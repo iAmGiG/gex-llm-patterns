@@ -2,8 +2,8 @@
 Alpha Vantage API Client for GEX-LLM Pattern Analysis
 
 This module specializes in retrieving options chain data from Alpha Vantage API
-for SPY/SPX gamma exposure calculations. Optimized for the free tier rate limits
-with intelligent caching.
+for SPY/SPX gamma exposure calculations. Optimized for entry premium tier rate limits
+(75 calls/min) with intelligent caching.
 """
 
 from datetime import datetime, timedelta
@@ -46,15 +46,15 @@ class AlphaVantageGEXClient:
         self.base_url = "https://www.alphavantage.co/query"
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Initialize unified cache (critical for free tier)
+        # Initialize unified cache (critical for premium tier)
         self.cache = cache_manager or UnifiedCacheManager()
 
-        # Rate limiting for free tier
+        # Rate limiting for entry premium tier
         self.calls_per_minute = 75
         self.call_timestamps = []
 
     def _check_rate_limit(self) -> bool:
-        """Check if we're within rate limits for free tier."""
+        """Check if we're within rate limits for entry premium tier."""
         now = datetime.now()
         # Remove calls older than 1 minute
         self.call_timestamps = [
@@ -100,8 +100,8 @@ class AlphaVantageGEXClient:
             return cached_data
 
         try:
-            # Note: Alpha Vantage free tier doesn't include options data
-            # This would require premium subscription or alternative approach
+            # Note: Alpha Vantage options data requires premium subscription
+            # Free tier (25 calls/day) is insufficient for research needs
             params = {
                 "function": "HISTORICAL_OPTIONS",  # Premium feature
                 "symbol": symbol,
