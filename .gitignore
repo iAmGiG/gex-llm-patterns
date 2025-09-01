@@ -128,6 +128,7 @@ CLAUDE.md
 .claude_archive/
 ADVISOR_REQUIREMENTS_MET.md
 TODO.md
+todo.md
 docs/internalREADME.md
 docs/research/notes.md
 docs/original_sentiment_agent.py
