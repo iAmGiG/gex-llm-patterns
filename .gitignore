@@ -1,0 +1,227 @@
+# Python
+# ======
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+env_test/
+
+# Environment & Config Files
+# ==========================
+
+# Environment variable files
+*.env
+.env.*
+
+# Local development configs (but keep .vscode/settings.json)
+.editorconfig
+.tool-versions
+
+# Linter/formatter caches
+.ruff_cache/
+.pylint.d/
+
+# Old/backup config files
+*.cfg.bak
+*.toml.bak
+.pep8
+.isort.cfg
+
+# IDEs
+# ====
+
+# Claude Code agent configurations
+.claude/
+
+# PyCharm
+.idea/
+
+# VS Code (keeping settings.json for project-specific linting config)
+.vscode/*
+!.vscode/settings.json
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Project-specific
+# ================
+
+# Cache directory (contains backtest results and market data)
+.cache/
+
+# CSV files from cache/deprecated (data outputs, not research results)
+.cache/**/*.csv
+deprecated/**/*.csv
+
+# Configuration files (contain API keys)
+config/
+
+# Internal documentation
+CLAUDE.md
+.claude_archive/
+ADVISOR_REQUIREMENTS_MET.md
+TODO.md
+docs/internalREADME.md
+docs/research/notes.md
+docs/original_sentiment_agent.py
+sentiment feature testing.md
+
+# Temporary files
+temp_env.sh
+environment.yml
+conda_requirements.txt
+
+# Test files - ignore entire test directory as we iterate rapidly
+tests/
+src/test/
+pytest.ini
+**/test_*.py
+enhanced_sentiment_comparison_*.json
+
+# Legacy test files
+test_*.py
+sentiment_agent_cli.py
+sentiment_agent_cli_improved.py
+
+# Deprecated agent versions
+src/agents/deprecated/
+
+# Scripts
+install_dependencies.sh
+run_simple_agent.sh
+run_sentiment_agent.sh
+package-lock.json
+
+# Deprecated backtest scripts backup
+scripts/deprecated_backtest_scripts/
+
+# Deprecated code archive (local only)
+deprecated/
+
+# Background Services (server-specific)
+services/background_cache_service.py
+services/start_cache_service.sh
+services/stop_cache_service.sh
+services/cache_service_status.sh
+
+# SEC Edgar data
+sec-edgar-filings/
+
+# Logs & Runtime Files
+*.log
+logs/
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# OS files
+# ========
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# Other
+# =====
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# PyPI configuration file
+.pypirc
