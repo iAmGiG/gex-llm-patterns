@@ -121,9 +121,12 @@ print(f"Retrieved {len(spy_data)} days of SPY data")
 
 Comprehensive documentation is available in the `docs/` folder:
 
-- **[Architecture](docs/architecture/architecture_overview.md)**: System design and component interactions
+- **[Project Overview](docs/architecture/project_overview.md)**: Complete research vision, current status, and development roadmap
+- **[Implementation Status](docs/technical/implementation_status.md)**: Technical guide showing what's built and what's next
+- **[Architecture Overview](docs/architecture/architecture_overview.md)**: System design and component interactions
 - **[Agent Framework](docs/agents/agent_framework.md)**: Autogen multi-agent setup and workflows  
-- **[Technical Implementation](docs/technical/)**: GEX calculations, data pipeline, tools & utilities
+- **[Data Pipeline](docs/technical/data_pipeline.md)**: Alpha Vantage integration, caching, and processing
+- **[GEX Calculations](docs/technical/gex_calculations.md)**: Mathematical GEX framework
 - **[Research Methodology](docs/research/research_methodology.md)**: Statistical validation and testing approach
 - **[Documentation Guidelines](docs/README.md)**: How to organize and format project documentation
 

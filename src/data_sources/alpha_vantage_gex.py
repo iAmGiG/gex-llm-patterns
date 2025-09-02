@@ -69,73 +69,100 @@ class AlphaVantageGEXClient:
         self.call_timestamps.append(now)
         return True
 
-    def fetch_options_chain(self, symbol: str, expiration_date: str) -> pd.DataFrame:
+    def fetch_historical_options(self, symbol: str, date: Optional[str] = None, 
+                               datatype: str = "json") -> pd.DataFrame:
         """
-        Fetch options chain for specific symbol and expiration.
-
+        Fetch full historical options chain for a specific trading date.
+        
         Args:
-            symbol: Underlying symbol (SPY, SPX)
-            expiration_date: Options expiration date (YYYY-MM-DD)
+            symbol: Underlying symbol (SPY, SPX, IBM, etc.)
+            date: Trading date (YYYY-MM-DD). If None, uses previous trading day
+            datatype: Response format ('json' or 'csv')
 
         Returns:
-            DataFrame with options chain data including strikes, calls, puts
-
+            DataFrame with complete options chain for the trading date
+            
         Note:
-            This requires Alpha Vantage Premium. For free tier, we'll need
-            to implement alternative data collection or use historical data.
+            - Returns ALL expirations available for the trading date
+            - Covers 15+ years of history (since 2008-01-01)
+            - Requires Alpha Vantage Premium for full functionality
         """
         if not self._check_rate_limit():
             self.logger.warning("Rate limit exceeded, using cached data only")
             return pd.DataFrame()
 
-        cache_key = f"options_{symbol}_{expiration_date}"
+        # Create cache key - use 'latest' if no date specified
+        cache_date = date or 'latest'
+        cache_key = f"options_{symbol}_{cache_date}"
 
         # Check cache first (critical for rate limits)
-        cached_data = self.cache.get_market_data(
-            cache_key, expiration_date, expiration_date, "options_chain"
-        )
-        if cached_data is not None:
-            self.logger.info(
-                f"Using cached options chain for {symbol} {expiration_date}")
-            return cached_data
+        if date:  # Only cache specific dates, not 'latest'
+            cached_data = self.cache.get_market_data(
+                cache_key, date, date, "historical_options"
+            )
+            if cached_data is not None:
+                self.logger.info(f"Using cached options data for {symbol} {date}")
+                return cached_data
 
         try:
-            # Note: Alpha Vantage options data requires premium subscription
-            # Free tier (25 calls/day) is insufficient for research needs
+            # Build API parameters according to Alpha Vantage docs
             params = {
-                "function": "HISTORICAL_OPTIONS",  # Premium feature
+                "function": "HISTORICAL_OPTIONS",
                 "symbol": symbol,
-                "date": expiration_date,
                 "apikey": self.api_key
             }
+            
+            # Add optional date parameter
+            if date:
+                params["date"] = date
+                
+            # Add datatype parameter
+            if datatype != "json":
+                params["datatype"] = datatype
 
-            response = requests.get(self.base_url, params=params)
+            self.logger.info(f"Fetching options data for {symbol}" + 
+                           (f" on {date}" if date else " (previous trading day)"))
+
+            response = requests.get(self.base_url, params=params, timeout=30)
 
             if response.status_code != 200:
-                self.logger.error(
-                    f"Alpha Vantage API error: {response.status_code}")
+                self.logger.error(f"Alpha Vantage API error: {response.status_code}")
                 return pd.DataFrame()
 
-            data = response.json()
+            # Handle different response formats
+            if datatype == "csv":
+                # Parse CSV response
+                df = self._process_csv_response(response.text, symbol, date)
+            else:
+                # Parse JSON response
+                data = response.json()
+                
+                if "Error Message" in data:
+                    self.logger.error(f"Alpha Vantage API error: {data['Error Message']}")
+                    return pd.DataFrame()
+                
+                if "Note" in data and "rate limit" in data["Note"].lower():
+                    self.logger.warning(f"Rate limit warning: {data['Note']}")
+                    return pd.DataFrame()
 
-            if "Error Message" in data:
-                self.logger.error(
-                    f"Alpha Vantage API error: {data['Error Message']}")
-                return pd.DataFrame()
+                df = self._process_options_data(data)
 
-            # Process options data into standardized format
-            # This would need to be implemented based on actual API response
-            df = self._process_options_data(data)
+            if df.empty:
+                self.logger.warning(f"No options data returned for {symbol}" + 
+                                  (f" on {date}" if date else ""))
+                return df
 
-            # Cache the processed data
-            self.cache.set_market_data(
-                cache_key, expiration_date, expiration_date, "options_chain", df
-            )
+            # Cache the processed data (only for specific dates)
+            if date:
+                self.cache.set_market_data(
+                    cache_key, date, date, "historical_options", df
+                )
 
+            self.logger.info(f"Successfully fetched {len(df)} option contracts")
             return df
 
         except Exception as e:
-            self.logger.error(f"Error fetching options chain: {e}")
+            self.logger.error(f"Error fetching historical options: {e}")
             return pd.DataFrame()
 
     def fetch_underlying_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
@@ -244,19 +271,123 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error fetching underlying data: {e}")
             return pd.DataFrame()
 
+    def _process_csv_response(self, csv_text: str, symbol: str, date: Optional[str]) -> pd.DataFrame:
+        """
+        Process CSV response from Alpha Vantage Historical Options API.
+        
+        Args:
+            csv_text: Raw CSV response text
+            symbol: Symbol for logging
+            date: Date for logging
+            
+        Returns:
+            DataFrame with processed options data
+        """
+        try:
+            import io
+            
+            # Parse CSV into DataFrame
+            df = pd.read_csv(io.StringIO(csv_text))
+            
+            if df.empty:
+                self.logger.warning(f"Empty CSV response for {symbol}")
+                return df
+            
+            # CSV format should match JSON structure, so process similarly
+            # Convert column names to match expected format if needed
+            df = self._standardize_csv_columns(df)
+            
+            # Apply same processing as JSON data
+            processed_df = self._apply_standard_processing(df)
+            
+            return processed_df
+            
+        except Exception as e:
+            self.logger.error(f"Error processing CSV response: {e}")
+            return pd.DataFrame()
+    
+    def _standardize_csv_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Standardize CSV column names to match JSON format."""
+        # CSV might have different column naming - adjust as needed
+        # This will be refined once we see actual CSV format
+        return df
+    
     def _process_options_data(self, raw_data: Dict) -> pd.DataFrame:
         """
         Process raw options data into standardized format for GEX calculations.
 
         Args:
-            raw_data: Raw API response data
+            raw_data: Raw API response data from Historical Options endpoint
 
         Returns:
-            DataFrame with columns: strike, call_volume, call_oi, put_volume, put_oi, etc.
+            DataFrame with options chain data organized by strike
         """
-        # This would need to be implemented based on actual API response format
-        # For now, return empty DataFrame as placeholder
-        return pd.DataFrame()
+        if "data" not in raw_data:
+            self.logger.warning("No 'data' field in options API response")
+            return pd.DataFrame()
+
+        options_data = raw_data["data"]
+        if not options_data:
+            self.logger.warning("Empty options data in API response")
+            return pd.DataFrame()
+
+        try:
+            # Convert to DataFrame
+            df = pd.DataFrame(options_data)
+            return self._apply_standard_processing(df)
+
+        except Exception as e:
+            self.logger.error(f"Error processing options data: {e}")
+            return pd.DataFrame()
+    
+    def _apply_standard_processing(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Apply standard processing to options DataFrame (shared by JSON and CSV).
+        
+        Args:
+            df: Raw options DataFrame
+            
+        Returns:
+            Processed DataFrame with derived fields
+        """
+        try:
+            if df.empty:
+                return df
+                
+            # Convert numeric columns
+            numeric_columns = [
+                "strike", "last", "mark", "bid", "ask", "bid_size", "ask_size",
+                "volume", "open_interest", "implied_volatility", "delta", 
+                "gamma", "theta", "vega", "rho"
+            ]
+            
+            for col in numeric_columns:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+            # Convert dates
+            if "expiration" in df.columns:
+                df["expiration"] = pd.to_datetime(df["expiration"])
+            if "date" in df.columns:
+                df["date"] = pd.to_datetime(df["date"])
+
+            # Add derived columns for GEX analysis
+            df["mid_price"] = (df["bid"] + df["ask"]) / 2
+            df["bid_ask_spread"] = df["ask"] - df["bid"]
+            df["bid_ask_spread_pct"] = df["bid_ask_spread"] / df["mid_price"] * 100
+            
+            # Volume-to-OI ratios (useful for detecting unusual activity)
+            df["vol_oi_ratio"] = df["volume"] / (df["open_interest"] + 1)  # +1 to avoid div by zero
+            
+            # Sort by expiration, then by strike
+            df = df.sort_values(["expiration", "strike"])
+            
+            self.logger.info(f"Processed {len(df)} option contracts")
+            return df
+
+        except Exception as e:
+            self.logger.error(f"Error in standard processing: {e}")
+            return pd.DataFrame()
 
     def get_rate_limit_status(self) -> Dict[str, Any]:
         """Get current rate limit status."""
