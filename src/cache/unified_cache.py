@@ -36,6 +36,9 @@ class UnifiedCacheManager:
         
         for dir_path in [self.market_data_dir, self.options_dir, self.news_dir, self.metadata_dir]:
             dir_path.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize GEX cache manager (lazy loading)
+        self._gex_cache = None
 
     # === OPTIONS DATA ===
     
@@ -324,6 +327,108 @@ class UnifiedCacheManager:
         except Exception as e:
             self.logger.error(f"Failed to cleanup cache: {e}")
             return 0
+
+    # === GEX CACHE INTEGRATION ===
+    
+    @property
+    def gex_cache(self):
+        """Lazy-loaded GEX cache manager."""
+        if self._gex_cache is None:
+            from src.cache.gex_cache_manager import GEXCacheManager
+            self._gex_cache = GEXCacheManager(str(self.base_dir))
+        return self._gex_cache
+    
+    def get_or_calculate_gex(self, symbol: str, trading_date: str) -> dict:
+        """
+        Get GEX from cache or calculate if missing.
+        Integration point for seamless GEX caching.
+        
+        Args:
+            symbol: Stock symbol (SPY, SPX, etc.) 
+            trading_date: Trading date in YYYY-MM-DD format
+            
+        Returns:
+            GEX summary dict or None if calculation fails
+        """
+        try:
+            # 1. Check GEX cache first
+            cached_gex = self.gex_cache.get_gex_summary(symbol, trading_date)
+            if cached_gex:
+                self.logger.debug(f"GEX cache hit for {symbol} {trading_date}")
+                return cached_gex
+            
+            # 2. Get options data (from existing cache)
+            options_data = self.get_options_data(symbol, trading_date)
+            
+            if options_data is None or options_data.empty:
+                self.logger.warning(f"No options data available for GEX calculation: {symbol} {trading_date}")
+                return None
+            
+            # 3. Calculate GEX using existing engine
+            from src.gex.sample_data_gex import SampleDataGEXInterface
+            gex_interface = SampleDataGEXInterface()
+            
+            gex_results = gex_interface.calculate_gex_metrics(
+                options_data, 
+                symbol=symbol,
+                trading_date=trading_date
+            )
+            
+            if gex_results and gex_results.get('status') == 'success':
+                # Extract and enhance summary for caching
+                gex_summary = gex_results.get('metrics', {})
+                gex_summary.update({
+                    'symbol': symbol,
+                    'trading_date': trading_date,
+                    'calculation_timestamp': datetime.now().isoformat(),
+                    'calculation_metadata': {
+                        'options_contracts_processed': len(options_data),
+                        'calculation_method': 'unified_cache_auto_calculation',
+                        'calculation_duration_ms': gex_results.get('calculation_time_ms', 0)
+                    }
+                })
+                
+                # 4. Cache the results
+                success = self.gex_cache.store_gex_calculation(
+                    symbol, trading_date, gex_summary
+                )
+                
+                if success:
+                    self.logger.info(f"Calculated and cached GEX for {symbol} {trading_date}")
+                
+                return gex_summary
+            else:
+                self.logger.error(f"GEX calculation failed for {symbol} {trading_date}: {gex_results}")
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"GEX get_or_calculate failed for {symbol} {trading_date}: {e}")
+            return None
+    
+    def batch_get_gex(self, requests: list) -> dict:
+        """
+        Efficient batch GEX retrieval.
+        
+        Args:
+            requests: List of (symbol, trading_date) tuples
+            
+        Returns:
+            Dict mapping "symbol_date" to GEX results
+        """
+        try:
+            # Use GEX cache manager's batch functionality
+            return self.gex_cache.batch_get_gex(requests)
+        except Exception as e:
+            self.logger.error(f"Batch GEX retrieval failed: {e}")
+            return {}
+    
+    def get_gex_cache_stats(self) -> dict:
+        """Get GEX cache statistics."""
+        try:
+            return self.gex_cache.get_cache_stats()
+        except Exception as e:
+            self.logger.error(f"Failed to get GEX cache stats: {e}")
+            return {'error': str(e)}
 
 
 # === SAMPLE DATA LOADER (for synthetic data) ===

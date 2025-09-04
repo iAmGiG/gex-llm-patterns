@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 import pandas as pd
 import logging
+from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
 

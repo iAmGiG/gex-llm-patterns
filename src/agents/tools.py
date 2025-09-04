@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 
 # Third-party imports
 from autogen_core.tools import FunctionTool
+import pandas as pd
 
 # Project imports - only tools actually used
 from src.cache import UnifiedCacheManager
@@ -184,19 +185,42 @@ def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str
 # GEX Calculation Tools
 # ===========================
 
-def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot_price: float = None):
+def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot_price: float = None, use_cache: bool = True):
     """
-    Calculate gamma exposure metrics for a symbol.
+    Calculate gamma exposure metrics for a symbol with caching support.
 
     Args:
         symbol: Stock symbol
         trading_date: Options data date
         spot_price: Current underlying price (auto-detect if None)
+        use_cache: Whether to use GEX caching (default True)
 
     Returns:
         Dictionary with GEX metrics
     """
     try:
+        # Default to current date if not specified
+        if not trading_date:
+            trading_date = datetime.now().strftime('%Y-%m-%d')
+        
+        # Use cached GEX calculation if enabled
+        if use_cache:
+            cached_gex = cache_manager.get_or_calculate_gex(symbol, trading_date)
+            
+            if cached_gex:
+                # Add cache metadata and return
+                result_data = {
+                    'status': 'success',
+                    'symbol': symbol,
+                    'metrics': cached_gex,
+                    'cache_hit': cached_gex.get('_cache_info', {}).get('cache_hit', True),
+                    'calculation_method': 'cached'
+                }
+                
+                logger.info(f"Returned cached GEX for {symbol} {trading_date}")
+                return result_data
+        
+        # Fallback to direct calculation if cache disabled or failed
         # Get options data
         options_result = fetch_options_data(symbol, trading_date)
 
@@ -208,7 +232,7 @@ def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot
         # Calculate GEX using sample interface (works with any data)
         gex_results = sample_gex.calculate_gex_for_symbol(
             symbol,
-            trading_date or datetime.now().strftime('%Y-%m-%d'),
+            trading_date,
             spot_price
         )
 
@@ -217,7 +241,9 @@ def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot
             'status': 'success',
             'symbol': symbol,
             'metrics': gex_results,
-            'contracts_analyzed': len(options_df)
+            'contracts_analyzed': len(options_df),
+            'cache_hit': False,
+            'calculation_method': 'direct'
         }
 
         # Save to reports with demo flag for testing
@@ -493,6 +519,113 @@ def _generate_confluence_insights(confluence: dict, vol_regime: dict) -> list:
     
     return insights
 
+def process_historical_gex_range(symbol: str = "SPY", start_date: str = None, end_date: str = None, max_workers: int = 4):
+    """
+    Process GEX calculations for a date range using concurrent processing.
+    
+    Args:
+        symbol: Stock symbol
+        start_date: Start date (YYYY-MM-DD), defaults to 30 days ago
+        end_date: End date (YYYY-MM-DD), defaults to today
+        max_workers: Number of concurrent workers
+        
+    Returns:
+        Dictionary with processing results and historical GEX data
+    """
+    try:
+        # Default date range if not provided
+        if not end_date:
+            end_date = datetime.now().strftime('%Y-%m-%d')
+        if not start_date:
+            start_dt = datetime.now() - timedelta(days=30)
+            start_date = start_dt.strftime('%Y-%m-%d')
+        
+        # Initialize concurrent processor
+        from src.cache.concurrent_gex_processor import ConcurrentGEXProcessor
+        processor = ConcurrentGEXProcessor(max_workers=max_workers, unified_cache_manager=cache_manager)
+        
+        # Process the date range
+        processing_results = processor.process_symbol_date_range(
+            symbol=symbol,
+            start_date=start_date, 
+            end_date=end_date,
+            force_recalculate=False
+        )
+        
+        # Get historical flip points for analysis
+        historical_gex = cache_manager.gex_cache.get_historical_flip_points(
+            symbol=symbol,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        # Save comprehensive results to reports
+        analysis_results = {
+            'symbol': symbol,
+            'date_range': f"{start_date} to {end_date}",
+            'processing_summary': processing_results,
+            'historical_data': historical_gex.to_dict('records') if not historical_gex.empty else [],
+            'analysis_timestamp': datetime.now().isoformat()
+        }
+        
+        reports_manager.save_analysis_results(
+            symbol, analysis_results, end_date,
+            analysis_type='historical_gex_range'
+        )
+        
+        # Shutdown processor
+        processor.shutdown(wait=True)
+        
+        return {
+            'status': 'success',
+            'symbol': symbol,
+            'date_range': f"{start_date} to {end_date}",
+            'processing_results': processing_results,
+            'historical_flip_points': len(historical_gex) if not historical_gex.empty else 0,
+            'recommendations': _generate_historical_recommendations(processing_results, historical_gex)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in historical GEX range processing: {e}")
+        return {
+            'status': 'error',
+            'message': f"Historical GEX processing failed: {str(e)}"
+        }
+
+def _generate_historical_recommendations(processing_results: dict, historical_data: pd.DataFrame) -> list:
+    """Generate recommendations based on historical GEX analysis."""
+    recommendations = []
+    
+    # Processing efficiency insights
+    if processing_results.get('cache_hits', 0) > processing_results.get('new_calculations', 0):
+        recommendations.append("High cache hit rate - GEX caching system performing well")
+    
+    # Historical pattern insights
+    if not historical_data.empty and len(historical_data) > 5:
+        flip_points = historical_data['flip_point'].dropna()
+        if not flip_points.empty:
+            avg_flip = flip_points.mean()
+            flip_std = flip_points.std()
+            current_flip = flip_points.iloc[-1] if len(flip_points) > 0 else None
+            
+            if current_flip and abs(current_flip - avg_flip) > flip_std:
+                if current_flip > avg_flip:
+                    recommendations.append(f"Current flip point ({current_flip:.2f}) above historical average - bullish gamma regime")
+                else:
+                    recommendations.append(f"Current flip point ({current_flip:.2f}) below historical average - bearish gamma regime")
+    
+    # Processing performance insights
+    total_dates = processing_results.get('total_dates', 0)
+    successful = processing_results.get('successful', 0)
+    if total_dates > 0:
+        success_rate = (successful / total_dates) * 100
+        if success_rate > 90:
+            recommendations.append("High processing success rate - data quality excellent")
+        elif success_rate < 70:
+            recommendations.append("Lower processing success rate - check data availability")
+    
+    return recommendations
+
 
 ##################################
 # AutoGen Tool Registration
@@ -545,6 +678,14 @@ technical_confluence_tool = FunctionTool(
 )
 technical_confluence_tool.agent_types = [ANALYSIS_AGENT]
 
+# Historical GEX processing tools
+historical_gex_tool = FunctionTool(
+    func=process_historical_gex_range,
+    name="process_historical_gex_range",
+    description="Process GEX calculations for date range using high-performance concurrent processing and caching"
+)
+historical_gex_tool.agent_types = [GEX_AGENT, ANALYSIS_AGENT]
+
 ##################################
 # Tool Collections by Agent Type
 ##################################
@@ -562,6 +703,7 @@ DATA_COLLECTION_TOOLS = [tool for tool in _data_tools_raw if tool is not None]
 _gex_tools_raw = [
     calculate_gex_tool,     # Core GEX calculations with Black-Scholes
     find_flip_points_tool,  # Flip point identification and analysis
+    historical_gex_tool,    # Historical range processing with caching
 ]
 GEX_CALCULATION_TOOLS = [tool for tool in _gex_tools_raw if tool is not None]
 
@@ -572,6 +714,7 @@ _analysis_tools_raw = [
     find_flip_points_tool,      # Flip point analysis for patterns
     query_analysis_tool,        # Market intelligence and query parsing
     technical_confluence_tool,  # Technical-GEX confluence analysis
+    historical_gex_tool,        # Historical GEX range analysis
 ]
 ANALYSIS_TOOLS = [tool for tool in _analysis_tools_raw if tool is not None]
 

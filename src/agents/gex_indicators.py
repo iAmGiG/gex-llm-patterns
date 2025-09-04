@@ -136,7 +136,7 @@ def gex_volatility_regime(price_data: pd.DataFrame, atr_period: int = 14) :
             'error': str(e)
         }
 
-def identify_key_levels(price_data: pd.DataFrame, gex_levels: Dict = None) :
+def identify_key_levels(price_data: pd.DataFrame, gex_levels = None) :
     """
     Identify key technical levels that may align with gamma concentrations.
     
@@ -212,7 +212,7 @@ def identify_key_levels(price_data: pd.DataFrame, gex_levels: Dict = None) :
             'error': str(e)
         }
 
-def enhanced_gex_context(price_data: pd.DataFrame, gex_data: Dict = None) :
+def enhanced_gex_context(price_data: pd.DataFrame, gex_data = None) :
     """
     Comprehensive technical context for GEX analysis.
     
