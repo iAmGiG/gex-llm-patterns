@@ -10,10 +10,7 @@ Aggregates gamma exposure data across different dimensions:
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
-from datetime import datetime, timedelta
 import logging
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +22,8 @@ class LevelAggregator:
     """
     
     def __init__(self, 
-                 significant_gex_threshold: float = 5000000,
-                 clustering_threshold: float = 0.02):
+                 significant_gex_threshold = 5000000,
+                 clustering_threshold = 0.02):
         """
         Initialize Level Aggregator.
         
@@ -38,8 +35,8 @@ class LevelAggregator:
         self.clustering_threshold = clustering_threshold
         
     def aggregate_by_expiration(self, 
-                              options_data: pd.DataFrame,
-                              gex_data: pd.DataFrame) -> pd.DataFrame:
+                              options_data,
+                              gex_data) :
         """
         Aggregate GEX by expiration date.
         
@@ -114,17 +111,15 @@ class LevelAggregator:
         return exp_aggregation
     
     def identify_gex_clusters(self, 
-                            strike_gex: pd.DataFrame,
-                            underlying_price: float) -> List[Dict]:
+                            strike_gex,
+                            underlying_price) :
         """
         Identify clusters of significant GEX around key price levels.
         
-        Args:
-            strike_gex: DataFrame with GEX by strike
+        Argsike_gex: DataFrame with GEX by strike
             underlying_price: Current underlying price
             
-        Returns:
-            List of GEX cluster information
+        Returns of GEX cluster information
         """
         if strike_gex.empty:
             return []
@@ -168,16 +163,15 @@ class LevelAggregator:
         
         return clusters
     
-    def _analyze_cluster(self, cluster_rows: List, underlying_price: float) -> Dict:
+    def _analyze_cluster(self, cluster_rows, underlying_price) :
         """
         Analyze a cluster of GEX levels.
         
         Args:
-            cluster_rows: List of DataFrame rows in the cluster
+            cluster_rows of DataFrame rows in the cluster
             underlying_price: Current underlying price
             
-        Returns:
-            Dictionary with cluster analysis
+        Returnsionary with cluster analysis
         """
         if not cluster_rows:
             return {}
@@ -226,19 +220,17 @@ class LevelAggregator:
         }
     
     def identify_key_levels(self, 
-                          strike_gex: pd.DataFrame,
-                          underlying_price: float,
-                          max_levels: int = 10) -> Dict:
+                          strike_gex,
+                          underlying_price,
+                          max_levels = 10) :
         """
         Identify key support and resistance levels from GEX data.
         
-        Args:
-            strike_gex: DataFrame with GEX by strike
+        Argsike_gex: DataFrame with GEX by strike
             underlying_price: Current underlying price
             max_levels: Maximum number of levels to return
             
-        Returns:
-            Dictionary with key support and resistance levels
+        Returnsionary with key support and resistance levels
         """
         if strike_gex.empty:
             return {'support_levels': [], 'resistance_levels': []}
@@ -262,14 +254,13 @@ class LevelAggregator:
         }
     
     def create_gex_profile_summary(self, 
-                                 strike_gex: pd.DataFrame,
-                                 exp_aggregation: pd.DataFrame,
-                                 underlying_price: float) -> Dict:
+                                 strike_gex,
+                                 exp_aggregation,
+                                 underlying_price) :
         """
         Create comprehensive GEX profile summary.
         
-        Args:
-            strike_gex: GEX aggregated by strike
+        Argsike_gex: GEX aggregated by strike
             exp_aggregation: GEX aggregated by expiration
             underlying_price: Current underlying price
             
@@ -329,9 +320,9 @@ class LevelAggregator:
         }
     
     def _assess_market_structure(self, 
-                               total_gex: float,
-                               key_levels: Dict,
-                               underlying_price: float) -> Dict:
+                               total_gex,
+                               key_levels,
+                               underlying_price) :
         """
         Assess overall market structure based on GEX profile.
         

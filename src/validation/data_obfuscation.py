@@ -9,7 +9,6 @@ Critical for Issue #134: Validate LLM trading decisions without data leakage.
 
 import pandas as pd
 import re
-from typing import Dict, List, Any, Tuple
 import json
 
 
@@ -43,16 +42,15 @@ class DataObfuscator:
             'VXX': 'VOLATILITY_INDEX'
         }
 
-    def obfuscate_dates(self, date_list: List[str], base_date: str = None) -> Dict[str, str]:
+    def obfuscate_dates(self, date_list, base_date = None) :
         """
         Convert real dates to relative timestamps.
 
         Args:
-            date_list: List of date strings to obfuscate
+            date_list of date strings to obfuscate
             base_date: Optional base date (first date becomes T+0)
 
-        Returns:
-            Dictionary mapping real dates to obfuscated dates
+        Returnsionary mapping real dates to obfuscated dates
         """
         if not date_list:
             return {}
@@ -83,15 +81,14 @@ class DataObfuscator:
         self.date_mapping = mapping
         return mapping
 
-    def obfuscate_tickers(self, ticker_list: List[str]) -> Dict[str, str]:
+    def obfuscate_tickers(self, ticker_list) :
         """
         Convert real tickers to anonymous symbols.
 
         Args:
-            ticker_list: List of ticker symbols to obfuscate
+            ticker_list of ticker symbols to obfuscate
 
-        Returns:
-            Dictionary mapping real tickers to obfuscated tickers
+        Returnsionary mapping real tickers to obfuscated tickers
         """
         mapping = {}
 
@@ -107,7 +104,7 @@ class DataObfuscator:
         self.ticker_mapping = mapping
         return mapping
 
-    def obfuscate_text_content(self, text: str) -> str:
+    def obfuscate_text_content(self, text) -> str:
         """
         Remove temporal and market context from text.
 
@@ -150,7 +147,7 @@ class DataObfuscator:
 
         return obfuscated
 
-    def obfuscate_market_data(self, market_data: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+    def obfuscate_market_data(self, market_data) :
         """
         Obfuscate a complete market data DataFrame.
 
@@ -200,15 +197,14 @@ class DataObfuscator:
 
         return obfuscated_df, metadata
 
-    def obfuscate_news_data(self, news_data: List[Dict]) -> List[Dict]:
+    def obfuscate_news_data(self, news_data) :
         """
         Obfuscate news articles by removing temporal references.
 
         Args:
-            news_data: List of news article dictionaries
+            news_data of news article dictionaries
 
-        Returns:
-            List of obfuscated news articles
+        Returns of obfuscated news articles
         """
         obfuscated_articles = []
 
@@ -231,12 +227,11 @@ class DataObfuscator:
 
         return obfuscated_articles
 
-    def create_reverse_mapping(self) -> Dict[str, Dict[str, str]]:
+    def create_reverse_mapping(self) :
         """
         Create reverse mappings to convert obfuscated data back to original.
 
-        Returns:
-            Dictionary with reverse mappings for dates and tickers
+        Returnsionary with reverse mappings for dates and tickers
         """
         reverse_mapping = {
             'dates': {v: k for k, v in self.date_mapping.items()},
@@ -246,7 +241,7 @@ class DataObfuscator:
         self.reverse_mappings = reverse_mapping
         return reverse_mapping
 
-    def save_mappings(self, filepath: str):
+    def save_mappings(self, filepath):
         """Save obfuscation mappings to file for later use."""
         mappings = {
             'date_mapping': self.date_mapping,
@@ -258,7 +253,7 @@ class DataObfuscator:
         with open(filepath, 'w') as f:
             json.dump(mappings, f, indent=2, default=str)
 
-    def load_mappings(self, filepath: str):
+    def load_mappings(self, filepath):
         """Load obfuscation mappings from file."""
         with open(filepath, 'r') as f:
             mappings = json.load(f)
@@ -269,7 +264,7 @@ class DataObfuscator:
             self.base_date = pd.to_datetime(mappings['base_date'])
 
 
-def validate_obfuscation_quality(original_text: str, obfuscated_text: str) -> Dict[str, Any]:
+def validate_obfuscation_quality(original_text, obfuscated_text) :
     """
     Validate that obfuscation successfully removed temporal references.
 
@@ -277,8 +272,7 @@ def validate_obfuscation_quality(original_text: str, obfuscated_text: str) -> Di
         original_text: Original text with temporal references
         obfuscated_text: Obfuscated text
 
-    Returns:
-        Dictionary with validation results
+    Returnsionary with validation results
     """
     issues = []
 
@@ -316,14 +310,14 @@ def validate_obfuscation_quality(original_text: str, obfuscated_text: str) -> Di
 
 
 # Convenience functions for quick usage
-def obfuscate_date_range(start_date: str, end_date: str) -> Dict[str, str]:
+def obfuscate_date_range(start_date, end_date) :
     """Quick function to obfuscate a date range."""
     obfuscator = DataObfuscator()
     dates = pd.date_range(start_date, end_date, freq='D').strftime('%Y-%m-%d').tolist()
     return obfuscator.obfuscate_dates(dates, start_date)
 
 
-def obfuscate_mag7_tickers() -> Dict[str, str]:
+def obfuscate_mag7_tickers() :
     """Quick function to get MAG7 ticker obfuscation mapping."""
     obfuscator = DataObfuscator()
     mag7 = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"]

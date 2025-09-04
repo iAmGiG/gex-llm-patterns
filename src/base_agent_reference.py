@@ -11,7 +11,6 @@ import json
 import traceback
 import pandas as pd
 from abc import ABC, abstractmethod
-from typing import Any, Optional, List, Dict, Callable, Union, Awaitable
 
 # Import the proper AutoGen core components
 from autogen_core.models import (
@@ -66,12 +65,12 @@ class BaseAgent(AssistantAgent, ABC):
       - Tool registration and usage
     """
 
-    def __init__(self, name: str, tools=None, memory_system: Optional[Any] = None, llm_config: Optional[Dict[str, Any]] = None):
+    def __init__(self, name, tools=None, memory_system= None, llm_config] = None):
         """
         Initialize the agent with tools, memory system, and LLM configuration.
 
         :param name: Unique name/identifier for this agent.
-        :param tools: List of tools the agent can use.
+        :param tools of tools the agent can use.
         :param memory_system: Optional memory interface for knowledge storage and retrieval.
         :param llm_config: Optional dictionary containing LLM settings (temperature, etc).
         """
@@ -124,7 +123,7 @@ class BaseAgent(AssistantAgent, ABC):
         self.llm_config = llm_params
         self.model_client = model_client_instance
 
-    def log(self, message: str) -> None:
+    def log(self, message) -> None:
         """
         Logs a message using the agent's logger or falls back to print.
 
@@ -140,7 +139,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Message Building and Processing
     #############################
 
-    def _build_message_sequence(self, prompt: str, system_prompt: Optional[str] = None) -> List[Any]:
+    def _build_message_sequence(self, prompt, system_prompt= None) :
         """
         Build a sequence of messages for the conversation with the LLM.
 
@@ -175,7 +174,7 @@ class BaseAgent(AssistantAgent, ABC):
         # Fall back to string representation
         return str(response)
 
-    def _parse_tool_arguments(self, tool_args: Any) -> Dict[str, Any]:
+    def _parse_tool_arguments(self, tool_args: Any) :
         """
         Parse tool arguments into a dictionary format that can be passed to a tool.
         This handles various formats that might be returned by the LLM.
@@ -209,7 +208,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Tool Execution
     #############################
 
-    async def _execute_tool(self, tool_name: str, tool_args: Any) -> Any:
+    async def _execute_tool(self, tool_name, tool_args: Any) -> Any:
         """
         Core method to execute a tool with the given arguments.
 
@@ -239,7 +238,7 @@ class BaseAgent(AssistantAgent, ABC):
             self.log(f"Error executing tool {tool_name}: {str(e)}")
             return f"Error executing {tool_name}: {str(e)}"
 
-    async def _execute_tool_async(self, tool, tool_name: str, tool_args: Dict[str, Any]) -> Any:
+    async def _execute_tool_async(self, tool, tool_name, tool_args) -> Any:
         """
         Execute a tool asynchronously using the most appropriate method based on the tool's interface.
 
@@ -309,7 +308,7 @@ class BaseAgent(AssistantAgent, ABC):
         raise ValueError(
             f"No viable execution method found for tool: {tool_name}")
 
-    def _log_tool_call(self, tool_name: str, tool_args: Any) -> None:
+    def _log_tool_call(self, tool_name, tool_args: Any) -> None:
         """
         Log information about a tool call.
 
@@ -335,7 +334,7 @@ class BaseAgent(AssistantAgent, ABC):
         else:
             self.log(f"Result is {type(tool_result)}")
 
-    def _format_tool_result(self, result: Any, tool_name: str, tool_id: str) -> FunctionExecutionResult:
+    def _format_tool_result(self, result: Any, tool_name, tool_id) -> FunctionExecutionResult:
         """
         Format a tool result for use in the conversation.
 
@@ -399,7 +398,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Core Conversation Methods
     #############################
 
-    async def _run_tool_conversation(self, messages: List[Any]) -> Any:
+    async def _run_tool_conversation(self, messages) -> Any:
         """
         Run a conversation that may involve tool calls, but bail out after
         `self.max_tool_rounds` (default 2).  The final turn is a plain-text
@@ -457,7 +456,7 @@ class BaseAgent(AssistantAgent, ABC):
         )
         return summary
 
-    async def _process_tool_calls(self, tool_calls: List[Any]) -> List[FunctionExecutionResult]:
+    async def _process_tool_calls(self, tool_calls) :
         """
         Process a list of tool calls and return their results.
 
@@ -500,7 +499,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Public API Methods
     #############################
 
-    def process_with_tools(self, prompt: str, system_prompt: Optional[str] = None) -> Union[str, Awaitable[str]]:
+    def process_with_tools(self, prompt, system_prompt= None) :
         """
         Process a prompt with the LLM, supporting tool calling.
         This method provides the core tool calling functionality that specific agents can build upon.
@@ -527,7 +526,7 @@ class BaseAgent(AssistantAgent, ABC):
             print(f"Error details: {error_details}")
             return f"Error processing with LLM: {str(e)}"
 
-    async def process_with_tools_async(self, prompt: str, system_prompt: Optional[str] = None) -> str:
+    async def process_with_tools_async(self, prompt, system_prompt= None) -> str:
         """
         Async version of process_with_tools - for use when already in an event loop.
 
@@ -544,7 +543,7 @@ class BaseAgent(AssistantAgent, ABC):
             print(f"Error details: {error_details}")
             return f"Error processing with LLM: {str(e)}"
 
-    def process_tool_result(self, tool_name: str, result: Any, tool_args: Any) -> Any:
+    def process_tool_result(self, tool_name, result: Any, tool_args: Any) -> Any:
         """
         Process tool results before passing them back to the LLM.
         This is a hook for subclasses to override and add custom processing.
@@ -561,14 +560,14 @@ class BaseAgent(AssistantAgent, ABC):
     # Memory Management Methods
     #############################
 
-    def store_in_memory(self, key: str, data: Any) -> None:
+    def store_in_memory(self, key, data: Any) -> None:
         """
         Stores data in the memory system under the specified key.
         """
         if self.memory_system:
             self.memory_system.store_data(key, data)
 
-    def retrieve_from_memory(self, key: str) -> Any:
+    def retrieve_from_memory(self, key) -> Any:
         """
         Retrieves data from memory.
         """
@@ -576,14 +575,14 @@ class BaseAgent(AssistantAgent, ABC):
             return self.memory_system.retrieve_data(key)
         return None
 
-    def store_data_in_context(self, key: str, data: Any):
+    def store_data_in_context(self, key, data: Any):
         """
         Stores data in the context layer of memory.
         """
         if self.memory_system:
             self.memory_system.store_data(key, data, layer="context")
 
-    def retrieve_data_from_context(self, key: str):
+    def retrieve_data_from_context(self, key):
         """
         Retrieves data from the context layer of memory.
         """
@@ -605,7 +604,7 @@ class BaseAgent(AssistantAgent, ABC):
         AutoGen's required method for handling incoming messages.
         Must be implemented by all subclasses.
 
-        :param messages: List of messages in the conversation.
+        :param messages of messages in the conversation.
         :param context: Optional context from AutoGen.
         :return: The agent's response.
         """

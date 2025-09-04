@@ -7,7 +7,6 @@ data formats regardless of source (Polygon.io, Alpha Vantage, Google Search).
 
 import json
 from pathlib import Path
-from typing import Optional, Dict, Any
 import pandas as pd
 from datetime import datetime, timedelta
 import logging
@@ -21,7 +20,7 @@ class UnifiedCacheManager:
     All OHLCV data stored in same format whether from Polygon or Alpha Vantage.
     """
 
-    def __init__(self, base_dir: str = ".cache"):
+    def __init__(self, base_dir = ".cache"):
         """Initialize unified cache manager."""
         self.base_dir = Path(base_dir)
         self.market_dir = self.base_dir / "market_data"
@@ -34,7 +33,7 @@ class UnifiedCacheManager:
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def _calculate_market_data_expiration(self, start_date: str, end_date: str) -> datetime:
+    def _calculate_market_data_expiration(self, start_date, end_date) -> datetime:
         """
         Calculate appropriate expiration based on data recency.
 
@@ -57,18 +56,18 @@ class UnifiedCacheManager:
             # Fallback to short expiration if date parsing fails
             return datetime.now() + timedelta(hours=24)
 
-    def _get_market_cache_key(self, symbol: str, start: str, end: str, source: str) -> str:
+    def _get_market_cache_key(self, symbol, start, end, source) -> str:
         """Generate standardized cache key for market data."""
         return f"{symbol}_{start}_{end}_{source}.json"
 
-    def _get_news_cache_key(self, query: str, start: str, end: str, source: str = "google_search") -> str:
+    def _get_news_cache_key(self, query, start, end, source = "google_search") -> str:
         """Generate standardized cache key for news data."""
         # Clean query for filename
         clean_query = "".join(c for c in query if c.isalnum() or c in (' ', '-', '_')).strip()
         clean_query = clean_query.replace(' ', '_')[:50]  # Limit length
         return f"{clean_query}_{start}_{end}_{source}.json"
 
-    def get_market_data(self, symbol: str, start: str, end: str, source: str) -> Optional[pd.DataFrame]:
+    def get_market_data(self, symbol, start, end, source) :
         """
         Get cached market data.
 
@@ -137,7 +136,7 @@ class UnifiedCacheManager:
 
         return None
 
-    def _load_quarterly_cache(self, symbol: str, year: str, source: str) -> Optional[pd.DataFrame]:
+    def _load_quarterly_cache(self, symbol, year, source) :
         """
         Load quarterly cache files for a full year (Q1-Q4).
 
@@ -203,7 +202,7 @@ class UnifiedCacheManager:
             self.logger.error(f"Error in quarterly cache loading: {e}")
             return None
 
-    def _search_overlapping_cache(self, symbol: str, start: str, end: str, source: str) -> Optional[pd.DataFrame]:
+    def _search_overlapping_cache(self, symbol, start, end, source) :
         """
         Search for cached data with overlapping date ranges.
 
@@ -391,7 +390,7 @@ class UnifiedCacheManager:
             self.logger.error(f"Error in overlapping cache search: {e}")
             return None
 
-    def set_market_data(self, symbol: str, start: str, end: str, source: str, data: pd.DataFrame):
+    def set_market_data(self, symbol, start, end, source, data):
         """
         Cache market data in standardized format.
 
@@ -453,7 +452,7 @@ class UnifiedCacheManager:
         except Exception as e:
             self.logger.error(f"Error caching market data: {e}")
 
-    def get_news(self, query: str, start: str, end: str, source: str = "google_search") -> Optional[pd.DataFrame]:
+    def get_news(self, query, start, end, source = "google_search") :
         """Get cached news data."""
         cache_key = self._get_news_cache_key(query, start, end, source)
         cache_path = self.news_dir / source / f"{cache_key}"
@@ -480,7 +479,7 @@ class UnifiedCacheManager:
             self.logger.error(f"Error reading news cache {cache_key}: {e}")
             return None
 
-    def set_news(self, query: str, start: str, end: str, data: pd.DataFrame, source: str = "google_search"):
+    def set_news(self, query, start, end, data, source = "google_search"):
         """Cache news data in standardized format."""
         if data.empty:
             return
@@ -549,7 +548,7 @@ class UnifiedCacheManager:
         if cleaned_count > 0:
             self.logger.info(f"Cleaned up {cleaned_count} expired cache files")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) :
         """Get cache statistics."""
         market_files = list(self.market_dir.glob("*.json"))
         news_files = list(self.news_dir.rglob("*.json"))

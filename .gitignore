@@ -116,6 +116,9 @@ ipython_config.py
 # Cache directory (contains backtest results and market data)
 .cache/
 
+# Sample data (Alpha Vantage examples - keep local only)
+sample_data/
+
 # CSV files from cache/deprecated (data outputs, not research results)
 .cache/**/*.csv
 deprecated/**/*.csv
@@ -226,3 +229,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.clauderc

@@ -6,9 +6,6 @@ Short Put Arbitrage and other institutional flow behaviors.
 """
 
 import pandas as pd
-import numpy as np
-from typing import Dict, List, Any, Tuple, Optional
-from datetime import datetime, timedelta
 import logging
 
 
@@ -18,15 +15,14 @@ class OptionsChainAnalyzer:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
     
-    def detect_short_put_arbitrage_signals(self, options_df: pd.DataFrame) -> Dict[str, Any]:
+    def detect_short_put_arbitrage_signals(self, options_df) :
         """
         Detect potential Short Put Arbitrage patterns in options chain data.
         
         Args:
             options_df: DataFrame with options chain data from Alpha Vantage
             
-        Returns:
-            Dictionary with pattern detection results
+        Returnsionary with pattern detection results
         """
         if options_df.empty:
             return {"pattern_detected": False, "reason": "No options data"}
@@ -76,7 +72,7 @@ class OptionsChainAnalyzer:
             self.logger.error(f"Error detecting Short Put Arbitrage: {e}")
             return {"pattern_detected": False, "error": str(e)}
     
-    def _detect_unusual_put_volume(self, puts: pd.DataFrame) -> Dict[str, Any]:
+    def _detect_unusual_put_volume(self, puts) :
         """Detect unusual put volume vs open interest patterns."""
         if puts.empty:
             return {"detected": False, "reason": "No put data"}
@@ -104,7 +100,7 @@ class OptionsChainAnalyzer:
             "strikes_count": len(otm_unusual_puts)
         }
     
-    def _detect_call_urgency(self, calls: pd.DataFrame) -> Dict[str, Any]:
+    def _detect_call_urgency(self, calls) :
         """Detect above-ask call buying patterns."""
         if calls.empty:
             return {"detected": False, "reason": "No call data"}
@@ -132,7 +128,7 @@ class OptionsChainAnalyzer:
             "avg_spread_pct": urgent_calls["spread_pct"].mean() if not urgent_calls.empty else 0
         }
     
-    def _detect_put_spread_pattern(self, puts: pd.DataFrame, calls: pd.DataFrame) -> Dict[str, Any]:
+    def _detect_put_spread_pattern(self, puts, calls) :
         """Detect multiple OTM put strikes being shorted simultaneously."""
         if puts.empty:
             return {"detected": False, "reason": "No put data"}
@@ -163,7 +159,7 @@ class OptionsChainAnalyzer:
             "otm_put_strikes": otm_puts_with_volume["strike"].tolist()
         }
     
-    def _check_seasonal_context(self) -> Dict[str, Any]:
+    def _check_seasonal_context(self) :
         """Check if current period matches summer month pattern."""
         current_month = datetime.now().month
         is_summer = current_month in [6, 7, 8]  # June, July, August
@@ -174,7 +170,7 @@ class OptionsChainAnalyzer:
             "seasonal_boost": 1.2 if is_summer else 1.0
         }
     
-    def _calculate_pattern_strength(self, signals: Dict[str, Any]) -> float:
+    def _calculate_pattern_strength(self, signals) -> float:
         """Calculate overall pattern strength from individual signals."""
         weights = {
             "put_volume_anomalies": 0.3,
@@ -206,7 +202,7 @@ class OptionsChainAnalyzer:
         
         return min(total_strength * seasonal_boost, 1.0)
     
-    def _estimate_underlying_price(self, options_df: pd.DataFrame) -> float:
+    def _estimate_underlying_price(self, options_df) -> float:
         """Estimate underlying price from options chain data."""
         if options_df.empty:
             return 0.0
@@ -220,7 +216,7 @@ class OptionsChainAnalyzer:
         # Fallback: use median strike
         return float(options_df["strike"].median())
     
-    def _calculate_chain_metrics(self, calls: pd.DataFrame, puts: pd.DataFrame) -> Dict[str, Any]:
+    def _calculate_chain_metrics(self, calls, puts) :
         """Calculate comprehensive options chain metrics."""
         metrics = {}
         

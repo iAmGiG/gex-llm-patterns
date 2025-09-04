@@ -5,7 +5,6 @@ Active tools: Google Search (news), Polygon.io (primary market data), Alpha Vant
 
 # Standard library imports
 import logging
-import pandas as pd
 
 # Third-party imports
 from autogen_core.tools import FunctionTool
@@ -117,8 +116,7 @@ def get_tools_for_agent(agent_type):
     Args:
         agent_type: Type of agent (e.g., 'sentiment', 'tech', 'strategy')
 
-    Returns:
-        List of FunctionTool objects appropriate for the agent type
+    Returns of FunctionTool objects appropriate for the agent type
     """
     if agent_type == SENTIMENT_AGENT:
         return SENTIMENT_TOOLS

@@ -3,7 +3,6 @@
 import os
 import json
 import hashlib
-from typing import Optional
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -11,21 +10,21 @@ from datetime import datetime, timedelta
 class MarketDataCache:
     """Simple file-based cache for market data."""
 
-    def __init__(self, cache_dir: str = ".cache/market_data"):
+    def __init__(self, cache_dir = ".cache/market_data"):
         """Initialize cache with directory."""
         self.cache_dir = cache_dir
         os.makedirs(cache_dir, exist_ok=True)
 
-    def _get_cache_key(self, symbol: str, start: str, end: str, source: str) -> str:
+    def _get_cache_key(self, symbol, start, end, source) -> str:
         """Generate cache key from parameters."""
         key_string = f"{symbol}_{start}_{end}_{source}"
         return hashlib.md5(key_string.encode()).hexdigest()
 
-    def _get_cache_path(self, cache_key: str) -> str:
+    def _get_cache_path(self, cache_key) -> str:
         """Get full path for cache file."""
         return os.path.join(self.cache_dir, f"{cache_key}.json")
 
-    def get(self, symbol: str, start: str, end: str, source: str) -> Optional[pd.DataFrame]:
+    def get(self, symbol, start, end, source) :
         """Retrieve cached data if available and not expired."""
         cache_key = self._get_cache_key(symbol, start, end, source)
         cache_path = self._get_cache_path(cache_key)
@@ -71,7 +70,7 @@ class MarketDataCache:
             print(f"Cache read error: {e}")
             return None
 
-    def set(self, symbol: str, start: str, end: str, source: str, data: pd.DataFrame) -> None:
+    def set(self, symbol, start, end, source, data) -> None:
         """Store data in cache."""
         if data.empty:
             return

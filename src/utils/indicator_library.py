@@ -21,16 +21,16 @@ __all__ = [
 
 
 # --- Trend ---
-def ema(series: pd.Series, span: int) -> pd.Series:
+def ema(series, span) :
     return series.ewm(span=span, adjust=False).mean()
 
 
-def sma(series: pd.Series, window: int) -> pd.Series:
+def sma(series, window) :
     return series.rolling(window=window).mean()
 
 
 # --- momentum ---
-def rsi(series: pd.Series, period: int = 14) -> pd.Series:
+def rsi(series, period = 14) :
     delta = series.diff()
     gain = delta.clip(lower=0)
     loss = -delta.clip(upper=0)
@@ -42,8 +42,8 @@ def rsi(series: pd.Series, period: int = 14) -> pd.Series:
 
 # --- Volatility ---
 def atr(
-    high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14
-) -> pd.Series:
+    high, low, close, period = 14
+) :
     tr = pd.concat(
         [high - low, (high - close.shift()).abs(), (low - close.shift()).abs()], axis=1
     ).max(axis=1)
@@ -52,12 +52,12 @@ def atr(
 
 # --- Composit trend/stop ---
 def supertrend(
-    high: pd.Series,
-    low: pd.Series,
-    close: pd.Series,
-    period: int = 10,
-    mult: float = 3.0,
-) -> pd.Series:
+    high,
+    low,
+    close,
+    period = 10,
+    mult = 3.0,
+) :
     """
     Vectorised Supertrend implementation (no explicit Python loop).
     Returns a pd.Series aligned to `close.index`.
@@ -87,10 +87,10 @@ def supertrend(
 
 # --- AVWAP ---
 def avwap(
-    close: pd.Series,
-    volume: pd.Series,
-    anchor_ts: int | str | pd.Timestamp = 0,
-) -> pd.Series:
+    close,
+    volume,
+    anchor_ts | str | pd.Timestamp = 0,
+) :
     """Anchored VWAP.
 
     Parameters
@@ -120,8 +120,8 @@ def avwap(
 
 # --- MACD ---
 def macd(
-    series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9
-) -> pd.DataFrame:
+    series, fast = 12, slow = 26, signal = 9
+) :
     """Moving Average Convergence Divergence."""
     ema_fast = ema(series, span=fast)
     ema_slow = ema(series, span=slow)
@@ -139,8 +139,8 @@ def macd(
 
 # --- Bollinger Bands ---
 def bollinger_bands(
-    series: pd.Series, window: int = 20, num_std: float = 2.0
-) -> pd.DataFrame:
+    series, window = 20, num_std = 2.0
+) :
     mid = sma(series, window)
     std = series.rolling(window=window).std()
     upper = mid + num_std * std
@@ -156,8 +156,8 @@ def bollinger_bands(
 
 # --- ADX and DI +/- ---
 def adx(
-    high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14
-) -> pd.DataFrame:
+    high, low, close, period = 14
+) :
     up_move = high.diff()
     down_move = low.diff().abs()
     plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
@@ -191,13 +191,13 @@ def adx(
 
 # --- Ichimoku Baseline & Cloud ---
 def ichimoku(
-    high: pd.Series,
-    low: pd.Series,
-    close: pd.Series,
-    conv_period: int = 9,
-    base_period: int = 26,
-    span_b_period: int = 52,
-) -> pd.DataFrame:
+    high,
+    low,
+    close,
+    conv_period = 9,
+    base_period = 26,
+    span_b_period = 52,
+) :
     tenkan = (high.rolling(conv_period).max() +
               low.rolling(conv_period).min()) / 2
     kijun = (high.rolling(base_period).max() +
@@ -218,12 +218,12 @@ def ichimoku(
 
 # --- Stochastic RSI ---
 def stochrsi(
-    series: pd.Series,
-    rsi_period: int = 14,
-    stoch_period: int = 14,
-    k_period: int = 3,
-    d_period: int = 3,
-) -> pd.DataFrame:
+    series,
+    rsi_period = 14,
+    stoch_period = 14,
+    k_period = 3,
+    d_period = 3,
+) :
     rsi_vals = rsi(series, rsi_period)
     min_rsi = rsi_vals.rolling(stoch_period).min()
     max_rsi = rsi_vals.rolling(stoch_period).max()
@@ -241,8 +241,8 @@ def stochrsi(
 
 # --- Commodity Channel Index ---
 def cci(
-    high: pd.Series, low: pd.Series, close: pd.Series, period: int = 20
-) -> pd.Series:
+    high, low, close, period = 20
+) :
     tp = (high + low + close) / 3
     ma = tp.rolling(window=period).mean()
     mad = tp.rolling(window=period).apply(
@@ -253,8 +253,8 @@ def cci(
 
 # --- Fibonacci Retracement ---
 def fibonacci_retracement(
-    high: pd.Series, low: pd.Series, period: int = 20
-) -> pd.DataFrame:
+    high, low, period = 20
+) :
     """Calculate Fibonacci retracement levels for support and resistance analysis.
 
     Parameters:

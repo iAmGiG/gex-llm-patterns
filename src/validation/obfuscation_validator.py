@@ -12,7 +12,6 @@ import sys
 from pathlib import Path
 import pandas as pd
 from datetime import datetime
-from typing import Dict, Any
 import json
 import numpy as np
 
@@ -38,7 +37,7 @@ class ObfuscationValidator:
     Part of V0-V4 sentiment framework validation.
     """
 
-    def __init__(self, use_cached_data: bool = True):
+    def __init__(self, use_cached_data = True):
         """Initialize validator with configuration."""
         self.use_cached_data = use_cached_data
         self.obfuscator = DataObfuscator()
@@ -49,10 +48,10 @@ class ObfuscationValidator:
         self.config = config_loader.load_config()
 
     async def run_comparison_test(self,
-                                  symbol: str,
-                                  start_date: str,
-                                  end_date: str,
-                                  test_name: str = None) -> Dict[str, Any]:
+                                  symbol,
+                                  start_date,
+                                  end_date,
+                                  test_name = None) :
         """
         Run identical trading scenario with and without obfuscation.
 
@@ -62,8 +61,7 @@ class ObfuscationValidator:
             end_date: End date for test period  
             test_name: Optional name for this test
 
-        Returns:
-            Dictionary comparing both results
+        Returnsionary comparing both results
         """
         print(f"🧪 Running obfuscation validation test: {symbol} ({start_date} to {end_date})")
 
@@ -100,11 +98,11 @@ class ObfuscationValidator:
         return comparison
 
     async def _run_trading_scenario(self,
-                                    symbol: str,
-                                    start_date: str,
-                                    end_date: str,
-                                    obfuscated: bool,
-                                    scenario_name: str) -> Dict[str, Any]:
+                                    symbol,
+                                    start_date,
+                                    end_date,
+                                    obfuscated,
+                                    scenario_name) :
         """
         Run a single trading scenario (with or without obfuscation).
 
@@ -247,7 +245,7 @@ class ObfuscationValidator:
                 'metrics': {}
             }
 
-    async def _get_llm_decision(self, llm_agent: SentimentV4Agent, decision_data: Dict) -> Dict[str, Any]:
+    async def _get_llm_decision(self, llm_agent: SentimentV4Agent, decision_data) :
         """
         Get trading decision from LLM agent.
 
@@ -290,7 +288,7 @@ class ObfuscationValidator:
             print(f"⚠️  Error getting LLM decision: {e}")
             return {'action': 'HOLD', 'reasoning': f'Error: {e}'}
 
-    async def _get_real_llm_response(self, llm_agent: SentimentV4Agent, decision_data: Dict) -> Dict[str, Any]:
+    async def _get_real_llm_response(self, llm_agent: SentimentV4Agent, decision_data) :
         """
         Get actual V4 sentiment-based trading decision.
 
@@ -355,7 +353,7 @@ class ObfuscationValidator:
             # Fallback to simple decision
             return {'action': 'HOLD', 'reasoning': f'Error in LLM call: {e}'}
 
-    def _format_price_history(self, historical_data: pd.DataFrame) -> str:
+    def _format_price_history(self, historical_data) -> str:
         """Format price history for LLM prompt."""
         if historical_data.empty:
             return "No historical data available"
@@ -369,7 +367,7 @@ class ObfuscationValidator:
 
         return "\n".join(formatted)
 
-    async def _load_market_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    async def _load_market_data(self, symbol, start_date, end_date) :
         """
         Load market data for the specified period.
 
@@ -449,7 +447,7 @@ class ObfuscationValidator:
         print(f"   ⚠️  No cached data found for {symbol}, generating synthetic data")
         return self._generate_synthetic_data(symbol, start_date, end_date)
 
-    def _generate_synthetic_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    def _generate_synthetic_data(self, symbol, start_date, end_date) :
         """Generate synthetic market data for testing."""
         dates = pd.date_range(start_date, end_date, freq='D')
 
@@ -474,7 +472,7 @@ class ObfuscationValidator:
 
         return synthetic_df
 
-    def _compare_results(self, real_results: Dict, obfuscated_results: Dict, test_name: str) -> Dict[str, Any]:
+    def _compare_results(self, real_results, obfuscated_results, test_name) :
         """
         Compare results between real and obfuscated scenarios.
 
@@ -535,7 +533,7 @@ class ObfuscationValidator:
 
         return comparison
 
-    def _assess_data_leakage(self, performance_degradation: float, real_trades: int, obfuscated_trades: int) -> str:  # pylint: disable=unused-argument
+    def _assess_data_leakage(self, performance_degradation, real_trades, obfuscated_trades) -> str:  # pylint: disable=unused-argument
         """
         Assess likelihood of data leakage based on performance degradation.
 
@@ -558,7 +556,7 @@ class ObfuscationValidator:
         else:
             return "✅ CLEAN - Performance similar regardless of obfuscation"
 
-    def generate_validation_report(self, output_file: str = None) -> str:
+    def generate_validation_report(self, output_file = None) -> str:
         """
         Generate comprehensive validation report.
 
@@ -634,7 +632,7 @@ class ObfuscationValidator:
 
         return report_content
 
-    def save_results(self, output_file: str):
+    def save_results(self, output_file):
         """Save detailed results to JSON file."""
         with open(output_file, 'w') as f:
             json.dump(self.results, f, indent=2, default=str)
@@ -642,9 +640,9 @@ class ObfuscationValidator:
 
 
 # Convenience functions for quick testing
-async def quick_validation_test(symbol: str = "AAPL",
-                                start_date: str = "2024-01-01",
-                                end_date: str = "2024-01-31") -> Dict[str, Any]:
+async def quick_validation_test(symbol = "AAPL",
+                                start_date = "2024-01-01",
+                                end_date = "2024-01-31") :
     """
     Run a quick V4 obfuscation validation test on a single symbol.
 

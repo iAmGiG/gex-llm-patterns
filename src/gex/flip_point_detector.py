@@ -7,11 +7,8 @@ to negative (or vice versa), creating critical support/resistance levels.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
-from datetime import datetime
 import logging
 from scipy import interpolate
-from scipy.optimize import brentq
 
 logger = logging.getLogger(__name__)
 
@@ -26,27 +23,25 @@ class FlipPointDetector:
     """
     
     def __init__(self, 
-                 interpolation_method: str = 'cubic',
-                 min_gex_threshold: float = 1000000):
+                 interpolation_method = 'cubic',
+                 min_gex_threshold = 1000000):
         """
         Initialize Flip Point Detector.
         
-        Args:
-            interpolation_method: Method for GEX interpolation ('linear', 'cubic', 'quadratic')
+        Argserpolation_method: Method for GEX interpolation ('linear', 'cubic', 'quadratic')
             min_gex_threshold: Minimum absolute GEX to consider significant
         """
         self.interpolation_method = interpolation_method
         self.min_gex_threshold = min_gex_threshold
         
     def create_gex_interpolation(self, 
-                               strike_gex: pd.DataFrame,
-                               price_range: Tuple[float, float],
-                               num_points: int = 1000) -> Tuple[np.ndarray, np.ndarray]:
+                               strike_gex,
+                               price_range,
+                               num_points = 1000) :
         """
         Create interpolated GEX curve across price range.
         
-        Args:
-            strike_gex: DataFrame with strike and total_gex columns
+        Argsike_gex: DataFrame with strike and total_gex columns
             price_range: (min_price, max_price) for interpolation
             num_points: Number of interpolation points
             
@@ -124,7 +119,7 @@ class FlipPointDetector:
     
     def find_zero_crossings(self, 
                            price_points: np.ndarray, 
-                           gex_values: np.ndarray) -> List[float]:
+                           gex_values: np.ndarray) :
         """
         Find price points where GEX crosses zero (flip points).
         
@@ -132,8 +127,7 @@ class FlipPointDetector:
             price_points: Array of price points
             gex_values: Corresponding GEX values
             
-        Returns:
-            List of flip point prices
+        Returns of flip point prices
         """
         if len(price_points) == 0 or len(gex_values) == 0:
             return []
@@ -158,15 +152,13 @@ class FlipPointDetector:
         
         return flip_points
     
-    def find_flip_points_analytical(self, strike_gex: pd.DataFrame) -> List[Dict]:
+    def find_flip_points_analytical(self, strike_gex) :
         """
         Find flip points using analytical approach between adjacent strikes.
         
-        Args:
-            strike_gex: DataFrame with strike and total_gex columns
+        Argsike_gex: DataFrame with strike and total_gex columns
             
-        Returns:
-            List of flip point information dictionaries
+        Returns of flip point information dictionaries
         """
         if strike_gex.empty or len(strike_gex) < 2:
             return []
@@ -205,19 +197,17 @@ class FlipPointDetector:
         return flip_points
     
     def identify_significant_flip_points(self, 
-                                       strike_gex: pd.DataFrame,
-                                       underlying_price: float,
-                                       price_range_pct: float = 0.15) -> List[Dict]:
+                                       strike_gex,
+                                       underlying_price,
+                                       price_range_pct = 0.15) :
         """
         Identify significant flip points near current price.
         
-        Args:
-            strike_gex: DataFrame with GEX by strike
+        Argsike_gex: DataFrame with GEX by strike
             underlying_price: Current underlying price
             price_range_pct: Percentage range around current price to analyze
             
-        Returns:
-            List of significant flip points with analysis
+        Returns of significant flip points with analysis
         """
         logger.info(f"Identifying flip points around ${underlying_price:.2f}")
         
@@ -242,10 +232,8 @@ class FlipPointDetector:
             strike_gex, (price_lower, price_upper), num_points=2000
         )
         
-        if len(price_points) > 0:
-            interpolated_flips = self.find_zero_crossings(price_points, gex_values)
-        else:
-            interpolated_flips = []
+        if len(price_points) > 0erpolated_flips = self.find_zero_crossings(price_points, gex_values)
+        elseerpolated_flips = []
         
         # Enhance analytical flips with additional metrics
         enhanced_flips = []
@@ -298,17 +286,16 @@ class FlipPointDetector:
         return enhanced_flips
     
     def analyze_flip_point_environment(self, 
-                                     flip_points: List[Dict],
-                                     underlying_price: float) -> Dict:
+                                     flip_points,
+                                     underlying_price) :
         """
         Analyze the overall flip point environment for trading insights.
         
         Args:
-            flip_points: List of flip point dictionaries
+            flip_points of flip point dictionaries
             underlying_price: Current underlying price
             
-        Returns:
-            Dictionary with environmental analysis
+        Returnsionary with environmental analysis
         """
         if not flip_points:
             return {

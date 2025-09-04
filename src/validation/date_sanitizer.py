@@ -4,11 +4,10 @@ Removes temporal information while preserving entity relationships.
 """
 
 import re
-from typing import Dict, List, Any
 import pandas as pd
 
 
-def sanitize_dates_only(text: str) -> str:
+def sanitize_dates_only(text) -> str:
     """
     Remove temporal anchors while preserving all other content.
     Prevents the LLM from using knowledge of future events.
@@ -44,7 +43,7 @@ def sanitize_dates_only(text: str) -> str:
     return text
 
 
-def prepare_news_for_v4(news_df: pd.DataFrame, requested_ticker: str = None) -> List[Dict[str, Any]]:
+def prepare_news_for_v4(news_df, requested_ticker = None) :
     """
     Prepare news data for V4 with date sanitization and selective ticker obfuscation.
     Leverages the categorization already done by hierarchical_news_tool.
@@ -54,8 +53,7 @@ def prepare_news_for_v4(news_df: pd.DataFrame, requested_ticker: str = None) -> 
         requested_ticker: The actual ticker being analyzed (e.g., 'AAPL')
                          This will be obfuscated in direct news only
 
-    Returns:
-        List of processed news items for LLM consumption
+    Returns of processed news items for LLM consumption
     """
     processed_news = []
 
@@ -87,13 +85,13 @@ def prepare_news_for_v4(news_df: pd.DataFrame, requested_ticker: str = None) -> 
     return processed_news
 
 
-def format_news_for_llm_prompt(processed_news: List[Dict[str, Any]]) -> str:
+def format_news_for_llm_prompt(processed_news]) -> str:
     """
     Format processed news into structured text for LLM prompt.
     Replaces the raw DataFrame string representation that was leaking dates.
 
     Args:
-        processed_news: List of news items from prepare_news_for_v4
+        processed_news of news items from prepare_news_for_v4
 
     Returns:
         Formatted string for LLM consumption

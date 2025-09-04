@@ -11,9 +11,7 @@ without requiring live API access. Creates realistic data shapes for:
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
 import json
-import os
 from pathlib import Path
 
 
@@ -22,7 +20,7 @@ class SampleDataManager:
     Generate and manage sample market data for testing GEX analysis pipeline.
     """
     
-    def __init__(self, base_dir: str = ".cache"):
+    def __init__(self, base_dir = ".cache"):
         self.base_dir = Path(base_dir)
         self.base_dir.mkdir(exist_ok=True)
         
@@ -38,16 +36,16 @@ class SampleDataManager:
         self.base_vol = 0.20  # 20% IV baseline
         
     def create_sample_options_chain(self, 
-                                  symbol: str = "SPY", 
-                                  trading_date: str = "2024-01-15",
-                                  expirations: Optional[List[str]] = None) -> pd.DataFrame:
+                                  symbol = "SPY", 
+                                  trading_date = "2024-01-15",
+                                  expirations] = None) :
         """
         Create realistic options chain data matching Alpha Vantage format.
         
         Args:
             symbol: SPY or SPX
             trading_date: Trading date for the options chain
-            expirations: List of expiration dates, or None for defaults
+            expirations of expiration dates, or None for defaults
             
         Returns:
             DataFrame with complete options chain
@@ -96,7 +94,7 @@ class SampleDataManager:
         
         return processed_df
     
-    def _generate_strike_ladder(self, underlying_price: float, symbol: str) -> List[float]:
+    def _generate_strike_ladder(self, underlying_price, symbol) :
         """Generate realistic strike ladder around underlying price."""
         if symbol == "SPY":
             # SPY: $1 strikes near ATM, $5 strikes further out
@@ -116,14 +114,13 @@ class SampleDataManager:
                 strikes.append(underlying_price + i * 5)
             # Wider strikes ($25 increments)
             for i in range(-20, 21):
-                if i != 0:
-                    strikes.append(underlying_price + i * 25)
+                if i != 0ikes.append(underlying_price + i * 25)
         
         return sorted(list(set(strikes)))  # Remove duplicates and sort
     
-    def _generate_contract(self, symbol: str, trading_date: str, expiration: str,
-                         strike: float, option_type: str, underlying_price: float,
-                         time_to_exp: float) -> Dict:
+    def _generate_contract(self, symbol, trading_date, expiration,
+                         strike, option_type, underlying_price,
+                         time_to_exp) :
         """Generate individual option contract with realistic Greeks."""
         
         # Calculate moneyness
@@ -202,7 +199,7 @@ class SampleDataManager:
             "rho": f"{rho:.5f}"
         }
     
-    def _calculate_intrinsic_value(self, spot: float, strike: float, option_type: str) -> float:
+    def _calculate_intrinsic_value(self, spot, strike, option_type) -> float:
         """Calculate intrinsic value."""
         if option_type == "call":
             return max(0, spot - strike)
@@ -210,9 +207,9 @@ class SampleDataManager:
             return max(0, strike - spot)
     
     def create_sample_underlying_data(self, 
-                                    symbol: str = "SPY",
-                                    start_date: str = "2020-01-01", 
-                                    end_date: str = "2024-01-15") -> pd.DataFrame:
+                                    symbol = "SPY",
+                                    start_date = "2020-01-01", 
+                                    end_date = "2024-01-15") :
         """
         Create sample underlying stock data with realistic price movements.
         """
@@ -272,7 +269,7 @@ class SampleDataManager:
         
         return df
     
-    def save_sample_data_locally(self, symbol: str = "SPY", years_back: int = 2):
+    def save_sample_data_locally(self, symbol = "SPY", years_back = 2):
         """
         Generate and save sample data locally for testing.
         
@@ -329,7 +326,7 @@ class SampleDataManager:
         print(f"✅ Saved metadata: {metadata_path}")
         return metadata
     
-    def load_sample_options(self, symbol: str = "SPY", trading_date: str = "2024-01-15") -> pd.DataFrame:
+    def load_sample_options(self, symbol = "SPY", trading_date = "2024-01-15") :
         """Load sample options data from local files."""
         options_path = self.base_dir / "options" / f"{symbol.lower()}_options_{trading_date}.json"
         
@@ -340,7 +337,7 @@ class SampleDataManager:
         
         return pd.read_json(options_path, orient='records')
     
-    def load_sample_underlying(self, symbol: str = "SPY") -> pd.DataFrame:
+    def load_sample_underlying(self, symbol = "SPY") :
         """Load sample underlying data from local files."""
         # Find the most recent underlying data file
         pattern = f"{symbol.lower()}_underlying_*.json"

@@ -8,7 +8,6 @@ use the same unified cache system with set-based union operations.
 import json
 import pandas as pd
 from pathlib import Path
-from typing import Optional
 from .unified_cache import UnifiedCacheManager
 
 
@@ -29,8 +28,8 @@ class CacheAdapter:
             Path(".cache/market_data")
         ]
 
-    def get_market_data(self, symbol: str, start_date: str, end_date: str,
-                        source: str = "any") -> Optional[pd.DataFrame]:
+    def get_market_data(self, symbol, start_date, end_date,
+                        source = "any") :
         """
         Get market data from any cache location, preferring unified cache.
 
@@ -59,8 +58,8 @@ class CacheAdapter:
 
         return None
 
-    def set_market_data(self, symbol: str, start_date: str, end_date: str,
-                        source: str, data: pd.DataFrame) -> None:
+    def set_market_data(self, symbol, start_date, end_date,
+                        source, data) -> None:
         """
         Store market data using unified cache (with set-based union logic).
 
@@ -82,8 +81,8 @@ class CacheAdapter:
             # No existing data - store directly
             self.unified_cache.set_market_data(symbol, start_date, end_date, source, data)
 
-    def _check_legacy_cache(self, cache_dir: Path, symbol: str,
-                            start_date: str, end_date: str) -> Optional[pd.DataFrame]:
+    def _check_legacy_cache(self, cache_dir: Path, symbol,
+                            start_date, end_date) :
         """Check legacy cache locations for matching data."""
         if not cache_dir.exists():
             return None
@@ -105,7 +104,7 @@ class CacheAdapter:
 
         return None
 
-    def _load_legacy_file(self, file_path: Path) -> Optional[pd.DataFrame]:
+    def _load_legacy_file(self, file_path: Path) :
         """Load data from legacy cache file format."""
         try:
             with open(file_path, 'r') as f:
@@ -133,7 +132,7 @@ class CacheAdapter:
 
         return None
 
-    def _union_data(self, existing: pd.DataFrame, new: pd.DataFrame) -> pd.DataFrame:
+    def _union_data(self, existing, new) :
         """
         Perform set-based union of two DataFrames.
 

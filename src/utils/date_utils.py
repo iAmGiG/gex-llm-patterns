@@ -2,7 +2,6 @@
 Utilities for dynamic date handling in data tools.
 """
 
-from typing import Tuple, Optional
 import re
 import datetime
 import os
@@ -22,7 +21,7 @@ def get_default_timezone() -> str:
     )
 
 
-def localize_df(df, tz: str):
+def localize_df(df, tz):
     """Ensure a DataFrame index is timezone-aware using the provided timezone."""
     import pandas as pd
 
@@ -43,7 +42,7 @@ def localize_df(df, tz: str):
     return df
 
 
-def get_default_date_range(days_back: int = 5) -> Tuple[str, str]:
+def get_default_date_range(days_back = 5) :
     """
     Calculate a default date range based on the current date.
     Returns (start_date, end_date) as strings in YYYY-MM-DD format.
@@ -76,7 +75,7 @@ def get_default_date_range(days_back: int = 5) -> Tuple[str, str]:
     return (start_date_str, end_date_str)
 
 
-def process_date_param(date_param: Optional[str]) -> Optional[str]:
+def process_date_param(date_param) :
     """
     Process a date parameter that might be a relative date string.
     Handles special strings like "today", "yesterday", "-7d", etc.
@@ -158,10 +157,10 @@ def process_date_param(date_param: Optional[str]) -> Optional[str]:
 
 
 def get_processed_date_range(
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
-    default_days_back: int = 5
-) -> Tuple[str, str]:
+    start_date= None,
+    end_date= None,
+    default_days_back = 5
+) :
     """
     Process start and end date parameters, applying defaults if needed.
 

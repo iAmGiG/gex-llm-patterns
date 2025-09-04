@@ -7,7 +7,6 @@ for SPY/SPX gamma exposure calculations. Optimized for entry premium tier rate l
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
 import logging
 import requests
 import pandas as pd
@@ -32,7 +31,7 @@ class AlphaVantageGEXClient:
     - Intelligent caching for historical data
     """
 
-    def __init__(self, cache_manager: Optional[UnifiedCacheManager] = None):
+    def __init__(self, cache_manager= None):
         # Load API key from @config/ loader
         config_loader = ConfigLoader()
         self.api_key = os.getenv(
@@ -69,8 +68,8 @@ class AlphaVantageGEXClient:
         self.call_timestamps.append(now)
         return True
 
-    def fetch_historical_options(self, symbol: str, date: Optional[str] = None, 
-                               datatype: str = "json") -> pd.DataFrame:
+    def fetch_historical_options(self, symbol, date= None, 
+                               datatype = "json") :
         """
         Fetch full historical options chain for a specific trading date.
         
@@ -165,7 +164,7 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error fetching historical options: {e}")
             return pd.DataFrame()
 
-    def fetch_underlying_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    def fetch_underlying_data(self, symbol, start_date, end_date) :
         """
         Fetch underlying stock data for GEX calculations.
 
@@ -271,7 +270,7 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error fetching underlying data: {e}")
             return pd.DataFrame()
 
-    def _process_csv_response(self, csv_text: str, symbol: str, date: Optional[str]) -> pd.DataFrame:
+    def _process_csv_response(self, csv_text, symbol, date) :
         """
         Process CSV response from Alpha Vantage Historical Options API.
         
@@ -306,13 +305,13 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error processing CSV response: {e}")
             return pd.DataFrame()
     
-    def _standardize_csv_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _standardize_csv_columns(self, df) :
         """Standardize CSV column names to match JSON format."""
         # CSV might have different column naming - adjust as needed
         # This will be refined once we see actual CSV format
         return df
     
-    def _process_options_data(self, raw_data: Dict) -> pd.DataFrame:
+    def _process_options_data(self, raw_data) :
         """
         Process raw options data into standardized format for GEX calculations.
 
@@ -340,7 +339,7 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error processing options data: {e}")
             return pd.DataFrame()
     
-    def _apply_standard_processing(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply_standard_processing(self, df) :
         """
         Apply standard processing to options DataFrame (shared by JSON and CSV).
         
@@ -389,7 +388,7 @@ class AlphaVantageGEXClient:
             self.logger.error(f"Error in standard processing: {e}")
             return pd.DataFrame()
 
-    def get_rate_limit_status(self) -> Dict[str, Any]:
+    def get_rate_limit_status(self) :
         """Get current rate limit status."""
         now = datetime.now()
         recent_calls = len([

@@ -3,7 +3,6 @@
 import os
 import json
 import hashlib
-from typing import Optional, Dict, Any, List
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -11,23 +10,23 @@ from datetime import datetime, timedelta
 class NewsCache:
     """Simple file-based cache for news and sentiment data."""
 
-    def __init__(self, cache_dir: str = ".cache/news_data"):
+    def __init__(self, cache_dir = ".cache/news_data"):
         """Initialize cache with directory."""
         self.cache_dir = cache_dir
         os.makedirs(cache_dir, exist_ok=True)
 
-    def _get_cache_key(self, keywords: List[str], ticker: str, start: str, end: str, source: str) -> str:
+    def _get_cache_key(self, keywords, ticker, start, end, source) -> str:
         """Generate cache key from parameters."""
         # Sort keywords for consistent hashing
         keywords_str = ",".join(sorted(keywords)) if keywords else ""
         key_string = f"{ticker}_{keywords_str}_{start}_{end}_{source}"
         return hashlib.md5(key_string.encode()).hexdigest()
 
-    def _get_cache_path(self, cache_key: str) -> str:
+    def _get_cache_path(self, cache_key) -> str:
         """Get full path for cache file."""
         return os.path.join(self.cache_dir, f"{cache_key}.json")
 
-    def get(self, keywords: List[str], ticker: str, start: str, end: str, source: str) -> Optional[pd.DataFrame]:
+    def get(self, keywords, ticker, start, end, source) :
         """Retrieve cached news data if available and not expired."""
         cache_key = self._get_cache_key(keywords, ticker, start, end, source)
         cache_path = self._get_cache_path(cache_key)
@@ -59,8 +58,8 @@ class NewsCache:
             print(f"News cache read error: {e}")
             return None
 
-    def set(self, keywords: List[str], ticker: str, start: str, end: str,
-            source: str, data: pd.DataFrame) -> None:
+    def set(self, keywords, ticker, start, end,
+            source, data) -> None:
         """Store news data in cache."""
         cache_key = self._get_cache_key(keywords, ticker, start, end, source)
         cache_path = self._get_cache_path(cache_key)
@@ -92,7 +91,7 @@ class NewsCache:
         except Exception as e:
             print(f"News cache write error: {e}")
 
-    def get_sentiment_score(self, ticker: str, date: str) -> Optional[float]:
+    def get_sentiment_score(self, ticker, date) :
         """Get cached sentiment score for a specific date."""
         # Check if we have any cached news for this ticker around this date
         cache_files = os.listdir(self.cache_dir)
@@ -133,7 +132,7 @@ class NewsCache:
                 os.remove(os.path.join(self.cache_dir, file))
         print("🗑️  News cache cleared")
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) :
         """Get cache statistics."""
         cache_files = [f for f in os.listdir(
             self.cache_dir) if f.endswith('.json')]

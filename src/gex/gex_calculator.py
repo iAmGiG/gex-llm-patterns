@@ -7,11 +7,8 @@ and hedging constraints that create predictable price movements.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
-from datetime import datetime, timedelta
 import logging
 from scipy.stats import norm
-from math import exp, log, sqrt
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +22,7 @@ class GEXCalculator:
     (supportive), negative suggests short gamma (reactive hedging).
     """
     
-    def __init__(self, risk_free_rate: float = 0.05):
+    def __init__(self, risk_free_rate = 0.05):
         """
         Initialize GEX Calculator.
         
@@ -35,11 +32,11 @@ class GEXCalculator:
         self.risk_free_rate = risk_free_rate
         
     def black_scholes_gamma(self, 
-                           S: float, 
-                           K: float, 
-                           T: float, 
-                           r: float, 
-                           sigma: float) -> float:
+                           S, 
+                           K, 
+                           T, 
+                           r, 
+                           sigma) -> float:
         """
         Calculate Black-Scholes gamma for an option.
         
@@ -62,9 +59,9 @@ class GEXCalculator:
         return gamma
     
     def calculate_dealer_gamma_exposure(self, 
-                                      options_data: pd.DataFrame,
-                                      underlying_price: float,
-                                      open_interest_multiplier: float = 100) -> pd.DataFrame:
+                                      options_data,
+                                      underlying_price,
+                                      open_interest_multiplier = 100) :
         """
         Calculate dealer GEX for each option contract.
         
@@ -128,7 +125,7 @@ class GEXCalculator:
         
         return gex_data
     
-    def aggregate_gex_by_strike(self, gex_data: pd.DataFrame) -> pd.DataFrame:
+    def aggregate_gex_by_strike(self, gex_data) :
         """
         Aggregate GEX by strike price for market level analysis.
         
@@ -154,7 +151,7 @@ class GEXCalculator:
         
         return strike_gex
     
-    def calculate_net_gex(self, gex_data: pd.DataFrame) -> float:
+    def calculate_net_gex(self, gex_data) -> float:
         """
         Calculate total net GEX across all strikes.
         
@@ -170,9 +167,9 @@ class GEXCalculator:
         return gex_data['weighted_gex'].sum()
     
     def calculate_gex_profile(self, 
-                            options_data: pd.DataFrame,
-                            underlying_price: float,
-                            price_range_pct: float = 0.20) -> Dict:
+                            options_data,
+                            underlying_price,
+                            price_range_pct = 0.20) :
         """
         Calculate comprehensive GEX profile for market analysis.
         
@@ -181,8 +178,7 @@ class GEXCalculator:
             underlying_price: Current underlying price
             price_range_pct: Percentage range around current price to analyze
             
-        Returns:
-            Dictionary with GEX profile metrics
+        Returnsionary with GEX profile metrics
         """
         logger.info(f"Calculating comprehensive GEX profile for underlying at ${underlying_price:.2f}")
         
@@ -241,7 +237,7 @@ class GEXCalculator:
             'total_contracts': len(gex_data)
         }
     
-    def analyze_gex_regime(self, net_gex: float, underlying_price: float) -> Dict:
+    def analyze_gex_regime(self, net_gex, underlying_price) :
         """
         Determine market regime based on GEX levels.
         
@@ -249,8 +245,7 @@ class GEXCalculator:
             net_gex: Net gamma exposure
             underlying_price: Current underlying price
             
-        Returns:
-            Dictionary with regime analysis
+        Returnsionary with regime analysis
         """
         # Normalize GEX by price for regime classification
         normalized_gex = net_gex / (underlying_price ** 2) if underlying_price > 0 else 0

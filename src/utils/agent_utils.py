@@ -9,7 +9,7 @@ import re
 from collections import Counter
 
 
-def load_agent_config(agent_key: str) -> dict:
+def load_agent_config(agent_key) -> dict:
     """
     Load an agent's configuration from the agent_prompts.json file.
 
@@ -39,8 +39,7 @@ def load_market_sectors() -> dict:
     """
     Load market sectors data from market_sectors.json file.
 
-    Returns:
-        Dictionary with market sectors data, or empty dict if file not found
+    Returnsionary with market sectors data, or empty dict if file not found
     """
     try:
         # Get the project root directory
@@ -66,22 +65,21 @@ class QueryParser:
         Initialize with optional market sectors data.
 
         Args:
-            market_sectors: Dictionary of market sectors. If None, will be loaded from file.
+            market_sectorsionary of market sectors. If None, will be loaded from file.
         """
         if market_sectors is None:
             self.market_sectors = load_market_sectors().get("sectors", {})
         else:
             self.market_sectors = market_sectors
 
-    def extract_query_details(self, message: str) -> dict:
+    def extract_query_details(self, message) -> dict:
         """
         Extract details from a user query.
 
         Args:
             message: The user's query message
 
-        Returns:
-            Dictionary with extracted details (ticker, topic, sector, dates)
+        Returnsionary with extracted details (ticker, topic, sector, dates)
         """
         ticker = None
         topic = None
@@ -286,7 +284,7 @@ class QueryParser:
         }
 
     @staticmethod
-    def _lookback_to_days(lookback: str) -> int:
+    def _lookback_to_days(lookback) -> int:
         """Convert lookback strings like '90d' or '2w' to day counts."""
         if not lookback:
             return 0
@@ -299,7 +297,7 @@ class QueryParser:
         return value * factors.get(unit, 1)
 
     @classmethod
-    def validate_interval_lookback(cls, interval: str, lookback: str) -> None:
+    def validate_interval_lookback(cls, interval, lookback) -> None:
         """Validate that the requested lookback is allowed for the interval."""
         limits = {
             "1m": 60,
@@ -336,8 +334,7 @@ class DataProcessor:
         Args:
             news_data: DataFrame with news data
 
-        Returns:
-            Dictionary with extracted signals
+        Returnsionary with extracted signals
         """
         signals = {}
         if news_data.empty:
@@ -379,8 +376,7 @@ class DataProcessor:
             market_data: DataFrame with market data
             ticker: Ticker symbol
 
-        Returns:
-            Dictionary with extracted signals
+        Returnsionary with extracted signals
         """
         signals = {}
         if market_data.empty:
@@ -418,7 +414,7 @@ class DataProcessor:
         Format all data for the LLM to generate a comprehensive response.
 
         Args:
-            data: Dictionary with all collected data
+            dataionary with all collected data
 
         Returns:
             Formatted data for LLM consumption
