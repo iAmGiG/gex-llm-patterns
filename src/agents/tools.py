@@ -1,21 +1,37 @@
 """
-Tool definitions for GEX-LLM agents using AutoGen 0.7.4 pattern.
+Clean Tools Configuration for GEX-LLM Analysis
+Active tools: Alpha Vantage (options), Polygon.io (market data), Sample Data (fallback)
 
-Provides data retrieval, calculation, and analysis tools that agents
-can use to interact with market data and perform GEX calculations.
+Organized by agent type for clean tool assignment and efficient agent workflows.
 """
 
+# Standard library imports
+import logging
+from datetime import datetime, timedelta
+
+# Third-party imports
 from autogen_core.tools import FunctionTool
+
+# Project imports - only tools actually used
 from src.cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from src.data_sources.polygon_client import PolygonClient
 from src.gex.sample_data_gex import SampleDataGEXInterface
 from src.validation.options_data_validator import OptionsDataValidator
 from src.utils.reports_manager import reports_manager
-from datetime import datetime, timedelta
-import logging
+from src.agents.market_intelligence import market_intelligence
+from src.agents.gex_indicators import enhanced_gex_context, gex_volatility_regime
 
 logger = logging.getLogger(__name__)
+
+##################################
+# Agent Types
+##################################
+
+DATA_AGENT = "data"
+GEX_AGENT = "gex"
+ANALYSIS_AGENT = "analysis"
+ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 
 # Initialize shared components
 cache_manager = UnifiedCacheManager()
@@ -23,9 +39,9 @@ alpha_vantage_client = AlphaVantageGEXClient()
 sample_gex = SampleDataGEXInterface()
 validator = OptionsDataValidator()
 
-# ===========================
+##################################
 # Data Retrieval Tools
-# ===========================
+##################################
 
 
 def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache: bool = True):
@@ -321,32 +337,189 @@ def _interpret_flip_point(metrics: dict):
         return f"Flip point {abs(distance_pct):.1f}% below - negative gamma regime"
 
 
-# ===========================
-# AutoGen Tool Registration
-# ===========================
+##################################
+# Market Intelligence Tools
+##################################
 
-# Data retrieval tools
+def analyze_query_intent(query: str):
+    """
+    Analyze user query to extract trading intent and market context.
+    
+    Args:
+        query: User's natural language query
+        
+    Returns:
+        Dictionary with extracted ticker, sector, dates, and context
+    """
+    try:
+        # Extract query details using market intelligence
+        details = market_intelligence.extract_query_details(query)
+        
+        # Enhance with sector context
+        if details['sector']:
+            related_symbols = market_intelligence.get_related_symbols(details['sector'])
+            details['related_symbols'] = related_symbols
+        
+        # Add sector identification for ticker
+        if details['ticker'] and not details['sector']:
+            identified_sector = market_intelligence.identify_sector(details['ticker'])
+            if identified_sector:
+                details['sector'] = identified_sector
+                details['related_symbols'] = market_intelligence.get_related_symbols(identified_sector)
+        
+        return {
+            'status': 'success',
+            'intent': details,
+            'recommendations': _generate_analysis_recommendations(details)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error analyzing query intent: {e}")
+        return {
+            'status': 'error',
+            'message': f"Query analysis failed: {str(e)}",
+            'intent': {'ticker': 'SPY', 'start_date': '-5d'}
+        }
+
+def _generate_analysis_recommendations(details: dict) -> dict:
+    """Generate analysis recommendations based on query details."""
+    recommendations = {
+        'primary_analysis': 'gamma_exposure',
+        'secondary_metrics': ['flip_points', 'net_gex'],
+        'market_context': []
+    }
+    
+    # Sector-specific recommendations
+    if details.get('sector') == 'technology':
+        recommendations['market_context'].append('High volatility sector - focus on gamma flip dynamics')
+    elif details.get('sector') == 'finance':
+        recommendations['market_context'].append('Interest rate sensitive - monitor GEX around Fed events')
+    elif details.get('sector') == 'energy':
+        recommendations['market_context'].append('Commodity driven - correlate with oil volatility')
+    
+    # Time-based recommendations
+    if details.get('anchor'):
+        if details['anchor'] == 'earnings':
+            recommendations['market_context'].append('Earnings period - expect elevated IV and gamma')
+        elif details['anchor'] == 'fomc':
+            recommendations['market_context'].append('FOMC period - focus on zero-gamma levels')
+    
+    return recommendations
+
+def analyze_gex_technical_confluence(symbol: str = "SPY", trading_date: str = None):
+    """
+    Analyze technical indicators in confluence with GEX levels.
+    
+    Args:
+        symbol: Stock symbol
+        trading_date: Analysis date
+        
+    Returns:
+        Dictionary with technical-GEX confluence analysis
+    """
+    try:
+        # Get market data
+        market_result = fetch_market_data(symbol, trading_date)
+        if market_result['status'] != 'success':
+            return market_result
+        
+        market_data = market_result['data']
+        
+        # Get GEX calculation
+        gex_result = calculate_gamma_exposure(symbol, trading_date)
+        gex_data = None
+        if gex_result['status'] == 'success':
+            gex_data = gex_result
+        
+        # Analyze technical confluence with GEX
+        confluence_analysis = enhanced_gex_context(market_data, gex_data)
+        
+        # Add volatility regime assessment
+        vol_regime = gex_volatility_regime(market_data)
+        
+        # Save analysis to reports
+        analysis_results = {
+            'symbol': symbol,
+            'trading_date': trading_date,
+            'confluence_analysis': confluence_analysis,
+            'volatility_regime': vol_regime,
+            'gex_summary': gex_data.get('metrics', {}) if gex_data else None
+        }
+        
+        reports_manager.save_analysis_results(
+            symbol, analysis_results, trading_date, 
+            analysis_type='technical_gex_confluence'
+        )
+        
+        return {
+            'status': 'success',
+            'symbol': symbol,
+            'analysis': confluence_analysis,
+            'volatility_regime': vol_regime,
+            'key_insights': _generate_confluence_insights(confluence_analysis, vol_regime)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in GEX technical confluence analysis: {e}")
+        return {
+            'status': 'error',
+            'message': f"Technical confluence analysis failed: {str(e)}"
+        }
+
+def _generate_confluence_insights(confluence: dict, vol_regime: dict) -> list:
+    """Generate key insights from technical-GEX confluence analysis."""
+    insights = []
+    
+    # Volatility insights
+    if vol_regime.get('volatility_regime') == 'low_volatility':
+        insights.append("Low volatility regime detected - gamma effects likely amplified")
+    elif vol_regime.get('volatility_regime') == 'high_volatility':
+        insights.append("High volatility regime - reduced gamma sensitivity due to wide spreads")
+    
+    # Technical level insights
+    tech_levels = confluence.get('technical_levels', {})
+    if abs(tech_levels.get('nearest_distance', 100)) < 1:
+        nearest = tech_levels.get('nearest_technical_level', 'unknown')
+        insights.append(f"Price near key technical level: {nearest}")
+    
+    # GEX correlation insights
+    correlations = tech_levels.get('gex_correlations', [])
+    if correlations:
+        insights.append(f"Technical-GEX convergence: {len(correlations)} levels aligned")
+    
+    # Trading recommendations
+    recommendations = confluence.get('trading_recommendations', [])
+    insights.extend(recommendations)
+    
+    return insights
+
+
+##################################
+# AutoGen Tool Registration
+##################################
+
+# Data retrieval tools with agent type assignment
 fetch_options_tool = FunctionTool(
     func=fetch_options_data,
     name="fetch_options_data",
     description="Fetch options chain data from cache or API for GEX analysis"
 )
+fetch_options_tool.agent_types = [DATA_AGENT]
 
 fetch_market_tool = FunctionTool(
     func=fetch_market_data,
     name="fetch_market_data",
     description="Fetch stock market OHLCV data from cache or API"
 )
+fetch_market_tool.agent_types = [DATA_AGENT]
 
-# Calculation tools
+# GEX calculation tools
 calculate_gex_tool = FunctionTool(
     func=calculate_gamma_exposure,
     name="calculate_gamma_exposure",
     description="Calculate gamma exposure metrics including net GEX and flip points"
 )
-
-# Note: validate_data_tool not exposed through AutoGen due to DataFrame parameter
-# Validation happens internally within other tools
+calculate_gex_tool.agent_types = [GEX_AGENT]
 
 # Analysis tools
 find_flip_points_tool = FunctionTool(
@@ -354,28 +527,87 @@ find_flip_points_tool = FunctionTool(
     name="find_gex_flip_points",
     description="Find gamma flip points where dealer hedging behavior changes"
 )
+find_flip_points_tool.agent_types = [ANALYSIS_AGENT]
 
-# Tool collections by agent type
-DATA_COLLECTION_TOOLS = [
-    fetch_options_tool,
-    fetch_market_tool
+# Market intelligence tools
+query_analysis_tool = FunctionTool(
+    func=analyze_query_intent,
+    name="analyze_query_intent",
+    description="Analyze user query to extract ticker, sector, dates, and trading context for GEX analysis"
+)
+query_analysis_tool.agent_types = [ANALYSIS_AGENT, DATA_AGENT]
+
+# Technical confluence tools
+technical_confluence_tool = FunctionTool(
+    func=analyze_gex_technical_confluence,
+    name="analyze_gex_technical_confluence", 
+    description="Analyze technical indicators in confluence with GEX levels for enhanced trading insights"
+)
+technical_confluence_tool.agent_types = [ANALYSIS_AGENT]
+
+##################################
+# Tool Collections by Agent Type
+##################################
+
+# DATA_AGENT tools - Data retrieval and caching
+_data_tools_raw = [
+    fetch_options_tool,     # Options chain data from Alpha Vantage or cache
+    fetch_market_tool,      # Market data from Polygon.io or cache
+    query_analysis_tool,    # Query intent analysis with market intelligence
     # Note: validate_data_tool removed - can't pass DataFrame through AutoGen
 ]
+DATA_COLLECTION_TOOLS = [tool for tool in _data_tools_raw if tool is not None]
 
-GEX_CALCULATION_TOOLS = [
-    calculate_gex_tool,
-    find_flip_points_tool
+# GEX_AGENT tools - Gamma exposure calculations
+_gex_tools_raw = [
+    calculate_gex_tool,     # Core GEX calculations with Black-Scholes
+    find_flip_points_tool,  # Flip point identification and analysis
 ]
+GEX_CALCULATION_TOOLS = [tool for tool in _gex_tools_raw if tool is not None]
 
-PATTERN_ANALYSIS_TOOLS = [
-    fetch_options_tool,
-    calculate_gex_tool,
-    find_flip_points_tool
+# ANALYSIS_AGENT tools - Pattern detection and analysis
+_analysis_tools_raw = [
+    fetch_options_tool,         # Data access for analysis
+    calculate_gex_tool,         # GEX calculations for patterns
+    find_flip_points_tool,      # Flip point analysis for patterns
+    query_analysis_tool,        # Market intelligence and query parsing
+    technical_confluence_tool,  # Technical-GEX confluence analysis
 ]
+ANALYSIS_TOOLS = [tool for tool in _analysis_tools_raw if tool is not None]
 
-# All tools combined
+# All tools combined (filter out None values from conditional imports)
 ALL_TOOLS = list(set(
-    DATA_COLLECTION_TOOLS +
-    GEX_CALCULATION_TOOLS +
-    PATTERN_ANALYSIS_TOOLS
+    tool for tool in (
+        DATA_COLLECTION_TOOLS +
+        GEX_CALCULATION_TOOLS +
+        ANALYSIS_TOOLS
+    ) if tool is not None
 ))
+
+# Tool dispatcher dictionary for efficient lookup by name
+ALL_TOOLS_DICT = {tool.name: tool for tool in ALL_TOOLS if tool is not None}
+
+##################################
+# Helper function to get tools for a specific agent type
+##################################
+
+
+def get_tools_for_agent(agent_type):
+    """
+    Get the list of tools that should be used by a specific agent type.
+
+    Args:
+        agent_type: Type of agent (e.g., 'data', 'gex', 'analysis')
+
+    Returns:
+        List of FunctionTool objects appropriate for the agent type
+    """
+    if agent_type == DATA_AGENT:
+        return DATA_COLLECTION_TOOLS
+    elif agent_type == GEX_AGENT:
+        return GEX_CALCULATION_TOOLS
+    elif agent_type == ANALYSIS_AGENT:
+        return ANALYSIS_TOOLS
+    else:
+        # Return all tools if agent type is unknown
+        return ALL_TOOLS

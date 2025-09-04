@@ -26,7 +26,23 @@ from .integration import (
     process_sample_options_data
 )
 
+from .schemas import (
+    OPTIONS_SCHEMA,
+    MARKET_SCHEMA,
+    NEWS_SCHEMA,
+    ECONOMIC_SCHEMA,
+    create_empty_options_df,
+    create_empty_market_df,
+    create_empty_news_df,
+    create_empty_economic_df,
+    standardize_indicator_columns,
+    normalize_alpha_vantage_market_data,
+    normalize_polygon_market_data,
+    validate_schema
+)
+
 __all__ = [
+    # Options normalization (existing)
     'OptionsDataNormalizer',
     'DataSourceAdapter', 
     'AlphaVantageAdapter',
@@ -43,5 +59,19 @@ __all__ = [
     'STANDARDIZATION_RULES',
     'NormalizedDataPipeline',
     'process_alpha_vantage_options',
-    'process_sample_options_data'
+    'process_sample_options_data',
+    
+    # Common schemas (new)
+    'OPTIONS_SCHEMA',
+    'MARKET_SCHEMA',
+    'NEWS_SCHEMA',
+    'ECONOMIC_SCHEMA',
+    'create_empty_options_df',
+    'create_empty_market_df',
+    'create_empty_news_df',
+    'create_empty_economic_df',
+    'standardize_indicator_columns',
+    'normalize_alpha_vantage_market_data',
+    'normalize_polygon_market_data',
+    'validate_schema'
 ]
