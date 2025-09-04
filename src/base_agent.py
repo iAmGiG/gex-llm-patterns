@@ -210,9 +210,13 @@ class DataCollectionAgent(BaseGEXAgent):
     """Agent specialized in collecting market data for GEX analysis."""
     
     def __init__(self, **kwargs):
+        # Import tools for this agent
+        from src.agents.tools import DATA_COLLECTION_TOOLS
+        
         super().__init__(
             name="DataCollector",
             description="Collects SPY/SPX market data via Alpha Vantage API",
+            tools=DATA_COLLECTION_TOOLS,
             **kwargs
         )
 
@@ -233,9 +237,13 @@ class GEXCalculationAgent(BaseGEXAgent):
     """Agent specialized in calculating Gamma Exposure metrics."""
     
     def __init__(self, **kwargs):
+        # Import tools for this agent
+        from src.agents.tools import GEX_CALCULATION_TOOLS
+        
         super().__init__(
             name="GEXCalculator", 
             description="Calculates gamma exposure and related options metrics",
+            tools=GEX_CALCULATION_TOOLS,
             **kwargs
         )
 
@@ -256,13 +264,17 @@ class PatternAnalysisAgent(BaseGEXAgent):
     """Agent specialized in LLM-based pattern discovery."""
     
     def __init__(self, **kwargs):
+        # Import tools for this agent
+        from src.agents.tools import PATTERN_ANALYSIS_TOOLS
+        
         # Use GPT-4o for more complex pattern analysis
         kwargs.setdefault("model_name", "gpt-4o")
         kwargs.setdefault("temperature", 0.1)  # Lower for more consistent analysis
         
         super().__init__(
             name="PatternAnalyzer",
-            description="Discovers patterns in GEX data using LLM analysis", 
+            description="Discovers patterns in GEX data using LLM analysis",
+            tools=PATTERN_ANALYSIS_TOOLS, 
             **kwargs
         )
 

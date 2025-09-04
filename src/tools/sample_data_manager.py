@@ -38,7 +38,7 @@ class SampleDataManager:
     def create_sample_options_chain(self, 
                                   symbol = "SPY", 
                                   trading_date = "2024-01-15",
-                                  expirations] = None) :
+                                  expirations = None) :
         """
         Create realistic options chain data matching Alpha Vantage format.
         
@@ -114,7 +114,8 @@ class SampleDataManager:
                 strikes.append(underlying_price + i * 5)
             # Wider strikes ($25 increments)
             for i in range(-20, 21):
-                if i != 0ikes.append(underlying_price + i * 25)
+                if i != 0:
+                    strikes.append(underlying_price + i * 25)
         
         return sorted(list(set(strikes)))  # Remove duplicates and sort
     

@@ -1,4 +1,5 @@
-"""Cache utilities for reducing API calls."""
+"""Unified cache system for market data, options, and news."""
 
+from .unified_cache import UnifiedCacheManager, SampleDataLoader
 
-__all__ = ['MarketDataCache', 'NewsCache', 'UnifiedCacheManager', 'CacheAdapter', 'cache_adapter']
+__all__ = ['UnifiedCacheManager', 'SampleDataLoader']
