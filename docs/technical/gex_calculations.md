@@ -448,3 +448,37 @@ def daily_gex_workflow(date, symbol='SPY'):
 ```
 
 This GEX calculation framework provides the mathematical foundation for identifying dealer hedging patterns that the LLM will analyze for exploitable market movements.
+
+## Implementation Module
+
+**Location**: `src/gex/`
+
+The complete GEX calculation system is implemented in the `src/gex/` module:
+
+- **`GEXCalculator`** (`src/gex/calculator.py`): Core calculation engine implementing all mathematical formulas documented above
+- **`GEXValidator`** (`src/gex/validator.py`): Validation framework for sanity checking and reference comparison
+
+### Usage Example
+
+```python
+from src.gex import GEXCalculator, GEXValidator
+
+# Initialize calculator
+calculator = GEXCalculator(risk_free_rate=0.05)
+
+# Calculate daily GEX metrics
+gex_metrics = calculator.calculate_daily_gex_metrics(
+    options_chain=options_df,
+    spot_price=current_price
+)
+
+# Validate results
+validator = GEXValidator()
+validation = validator.validate_calculation_sanity(gex_metrics)
+
+print(f"Total GEX: ${gex_metrics['total_gex']:,.0f}")
+print(f"Gamma Flip: {gex_metrics['gamma_flip']}")
+print(f"Regime: {gex_metrics['regime']}")
+```
+
+The module provides both individual strike calculations and vectorized processing for high-performance analysis of large options datasets.
