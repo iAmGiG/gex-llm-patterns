@@ -5,7 +5,6 @@ Identifies key price levels where dealer gamma exposure flips from positive
 to negative (or vice versa), creating critical support/resistance levels.
 """
 
-import pandas as pd
 import numpy as np
 import logging
 from scipy import interpolate
@@ -232,8 +231,10 @@ class FlipPointDetector:
             strike_gex, (price_lower, price_upper), num_points=2000
         )
         
-        if len(price_points) > 0erpolated_flips = self.find_zero_crossings(price_points, gex_values)
-        elseerpolated_flips = []
+        if len(price_points) > 0:
+            interpolated_flips = self.find_zero_crossings(price_points, gex_values)
+        else:
+            interpolated_flips = []
         
         # Enhance analytical flips with additional metrics
         enhanced_flips = []

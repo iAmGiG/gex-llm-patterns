@@ -15,10 +15,17 @@ from autogen_core.models import SystemMessage, UserMessage
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
-# Project components
-from src.cache import UnifiedCacheManager
-from config.config_loader import ConfigLoader
+# Project components  
+import sys
 import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from cache import UnifiedCacheManager
+try:
+    from config.config_loader import ConfigLoader
+except ImportError:
+    ConfigLoader = None
 
 
 class BaseGEXAgent(AssistantAgent, ABC):
