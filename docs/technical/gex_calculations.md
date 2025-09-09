@@ -458,7 +458,7 @@ The complete GEX calculation system is implemented in the `src/gex/` module:
 - **`GEXCalculator`** (`src/gex/calculator.py`): Core calculation engine implementing all mathematical formulas documented above
 - **`GEXValidator`** (`src/gex/validator.py`): Validation framework for sanity checking and reference comparison
 - **`AdvancedGreeks`** (`src/gex/greeks.py`): Complete Greeks implementation including:
-  - **Second-order Greeks**: Vanna, Charm, Vomma (Issue #26)
+  - **Second-order Greeks**: Vanna, Charm, Vomma, Veta (Issues #26, #28)
   - **Third-order Greeks**: Speed, Zomma, Color (Issue #27)
   - Both analytical Black-Scholes and finite difference methods
 

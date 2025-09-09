@@ -14,7 +14,7 @@ class AdvancedGreeks:
     Calculate advanced Greeks (second and third order) for options.
     
     Provides both finite difference and analytical methods for
-    comprehensive Greeks analysis including Vanna, Charm, Vomma,
+    comprehensive Greeks analysis including Vanna, Charm, Vomma, Veta,
     Speed, Zomma, and Color.
     """
     
@@ -164,6 +164,34 @@ class AdvancedGreeks:
         vomma = (vega_up - vega_down) / (2 * vol_bump)
         return vomma
     
+    def calculate_veta_analytical(self, S, K, T, r, sigma):
+        """
+        Calculate Veta (∂²V/∂σ∂τ) using analytical formula.
+        
+        Veta measures vega sensitivity to time decay.
+        """
+        if T <= 0 or sigma <= 0:
+            return 0.0
+            
+        d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
+        d2 = d1 - sigma * np.sqrt(T)
+        
+        veta = -S * norm.pdf(d1) * np.sqrt(T) * (r * d1 / (sigma * np.sqrt(T)) - (1 + d1 * d2) / (2 * T))
+        return veta
+    
+    def calculate_veta_finite(self, S, K, T, r, sigma, time_bump=1/365):
+        """
+        Calculate Veta using finite difference method.
+        """
+        if T <= time_bump:
+            return 0.0
+            
+        vega_now = self.calculate_vega(S, K, T, r, sigma)
+        vega_later = self.calculate_vega(S, K, T - time_bump, r, sigma)
+        
+        veta = -(vega_later - vega_now) / time_bump
+        return veta
+    
     # ========== Third-Order Greeks ==========
     
     def calculate_speed_analytical(self, S, K, T, r, sigma):
@@ -277,6 +305,7 @@ class AdvancedGreeks:
             greeks['vanna'] = self.calculate_vanna_analytical(S, K, T, r, sigma)
             greeks['charm'] = self.calculate_charm_analytical(S, K, T, r, sigma, option_type)
             greeks['vomma'] = self.calculate_vomma_analytical(S, K, T, r, sigma)
+            greeks['veta'] = self.calculate_veta_analytical(S, K, T, r, sigma)
             
             # Third-order Greeks
             greeks['speed'] = self.calculate_speed_analytical(S, K, T, r, sigma)
@@ -286,6 +315,7 @@ class AdvancedGreeks:
             greeks['vanna'] = self.calculate_vanna_finite(S, K, T, r, sigma)
             greeks['charm'] = self.calculate_charm_finite(S, K, T, r, sigma, option_type=option_type)
             greeks['vomma'] = self.calculate_vomma_finite(S, K, T, r, sigma)
+            greeks['veta'] = self.calculate_veta_finite(S, K, T, r, sigma)
             
             # Third-order Greeks
             greeks['speed'] = self.calculate_speed_finite(S, K, T, r, sigma)
