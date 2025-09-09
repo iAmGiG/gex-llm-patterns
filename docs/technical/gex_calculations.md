@@ -457,6 +457,10 @@ The complete GEX calculation system is implemented in the `src/gex/` module:
 
 - **`GEXCalculator`** (`src/gex/calculator.py`): Core calculation engine implementing all mathematical formulas documented above
 - **`GEXValidator`** (`src/gex/validator.py`): Validation framework for sanity checking and reference comparison
+- **`AdvancedGreeks`** (`src/gex/greeks.py`): Complete Greeks implementation including:
+  - **Second-order Greeks**: Vanna, Charm, Vomma (Issue #26)
+  - **Third-order Greeks**: Speed, Zomma, Color (Issue #27)
+  - Both analytical Black-Scholes and finite difference methods
 
 ### Usage Example
 
@@ -479,6 +483,37 @@ validation = validator.validate_calculation_sanity(gex_metrics)
 print(f"Total GEX: ${gex_metrics['total_gex']:,.0f}")
 print(f"Gamma Flip: {gex_metrics['gamma_flip']}")
 print(f"Regime: {gex_metrics['regime']}")
+```
+
+### Advanced Greeks Usage
+
+```python
+from src.gex import AdvancedGreeks
+
+# Initialize Greeks calculator
+greeks_calc = AdvancedGreeks(risk_free_rate=0.05)
+
+# Calculate all Greeks for an option
+all_greeks = greeks_calc.calculate_all_greeks(
+    S=100,      # Spot price
+    K=105,      # Strike price
+    T=0.25,     # Time to expiry (years)
+    r=0.05,     # Risk-free rate
+    sigma=0.2,  # Implied volatility
+    option_type='call',
+    method='analytical'  # or 'finite_difference'
+)
+
+# Access individual Greeks
+print(f"Gamma: {all_greeks['gamma']:.6f}")
+print(f"Vanna: {all_greeks['vanna']:.6f}")  # Second-order
+print(f"Speed: {all_greeks['speed']:.6f}")  # Third-order
+
+# Calculate Greeks surface for visualization
+spot_range = np.linspace(90, 110, 100)
+gamma_surface = greeks_calc.calculate_greeks_surface(
+    spot_range, K=100, T=0.25, r=0.05, sigma=0.2, greek_name='gamma'
+)
 ```
 
 The module provides both individual strike calculations and vectorized processing for high-performance analysis of large options datasets.
