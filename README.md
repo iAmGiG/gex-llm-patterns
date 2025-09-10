@@ -22,9 +22,11 @@ We hypothesize that:
 
 ## Data Scope
 
-- **Historical Period**: 2020-2024 (4+ years of options data)
-- **Instruments**: SPY/SPX options chains and underlying price data
-- **Data Source**: Alpha Vantage Historical Options API
+- **Historical Period**: 2008-present (15+ years of options data via automated collection)
+- **Instruments**: SPY, QQQ, IWM, DIA, TLT, GLD options chains + underlying price data
+- **Data Sources**: Alpha Vantage (options) + Polygon.io (stocks)
+- **Collection Rate**: 25 trading days/day (options), 7,200 calls/day (stocks)
+- **Current Status**: 87,000+ live options contracts cached and growing
 - **Key Metrics**: Daily GEX calculations, gamma flip points, volatility skew
 - **Market Events**: FOMC meetings, OpEx, earnings, major volatility events
 
@@ -32,39 +34,48 @@ We hypothesize that:
 
 ```bash
 src/
-├── cache/                  # Unified caching system (10yr historical, 24hr recent)
-├── data_sources/          # Alpha Vantage client (entry premium: 75 calls/min)
+├── data_sources/          # API clients (Alpha Vantage + Polygon.io)
+├── scripts/
+│   ├── data_collection/   # 24/7 automated collection system
+│   │   └── automation/    # Persistent collection services  
+│   ├── analysis/          # Data analysis and exploration
+│   └── testing/           # System validation and QA
+├── cache/                 # Unified caching system (auto-expanding)
 ├── gex/                   # GEX calculation engine (Black-Scholes, flip points)
-├── tokenization/          # Dynamic tokenizer for LLM sequence generation
-├── utils/                 # Agent utilities, indicators, Autogen examples
-└── validation/           # Data obfuscation for unbiased LLM testing
+├── agents/               # AutoGen 0.7.4 multi-agent framework
+├── tokenization/         # Dynamic tokenizer for LLM sequence generation
+└── validation/          # Data obfuscation for unbiased LLM testing
 ```
 
 ## Development Phases
 
-### Phase 1: Data Infrastructure ⏳
+### Phase 1: Data Infrastructure ✅
 
-- **Issues #1-3**: Alpha Vantage integration, caching, data pipeline
-- **Goal**: Reliable SPY/SPX options chain collection with rate limiting
+- **Status**: Complete - 24/7 automated collection system operational
+- **Achievement**: 87,000+ options contracts, persistent collection, API rate management
+- **Data Sources**: Alpha Vantage (options) + Polygon.io (stocks) fully integrated
 
-### Phase 2: GEX Calculation Engine ⏳  
+### Phase 2: GEX Calculation Engine ✅  
 
-- **Issues #4**: Gamma exposure calculations, flip point detection
-- **Goal**: Daily GEX metrics and key market levels
+- **Status**: Complete - Full Greeks calculations with advanced derivatives
+- **Achievement**: Black-Scholes engine, flip point detection, comprehensive validation
+- **Features**: Second/third-order Greeks, GEX caching, auto-calculation pipeline
 
-### Phase 3: Tokenization System ⏳
+### Phase 3: Agent Framework ✅
 
-- **Issues #5**: Dynamic tokenization of market states for LLM input
-- **Goal**: Optimized sequences for GPT-4o-mini/GPT-4o analysis
+- **Status**: Complete - AutoGen 0.7.4 multi-agent system operational  
+- **Achievement**: Agent communication, tool integration, workflow automation
+- **Capabilities**: Data retrieval, GEX calculation, pattern analysis agents
 
 ### Phase 4: Pattern Mining & LLM Integration ⏳
 
-- **Issues #6-7**: Sequential pattern mining, Autogen multi-agent analysis
+- **Status**: Ready for implementation with real data
+- **Next**: Sequential pattern mining, GPT-4o analysis of collected data
 - **Goal**: Discovered patterns with mechanical explanations
 
 ### Phase 5: Validation & Analysis ⏳
 
-- **Issues #8-9, #11**: Backtesting, statistical validation, research documentation
+- **Status**: Framework prepared, awaiting pattern discovery
 - **Goal**: Statistically significant, out-of-sample validated results
 
 ## Getting Started
@@ -72,9 +83,10 @@ src/
 ### Prerequisites
 
 - Python 3.10+
-- Alpha Vantage API key (entry premium tier recommended - 75 calls/min)
-- OpenAI API key for GPT-4o-mini/GPT-4o
-- Conda environment with Autogen dependencies
+- Alpha Vantage API key (free tier: 25 calls/day, or premium: 75 calls/min)
+- Polygon.io API key (free tier: 7,200 calls/day)
+- OpenAI API key for GPT-4o-mini/GPT-4o (for pattern analysis)
+- Linux/Unix environment for persistent collection sessions
 
 ### Installation
 
@@ -83,39 +95,57 @@ src/
 git clone https://github.com/iAmGiG/gex-llm-patterns.git
 cd gex-llm-patterns
 
-# Set up configuration (uses @config/ loader, excluded from repo)
-# Add your API keys to the @config/ system
+# Set up configuration (add API keys to config/config.json)
+# {
+#   "ALPHA_VANTAGE_KEY": "your_alpha_vantage_key",
+#   "POLYGON_IO": "your_polygon_key", 
+#   "OPEN_AI_KEY": "your_openai_key"
+# }
 
 # Install dependencies
-pip install -r requirements.txt  # To be created
+pip install requests pandas asyncio
 
 # Verify setup
-python -c "from src.cache import UnifiedCacheManager; print('Setup OK')"
+python -c "from src.cache.unified_cache import UnifiedCacheManager; print('Setup OK')"
 ```
 
 ### Quick Start
 
-```python
-# Initialize Alpha Vantage client with caching
-from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-from src.cache import UnifiedCacheManager
+#### 1. Start Automated Data Collection
+```bash
+# Start persistent collection (runs 24/7)
+python scripts/data_collection/automation/automated_data_collector.py
 
-cache = UnifiedCacheManager()
-client = AlphaVantageGEXClient(cache_manager=cache)
-
-# Fetch underlying data for GEX calculations
-spy_data = client.fetch_underlying_data("SPY", "2020-01-01", "2024-12-31")
-print(f"Retrieved {len(spy_data)} days of SPY data")
+# Monitor progress  
+python scripts/data_collection/automation/monitor_collection.py
 ```
 
-## Project Status
+#### 2. Analyze Collected Data
+```python
+from src.cache.unified_cache import UnifiedCacheManager
 
-- ✅ **Codebase Foundation**: Clean architecture with caching and data obfuscation
-- ✅ **Issue Planning**: 11 detailed issues with technical specifications  
-- ✅ **GitHub Integration**: Project board, labels, automated tracking
-- ⏳ **Data Pipeline**: Alpha Vantage client implementation
-- ⏳ **GEX Engine**: Gamma calculation and flip point detection
-- ⏳ **Pattern Mining**: LLM integration via Autogen framework
+cache = UnifiedCacheManager()
+summary = cache.get_options_cache_summary()
+
+print(f"Options data: {summary['total_contracts']:,} contracts")
+print(f"Symbols: {list(summary['tickers'].keys())}")
+```
+
+#### 3. Explore Options Data Structure  
+```bash
+python scripts/analysis/explain_options_data.py
+```
+
+## Current Status
+
+- ✅ **Data Infrastructure**: 24/7 automated collection system operational  
+- ✅ **Real Data**: 87,000+ live options contracts cached and growing
+- ✅ **API Integration**: Alpha Vantage + Polygon.io fully integrated
+- ✅ **GEX Engine**: Complete Black-Scholes implementation with advanced Greeks
+- ✅ **Agent Framework**: AutoGen 0.7.4 multi-agent system ready
+- ✅ **Organized Codebase**: Clean scripts structure, comprehensive testing
+- ⏳ **Pattern Discovery**: Ready for LLM analysis of collected data
+- ⏳ **Research Phase**: Statistical validation and backtesting framework
 
 ## Documentation
 
