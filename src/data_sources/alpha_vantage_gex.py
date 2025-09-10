@@ -11,6 +11,9 @@ import logging
 import requests
 import pandas as pd
 import os
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
 from src.utils.date_utils import (
     get_processed_date_range,
@@ -96,9 +99,7 @@ class AlphaVantageGEXClient:
 
         # Check cache first (critical for rate limits)
         if date:  # Only cache specific dates, not 'latest'
-            cached_data = self.cache.get_market_data(
-                cache_key, date, date, "historical_options"
-            )
+            cached_data = self.cache.get_options_data(symbol, date)
             if cached_data is not None:
                 self.logger.info(f"Using cached options data for {symbol} {date}")
                 return cached_data
@@ -153,9 +154,7 @@ class AlphaVantageGEXClient:
 
             # Cache the processed data (only for specific dates)
             if date:
-                self.cache.set_market_data(
-                    cache_key, date, date, "historical_options", df
-                )
+                self.cache.store_options_data(symbol, date, df)
 
             self.logger.info(f"Successfully fetched {len(df)} option contracts")
             return df

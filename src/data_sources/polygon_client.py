@@ -15,7 +15,23 @@ class PolygonClient:
 
     def __init__(self, api_key: str = None):
         """Initialize client with API key."""
-        self.api_key = api_key or "your_polygon_api_key"
+        import os
+        import sys
+        import json
+        from pathlib import Path
+        
+        # Try to load from config if not provided
+        if not api_key:
+            try:
+                config_path = Path(__file__).parent.parent.parent / 'config' / 'config.json'
+                if config_path.exists():
+                    with open(config_path, 'r') as f:
+                        config = json.load(f)
+                    api_key = config.get('POLYGON_IO')
+            except Exception:
+                pass
+        
+        self.api_key = api_key or os.getenv('POLYGON_IO', 'your_polygon_api_key')
         self.base_url = "https://api.polygon.io/v2"
         self.logger = logging.getLogger(self.__class__.__name__)
         
@@ -56,7 +72,7 @@ class PolygonClient:
             
             url = f"{self.base_url}/aggs/ticker/{symbol.upper()}/range/1/day/{start_date}/{end_date}"
             params = {
-                'apikey': self.api_key,
+                'apiKey': self.api_key,  # Note: capital K in apiKey
                 'adjusted': 'true',
                 'sort': 'asc'
             }
@@ -77,8 +93,9 @@ class PolygonClient:
             
             data = response.json()
             
-            if data.get('status') != 'OK':
-                self.logger.warning(f"API returned status: {data.get('status')}")
+            # Accept both OK and DELAYED status (DELAYED = 15-min delayed data for free tier)
+            if data.get('status') not in ['OK', 'DELAYED']:
+                self.logger.warning(f"API returned unexpected status: {data.get('status')}")
                 return None
                 
             results = data.get('results', [])
@@ -93,19 +110,19 @@ class PolygonClient:
             df['date'] = pd.to_datetime(df['t'], unit='ms').dt.tz_localize('UTC').dt.tz_convert('America/New_York')
             df = df.set_index('date')
             
-            # Rename columns to standard format
+            # Rename columns to standard format (lowercase for cache compatibility)
             df = df.rename(columns={
-                'o': 'Open',
-                'h': 'High', 
-                'l': 'Low',
-                'c': 'Close',
-                'v': 'Volume',
-                'vw': 'VWAP',
-                'n': 'Transactions'
+                'o': 'open',
+                'h': 'high', 
+                'l': 'low',
+                'c': 'close',
+                'v': 'volume',
+                'vw': 'vwap',
+                'n': 'transactions'
             })
             
             # Select relevant columns
-            df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
+            df = df[['open', 'high', 'low', 'close', 'volume']]
             
             self.logger.info(f"Successfully fetched {len(df)} days for {symbol}")
             return df

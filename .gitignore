@@ -175,6 +175,10 @@ services/start_cache_service.sh
 services/stop_cache_service.sh
 services/cache_service_status.sh
 
+# Deployment Tools (environment-specific)
+tools/deployment/
+*.sh
+
 # SEC Edgar data
 sec-edgar-filings/
 
