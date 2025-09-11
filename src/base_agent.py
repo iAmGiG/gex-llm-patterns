@@ -8,7 +8,8 @@ but streamlined for research workflows.
 
 import logging
 from abc import ABC, abstractmethod
-from datetime import datetime
+from typing import Any
+from utils.date_utils import now_iso
 
 # AutoGen core components (0.7.4)
 from autogen_core.models import SystemMessage, UserMessage
@@ -86,6 +87,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
         # GEX-specific components
         self.cache_manager = cache_manager or UnifiedCacheManager()
         self.logger = logging.getLogger(f"GEX.{name}")
+        from datetime import datetime
         self.created_at = datetime.now()
         
         # Agent state
@@ -167,7 +169,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
         """Store data in agent's local storage."""
         self.processed_data[key] = {
             "data": data,
-            "timestamp": datetime.now(),
+            "timestamp": now_iso(),
             "agent": self.name
         }
         self.log(f"Stored data: {key}")
@@ -182,7 +184,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
         """Store analysis results."""
         self.analysis_results[analysis_type] = {
             "result": result,
-            "timestamp": datetime.now(),
+            "timestamp": now_iso(),
             "agent": self.name
         }
         self.log(f"Stored analysis result: {analysis_type}")

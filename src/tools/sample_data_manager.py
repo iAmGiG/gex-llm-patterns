@@ -10,9 +10,13 @@ without requiring live API access. Creates realistic data shapes for:
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import timedelta
 import json
 from pathlib import Path
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.date_utils import parse_date_string, today_str, now_iso
 
 
 class SampleDataManager:
@@ -52,7 +56,7 @@ class SampleDataManager:
         """
         if expirations is None:
             # Default expirations: weekly and monthly
-            base_date = datetime.strptime(trading_date, "%Y-%m-%d")
+            base_date = parse_date_string(trading_date)
             expirations = [
                 (base_date + timedelta(days=3)).strftime("%Y-%m-%d"),   # This week
                 (base_date + timedelta(days=10)).strftime("%Y-%m-%d"),  # Next week  
@@ -71,8 +75,8 @@ class SampleDataManager:
             strikes = self._generate_strike_ladder(underlying_price, symbol)
             
             # Calculate time to expiration
-            exp_dt = datetime.strptime(exp_date, "%Y-%m-%d")
-            trade_dt = datetime.strptime(trading_date, "%Y-%m-%d")
+            exp_dt = parse_date_string(exp_date)
+            trade_dt = parse_date_string(trading_date)
             days_to_exp = (exp_dt - trade_dt).days
             time_to_exp = max(days_to_exp / 365.25, 1/365.25)  # At least 1 day
             
@@ -172,7 +176,7 @@ class SampleDataManager:
         base_oi = np.random.poisson(500 * volume_factor)
         
         # Contract ID
-        exp_code = datetime.strptime(expiration, "%Y-%m-%d").strftime("%y%m%d")
+        exp_code = parse_date_string(expiration).strftime("%y%m%d")
         option_code = "C" if option_type == "call" else "P"
         strike_code = f"{int(strike * 1000):08d}"
         contract_id = f"{symbol}{exp_code}{option_code}{strike_code}"
@@ -214,8 +218,8 @@ class SampleDataManager:
         """
         Create sample underlying stock data with realistic price movements.
         """
-        start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-        end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        start_dt = parse_date_string(start_date)
+        end_dt = parse_date_string(end_date)
         
         # Generate business days only
         dates = pd.bdate_range(start=start_dt, end=end_dt)
@@ -279,7 +283,8 @@ class SampleDataManager:
         print(f"Generating sample data for {symbol}...")
         
         # Create underlying data
-        end_date = datetime.now().strftime("%Y-%m-%d")
+        from datetime import datetime
+        end_date = today_str()
         start_date = (datetime.now() - timedelta(days=365 * years_back)).strftime("%Y-%m-%d")
         
         underlying_df = self.create_sample_underlying_data(symbol, start_date, end_date)
@@ -303,7 +308,7 @@ class SampleDataManager:
         # Create summary metadata
         metadata = {
             "symbol": symbol,
-            "generated_at": datetime.now().isoformat(),
+            "generated_at": now_iso(),
             "underlying_data": {
                 "start_date": start_date,
                 "end_date": end_date,

@@ -6,11 +6,11 @@ Keeps outputs separate from cache to maintain clean data pipeline.
 """
 
 import json
-from datetime import datetime
 from pathlib import Path
 import pandas as pd
 import logging
 from typing import Dict, Any, List
+from .date_utils import now_timestamp, now_iso
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class ReportsManager:
         Returns:
             Path to saved file
         """
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         
         if trading_date:
             filename = f"{symbol}_{trading_date}_{timestamp}_gex_results.json"
@@ -76,7 +76,7 @@ class ReportsManager:
             'metadata': {
                 'symbol': symbol,
                 'trading_date': trading_date,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': now_iso(),
                 'type': 'gex_calculation_results'
             },
             'results': results
@@ -91,7 +91,7 @@ class ReportsManager:
     def save_gex_time_series(self, symbol, data: pd.DataFrame, 
                            is_demo: bool = False) -> Path:
         """Save GEX time series data as CSV."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         filename = f"{symbol}_{timestamp}_gex_timeseries.csv"
         
         save_dir = self.demo_dir if is_demo else self.gex_dir
@@ -109,7 +109,7 @@ class ReportsManager:
                             symbol= None, 
                             is_demo: bool = False) -> Path:
         """Save pattern analysis results."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         
         if symbol:
             filename = f"{pattern_type}_{symbol}_{timestamp}_analysis.json"
@@ -123,7 +123,7 @@ class ReportsManager:
             'metadata': {
                 'pattern_type': pattern_type,
                 'symbol': symbol,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': now_iso(),
                 'type': 'pattern_analysis_results'
             },
             'analysis': results
@@ -143,7 +143,7 @@ class ReportsManager:
                               conversation_log: List[Dict[Any, Any]], 
                               is_demo: bool = False) -> Path:
         """Save multi-agent conversation log."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         agents_str = "_".join(agent_names)
         filename = f"{agents_str}_{timestamp}_conversation.json"
         
@@ -153,7 +153,7 @@ class ReportsManager:
         output_data = {
             'metadata': {
                 'agents': agent_names,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': now_iso(),
                 'type': 'agent_conversation_log',
                 'message_count': len(conversation_log)
             },
@@ -169,7 +169,7 @@ class ReportsManager:
     def save_agent_results(self, agent_name, task, 
                           results: Dict[Any, Any], is_demo: bool = False) -> Path:
         """Save individual agent task results."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         filename = f"{agent_name}_{task}_{timestamp}_results.json"
         
         save_dir = self.demo_dir if is_demo else self.agent_dir
@@ -179,7 +179,7 @@ class ReportsManager:
             'metadata': {
                 'agent_name': agent_name,
                 'task': task,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': now_iso(),
                 'type': 'agent_task_results'
             },
             'results': results
@@ -199,7 +199,7 @@ class ReportsManager:
                            data_type: str = "options", 
                            is_demo: bool = False) -> Path:
         """Save data quality assessment report."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = now_timestamp()
         filename = f"{symbol}_{data_type}_{timestamp}_quality_report.json"
         
         save_dir = self.demo_dir if is_demo else self.quality_dir
@@ -209,7 +209,7 @@ class ReportsManager:
             'metadata': {
                 'symbol': symbol,
                 'data_type': data_type,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': now_iso(),
                 'type': 'data_quality_report'
             },
             'report': report
@@ -246,6 +246,7 @@ class ReportsManager:
     
     def cleanup_demo_results(self, older_than_days: int = 7) -> int:
         """Clean up old demo results."""
+        from datetime import datetime
         cutoff_time = datetime.now().timestamp() - (older_than_days * 24 * 3600)
         cleaned = 0
         

@@ -7,6 +7,10 @@ Short Put Arbitrage and other institutional flow behaviors.
 
 import pandas as pd
 import logging
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.date_utils import now_iso
 
 
 class OptionsChainAnalyzer:
@@ -39,7 +43,7 @@ class OptionsChainAnalyzer:
                 "pattern_detected": False,
                 "signals": {},
                 "metrics": {},
-                "timestamp": datetime.now().isoformat()
+                "timestamp": now_iso()
             }
             
             # Signal 1: Unusual Put Volume vs OI
@@ -161,6 +165,7 @@ class OptionsChainAnalyzer:
     
     def _check_seasonal_context(self) :
         """Check if current period matches summer month pattern."""
+        from datetime import datetime
         current_month = datetime.now().month
         is_summer = current_month in [6, 7, 8]  # June, July, August
         

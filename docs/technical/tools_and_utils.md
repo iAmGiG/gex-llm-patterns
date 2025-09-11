@@ -38,9 +38,30 @@ formatted_data = processor.format_for_agent(raw_market_data)
 
 ### Date Utils (`date_utils.py`)
 
-Provides timezone-aware date processing specifically designed for financial market data.
+Provides timezone-aware date processing specifically designed for financial market data. **Consolidated datetime module** - all datetime operations across the project should use these utilities to reduce library imports and ensure consistency.
 
-#### Key Functions
+#### Core DateTime Functions (Consolidated)
+
+```python
+# Timestamp generation functions
+def now_iso() -> str:
+    """Get current timestamp as ISO string (replaces datetime.now().isoformat())"""
+    
+def now_timestamp() -> str:
+    """Get current timestamp for filenames/IDs (replaces datetime.now().strftime())"""
+    
+def today_str() -> str:
+    """Get today's date as YYYY-MM-DD string (replaces datetime.now().strftime('%Y-%m-%d'))"""
+
+# Date parsing and formatting
+def parse_date_string(date_str: str) -> datetime:
+    """Parse various date string formats (replaces datetime.strptime())"""
+    
+def format_for_filename(dt: datetime = None) -> str:
+    """Format datetime for filenames (no special characters)"""
+```
+
+#### Market Data Functions
 
 ```python
 def get_default_timezone() -> timezone:
@@ -55,12 +76,33 @@ def get_processed_date_range(start: str, end: str) -> Tuple[str, str]:
 
 def localize_df(df: pd.DataFrame, tz: timezone) -> pd.DataFrame:
     """Localize DataFrame index to specified timezone"""
+
+# Business day utilities
+def add_business_days(date_str: str, days: int) -> str:
+    """Add business days to a date string"""
+    
+def is_business_day(date_str: str) -> bool:
+    """Check if a date is a business day"""
+    
+def date_range_trading_days(start_date: str, end_date: str) -> list:
+    """Generate list of trading days between dates"""
 ```
 
 #### Usage Example
 
 ```python
-from src.utils.date_utils import get_processed_date_range, localize_df
+from src.utils.date_utils import (
+    now_iso, now_timestamp, today_str, parse_date_string,
+    get_processed_date_range, localize_df
+)
+
+# Use consolidated datetime functions (preferred over datetime imports)
+timestamp = now_iso()          # "2025-09-11T15:31:22.396607"
+filename_ts = now_timestamp()  # "20250911_153122"
+current_date = today_str()     # "2025-09-11"
+
+# Parse date strings consistently
+parsed_date = parse_date_string("2024-01-15")
 
 # Process flexible date inputs
 start, end = get_processed_date_range("-30d", "today")
@@ -320,7 +362,10 @@ VALIDATION_STRICT_MODE=true
 
 ## Best Practices
 
-1. **Always use date_utils** for any date/time operations with market data
+1. **Always use date_utils** for any date/time operations - **NEVER import datetime directly**
+   - Use `now_iso()`, `now_timestamp()`, `today_str()` instead of `datetime.now()`
+   - Use `parse_date_string()` instead of `datetime.strptime()`
+   - This reduces library imports and ensures consistency across the project
 2. **Normalize data** before feeding to any analysis component
 3. **Obfuscate data** before LLM testing to ensure research integrity
 4. **Validate obfuscation** effectiveness regularly

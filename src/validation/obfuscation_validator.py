@@ -11,14 +11,15 @@ Part of V0-V4 sentiment analysis framework validation.
 import sys
 from pathlib import Path
 import pandas as pd
-from datetime import datetime
 import json
 import numpy as np
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils.date_utils import now_iso
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.utils.data_obfuscation import DataObfuscator
+from validation.data_obfuscation import DataObfuscator
 from src.agents.sentiment_v4 import SentimentV4Agent
 from config.config_loader import ConfigLoader
 
@@ -522,7 +523,7 @@ class ObfuscationValidator:
                 'likely_data_leakage': significant_degradation and performance_degradation > 0,
                 'assessment': self._assess_data_leakage(performance_degradation, real_trades, obfuscated_trades)
             },
-            'timestamp': datetime.now().isoformat()
+            'timestamp': now_iso()
         }
 
         # Print summary
@@ -569,6 +570,8 @@ class ObfuscationValidator:
         if not self.results:
             return "No validation results available."
 
+        from datetime import datetime
+        
         report_lines = [
             "# LLM Trading Data Leakage Validation Report",
             f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
