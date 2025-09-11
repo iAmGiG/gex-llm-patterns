@@ -6,6 +6,7 @@ High-performance concurrent processing for multi-symbol, multi-date GEX calculat
 import logging
 from datetime import datetime, timedelta
 import pandas as pd
+from typing import List, Dict, Tuple, Optional
 
 from .gex_cache_manager import GEXCacheManager
 from .unified_cache import UnifiedCacheManager

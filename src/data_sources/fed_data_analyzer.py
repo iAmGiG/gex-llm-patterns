@@ -12,6 +12,7 @@ import pandas as pd
 from datetime import datetime
 import logging
 from pathlib import Path
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 

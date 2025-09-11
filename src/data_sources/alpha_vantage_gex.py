@@ -35,15 +35,24 @@ class AlphaVantageGEXClient:
     """
 
     def __init__(self, cache_manager= None):
-        # Load API key from @config/ loader
+        # Load premium API key from @config/ loader
         config_loader = ConfigLoader()
         self.api_key = os.getenv(
-            "ALPHA_VANTAGE_KEY", config_loader.get("ALPHA_VANTAGE_KEY")
+            "ALPHA_VANTAGE_PREMO_KEY", config_loader.get("ALPHA_VANTAGE_PREMO_KEY")
         )
+        
+        # Fallback to regular key if premium not available
+        if not self.api_key:
+            self.api_key = os.getenv(
+                "ALPHA_VANTAGE_KEY", config_loader.get("ALPHA_VANTAGE_KEY")
+            )
 
         if not self.api_key:
             logging.warning(
                 "Alpha Vantage API key not found in @config/ loader.")
+        else:
+            key_type = "Premium" if "PREMO" in str(self.api_key) or self.api_key == config_loader.get("ALPHA_VANTAGE_PREMO_KEY") else "Standard"
+            logging.info(f"Alpha Vantage {key_type} API key configured")
 
         self.base_url = "https://www.alphavantage.co/query"
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -51,12 +60,18 @@ class AlphaVantageGEXClient:
         # Initialize unified cache (critical for premium tier)
         self.cache = cache_manager or UnifiedCacheManager()
 
-        # Rate limiting for entry premium tier
-        self.calls_per_minute = 75
+        # Rate limiting - premium tier has higher limits
+        premium_key = config_loader.get("ALPHA_VANTAGE_PREMO_KEY")
+        if self.api_key == premium_key:
+            self.calls_per_minute = 1000  # Premium tier limit
+            logging.info("Using premium tier rate limits (1000/min)")
+        else:
+            self.calls_per_minute = 75   # Standard tier limit
+            logging.info("Using standard tier rate limits (75/min)")
         self.call_timestamps = []
 
     def _check_rate_limit(self) -> bool:
-        """Check if we're within rate limits for entry premium tier."""
+        """Check if we're within API rate limits (premium or standard tier)."""
         now = datetime.now()
         # Remove calls older than 1 minute
         self.call_timestamps = [

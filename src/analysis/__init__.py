@@ -1,11 +1,12 @@
 """
-Pattern Analysis Module
+Analysis Components for GEX-LLM Pattern Analysis
 
-Statistical analysis engines for GEX pattern-outcome mapping and probability
-calculation. Provides quantified probabilities for pattern-based trading strategies.
+This package contains core analysis tools for evaluating pattern effectiveness
+and statistical validation of GEX-based trading strategies.
 """
 
 from .pattern_probability_mapper import PatternProbabilityMapper
-from .statistical_validator import StatisticalValidator
 
-__all__ = ['PatternProbabilityMapper', 'StatisticalValidator']
+__all__ = [
+    'PatternProbabilityMapper'
+]
