@@ -2,27 +2,37 @@
 
 ## Overview
 
-The data pipeline manages the collection, caching, and preprocessing of financial market data from Alpha Vantage API, with a focus on SPY/SPX options chains and underlying price data for GEX calculations.
+The data pipeline manages the collection, caching, and preprocessing of financial market data from multiple sources: Alpha Vantage API for options data, FRED API for economic indicators, with a focus on SPY/SPX options chains and Fed context for enhanced GEX calculations.
 
 ## Pipeline Architecture
 
 ```bash
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │  Alpha Vantage  │────│  Rate Limiter   │────│   Cache Layer   │
-│   API (Premium) │    │ 75 calls/min*   │    │  Smart Expiry   │
+│   API (Premium) │    │ 75 calls/min    │    │  Smart Expiry   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │  Data Validator │
-                    │   & Processor   │
-                    └─────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │  Standardized   │
-                    │  Market Data    │
-                    └─────────────────┘
+         │                                              │
+┌─────────────────┐                                     │
+│   FRED API      │────┬─────────────────────────────────┘
+│ (Fed Indicators)│    │
+└─────────────────┘    │
+         │              │
+         └──────────────┼─────────────────────────────────┐
+                        │                                 │
+                ┌───────▼─────────┐                       │
+                │  Data Validator │                       │
+                │   & Processor   │                       │
+                └─────────────────┘                       │
+                        │                                 │
+                ┌───────▼─────────┐                       │
+                │   GEX Engine    │◄──────────────────────┘
+                │  + Fed Context  │
+                └─────────────────┘
+                        │
+                ┌───────▼─────────┐
+                │ Enhanced Market │
+                │ Data + Patterns │
+                └─────────────────┘
 ```
 
 ## Alpha Vantage Integration
@@ -71,6 +81,8 @@ class RateLimiter:
         
     def check_rate_limit(self) -> bool:
         """Check if within rate limits, update timestamps"""
+        from src.utils.date_utils import now_iso
+        from datetime import datetime
         now = datetime.now()
         
         # Remove calls older than 1 minute
@@ -110,7 +122,9 @@ def calculate_expiration(self, start_date: str, end_date: str) -> datetime:
     Historical data (>2 days old): 10 years expiration
     Recent data (≤2 days): 24 hours expiration  
     """
-    end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+    from src.utils.date_utils import parse_date_string, today_str
+    from datetime import datetime, timedelta
+    end_dt = parse_date_string(end_date)
     today = datetime.now().date()
     
     if end_dt.date() < today - timedelta(days=2):
@@ -131,6 +145,43 @@ if cached_data is not None:
 # Only make API call if cache miss
 api_data = fetch_from_api(symbol, start_date, end_date)
 cache.set_market_data(symbol, start_date, end_date, "daily_stock", api_data)
+```
+
+## Fed Data Integration
+
+### FRED API Configuration
+
+```python
+from src.data_sources.fed_data_integration import FedDataIntegration
+
+fed = FedDataIntegration()  # Auto-loads FREDAPI key from config
+context = fed.get_full_context(pd.Timestamp('2024-01-19'))
+```
+
+### Economic Indicators Tracked
+
+- **DFF**: Effective Federal Funds Rate
+- **DFEDTARU/DFEDTARL**: Fed Funds Target Rates (Upper/Lower)
+- **VIXCLS**: VIX Volatility Index
+- **BAMLH0A0HYM2**: High Yield Credit Spreads
+- **T10Y2Y**: 10Y-2Y Treasury Yield Curve
+- **DEXUSEU**: USD/EUR Exchange Rate
+
+### Fed Data Caching
+
+```bash
+.cache/fed_data/
+├── fomc_calendar.pkl      # FOMC meeting dates and decisions
+├── fed_indicators.pkl     # Daily economic indicators
+└── fed_analysis/
+    └── reports/           # Generated analysis reports
+```
+
+### Market Stress Calculation
+
+```python
+stress_metrics = fed.calculate_market_stress(date)
+# Returns: VIX regime, yield curve inversion, credit stress, composite score
 ```
 
 ## Data Collection Workflow

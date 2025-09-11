@@ -24,10 +24,10 @@ We hypothesize that:
 
 - **Historical Period**: 2008-present (15+ years of options data via automated collection)
 - **Instruments**: SPY, QQQ, IWM, DIA, TLT, GLD options chains + underlying price data
-- **Data Sources**: Alpha Vantage (options) + Polygon.io (stocks)
-- **Collection Rate**: 25 trading days/day (options), 7,200 calls/day (stocks)
-- **Current Status**: 87,000+ live options contracts cached and growing
-- **Key Metrics**: Daily GEX calculations, gamma flip points, volatility skew
+- **Data Sources**: Alpha Vantage Premium (options) + Polygon.io (stocks) + FRED (Fed data)
+- **Collection Rate**: 75/min (options), 7,200/day (stocks), daily (Fed indicators)
+- **Current Status**: 87,000+ live options contracts + Fed context integration
+- **Key Metrics**: Enhanced GEX (3 metrics), gamma flip points, Fed context patterns
 - **Market Events**: FOMC meetings, OpEx, earnings, major volatility events
 
 ## Architecture

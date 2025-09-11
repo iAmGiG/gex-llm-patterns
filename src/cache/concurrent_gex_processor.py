@@ -4,14 +4,11 @@ High-performance concurrent processing for multi-symbol, multi-date GEX calculat
 """
 
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed, Future
-from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime, timedelta
 import pandas as pd
-from pathlib import Path
 
-from cache.gex_cache_manager import GEXCacheManager
-from cache.unified_cache import UnifiedCacheManager
+from .gex_cache_manager import GEXCacheManager
+from .unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +45,10 @@ class ConcurrentGEXProcessor:
         logger.info(f"Concurrent GEX Processor initialized with {max_workers} workers")
     
     def process_symbol_date_range(self, 
-                                 symbol: str, 
-                                 start_date: str, 
-                                 end_date: str,
-                                 force_recalculate: bool = False) -> Dict[str, Any]:
+                                 symbol, 
+                                 start_date, 
+                                 end_date,
+                                 force_recalculate: bool = False) :
         """
         Process GEX for entire date range concurrently.
         
@@ -129,8 +126,8 @@ class ConcurrentGEXProcessor:
     
     def process_multi_symbol(self, 
                            symbols: List[str], 
-                           trading_date: str,
-                           force_recalculate: bool = False) -> Dict[str, Any]:
+                           trading_date,
+                           force_recalculate: bool = False) :
         """
         Process multiple symbols for same date concurrently.
         
@@ -193,7 +190,7 @@ class ConcurrentGEXProcessor:
     
     def batch_process_requests(self, 
                               requests: List[Tuple[str, str]],
-                              force_recalculate: bool = False) -> Dict[str, Any]:
+                              force_recalculate: bool = False) :
         """
         Efficient batch processing of multiple (symbol, date) requests.
         
@@ -261,7 +258,7 @@ class ConcurrentGEXProcessor:
                 'processing_time': datetime.now().isoformat()
             }
     
-    def _process_single_date(self, symbol: str, trading_date: str, force_recalculate: bool = False) -> Optional[Dict[str, Any]]:
+    def _process_single_date(self, symbol, trading_date, force_recalculate: bool = False) :
         """
         Process GEX for single symbol/date combination.
         Internal method used by concurrent processing.
@@ -306,7 +303,7 @@ class ConcurrentGEXProcessor:
                 'error': str(e)
             }
     
-    def _calculate_gex_with_cache(self, symbol: str, trading_date: str, options_data: pd.DataFrame) -> Dict[str, Any]:
+    def _calculate_gex_with_cache(self, symbol, trading_date, options_data: pd.DataFrame) :
         """
         Calculate GEX and store in cache.
         Uses existing GEX calculation engine.
@@ -356,7 +353,7 @@ class ConcurrentGEXProcessor:
             logger.error(f"GEX calculation with cache failed for {symbol} {trading_date}: {e}")
             raise
     
-    def _get_trading_dates(self, start_date: str, end_date: str) -> List[str]:
+    def _get_trading_dates(self, start_date, end_date) :
         """
         Generate list of trading dates between start and end.
         Simplified approximation - excludes weekends but not holidays.
@@ -380,7 +377,7 @@ class ConcurrentGEXProcessor:
             logger.error(f"Error generating trading dates: {e}")
             return []
     
-    def get_processing_stats(self) -> Dict[str, Any]:
+    def get_processing_stats(self) :
         """Get processor performance statistics."""
         return {
             'max_workers': self.max_workers,

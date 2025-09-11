@@ -4,6 +4,16 @@
 
 Gamma Exposure (GEX) calculations form the mathematical core of this research project. GEX quantifies the dollar amount of gamma exposure dealers have from options market making, which directly influences their hedging behavior and creates predictable market movements.
 
+**Status**: Enhanced with three-metric approach and pattern detection framework (Issue #29 completed).
+
+## Data Organization
+
+All market data is properly cached under `.cache/` with organized structure:
+
+- `.cache/options/SYMBOL/YYYY-MM-DD.pickle` - Options chains  
+- `.cache/stocks/SYMBOL/YYYY-MM-DD.pickle` - Stock OHLCV data
+- All data excluded from repository via `.gitignore`
+
 ## Mathematical Foundation
 
 ### Gamma Exposure Formula

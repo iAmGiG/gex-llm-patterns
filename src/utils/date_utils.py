@@ -308,3 +308,231 @@ def resolve_anchor(df, anchor_token):
         warning = str(e)
 
     return pd.Timestamp(anchor_ts), warning
+
+
+# === COMMON DATETIME UTILITIES ===
+# Consolidation functions to reduce datetime import duplication across modules
+
+def now_iso() -> str:
+    """
+    Get current timestamp as ISO string.
+    
+    Returns:
+        Current timestamp in ISO format (YYYY-MM-DDTHH:MM:SS.ffffff)
+    """
+    return datetime.datetime.now().isoformat()
+
+
+def now_timestamp() -> str:
+    """
+    Get current timestamp formatted for filenames/IDs.
+    
+    Returns:
+        Current timestamp as YYYYMMDD_HHMMSS string
+    """
+    return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+
+def today_str() -> str:
+    """
+    Get today's date as string.
+    
+    Returns:
+        Today's date in YYYY-MM-DD format
+    """
+    return datetime.datetime.now().strftime('%Y-%m-%d')
+
+
+def add_business_days(date_str, days) -> str:
+    """
+    Add business days to a date string.
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        days: Number of business days to add (can be negative)
+        
+    Returns:
+        New date in YYYY-MM-DD format
+    """
+    import pandas as pd
+    
+    # Convert to datetime
+    dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    
+    # Add business days using pandas
+    result_dt = pd.bdate_range(start=dt, periods=abs(days) + 1, freq='B')
+    
+    if days >= 0:
+        return result_dt[-1].strftime('%Y-%m-%d')
+    else:
+        # For negative days, go backwards
+        result_dt = pd.bdate_range(end=dt, periods=abs(days) + 1, freq='B')
+        return result_dt[0].strftime('%Y-%m-%d')
+
+
+def parse_date_string(date_str) -> datetime.datetime:
+    """
+    Parse various date string formats to datetime object.
+    
+    Args:
+        date_str: Date string in various formats
+        
+    Returns:
+        datetime.datetime object
+        
+    Raises:
+        ValueError: If date string cannot be parsed
+    """
+    formats_to_try = [
+        '%Y-%m-%d',
+        '%Y-%m-%d %H:%M:%S',
+        '%Y-%m-%dT%H:%M:%S',
+        '%Y-%m-%dT%H:%M:%S.%f',
+        '%m/%d/%Y',
+        '%d/%m/%Y',
+    ]
+    
+    for fmt in formats_to_try:
+        try:
+            return datetime.datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+    
+    raise ValueError(f"Unable to parse date string: {date_str}")
+
+
+def date_range_trading_days(start_date, end_date) -> list:
+    """
+    Generate list of trading days between start and end dates.
+    
+    Args:
+        start_date: Start date in YYYY-MM-DD format
+        end_date: End date in YYYY-MM-DD format
+        
+    Returns:
+        List of trading day strings in YYYY-MM-DD format
+    """
+    import pandas as pd
+    
+    start_dt = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    end_dt = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    
+    # Generate business days
+    trading_days = pd.bdate_range(start=start_dt, end=end_dt, freq='B')
+    
+    return [dt.strftime('%Y-%m-%d') for dt in trading_days]
+
+
+def calculate_duration_minutes(start_iso, end_iso) -> float:
+    """
+    Calculate duration in minutes between two ISO timestamp strings.
+    
+    Args:
+        start_iso: Start timestamp in ISO format
+        end_iso: End timestamp in ISO format
+        
+    Returns:
+        Duration in minutes as float
+    """
+    start_dt = datetime.datetime.fromisoformat(start_iso)
+    end_dt = datetime.datetime.fromisoformat(end_iso)
+    
+    return (end_dt - start_dt).total_seconds() / 60
+
+
+def next_business_day(date_str) -> str:
+    """
+    Get the next business day after the given date.
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        
+    Returns:
+        Next business day in YYYY-MM-DD format
+    """
+    return add_business_days(date_str, 1)
+
+
+def is_business_day(date_str) -> bool:
+    """
+    Check if a date is a business day (Monday-Friday, excluding holidays).
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        
+    Returns:
+        True if it's a business day, False otherwise
+    """
+    import pandas as pd
+    
+    dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    
+    # Check if it's a weekday
+    if dt.weekday() >= 5:  # Saturday = 5, Sunday = 6
+        return False
+    
+    # Check against US market holidays (basic check)
+    # This could be enhanced with a proper holiday calendar
+    return True
+
+
+def format_for_filename(dt: datetime.datetime = None) -> str:
+    """
+    Format datetime for use in filenames (no special characters).
+    
+    Args:
+        dt: datetime object (defaults to now)
+        
+    Returns:
+        Formatted string safe for filenames
+    """
+    if dt is None:
+        dt = datetime.datetime.now()
+    
+    return dt.strftime('%Y%m%d_%H%M%S')
+
+
+def get_market_open_time(date_str, timezone: str = "America/New_York") -> datetime.datetime:
+    """
+    Get market open time for a given date.
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        timezone: Market timezone (default: America/New_York)
+        
+    Returns:
+        datetime object for market open (9:30 AM ET)
+    """
+    import pytz
+    
+    dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    
+    # Set to 9:30 AM
+    market_open = dt.replace(hour=9, minute=30, second=0, microsecond=0)
+    
+    # Localize to market timezone
+    tz = pytz.timezone(timezone)
+    return tz.localize(market_open)
+
+
+def get_market_close_time(date_str, timezone: str = "America/New_York") -> datetime.datetime:
+    """
+    Get market close time for a given date.
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        timezone: Market timezone (default: America/New_York)
+        
+    Returns:
+        datetime object for market close (4:00 PM ET)
+    """
+    import pytz
+    
+    dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    
+    # Set to 4:00 PM
+    market_close = dt.replace(hour=16, minute=0, second=0, microsecond=0)
+    
+    # Localize to market timezone
+    tz = pytz.timezone(timezone)
+    return tz.localize(market_close)
