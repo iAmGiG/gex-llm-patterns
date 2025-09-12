@@ -8,12 +8,14 @@ This documentation system provides comprehensive guidance for the GEX-LLM Patter
 
 ```bash
 docs/
-├── README.md              # This file - organization guidelines
-├── architecture/          # System design and component interactions
-├── agents/                # LLM agent frameworks and workflows
-├── technical/             # Implementation details and technical specs
-├── research/              # Research methodology and academic standards
-└── api/                   # API documentation and integration guides
+├── README.md                  # This file - organization guidelines
+├── architecture/              # System design and component interactions
+├── agents/                    # LLM agent frameworks and workflows
+├── technical/                 # Implementation details and technical specs
+├── research/                  # Research methodology and academic standards
+├── api/                       # API documentation and integration guides
+├── CACHE_AUDIT_REPORT.md      # Cache system analysis and problems
+└── CACHE_CLEANUP_SUMMARY.md   # Cache cleanup actions and results
 ```
 
 ## Folder Guidelines
@@ -122,6 +124,43 @@ docs/
 - `alpha_vantage_integration.md` - Alpha Vantage API guide
 - `openai_api_usage.md` - OpenAI/LLM API integration
 - `internal_api_reference.md` - Project's internal APIs
+
+## Critical System Documentation
+
+### Cache System Analysis (September 2025)
+
+**⚠️ CRITICAL INFRASTRUCTURE DOCUMENTATION**
+
+The project underwent a major cache system audit and cleanup in September 2025 due to critical organizational issues:
+
+#### Key Documents
+- **`CACHE_AUDIT_REPORT.md`** - Complete analysis of cache system chaos
+  - 8 databases reduced to 1 source of truth
+  - Directory structure and usage patterns documented  
+  - Data flow mapping (API → Pickle → Database)
+  - Identified existing `UnifiedCacheManager` infrastructure
+
+- **`CACHE_CLEANUP_SUMMARY.md`** - Cleanup actions and results
+  - 400K+ storage recovered by removing test files
+  - Emergency cleanup phase completed
+  - Architecture recommendations for unified system
+  - Next steps for proper cache-first implementation
+
+#### Critical Findings
+- **Database consolidation**: `consolidated_historical.db` is source of truth (13 records)
+- **Data storage**: 34M options data, 1.4M market data in organized pickle files
+- **Missing data**: Need complete 2015-2024 historical data for statistical validity
+- **Architecture issue**: Existing `UnifiedCacheManager` should be used instead of hardcoded paths
+
+#### GitHub Issues
+- **Issue #44**: Cache System Organization and Documentation Overhaul
+- **Issue #45**: Design: Unified Data Storage and Retrieval System
+
+#### Branch Status
+- **`dbreorg` branch**: Contains cache cleanup and documentation
+- **Status**: Cleanup phase complete, ready for unified system implementation
+
+**⚠️ DO NOT bypass the `UnifiedCacheManager` - use existing cache infrastructure!**
 
 ## File Naming Conventions
 
