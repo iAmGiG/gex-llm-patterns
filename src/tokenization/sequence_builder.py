@@ -5,9 +5,18 @@ Combines tokens from different sources to create LLM-ready sequences.
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 import json
 import logging
+
+# Use date_utils instead of datetime
+from src.utils.date_utils import (
+    today_str,
+    now_timestamp,
+    parse_date_string,
+    add_business_days,
+    calculate_duration_minutes
+)
+import datetime
 
 from .gex_tokenizer import GEXTokenizer
 from .price_tokenizer import PriceTokenizer
@@ -41,9 +50,9 @@ class SequenceBuilder:
         self.event_tokenizer = EventTokenizer()
         self.vocabulary = TokenVocabulary()
         
-    def build_sequence(self, 
+    def build_sequence(self,
                       data,
-                      target_date: datetime,
+                      target_date: datetime.datetime,
                       lookback_days= None,
                       include_target = True) :
         """
@@ -61,11 +70,11 @@ class SequenceBuilder:
             lookback_days = self.context_window_days
         
         # Get data window
-        start_date = target_date - timedelta(days=lookback_days)
+        start_date = target_date - datetime.timedelta(days=lookback_days)
         if include_target:
             end_date = target_date
         else:
-            end_date = target_date - timedelta(days=1)
+            end_date = target_date - datetime.timedelta(days=1)
         
         window_data = data[start_date:end_date]
         
@@ -97,13 +106,12 @@ class SequenceBuilder:
             tokens['price'] = price_tokens
         
         # Detect and tokenize events
+        tokens['events'] = [''] * len(window_data)  # Initialize events list
         if 'gex' in window_data.columns:
             gex_events = self.event_tokenizer.detect_gex_events(window_data['gex'])
             for event in gex_events:
                 if event['date'] in window_data.index:
                     idx = window_data.index.get_loc(event['date'])
-                    if 'events' not in tokens:
-                        tokens['events'] = [''] * len(window_data)
                     tokens['events'][idx] = event['event']
         
         # Add context tokens for target date
@@ -186,9 +194,9 @@ class SequenceBuilder:
         
         return sequences
     
-    def build_multi_timeframe_sequence(self, 
+    def build_multi_timeframe_sequence(self,
                                       data,
-                                      target_date: datetime,
+                                      target_date: datetime.datetime,
                                       timeframes= [5, 10, 20]) :
         """
         Build sequences with multiple timeframes.

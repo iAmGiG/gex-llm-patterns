@@ -31,7 +31,7 @@ import numpy as np
 import psutil
 import time
 import atexit
-from datetime import timedelta
+import datetime
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from contextlib import contextmanager
@@ -875,7 +875,7 @@ class HistoricalGEXDatabaseBuilder:
                 if resume_date:
                     self.logger.info(f"Resuming from {resume_date}")
                     # Adjust start date to day after last processed
-                    resume_dt = parse_date_string(resume_date) + timedelta(days=1)
+                    resume_dt = parse_date_string(resume_date) + datetime.timedelta(days=1)
                     effective_start = max(resume_dt.strftime('%Y-%m-%d'), start_date)
                 else:
                     effective_start = start_date

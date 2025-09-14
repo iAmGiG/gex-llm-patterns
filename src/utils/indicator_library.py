@@ -17,6 +17,9 @@ __all__ = [
     "stochrsi",
     "cci",
     "fibonacci_retracement",
+    "gex_volatility_regime",
+    "identify_key_levels",
+    "enhanced_gex_context",
 ]
 
 
@@ -89,7 +92,7 @@ def supertrend(
 def avwap(
     close,
     volume,
-    anchor_ts | str | pd.Timestamp = 0,
+    anchor_ts = 0,
 ) :
     """Anchored VWAP.
 
@@ -99,7 +102,7 @@ def avwap(
         Close prices.
     volume : pd.Series
         Volume series.
-    anchor_ts : int | str | pd.Timestamp, optional
+    anchor_ts : int, str, or pd.Timestamp, optional
         Anchor position (index value, ISO date string, or integer index).
         Defaults to the first row when ``0``.
     """
@@ -301,3 +304,180 @@ def fibonacci_retracement(
         "Fib_100_0": fib_100_0,
         "Fib_range": price_range   # Range for reference
     })
+
+
+##################################
+# GEX-Enhanced Analysis Functions
+##################################
+
+def gex_volatility_regime(price_data, atr_period: int = 14):
+    """
+    Assess volatility regime to contextualize GEX calculations.
+
+    Args:
+        price_data: DataFrame with OHLCV data
+        atr_period: ATR calculation period
+
+    Returns:
+        Dict with volatility regime assessment
+    """
+    try:
+        atr_vals = atr(price_data['high'], price_data['low'], price_data['close'], atr_period)
+        rsi_vals = rsi(price_data['close'])
+
+        current_atr = atr_vals.iloc[-1]
+        atr_percentile = (atr_vals <= current_atr).mean() * 100
+
+        current_rsi = rsi_vals.iloc[-1]
+
+        # Determine volatility regime
+        if atr_percentile > 80:
+            vol_regime = "high_volatility"
+            gex_interpretation = "Expect reduced gamma effects due to wide spreads"
+        elif atr_percentile < 20:
+            vol_regime = "low_volatility"
+            gex_interpretation = "Enhanced gamma effects - tight dealer positioning"
+        else:
+            vol_regime = "normal_volatility"
+            gex_interpretation = "Standard gamma exposure dynamics"
+
+        return {
+            'volatility_regime': vol_regime,
+            'atr_current': current_atr,
+            'atr_percentile': atr_percentile,
+            'rsi_current': current_rsi,
+            'gex_interpretation': gex_interpretation,
+            'regime_strength': 'high' if abs(atr_percentile - 50) > 30 else 'moderate'
+        }
+
+    except Exception as e:
+        return {
+            'volatility_regime': 'unknown',
+            'error': str(e)
+        }
+
+def identify_key_levels(price_data, gex_levels=None):
+    """
+    Identify key technical levels that may align with gamma concentrations.
+
+    Args:
+        price_data: DataFrame with OHLCV data
+        gex_levels: Optional dict with GEX strike levels
+
+    Returns:
+        Dict with key technical levels and GEX correlation
+    """
+    try:
+        current_price = price_data['close'].iloc[-1]
+
+        # Calculate technical levels
+        bb_bands = bollinger_bands(price_data['close'])
+        fib_levels = fibonacci_retracement(price_data['high'], price_data['low'])
+
+        # Get current levels
+        current_bb_upper = bb_bands['BB_upper'].iloc[-1]
+        current_bb_lower = bb_bands['BB_lower'].iloc[-1]
+        current_bb_mid = bb_bands['BB_middle'].iloc[-1]
+
+        current_fib_50 = fib_levels['Fib_50_0'].iloc[-1]
+        current_fib_618 = fib_levels['Fib_61_8'].iloc[-1]
+        current_fib_382 = fib_levels['Fib_38_2'].iloc[-1]
+
+        key_levels = {
+            'bb_upper': current_bb_upper,
+            'bb_middle': current_bb_mid,
+            'bb_lower': current_bb_lower,
+            'fib_50': current_fib_50,
+            'fib_618': current_fib_618,
+            'fib_382': current_fib_382,
+        }
+
+        # Calculate distances from current price
+        level_distances = {}
+        for level_name, level_price in key_levels.items():
+            distance_pct = ((level_price - current_price) / current_price) * 100
+            level_distances[f"{level_name}_distance"] = distance_pct
+
+        # Find nearest significant levels
+        abs_distances = {k: abs(v) for k, v in level_distances.items()}
+        nearest_level = min(abs_distances, key=abs_distances.get).replace('_distance', '')
+
+        result = {
+            'current_price': current_price,
+            'key_levels': key_levels,
+            'level_distances': level_distances,
+            'nearest_technical_level': nearest_level,
+            'nearest_distance': level_distances[f"{nearest_level}_distance"]
+        }
+
+        # Add GEX correlation if provided
+        if gex_levels:
+            gex_correlations = []
+            for tech_name, tech_level in key_levels.items():
+                for gex_name, gex_level in gex_levels.items():
+                    if abs(tech_level - gex_level) / tech_level < 0.02:  # Within 2%
+                        gex_correlations.append({
+                            'technical_level': tech_name,
+                            'gex_level': gex_name,
+                            'convergence': abs(tech_level - gex_level)
+                        })
+
+            result['gex_correlations'] = gex_correlations
+
+        return result
+
+    except Exception as e:
+        return {
+            'current_price': price_data['close'].iloc[-1] if not price_data.empty else None,
+            'error': str(e)
+        }
+
+def enhanced_gex_context(price_data, gex_data=None):
+    """
+    Comprehensive technical context for GEX analysis.
+
+    Args:
+        price_data: DataFrame with OHLCV data
+        gex_data: Optional GEX calculation results
+
+    Returns:
+        Dict with enhanced GEX context including technical analysis
+    """
+    try:
+        vol_regime = gex_volatility_regime(price_data)
+        key_levels = identify_key_levels(price_data, gex_data.get('levels', {}) if gex_data else None)
+
+        # Calculate AVWAP if volume data available
+        avwap_level = None
+        if 'volume' in price_data.columns:
+            avwap_vals = avwap(price_data['close'], price_data['volume'])
+            avwap_level = avwap_vals.iloc[-1]
+
+        context = {
+            'volatility_analysis': vol_regime,
+            'technical_levels': key_levels,
+            'avwap_level': avwap_level,
+            'analysis_timestamp': pd.Timestamp.now(),
+        }
+
+        # Add trading recommendations based on technical + GEX confluence
+        recommendations = []
+
+        if vol_regime['volatility_regime'] == 'low_volatility':
+            recommendations.append("Low vol regime: GEX effects amplified - watch for sharp moves near flip points")
+
+        if key_levels.get('gex_correlations'):
+            recommendations.append("Technical-GEX convergence detected - key inflection points identified")
+
+        if abs(key_levels.get('nearest_distance', 100)) < 2:
+            recommendations.append(f"Near key technical level: {key_levels.get('nearest_technical_level')}")
+
+        context['trading_recommendations'] = recommendations
+
+        return context
+
+    except Exception as e:
+        return {
+            'error': str(e),
+            'analysis_timestamp': pd.Timestamp.now()
+        }

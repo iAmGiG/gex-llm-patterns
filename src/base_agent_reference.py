@@ -65,7 +65,7 @@ class BaseAgent(AssistantAgent, ABC):
       - Tool registration and usage
     """
 
-    def __init__(self, name, tools=None, memory_system= None, llm_config] = None):
+    def __init__(self, name, tools=None, memory_system=None, llm_config=None):
         """
         Initialize the agent with tools, memory system, and LLM configuration.
 
@@ -75,7 +75,7 @@ class BaseAgent(AssistantAgent, ABC):
         :param llm_config: Optional dictionary containing LLM settings (temperature, etc).
         """
         # 1. Merge default LLM config with any provided config
-        llm_params = DEFAULT_LLM_CONFIG.copy()
+        llm_params= DEFAULT_LLM_CONFIG.copy()
         if llm_config:
             llm_params.update(llm_config)
 

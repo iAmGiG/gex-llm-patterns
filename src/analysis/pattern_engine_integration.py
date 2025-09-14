@@ -7,8 +7,15 @@ and Fed context for comprehensive pattern analysis workflow.
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+import datetime
 from typing import Dict, List, Optional, Tuple
+
+# Use date_utils instead of datetime (in addition to existing import)
+from src.utils.date_utils import (
+    today_str,
+    add_business_days,
+    calculate_duration_minutes
+)
 import logging
 from pathlib import Path
 
@@ -68,7 +75,7 @@ class PatternEngineIntegration:
             Dictionary with comprehensive pattern analysis
         """
         if analysis_date is None:
-            analysis_date = datetime.now().strftime('%Y-%m-%d')
+            analysis_date = datetime.datetime.now().strftime('%Y-%m-%d')
         
         logger.info(f"Analyzing current patterns for {analysis_date}")
         

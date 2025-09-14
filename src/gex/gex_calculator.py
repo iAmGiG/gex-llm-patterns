@@ -8,7 +8,9 @@ and hedging constraints that create predictable price movements.
 import pandas as pd
 import numpy as np
 import logging
+from math import log, sqrt, exp
 from scipy.stats import norm
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 

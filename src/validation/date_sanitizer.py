@@ -4,7 +4,6 @@ Removes temporal information while preserving entity relationships.
 """
 
 import re
-import pandas as pd
 
 
 def sanitize_dates_only(text) -> str:
@@ -31,7 +30,8 @@ def sanitize_dates_only(text) -> str:
     text = re.sub(r'\b19\d{2}\b', '[YEAR]', text)  # Years 1900-1999
 
     # Replace relative time references
-    text = re.sub(r'\b(yesterday|today|tomorrow)\b', '[RECENT]', text, flags=re.IGNORECASE)
+    text = re.sub(r'\b(yesterday|today|tomorrow)\b',
+                  '[RECENT]', text, flags=re.IGNORECASE)
     text = re.sub(r'\b(last|this|next)\s+(week|month|quarter|year)\b',
                   '[PERIOD]', text, flags=re.IGNORECASE)
     text = re.sub(r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b',
@@ -43,7 +43,7 @@ def sanitize_dates_only(text) -> str:
     return text
 
 
-def prepare_news_for_v4(news_df, requested_ticker = None) :
+def prepare_news_for_v4(news_df, requested_ticker=None):
     """
     Prepare news data for V4 with date sanitization and selective ticker obfuscation.
     Leverages the categorization already done by hierarchical_news_tool.
@@ -65,7 +65,8 @@ def prepare_news_for_v4(news_df, requested_ticker = None) :
                           article.get('target_ticker') == requested_ticker))
 
         # Get the appropriate ticker to display
-        article_ticker = article.get('ticker', article.get('news_source_ticker', 'UNKNOWN'))
+        article_ticker = article.get(
+            'ticker', article.get('news_source_ticker', 'UNKNOWN'))
 
         # Obfuscate ONLY the primary ticker in direct news
         # Keep sector (XLK, QQQ) and market (SPY) tickers visible
@@ -73,11 +74,13 @@ def prepare_news_for_v4(news_df, requested_ticker = None) :
 
         news_item = {
             'title': article['title'],  # Keep titles as-is
-            'summary': sanitize_dates_only(article.get('summary', '')),  # Sanitize dates
+            # Sanitize dates
+            'summary': sanitize_dates_only(article.get('summary', '')),
             'ticker': display_ticker,
             'source': article.get('url_pattern_source', 'Unknown'),
             'relevance': float(article.get('relevance_score', 0.5)),
-            'category': article.get('news_category', 'unknown')  # Already set by hierarchical tool
+            # Already set by hierarchical tool
+            'category': article.get('news_category', 'unknown')
         }
 
         processed_news.append(news_item)
@@ -85,7 +88,7 @@ def prepare_news_for_v4(news_df, requested_ticker = None) :
     return processed_news
 
 
-def format_news_for_llm_prompt(processed_news]) -> str:
+def format_news_for_llm_prompt(processed_news) -> str:
     """
     Format processed news into structured text for LLM prompt.
     Replaces the raw DataFrame string representation that was leaking dates.
@@ -97,11 +100,11 @@ def format_news_for_llm_prompt(processed_news]) -> str:
         Formatted string for LLM consumption
     """
     # Group by category (already marked by hierarchical tool)
-    direct_news = [n for n in processed_news if n.get('category') == 'direct']
-    sector_news = [n for n in processed_news if n.get('category') == 'sector']
-    market_news = [n for n in processed_news if n.get('category') == 'market']
+    direct_news= [n for n in processed_news if n.get('category') == 'direct']
+    sector_news= [n for n in processed_news if n.get('category') == 'sector']
+    market_news= [n for n in processed_news if n.get('category') == 'market']
 
-    output_parts = []
+    output_parts= []
 
     # Direct news - with obfuscated ticker (TICKER_001)
     if direct_news:
@@ -110,7 +113,8 @@ def format_news_for_llm_prompt(processed_news]) -> str:
             output_parts.append(f"[{item['ticker']}] {item['title']}")
             if item['summary']:
                 output_parts.append(f"  Summary: {item['summary'][:200]}")
-            output_parts.append(f"  Source: {item['source']} | Relevance: {item['relevance']:.2f}")
+            output_parts.append(
+                f"  Source: {item['source']} | Relevance: {item['relevance']:.2f}")
             output_parts.append("")
 
     # Sector news - real tickers visible (XLK, QQQ, etc.)

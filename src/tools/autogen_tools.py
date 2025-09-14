@@ -7,7 +7,15 @@ Organized by agent type for clean tool assignment and efficient agent workflows.
 
 # Standard library imports
 import logging
-from datetime import datetime, timedelta
+
+# Project imports for date handling
+from src.utils.date_utils import (
+    today_str,
+    add_business_days,
+    parse_date_string,
+    format_for_filename,
+    calculate_duration_minutes
+)
 
 # Third-party imports
 from autogen_core.tools import FunctionTool
@@ -20,8 +28,8 @@ from src.data_sources.polygon_client import PolygonClient
 from src.gex.sample_data_gex import SampleDataGEXInterface
 from src.validation.options_data_validator import OptionsDataValidator
 from src.utils.reports_manager import reports_manager
-from src.agents.market_intelligence import market_intelligence
-from src.agents.gex_indicators import enhanced_gex_context, gex_volatility_regime
+from src.utils.market_intelligence import market_intelligence
+from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +68,7 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
     try:
         # Default to today if no date specified
         if not trading_date:
-            trading_date = datetime.now().strftime('%Y-%m-%d')
+            trading_date = today_str()
 
         # Check cache first
         if use_cache:
@@ -128,10 +136,9 @@ def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str
     try:
         # Default dates if not specified
         if not end_date:
-            end_date = datetime.now().strftime('%Y-%m-%d')
+            end_date = today_str()
         if not start_date:
-            start_date = (datetime.now() - timedelta(days=30)
-                          ).strftime('%Y-%m-%d')
+            start_date = add_business_days(end_date, -30)
 
         # Check cache
         if use_cache:
@@ -201,7 +208,7 @@ def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot
     try:
         # Default to current date if not specified
         if not trading_date:
-            trading_date = datetime.now().strftime('%Y-%m-%d')
+            trading_date = today_str()
         
         # Use cached GEX calculation if enabled
         if use_cache:
@@ -367,7 +374,7 @@ def _interpret_flip_point(metrics: dict):
 # Market Intelligence Tools
 ##################################
 
-def analyze_query_intent(query: str):
+def analyze_query_intent(query):
     """
     Analyze user query to extract trading intent and market context.
     
@@ -535,10 +542,9 @@ def process_historical_gex_range(symbol: str = "SPY", start_date: str = None, en
     try:
         # Default date range if not provided
         if not end_date:
-            end_date = datetime.now().strftime('%Y-%m-%d')
+            end_date = today_str()
         if not start_date:
-            start_dt = datetime.now() - timedelta(days=30)
-            start_date = start_dt.strftime('%Y-%m-%d')
+            start_date = add_business_days(end_date, -30)
         
         # Initialize concurrent processor
         from src.cache.concurrent_gex_processor import ConcurrentGEXProcessor
@@ -565,7 +571,7 @@ def process_historical_gex_range(symbol: str = "SPY", start_date: str = None, en
             'date_range': f"{start_date} to {end_date}",
             'processing_summary': processing_results,
             'historical_data': historical_gex.to_dict('records') if not historical_gex.empty else [],
-            'analysis_timestamp': datetime.now().isoformat()
+            'analysis_timestamp': format_for_filename()
         }
         
         reports_manager.save_analysis_results(

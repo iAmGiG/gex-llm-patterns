@@ -5,9 +5,10 @@ Free tier provides daily stock data with 5 calls/minute limit.
 
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
+import datetime
 import logging
 import time
+
 
 
 class PolygonClient:
@@ -16,7 +17,6 @@ class PolygonClient:
     def __init__(self, api_key: str = None):
         """Initialize client with API key."""
         import os
-        import sys
         import json
         from pathlib import Path
         
@@ -145,8 +145,8 @@ class PolygonClient:
         Returns:
             DataFrame with recent OHLCV data
         """
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days)
+        end_date = datetime.datetime.now()
+        start_date = end_date - datetime.timedelta(days=days)
         
         return self.fetch_daily_bars(
             symbol,
@@ -160,7 +160,7 @@ class PolygonClient:
             self._rate_limit()
             
             # Get recent SPY data as test
-            yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+            yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             url = f"{self.base_url}/aggs/ticker/SPY/range/1/day/{yesterday}/{yesterday}"
             
             response = requests.get(url, params={'apikey': self.api_key}, timeout=10)

@@ -72,7 +72,8 @@ hierarchical_news_tool.agent_types = [SENTIMENT_AGENT]
 _sentiment_tools_raw = [
     google_search_smart_tool,   # V1: Google Custom Search API with smart sampling
     vxx_volatility_tool,        # V2: VXX volatility data for market fear sentiment
-    hierarchical_news_tool,     # V4: Hierarchical adaptive news (Direct + Sector + Market)
+    # V4: Hierarchical adaptive news (Direct + Sector + Market)
+    hierarchical_news_tool,
     market_context_tool,        # V4: SPY/QQQ market context for enhanced sentiment
 ]
 SENTIMENT_TOOLS = [tool for tool in _sentiment_tools_raw if tool is not None]

@@ -6,7 +6,7 @@ for SPY/SPX gamma exposure calculations. Optimized for entry premium tier rate l
 (75 calls/min) with intelligent caching.
 """
 
-from datetime import datetime, timedelta
+import datetime
 import logging
 import requests
 import pandas as pd
@@ -72,11 +72,11 @@ class AlphaVantageGEXClient:
 
     def _check_rate_limit(self) -> bool:
         """Check if we're within API rate limits (premium or standard tier)."""
-        now = datetime.now()
+        now = datetime.datetime.now()
         # Remove calls older than 1 minute
         self.call_timestamps = [
             ts for ts in self.call_timestamps
-            if now - ts < timedelta(minutes=1)
+            if now - ts < datetime.timedelta(minutes=1)
         ]
 
         if len(self.call_timestamps) >= self.calls_per_minute:
@@ -218,8 +218,8 @@ class AlphaVantageGEXClient:
                 f"Fetching stock data for {symbol} from {processed_start} to {processed_end}")
 
             # Determine outputsize based on date range
-            days_range = (datetime.strptime(processed_end, "%Y-%m-%d") -
-                          datetime.strptime(processed_start, "%Y-%m-%d")).days
+            days_range = (datetime.datetime.strptime(processed_end, "%Y-%m-%d") -
+                          datetime.datetime.strptime(processed_start, "%Y-%m-%d")).days
             use_full = days_range > 100
 
             params = {
@@ -404,14 +404,14 @@ class AlphaVantageGEXClient:
 
     def get_rate_limit_status(self) :
         """Get current rate limit status."""
-        now = datetime.now()
+        now = datetime.datetime.now()
         recent_calls = len([
             ts for ts in self.call_timestamps
-            if now - ts < timedelta(minutes=1)
+            if now - ts < datetime.timedelta(minutes=1)
         ])
 
         return {
             "calls_last_minute": recent_calls,
             "calls_remaining": max(0, self.calls_per_minute - recent_calls),
-            "reset_time": now + timedelta(minutes=1) if recent_calls > 0 else now
+            "reset_time": now + datetime.timedelta(minutes=1) if recent_calls > 0 else now
         }

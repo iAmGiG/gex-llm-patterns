@@ -9,7 +9,16 @@ Data Flow: Cache → Alpha Vantage Premium → Sample (fallback only)
 from pathlib import Path
 import logging
 import sys
-from datetime import datetime, timedelta
+import datetime
+
+# Use date_utils instead of datetime
+from src.utils.date_utils import (
+    today_str,
+    now_timestamp,
+    parse_date_string,
+    add_business_days,
+    calculate_duration_minutes
+)
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -203,7 +212,7 @@ class DataRetrievalAgent:
             if not df.empty and 'date' in df.columns:
                 self.current_date = df['date'].max().strftime('%Y-%m-%d')
             else:
-                self.current_date = date or datetime.now().strftime('%Y-%m-%d')
+                self.current_date = date or datetime.datetime.now().strftime('%Y-%m-%d')
 
         return result
 
@@ -319,7 +328,7 @@ class DataRetrievalAgent:
         """Fetch via the production flow: Cache → API → Sample."""
         # Default to today if no date specified
         if not date:
-            date = datetime.now().strftime('%Y-%m-%d')
+            date = datetime.datetime.now().strftime('%Y-%m-%d')
         
         # Step 1: Check cache first
         if self.cache_manager:
@@ -482,9 +491,9 @@ class DataRetrievalAgent:
             return []
         
         recent_dates = []
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days_back)
-        
+        end_date = datetime.datetime.now()
+        start_date = end_date - datetime.timedelta(days=days_back)
+
         current_date = start_date
         while current_date <= end_date:
             date_str = current_date.strftime('%Y-%m-%d')
@@ -495,7 +504,7 @@ class DataRetrievalAgent:
             except Exception:
                 pass  # Skip dates with errors
             
-            current_date += timedelta(days=1)
+            current_date += datetime.timedelta(days=1)
         
         return sorted(recent_dates)
 

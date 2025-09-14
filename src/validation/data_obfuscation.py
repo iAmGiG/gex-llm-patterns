@@ -42,7 +42,7 @@ class DataObfuscator:
             'VXX': 'VOLATILITY_INDEX'
         }
 
-    def obfuscate_dates(self, date_list, base_date = None) :
+    def obfuscate_dates(self, date_list, base_date=None):
         """
         Convert real dates to relative timestamps.
 
@@ -81,7 +81,7 @@ class DataObfuscator:
         self.date_mapping = mapping
         return mapping
 
-    def obfuscate_tickers(self, ticker_list) :
+    def obfuscate_tickers(self, ticker_list):
         """
         Convert real tickers to anonymous symbols.
 
@@ -97,7 +97,8 @@ class DataObfuscator:
                 mapping[ticker] = self.standard_tickers[ticker]
             else:
                 # Generate generic names for unknown tickers
-                existing_count = len([k for k in mapping.values() if k.startswith('STOCK_')])
+                existing_count = len(
+                    [k for k in mapping.values() if k.startswith('STOCK_')])
                 next_letter = chr(ord('H') + existing_count)  # Start after G
                 mapping[ticker] = f'STOCK_{next_letter}'
 
@@ -127,7 +128,8 @@ class DataObfuscator:
         for real_ticker, obfuscated_ticker in self.ticker_mapping.items():
             # Use word boundaries to avoid partial matches
             pattern = r'\b' + re.escape(real_ticker) + r'\b'
-            obfuscated = re.sub(pattern, obfuscated_ticker, obfuscated, flags=re.IGNORECASE)
+            obfuscated = re.sub(pattern, obfuscated_ticker,
+                                obfuscated, flags=re.IGNORECASE)
 
         # Remove specific temporal references
         temporal_patterns = [
@@ -143,11 +145,12 @@ class DataObfuscator:
         ]
 
         for pattern, replacement in temporal_patterns:
-            obfuscated = re.sub(pattern, replacement, obfuscated, flags=re.IGNORECASE)
+            obfuscated = re.sub(pattern, replacement,
+                                obfuscated, flags=re.IGNORECASE)
 
         return obfuscated
 
-    def obfuscate_market_data(self, market_data) :
+    def obfuscate_market_data(self, market_data):
         """
         Obfuscate a complete market data DataFrame.
 
@@ -165,7 +168,8 @@ class DataObfuscator:
 
         # Extract unique dates and tickers
         if isinstance(obfuscated_df.index, pd.DatetimeIndex):
-            date_strings = [d.strftime('%Y-%m-%d') for d in obfuscated_df.index]
+            date_strings = [d.strftime('%Y-%m-%d')
+                            for d in obfuscated_df.index]
         else:
             date_strings = obfuscated_df.index.tolist()
 
@@ -179,7 +183,8 @@ class DataObfuscator:
 
         # Apply obfuscation to index
         if isinstance(obfuscated_df.index, pd.DatetimeIndex):
-            new_index = [date_map[d.strftime('%Y-%m-%d')] for d in obfuscated_df.index]
+            new_index = [date_map[d.strftime('%Y-%m-%d')]
+                         for d in obfuscated_df.index]
             obfuscated_df.index = new_index
 
         # Apply obfuscation to Symbol column
@@ -197,7 +202,7 @@ class DataObfuscator:
 
         return obfuscated_df, metadata
 
-    def obfuscate_news_data(self, news_data) :
+    def obfuscate_news_data(self, news_data):
         """
         Obfuscate news articles by removing temporal references.
 
@@ -219,7 +224,8 @@ class DataObfuscator:
 
             # Obfuscate date fields
             if 'publishedAt' in obfuscated_article:
-                pub_date = obfuscated_article['publishedAt'][:10]  # Extract YYYY-MM-DD
+                # Extract YYYY-MM-DD
+                pub_date = obfuscated_article['publishedAt'][:10]
                 if pub_date in self.date_mapping:
                     obfuscated_article['publishedAt'] = self.date_mapping[pub_date]
 
@@ -227,7 +233,7 @@ class DataObfuscator:
 
         return obfuscated_articles
 
-    def create_reverse_mapping(self) :
+    def create_reverse_mapping(self):
         """
         Create reverse mappings to convert obfuscated data back to original.
 
@@ -264,7 +270,7 @@ class DataObfuscator:
             self.base_date = pd.to_datetime(mappings['base_date'])
 
 
-def validate_obfuscation_quality(original_text, obfuscated_text) :
+def validate_obfuscation_quality(original_text, obfuscated_text):
     """
     Validate that obfuscation successfully removed temporal references.
 
@@ -289,7 +295,8 @@ def validate_obfuscation_quality(original_text, obfuscated_text) :
             issues.append(f"Found remaining dates: {matches}")
 
     # Check for remaining ticker patterns
-    ticker_patterns = [r'\b[A-Z]{2,5}\b']  # 2-5 uppercase letters (typical tickers)
+    # 2-5 uppercase letters (typical tickers)
+    ticker_patterns = [r'\b[A-Z]{2,5}\b']
     for pattern in ticker_patterns:
         matches = re.findall(pattern, obfuscated_text)
         # Filter out our obfuscated patterns and replacement words
@@ -310,14 +317,15 @@ def validate_obfuscation_quality(original_text, obfuscated_text) :
 
 
 # Convenience functions for quick usage
-def obfuscate_date_range(start_date, end_date) :
+def obfuscate_date_range(start_date, end_date):
     """Quick function to obfuscate a date range."""
     obfuscator = DataObfuscator()
-    dates = pd.date_range(start_date, end_date, freq='D').strftime('%Y-%m-%d').tolist()
+    dates = pd.date_range(start_date, end_date,
+                          freq='D').strftime('%Y-%m-%d').tolist()
     return obfuscator.obfuscate_dates(dates, start_date)
 
 
-def obfuscate_mag7_tickers() :
+def obfuscate_mag7_tickers():
     """Quick function to get MAG7 ticker obfuscation mapping."""
     obfuscator = DataObfuscator()
     mag7 = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"]
