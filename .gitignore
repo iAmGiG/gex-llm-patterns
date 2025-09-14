@@ -116,6 +116,9 @@ ipython_config.py
 # Cache directory (contains backtest results and market data)
 .cache/
 
+# Sample data (Alpha Vantage examples - keep local only)
+sample_data/
+
 # CSV files from cache/deprecated (data outputs, not research results)
 .cache/**/*.csv
 deprecated/**/*.csv
@@ -128,6 +131,7 @@ CLAUDE.md
 .claude_archive/
 ADVISOR_REQUIREMENTS_MET.md
 TODO.md
+todo.md
 docs/internalREADME.md
 docs/research/notes.md
 docs/original_sentiment_agent.py
@@ -170,6 +174,10 @@ services/background_cache_service.py
 services/start_cache_service.sh
 services/stop_cache_service.sh
 services/cache_service_status.sh
+
+# Deployment Tools (environment-specific)
+tools/deployment/
+*.sh
 
 # SEC Edgar data
 sec-edgar-filings/
@@ -225,3 +233,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.clauderc

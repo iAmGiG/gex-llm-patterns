@@ -1,0 +1,274 @@
+"""
+GEX Calculator - Core Gamma Exposure Calculation Engine
+
+Calculates dealer gamma exposure from options data to identify key market levels
+and hedging constraints that create predictable price movements.
+"""
+
+import pandas as pd
+import numpy as np
+import logging
+from math import log, sqrt, exp
+from scipy.stats import norm
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+
+class GEXCalculator:
+    """
+    Calculate Gamma Exposure (GEX) for dealer positioning analysis.
+    
+    GEX represents the amount dealers must buy/sell for every 1% move
+    in the underlying. Positive GEX suggests dealers are long gamma
+    (supportive), negative suggests short gamma (reactive hedging).
+    """
+    
+    def __init__(self, risk_free_rate = 0.05):
+        """
+        Initialize GEX Calculator.
+        
+        Args:
+            risk_free_rate: Risk-free rate for Black-Scholes calculations (default 5%)
+        """
+        self.risk_free_rate = risk_free_rate
+        
+    def black_scholes_gamma(self, 
+                           S, 
+                           K, 
+                           T, 
+                           r, 
+                           sigma) -> float:
+        """
+        Calculate Black-Scholes gamma for an option.
+        
+        Args:
+            S: Current stock price
+            K: Strike price
+            T: Time to expiration (in years)
+            r: Risk-free rate
+            sigma: Volatility (annual)
+            
+        Returns:
+            Gamma value
+        """
+        if T <= 0 or sigma <= 0:
+            return 0.0
+            
+        d1 = (log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * sqrt(T))
+        
+        gamma = norm.pdf(d1) / (S * sigma * sqrt(T))
+        return gamma
+    
+    def calculate_dealer_gamma_exposure(self, 
+                                      options_data,
+                                      underlying_price,
+                                      open_interest_multiplier = 100) :
+        """
+        Calculate dealer GEX for each option contract.
+        
+        Dealer GEX = -1 * Customer Position * Gamma * Underlying Price^2 * 0.01
+        
+        Assumes dealers are short customer positions (market makers).
+        
+        Args:
+            options_data: DataFrame with options data (strike, oi, iv, dte, type)
+            underlying_price: Current price of underlying
+            open_interest_multiplier: Contract size multiplier (default 100 shares/contract)
+            
+        Returns:
+            DataFrame with GEX calculations per strike
+        """
+        if options_data.empty:
+            logger.warning("Empty options data provided to GEX calculator")
+            return pd.DataFrame()
+            
+        logger.info(f"Calculating GEX for {len(options_data)} option contracts")
+        
+        gex_data = options_data.copy()
+        
+        # Calculate days to expiration if not present
+        if 'days_to_expiration' not in gex_data.columns and 'expiration' in gex_data.columns:
+            if 'date' in gex_data.columns:
+                gex_data['days_to_expiration'] = (gex_data['expiration'] - gex_data['date']).dt.days
+            else:
+                # Use current date if trade date not available
+                current_date = pd.Timestamp.now().normalize()
+                gex_data['days_to_expiration'] = (gex_data['expiration'] - current_date).dt.days
+        
+        # Convert DTE to years
+        gex_data['time_to_expiry'] = gex_data['days_to_expiration'] / 365.0
+        
+        # Calculate Black-Scholes gamma for each contract
+        gex_data['bs_gamma'] = gex_data.apply(
+            lambda row: self.black_scholes_gamma(
+                S=underlying_price,
+                K=row['strike'],
+                T=row['time_to_expiry'],
+                r=self.risk_free_rate,
+                sigma=row['implied_volatility']
+            ), axis=1
+        )
+        
+        # Calculate dealer GEX per contract
+        # Dealer GEX = -1 * Customer OI * Gamma * S^2 * 0.01 * multiplier
+        gex_data['dealer_gex'] = (
+            -1 * gex_data['open_interest'] * 
+            gex_data['bs_gamma'] * 
+            (underlying_price ** 2) * 
+            0.01 * 
+            open_interest_multiplier
+        )
+        
+        # Add contract type weighting (calls are positive customer exposure)
+        gex_data['weighted_gex'] = gex_data['dealer_gex'] * np.where(
+            gex_data['type'] == 'call', 1, -1
+        )
+        
+        return gex_data
+    
+    def aggregate_gex_by_strike(self, gex_data) :
+        """
+        Aggregate GEX by strike price for market level analysis.
+        
+        Args:
+            gex_data: Output from calculate_dealer_gamma_exposure
+            
+        Returns:
+            DataFrame with total GEX per strike
+        """
+        if gex_data.empty:
+            return pd.DataFrame()
+            
+        strike_gex = gex_data.groupby('strike').agg({
+            'weighted_gex': 'sum',
+            'open_interest': 'sum',
+            'bs_gamma': 'mean'  # Average gamma at strike
+        }).reset_index()
+        
+        strike_gex.columns = ['strike', 'total_gex', 'total_oi', 'avg_gamma']
+        
+        # Sort by strike for easier analysis
+        strike_gex = strike_gex.sort_values('strike').reset_index(drop=True)
+        
+        return strike_gex
+    
+    def calculate_net_gex(self, gex_data) -> float:
+        """
+        Calculate total net GEX across all strikes.
+        
+        Args:
+            gex_data: Output from calculate_dealer_gamma_exposure
+            
+        Returns:
+            Net GEX value (positive = long gamma, negative = short gamma)
+        """
+        if gex_data.empty:
+            return 0.0
+            
+        return gex_data['weighted_gex'].sum()
+    
+    def calculate_gex_profile(self, 
+                            options_data,
+                            underlying_price,
+                            price_range_pct = 0.20) :
+        """
+        Calculate comprehensive GEX profile for market analysis.
+        
+        Args:
+            options_data: DataFrame with options data
+            underlying_price: Current underlying price
+            price_range_pct: Percentage range around current price to analyze
+            
+        Returnsionary with GEX profile metrics
+        """
+        logger.info(f"Calculating comprehensive GEX profile for underlying at ${underlying_price:.2f}")
+        
+        # Calculate base GEX
+        gex_data = self.calculate_dealer_gamma_exposure(options_data, underlying_price)
+        
+        if gex_data.empty:
+            return {
+                'net_gex': 0.0,
+                'strike_gex': pd.DataFrame(),
+                'key_levels': [],
+                'gex_range': (0.0, 0.0),
+                'calculation_timestamp': datetime.now()
+            }
+        
+        # Aggregate by strike
+        strike_gex = self.aggregate_gex_by_strike(gex_data)
+        
+        # Calculate key metrics
+        net_gex = self.calculate_net_gex(gex_data)
+        
+        # Find strikes within analysis range
+        price_lower = underlying_price * (1 - price_range_pct)
+        price_upper = underlying_price * (1 + price_range_pct)
+        
+        relevant_strikes = strike_gex[
+            (strike_gex['strike'] >= price_lower) & 
+            (strike_gex['strike'] <= price_upper)
+        ].copy()
+        
+        # Identify key GEX levels (high absolute GEX values)
+        if not relevant_strikes.empty:
+            relevant_strikes['abs_gex'] = abs(relevant_strikes['total_gex'])
+            key_levels = relevant_strikes.nlargest(5, 'abs_gex')[
+                ['strike', 'total_gex', 'total_oi']
+            ].to_dict('records')
+        else:
+            key_levels = []
+        
+        # GEX range for the analysis window
+        if not relevant_strikes.empty:
+            gex_range = (relevant_strikes['total_gex'].min(), 
+                        relevant_strikes['total_gex'].max())
+        else:
+            gex_range = (0.0, 0.0)
+        
+        return {
+            'net_gex': net_gex,
+            'strike_gex': strike_gex,
+            'relevant_strikes': relevant_strikes,
+            'key_levels': key_levels,
+            'gex_range': gex_range,
+            'underlying_price': underlying_price,
+            'price_range': (price_lower, price_upper),
+            'calculation_timestamp': datetime.now(),
+            'total_contracts': len(gex_data)
+        }
+    
+    def analyze_gex_regime(self, net_gex, underlying_price) :
+        """
+        Determine market regime based on GEX levels.
+        
+        Args:
+            net_gex: Net gamma exposure
+            underlying_price: Current underlying price
+            
+        Returnsionary with regime analysis
+        """
+        # Normalize GEX by price for regime classification
+        normalized_gex = net_gex / (underlying_price ** 2) if underlying_price > 0 else 0
+        
+        if normalized_gex > 0.0001:  # Threshold for long gamma regime
+            regime = "Long Gamma"
+            description = "Dealers long gamma - suppressive to volatility, mean-reverting environment"
+            market_impact = "Supportive on dips, resistant on rallies"
+        elif normalized_gex < -0.0001:  # Threshold for short gamma regime
+            regime = "Short Gamma"
+            description = "Dealers short gamma - amplifies volatility, momentum environment"
+            market_impact = "Selling on dips, buying on rallies"
+        else:
+            regime = "Neutral Gamma"
+            description = "Balanced gamma positioning"
+            market_impact = "Limited dealer hedging impact"
+            
+        return {
+            'regime': regime,
+            'description': description,
+            'market_impact': market_impact,
+            'normalized_gex': normalized_gex,
+            'raw_gex': net_gex
+        }
