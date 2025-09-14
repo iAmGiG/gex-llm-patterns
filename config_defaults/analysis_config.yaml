@@ -1,0 +1,53 @@
+# Analysis Configuration
+# Parameters for statistical analysis and confidence scoring
+
+confidence_scorer:
+  # Base lookback period for pattern analysis (trading days)
+  base_lookback_days: 252
+
+  # Recent weighting period for pattern analysis (trading days)
+  recent_weight_days: 63
+
+  # Minimum sample size for reliable confidence scoring
+  min_sample_size: 20
+
+  # Base confidence scores for different conditions
+  base_scores:
+    statistically_significant: 75
+    not_significant: 25
+    neutral: 50
+
+  # Confidence adjustments
+  adjustments:
+    stress_penalty: 15
+    low_vol_pin_bonus: 10
+    high_vol_gamma_bonus: 10
+    extreme_damping_threshold: 90
+    extreme_damping_factor: 0.5
+
+statistical_validator:
+  # Confidence level for statistical tests (0.95 = 95%)
+  confidence_level: 0.95
+
+  # Minimum sample size for reliable statistical testing
+  min_samples: 30
+
+  # Number of bootstrap iterations for confidence intervals
+  n_bootstrap: 1000
+
+  # Number of permutations for permutation testing
+  n_permutations: 1000
+
+pattern_analyzer:
+  # Minimum win rate threshold for pattern validation (0.6 = 60%)
+  min_win_rate: 0.6
+
+  # Confidence threshold for high-confidence patterns
+  high_confidence_threshold: 85
+
+baseline_comparison:
+  # Confidence threshold for baseline comparison analysis
+  confidence_threshold: 85
+
+  # Statistical significance threshold (p-value)
+  significance_threshold: 0.05

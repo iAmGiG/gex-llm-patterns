@@ -11,6 +11,8 @@ import logging
 from math import log, sqrt, exp
 from scipy.stats import norm
 from datetime import datetime
+from typing import Dict, Any
+from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -24,14 +26,15 @@ class GEXCalculator:
     (supportive), negative suggests short gamma (reactive hedging).
     """
     
-    def __init__(self, risk_free_rate = 0.05):
+    def __init__(self, risk_free_rate: float = None):
         """
         Initialize GEX Calculator.
-        
+
         Args:
-            risk_free_rate: Risk-free rate for Black-Scholes calculations (default 5%)
+            risk_free_rate: Risk-free rate for Black-Scholes calculations (default from config)
         """
-        self.risk_free_rate = risk_free_rate
+        config = get_config()
+        self.risk_free_rate = risk_free_rate or config.get('gex_calculation.gex_calculator.risk_free_rate', 0.05)
         
     def black_scholes_gamma(self, 
                            S, 
@@ -60,10 +63,10 @@ class GEXCalculator:
         gamma = norm.pdf(d1) / (S * sigma * sqrt(T))
         return gamma
     
-    def calculate_dealer_gamma_exposure(self, 
-                                      options_data,
-                                      underlying_price,
-                                      open_interest_multiplier = 100) :
+    def calculate_dealer_gamma_exposure(self,
+                                      options_data: pd.DataFrame,
+                                      underlying_price: float,
+                                      open_interest_multiplier: int = 100) -> pd.DataFrame:
         """
         Calculate dealer GEX for each option contract.
         
@@ -127,7 +130,7 @@ class GEXCalculator:
         
         return gex_data
     
-    def aggregate_gex_by_strike(self, gex_data) :
+    def aggregate_gex_by_strike(self, gex_data: pd.DataFrame) -> pd.DataFrame:
         """
         Aggregate GEX by strike price for market level analysis.
         
@@ -168,10 +171,10 @@ class GEXCalculator:
             
         return gex_data['weighted_gex'].sum()
     
-    def calculate_gex_profile(self, 
-                            options_data,
-                            underlying_price,
-                            price_range_pct = 0.20) :
+    def calculate_gex_profile(self,
+                            options_data: pd.DataFrame,
+                            underlying_price: float,
+                            price_range_pct: float = 0.20) -> Dict[str, Any]:
         """
         Calculate comprehensive GEX profile for market analysis.
         
@@ -180,7 +183,8 @@ class GEXCalculator:
             underlying_price: Current underlying price
             price_range_pct: Percentage range around current price to analyze
             
-        Returnsionary with GEX profile metrics
+        Returns:
+            Dictionary with GEX profile metrics
         """
         logger.info(f"Calculating comprehensive GEX profile for underlying at ${underlying_price:.2f}")
         
@@ -239,7 +243,7 @@ class GEXCalculator:
             'total_contracts': len(gex_data)
         }
     
-    def analyze_gex_regime(self, net_gex, underlying_price) :
+    def analyze_gex_regime(self, net_gex: float, underlying_price: float) -> Dict[str, Any]:
         """
         Determine market regime based on GEX levels.
         
@@ -247,7 +251,8 @@ class GEXCalculator:
             net_gex: Net gamma exposure
             underlying_price: Current underlying price
             
-        Returnsionary with regime analysis
+        Returns:
+            Dictionary with regime analysis
         """
         # Normalize GEX by price for regime classification
         normalized_gex = net_gex / (underlying_price ** 2) if underlying_price > 0 else 0
