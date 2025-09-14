@@ -12,24 +12,24 @@ class SimplePatternAnalyzer:
     Simple pattern analyzer for immediate use.
     Analyzes pattern outcomes and identifies high conviction setups.
     """
-    
+
     def __init__(self, db_path):
         """Initialize with database path."""
         self.db_path = db_path
-    
-    def analyze_patterns(self, symbol: str = 'SPY', min_samples: int = 2) :
+
+    def analyze_patterns(self, symbol: str = 'SPY', min_samples: int = 2):
         """
         Analyze all patterns for the given symbol.
-        
+
         Args:
             symbol: Symbol to analyze (default: SPY)
             min_samples: Minimum samples required for analysis
-            
+
         Returns:
             Dictionary with pattern analysis results
         """
         conn = sqlite3.connect(self.db_path)
-        
+
         # Core pattern analysis query
         query = '''
             WITH pattern_days AS (
@@ -70,47 +70,48 @@ class SimplePatternAnalyzer:
             HAVING COUNT(*) >= ?
             ORDER BY win_rate DESC, avg_return DESC
         '''
-        
+
         results_df = pd.read_sql(query, conn, params=[symbol, min_samples])
         conn.close()
-        
+
         # Convert to dictionary format
         analysis = {
             'symbol': symbol,
             'total_patterns': len(results_df),
             'patterns': {}
         }
-        
+
         for _, row in results_df.iterrows():
             pattern_name = row['pattern_name']
             analysis['patterns'][pattern_name] = {
                 'sample_size': int(row['sample_size']),
-                'win_rate': float(row['win_rate']) / 100.0,  # Convert to decimal
+                # Convert to decimal
+                'win_rate': float(row['win_rate']) / 100.0,
                 'avg_return': float(row['avg_return']),
                 'avg_confidence': float(row['avg_confidence']),
                 'max_return': float(row['max_return']),
                 'min_return': float(row['min_return']),
                 'return_magnitude': float(row['avg_return_magnitude'])
             }
-        
+
         return analysis
-    
-    def get_high_conviction_patterns(self, symbol: str = 'SPY', 
-                                   min_win_rate: float = 0.6, 
-                                   min_samples: int = 3) :
+
+    def get_high_conviction_patterns(self, symbol: str = 'SPY',
+                                     min_win_rate: float = 0.6,
+                                     min_samples: int = 3):
         """
         Identify high conviction trading setups.
-        
+
         Args:
             symbol: Symbol to analyze
             min_win_rate: Minimum win rate (0.6 = 60%)
             min_samples: Minimum sample size
-            
+
         Returns:
             List of high conviction patterns
         """
         analysis = self.analyze_patterns(symbol, min_samples)
-        
+
         high_conviction = []
         for pattern_name, stats in analysis['patterns'].items():
             if stats['win_rate'] >= min_win_rate and stats['sample_size'] >= min_samples:
@@ -120,19 +121,21 @@ class SimplePatternAnalyzer:
                     'avg_return': stats['avg_return'],
                     'sample_size': stats['sample_size'],
                     'confidence': stats['avg_confidence'],
-                    'conviction_score': stats['win_rate'] * (stats['sample_size'] / 10.0)  # Boost for more samples
+                    # Boost for more samples
+                    'conviction_score': stats['win_rate'] * (stats['sample_size'] / 10.0)
                 })
-        
+
         # Sort by conviction score
         high_conviction.sort(key=lambda x: x['conviction_score'], reverse=True)
         return high_conviction
-    
+
     def generate_pattern_report(self, symbol: str = 'SPY') -> str:
         """Generate a comprehensive pattern analysis report."""
-        
+
         analysis = self.analyze_patterns(symbol)
-        high_conviction = self.get_high_conviction_patterns(symbol, min_win_rate=0.5)
-        
+        high_conviction = self.get_high_conviction_patterns(
+            symbol, min_win_rate=0.5)
+
         report = f"""
 PATTERN PROBABILITY ANALYSIS REPORT
 Symbol: {symbol}
@@ -144,7 +147,7 @@ Total patterns analyzed: {analysis['total_patterns']}
 
 INDIVIDUAL PATTERN PERFORMANCE:
 """
-        
+
         for pattern_name, stats in analysis['patterns'].items():
             report += f"""
 {pattern_name.upper()}:
@@ -154,11 +157,11 @@ INDIVIDUAL PATTERN PERFORMANCE:
   Return range: {stats['min_return']:.2f}% to {stats['max_return']:.2f}%
   Average confidence: {stats['avg_confidence']:.1f}%
 """
-        
+
         report += f"""
 HIGH CONVICTION SETUPS (≥50% win rate):
 """
-        
+
         if high_conviction:
             for setup in high_conviction:
                 report += f"""
@@ -170,7 +173,7 @@ HIGH CONVICTION SETUPS (≥50% win rate):
 """
         else:
             report += "  No patterns meet high conviction criteria\n"
-        
+
         report += f"""
 STATISTICAL NOTES:
 - Minimum sample size for analysis: 2 occurrences
@@ -184,26 +187,5 @@ NEXT STEPS:
 3. Add regime-based pattern analysis
 4. Create LLM prompts based on pattern insights
 """
-        
+
         return report
-
-
-def test_pattern_analyzer():
-    """Test the pattern analyzer with current database."""
-    
-    # Use our best database
-    db_path = '.cache/test_gex_pipeline.db'
-    analyzer = SimplePatternAnalyzer(db_path)
-    
-    print("TESTING SIMPLE PATTERN ANALYZER")
-    print("=" * 50)
-    
-    # Generate full report
-    report = analyzer.generate_pattern_report('SPY')
-    print(report)
-    
-    return analyzer
-
-
-if __name__ == "__main__":
-    test_pattern_analyzer()

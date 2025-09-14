@@ -6,6 +6,7 @@ Creates data-driven prompts for pattern analysis with empirical evidence.
 
 import sys
 from pathlib import Path
+from typing import Dict, List
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -33,7 +34,7 @@ class StatisticalPromptGenerator:
             }
         }
 
-    def create_production_llm_prompt(self, date: str, gex_data: Dict,
+    def create_production_llm_prompt(self, date, gex_data: Dict,
                                      pattern_results: List[Dict],
                                      fed_context: Dict = None,
                                      trading_signal: Dict = None) -> str:

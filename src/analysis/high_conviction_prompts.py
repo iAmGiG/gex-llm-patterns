@@ -8,7 +8,7 @@ from typing import Dict, List
 
 class HighConvictionPromptGenerator:
     """Generates high-conviction LLM prompts based on statistical analysis."""
-    
+
     def __init__(self):
         # Statistical findings from our analysis
         self.pattern_insights = {
@@ -23,15 +23,15 @@ class HighConvictionPromptGenerator:
                 'key_insight': 'High win rate but negative avg return suggests timing/exit issues'
             }
         }
-    
+
     def generate_refined_trading_prompt(self, date, gex_data: Dict, patterns: List[Dict]) -> str:
         """
         Generate refined LLM prompt that addresses the statistical findings properly.
-        
+
         Focus: High win rate but negative expected return suggests the pattern 
         identifies direction correctly but exit timing needs refinement.
         """
-        
+
         prompt_lines = [
             f"STATISTICAL PATTERN ANALYSIS - {date}",
             "=" * 60,
@@ -45,16 +45,16 @@ class HighConvictionPromptGenerator:
             "",
             "📊 PATTERN DETECTION & STATISTICAL VALIDATION:",
         ]
-        
+
         high_conviction_patterns = []
-        
+
         for pattern in patterns:
             pattern_name = pattern.get('pattern_name', 'unknown').lower()
             confidence = pattern.get('confidence', 0)
-            
+
             if pattern_name in self.pattern_insights:
                 insights = self.pattern_insights[pattern_name]
-                
+
                 prompt_lines.extend([
                     f"",
                     f"🔍 {pattern_name.upper()} DETECTED:",
@@ -68,21 +68,21 @@ class HighConvictionPromptGenerator:
                     f"  → Pattern correctly identifies DIRECTION ({insights['win_rate']:.1f}% accuracy)",
                     f"  → EXIT TIMING needs refinement (negative avg return despite high win rate)",
                 ])
-                
+
                 if confidence >= 85:  # High conviction threshold
                     high_conviction_patterns.append({
                         'name': pattern_name,
                         'confidence': confidence,
                         'insights': insights
                     })
-        
+
         if high_conviction_patterns:
             prompt_lines.extend([
                 "",
                 "🎯 HIGH CONVICTION TRADING SETUP:",
                 "=" * 40,
             ])
-            
+
             for pattern_info in high_conviction_patterns:
                 insights = pattern_info['insights']
                 prompt_lines.extend([
@@ -92,7 +92,7 @@ class HighConvictionPromptGenerator:
                     "",
                     f"⚠️  CRITICAL ANALYSIS REQUIRED:",
                     f"1. DIRECTION: Pattern shows {insights['win_rate']:.1f}% win rate → directional bias reliable",
-                    f"2. MAGNITUDE: Average return {insights['avg_return']:.2f}% → small moves expected", 
+                    f"2. MAGNITUDE: Average return {insights['avg_return']:.2f}% → small moves expected",
                     f"3. RISK: Max loss observed: {insights['min_return']:.2f}%",
                     f"4. OPPORTUNITY: Max gain observed: +{insights['max_return']:.2f}%",
                     "",
@@ -104,7 +104,7 @@ class HighConvictionPromptGenerator:
                 "   Proceed with standard GEX regime analysis only.",
                 ""
             ])
-        
+
         prompt_lines.extend([
             "",
             "🧠 STRATEGIC ANALYSIS REQUEST:",
@@ -136,17 +136,17 @@ class HighConvictionPromptGenerator:
             "   Design a strategy that captures the 60% directional accuracy",
             "   while minimizing the impact of poor average returns.",
         ])
-        
+
         return "\n".join(prompt_lines)
-    
-    def generate_pattern_specific_rules(self, pattern_name) :
+
+    def generate_pattern_specific_rules(self, pattern_name):
         """Generate specific trading rules for a pattern based on statistical analysis."""
-        
+
         if pattern_name.lower() not in self.pattern_insights:
             return {}
-        
+
         insights = self.pattern_insights[pattern_name.lower()]
-        
+
         return {
             'pattern': pattern_name.upper(),
             'entry_rule': f"Enter when {pattern_name.upper()} confidence ≥ 85%",
@@ -159,10 +159,10 @@ class HighConvictionPromptGenerator:
             'risk_warning': f"Negative expected return ({insights['avg_return']:.2f}%) despite {insights['win_rate']:.1f}% win rate",
             'refinement_needed': "Exit strategy optimization critical for profitability"
         }
-    
+
     def create_llm_system_prompt(self) -> str:
         """Create system prompt for LLM with statistical context."""
-        
+
         return """You are a quantitative trading analyst specializing in gamma exposure (GEX) pattern analysis. 
 
 Your analysis is informed by statistical research showing:
@@ -185,48 +185,3 @@ ANALYSIS FRAMEWORK:
 4. Emphasize exit strategy refinement for pattern-based trades
 
 Always provide specific, actionable recommendations with clear risk parameters."""
-
-
-def test_high_conviction_prompts():
-    """Test the high conviction prompt generator."""
-    
-    generator = HighConvictionPromptGenerator()
-    
-    print("HIGH CONVICTION PROMPT GENERATOR TEST")
-    print("=" * 60)
-    
-    # Test refined trading prompt
-    sample_gex = {
-        'net_gex': -5386476,
-        'gex_regime': 'NEGATIVE_GAMMA_LOW',
-        'flip_point': 450.22,
-        'spot_price': 472.65
-    }
-    
-    sample_patterns = [{
-        'pattern_name': 'gamma_trap',
-        'confidence': 90.0
-    }]
-    
-    prompt = generator.generate_refined_trading_prompt('2024-01-15', sample_gex, sample_patterns)
-    print("REFINED TRADING PROMPT:")
-    print("-" * 30)
-    print(prompt)
-    
-    print("\n" + "=" * 60)
-    print("PATTERN-SPECIFIC RULES:")
-    print("-" * 30)
-    rules = generator.generate_pattern_specific_rules('gamma_trap')
-    for key, value in rules.items():
-        print(f"{key}: {value}")
-    
-    print("\n" + "=" * 60)
-    print("SYSTEM PROMPT:")
-    print("-" * 30)
-    print(generator.create_llm_system_prompt())
-    
-    return generator
-
-
-if __name__ == "__main__":
-    test_high_conviction_prompts()

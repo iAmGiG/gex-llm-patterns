@@ -11,8 +11,15 @@ Advanced confidence scoring system for pattern predictions that combines:
 
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+import datetime
 from typing import Dict, List, Optional, Tuple
+
+# Use date_utils instead of datetime (in addition to existing import)
+from src.utils.date_utils import (
+    today_str,
+    add_business_days,
+    calculate_duration_minutes
+)
 import logging
 from pathlib import Path
 

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+from typing import List, Dict
 
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import RoundRobinGroupChat
@@ -25,13 +26,13 @@ class ModelType(Enum):
 @dataclass
 class PatternAnalysisResult:
     """Structured result from LLM pattern analysis."""
-    pattern_id
-    mechanical_explanation
-    failure_modes
-    trading_implications
-    confidence_score
-    statistical_significance
-    cost_analysis
+    pattern_id: str
+    mechanical_explanation: str
+    failure_modes: List[str]
+    trading_implications: Dict
+    confidence_score: float
+    statistical_significance: float
+    cost_analysis: Dict
 
 
 class CostOptimizer:

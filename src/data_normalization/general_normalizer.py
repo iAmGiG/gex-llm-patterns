@@ -3,8 +3,16 @@ Data normalization utilities for standardizing data from different sources into 
 """
 
 import pandas as pd
-from datetime import datetime
 import re
+import datetime
+
+from src.utils.date_utils import (
+    today_str,
+    now_timestamp,
+    parse_date_string,
+    add_business_days,
+    calculate_duration_minutes
+)
 
 
 # Define common schemas
@@ -47,31 +55,28 @@ ECONOMIC_SCHEMA = {
 }
 
 
-def create_empty_news_df() :
+def create_empty_news_df():
     """Create an empty DataFrame with the standard news schema."""
-    df = pd.DataFrame(
-        {col(dtype=dtype) for col, dtype in NEWS_SCHEMA.items()}
-    )
+    df = pd.DataFrame({col: pd.Series(dtype=dtype)
+                      for col, dtype in NEWS_SCHEMA.items()})
     return df
 
 
-def create_empty_market_df() :
+def create_empty_market_df():
     """Create an empty DataFrame with the standard market schema."""
-    df = pd.DataFrame(
-        {col(dtype=dtype) for col, dtype in MARKET_SCHEMA.items()}
-    )
+    df = pd.DataFrame({col: pd.Series(dtype=dtype)
+                      for col, dtype in MARKET_SCHEMA.items()})
     return df
 
 
-def create_empty_economic_df() :
+def create_empty_economic_df():
     """Create an empty DataFrame with the standard economic data schema."""
-    df = pd.DataFrame(
-        {col(dtype=dtype) for col, dtype in ECONOMIC_SCHEMA.items()}
-    )
+    df = pd.DataFrame({col: pd.Series(dtype=dtype)
+                      for col, dtype in ECONOMIC_SCHEMA.items()})
     return df
 
 
-def standardize_indicator_columns(df) :
+def standardize_indicator_columns(df):
     """Rename indicator columns to `INDICATOR_param` format."""
     rename_map = {}
     pattern = re.compile(r"([A-Za-z]+)(\d+)$")
@@ -84,7 +89,7 @@ def standardize_indicator_columns(df) :
     return df
 
 
-def normalize_newsapi_data(raw_df) :
+def normalize_newsapi_data(raw_df):
     """
     Normalize data from NewsHeadlineTool to the common news schema.
 
@@ -114,7 +119,7 @@ def normalize_newsapi_data(raw_df) :
     return normalized_df
 
 
-def normalize_finnhub_data(raw_data: list) :
+def normalize_finnhub_data(raw_data: list):
     """
     Normalize data from FinnHubTool to the common news schema.
 
@@ -135,7 +140,7 @@ def normalize_finnhub_data(raw_data: list) :
         if timestamp:
             # Convert Unix timestamp to datetime if needed
             if isinstance(timestamp, int):
-                timestamp = datetime.fromtimestamp(timestamp)
+                timestamp = datetime.datetime.fromtimestamp(timestamp)
 
         entry = {
             "timestamp": timestamp,
@@ -152,7 +157,7 @@ def normalize_finnhub_data(raw_data: list) :
     return pd.DataFrame(normalized_data)
 
 
-def normalize_yahoo_finance_data(raw_df, symbol) :
+def normalize_yahoo_finance_data(raw_df, symbol):
     """
     Normalize data from YahooFinanceTool to the common market schema.
 
@@ -182,7 +187,7 @@ def normalize_yahoo_finance_data(raw_df, symbol) :
     return normalized_df
 
 
-def normalize_alpha_vantage_data(raw_df, symbol) :
+def normalize_alpha_vantage_data(raw_df, symbol):
     """
     Normalize data from AlphaVantageTool to the common market schema.
 
@@ -254,7 +259,7 @@ def normalize_alpha_vantage_data(raw_df, symbol) :
 
 def normalize_market_data_for_sentiment(
     market_df,
-) :
+):
     """
     Convert market data to a format usable for sentiment analysis or skip it.
     This function either:
@@ -275,8 +280,8 @@ def normalize_market_data_for_sentiment(
 
 
 def normalize_fred_data(
-    raw_df, indicator = "Unknown"
-) :
+    raw_df, indicator="Unknown"
+):
     """
     Normalize data from FRED to the common economic schema.
 
@@ -339,7 +344,7 @@ def normalize_fred_data(
 
 def normalize_data_for_sentiment(
     df, data_type, **kwargs
-) :
+):
     """
     Main entry point for normalizing any data source for sentiment analysis.
 

@@ -227,7 +227,8 @@ class QueryParser:
             if match:
                 anchor = match.group(1).replace(" ", "_")
         if not anchor:
-            match = re.search(r"(?:from|since)\s+(\d{4}-\d{2}-\d{2})", message_lower)
+            match = re.search(
+                r"(?:from|since)\s+(\d{4}-\d{2}-\d{2})", message_lower)
             if match:
                 anchor = match.group(1)
 

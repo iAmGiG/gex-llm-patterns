@@ -8,7 +8,6 @@ import logging
 import sys
 from pathlib import Path
 from typing import Dict, List
-import pandas as pd
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -17,21 +16,21 @@ sys.path.append(str(Path(__file__).parent.parent))
 logger = logging.getLogger(__name__)
 
 
-def calculate_kelly_position(win_rate: float, avg_win: float, avg_loss: float) -> float:
+def calculate_kelly_position(win_rate, avg_win, avg_loss) -> float:
     """Calculate optimal position size using Kelly Criterion."""
     # Kelly % = (p*b - q) / b
     # p = win probability, q = loss probability, b = win/loss ratio
     p = win_rate
     q = 1 - win_rate
     b = abs(avg_win / avg_loss)
-    
+
     kelly = (p * b - q) / b
-    
+
     # Use fractional Kelly (25%) for safety
     return max(0, min(0.25, kelly * 0.25))
 
 
-def track_mae(trades_df) -> Dict:
+def track_mae(trades_df) :
     """Track how far trades go against you before winning (Maximum Adverse Excursion)."""
     mae_stats = {
         'avg_mae_winners': 0.0,
@@ -39,30 +38,34 @@ def track_mae(trades_df) -> Dict:
         'optimal_stop_loss': 0.0,
         'mae_analysis': []
     }
-    
+
     if trades_df.empty:
         return mae_stats
-    
+
     winners = trades_df[trades_df['final_return'] > 0]
     losers = trades_df[trades_df['final_return'] <= 0]
-    
+
     if not winners.empty:
         # For winners, track how much they went against before winning
         mae_stats['avg_mae_winners'] = winners['max_drawdown_pct'].mean()
-        
+
     if not losers.empty:
         # For losers, track maximum adverse movement
         mae_stats['avg_mae_losers'] = abs(losers['max_drawdown_pct'].mean())
-    
+
     # Suggest optimal stop loss based on MAE analysis
     if not winners.empty:
         # Set stop loss at 90th percentile of winner MAE
-        mae_stats['optimal_stop_loss'] = winners['max_drawdown_pct'].quantile(0.9)
-    
-    mae_stats['mae_analysis'].append(f"Winners averaged {mae_stats['avg_mae_winners']:.1%} drawdown before winning")
-    mae_stats['mae_analysis'].append(f"Losers averaged {mae_stats['avg_mae_losers']:.1%} adverse movement")
-    mae_stats['mae_analysis'].append(f"Optimal stop loss: {mae_stats['optimal_stop_loss']:.1%}")
-    
+        mae_stats['optimal_stop_loss'] = winners['max_drawdown_pct'].quantile(
+            0.9)
+
+    mae_stats['mae_analysis'].append(
+        f"Winners averaged {mae_stats['avg_mae_winners']:.1%} drawdown before winning")
+    mae_stats['mae_analysis'].append(
+        f"Losers averaged {mae_stats['avg_mae_losers']:.1%} adverse movement")
+    mae_stats['mae_analysis'].append(
+        f"Optimal stop loss: {mae_stats['optimal_stop_loss']:.1%}")
+
     return mae_stats
 
 
@@ -70,19 +73,24 @@ def track_mae(trades_df) -> Dict:
 PRODUCTION_RULES = {
     'gamma_trap_contrarian': {
         'entry_conditions': [
-            'gamma_trap_confidence >= 75',    # Confidence requirement (lowered for small sample)
+            # Confidence requirement (lowered for small sample)
+            'gamma_trap_confidence >= 75',
             'net_gex < 0',                    # Negative gamma regime (optimal)
             'no_fomc_today',                  # Avoid event days
             'distance_to_flip < 0.05'         # Within 5% of flip point
         ],
         'trade_direction': 'OPPOSITE_TO_PATTERN',  # Contrarian signal
-        'position_size': 0.015,                    # 1.5% of portfolio (reduced due to small sample)
-        'stop_loss': 0.01,                         # 1% stop loss (reduced risk)
-        'profit_target': 0.015,                        # 1.5% profit target (improved reward)
+        # 1.5% of portfolio (reduced due to small sample)
+        'position_size': 0.015,
+        # 1% stop loss (reduced risk)
+        'stop_loss': 0.01,
+        # 1.5% profit target (improved reward)
+        'profit_target': 0.015,
         'max_holding_period': 2,                   # Days
         'expected_stats': {
             'win_rate': 0.571,                     # 57.1% empirically validated
-            'avg_return': 0.00427,                 # 0.427% per trade (new EV calculation)
+            # 0.427% per trade (new EV calculation)
+            'avg_return': 0.00427,
             'sharpe': 0.42,                        # From baseline comparison
             'max_drawdown': -0.024                 # -2.4% historical max
         },
@@ -106,7 +114,7 @@ class ValidatedTradingEngine:
 
     def evaluate_gamma_trap_contrarian(self, gex_data: Dict, market_data: Dict,
                                        fed_context: Dict = None,
-                                       pattern_confidence: float = 0) -> Dict:
+                                       pattern_confidence: float = 0) :
         """
         Evaluate GAMMA_TRAP contrarian trading rule.
 
@@ -195,7 +203,7 @@ class ValidatedTradingEngine:
 
         return decision
 
-    def calculate_position_size(self, account_value: float, rule_name: str,
+    def calculate_position_size(self, account_value, rule_name,
                                 volatility_adjustment: float = 1.0) -> float:
         """Calculate position size based on rule and account value."""
 
@@ -211,25 +219,25 @@ class ValidatedTradingEngine:
         position_size_dollars = account_value * adjusted_size
 
         return position_size_dollars
-    
-    def calculate_kelly_position_size(self, account_value: float, rule_name: str) -> float:
+
+    def calculate_kelly_position_size(self, account_value, rule_name) -> float:
         """Calculate position size using Kelly Criterion."""
         if rule_name not in self.rules:
             return 0.0
-        
+
         rule = self.rules[rule_name]
         stats = rule['expected_stats']
-        
+
         win_rate = stats['win_rate']
         avg_win = rule['profit_target']
         avg_loss = rule['stop_loss']
-        
+
         kelly_fraction = calculate_kelly_position(win_rate, avg_win, avg_loss)
-        
+
         # Return Kelly position size in dollars
         return account_value * kelly_fraction
 
-    def get_risk_parameters(self, rule_name: str) -> Dict:
+    def get_risk_parameters(self, rule_name) :
         """Get risk management parameters for a rule."""
 
         if rule_name not in self.rules:
@@ -246,7 +254,7 @@ class ValidatedTradingEngine:
             'expected_return': rule['expected_stats']['avg_return'] * 100
         }
 
-    def validate_rule_performance(self, rule_name: str) -> Dict:
+    def validate_rule_performance(self, rule_name) :
         """Validate current rule performance vs statistical expectations."""
 
         if rule_name not in self.rules:
@@ -272,9 +280,9 @@ class ValidatedTradingEngine:
         }
 
 
-def create_production_trading_signal(date: str, gex_data: Dict, market_data: Dict,
+def create_production_trading_signal(date, gex_data: Dict, market_data: Dict,
                                      pattern_results: List[Dict],
-                                     fed_context: Dict = None) -> Dict:
+                                     fed_context: Dict = None) :
     """
     Create production trading signal with statistical validation.
 

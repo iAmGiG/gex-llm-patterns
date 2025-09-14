@@ -5,8 +5,19 @@ Detects and tokenizes market events and special conditions.
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 import logging
+
+# Use date_utils instead of datetime
+from src.utils.date_utils import (
+    today_str,
+    now_timestamp,
+    parse_date_string,
+    add_business_days,
+    next_business_day,
+    date_range_trading_days,
+    calculate_duration_minutes
+)
+import datetime
 
 from .vocabulary import EventToken, ContextToken, TokenVocabulary
 
@@ -196,7 +207,7 @@ class EventTokenizer:
         
         return events
     
-    def generate_context_tokens(self, date: datetime) :
+    def generate_context_tokens(self, date: datetime.datetime) :
         """
         Generate context tokens for a specific date.
         
@@ -238,8 +249,8 @@ class EventTokenizer:
     
     def tokenize_events_timeline(self, 
                                  events,
-                                 start_date: datetime,
-                                 end_date: datetime) :
+                                 start_date: datetime.datetime,
+                                 end_date: datetime.datetime) :
         """
         Create timeline of event tokens.
         
@@ -279,13 +290,13 @@ class EventTokenizer:
         """Generate standard monthly options expiration dates."""
         opex_dates = set()
         
-        current_year = datetime.now().year
+        current_year = datetime.datetime.now().year
         for year in range(current_year - years, current_year + 2):
             for month in range(1, 13):
                 # Find third Friday of month
-                first_day = datetime(year, month, 1)
-                first_friday = first_day + timedelta(days=(4 - first_day.weekday()) % 7)
-                third_friday = first_friday + timedelta(weeks=2)
+                first_day = datetime.datetime(year, month, 1)
+                first_friday = first_day + datetime.timedelta(days=(4 - first_day.weekday()) % 7)
+                third_friday = first_friday + datetime.timedelta(weeks=2)
                 opex_dates.add(third_friday)
         
         return opex_dates
@@ -295,16 +306,16 @@ class EventTokenizer:
         # Approximate FOMC dates (8 per year, roughly every 6 weeks)
         fomc_dates = set()
         
-        current_date = datetime(2020, 1, 29)  # Starting point
-        end_date = datetime.now() + timedelta(days=365)
-        
+        current_date = datetime.datetime(2020, 1, 29)  # Starting point
+        end_date = datetime.datetime.now() + datetime.timedelta(days=365)
+
         while current_date < end_date:
             fomc_dates.add(current_date)
-            current_date += timedelta(weeks=6)
+            current_date += datetime.timedelta(weeks=6)
         
         return fomc_dates
     
-    def _days_to_next_opex(self, date: datetime) -> int:
+    def _days_to_next_opex(self, date: datetime.datetime) -> int:
         """Calculate days to next options expiration."""
         future_opex = [d for d in self.opex_dates if d >= date]
         
@@ -314,7 +325,7 @@ class EventTokenizer:
         
         return 30  # Default if no future date found
     
-    def _days_since_last_fomc(self, date: datetime) -> int:
+    def _days_since_last_fomc(self, date: datetime.datetime) -> int:
         """Calculate days since last FOMC meeting."""
         past_fomc = [d for d in self.fomc_dates if d <= date]
         
@@ -324,9 +335,9 @@ class EventTokenizer:
         
         return 30  # Default if no past date found
     
-    def validate_event_detection(self, 
+    def validate_event_detection(self,
                                 events,
-                                known_events] = None) :
+                                known_events = None) :
         """
         Validate event detection accuracy.
         

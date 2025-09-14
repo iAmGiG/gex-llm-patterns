@@ -5,8 +5,17 @@ Converts continuous GEX values into discrete tokens based on rolling percentiles
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 import logging
+
+# Use date_utils instead of datetime
+from src.utils.date_utils import (
+    today_str,
+    now_timestamp,
+    parse_date_string,
+    add_business_days,
+    calculate_duration_minutes
+)
+import datetime
 
 from .vocabulary import GEXToken, TokenVocabulary
 
@@ -39,7 +48,7 @@ class GEXTokenizer:
     def tokenize_single(self, 
                        gex_value,
                        historical_gex,
-                       date= None) -> str:
+                       date=None) -> str:
         """
         Tokenize a single GEX value.
         
@@ -78,7 +87,7 @@ class GEXTokenizer:
         for date, gex_value in gex_series.items():
             if rolling_window:
                 # Get historical data up to this date
-                lookback_start = date - timedelta(days=self.lookback_days)
+                lookback_start = date - datetime.timedelta(days=self.lookback_days)
                 historical = gex_series[lookback_start:date]
             else:
                 # Use entire series for percentile calculation
@@ -121,7 +130,7 @@ class GEXTokenizer:
     def _calculate_percentile(self, 
                              value,
                              historical,
-                             date= None) -> float:
+                             date=None) -> float:
         """
         Calculate percentile of value in historical distribution.
         
@@ -223,7 +232,7 @@ class GEXTokenizer:
         self._percentile_cache[cache_key] = {
             p: np.percentile(historical.dropna(), p) for p in percentiles
         }
-        self._last_update = datetime.now()
+        self._last_update = datetime.datetime.now()
     
     def get_token_statistics(self, tokens) :
         """
