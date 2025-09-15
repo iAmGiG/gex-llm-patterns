@@ -453,6 +453,32 @@ def next_business_day(date_str) -> str:
     return add_business_days(date_str, 1)
 
 
+def is_opex_week(date) -> bool:
+    """
+    Check if date is in OPEX week (third Friday of the month).
+
+    Args:
+        date: Date as string (YYYY-MM-DD) or datetime object
+
+    Returns:
+        True if date is in OPEX week
+    """
+    # Ensure date is a datetime object
+    if isinstance(date, str):
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+
+    # Third Friday of the month
+    first_day = date.replace(day=1)
+    first_friday = first_day + datetime.timedelta(days=(4 - first_day.weekday()) % 7)
+    third_friday = first_friday + datetime.timedelta(weeks=2)
+
+    # Check if within OPEX week (Mon-Fri of third Friday week)
+    week_start = third_friday - datetime.timedelta(days=third_friday.weekday())
+    week_end = week_start + datetime.timedelta(days=4)
+
+    return week_start <= date <= week_end
+
+
 def is_business_day(date_str) -> bool:
     """
     Check if a date is a business day (Monday-Friday, excluding holidays).

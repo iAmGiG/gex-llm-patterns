@@ -14,7 +14,9 @@ from src.utils.date_utils import (
     get_default_date_range,
     parse_date_string,
     is_business_day,
-    date_range_trading_days
+    date_range_trading_days,
+    is_opex_week,
+    add_business_days
 )
 from src.cache.unified_cache import UnifiedCacheManager
 from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
@@ -97,19 +99,27 @@ class MarketMechanicsAgent:
             - supporting_evidence: Data backing the interpretation
         """
         try:
+            # Convert date to datetime if it's a string
+            if isinstance(date, str):
+                date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
+                date_str = date
+            else:
+                date_obj = date
+                date_str = date.strftime('%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
+
             # 1. Get data
-            logger.info(f"Starting daily analysis for {date}")
-            options_data = self._fetch_options_data(date)
+            logger.info(f"Starting daily analysis for {date_str}")
+            options_data = self._fetch_options_data(date_str)
             if options_data is None or options_data.empty:
-                logger.warning(f"No options data for {date}")
+                logger.warning(f"No options data for {date_str}")
                 return self._empty_analysis()
 
             # 2. Calculate GEX metrics
-            gex_metrics = self._calculate_gex_metrics(options_data, date)
+            gex_metrics = self._calculate_gex_metrics(options_data, date_str)
 
             # 3. Build comprehensive context
             context = self._build_market_context(
-                date, gex_metrics, options_data)
+                date_obj, gex_metrics, options_data)
 
             # 4. Detect patterns
             patterns = self._detect_mechanics_patterns(context)
@@ -216,12 +226,15 @@ class MarketMechanicsAgent:
     def _describe_price_action(self, date) -> Dict:
         """Describe recent price action patterns."""
         try:
+            # Ensure date is a datetime object
+            if isinstance(date, str):
+                date = datetime.datetime.strptime(date, '%Y-%m-%d')
+
             # Get last 5 days of price data
             price_data = []
             for i in range(5):
                 check_date = date - datetime.timedelta(days=i)
-                check_date_str = check_date.strftime(
-                    '%Y-%m-%d') if hasattr(check_date, 'strftime') else str(check_date)
+                check_date_str = check_date.strftime('%Y-%m-%d')
                 market_data = self.cache.get_market_data(
                     self.symbol, check_date_str)
                 if market_data is not None and not market_data.empty:
@@ -735,18 +748,8 @@ class MarketMechanicsAgent:
 
     def _is_opex_week(self, date) -> bool:
         """Check if date is in OPEX week."""
-        # Third Friday of the month
-        first_day = date.replace(day=1)
-        first_friday = first_day + \
-            datetime.timedelta(days=(4 - first_day.weekday()) % 7)
-        third_friday = first_friday + datetime.timedelta(weeks=2)
-
-        # Check if within OPEX week (Mon-Fri of third Friday week)
-        week_start = third_friday - \
-            datetime.timedelta(days=third_friday.weekday())
-        week_end = week_start + datetime.timedelta(days=4)
-
-        return week_start <= date <= week_end
+        # Use the date_utils function
+        return is_opex_week(date)
 
     def _days_to_next_fomc(self, date) -> int:
         """Calculate days to next FOMC meeting."""
