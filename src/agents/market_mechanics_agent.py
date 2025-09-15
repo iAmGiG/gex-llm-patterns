@@ -46,7 +46,18 @@ class MarketMechanicsAgent:
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
         self.prompt_builder = MechanicsPromptBuilder()
-        self.llm = llm_provider
+
+        # Auto-initialize LLM if not provided
+        if llm_provider is None:
+            try:
+                from src.llm.market_mechanics_llm import MarketMechanicsLLM
+                self.llm = MarketMechanicsLLM()
+                logger.info("Initialized OpenAI LLM for mechanics interpretation")
+            except Exception as e:
+                logger.warning(f"Could not initialize LLM: {e}")
+                self.llm = None
+        else:
+            self.llm = llm_provider
 
         # Market mechanics patterns library
         self.mechanics_patterns = {
@@ -373,13 +384,17 @@ class MarketMechanicsAgent:
         prompt = self._build_mechanics_prompt(context, patterns)
 
         try:
-            # Get LLM interpretation
-            response = self.llm.generate(prompt)
-
-            # Parse LLM response
-            interpretation = self._parse_llm_response(response)
-
-            return interpretation
+            # Check if our LLM has the interpret_mechanics method (MarketMechanicsLLM)
+            if hasattr(self.llm, 'interpret_mechanics'):
+                # Get structured interpretation directly
+                interpretation = self.llm.interpret_mechanics(prompt)
+                return interpretation
+            else:
+                # Fall back to generate method for other LLMs
+                response = self.llm.generate(prompt)
+                # Parse LLM response
+                interpretation = self._parse_llm_response(response)
+                return interpretation
 
         except Exception as e:
             logger.error(f"LLM interpretation failed: {e}")
