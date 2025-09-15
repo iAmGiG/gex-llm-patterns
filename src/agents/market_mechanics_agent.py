@@ -24,6 +24,14 @@ from src.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 import datetime
 
+# Import autogen_tools at module level with fallback
+try:
+    from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
+    AUTOGEN_TOOLS_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"AutoGen tools not available: {e}")
+    AUTOGEN_TOOLS_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -99,6 +107,43 @@ class MarketMechanicsAgent:
             }
         }
 
+    def _normalize_date(self, date) -> tuple[datetime.datetime, str]:
+        """Normalize date input to (datetime_obj, date_string) tuple."""
+        if isinstance(date, str):
+            try:
+                date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
+                date_str = date
+            except ValueError:
+                # Try parsing other common formats
+                try:
+                    date_obj = pd.to_datetime(date).to_pydatetime()
+                    date_str = date_obj.strftime('%Y-%m-%d')
+                except Exception:
+                    raise ValueError(f"Unable to parse date: {date}")
+        elif hasattr(date, 'strftime'):
+            date_obj = date
+            date_str = date.strftime('%Y-%m-%d')
+        elif hasattr(date, 'to_pydatetime'):
+            date_obj = date.to_pydatetime()
+            date_str = date_obj.strftime('%Y-%m-%d')
+        else:
+            raise ValueError(f"Unsupported date type: {type(date)}")
+
+        return date_obj, date_str
+
+    def _normalize_gex_results(self, gex_profile: Dict, spot_price: float) -> Dict:
+        """Normalize GEX results to consistent structure regardless of source."""
+        return {
+            'net_gex': gex_profile.get('net_gex', 0),
+            'flip_point': gex_profile.get('flip_point', spot_price),
+            'spot_price': spot_price,
+            'gex_by_strike': gex_profile.get('gex_by_strike', {}),
+            # Ensure these fields exist for downstream compatibility
+            'total_gamma': gex_profile.get('total_gamma', 0),
+            'gamma_concentration': gex_profile.get('gamma_concentration', {}),
+            'max_strike': gex_profile.get('max_strike', spot_price)
+        }
+
     def daily_analysis(self, date) -> Dict:
         """
         Perform complete daily market mechanics analysis.
@@ -111,13 +156,8 @@ class MarketMechanicsAgent:
             - supporting_evidence: Data backing the interpretation
         """
         try:
-            # Convert date to datetime if it's a string
-            if isinstance(date, str):
-                date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
-                date_str = date
-            else:
-                date_obj = date
-                date_str = date.strftime('%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
+            # Normalize date input
+            date_obj, date_str = self._normalize_date(date)
 
             # 1. Get data
             logger.info(f"Starting daily analysis for {date_str}")
@@ -161,41 +201,109 @@ class MarketMechanicsAgent:
             return self._empty_analysis()
 
     def _fetch_options_data(self, date) -> Optional[pd.DataFrame]:
-        """Fetch options data from cache."""
-        # Convert date to string format expected by cache
-        if hasattr(date, 'strftime'):
-            date_str = date.strftime('%Y-%m-%d')
-        else:
-            date_str = str(date)
-        return self.cache.get_options_data(self.symbol, date_str)
+        """Fetch options data using autogen_tools for better caching."""
+        if not AUTOGEN_TOOLS_AVAILABLE:
+            # Fallback to direct cache access
+            _, date_str = self._normalize_date(date)
+            return self.cache.get_options_data(self.symbol, date_str)
+
+        # Convert date to string format
+        _, date_str = self._normalize_date(date)
+
+        # Use autogen tool which handles cache → API → sample data fallback
+        try:
+            result = fetch_options_data(symbol=self.symbol, trading_date=date_str, use_cache=True)
+
+            if result['status'] == 'success':
+                logger.info(f"Fetched options data from {result['source']} for {self.symbol} {date_str}")
+                return result['data']
+            else:
+                logger.error(f"AutoGen fetch failed: {result.get('message', 'Unknown error')}")
+                # Fallback to direct cache access
+                return self.cache.get_options_data(self.symbol, date_str)
+
+        except (ConnectionError, TimeoutError) as e:
+            logger.warning(f"AutoGen API connection issue: {e}, falling back to cache")
+            return self.cache.get_options_data(self.symbol, date_str)
+        except Exception as e:
+            logger.error(f"AutoGen tools error: {e}, falling back to cache")
+            return self.cache.get_options_data(self.symbol, date_str)
 
     def _calculate_gex_metrics(self, options_data: pd.DataFrame, date) -> Dict:
-        """Calculate comprehensive GEX metrics."""
+        """Calculate comprehensive GEX metrics using autogen_tools."""
         try:
-            # Get spot price
-            date_str = date.strftime(
-                '%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
-            market_data = self.cache.get_market_data(self.symbol, date_str)
-            if market_data is None or market_data.empty:
-                spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
+
+            # Convert date to string format
+            _, date_str = self._normalize_date(date)
+
+            # Get market data for spot price using autogen tools
+            if AUTOGEN_TOOLS_AVAILABLE:
+                try:
+                    market_result = fetch_market_data(symbol=self.symbol, end_date=date_str, use_cache=True)
+
+                    if market_result['status'] == 'success':
+                        market_data = market_result['data']
+                        close_col = 'close' if 'close' in market_data.columns else 'Close'
+                        spot_price = market_data[close_col].iloc[-1]
+                    else:
+                        # Fallback to options data spot price
+                        spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
+
+                except (ConnectionError, TimeoutError) as e:
+                    logger.warning(f"AutoGen market data API issue: {e}, using options data fallback")
+                    spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
+                except Exception as e:
+                    logger.error(f"AutoGen market data error: {e}, using options data fallback")
+                    spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
             else:
-                # Handle both lowercase and capitalized column names
-                close_col = 'close' if 'close' in market_data.columns else 'Close'
-                spot_price = market_data[close_col].iloc[-1]
+                # Direct fallback when AutoGen not available
+                spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
 
-            # Calculate GEX using the correct method
-            gex_profile = self.gex_calculator.calculate_gex_profile(
-                options_data=options_data,
-                underlying_price=spot_price
-            )
+            # Use autogen tool for GEX calculation which handles caching
+            if AUTOGEN_TOOLS_AVAILABLE:
+                try:
+                    gex_result = calculate_gamma_exposure(
+                        symbol=self.symbol,
+                        trading_date=date_str,
+                        spot_price=spot_price,
+                        use_cache=True
+                    )
 
-            # Extract key metrics for compatibility
-            gex_results = {
-                'net_gex': gex_profile.get('net_gex', 0),
-                'flip_point': gex_profile.get('flip_point', spot_price),
-                'spot_price': spot_price,
-                'gex_by_strike': gex_profile.get('gex_by_strike', {})
-            }
+                    if gex_result['status'] == 'success':
+                        gex_metrics = gex_result['metrics']
+                        logger.info(f"GEX calculation via autogen_tools: cache_hit={gex_result.get('cache_hit', False)}")
+
+                        # Convert to expected format
+                        gex_profile = {
+                            'net_gex': gex_metrics.get('net_gex', 0),
+                            'flip_point': gex_metrics.get('flip_point', spot_price),
+                            'spot_price': spot_price,
+                            'gex_by_strike': gex_metrics.get('gex_by_strike', {})
+                        }
+                    else:
+                        raise ValueError(f"AutoGen GEX calculation failed: {gex_result.get('message', 'Unknown error')}")
+
+                except (ConnectionError, TimeoutError) as e:
+                    logger.warning(f"AutoGen GEX API issue: {e}, falling back to direct calculation")
+                    gex_profile = self.gex_calculator.calculate_gex_profile(
+                        options_data=options_data,
+                        underlying_price=spot_price
+                    )
+                except Exception as e:
+                    logger.error(f"AutoGen GEX calculation error: {e}, falling back to direct calculation")
+                    gex_profile = self.gex_calculator.calculate_gex_profile(
+                        options_data=options_data,
+                        underlying_price=spot_price
+                    )
+            else:
+                # Direct calculation when AutoGen not available
+                gex_profile = self.gex_calculator.calculate_gex_profile(
+                    options_data=options_data,
+                    underlying_price=spot_price
+                )
+
+            # Extract key metrics for compatibility - ensure consistent structure
+            gex_results = self._normalize_gex_results(gex_profile, spot_price)
 
             # Add regime classification
             net_gex = gex_results.get('net_gex', 0)
@@ -385,21 +493,44 @@ class MarketMechanicsAgent:
         prompt = self._build_mechanics_prompt(context, patterns)
 
         try:
-            # Check if our LLM has the interpret_mechanics method (MarketMechanicsLLM)
-            if hasattr(self.llm, 'interpret_mechanics'):
-                # Get structured interpretation directly
-                interpretation = self.llm.interpret_mechanics(prompt)
-                return interpretation
-            else:
-                # Fall back to generate method for other LLMs
-                response = self.llm.generate(prompt)
-                # Parse LLM response
-                interpretation = self._parse_llm_response(response)
-                return interpretation
+            # Use duck typing with proper error handling
+            interpretation = self._invoke_llm_safely(prompt)
+            return interpretation
 
         except Exception as e:
             logger.error(f"LLM interpretation failed: {e}")
             return self._rule_based_interpretation(patterns)
+
+    def _invoke_llm_safely(self, prompt: str) -> Dict:
+        """Safely invoke LLM with proper interface detection."""
+        # Try structured interpretation method first (preferred)
+        try:
+            if callable(getattr(self.llm, 'interpret_mechanics', None)):
+                return self.llm.interpret_mechanics(prompt)
+        except (AttributeError, TypeError):
+            pass
+
+        # Try AutoGen-style interpretation
+        try:
+            if callable(getattr(self.llm, 'analyze_market_mechanics', None)):
+                return self.llm.analyze_market_mechanics(prompt)
+        except (AttributeError, TypeError):
+            pass
+
+        # Fall back to generic generate method
+        try:
+            if callable(getattr(self.llm, 'generate', None)):
+                response = self.llm.generate(prompt)
+                return self._parse_llm_response(response)
+        except (AttributeError, TypeError):
+            pass
+
+        # Last resort: try calling the object directly
+        try:
+            response = self.llm(prompt)
+            return self._parse_llm_response(response)
+        except (AttributeError, TypeError, Exception):
+            raise ValueError(f"LLM object {type(self.llm)} does not implement any recognized interface")
 
     def _rule_based_interpretation(self, patterns: List[Dict]) -> Dict:
         """Fallback rule-based interpretation when LLM unavailable."""

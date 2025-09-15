@@ -373,9 +373,10 @@ def add_business_days(date_str, days) -> str:
 def parse_date_string(date_str) -> datetime.datetime:
     """
     Parse various date string formats to datetime object.
+    Supports both real dates and obfuscated dates from data obfuscation system.
 
     Args:
-        date_str: Date string in various formats
+        date_str: Date string in various formats, including obfuscated "Day T+N" format
 
     Returns:
         datetime.datetime object
@@ -383,6 +384,30 @@ def parse_date_string(date_str) -> datetime.datetime:
     Raises:
         ValueError: If date string cannot be parsed
     """
+    # Handle obfuscated date format (e.g., "Day T+0", "Day T+5", "Day T-2")
+    if isinstance(date_str, str) and date_str.startswith("Day T"):
+        try:
+            # Extract the offset from "Day T+N" or "Day T-N" format
+            if "T+" in date_str:
+                offset_str = date_str.split("T+")[1]
+                offset = int(offset_str)
+            elif "T-" in date_str:
+                offset_str = date_str.split("T-")[1]
+                offset = -int(offset_str)
+            else:  # "Day T+0" case
+                offset = 0
+
+            # Use a base date for obfuscated dates (arbitrary but consistent)
+            # This allows date arithmetic to work properly
+            base_date = datetime.datetime(2020, 1, 1)  # Arbitrary base date
+            result_date = base_date + datetime.timedelta(days=offset)
+
+            return result_date
+
+        except (ValueError, IndexError) as e:
+            raise ValueError(f"Unable to parse obfuscated date string: {date_str}") from e
+
+    # Handle standard date formats
     formats_to_try = [
         '%Y-%m-%d',
         '%Y-%m-%d %H:%M:%S',

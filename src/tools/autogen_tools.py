@@ -374,13 +374,13 @@ def _interpret_flip_point(metrics: dict):
 # Market Intelligence Tools
 ##################################
 
-def analyze_query_intent(query):
+def analyze_query_intent(query: str):
     """
     Analyze user query to extract trading intent and market context.
-    
+
     Args:
         query: User's natural language query
-        
+
     Returns:
         Dictionary with extracted ticker, sector, dates, and context
     """
