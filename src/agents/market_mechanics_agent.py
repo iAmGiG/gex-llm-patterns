@@ -49,12 +49,13 @@ class MarketMechanicsAgent:
 
         # Auto-initialize LLM if not provided
         if llm_provider is None:
+            # Use AutoGen for consistency with base_agent architecture
             try:
-                from src.llm.market_mechanics_llm import MarketMechanicsLLM
-                self.llm = MarketMechanicsLLM()
-                logger.info("Initialized OpenAI LLM for mechanics interpretation")
+                from src.llm.autogen_market_mechanics import AutoGenMarketMechanics
+                self.llm = AutoGenMarketMechanics()
+                logger.info("Initialized AutoGen LLM for mechanics interpretation")
             except Exception as e:
-                logger.warning(f"Could not initialize LLM: {e}")
+                logger.warning(f"Could not initialize AutoGen LLM: {e}")
                 self.llm = None
         else:
             self.llm = llm_provider
