@@ -315,8 +315,13 @@ class OptionsDataValidator:
 
         # Calculate average days to expiry
         if 'date' in df.columns and 'expiration' in df.columns:
-            days_to_exp = (df['expiration'] - df['date']).dt.days
-            metrics['avg_days_to_expiry'] = days_to_exp.mean()
+            try:
+                from utils.date_utils import calculate_days_to_expiration
+                days_to_exp = calculate_days_to_expiration(df['expiration'], df['date'])
+                metrics['avg_days_to_expiry'] = days_to_exp.mean()
+            except Exception as e:
+                logger.warning(f"Could not calculate days to expiry: {e}")
+                metrics['avg_days_to_expiry'] = None
 
         # IV distribution
         if 'implied_volatility' in df.columns:

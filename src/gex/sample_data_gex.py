@@ -52,19 +52,21 @@ class SampleDataGEXInterface:
         # Cache for processed data
         self._processed_cache = {}
         
-    def calculate_gex_for_symbol(self, 
+    def calculate_gex_for_symbol(self,
                                  symbol,
-                                 date= None,
-                                 spot_price= None) :
+                                 trading_date= None,
+                                 spot_price= None,
+                                 options_data= None) :
         """
         Calculate complete GEX metrics for a symbol.
-        
+
         Args:
             symbol: Stock symbol
-            date: Options date (uses latest if None)
+            trading_date: Options date (uses latest if None)
             spot_price: Current spot price (auto-detects if None)
-        
-        Returnsionary containing:
+            options_data: Pre-loaded options DataFrame (preferred over loading from sample)
+
+        Returns dictionary containing:
             - total_gex: Net gamma exposure
             - call_gex: Call gamma exposure
             - put_gex: Put gamma exposure
@@ -74,17 +76,22 @@ class SampleDataGEXInterface:
             - peak_gamma_strike: Strike with highest gamma
             - summary_stats: Additional metrics
         """
-        cache_key = f"{symbol}_{date}_{spot_price}"
+        cache_key = f"{symbol}_{trading_date}_{spot_price}"
         if cache_key in self._processed_cache:
             logger.info(f"Using cached GEX for {cache_key}")
             return self._processed_cache[cache_key]
-        
-        # Load options data
-        logger.info(f"Loading options data for {symbol} on {date}")
-        options_df = self.provider.fetch_options_data(symbol, date)
+
+        # Use provided options data or load from cache/sample
+        if options_data is not None and not options_data.empty:
+            logger.info(f"Using provided options data for {symbol} on {trading_date}")
+            options_df = options_data
+        else:
+            # Fallback to sample data loader
+            logger.info(f"Loading sample options data for {symbol} on {trading_date}")
+            options_df = self.provider.fetch_options_data(symbol, trading_date)
         
         if options_df.empty:
-            logger.warning(f"No options data found for {symbol} on {date}")
+            logger.warning(f"No options data found for {symbol} on {trading_date}")
             return self._empty_gex_result()
         
         # Validate data if requested
@@ -367,23 +374,23 @@ class SampleDataGEXInterface:
             'summary_stats': {}
         }
     
-    def generate_gex_report(self, 
+    def generate_gex_report(self,
                            symbol,
-                           date= None) -> str:
+                           trading_date= None) -> str:
         """
         Generate a formatted GEX report.
-        
+
         Args:
             symbol: Stock symbol
-            date: Options date
-        
+            trading_date: Options date
+
         Returns:
             Formatted report string
         """
-        results = self.calculate_gex_for_symbol(symbol, date)
+        results = self.calculate_gex_for_symbol(symbol, trading_date)
         
         if results['total_contracts'] == 0:
-            return f"No options data available for {symbol} on {date}"
+            return f"No options data available for {symbol} on {trading_date}"
         
         report = []
         report.append("=" * 60)

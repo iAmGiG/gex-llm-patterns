@@ -23,7 +23,7 @@ from src.utils.date_utils import (
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from gex.live_gex_interface import LiveGEXInterface
+# from gex.live_gex_interface import LiveGEXInterface  # Removed during consolidation
 from gex.sample_data_gex import SampleDataGEXInterface
 from validation.options_data_validator import OptionsDataValidator
 from cache.unified_cache import UnifiedCacheManager

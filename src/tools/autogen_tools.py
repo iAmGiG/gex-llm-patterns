@@ -1,6 +1,6 @@
 """
 Clean Tools Configuration for GEX-LLM Analysis
-Active tools: Alpha Vantage (options), Polygon.io (market data), Sample Data (fallback)
+Active tools: Alpha Vantage Premium (options & market data), Sample Data (fallback)
 
 Organized by agent type for clean tool assignment and efficient agent workflows.
 """
@@ -24,8 +24,8 @@ import pandas as pd
 # Project imports - only tools actually used
 from src.cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-from src.data_sources.polygon_client import PolygonClient
-from src.gex.sample_data_gex import SampleDataGEXInterface
+# from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
+from src.gex.live_gex_interface import LiveGEXInterface
 from src.validation.options_data_validator import OptionsDataValidator
 from src.utils.reports_manager import reports_manager
 from src.utils.market_intelligence import market_intelligence
@@ -45,7 +45,7 @@ ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 # Initialize shared components
 cache_manager = UnifiedCacheManager()
 alpha_vantage_client = AlphaVantageGEXClient()
-sample_gex = SampleDataGEXInterface()
+live_gex = LiveGEXInterface()
 validator = OptionsDataValidator()
 
 ##################################
@@ -100,16 +100,11 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
                 'date': trading_date
             }
 
-        # Fallback to sample data
-        logger.warning(f"No API data available, using sample data")
-        sample_data = sample_gex.load_sample_options(symbol, trading_date)
-
+        # No fallback to sample data - return error
+        logger.error(f"No live options data available for {symbol} on {trading_date}")
         return {
-            'status': 'success',
-            'source': 'sample',
-            'data': sample_data,
-            'symbol': symbol,
-            'date': trading_date
+            'status': 'error',
+            'message': f'No live options data available for {symbol} on {trading_date}'
         }
 
     except Exception as e:
@@ -153,31 +148,26 @@ def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str
                     'symbol': symbol
                 }
 
-        # Try Polygon if API key available
-        polygon = PolygonClient()
-        if polygon.test_connection():
-            market_data = polygon.fetch_daily_bars(
-                symbol, start_date, end_date)
-            if market_data is not None:
-                cache_manager.store_market_data(symbol, market_data)
-                return {
-                    'status': 'success',
-                    'source': 'polygon',
-                    'data': market_data,
-                    'symbol': symbol
-                }
+        # Try Alpha Vantage Premium for market data
+        logger.info(f"Fetching {symbol} market data from Alpha Vantage Premium")
+        market_data = alpha_vantage_client.fetch_underlying_data(
+            symbol, start_date, end_date)
 
-        # Fallback to sample data
-        logger.warning("Using sample market data")
-        from src.cache import SampleDataLoader
-        sample_loader = SampleDataLoader()
-        sample_data = sample_loader.get_sample_stocks(symbol)
+        if market_data is not None and not market_data.empty:
+            # Cache the data
+            cache_manager.store_market_data(symbol, market_data)
+            return {
+                'status': 'success',
+                'source': 'alpha_vantage_premium',
+                'data': market_data,
+                'symbol': symbol
+            }
 
+        # No fallback to sample data - return error
+        logger.error(f"No live market data available for {symbol}")
         return {
-            'status': 'success',
-            'source': 'sample',
-            'data': sample_data,
-            'symbol': symbol
+            'status': 'error',
+            'message': f'No live market data available for {symbol}'
         }
 
     except Exception as e:
@@ -236,11 +226,12 @@ def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot
 
         options_df = options_result['data']
 
-        # Calculate GEX using sample interface (works with any data)
-        gex_results = sample_gex.calculate_gex_for_symbol(
-            symbol,
-            trading_date,
-            spot_price
+        # Calculate GEX using live interface (works with any data)
+        gex_results = live_gex.calculate_gex_for_symbol(
+            symbol=symbol,
+            trading_date=trading_date,
+            spot_price=spot_price,
+            options_data=options_df  # Pass the live fetched data
         )
 
         # Save results to reports (not cache!)

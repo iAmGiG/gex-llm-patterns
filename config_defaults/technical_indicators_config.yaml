@@ -1,0 +1,121 @@
+# Technical Indicator Configuration
+# Validated parameters from production trading system
+
+strategy_parameters:
+  macd:
+    fast: 13
+    slow: 34
+    signal: 8
+    description: "Validated MACD parameters (13/34/8) - outperforms standard 12/26/9"
+
+  rsi:
+    period: 14
+    oversold: 30
+    overbought: 70
+    description: "Standard RSI with 30/70 levels"
+
+  voting_system:
+    mode: "three_tier"  # Adaptive Consensus 3-tier voting system
+    description: "3-tier consensus: Strong/Weak/Hold with dynamic position sizing"
+
+    # Signal generation thresholds
+    macd_threshold: 0.1      # Histogram threshold for MACD signals
+    rsi_oversold: 30         # RSI oversold threshold (uses rsi.oversold)
+    rsi_overbought: 70       # RSI overbought threshold (uses rsi.overbought)
+
+    # Confidence and position sizing
+    strong_consensus:
+      condition: "both_agree"
+      position_size: 1.0     # 100% position
+      confidence_boost: 0.15 # +0.15 confidence boost
+      min_confidence: 0.65   # Minimum confidence for strong signals
+
+    weak_signal:
+      condition: "one_signals_other_neutral"
+      position_size: 0.5     # 50% position
+      confidence_boost: 0.10 # +0.10 confidence boost
+      min_confidence: 0.40   # Minimum confidence for weak signals
+
+    hold_conflict:
+      condition: "conflicting_or_neutral"
+      position_size: 0.0     # No position
+      confidence: 0.2        # Low confidence for conflicts
+
+    # Minimum data requirements
+    min_data_points: 42      # Minimum days for reliable signals
+
+  exits:
+    balanced:
+      take_profit: 0.08  # 8% take profit
+      stop_loss: 0.05    # 5% stop loss
+      description: "Balanced 8% TP / 5% SL (Best EV)"
+      expected_value_50wr: 0.015
+      breakeven_win_rate: 0.385
+
+    conservative:
+      take_profit: 0.06  # 6% take profit
+      stop_loss: 0.08    # 8% stop loss
+      description: "Conservative 6% TP / 8% SL (Needs high WR)"
+      expected_value_50wr: -0.01
+      breakeven_win_rate: 0.571
+
+    aggressive:
+      take_profit: 0.10  # 10% take profit
+      stop_loss: 0.03    # 3% stop loss
+      description: "Aggressive 10% TP / 3% SL"
+      expected_value_50wr: 0.035
+      breakeven_win_rate: 0.231
+
+    default: "balanced"
+
+  position_sizing:
+    mode: "fixed"
+    size: 1.0  # 100% capital per trade (all-in for comparison)
+    description: "100% capital per trade (all-in)"
+
+backtest_defaults:
+  initial_capital: 10000
+  commission: 0.001  # 0.1% commission
+  slippage: 0.001    # 0.1% slippage
+
+validated_performance:
+  adaptive_consensus_voting:
+    sharpe_ratio: 0.856
+    win_rate: 0.514
+    annual_return: 0.1262
+    max_drawdown: -0.101
+    test_period: "2024 AAPL"
+    vs_single_macd:
+      sharpe_improvement: 0.015  # 0.856 vs 0.841
+      win_rate_improvement: 0.195  # 51.4% vs 31.9%
+      drawdown_improvement: 0.0048  # -10.10% vs -10.58%
+    note: "3-tier voting with dynamic position sizing - proven superior to binary logic"
+    experiment_id: "#293"
+
+  complex_percentile:
+    sharpe_ratio: -1.260
+    win_rate: 0.177
+    note: "Failed complexity trap - DO NOT USE"
+
+# Baseline comparison settings
+baseline_comparison:
+  test_tickers:
+    - "SPY"   # S&P 500 ETF - $450+ range
+    - "QQQ"   # NASDAQ ETF - $350+ range
+    - "AAPL"  # Apple - $175+ range
+    - "MSFT"  # Microsoft - $350+ range
+
+  account_sizes:
+    small: 10000      # $10K - good for ETFs
+    medium: 50000     # $50K - individual blue chips
+    large: 100000     # $100K - full diversification
+
+  test_periods:
+    short_term: "2024-06-01 to 2024-09-01"  # 3 months
+    medium_term: "2024-01-01 to 2024-09-01"  # 8 months
+    long_term: "2023-01-01 to 2024-09-01"   # 20 months
+
+  visual_metrics:
+    currency_format: "USD"
+    show_dollar_amounts: true
+    account_size_for_visuals: 50000  # $50K for P&L calculations

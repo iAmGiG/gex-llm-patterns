@@ -13,6 +13,7 @@ from scipy.stats import norm
 from datetime import datetime
 from typing import Dict, Any
 from src.utils.config_manager import get_config
+from utils.date_utils import calculate_days_to_expiration
 
 logger = logging.getLogger(__name__)
 
@@ -93,11 +94,16 @@ class GEXCalculator:
         # Calculate days to expiration if not present
         if 'days_to_expiration' not in gex_data.columns and 'expiration' in gex_data.columns:
             if 'date' in gex_data.columns:
-                gex_data['days_to_expiration'] = (gex_data['expiration'] - gex_data['date']).dt.days
+                gex_data['days_to_expiration'] = calculate_days_to_expiration(
+                    gex_data['expiration'], gex_data['date']
+                )
             else:
                 # Use current date if trade date not available
                 current_date = pd.Timestamp.now().normalize()
-                gex_data['days_to_expiration'] = (gex_data['expiration'] - current_date).dt.days
+                current_dates = pd.Series([current_date] * len(gex_data), index=gex_data.index)
+                gex_data['days_to_expiration'] = calculate_days_to_expiration(
+                    gex_data['expiration'], current_dates
+                )
         
         # Convert DTE to years
         gex_data['time_to_expiry'] = gex_data['days_to_expiration'] / 365.0

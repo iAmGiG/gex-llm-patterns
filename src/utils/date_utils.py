@@ -587,3 +587,38 @@ def get_market_close_time(date_str, timezone: str = "America/New_York") -> datet
     # Localize to market timezone
     tz = pytz.timezone(timezone)
     return tz.localize(market_close)
+
+
+def calculate_days_to_expiration(expiration_dates, trade_dates):
+    """
+    Calculate days to expiration for options data.
+    Handles both pandas Series and individual dates, and supports obfuscated dates.
+
+    Args:
+        expiration_dates: pandas Series or single date value representing expiration dates
+        trade_dates: pandas Series or single date value representing trade dates
+
+    Returns:
+        pandas Series or int: Days to expiration for each option contract
+    """
+    import pandas as pd
+
+    # Convert to pandas datetime if not already
+    if not isinstance(expiration_dates, pd.Series):
+        expiration_dates = pd.to_datetime(expiration_dates)
+    if not isinstance(trade_dates, pd.Series):
+        trade_dates = pd.to_datetime(trade_dates)
+
+    # Handle obfuscated dates by parsing them first
+    if isinstance(expiration_dates, pd.Series) and expiration_dates.dtype == 'object':
+        expiration_dates = expiration_dates.apply(lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        expiration_dates = pd.to_datetime(expiration_dates)
+
+    if isinstance(trade_dates, pd.Series) and trade_dates.dtype == 'object':
+        trade_dates = trade_dates.apply(lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        trade_dates = pd.to_datetime(trade_dates)
+
+    # Calculate the difference in days
+    days_diff = (expiration_dates - trade_dates).dt.days
+
+    return days_diff

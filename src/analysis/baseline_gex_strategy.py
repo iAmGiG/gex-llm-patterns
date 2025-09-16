@@ -180,7 +180,9 @@ class BaselineGEXStrategy:
     def backtest(self,
                  gex_data: Dict,
                  price_data: pd.DataFrame,
-                 flip_points: Optional[Dict] = None) -> Dict:
+                 flip_points: Optional[Dict] = None,
+                 symbol: str = "SPY",
+                 test_period: Optional[str] = None) -> Dict:
         """
         Backtest the baseline strategy.
 
@@ -208,9 +210,14 @@ class BaselineGEXStrategy:
 
         # Calculate performance metrics
         if trades:
-            return self._calculate_metrics(trades, daily_pnl)
+            results = self._calculate_metrics(trades, daily_pnl)
+            # Add metadata
+            results.update(self._add_metadata(symbol, test_period, gex_data, price_data))
+            return results
         else:
-            return self._empty_results("No valid trades executed")
+            empty_results = self._empty_results("No valid trades executed")
+            empty_results.update(self._add_metadata(symbol, test_period, gex_data, price_data))
+            return empty_results
 
     def _execute_trade(self, signal: Dict, price_data: pd.DataFrame) -> Optional[Dict]:
         """Execute a single trade based on signal."""
@@ -337,6 +344,43 @@ class BaselineGEXStrategy:
             'max_drawdown': 0,
             'message': message,
             'strategy_type': 'baseline_negative_gex'
+        }
+
+    def _add_metadata(self, symbol: str, test_period: Optional[str], gex_data: Dict, price_data: pd.DataFrame) -> Dict:
+        """Add metadata to results."""
+        from utils.date_utils import today_str
+
+        # Determine test period from data if not provided
+        if test_period is None:
+            start_date = price_data['date'].min()
+            end_date = price_data['date'].max()
+            if hasattr(start_date, 'strftime'):
+                start_str = start_date.strftime('%Y-%m-%d')
+                end_str = end_date.strftime('%Y-%m-%d')
+                test_period = f"{start_str} to {end_str}"
+            else:
+                test_period = "Unknown period"
+
+        # Calculate GEX statistics
+        gex_values = list(gex_data.values())
+        negative_gex_days = sum(1 for v in gex_values if v < 0)
+
+        return {
+            'metadata': {
+                'symbol': symbol,
+                'test_period': test_period,
+                'total_days': len(price_data),
+                'negative_gex_days': negative_gex_days,
+                'negative_gex_percentage': negative_gex_days / len(gex_values) * 100 if gex_values else 0,
+                'run_date': today_str(),
+                'strategy_version': 'baseline_negative_gex_v1.0',
+                'position_sizing': f"{self.position_size:.1%}",
+                'risk_management': {
+                    'stop_loss': f"{self.stop_loss_pct:.1%}",
+                    'profit_target': f"{self.profit_target_pct:.1%}",
+                    'max_holding_days': self.max_holding_days
+                }
+            }
         }
 
     def compare_to_llm(self, llm_results: Dict) -> Dict:

@@ -376,14 +376,15 @@ class UnifiedCacheManager:
                     f"No options data available for GEX calculation: {symbol} {trading_date}")
                 return None
 
-            # 3. Calculate GEX using existing engine
-            from src.gex.sample_data_gex import SampleDataGEXInterface
-            gex_interface = SampleDataGEXInterface()
+            # 3. Calculate GEX using live data engine
+            from src.gex.live_gex_interface import LiveGEXInterface
+            gex_interface = LiveGEXInterface()
 
-            gex_results = gex_interface.calculate_gex_metrics(
-                options_data,
+            gex_results = gex_interface.calculate_gex_for_symbol(
                 symbol=symbol,
-                trading_date=trading_date
+                trading_date=trading_date,
+                spot_price=None,  # Auto-detect from data
+                options_data=options_data  # Pass the live cached data
             )
 
             if gex_results and gex_results.get('status') == 'success':

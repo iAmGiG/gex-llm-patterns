@@ -335,15 +335,16 @@ class ConcurrentGEXProcessor:
         """
         try:
             # Import GEX calculation engine
-            from src.gex.sample_data_gex import SampleDataGEXInterface
+            from src.gex.live_gex_interface import LiveGEXInterface
 
-            gex_interface = SampleDataGEXInterface()
+            gex_interface = LiveGEXInterface()
 
             # Calculate GEX metrics
-            gex_results = gex_interface.calculate_gex_metrics(
-                options_data,
+            gex_results = gex_interface.calculate_gex_for_symbol(
                 symbol=symbol,
-                trading_date=trading_date
+                trading_date=trading_date,
+                spot_price=None,  # Auto-detect from data
+                options_data=options_data  # Pass the live cached data
             )
 
             if gex_results and 'status' in gex_results and gex_results['status'] == 'success':
