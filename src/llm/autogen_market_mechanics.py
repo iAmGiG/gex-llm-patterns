@@ -249,29 +249,3 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
             'error': True
         }
 
-    def estimate_cost(self, input_tokens: int = 500, output_tokens: int = 200) -> float:
-        """
-        Estimate cost for an API call.
-
-        Args:
-            input_tokens: Estimated input tokens (default 500)
-            output_tokens: Estimated output tokens (default 200)
-
-        Returns:
-            Estimated cost in USD
-        """
-        # Pricing based on model
-        if 'gpt-4o-mini' in self.model:
-            # gpt-4o-mini pricing
-            input_cost = (input_tokens * 0.15) / 1_000_000
-            output_cost = (output_tokens * 0.60) / 1_000_000
-        elif 'gpt-4' in self.model:
-            # gpt-4 pricing (more expensive)
-            input_cost = (input_tokens * 30) / 1_000_000
-            output_cost = (output_tokens * 60) / 1_000_000
-        else:
-            # Default/unknown model - use gpt-3.5 pricing
-            input_cost = (input_tokens * 0.50) / 1_000_000
-            output_cost = (output_tokens * 1.50) / 1_000_000
-
-        return input_cost + output_cost

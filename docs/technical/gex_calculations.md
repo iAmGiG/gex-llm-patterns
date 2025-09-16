@@ -465,9 +465,8 @@ This GEX calculation framework provides the mathematical foundation for identify
 
 The complete GEX calculation system is implemented in the `src/gex/` module:
 
-- **`GEXCalculator`** (`src/gex/calculator.py`): Core calculation engine implementing all mathematical formulas documented above
-- **`GEXValidator`** (`src/gex/validator.py`): Validation framework for sanity checking and reference comparison
-- **`AdvancedGreeks`** (`src/gex/greeks.py`): Complete Greeks implementation including:
+- **`GEXCalculator`** (`src/gex/gex_calculator.py`): Core calculation engine implementing all mathematical formulas documented above
+- **Legacy Components** (moved to `docs/legacy/`): Advanced Greeks, validators, and other mathematical precision tools superseded by LLM-interpretable mechanics approach
   - **Second-order Greeks**: Vanna, Charm, Vomma, Veta (Issues #26, #28)
   - **Third-order Greeks**: Speed, Zomma, Color (Issue #27)
   - Both analytical Black-Scholes and finite difference methods
@@ -475,7 +474,8 @@ The complete GEX calculation system is implemented in the `src/gex/` module:
 ### Usage Example
 
 ```python
-from src.gex import GEXCalculator, GEXValidator
+from src.gex import GEXCalculator
+# Legacy: GEXValidator moved to docs/legacy/
 
 # Initialize calculator
 calculator = GEXCalculator(risk_free_rate=0.05)
@@ -498,10 +498,12 @@ print(f"Regime: {gex_metrics['regime']}")
 ### Advanced Greeks Usage
 
 ```python
-from src.gex import AdvancedGreeks
+# LEGACY: Advanced Greeks moved to docs/legacy/advanced_greeks.py
+# Strategic decision: Focus on LLM-interpretable mechanics vs complex mathematics
+# from docs.legacy.advanced_greeks import AdvancedGreeks
 
-# Initialize Greeks calculator
-greeks_calc = AdvancedGreeks(risk_free_rate=0.05)
+# Initialize Greeks calculator (legacy approach)
+# greeks_calc = AdvancedGreeks(risk_free_rate=0.05)
 
 # Calculate all Greeks for an option
 all_greeks = greeks_calc.calculate_all_greeks(

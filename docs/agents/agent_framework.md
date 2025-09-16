@@ -229,7 +229,8 @@ class ModelRouter:
 from autogen_core.tools import FunctionTool
 from autogen_core.agents import AssistantAgent, UserProxyAgent
 
-# Reference implementation in src/utils/autogen_examples.py
+# Reference implementation in docs/legacy/autogen_examples.py (legacy)
+# Current implementation: src/llm/autogen_market_mechanics.py
 ```
 
 ### Agent Initialization

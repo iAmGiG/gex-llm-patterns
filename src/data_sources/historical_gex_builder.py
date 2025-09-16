@@ -20,7 +20,7 @@ Builds comprehensive historical GEX database by combining:
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.polygon_client import PolygonClient
 from src.data_sources.fed_data_integration import FedDataIntegration
-from src.gex.calculator import GEXCalculator
+from src.gex.gex_calculator import GEXCalculator
 from src.data_sources.historical_collector import HistoricalOptionsCollector
 from src.utils.date_utils import now_iso, now_timestamp, parse_date_string, calculate_duration_minutes
 import logging

@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.data_sources.fed_data_integration import FedDataIntegration
 from src.data_sources.fed_data_analyzer import FedDataAnalyzer
-from src.gex.calculator import GEXCalculator
+from src.gex.gex_calculator import GEXCalculator
 
 
 def create_demo_results():

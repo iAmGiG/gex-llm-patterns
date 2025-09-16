@@ -25,7 +25,7 @@ from src.analysis.pattern_probability_mapper import PatternProbabilityMapper
 from src.analysis.statistical_validator import StatisticalValidator
 from src.analysis.confidence_scorer import ConfidenceScorer
 from src.analysis.pattern_engine_integration import PatternEngineIntegration
-from src.gex.calculator import GEXCalculator
+from src.gex.gex_calculator import GEXCalculator
 from src.data_sources.fed_data_integration import FedDataIntegration
 
 

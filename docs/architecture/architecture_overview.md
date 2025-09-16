@@ -68,16 +68,21 @@ src/
 ├── data_sources/          # External data integration
 │   └── alpha_vantage_gex.py # Alpha Vantage client
 ├── gex/                   # Gamma exposure calculations
-├── tokenization/          # Market state tokenization
 ├── utils/                 # Shared utilities
-│   ├── agent_utils.py     # Autogen operations
 │   ├── date_utils.py      # Date/time handling
+│   ├── config_manager.py  # Configuration management
+│   ├── market_intelligence.py # Market analysis
 │   ├── indicator_library.py # Technical indicators
-│   └── autogen_examples.py # Framework examples
+│   └── reports_manager.py # Results management
 └── validation/           # Research integrity
     ├── data_obfuscation.py # Remove temporal bias
     ├── date_sanitizer.py  # Date anonymization
-    └── obfuscation_validator.py # Validation testing
+    └── mechanics_validation_dataset.py # Historical validation
+docs/legacy/              # Moved components
+├── tokenization/         # Token-based LLM approach (deprecated)
+├── agent_utils.py        # Legacy agent operations
+├── autogen_examples.py   # Framework examples
+└── advanced_greeks.py    # Complex mathematical precision
 ```
 
 ## Design Principles

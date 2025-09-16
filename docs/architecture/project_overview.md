@@ -299,7 +299,7 @@ discovered_patterns = pattern_miner.discover_patterns(
 ### Immediate Goals (Next 3 Months)
 1. **Complete data infrastructure** (Issues #14-17)
 2. **Implement GEX calculation engine**
-3. **Develop tokenization system**
+3. **Develop natural language prompt system** (tokenization approach deprecated)
 4. **Begin pattern discovery with sample data**
 
 ### Research Goals (6 Months)

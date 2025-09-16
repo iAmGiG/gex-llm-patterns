@@ -6,9 +6,11 @@ The `src/utils/` directory contains shared utilities and tools that support the 
 
 ## Core Utilities
 
-### Agent Utils (`agent_utils.py`)
+### Agent Utils (`agent_utils.py`) - LEGACY
 
-Provides utilities for Autogen agent operations and configuration management.
+**Status**: Moved to `docs/legacy/` - superseded by modern autogen_tools.py architecture
+
+Previously provided utilities for Autogen agent operations and configuration management.
 
 #### Key Functions
 
@@ -26,7 +28,9 @@ def DataProcessor:
 #### Usage Example
 
 ```python
-from src.utils.agent_utils import load_agent_config, DataProcessor
+# LEGACY: # LEGACY: from src.utils.agent_utils import load_agent_config
+# Current: Use src/tools/autogen_tools.py, DataProcessor
+# Current: Use src/tools/autogen_tools.py for modern agent functionality
 
 # Load agent configuration
 config = load_agent_config('config/agents.json')
@@ -196,9 +200,11 @@ complete_data = normalizer.handle_missing_data(clean_data, method='linear_interp
 filtered_data = normalizer.winsorize(complete_data['returns'], limits=(0.005, 0.005))
 ```
 
-### Autogen Examples (`autogen_examples.py`)
+### Autogen Examples (`autogen_examples.py`) - LEGACY
 
-Contains reference implementations and examples for the Autogen framework integration.
+**Status**: Moved to `docs/legacy/` - reference implementations preserved for documentation
+
+Previously contained reference implementations and examples for the Autogen framework integration.
 
 #### Reference Patterns
 
@@ -321,7 +327,8 @@ obfuscator = DataObfuscator()
 clean_data = obfuscator.obfuscate_dataframe(combined_data)
 
 # 4. Configure agents
-from src.utils.agent_utils import load_agent_config
+# LEGACY: from src.utils.agent_utils import load_agent_config
+# Current: Use src/tools/autogen_tools.py
 agent_config = load_agent_config('research_agents.json')
 ```
 
@@ -332,7 +339,7 @@ agent_config = load_agent_config('research_agents.json')
 # - GEX Calculator uses date_utils for timezone handling
 # - Tokenizer uses data_normalizer for preprocessing  
 # - Pattern Miner uses indicator_library for feature engineering
-# - LLM Integration uses agent_utils for configuration
+# - LLM Integration uses autogen_tools.py for modern configuration
 # - All components use validation tools for research integrity
 ```
 
@@ -369,7 +376,7 @@ VALIDATION_STRICT_MODE=true
 2. **Normalize data** before feeding to any analysis component
 3. **Obfuscate data** before LLM testing to ensure research integrity
 4. **Validate obfuscation** effectiveness regularly
-5. **Use agent_utils** for consistent agent configuration across the project
+5. **Use autogen_tools.py** for modern agent configuration and API integration
 6. **Combine technical indicators** with GEX analysis for richer insights
 
 ## Testing
