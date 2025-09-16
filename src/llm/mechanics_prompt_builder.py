@@ -154,7 +154,18 @@ class MechanicsPromptBuilder:
 
 {context_section}
 
-QUESTION: What market mechanics are at play? Who is positioning for what?"""
+QUESTION: Analyze the market mechanics using the WHO forces WHOM to do WHAT framework.
+
+WHO: Identify the key market participant taking action (retail traders, institutions, dealers, etc.)
+WHOM: Identify who is being forced to respond (dealers, market makers, other participants)
+WHAT: Describe the specific forced action (buy/sell, hedge, rebalance)
+
+Provide your analysis in this exact format:
+WHO: [Primary actor]
+WHOM: [Forced participant]
+WHAT: [Specific forced action]
+CONFIDENCE: [0-100%]
+NARRATIVE: [2-3 sentence explanation of the mechanics]"""
 
         return prompt
 

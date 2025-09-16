@@ -1,0 +1,20 @@
+{
+  "model": "gpt-5-mini",
+  "test_type": "covid_crash_analysis",
+  "event": "covid_crash_2020_obfuscated",
+  "prompt_format": "simple_direct",
+  "response": {
+    "who": "Unknown",
+    "whom": "Unknown",
+    "what": "Unknown",
+    "confidence": 50,
+    "narrative": "",
+    "mechanics": ""
+  },
+  "cost_analysis": {
+    "input_tokens_est": 600,
+    "output_tokens_est": 250,
+    "cost_usd": 0.00065
+  },
+  "timestamp": "2025-09-15T22:44:42.354480"
+}

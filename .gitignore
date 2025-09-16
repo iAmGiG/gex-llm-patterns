@@ -234,3 +234,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .clauderc
+config/config.json

@@ -32,8 +32,8 @@ class AutoGenMarketMechanics:
         # Load configuration
         config_loader = ConfigLoader()
 
-        # Get model and API key from config
-        self.model = model or os.getenv("OPEN_MODEL", config_loader.get("OPEN_MODEL", "gpt-4o-mini"))
+        # Get model and API key from config (use prompt model for LLM analysis)
+        self.model = model or os.getenv("OPEN_MODEL_LLM_PROMPT", config_loader.get("OPEN_MODEL_LLM_PROMPT", "gpt-4o"))
         api_key = os.getenv("OPEN_AI_KEY", config_loader.get("OPEN_AI_KEY"))
 
         if not api_key:
@@ -43,16 +43,26 @@ class AutoGenMarketMechanics:
         if not api_key:
             raise ValueError("OpenAI API key not found in config or environment")
 
-        # Initialize AutoGen OpenAI client
-        self.client = OpenAIChatCompletionClient(
-            model=self.model,
-            api_key=api_key,
-            temperature=temperature,
-            max_tokens=1000,
-            top_p=0.95,
-            timeout=30,
-            max_retries=3
-        )
+        # Initialize AutoGen OpenAI client with model-specific parameters
+        client_params = {
+            "model": self.model,
+            "api_key": api_key,
+            "timeout": 30,
+            "max_retries": 3
+        }
+
+        # Configure parameters based on model type
+        if "o3" in self.model or "o4" in self.model or "gpt-5" in self.model:
+            # O3/O4/GPT-5 models use different parameters
+            client_params["max_completion_tokens"] = 1000
+            # These models don't support temperature or top_p
+        else:
+            # Standard models (GPT-4o, GPT-4o-mini, etc.)
+            client_params["max_tokens"] = 1000
+            client_params["temperature"] = temperature
+            client_params["top_p"] = 0.95
+
+        self.client = OpenAIChatCompletionClient(**client_params)
 
         self.system_prompt = """You are a market mechanics analyst specializing in dealer positioning and forced hedging flows.
 
@@ -206,7 +216,14 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
                 parsed['mechanics'] = line.split(':', 1)[1].strip()
             elif line_upper.startswith('CONFIDENCE:'):
                 conf_str = line.split(':', 1)[1].strip().upper()
-                if 'HIGH' in conf_str:
+
+                # Try to extract numeric confidence first
+                import re
+                numeric_match = re.search(r'(\d+)', conf_str)
+                if numeric_match:
+                    parsed['confidence'] = min(int(numeric_match.group(1)), 100)
+                # Fallback to text-based confidence
+                elif 'HIGH' in conf_str:
                     parsed['confidence'] = 80
                 elif 'MEDIUM' in conf_str or 'MED' in conf_str:
                     parsed['confidence'] = 60

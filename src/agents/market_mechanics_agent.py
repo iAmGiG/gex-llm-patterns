@@ -9,6 +9,8 @@ from typing import Dict, List, Optional
 import logging
 import pandas as pd
 import numpy as np
+import yaml
+from pathlib import Path
 
 from src.utils.date_utils import (
     get_default_date_range,
@@ -24,6 +26,8 @@ from src.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 import datetime
 
+logger = logging.getLogger(__name__)
+
 # Import autogen_tools at module level with fallback
 try:
     from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
@@ -32,8 +36,6 @@ except ImportError as e:
     logger.warning(f"AutoGen tools not available: {e}")
     AUTOGEN_TOOLS_AVAILABLE = False
 
-logger = logging.getLogger(__name__)
-
 
 class MarketMechanicsAgent:
     """
@@ -41,15 +43,18 @@ class MarketMechanicsAgent:
     Focus: WHO is forcing WHOM to do WHAT
     """
 
-    def __init__(self, symbol: str = "SPY", llm_provider: Optional[object] = None):
+    def __init__(self, symbol: str = "SPY", llm_provider: Optional[object] = None, config: Optional[Dict] = None):
         """
         Initialize the Market Mechanics Agent.
 
         Args:
             symbol: Trading symbol to analyze
             llm_provider: LLM integration (OpenAI, Claude, etc.)
+            config: Configuration dictionary (loads from file if None)
         """
         self.symbol = symbol
+        self.config = config or self._load_config()
+        self.gex_thresholds = self.config.get('gex_thresholds', {})
         self.cache = UnifiedCacheManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
@@ -106,6 +111,26 @@ class MarketMechanicsAgent:
                 'what': 'Defending profitable strike levels through spot manipulation'
             }
         }
+
+    def _load_config(self) -> Dict:
+        """Load configuration from analysis_config.yaml."""
+        try:
+            base_dir = Path(__file__).parent.parent.parent
+            config_path = base_dir / "config_defaults" / "analysis_config.yaml"
+
+            with open(config_path, 'r') as f:
+                return yaml.safe_load(f)
+        except Exception as e:
+            logger.warning(f"Failed to load config: {e}. Using defaults.")
+            return {
+                'gex_thresholds': {
+                    'positive_high': 5e9,
+                    'negative_high': -5e9,
+                    'gamma_concentration_threshold': 0.7,
+                    'high_volume_threshold': 1e6,
+                    'significant_flow_threshold': 5e5
+                }
+            }
 
     def _normalize_date(self, date) -> tuple[datetime.datetime, str]:
         """Normalize date input to (datetime_obj, date_string) tuple."""
@@ -313,10 +338,9 @@ class MarketMechanicsAgent:
             # Add Greeks concentration analysis
             gex_results['gamma_concentration'] = self._analyze_gamma_concentration(
                 options_data, spot_price)
-            gex_results['vanna_estimate'] = self._estimate_vanna_flows(
-                options_data)
-            gex_results['charm_estimate'] = self._estimate_charm_decay(
-                options_data, date)
+            # Skip vanna/charm for now - not needed for basic mechanics analysis
+            # gex_results['vanna_estimate'] = self._estimate_vanna_flows(options_data)
+            # gex_results['charm_estimate'] = self._estimate_charm_decay(options_data, date)
 
             return gex_results
 
@@ -450,7 +474,8 @@ class MarketMechanicsAgent:
             evidence = []
 
             if pattern_name == 'dealer_hedging':
-                if gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0) > 0.7:
+                gamma_threshold = self.gex_thresholds.get('gamma_concentration_threshold', 0.7)
+                if gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0) > gamma_threshold:
                     confidence += 40
                     evidence.append("High gamma concentration detected")
                 if abs(gex_metrics.get('net_gex', 0)) > 1e9:
@@ -730,11 +755,14 @@ class MarketMechanicsAgent:
     # Helper methods
     def _classify_gex_regime(self, net_gex: float, spot_price: float) -> str:
         """Classify GEX regime."""
-        if net_gex > 5e9:
+        positive_high = self.gex_thresholds.get('positive_high', 5e9)
+        negative_high = self.gex_thresholds.get('negative_high', -5e9)
+
+        if net_gex > positive_high:
             return 'POSITIVE_GAMMA_HIGH'
         elif net_gex > 0:
             return 'POSITIVE_GAMMA_LOW'
-        elif net_gex > -5e9:
+        elif net_gex > negative_high:
             return 'NEGATIVE_GAMMA_LOW'
         else:
             return 'NEGATIVE_GAMMA_HIGH'

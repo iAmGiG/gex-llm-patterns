@@ -51,3 +51,21 @@ baseline_comparison:
 
   # Statistical significance threshold (p-value)
   significance_threshold: 0.05
+
+  # Expected baseline strategy performance (trading all negative GEX)
+  expected_baseline_win_rate: 0.43  # 43% win rate typical for unfiltered
+  expected_baseline_ev: -0.0028  # -0.28% expected value per trade
+  expected_baseline_sharpe: -0.15  # Negative Sharpe ratio
+  expected_baseline_drawdown: -0.045  # -4.5% maximum drawdown
+
+gex_thresholds:
+  # GEX regime classification thresholds
+  positive_high: 5000000000  # 5e9 - High positive GEX threshold
+  negative_high: -5000000000  # -5e9 - High negative GEX threshold
+
+  # Gamma concentration metrics
+  gamma_concentration_threshold: 0.7  # 70% concentration threshold
+
+  # Volume and flow thresholds
+  high_volume_threshold: 1000000  # 1M volume threshold
+  significant_flow_threshold: 500000  # 500K flow threshold

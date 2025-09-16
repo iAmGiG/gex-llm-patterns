@@ -11,6 +11,11 @@ This directory contains comprehensive documentation for the GEX-LLM Patterns tra
 - **Data Obfuscation System**: Prevents training data leakage in validation
 - **Accuracy Metrics**: Quantifies LLM market mechanics interpretation capability
 
+### [Model Selection Research](model-selection-research.md)
+- **O3-mini Production Deployment**: 90% confidence with 60% cost savings
+- **Comprehensive Model Testing**: GPT-4o, O3-mini, O4-mini, GPT-5 mini comparison
+- **Cost Optimization Strategy**: Hybrid architecture for maximum efficiency
+
 ### [Market Mechanics Agent](market-mechanics-agent.md)
 - **Single-Agent Architecture**: Simplified pipeline for market analysis
 - **AutoGen Integration**: Consistent LLM framework with sophisticated caching
@@ -105,9 +110,11 @@ Data Sources → AutoGen Tools → Market Mechanics Agent → LLM Interpretation
 ```
 docs/
 ├── README.md                      # This overview
+├── model-selection-research.md    # Model testing and O3-mini selection
 ├── validation-framework.md        # Validation system documentation
-├── market-mechanics-agent.md     # Agent architecture and usage
+├── baseline-strategy.md           # Baseline strategy implementation
 ├── data-obfuscation.md           # Obfuscation system details
+├── market-mechanics-agent.md     # Agent architecture and usage
 ├── date-utilities.md             # Date handling documentation
 ├── api-reference.md              # Complete API documentation
 └── troubleshooting.md            # Common issues and solutions
@@ -116,10 +123,11 @@ docs/
 ## Development Status
 
 ### ✅ Production Ready
+- **Model Selection**: O3-mini deployed with 90% confidence and 60% cost savings
 - **Market Mechanics Agent**: Single-agent architecture with AutoGen LLM
 - **Validation Framework**: 6 historical events with obfuscated testing
 - **Data Obfuscation System**: Prevents training data leakage
-- **Date Utilities**: Centralized datetime handling with obfuscation support
+- **Baseline Strategy**: Mechanical trading strategy for LLM comparison
 
 ### 🔄 In Development
 - **Enhanced Pattern Detection**: Additional market mechanics patterns
