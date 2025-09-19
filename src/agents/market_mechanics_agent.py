@@ -10,6 +10,7 @@ import logging
 import pandas as pd
 import numpy as np
 import yaml
+import sqlite3
 from pathlib import Path
 
 from src.utils.date_utils import (
@@ -55,6 +56,7 @@ class MarketMechanicsAgent:
         self.symbol = symbol
         self.config = config or self._load_config()
         self.gex_thresholds = self.config.get('gex_thresholds', {})
+        self.strike_pattern_config = self.config.get('strike_level_patterns', {})
         self.cache = UnifiedCacheManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
@@ -77,7 +79,7 @@ class MarketMechanicsAgent:
         self.mechanics_patterns = {
             'dealer_hedging': {
                 'description': 'Market makers hedging their gamma exposure',
-                'indicators': ['high_gamma_concentration', 'pin_risk', 'charm_flow'],
+                'indicators': ['high_gamma_concentration', 'pin_risk'],
                 'who': 'Dealers/Market Makers',
                 'whom': 'Directional traders',
                 'what': 'Forced buying/selling to maintain delta neutrality'
@@ -88,20 +90,6 @@ class MarketMechanicsAgent:
                 'who': 'Options flow',
                 'whom': 'Dealers',
                 'what': 'Forced to buy high/sell low amplifying moves'
-            },
-            'vanna_flows': {
-                'description': 'IV changes forcing delta rebalancing',
-                'indicators': ['vanna_concentration', 'iv_skew_changes'],
-                'who': 'Volatility regime',
-                'whom': 'Options holders',
-                'what': 'Rebalancing due to vega/delta interaction'
-            },
-            'charm_decay': {
-                'description': 'Time decay forcing position adjustments',
-                'indicators': ['near_expiry', 'charm_concentration'],
-                'who': 'Time decay',
-                'whom': 'Delta hedgers',
-                'what': 'Forced rebalancing as deltas change with time'
             },
             'pin_manipulation': {
                 'description': 'Large players defending strike levels',
@@ -133,24 +121,46 @@ class MarketMechanicsAgent:
             }
 
     def _normalize_date(self, date) -> tuple[datetime.datetime, str]:
-        """Normalize date input to (datetime_obj, date_string) tuple."""
+        """Normalize date input to (datetime_obj, date_string) tuple.
+
+        Supports both daily dates ('2024-01-15') and intra-day timestamps ('2024-01-15 15:30:00').
+        For intra-day timestamps, preserves the full timestamp format.
+        """
         if isinstance(date, str):
             try:
-                date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
-                date_str = date
+                # Try intra-day timestamp format first
+                if ' ' in date and ':' in date:
+                    date_obj = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+                    date_str = date  # Preserve full timestamp
+                else:
+                    # Traditional daily date format
+                    date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
+                    date_str = date
             except ValueError:
                 # Try parsing other common formats
                 try:
                     date_obj = pd.to_datetime(date).to_pydatetime()
-                    date_str = date_obj.strftime('%Y-%m-%d')
+                    # Determine if this has time component
+                    if date_obj.hour != 0 or date_obj.minute != 0 or date_obj.second != 0:
+                        date_str = date_obj.strftime('%Y-%m-%d %H:%M:%S')
+                    else:
+                        date_str = date_obj.strftime('%Y-%m-%d')
                 except Exception:
                     raise ValueError(f"Unable to parse date: {date}")
         elif hasattr(date, 'strftime'):
             date_obj = date
-            date_str = date.strftime('%Y-%m-%d')
+            # Determine if this has time component
+            if date_obj.hour != 0 or date_obj.minute != 0 or date_obj.second != 0:
+                date_str = date.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                date_str = date.strftime('%Y-%m-%d')
         elif hasattr(date, 'to_pydatetime'):
             date_obj = date.to_pydatetime()
-            date_str = date_obj.strftime('%Y-%m-%d')
+            # Determine if this has time component
+            if date_obj.hour != 0 or date_obj.minute != 0 or date_obj.second != 0:
+                date_str = date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                date_str = date_obj.strftime('%Y-%m-%d')
         else:
             raise ValueError(f"Unsupported date type: {type(date)}")
 
@@ -186,13 +196,23 @@ class MarketMechanicsAgent:
 
             # 1. Get data
             logger.info(f"Starting daily analysis for {date_str}")
-            options_data = self._fetch_options_data(date_str)
-            if options_data is None or options_data.empty:
-                logger.warning(f"No options data for {date_str}")
-                return self._empty_analysis()
 
-            # 2. Calculate GEX metrics
-            gex_metrics = self._calculate_gex_metrics(options_data, date_str)
+            # Try database GEX first for consistency with baseline
+            gex_metrics = self._fetch_gex_from_database(date_str)
+
+            if gex_metrics:
+                # If we got GEX from database, we might not have options data
+                logger.info(f"Using database GEX for {date_str}, skipping options data fetch")
+                options_data = pd.DataFrame()  # Empty DataFrame for downstream functions
+            else:
+                # Fallback to normal options data flow
+                options_data = self._fetch_options_data(date_str)
+                if options_data is None or options_data.empty:
+                    logger.warning(f"No options data for {date_str}")
+                    return self._empty_analysis()
+
+                # 2. Calculate GEX metrics from options data
+                gex_metrics = self._calculate_gex_metrics(options_data, date_str)
 
             # 3. Build comprehensive context
             context = self._build_market_context(
@@ -209,6 +229,10 @@ class MarketMechanicsAgent:
                 interpretation = self._rule_based_interpretation(patterns)
 
             # 6. Generate actionable signal
+            # Add overall confidence and patterns to context for signal generation
+            overall_confidence = self._calculate_confidence(patterns, context)
+            context['overall_confidence'] = overall_confidence
+            context['patterns_detected'] = patterns
             signal = self._generate_trading_signal(interpretation, context)
 
             date_str = date.strftime('%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
@@ -222,7 +246,9 @@ class MarketMechanicsAgent:
             }
 
         except Exception as e:
+            import traceback
             logger.error(f"Error in daily analysis: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return self._empty_analysis()
 
     def _fetch_options_data(self, date) -> Optional[pd.DataFrame]:
@@ -254,8 +280,89 @@ class MarketMechanicsAgent:
             logger.error(f"AutoGen tools error: {e}, falling back to cache")
             return self.cache.get_options_data(self.symbol, date_str)
 
+    def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
+        """Fetch GEX data from database, calculate and populate if missing.
+
+        Supports both daily data and intra-day data retrieval.
+        For timestamps, queries intraday_gex_metrics table.
+        For dates, queries daily_gex_metrics table.
+        """
+        try:
+            conn = sqlite3.connect("./.cache/consolidated_historical.db")
+
+            # Determine if this is intra-day timestamp or daily date
+            is_intraday = ' ' in date_str and ':' in date_str
+
+            if is_intraday:
+                # Query intraday table for exact timestamp
+                query = """
+                    SELECT timestamp, total_gex, gex_regime, gamma_flip_point,
+                           net_call_gex, net_put_gex, flip_ratio, spot_price
+                    FROM intraday_gex_metrics
+                    WHERE symbol = ? AND timestamp = ?
+                """
+            else:
+                # Query daily table for date
+                query = """
+                    SELECT date, total_gex, gex_regime, gamma_flip_point,
+                           net_call_gex, net_put_gex, flip_ratio, spot_price
+                    FROM daily_gex_metrics
+                    WHERE symbol = ? AND date = ?
+                """
+
+            cursor = conn.execute(query, (self.symbol, date_str))
+            row = cursor.fetchone()
+
+            if row:
+                # Data exists - return it
+                conn.close()
+                total_gex = row[1]
+                return {
+                    'total_gamma': total_gex,
+                    'net_gex': total_gex,
+                    'gex_value': total_gex,
+                    'regime': row[2] or ('NEGATIVE_GAMMA' if total_gex < 0 else 'POSITIVE_GAMMA'),
+                    'flip_level': row[3] or 0,
+                    'gamma_concentration': abs(row[6]) if row[6] else 0,  # Use flip_ratio as proxy
+                    'call_gamma': row[4] or 0,
+                    'put_gamma': row[5] or 0,
+                    'zero_gamma_level': row[3] or 0,  # Use flip point as zero gamma
+                    'spot_price': row[7] or 0,
+                    'source': 'historical_database'
+                }
+
+            # Data missing - calculate and populate
+            logger.info(f"No database GEX data for {date_str}, calculating and populating...")
+
+            # Fetch options data for calculation
+            options_data = self._fetch_options_data(date_str)
+            if options_data is None or options_data.empty:
+                conn.close()
+                logger.warning(f"Cannot calculate GEX for {date_str} - no options data")
+                return None
+
+            # Calculate GEX metrics
+            gex_metrics = self._calculate_gex_metrics(options_data, date_str)
+            if not gex_metrics:
+                conn.close()
+                logger.warning(f"GEX calculation failed for {date_str}")
+                return None
+
+            # Populate database with calculated data
+            self._populate_database_entry(conn, date_str, gex_metrics)
+            conn.close()
+
+            # Return calculated data with database source flag
+            gex_metrics['source'] = 'calculated_and_populated'
+            logger.info(f"Calculated and populated GEX for {date_str}: {gex_metrics.get('net_gex', 0):.2e}")
+            return gex_metrics
+
+        except Exception as e:
+            logger.warning(f"Database GEX fetch/populate failed: {e}")
+            return None
+
     def _calculate_gex_metrics(self, options_data: pd.DataFrame, date) -> Dict:
-        """Calculate comprehensive GEX metrics using autogen_tools."""
+        """Calculate comprehensive GEX metrics using autogen_tools or direct calculation."""
         try:
 
             # Convert date to string format
@@ -296,7 +403,7 @@ class MarketMechanicsAgent:
 
                     if gex_result['status'] == 'success':
                         gex_metrics = gex_result['metrics']
-                        logger.info(f"GEX calculation via autogen_tools: cache_hit={gex_result.get('cache_hit', False)}")
+                        logger.info(f"GEX calculation via autogen_tools (fallback): cache_hit={gex_result.get('cache_hit', False)}")
 
                         # Convert to expected format
                         gex_profile = {
@@ -350,15 +457,37 @@ class MarketMechanicsAgent:
 
     def _build_market_context(self, date, gex_metrics: Dict, options_data: pd.DataFrame) -> Dict:
         """Build comprehensive market context for analysis."""
+        # Enhanced temporal context with Friday 3:30 PM detection
+        temporal_context = self._get_temporal_context(date)
+
+        # Add Friday 3:30 PM flag for Issue #73 validation
+        temporal_context['is_friday_330pm'] = (
+            temporal_context.get('day_of_week') == 'Friday' and
+            hasattr(date, 'hour') and hasattr(date, 'minute') and
+            date.hour == 15 and date.minute == 30
+        )
+
         context = {
             'date': date,
             'gex_metrics': gex_metrics,
+            'options_data': options_data,  # Include options data for strike-level analysis
             'price_action': self._describe_price_action(date),
             'options_flow': self._analyze_flow_patterns(options_data),
-            'temporal_context': self._get_temporal_context(date),
+            'temporal_context': temporal_context,
             'strike_distribution': self._analyze_strike_distribution(options_data),
             'volatility_surface': self._analyze_volatility_surface(options_data)
         }
+
+        # Add strike-level patterns for enhanced analysis
+        if not options_data.empty and gex_metrics.get('spot_price'):
+            strike_patterns = {
+                'gamma_concentration': self._detect_gamma_concentration_enhanced(options_data, gex_metrics['spot_price']),
+                'volume_anomalies': self._detect_volume_anomalies(options_data),
+                'gamma_walls': self._detect_gamma_walls(options_data, gex_metrics['spot_price']),
+                'pin_setup': self._detect_pin_setup(options_data, gex_metrics['spot_price'], temporal_context),
+                'dealer_positioning': self._calculate_dealer_exposure(options_data, gex_metrics['spot_price'])
+            }
+            context['strike_level_patterns'] = strike_patterns
 
         # Add Fed context if available
         fed_context = self._get_fed_context(date)
@@ -462,42 +591,62 @@ class MarketMechanicsAgent:
         }
 
     def _detect_mechanics_patterns(self, context: Dict) -> List[Dict]:
-        """Detect market mechanics patterns from context."""
+        """Enhanced pattern detection with strike-level analysis."""
         detected_patterns = []
 
+        # Get enhanced strike-level patterns
+        strike_patterns = self._detect_strike_level_patterns(context)
+
+        # Traditional mechanics patterns with enhanced strike-level data
         gex_metrics = context.get('gex_metrics', {})
         options_flow = context.get('options_flow', {})
 
-        # Check for each mechanics pattern
+        # Check for each mechanics pattern with enhanced detection
         for pattern_name, pattern_def in self.mechanics_patterns.items():
             confidence = 0
             evidence = []
 
             if pattern_name == 'dealer_hedging':
-                gamma_threshold = self.gex_thresholds.get('gamma_concentration_threshold', 0.7)
-                if gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0) > gamma_threshold:
-                    confidence += 40
-                    evidence.append("High gamma concentration detected")
-                if abs(gex_metrics.get('net_gex', 0)) > 1e9:
+                # Enhanced with strike-level gamma concentration
+                gamma_config = self.strike_pattern_config.get('gamma_concentration', {})
+                threshold = gamma_config.get('high_concentration_pct', 0.20)
+
+                gamma_data = strike_patterns.get('gamma_concentration', {})
+                if gamma_data.get('concentration_pct', 0) > threshold:
+                    confidence += 50
+                    evidence.append(f"Gamma concentration: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f}")
+
+                # Strike-level volume validation
+                volume_data = strike_patterns.get('volume_anomalies', {})
+                if volume_data.get('detected', False):
                     confidence += 30
-                    evidence.append("Significant net GEX exposure")
+                    evidence.append(f"Volume anomaly: {volume_data.get('max_volume', 0):,.0f} contracts")
 
             elif pattern_name == 'gamma_squeeze':
                 if gex_metrics.get('gex_regime') == 'POSITIVE_GAMMA_HIGH':
-                    confidence += 50
+                    confidence += 40
                     evidence.append("Positive gamma regime")
-                if context.get('price_action', {}).get('volatility', 0) > 0.02:
+
+                # Enhanced with gamma wall detection
+                gamma_walls = strike_patterns.get('gamma_walls', {})
+                if gamma_walls.get('resistance_strikes'):
                     confidence += 30
-                    evidence.append("Elevated volatility")
+                    evidence.append(f"Gamma resistance at {gamma_walls.get('resistance_strikes')}")
 
             elif pattern_name == 'pin_manipulation':
-                strike_dist = context.get('strike_distribution', {})
-                if strike_dist.get('max_oi_concentration', 0) > 0.3:
-                    confidence += 60
-                    evidence.append(
-                        "Massive OI concentration at specific strikes")
+                # Enhanced pin detection using Issue #73 validated approach
+                pin_data = strike_patterns.get('pin_setup', {})
+                if pin_data.get('pin_probability', 0) > 0.60:  # Validated 60% threshold
+                    confidence += 70
+                    evidence.append(f"Pin setup: {pin_data.get('pin_probability', 0):.1%} probability to ${pin_data.get('target_strike', 0):.0f}")
 
-            if confidence > 50:
+                # Add Friday 3:30 PM context if applicable
+                time_context = context.get('temporal_context', {})
+                if time_context.get('is_friday_330pm', False):
+                    confidence += 20
+                    evidence.append("Friday 3:30 PM expiration timing")
+
+            if confidence > 30:
                 detected_patterns.append({
                     'pattern': pattern_name,
                     'confidence': confidence,
@@ -507,23 +656,288 @@ class MarketMechanicsAgent:
                     'evidence': evidence
                 })
 
+        # Add compound pattern detection (main chat suggestion)
+        compound_patterns = self._detect_compound_patterns(strike_patterns, context)
+        detected_patterns.extend(compound_patterns)
+
         return sorted(detected_patterns, key=lambda x: x['confidence'], reverse=True)
+
+    def _detect_strike_level_patterns(self, context: Dict) -> Dict:
+        """Enhanced strike-level pattern detection based on Issue #73 validation."""
+        options_data = context.get('options_data', pd.DataFrame())
+        gex_metrics = context.get('gex_metrics', {})
+        temporal_context = context.get('temporal_context', {})
+        spot_price = gex_metrics.get('spot_price', 0)
+
+        if options_data.empty or not spot_price:
+            return {}
+
+        patterns = {
+            'gamma_concentration': self._detect_gamma_concentration_enhanced(options_data, spot_price),
+            'volume_anomalies': self._detect_volume_anomalies(options_data),
+            'gamma_walls': self._detect_gamma_walls(options_data, spot_price),
+            'pin_setup': self._detect_pin_setup(options_data, spot_price, temporal_context),
+            'dealer_positioning': self._calculate_dealer_exposure(options_data, spot_price)
+        }
+
+        return patterns
+
+    def _detect_compound_patterns(self, strike_patterns: Dict, context: Dict) -> List[Dict]:
+        """
+        Detect compound patterns where multiple signals align for higher probability.
+        Based on main chat suggestion for pattern combination detection.
+        """
+        compound_patterns = []
+        temporal_context = context.get('temporal_context', {})
+
+        # High Probability Pin (validated from Issue #73 - 75% success rate)
+        gamma_data = strike_patterns.get('gamma_concentration', {})
+        volume_data = strike_patterns.get('volume_anomalies', {})
+        pin_data = strike_patterns.get('pin_setup', {})
+
+        if (gamma_data.get('concentration_pct', 0) > 0.20 and  # 20% gamma concentration
+            volume_data.get('detected', False) and               # Volume anomaly present
+            temporal_context.get('is_friday_330pm', False)):     # Friday 3:30 PM timing
+
+            combined_confidence = min(0.95,
+                gamma_data.get('confidence', 0.5) * 0.4 +
+                volume_data.get('confidence', 0.5) * 0.3 +
+                0.85  # Issue #73 validated Friday 3:30 PM boost
+            )
+
+            compound_patterns.append({
+                'pattern': 'high_probability_pin',
+                'confidence': combined_confidence * 100,  # Convert to percentage
+                'who': 'Market makers and institutional traders',
+                'whom': 'Price action and retail traders',
+                'what': 'Coordinated gamma pinning toward max concentration strike',
+                'evidence': [
+                    f"Gamma concentration: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f}",
+                    f"Volume anomaly: {volume_data.get('max_volume', 0):,.0f} contracts",
+                    "Friday 3:30 PM expiration timing (75% historical success)",
+                    f"Target pin level: ${pin_data.get('target_strike', gamma_data.get('max_strike', 0)):.0f}"
+                ],
+                'historical_validation': {
+                    'source': 'Issue #73 June 2024 validation',
+                    'success_rate': '75%',
+                    'sample_size': 4,
+                    'methodology': 'Friday 3:30 PM gamma pinning analysis'
+                }
+            })
+
+        # Volume + Gamma Squeeze Combination
+        gamma_walls = strike_patterns.get('gamma_walls', {})
+        if (volume_data.get('detected', False) and
+            gamma_walls.get('resistance_strikes') and
+            gamma_data.get('concentration_pct', 0) > 0.15):
+
+            compound_patterns.append({
+                'pattern': 'volume_gamma_breakout',
+                'confidence': 75,
+                'who': 'Large options players',
+                'whom': 'Market makers and short-term traders',
+                'what': 'Force breakout through gamma resistance levels',
+                'evidence': [
+                    f"Volume surge: {volume_data.get('max_volume', 0):,.0f} contracts",
+                    f"Gamma resistance: {gamma_walls.get('resistance_strikes')}",
+                    f"Concentration: {gamma_data.get('concentration_pct', 0):.1%}"
+                ]
+            })
+
+        return compound_patterns
+
+    def _detect_gamma_concentration_enhanced(self, options_data: pd.DataFrame, spot_price: float) -> Dict:
+        """Enhanced gamma concentration detection based on Issue #73 validation."""
+        try:
+            if 'gamma' not in options_data.columns:
+                return {}
+
+            # Group by strike and sum absolute gamma exposure
+            gamma_by_strike = options_data.groupby('strike')['gamma'].sum().abs()
+            total_gamma = gamma_by_strike.sum()
+
+            if total_gamma == 0:
+                return {}
+
+            # Find max gamma strike and concentration percentage
+            max_gamma_strike = gamma_by_strike.idxmax()
+            max_gamma_value = gamma_by_strike.max()
+            concentration_pct = max_gamma_value / total_gamma
+
+            # Distance from spot price
+            distance_from_spot = (max_gamma_strike - spot_price) / spot_price
+
+            return {
+                'max_strike': float(max_gamma_strike),
+                'concentration_pct': concentration_pct,
+                'distance_from_spot': distance_from_spot,
+                'max_gamma_value': max_gamma_value,
+                'confidence': min(1.0, concentration_pct * 2)  # Higher concentration = higher confidence
+            }
+
+        except Exception as e:
+            logger.error(f"Error in enhanced gamma concentration detection: {e}")
+            return {}
+
+    def _detect_volume_anomalies(self, options_data: pd.DataFrame) -> Dict:
+        """Detect unusual volume spikes indicating institutional activity."""
+        try:
+            if 'volume' not in options_data.columns:
+                return {'detected': False}
+
+            # Find strikes with high volume
+            high_volume_threshold = self.config.get('gex_thresholds', {}).get('high_volume_threshold', 100000)
+            volume_by_strike = options_data.groupby('strike')['volume'].sum()
+
+            # Detect anomalies (>3x average volume)
+            avg_volume = volume_by_strike.mean()
+            anomaly_threshold = max(high_volume_threshold, avg_volume * 3)
+
+            anomalous_strikes = volume_by_strike[volume_by_strike > anomaly_threshold]
+
+            if anomalous_strikes.empty:
+                return {'detected': False}
+
+            max_volume_strike = anomalous_strikes.idxmax()
+            max_volume = anomalous_strikes.max()
+
+            return {
+                'detected': True,
+                'max_volume_strike': float(max_volume_strike),
+                'max_volume': int(max_volume),
+                'anomalous_strikes': anomalous_strikes.index.tolist(),
+                'vs_average': max_volume / avg_volume if avg_volume > 0 else 0,
+                'confidence': min(1.0, max_volume / 500000)  # Confidence based on volume level
+            }
+
+        except Exception as e:
+            logger.error(f"Error in volume anomaly detection: {e}")
+            return {'detected': False}
+
+    def _detect_gamma_walls(self, options_data: pd.DataFrame, spot_price: float) -> Dict:
+        """Identify resistance/support levels from gamma buildup."""
+        try:
+            if 'gamma' not in options_data.columns:
+                return {}
+
+            gamma_by_strike = options_data.groupby('strike')['gamma'].sum()
+
+            # Find significant gamma levels (>20% of total)
+            total_gamma = gamma_by_strike.abs().sum()
+            significant_threshold = total_gamma * 0.20
+
+            significant_strikes = gamma_by_strike[gamma_by_strike.abs() > significant_threshold]
+
+            if significant_strikes.empty:
+                return {}
+
+            # Classify as resistance (above spot) or support (below spot)
+            resistance_strikes = [s for s in significant_strikes.index if s > spot_price]
+            support_strikes = [s for s in significant_strikes.index if s <= spot_price]
+
+            return {
+                'resistance_strikes': resistance_strikes,
+                'support_strikes': support_strikes,
+                'strength': 'high' if len(significant_strikes) >= 3 else 'medium'
+            }
+
+        except Exception as e:
+            logger.error(f"Error in gamma walls detection: {e}")
+            return {}
+
+    def _detect_pin_setup(self, options_data: pd.DataFrame, spot_price: float, temporal_context: Dict) -> Dict:
+        """Detect pin setup using Issue #73 validated methodology."""
+        try:
+            # Get gamma concentration data
+            gamma_data = self._detect_gamma_concentration_enhanced(options_data, spot_price)
+
+            if not gamma_data:
+                return {}
+
+            max_gamma_strike = gamma_data.get('max_strike', 0)
+            concentration_pct = gamma_data.get('concentration_pct', 0)
+
+            # Friday 3:30 PM gets boost from Issue #73 validation (75% success rate)
+            is_friday_330pm = temporal_context.get('is_friday_330pm', False)
+            base_probability = concentration_pct
+
+            if is_friday_330pm and concentration_pct > 0.15:
+                # Apply Issue #73 validated 75% success rate
+                pin_probability = 0.75
+            else:
+                # Standard calculation
+                pin_probability = min(0.90, base_probability * 2)
+
+            return {
+                'target_strike': max_gamma_strike,
+                'pin_probability': pin_probability,
+                'distance_to_target': abs(spot_price - max_gamma_strike) / spot_price,
+                'friday_330pm_boost': is_friday_330pm,
+                'validated_setup': is_friday_330pm and concentration_pct > 0.15
+            }
+
+        except Exception as e:
+            logger.error(f"Error in pin setup detection: {e}")
+            return {}
+
+    def _calculate_dealer_exposure(self, options_data: pd.DataFrame, spot_price: float) -> Dict:
+        """Calculate net dealer gamma exposure and positioning."""
+        try:
+            if 'gamma' not in options_data.columns:
+                return {}
+
+            # Estimate dealer positioning (simplified)
+            total_gamma = options_data['gamma'].sum()
+            call_gamma = options_data[options_data['type'] == 'call']['gamma'].sum()
+            put_gamma = options_data[options_data['type'] == 'put']['gamma'].sum()
+
+            # Find approximate gamma flip point
+            gamma_by_strike = options_data.groupby('strike')['gamma'].sum()
+
+            # Simple flip point estimation
+            cumulative_gamma = gamma_by_strike.cumsum()
+            zero_crossings = cumulative_gamma[cumulative_gamma.abs() < abs(total_gamma) * 0.1]
+
+            flip_point = zero_crossings.index[0] if not zero_crossings.empty else spot_price
+
+            return {
+                'total_gamma': total_gamma,
+                'call_gamma': call_gamma,
+                'put_gamma': put_gamma,
+                'flip_point': flip_point,
+                'distance_to_flip': (spot_price - flip_point) / flip_point if flip_point > 0 else 0,
+                'regime': 'short_gamma' if total_gamma < 0 else 'long_gamma'
+            }
+
+        except Exception as e:
+            logger.error(f"Error in dealer exposure calculation: {e}")
+            return {}
 
     def _llm_interpret_mechanics(self, context: Dict, patterns: List[Dict]) -> Dict:
         """Use LLM to interpret market mechanics."""
         if not self.llm:
+            logger.warning("No LLM available, falling back to rule-based interpretation")
             return self._rule_based_interpretation(patterns)
 
         # Build LLM prompt
-        prompt = self._build_mechanics_prompt(context, patterns)
+        try:
+            prompt = self._build_mechanics_prompt(context, patterns)
+            logger.debug(f"Built prompt for LLM (length: {len(prompt)} chars)")
+        except Exception as e:
+            logger.error(f"Prompt building failed: {e}")
+            return self._rule_based_interpretation(patterns)
 
         try:
             # Use duck typing with proper error handling
+            logger.debug("Invoking LLM for mechanics interpretation...")
             interpretation = self._invoke_llm_safely(prompt)
+            logger.info(f"LLM interpretation successful: confidence={interpretation.get('confidence', 'Unknown')}")
             return interpretation
 
         except Exception as e:
             logger.error(f"LLM interpretation failed: {e}")
+            import traceback
+            logger.error(f"Full traceback: {traceback.format_exc()}")
             return self._rule_based_interpretation(patterns)
 
     def _invoke_llm_safely(self, prompt: str) -> Dict:
@@ -601,19 +1015,33 @@ class MarketMechanicsAgent:
             'target': None
         }
 
-        # Check for high confidence patterns
-        if interpretation.get('confidence', 0) < 75:
+        # Check for sufficient confidence patterns (configurable threshold)
+        min_confidence = self.config.get('min_signal_confidence', 30)  # Default 30%
+
+        # Use pattern confidence if interpretation confidence is missing/low
+        interp_confidence = interpretation.get('confidence', 0)
+        pattern_confidence = context.get('overall_confidence', 0)
+        effective_confidence = max(interp_confidence, pattern_confidence)
+
+        if effective_confidence < min_confidence:
             return signal
 
         primary_mechanic = interpretation.get('primary_mechanic')
         gex_metrics = context.get('gex_metrics', {})
 
-        # Apply contrarian logic for specific patterns
-        if primary_mechanic == 'dealer_hedging':
-            if gex_metrics.get('gex_regime') == 'NEGATIVE_GAMMA_LOW':
+        # Also check detected patterns directly
+        patterns = context.get('patterns_detected', [])
+        top_pattern = patterns[0]['pattern'] if patterns else None
+
+        logger.info(f"Signal generation: confidence {effective_confidence}% >= {min_confidence}%, pattern: {top_pattern}")
+
+        # Apply contrarian logic for specific patterns (check both LLM and pattern detection)
+        active_mechanic = primary_mechanic or top_pattern
+        if active_mechanic == 'dealer_hedging':
+            if gex_metrics.get('regime') == 'NEGATIVE_GAMMA_LOW':  # Fixed key name
                 signal = {
                     'action': 'BUY',
-                    'confidence': interpretation['confidence'],
+                    'confidence': effective_confidence,
                     'rationale': 'Dealers forced to buy dips in negative gamma - fade the move',
                     'risk_reward': 1.5,
                     'entry': 'Market',
@@ -649,19 +1077,27 @@ class MarketMechanicsAgent:
     def _calculate_confidence(self, patterns: List[Dict], context: Dict) -> float:
         """Calculate overall confidence in the analysis."""
         if not patterns:
+            # Base confidence from GEX regime alone
+            gex_metrics = context.get('gex_metrics', {})
+            if gex_metrics.get('regime') in ['NEGATIVE_GAMMA_HIGH', 'NEGATIVE_GAMMA_LOW']:
+                return 30.0  # Base 30% confidence for negative GEX
             return 0.0
 
-        # Weight patterns by confidence
-        total_confidence = sum(p['confidence'] for p in patterns)
+        # Use max pattern confidence instead of average
+        max_confidence = max(p['confidence'] for p in patterns)
+
+        # Bonus for multiple confirming patterns
+        if len(patterns) > 1:
+            max_confidence += 10 * (len(patterns) - 1)  # +10% per additional pattern
 
         # Adjust for context factors
         temporal = context.get('temporal_context', {})
         if temporal.get('is_opex'):
-            total_confidence *= 1.2  # Higher confidence during OPEX
+            max_confidence *= 1.2  # Higher confidence during OPEX
         if temporal.get('days_to_fomc', 999) < 3:
-            total_confidence *= 0.8  # Lower confidence near FOMC
+            max_confidence *= 0.8  # Lower confidence near FOMC
 
-        return min(total_confidence / len(patterns), 100.0)
+        return min(max_confidence, 100.0)
 
     def _build_mechanics_prompt(self, context: Dict, patterns: List[Dict]) -> str:
         """Build prompt for LLM mechanics interpretation using exact format."""
@@ -692,12 +1128,13 @@ class MarketMechanicsAgent:
             elif top_pattern['pattern'] == 'dealer_hedging':
                 options_flow['unusual_activity'] = 'Dealer hedging flows dominating price action'
 
-        # Add market context
+        # Add market context with strike-level patterns
         market_context = {
             'price_action': context.get('price_action', {}),
             'temporal_context': context.get('temporal_context', {}),
             'strike_distribution': context.get('strike_distribution', {}),
-            'volatility_surface': context.get('volatility_surface', {})
+            'volatility_surface': context.get('volatility_surface', {}),
+            'strike_level_patterns': context.get('strike_level_patterns', {})  # Add enhanced patterns
         }
 
         # Use prompt builder with exact format
@@ -794,35 +1231,6 @@ class MarketMechanicsAgent:
             logger.error(f"Error analyzing gamma concentration: {e}")
             return {}
 
-    def _estimate_vanna_flows(self, options_data: pd.DataFrame) -> float:
-        """Estimate vanna flows (simplified)."""
-        # Simplified vanna estimation
-        if 'vega' in options_data.columns and 'delta' in options_data.columns:
-            return (options_data['vega'] * options_data['delta']).sum()
-        return 0.0
-
-    def _estimate_charm_decay(self, options_data: pd.DataFrame, date) -> float:
-        """Estimate charm decay impact."""
-        # Simplified charm estimation based on time to expiry
-        if 'expiry' not in options_data.columns:
-            return 0.0
-
-        try:
-            # Create a copy to avoid modifying original data
-            options_data = options_data.copy()
-            options_data['dte'] = pd.to_datetime(
-                options_data['expiry']) - pd.Timestamp(date)
-            options_data['dte'] = options_data['dte'].dt.days
-
-            # Higher charm for near-expiry options
-            near_expiry = options_data[options_data['dte'] <= 7]
-            if 'delta' in near_expiry.columns and 'gamma' in near_expiry.columns:
-                return (near_expiry['delta'] * near_expiry['gamma'] / near_expiry['dte']).sum()
-
-        except Exception as e:
-            logger.error(f"Error estimating charm: {e}")
-
-        return 0.0
 
     def _analyze_strike_distribution(self, options_data: pd.DataFrame) -> Dict:
         """Analyze strike distribution and OI concentration."""
@@ -978,3 +1386,82 @@ class MarketMechanicsAgent:
             'gex_metrics': {},
             'confidence': 0
         }
+
+    def _populate_database_entry(self, conn, date_str: str, gex_metrics: Dict):
+        """Populate database with calculated GEX metrics.
+
+        Handles both daily and intra-day data population.
+        """
+        try:
+            # Determine regime
+            net_gex = gex_metrics.get('net_gex', 0)
+            if net_gex < -5e9:
+                regime = 'NEGATIVE_GAMMA_HIGH'
+            elif net_gex < 0:
+                regime = 'NEGATIVE_GAMMA_LOW'
+            elif net_gex > 5e9:
+                regime = 'POSITIVE_GAMMA_HIGH'
+            else:
+                regime = 'POSITIVE_GAMMA_LOW'
+
+            # Determine if this is intra-day timestamp or daily date
+            is_intraday = ' ' in date_str and ':' in date_str
+
+            cursor = conn.cursor()
+
+            if is_intraday:
+                # Insert into intraday table
+                cursor.execute("""
+                    INSERT OR REPLACE INTO intraday_gex_metrics
+                    (symbol, timestamp, spot_price, total_gex, net_call_gex, net_put_gex,
+                     gamma_flip_point, flip_ratio, gex_regime, data_quality_score,
+                     options_count, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    self.symbol,
+                    date_str,  # This is actually a timestamp for intraday
+                    gex_metrics.get('spot_price', 0),
+                    net_gex,
+                    gex_metrics.get('call_gamma', 0),
+                    gex_metrics.get('put_gamma', 0),
+                    gex_metrics.get('flip_level', 0),
+                    gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0)
+                        if isinstance(gex_metrics.get('gamma_concentration'), dict)
+                        else gex_metrics.get('gamma_concentration', 0),
+                    regime,
+                    1.0,  # data_quality_score
+                    0,    # options_count (would need to count from options_data)
+                    datetime.datetime.now().isoformat()
+                ))
+            else:
+                # Insert into daily table
+                cursor.execute("""
+                    INSERT OR REPLACE INTO daily_gex_metrics
+                    (symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
+                     gamma_flip_point, flip_ratio, gex_regime, data_quality_score,
+                     options_count, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    self.symbol,
+                    date_str,
+                    gex_metrics.get('spot_price', 0),
+                    net_gex,
+                    gex_metrics.get('call_gamma', 0),
+                    gex_metrics.get('put_gamma', 0),
+                    gex_metrics.get('flip_level', 0),
+                    gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0)
+                        if isinstance(gex_metrics.get('gamma_concentration'), dict)
+                        else gex_metrics.get('gamma_concentration', 0),
+                    regime,
+                    1.0,  # data_quality_score
+                    0,    # options_count (would need to count from options_data)
+                    datetime.datetime.now().isoformat()
+                ))
+
+            conn.commit()
+            table_type = "intraday" if is_intraday else "daily"
+            logger.debug(f"Populated {table_type} database entry for {self.symbol} {date_str}")
+
+        except Exception as e:
+            logger.error(f"Failed to populate database entry for {date_str}: {e}")
+            # Don't raise - we still want to return the calculated data

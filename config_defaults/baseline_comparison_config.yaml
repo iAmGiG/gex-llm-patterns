@@ -1,14 +1,30 @@
-# Baseline Comparison Configuration - Issue #58
-# Parameterized settings for real baseline vs LLM comparison testing
+# Baseline Comparison Configuration - General Config
+# Single config for all tickers with command-line overrides
 
 # Test Configuration
 test_config:
-  default_symbol: "SPY"
-  default_start_date: "2023-01-01"
-  default_end_date: "2023-12-31"
+  default_symbol: "SPY"  # Override with --symbol
+  # Extended test periods for statistical significance
+  default_start_date: "2023-01-01"  # Override with --start-date
+  default_end_date: "2024-01-31"    # Override with --end-date
+  # Quick test period (for debugging)
+  quick_test_start: "2024-01-01"
+  quick_test_end: "2024-03-31"
   account_size: 50000  # For P&L visualization
   commission: 0.001    # 0.1% per trade
   slippage: 0.001      # 0.1% per trade
+  min_trades_for_significance: 30  # Statistical significance threshold
+
+# Experiment Naming
+experiment_config:
+  # Experiment types (one word)
+  type: "mechvsllm"  # Options: baseline, llm, mechvsllm, confidence, patterns
+  # Range naming based on date spans
+  range_naming:
+    "2024-01-01_2024-03-31": "2024Q1"
+    "2023-01-01_2024-01-31": "2023-2024"
+    "2024-01-01_2024-12-31": "2024"
+    "2023-01-01_2023-12-31": "2023"
 
 # Strategy Parameters
 strategies:
@@ -21,15 +37,23 @@ strategies:
   technical_baseline:
     name: "Technical Indicators"
     description: "MACD + RSI weighted voting"
-    enabled: true
+    enabled: false  # Disabled - focusing on GEX vs LLM only
     position_sizing: 0.015  # 1.5% conservative
 
   llm_strategy:
     name: "O3-mini LLM"
     description: "MarketMechanicsAgent with WHO/WHOM/WHAT analysis"
     enabled: true
-    confidence_threshold: 75  # Minimum confidence for trade execution
-    max_trades_per_test: 20   # Limit for testing (cost control)
+    confidence_threshold: 30  # Lowered from 75 to generate more signals
+    max_trades_per_test: 100  # Increased from 20 for better statistics
+    # Test multiple thresholds to find optimal
+    confidence_thresholds_to_test: [30, 40, 50, 60, 70]  # Lowered range
+    analyze_confidence_impact: true  # Enable detailed confidence analysis
+    # LLM-specific risk adjustments
+    position_sizing_by_confidence:
+      30-50: 0.01   # 1% position for low confidence
+      50-70: 0.015  # 1.5% position for medium confidence
+      70-100: 0.02  # 2% position for high confidence
 
 # Risk Management (consistent across all strategies)
 risk_management:
@@ -59,7 +83,7 @@ data_sources:
 
   options_data:
     primary: "alpha_vantage_premium"
-    fallback: "sample_data"
+    fallback: "cache_only"  # Changed from sample_data to ensure real data only
     use_cache: true
 
 # Output Configuration
@@ -116,3 +140,8 @@ llm_config:
   cost_per_query: 0.00176  # $0.00176 per query
   timeout_seconds: 30
   retry_attempts: 2
+  # Agent-specific configuration
+  min_signal_confidence: 30  # Lowered from default 50% to generate more signals
+  gex_thresholds:
+    gamma_concentration_threshold: 0.5  # Lowered from 0.7 for more sensitivity
+    significant_gex_threshold: 300000000  # 300M instead of 500M for more pattern detection

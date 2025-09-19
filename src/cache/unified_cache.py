@@ -16,9 +16,11 @@ samples/                 # Synthetic data (separate)
 import json
 from pathlib import Path
 import pandas as pd
-import datetime
 import logging
-from src.utils.date_utils import now_iso
+from src.utils.date_utils import (
+    now_iso,
+    today_str
+)
 
 
 class UnifiedCacheManager:
@@ -181,7 +183,7 @@ class UnifiedCacheManager:
                 end = df['timestamp'].max().strftime('%Y-%m-%d')
                 date_range = f"{start}_{end}"
             elif not date_range:
-                date_range = datetime.datetime.now().strftime('%Y-%m-%d')
+                date_range = today_str()
 
             # Path: .cache/news/SPY/2024-01-01_2024-12-31.json
             category_dir = self.news_dir / category
@@ -319,11 +321,13 @@ class UnifiedCacheManager:
     def cleanup_cache(self, older_than_days: int = 30) -> int:
         """Clean up old cache files."""
         try:
+            import datetime
             cutoff_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
             cleaned = 0
 
             for file_path in self.base_dir.rglob('*.pickle'):
                 if file_path.is_file():
+                    import datetime
                     file_time = datetime.datetime.fromtimestamp(
                         file_path.stat().st_mtime)
 

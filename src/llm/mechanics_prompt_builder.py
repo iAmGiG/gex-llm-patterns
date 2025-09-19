@@ -45,9 +45,44 @@ class MechanicsPromptBuilder:
         # Format date
         date_str = date.strftime("%B %d, %Y")
 
-        # Build GEX analysis section
-        gex_section = f"""GEX ANALYSIS - {date_str}
-- Net GEX: ${gex_metrics.get('net_gex', 0)/1e9:.1f}B ({gex_metrics.get('gex_regime', 'UNKNOWN')})
+        # Enhanced GEX analysis with strike-level intelligence
+        gex_section = f"""ENHANCED GEX ANALYSIS - {date_str}
+- Net GEX: ${gex_metrics.get('net_gex', 0)/1e9:.1f}B ({gex_metrics.get('gex_regime', 'UNKNOWN')})"""
+
+        # Add strike-level intelligence if available
+        if 'strike_level_patterns' in market_context:
+            patterns = market_context['strike_level_patterns']
+
+            # Gamma concentration intelligence
+            gamma_data = patterns.get('gamma_concentration', {})
+            if gamma_data:
+                gex_section += f"""
+- GAMMA CONCENTRATION: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f} strike
+- Distance from spot: {gamma_data.get('distance_from_spot', 0):.3f}% ({abs(gamma_data.get('distance_from_spot', 0)):.1%} away)"""
+
+            # Volume anomalies
+            volume_data = patterns.get('volume_anomalies', {})
+            if volume_data.get('detected', False):
+                gex_section += f"""
+- VOLUME ANOMALY: {volume_data.get('max_volume', 0):,.0f} contracts at ${volume_data.get('max_volume_strike', 0):.0f} ({volume_data.get('vs_average', 0):.1f}x average)"""
+
+            # Pin setup intelligence (Issue #73 validated)
+            pin_data = patterns.get('pin_setup', {})
+            if pin_data.get('pin_probability', 0) > 0.60:
+                validation_note = " (75% VALIDATED SETUP)" if pin_data.get('validated_setup', False) else ""
+                gex_section += f"""
+- PIN SETUP: {pin_data.get('pin_probability', 0):.1%} probability toward ${pin_data.get('target_strike', 0):.0f}{validation_note}"""
+
+            # Gamma walls
+            gamma_walls = patterns.get('gamma_walls', {})
+            if gamma_walls.get('resistance_strikes') or gamma_walls.get('support_strikes'):
+                resistance = gamma_walls.get('resistance_strikes', [])
+                support = gamma_walls.get('support_strikes', [])
+                gex_section += f"""
+- GAMMA WALLS: Resistance at {resistance[:3]}, Support at {support[:3]} ({gamma_walls.get('strength', 'medium')} strength)"""
+
+        # Add basic GEX metrics
+        gex_section += f"""
 - Flip point: ${gex_metrics.get('flip_point', 0):.0f}
 - Current price: ${gex_metrics.get('spot_price', 0):.2f}"""
 

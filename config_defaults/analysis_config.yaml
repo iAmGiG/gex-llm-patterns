@@ -69,3 +69,67 @@ gex_thresholds:
   # Volume and flow thresholds
   high_volume_threshold: 1000000  # 1M volume threshold
   significant_flow_threshold: 500000  # 500K flow threshold
+
+# Intra-day analysis configuration
+intraday_analysis:
+  # Key algo trading times (24-hour format)
+  algo_times:
+    market_open: "09:30:00"      # Market open
+    algo_10am: "10:00:00"        # 10 AM algo updates
+    fomc_230pm: "14:30:00"       # FOMC/Fed 2:30 PM (special days)
+    gamma_330pm: "15:30:00"      # Gamma 3:30 PM (key validation time)
+    gamma_340pm: "15:40:00"      # Gamma 3:40 PM
+    gamma_350pm: "15:50:00"      # Gamma 3:50 PM
+    market_close: "16:00:00"     # Market close
+    extended_close: "16:15:00"   # Extended ETF close
+
+  # Market session configuration
+  market_session:
+    start_time: "09:30:00"       # Regular session start
+    end_time: "16:15:00"         # Extended session end
+    timezone: "America/New_York" # Market timezone
+
+  # Data collection intervals
+  data_intervals:
+    standard_interval: 10        # 10-minute snapshots
+    high_frequency_interval: 1   # 1-minute for critical times
+
+# Strike-level pattern detection configuration
+strike_level_patterns:
+  # Gamma concentration thresholds
+  gamma_concentration:
+    min_concentration_pct: 0.15    # 15% minimum concentration to detect
+    high_concentration_pct: 0.20   # 20% for high-confidence signals
+    max_distance_from_spot: 0.05   # 5% maximum distance from spot price
+
+  # Volume anomaly detection
+  volume_anomalies:
+    base_threshold: 100000         # 100K contracts minimum
+    multiplier_threshold: 3.0      # 3x average volume
+    confidence_volume: 500000      # 500K for high confidence
+
+  # Gamma walls detection
+  gamma_walls:
+    significance_threshold: 0.20   # 20% of total gamma
+    min_strikes_required: 2        # Minimum strikes for wall
+    proximity_range: 0.03          # 3% range around spot
+
+  # Pin setup configuration (Issue #73 validated)
+  pin_setup:
+    base_probability_multiplier: 2.0     # Base concentration to probability
+    friday_330pm_probability: 0.75       # Issue #73 validated success rate
+    min_concentration_for_pin: 0.15      # 15% minimum for pin detection
+    validated_setup_threshold: 0.15      # Threshold for validated Friday setup
+
+  # Compound pattern thresholds
+  compound_patterns:
+    high_probability_pin:
+      min_gamma_concentration: 0.20      # 20% gamma concentration required
+      require_volume_anomaly: true       # Volume anomaly must be present
+      require_friday_330pm: true         # Friday 3:30 PM timing required
+      combined_confidence_cap: 0.95      # Maximum combined confidence
+
+    volume_gamma_breakout:
+      min_gamma_concentration: 0.15      # 15% gamma concentration
+      require_gamma_walls: true          # Gamma resistance/support required
+      base_confidence: 0.75               # Base confidence level
