@@ -5,18 +5,21 @@ Scripts for system validation, integration testing, and quality assurance.
 ## Scripts
 
 ### `test_cache_integration.py`
+
 - **Purpose**: Validates the cache system integration with data collection
 - **Usage**: `python scripts/testing/test_cache_integration.py`
 - **Tests**: Cache directory structure, methods availability, collector integration
 - **Output**: Validation report of cache system functionality
 
 ### `test_gex_caching.py`
+
 - **Purpose**: Tests GEX caching implementation and performance
 - **Usage**: `python scripts/testing/test_gex_caching.py`
 - **Tests**: GEX cache functionality, concurrent processing, performance metrics
 - **Output**: Cache performance validation and functionality report
 
 ### `test_agents.py`
+
 - **Purpose**: Tests agent communication and basic functionality
 - **Usage**: `python scripts/testing/test_agents.py`
 - **Tests**: Agent creation, communication patterns, workflow integration
@@ -25,11 +28,13 @@ Scripts for system validation, integration testing, and quality assurance.
 ## Testing Categories
 
 ### Integration Tests
+
 - Cache system integration
 - API client connectivity
 - Data pipeline validation
 
 ### Unit Tests
+
 - Individual component testing
 - Function validation
 - Error handling verification
