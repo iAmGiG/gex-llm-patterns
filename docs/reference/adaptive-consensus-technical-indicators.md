@@ -7,11 +7,13 @@ The Adaptive Consensus Technical Indicator System is a 3-tier voting framework t
 ## Problem Solved
 
 **Before Implementation:**
+
 - Binary AND logic required both MACD and RSI to agree simultaneously
 - Result: 0 signals generated during Q1 2024 SPY testing
 - System was too restrictive for practical trading
 
 **After Implementation:**
+
 - 3-tier consensus system with flexible agreement levels
 - Result: 33 signals generated from 48 trading days (68.8% signal rate)
 - Realistic trading frequency with conservative risk management
@@ -64,6 +66,7 @@ strategy_parameters:
 #### Step 1: Individual Indicator Signals
 
 **RSI Signals:**
+
 ```python
 rsi_signal = 0
 if rsi <= 30:  # Oversold
@@ -73,6 +76,7 @@ elif rsi >= 70:  # Overbought
 ```
 
 **MACD Signals:**
+
 ```python
 macd_signal = 0
 if abs(macd_histogram) > 0.1:  # Threshold from config
@@ -85,6 +89,7 @@ if abs(macd_histogram) > 0.1:  # Threshold from config
 #### Step 2: 3-Tier Consensus Logic
 
 **Tier 1 - Strong Consensus (Both Agree):**
+
 ```python
 if rsi_signal != 0 and macd_signal != 0 and rsi_signal == macd_signal:
     consensus_type = "strong_consensus"
@@ -95,6 +100,7 @@ if rsi_signal != 0 and macd_signal != 0 and rsi_signal == macd_signal:
 ```
 
 **Tier 2 - Weak Signal (One Signals, Other Neutral):**
+
 ```python
 elif (rsi_signal != 0 and macd_signal == 0) or (rsi_signal == 0 and macd_signal != 0):
     consensus_type = "weak_signal"
@@ -105,6 +111,7 @@ elif (rsi_signal != 0 and macd_signal == 0) or (rsi_signal == 0 and macd_signal 
 ```
 
 **Tier 3 - Hold/Conflict (Skip Trade):**
+
 ```python
 else:
     # No signals or conflicting signals
@@ -124,16 +131,19 @@ if final_confidence < min_confidence:
 ### File Structure
 
 **Primary Implementation:**
+
 - `src/analysis/technical_indicator_baseline.py` - Main Adaptive Consensus logic
 - `config_defaults/technical_indicators_config.yaml` - Configuration parameters
 
 **Test Framework:**
+
 - `scripts/test_rh2mas_voting.py` - Isolated testing implementation
-- Uses cached SPY data from `.cache/market_data/SPY/`
+- Uses cached market data for analysis
 
 ### Key Code Sections
 
 **Configuration Loading:**
+
 ```python
 # In technical_indicator_baseline.py __init__
 with open('config_defaults/technical_indicators_config.yaml', 'r') as f:
@@ -146,6 +156,7 @@ self.macd_threshold = voting_config['macd_threshold']
 ```
 
 **Signal Generation:**
+
 ```python
 # Adaptive Consensus 3-tier voting logic (lines 243-272 in technical_indicator_baseline.py)
 if rsi_signal != 0 and macd_signal != 0 and rsi_signal == macd_signal:
@@ -172,6 +183,7 @@ else:
 ```
 
 **Enhanced Signal Metadata:**
+
 ```python
 signal = {
     'date': date.strftime('%Y-%m-%d'),
@@ -194,17 +206,20 @@ signal = {
 ### Test Results (SPY Q1 2024)
 
 **Data Source:** Cached Alpha Vantage data
+
 - **Period:** 2024-01-01 to 2024-03-31
 - **Market Days:** 61 total days
 - **Indicator Days:** 48 days (after warmup period)
 
 **Signal Generation:**
+
 - **Total Signals:** 33 signals
 - **Signal Rate:** 68.8% (33/48 trading days)
 - **Direction Breakdown:** 29 long, 4 short signals
 - **Consensus Breakdown:** 33 weak signals, 0 strong consensus
 
 **Signal Characteristics:**
+
 - **Position Size:** 50% for all signals (weak signal tier)
 - **Confidence:** 55% for all signals (base 45% + 10% boost)
 - **Risk Management:** Conservative approach with reduced position sizing
@@ -256,11 +271,13 @@ The Adaptive Consensus system serves as the **Technical Indicator Baseline** in 
 ### Data Dependencies
 
 **Input Requirements:**
+
 - OHLCV market data (daily frequency)
 - Minimum 34 days of data (for MACD slow period)
 - Clean, continuous price series
 
 **Output Format:**
+
 - Signal dictionary with enhanced metadata
 - Compatible with backtesting frameworks
 - Standardized confidence and position sizing
@@ -284,6 +301,7 @@ The Adaptive Consensus system serves as the **Technical Indicator Baseline** in 
 ## Validation Status
 
 ✅ **Implemented and Tested**
+
 - Configuration system working
 - Signal generation validated
 - Performance metrics confirmed

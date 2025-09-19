@@ -26,6 +26,7 @@ The Baseline GEX Strategy provides a mechanical trading approach that trades eve
 ### What's Blocked ❌
 
 **Cannot complete baseline comparison because:**
+
 - GPT-4o-mini fails obfuscated validation (0% accuracy)
 - Need working LLM model first (Issue #62)
 - Current LLM cannot perform genuine market mechanics analysis
@@ -35,6 +36,7 @@ The Baseline GEX Strategy provides a mechanical trading approach that trades eve
 ### Configuration Parameters
 
 From `config_defaults/trading_config.yaml`:
+
 ```yaml
 validated_trading_engine:
   position_sizing:
@@ -46,6 +48,7 @@ validated_trading_engine:
 ```
 
 From `config_defaults/analysis_config.yaml`:
+
 ```yaml
 baseline_comparison:
   expected_baseline_win_rate: 0.43    # 43% win rate expected
@@ -57,11 +60,13 @@ baseline_comparison:
 ### Strategy Logic
 
 **Entry Rule:** Trade contrarian on every day when GEX < 0
+
 - No intelligence filtering
 - No pattern recognition
 - 100% of negative GEX days generate signals
 
 **Risk Management:** Same parameters as LLM strategy for fair comparison
+
 - Stop loss: 1%
 - Profit target: 1.5%
 - Max holding: 2 days
@@ -80,11 +85,13 @@ signals = baseline.generate_signals(gex_data)
 ## Dependencies
 
 ### Completed Dependencies ✅
+
 - Issue #53: Simplified data pipeline
 - Enhanced MarketMechanicsAgent with robust error handling
 - Configuration system ready
 
 ### Blocking Dependencies ❌
+
 - **Issue #62**: Model selection research (CRITICAL)
   - Need LLM that works on obfuscated data
   - GPT-4o-mini fails genuine analysis test

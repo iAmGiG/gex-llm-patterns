@@ -8,7 +8,7 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 
 ## Current System Architecture
 
-```
+```bash
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │  Data Sources   │────│  Cache Layer    │────│  Analysis Core  │
 │                 │    │                 │    │                 │
@@ -42,12 +42,14 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 ### Core Research Question
 
 **Traditional quantitative methods miss sophisticated institutional patterns because they:**
+
 - Analyze single dimensions (price, volume, etc.)
 - Can't understand cross-market coordination
 - Miss temporal sequence patterns
 - Don't detect manipulation vs. organic flows
 
 **LLMs can potentially identify these patterns because they:**
+
 - Excel at multi-dimensional pattern recognition
 - Understand sequential relationships
 - Can detect anomalies in complex datasets
@@ -56,6 +58,7 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 ### Key Pattern Example: Short Put Arbitrage
 
 **Pattern Mechanics** (Issue #13):
+
 1. **Setup**: Summer months, lower volume conditions
 2. **Phase 1**: Load above-ask calls to create urgency/FOMO
 3. **Phase 2**: Rapid-fire short OTM puts across multiple strikes
@@ -63,6 +66,7 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 5. **Result**: Force additional call buying, create upside momentum
 
 **Why LLMs Matter**: This pattern requires recognizing:
+
 - Seasonal timing (summer bias)
 - Volume/OI anomalies across strikes
 - Fill-side manipulation signatures
@@ -74,18 +78,21 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 ### ✅ **Completed Infrastructure (Phase 1a)**
 
 #### Data Pipeline
+
 - **Alpha Vantage Integration**: Historical Options API client (`fetch_historical_options`)
 - **Sample Data System**: 4 years of realistic SPY/SPX data in `.cache/`
 - **Data Processing**: JSON format, derived fields, validation
 - **Rate Limiting**: Entry premium tier (75 calls/min) ready
 
 #### Agent Framework  
+
 - **BaseGEXAgent**: Simplified from reference, AutoGen 0.7.4 compatible
 - **Three Agents**: DataCollector, GEXCalculator, PatternAnalyzer
 - **Communication**: Multi-agent data flow tested
 - **Storage**: Local data management and results caching
 
 #### Testing System
+
 - **Full Pipeline Test**: End-to-end without API dependencies
 - **Pattern Detection**: Short Put Arbitrage framework working
 - **Data Quality**: Comprehensive validation (530 SPY, 1050 SPX contracts/day)
@@ -93,21 +100,25 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 ### 🔄 **Current Focus (Phase 1b): Data Tools (Issues #14-17)**
 
 #### Issue #14: Data Ingestion - Options Chain Parser
+
 - **Status**: ✅ Basic implementation complete
 - **Remaining**: CSV format optimization, error handling enhancement
 - **Goal**: Robust parsing of Alpha Vantage Historical Options responses
 
 #### Issue #15: Caching System - Options Storage
+
 - **Status**: ⏳ Partially implemented via sample system
 - **Remaining**: Parquet format, smart TTL, performance optimization
 - **Goal**: Efficient storage/retrieval for 15+ years of options history
 
 #### Issue #16: Data Validation - Quality Control
+
 - **Status**: ⏳ Basic validation working
 - **Remaining**: Business rules, Greeks relationships, outlier detection
 - **Goal**: Ensure high-quality data foundation for analysis
 
 #### Issue #17: Data Normalization - Multi-source Format
+
 - **Status**: ⏳ Alpha Vantage format working
 - **Remaining**: Future data sources, derived fields, quality scoring
 - **Goal**: Consistent format regardless of data provider
@@ -117,6 +128,7 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 ### Pattern Discovery Approach
 
 #### 1. **Historical Analysis (2020-2024)**
+
 ```python
 # Data Collection
 spy_chains = collect_options_history("SPY", "2020-01-01", "2024-12-31")
@@ -131,6 +143,7 @@ tokenized_sequences = convert_to_llm_input(spy_chains, context_window=50)
 ```
 
 #### 2. **Multi-Agent Pattern Mining**
+
 ```python
 # Agent Workflow
 data_agent.collect_options_chain("SPY", "2024-07-15")
@@ -145,6 +158,7 @@ patterns = pattern_agent.process_with_tools(
 ```
 
 #### 3. **Statistical Validation**
+
 - **Backtesting**: Out-of-sample performance on 2023-2024 data  
 - **Monte Carlo**: Random pattern generation vs. real signal detection
 - **Cross-validation**: Multiple market regimes and volatility environments
@@ -153,12 +167,14 @@ patterns = pattern_agent.process_with_tools(
 ### Success Metrics
 
 #### Pattern Detection Performance
+
 - **Precision**: >80% accuracy identifying true patterns
 - **Recall**: >70% capture rate of known instances  
 - **False Positive Rate**: <10% (critical for trading applications)
 - **Timing**: Detection within 15-30 minutes of pattern initiation
 
 #### Research Validation
+
 - **Statistical Significance**: p < 0.05 for pattern predictive power
 - **Economic Significance**: Patterns lead to measurable price movements
 - **Robustness**: Performance across different market conditions
@@ -188,7 +204,8 @@ results = await agents["analyzer"].generate_reply([{"content": analysis_request}
 ### Sample Data Capabilities
 
 **Current Test Environment**:
-```
+
+```bash
 .cache/
 ├── options/          # 14 complete options chains
 │   ├── spy_options_2024-07-15.json    # 530 contracts
@@ -199,6 +216,7 @@ results = await agents["analyzer"].generate_reply([{"content": analysis_request}
 ```
 
 **Realistic Market Data**:
+
 - **Strike Ladders**: $1 SPY strikes, $5 SPX strikes near ATM
 - **Greeks**: Black-Scholes calculated delta, gamma, theta, vega, rho
 - **Market Structure**: Bid/ask spreads, volume/OI patterns
@@ -207,6 +225,7 @@ results = await agents["analyzer"].generate_reply([{"content": analysis_request}
 ## Next Development Phases
 
 ### Phase 2: GEX Calculation Engine (Issue #4)
+
 **Objective**: Calculate actual gamma exposure levels and flip points
 
 ```python
@@ -224,6 +243,7 @@ results = {
 ```
 
 ### Phase 3: Tokenization System (Issue #5)
+
 **Objective**: Convert market data to LLM-optimized sequences
 
 ```python
@@ -238,6 +258,7 @@ sequences = tokenizer.create_sequences(
 ```
 
 ### Phase 4: LLM Pattern Discovery (Issues #6-7)
+
 **Objective**: Multi-agent pattern mining with GPT-4o/4o-mini
 
 ```python
@@ -256,6 +277,7 @@ discovered_patterns = pattern_miner.discover_patterns(
 ```
 
 ### Phase 5: Research Validation (Issues #8-9, #11)
+
 **Objective**: Academic-quality validation and documentation
 
 - **Statistical Testing**: Hypothesis testing, significance analysis
@@ -266,16 +288,19 @@ discovered_patterns = pattern_miner.discover_patterns(
 ## Integration Points
 
 ### Market Data Sources
+
 - **Primary**: Alpha Vantage Historical Options (premium tier)
 - **Validation**: CBOE data for cross-verification
 - **Real-time**: Future integration for live pattern detection
 
 ### LLM Providers
+
 - **Development**: GPT-4o-mini for cost-efficient testing
 - **Production**: GPT-4o for complex pattern analysis
 - **Framework**: AutoGen 0.7.4 for multi-agent orchestration
 
 ### Analysis Tools
+
 - **GEX Calculations**: Black-Scholes Greeks, exposure aggregation
 - **Pattern Detection**: Statistical significance testing
 - **Validation**: Monte Carlo simulation, cross-validation
@@ -283,12 +308,14 @@ discovered_patterns = pattern_miner.discover_patterns(
 ## Research Ethics & Compliance
 
 ### Academic Standards
+
 - **Open Source**: All methodology and code publicly available
 - **Reproducibility**: Complete documentation of data and methods
 - **Bias Controls**: Multiple validation approaches
 - **Peer Review**: Research methodology open to scrutiny
 
 ### Market Ethics
+
 - **Detection Only**: No pattern creation or market manipulation
 - **Academic Purpose**: Research aims to understand market mechanics
 - **Risk Disclosure**: Past performance doesn't predict future results
@@ -297,18 +324,21 @@ discovered_patterns = pattern_miner.discover_patterns(
 ## Success Vision
 
 ### Immediate Goals (Next 3 Months)
+
 1. **Complete data infrastructure** (Issues #14-17)
 2. **Implement GEX calculation engine**
 3. **Develop natural language prompt system** (tokenization approach deprecated)
 4. **Begin pattern discovery with sample data**
 
 ### Research Goals (6 Months)
+
 1. **Validate Short Put Arbitrage detection** with historical data
 2. **Discover 2-3 additional institutional patterns**
 3. **Publish methodology** and preliminary findings
 4. **Demonstrate statistical significance** of pattern predictions
 
 ### Long-term Vision (12 Months)
+
 1. **Academic publication** on LLM market pattern detection
 2. **Open-source framework** for options pattern analysis  
 3. **Real-time pattern detection** system

@@ -8,11 +8,11 @@ Gamma Exposure (GEX) calculations form the mathematical core of this research pr
 
 ## Data Organization
 
-All market data is properly cached under `.cache/` with organized structure:
+Market data is organized with structured caching:
 
-- `.cache/options/SYMBOL/YYYY-MM-DD.pickle` - Options chains  
-- `.cache/stocks/SYMBOL/YYYY-MM-DD.pickle` - Stock OHLCV data
-- All data excluded from repository via `.gitignore`
+- `cache/options/SYMBOL/` - Options chains by symbol and date
+- `cache/market_data/SYMBOL/` - Stock OHLCV data by symbol
+- Local caching system for efficient data access
 
 ## Mathematical Foundation
 

@@ -9,6 +9,7 @@ The Data Obfuscation System prevents LLM training data leakage during validation
 ### Training Data Leakage Risk
 
 When testing LLMs on famous market events:
+
 - **"GameStop January 2021"** → LLM recognizes famous squeeze from training data
 - **"COVID crash March 2020"** → LLM recalls documented market mechanics
 - **"Tesla August 2020"** → LLM knows about the stock split rally
@@ -19,7 +20,7 @@ When testing LLMs on famous market events:
 
 Our testing revealed clear evidence:
 
-```
+```bash
 Normal Validation (SPY March 2020):
 - WHO: Retail traders
 - WHAT: Dealers forced to sell at $1190 flip point
@@ -375,13 +376,15 @@ def obfuscate_mag7_tickers():
 
 ### When to Use Obfuscation
 
-#### ✅ **Always Use For**:
+#### ✅ **Always Use For**
+
 - Academic research and publications
 - Unbiased LLM capability assessment
 - Production validation confidence
 - Model comparison benchmarks
 
-#### ⚠️ **Optional For**:
+#### ⚠️ **Optional For**
+
 - Development and debugging (use normal validation for speed)
 - System functionality testing
 - Initial prototyping
@@ -417,16 +420,19 @@ def comprehensive_analysis():
 ### Result Interpretation
 
 #### High Normal, Low Obfuscated Accuracy
+
 - **Interpretation**: LLM heavily dependent on training data
 - **Action**: Improve LLM prompts or use different model
 - **Example**: Normal 85%, Obfuscated 15%
 
 #### Similar Normal and Obfuscated Accuracy
+
 - **Interpretation**: LLM genuinely analyzing data patterns
 - **Action**: Confidence in analytical capability
 - **Example**: Normal 75%, Obfuscated 70%
 
 #### Low Both Accuracies
+
 - **Interpretation**: LLM struggling with market mechanics
 - **Action**: Enhance data quality or training approach
 - **Example**: Normal 25%, Obfuscated 20%

@@ -29,6 +29,7 @@
 ## Technical Implementation
 
 ### Configuration Changes
+
 ```json
 {
   "OPEN_MODEL_LLM_TOOLS": "gpt-4o-mini",
@@ -37,17 +38,21 @@
 ```
 
 ### API Compatibility Fixes
+
 - **O3/O4/GPT-5 models**: Use `max_completion_tokens` instead of `max_tokens`
 - **O3/O4/GPT-5 models**: No `temperature` or `top_p` parameters supported
 - **Parsing enhancement**: Extract numeric confidence scores (85%, 90%)
 
 ### Prompt Strategy
+
 **Reasoning models (O3/O4) work best with**:
+
 - Simple, direct prompts (<200 words)
 - Clear expected output format
 - Financial domain context
 
 **Example working prompt**:
+
 ```
 You are a financial analyst.
 
@@ -65,12 +70,14 @@ CONFIDENCE: [0-100]
 ## Cost Analysis
 
 ### Per-Query Costs
+
 - **O3-mini**: $0.002 (60% savings)
 - **GPT-4o**: $0.005 (baseline)
 - **GPT-4o-mini**: $0.0001 (tools)
 - **GPT-5 mini**: $0.0006 (unreliable)
 
 ### Production Architecture
+
 ```
 Market Analysis → O3-mini ($0.002/query)
 Data Fetching → GPT-4o-mini ($0.0001/query)
@@ -82,6 +89,7 @@ Complex Scenarios → GPT-4o fallback ($0.005/query)
 ## Sample Analysis Results
 
 ### O3-mini Response (COVID Crash Scenario)
+
 ```
 WHO: Dealers
 WHAT: They must buy the underlying on upward moves and sell on
@@ -96,6 +104,7 @@ boost the move.
 ```
 
 ### GPT-4o Response (Same Scenario)
+
 ```
 WHO: Dealers
 WHAT: Maintain neutral stance, causing market participants to
@@ -111,17 +120,20 @@ not significantly positioned.
 ## Production Deployment
 
 ### Status: ✅ Ready for Production
+
 - Configuration updated to use O3-mini
 - API compatibility issues resolved
 - Parsing bugs fixed
 - Cost optimization achieved
 
 ### Next Steps
+
 - Deploy to Issue #58 baseline comparison
 - Monitor performance in production
 - Implement GPT-4o fallback for edge cases
 
 ### Performance Targets
+
 - **Confidence**: 90%+ on standard market mechanics
 - **Cost**: 60% reduction vs previous GPT-4o approach
 - **Reliability**: 99%+ uptime with fallback systems

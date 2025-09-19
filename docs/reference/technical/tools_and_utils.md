@@ -6,11 +6,11 @@ The `src/utils/` directory contains shared utilities and tools that support the 
 
 ## Core Utilities
 
-### Agent Utils (`agent_utils.py`) - LEGACY
+### Agent Utils - LEGACY
 
-**Status**: Moved to `docs/legacy/` - superseded by modern autogen_tools.py architecture
+**Status**: Moved to `docs/legacy/` - superseded by modern autogen framework architecture
 
-Previously provided utilities for Autogen agent operations and configuration management.
+Previously provided utilities for agent operations and configuration management.
 
 #### Key Functions
 
@@ -28,8 +28,7 @@ def DataProcessor:
 #### Usage Example
 
 ```python
-# LEGACY: # LEGACY: from src.utils.agent_utils import load_agent_config
-# Current: Use src/tools/autogen_tools.py, DataProcessor
+# LEGACY: from src.utils.agent_utils import load_agent_config
 # Current: Use src/tools/autogen_tools.py for modern agent functionality
 
 # Load agent configuration
@@ -200,11 +199,11 @@ complete_data = normalizer.handle_missing_data(clean_data, method='linear_interp
 filtered_data = normalizer.winsorize(complete_data['returns'], limits=(0.005, 0.005))
 ```
 
-### Autogen Examples (`autogen_examples.py`) - LEGACY
+### Agent Examples - LEGACY
 
 **Status**: Moved to `docs/legacy/` - reference implementations preserved for documentation
 
-Previously contained reference implementations and examples for the Autogen framework integration.
+Previously contained reference implementations and examples for agent framework integration.
 
 #### Reference Patterns
 
@@ -337,9 +336,8 @@ agent_config = load_agent_config('research_agents.json')
 ```python
 # These utilities integrate with main components:
 # - GEX Calculator uses date_utils for timezone handling
-# - Tokenizer uses data_normalizer for preprocessing  
-# - Pattern Miner uses indicator_library for feature engineering
-# - LLM Integration uses autogen_tools.py for modern configuration
+# - Pattern detection uses indicator_library for feature engineering
+# - LLM Integration uses modern agent configuration
 # - All components use validation tools for research integrity
 ```
 
@@ -352,7 +350,7 @@ agent_config = load_agent_config('research_agents.json')
 MARKET_TIMEZONE=US/Eastern
 
 # Agent configuration paths
-AGENT_CONFIG_PATH=@config/agents.json
+AGENT_CONFIG_PATH=config/agents.json
 
 # Validation settings
 OBFUSCATION_ENABLED=true
