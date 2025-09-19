@@ -9,10 +9,10 @@ Uses configuration from config_defaults/trading_config.yaml
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Optional
-from datetime import timedelta
 import logging
 import yaml
 from pathlib import Path
+from src.utils.date_utils import today_str, parse_date_string
 
 logger = logging.getLogger(__name__)
 
@@ -212,11 +212,13 @@ class BaselineGEXStrategy:
         if trades:
             results = self._calculate_metrics(trades, daily_pnl)
             # Add metadata
-            results.update(self._add_metadata(symbol, test_period, gex_data, price_data))
+            results.update(self._add_metadata(
+                symbol, test_period, gex_data, price_data))
             return results
         else:
             empty_results = self._empty_results("No valid trades executed")
-            empty_results.update(self._add_metadata(symbol, test_period, gex_data, price_data))
+            empty_results.update(self._add_metadata(
+                symbol, test_period, gex_data, price_data))
             return empty_results
 
     def _execute_trade(self, signal: Dict, price_data: pd.DataFrame) -> Optional[Dict]:
@@ -233,7 +235,7 @@ class BaselineGEXStrategy:
 
         # Track trade over holding period
         for days_held in range(1, self.max_holding_days + 1):
-            check_date = date + timedelta(days=days_held)
+            check_date = date + pd.Timedelta(days=days_held)
             check_row = price_data[price_data['date'] == check_date]
 
             if check_row.empty:
@@ -348,7 +350,6 @@ class BaselineGEXStrategy:
 
     def _add_metadata(self, symbol: str, test_period: Optional[str], gex_data: Dict, price_data: pd.DataFrame) -> Dict:
         """Add metadata to results."""
-        from utils.date_utils import today_str
 
         # Determine test period from data if not provided
         if test_period is None:
