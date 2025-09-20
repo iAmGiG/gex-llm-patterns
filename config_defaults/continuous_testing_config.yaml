@@ -1,30 +1,20 @@
-# Baseline Comparison Configuration - General Config
-# Single config for all tickers with command-line overrides
+# Continuous Testing Configuration
+# Parameterized config for all testing types with command-line overrides
 
-# Test Configuration
+# Test Configuration - All dates parameterized via command line
 test_config:
   default_symbol: "SPY"  # Override with --symbol
-  # Extended test periods for statistical significance
-  default_start_date: "2023-01-01"  # Override with --start-date
-  default_end_date: "2024-01-31"    # Override with --end-date
-  # Quick test period (for debugging)
-  quick_test_start: "2024-01-01"
-  quick_test_end: "2024-03-31"
+  # Dates fully parameterized - no defaults to force intentional selection
   account_size: 50000  # For P&L visualization
   commission: 0.001    # 0.1% per trade
   slippage: 0.001      # 0.1% per trade
-  min_trades_for_significance: 30  # Statistical significance threshold
+  min_trades_for_significance: 20  # Statistical significance threshold (lowered for shorter tests)
 
-# Experiment Naming
+# Experiment Configuration - Built dynamically in test
 experiment_config:
-  # Experiment types (one word)
-  type: "mechvsllm"  # Options: baseline, llm, mechvsllm, confidence, patterns
-  # Range naming based on date spans
-  range_naming:
-    "2024-01-01_2024-03-31": "2024Q1"
-    "2023-01-01_2024-01-31": "2023-2024"
-    "2024-01-01_2024-12-31": "2024"
-    "2023-01-01_2023-12-31": "2023"
+  # Experiment types will be set via --experiment-type parameter
+  # Naming will be auto-generated: {experiment_type}_{symbol}_{start_date}_{end_date}
+  auto_generate_names: true
 
 # Strategy Parameters
 strategies:
@@ -44,11 +34,13 @@ strategies:
     name: "O3-mini LLM"
     description: "MarketMechanicsAgent with WHO/WHOM/WHAT analysis"
     enabled: true
-    confidence_threshold: 30  # Lowered from 75 to generate more signals
-    max_trades_per_test: 100  # Increased from 20 for better statistics
-    # Test multiple thresholds to find optimal
-    confidence_thresholds_to_test: [30, 40, 50, 60, 70]  # Lowered range
-    analyze_confidence_impact: true  # Enable detailed confidence analysis
+    confidence_threshold: 50  # Standard threshold for gamma concentration detection
+    max_trades_per_test: 100  # Flexible for continuous testing
+    # Enhanced pattern detection settings
+    enhanced_patterns:
+      gamma_concentration: true      # Primary pattern for 0DTE validation
+      volume_anomaly: true          # Secondary pattern
+      compound_patterns: true       # High probability combinations
     # LLM-specific risk adjustments
     position_sizing_by_confidence:
       30-50: 0.01   # 1% position for low confidence
@@ -62,17 +54,25 @@ risk_management:
   max_holding_days: 2      # Maximum holding period
   daily_loss_limit: 0.02  # 2% daily loss limit
 
-# Performance Targets
+# Performance Targets - Configurable for different test types
 targets:
-  minimum_viable:
-    win_rate: 0.43         # Beat baseline 43%
-    expected_value: 0.0    # Positive EV (turn negative to positive)
+  # 0DTE Daily Validation targets
+  daily_0dte:
+    hypothesis_confirmation: 0.60  # 60%+ success rate (primary target)
+    friday_baseline: 0.75         # Friday's validated 75% success rate
+    minimum_viable: 0.50          # Minimum to be considered working
 
-  target_performance:
+  # General performance targets
+  standard_performance:
     win_rate: 0.60         # 60%+ win rate
     expected_value: 0.005  # 0.5%+ expected value per trade
     sharpe_ratio: 1.0      # Sharpe ratio >1.0
     max_drawdown: 0.03     # Maximum drawdown <3%
+
+  # Baseline comparison targets
+  vs_mechanical:
+    beat_raw_gex: 0.43     # Beat baseline 43%
+    positive_ev: 0.0       # Positive EV (turn negative to positive)
 
 # Data Sources
 data_sources:

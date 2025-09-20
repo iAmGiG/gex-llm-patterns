@@ -35,12 +35,73 @@ class ReportsManager:
         self.pattern_dir = self.base_dir / "pattern_analysis"
         self.quality_dir = self.base_dir / "data_quality"
         self.agent_dir = self.base_dir / "agent_outputs"
-        self.demo_dir = self.base_dir / "demo_results"
+        # demo_results removed - use validation_experiments instead
 
         # Ensure all directories exist
         for directory in [self.gex_dir, self.pattern_dir, self.quality_dir,
-                          self.agent_dir, self.demo_dir]:
+                          self.agent_dir]:
             directory.mkdir(parents=True, exist_ok=True)
+
+    # ===========================
+    # Data Filtering Helpers
+    # ===========================
+
+    def filter_strike_data(self, gex_data: Dict, min_volume: int = 0, min_oi: int = 1) -> Dict:
+        """
+        Filter strike data to remove zero OI strikes (keep volume > 0 for potential GEX).
+
+        Args:
+            gex_data: GEX data dictionary
+            min_volume: Minimum volume (0 = keep all with any activity)
+            min_oi: Minimum open interest (1 = remove zero OI)
+
+        Returns:
+            Filtered GEX data
+        """
+        if 'gex_by_strike' not in gex_data:
+            return gex_data
+
+        filtered_data = gex_data.copy()
+        gex_by_strike = gex_data['gex_by_strike']
+
+        if not isinstance(gex_by_strike, dict):
+            return filtered_data
+
+        # Count original strikes
+        original_count = len(gex_by_strike.get('strike', {}))
+
+        # Filter logic - keep strikes with volume OR open interest
+        keep_indices = []
+
+        for i, (strike_key, strike_val) in enumerate(gex_by_strike.get('strike', {}).items()):
+            volume = gex_by_strike.get('volume', {}).get(str(i), 0)
+            oi = gex_by_strike.get('open_interest', {}).get(str(i), 0)
+
+            # Keep if has volume OR open interest (potential GEX contribution)
+            if volume >= min_volume or oi >= min_oi:
+                keep_indices.append(i)
+
+        # Filter all strike arrays
+        if keep_indices and len(keep_indices) < original_count:
+            filtered_gex_by_strike = {}
+
+            for field, field_data in gex_by_strike.items():
+                if isinstance(field_data, dict):
+                    filtered_field = {}
+                    for new_idx, orig_idx in enumerate(keep_indices):
+                        if str(orig_idx) in field_data:
+                            filtered_field[str(new_idx)
+                                           ] = field_data[str(orig_idx)]
+                    filtered_gex_by_strike[field] = filtered_field
+                else:
+                    filtered_gex_by_strike[field] = field_data
+
+            filtered_data['gex_by_strike'] = filtered_gex_by_strike
+
+            logger.info(
+                f"Filtered strike data: {original_count} -> {len(keep_indices)} strikes")
+
+        return filtered_data
 
     # ===========================
     # GEX Results Storage
@@ -48,28 +109,41 @@ class ReportsManager:
 
     def save_gex_results(self, symbol, results: Dict[Any, Any],
                          trading_date=None,
-                         is_demo: bool = False) -> Path:
+                         filter_strikes: bool = True) -> Path:
         """
-        Save GEX calculation results.
+        Save GEX calculation results with strike filtering.
 
         Args:
             symbol: Stock symbol
             results: GEX calculation results dictionary
             trading_date: Optional trading date
-            is_demo: Save to demo folder if True
+            filter_strikes: Remove zero OI strikes to reduce file size
 
         Returns:
             Path to saved file
         """
-        timestamp = now_timestamp()
+        # Filter strike data to prevent bloated files
+        if filter_strikes and isinstance(results, dict):
+            results = self.filter_strike_data(results)
 
+        # Clean filename without timestamp bloat
         if trading_date:
-            filename = f"{symbol}_{trading_date}_{timestamp}_gex_results.json"
+            filename = f"gex_{symbol}_{trading_date}.json"
         else:
-            filename = f"{symbol}_{timestamp}_gex_results.json"
+            filename = f"gex_{symbol}.json"
 
-        save_dir = self.demo_dir if is_demo else self.gex_dir
+        save_dir = self.gex_dir
         file_path = save_dir / filename
+
+        # If file exists, add counter instead of timestamp
+        counter = 1
+        while file_path.exists():
+            if trading_date:
+                filename = f"gex_{symbol}_{trading_date}_{counter}.json"
+            else:
+                filename = f"gex_{symbol}_{counter}.json"
+            file_path = save_dir / filename
+            counter += 1
 
         # Add metadata
         output_data = {
@@ -94,7 +168,7 @@ class ReportsManager:
         timestamp = now_timestamp()
         filename = f"{symbol}_{timestamp}_gex_timeseries.csv"
 
-        save_dir = self.demo_dir if is_demo else self.gex_dir
+        save_dir = self.gex_dir  # No more demo mode
         file_path = save_dir / filename
 
         data.to_csv(file_path, index=True)
@@ -116,7 +190,7 @@ class ReportsManager:
         else:
             filename = f"{pattern_type}_{timestamp}_analysis.json"
 
-        save_dir = self.demo_dir if is_demo else self.pattern_dir
+        save_dir = self.pattern_dir  # No more demo mode
         file_path = save_dir / filename
 
         output_data = {
@@ -147,7 +221,7 @@ class ReportsManager:
         agents_str = "_".join(agent_names)
         filename = f"{agents_str}_{timestamp}_conversation.json"
 
-        save_dir = self.demo_dir if is_demo else self.agent_dir
+        save_dir = self.agent_dir  # No more demo mode
         file_path = save_dir / filename
 
         output_data = {
@@ -172,7 +246,7 @@ class ReportsManager:
         timestamp = now_timestamp()
         filename = f"{agent_name}_{task}_{timestamp}_results.json"
 
-        save_dir = self.demo_dir if is_demo else self.agent_dir
+        save_dir = self.agent_dir  # No more demo mode
         file_path = save_dir / filename
 
         output_data = {
@@ -202,7 +276,7 @@ class ReportsManager:
         timestamp = now_timestamp()
         filename = f"{symbol}_{data_type}_{timestamp}_quality_report.json"
 
-        save_dir = self.demo_dir if is_demo else self.quality_dir
+        save_dir = self.quality_dir  # No more demo mode
         file_path = save_dir / filename
 
         output_data = {
@@ -244,19 +318,21 @@ class ReportsManager:
                 all_files.extend(list(directory.glob("*")))
             return all_files
 
-    def cleanup_demo_results(self, older_than_days: int = 7) -> int:
-        """Clean up old demo results."""
+    def cleanup_old_results(self, older_than_days: int = 7) -> int:
+        """Clean up old results across all directories."""
         from datetime import datetime
         cutoff_time = datetime.now().timestamp() - (older_than_days * 24 * 3600)
         cleaned = 0
 
-        for file_path in self.demo_dir.glob("*"):
-            if file_path.is_file() and file_path.stat().st_mtime < cutoff_time:
-                file_path.unlink()
-                cleaned += 1
+        # Clean up across all result directories
+        for directory in [self.gex_dir, self.pattern_dir, self.quality_dir, self.agent_dir]:
+            for file_path in directory.glob("*"):
+                if file_path.is_file() and file_path.stat().st_mtime < cutoff_time:
+                    file_path.unlink()
+                    cleaned += 1
 
         logger.info(
-            f"Cleaned {cleaned} demo files older than {older_than_days} days")
+            f"Cleaned {cleaned} old files older than {older_than_days} days")
         return cleaned
 
     def get_summary(self):

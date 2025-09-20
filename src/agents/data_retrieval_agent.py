@@ -6,13 +6,16 @@ Uses cache-first approach with Alpha Vantage Premium API and sample fallback.
 Data Flow: Cache → Alpha Vantage Premium → Sample (fallback only)
 """
 
+from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from cache.unified_cache import UnifiedCacheManager
+from validation.options_data_validator import OptionsDataValidator
 from pathlib import Path
 import logging
 import sys
 import datetime
 
 # Use date_utils instead of datetime
-from src.utils.date_utils import (
+from utils.date_utils import (
     today_str,
     now_timestamp,
     parse_date_string,
@@ -23,12 +26,7 @@ from src.utils.date_utils import (
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-# from gex.live_gex_interface import LiveGEXInterface  # Removed during consolidation
-from gex.sample_data_gex import SampleDataGEXInterface
-from validation.options_data_validator import OptionsDataValidator
-from cache.unified_cache import UnifiedCacheManager
-from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-from data_sources.sample_data_loader import SampleDataProvider
+# LiveGEXInterface removed during consolidation - use MarketMechanicsAgent instead
 
 
 logger = logging.getLogger(__name__)
@@ -67,25 +65,23 @@ class DataRetrievalAgent:
         # Initialize data providers based on source
         if data_source == "production":
             # Production: Cache → Alpha Vantage → Sample fallback
-            self.cache_manager = UnifiedCacheManager(base_dir=str(self.cache_dir))
-            self.alpha_vantage_client = AlphaVantageGEXClient(self.cache_manager)
-            self.gex_interface = LiveGEXInterface(
-                validate_data=validate,
-                enable_sample_fallback=enable_sample_fallback
-            )
+            self.cache_manager = UnifiedCacheManager(
+                base_dir=str(self.cache_dir))
+            self.alpha_vantage_client = AlphaVantageGEXClient(
+                self.cache_manager)
+            # LiveGEXInterface removed - use direct calculation instead
             self.provider = None  # Will use cache_manager + alpha_vantage_client
-            logger.info("Initialized production data retrieval with cache + Alpha Vantage Premium")
-            
+            logger.info(
+                "Initialized production data retrieval with cache + Alpha Vantage Premium")
+
         elif data_source == "sample":
-            # Sample-only mode (for testing)
-            self.provider = SampleDataProvider()
-            self.gex_interface = SampleDataGEXInterface(validate_data=validate)
-            self.cache_manager = None
-            self.alpha_vantage_client = None
-            logger.info("Initialized sample-only data retrieval (testing mode)")
-            
+            # Sample mode no longer supported - must use real data
+            raise ValueError(
+                "Sample data mode is deprecated. Use 'production' mode with real data only.")
+
         else:
-            raise ValueError(f"Invalid data source: {data_source}. Use 'production' or 'sample'")
+            raise ValueError(
+                f"Invalid data source: {data_source}. Use 'production' or 'sample'")
 
         self.validator = OptionsDataValidator() if validate else None
 
@@ -93,7 +89,7 @@ class DataRetrievalAgent:
         self.current_symbol = None
         self.current_date = None
         self.data_cache = {}
-        
+
         # Statistics
         self.request_stats = {
             'total_requests': 0,
@@ -116,7 +112,7 @@ class DataRetrievalAgent:
             # Production mode: report cache status and API availability
             symbols = ['SPY', 'SPX']  # Primary symbols supported
             symbol_info = {}
-            
+
             for symbol in symbols:
                 # Check cache for recent data
                 try:
@@ -136,7 +132,7 @@ class DataRetrievalAgent:
                         'last': None,
                         'cache_status': f'error: {str(e)}'
                     }
-            
+
             return {
                 'status': 'initialized',
                 'data_source': self.data_source,
@@ -147,7 +143,7 @@ class DataRetrievalAgent:
                 'alpha_vantage_available': self.alpha_vantage_client.api_key is not None,
                 'sample_fallback_enabled': self.enable_sample_fallback
             }
-            
+
         else:  # sample mode
             self.provider.initialize()
             symbols = self.provider.fetch_available_symbols()
@@ -200,12 +196,14 @@ class DataRetrievalAgent:
         if self.data_source == "production":
             result = self._retrieve_production_data(symbol, date, filters)
         else:
-            result = self._retrieve_sample_data(symbol, date, filters)
+            # Sample mode no longer supported
+            raise ValueError(
+                "Sample data mode is deprecated. Use production mode only.")
 
         # Cache result locally
         if result['status'] == 'success':
             self.data_cache[cache_key] = result
-            
+
             # Update agent state
             self.current_symbol = symbol
             df = result['data']
@@ -221,12 +219,12 @@ class DataRetrievalAgent:
         try:
             # Use production flow through tools.py style access
             result = self._fetch_via_production_flow(symbol, date)
-            
+
             if result['status'] != 'success':
                 return result
-                
+
             df = result['data']
-            
+
             # Track data source for stats
             if result['source'] == 'cache':
                 self.request_stats['cache_hits'] += 1
@@ -234,13 +232,14 @@ class DataRetrievalAgent:
                 self.request_stats['api_calls'] += 1
             elif result['source'] == 'sample':
                 self.request_stats['sample_fallbacks'] += 1
-            
+
             # Validate if enabled
             validation_report = None
             if self.validate and self.validator:
                 original_count = len(df)
                 df, validation_report = self.validator.validate(df)
-                logger.info(f"Validation: {len(df)}/{original_count} valid contracts")
+                logger.info(
+                    f"Validation: {len(df)}/{original_count} valid contracts")
 
             # Apply filters
             if filters:
@@ -264,7 +263,7 @@ class DataRetrievalAgent:
                 'validation_report': validation_report,
                 'request_stats': self.request_stats.copy()
             }
-            
+
         except Exception as e:
             logger.error(f"Production data retrieval failed: {e}")
             return {
@@ -275,61 +274,32 @@ class DataRetrievalAgent:
             }
 
     def _retrieve_sample_data(self, symbol, date, filters):
-        """Retrieve data using sample-only flow."""
-        try:
-            # Fetch from sample provider
-            df = self.provider.fetch_options_data(symbol, date)
+        """Sample data retrieval is deprecated."""
+        raise NotImplementedError(
+            "Sample data mode is deprecated. Use real production data only.")
 
-            if df.empty:
-                return {
-                    'status': 'no_data',
-                    'symbol': symbol,
-                    'date': date,
-                    'message': f"No sample data found for {symbol} on {date}"
-                }
+    def _apply_filters(self, df, filters):
+        """Apply filters to options data."""
+        if df.empty:
+            return df
 
-            # Validate if enabled
-            validation_report = None
-            if self.validate and self.validator:
-                df, validation_report = self.validator.validate(df)
-                logger.info(f"Sample validation complete: {len(df)} valid contracts")
+        # Apply any filters if provided
+        if filters:
+            if 'min_volume' in filters and 'volume' in df.columns:
+                df = df[df['volume'] >= filters['min_volume']]
+            if 'min_open_interest' in filters and 'open_interest' in df.columns:
+                df = df[df['open_interest'] >= filters['min_open_interest']]
+            if 'option_type' in filters and 'type' in df.columns:
+                df = df[df['type'] == filters['option_type']]
 
-            # Apply filters
-            if filters:
-                df = self._apply_filters(df, filters)
-
-            return {
-                'status': 'success',
-                'symbol': symbol,
-                'date': date or df['date'].max().strftime('%Y-%m-%d') if 'date' in df.columns else 'unknown',
-                'data': df,
-                'source': 'sample',
-                'metadata': {
-                    'total_contracts': len(df),
-                    'unique_strikes': df['strike'].nunique() if 'strike' in df.columns else 0,
-                    'unique_expirations': df['expiration'].nunique() if 'expiration' in df.columns else 0,
-                    'put_call_ratio': len(df[df['type'] == 'put']) / max(1, len(df[df['type'] == 'call'])) if 'type' in df.columns else 0,
-                    'total_volume': df['volume'].sum() if 'volume' in df.columns else 0,
-                    'total_open_interest': df['open_interest'].sum() if 'open_interest' in df.columns else 0
-                },
-                'validation_report': validation_report
-            }
-            
-        except Exception as e:
-            logger.error(f"Sample data retrieval failed: {e}")
-            return {
-                'status': 'error',
-                'symbol': symbol,
-                'date': date,
-                'message': f"Sample data retrieval failed: {str(e)}"
-            }
+        return df
 
     def _fetch_via_production_flow(self, symbol, date):
         """Fetch via the production flow: Cache → API → Sample."""
         # Default to today if no date specified
         if not date:
             date = datetime.datetime.now().strftime('%Y-%m-%d')
-        
+
         # Step 1: Check cache first
         if self.cache_manager:
             cached_data = self.cache_manager.get_options_data(symbol, date)
@@ -344,11 +314,13 @@ class DataRetrievalAgent:
         # Step 2: Try Alpha Vantage API
         if self.alpha_vantage_client:
             try:
-                api_data = self.alpha_vantage_client.fetch_historical_options(symbol, date)
+                api_data = self.alpha_vantage_client.fetch_historical_options(
+                    symbol, date)
                 if api_data is not None and not api_data.empty:
                     # Cache the data
                     if self.cache_manager:
-                        self.cache_manager.store_options_data(symbol, date, api_data)
+                        self.cache_manager.store_options_data(
+                            symbol, date, api_data)
                     return {
                         'status': 'success',
                         'source': 'alpha_vantage',
@@ -357,18 +329,8 @@ class DataRetrievalAgent:
             except Exception as e:
                 logger.warning(f"Alpha Vantage API failed: {e}")
 
-        # Step 3: Sample data fallback
-        if self.enable_sample_fallback:
-            try:
-                sample_data = self.gex_interface.load_sample_options(symbol, date)
-                if not sample_data.empty:
-                    return {
-                        'status': 'success',
-                        'source': 'sample',
-                        'data': sample_data
-                    }
-            except Exception as e:
-                logger.error(f"Sample fallback failed: {e}")
+        # No sample data fallback - fail if no real data available
+        logger.error(f"No real options data available for {symbol} on {date}")
 
         return {
             'status': 'error',
@@ -401,24 +363,29 @@ class DataRetrievalAgent:
 
         logger.info(f"Calculating GEX for {symbol} on {date}")
 
-        # Use production GEX interface
-        gex_results = self.gex_interface.calculate_gex_for_symbol(
-            symbol, date, spot_price
-        )
+        # Use MarketMechanicsAgent for GEX calculation instead of removed LiveGEXInterface
+        from agents.market_mechanics_agent import MarketMechanicsAgent
+        agent = MarketMechanicsAgent(symbol)
+
+        # Get options data first
+        options_data = self.retrieve_options_data(symbol, date)
+        if options_data['status'] != 'success':
+            return {
+                'status': 'error',
+                'message': f'Cannot calculate GEX: {options_data.get("message", "No options data")}'
+            }
+
+        # Calculate GEX using autogen tools
+        from tools.autogen_tools import calculate_gamma_exposure
+        gex_results = calculate_gamma_exposure(
+            symbol, date or self.current_date)
 
         # Add agent metadata and consolidate stats
         gex_results['agent'] = 'DataRetrievalAgent'
         gex_results['data_source'] = self.data_source
-        
-        # Consolidate stats from GEX interface if available
-        if hasattr(self.gex_interface, 'get_stats'):
-            interface_stats = self.gex_interface.get_stats()
-            # Merge stats from interface with agent stats
-            consolidated_stats = self.request_stats.copy()
-            consolidated_stats.update(interface_stats)
-            gex_results['agent_stats'] = consolidated_stats
-        else:
-            gex_results['agent_stats'] = self.request_stats.copy()
+
+        # Add agent stats
+        gex_results['agent_stats'] = self.request_stats.copy()
 
         return gex_results
 
@@ -489,7 +456,7 @@ class DataRetrievalAgent:
         """Get list of dates with cached data for symbol."""
         if not self.cache_manager:
             return []
-        
+
         recent_dates = []
         end_date = datetime.datetime.now()
         start_date = end_date - datetime.timedelta(days=days_back)
@@ -498,14 +465,15 @@ class DataRetrievalAgent:
         while current_date <= end_date:
             date_str = current_date.strftime('%Y-%m-%d')
             try:
-                cached_data = self.cache_manager.get_options_data(symbol, date_str)
+                cached_data = self.cache_manager.get_options_data(
+                    symbol, date_str)
                 if cached_data is not None and not cached_data.empty:
                     recent_dates.append(date_str)
             except Exception:
                 pass  # Skip dates with errors
-            
+
             current_date += datetime.timedelta(days=1)
-        
+
         return sorted(recent_dates)
 
     def _apply_filters(self, df, filters):
@@ -525,8 +493,10 @@ class DataRetrievalAgent:
         # Expiration filter
         if 'max_days_to_expiry' in filters:
             if 'date' in filtered.columns and 'expiration' in filtered.columns:
-                days_to_exp = (filtered['expiration'] - filtered['date']).dt.days
-                filtered = filtered[days_to_exp <= filters['max_days_to_expiry']]
+                days_to_exp = (filtered['expiration'] -
+                               filtered['date']).dt.days
+                filtered = filtered[days_to_exp <=
+                                    filters['max_days_to_expiry']]
 
         # Option type filter
         if 'option_type' in filters and 'type' in filtered.columns:
@@ -572,12 +542,15 @@ class DataRetrievalAgent:
         report.append("=" * 70)
         report.append(f"Data Source: {self.data_source}")
         report.append(f"Cache Directory: {self.cache_dir}")
-        report.append(f"Validation: {'Enabled' if self.validate else 'Disabled'}")
-        
+        report.append(
+            f"Validation: {'Enabled' if self.validate else 'Disabled'}")
+
         if self.data_source == "production":
-            report.append(f"Alpha Vantage: {'Available' if info.get('alpha_vantage_available') else 'Unavailable'}")
-            report.append(f"Sample Fallback: {'Enabled' if self.enable_sample_fallback else 'Disabled'}")
-        
+            report.append(
+                f"Alpha Vantage: {'Available' if info.get('alpha_vantage_available') else 'Unavailable'}")
+            report.append(
+                f"Sample Fallback: {'Enabled' if self.enable_sample_fallback else 'Disabled'}")
+
         report.append("")
 
         # Request statistics
@@ -586,9 +559,12 @@ class DataRetrievalAgent:
             report.append("REQUEST STATISTICS")
             report.append("-" * 30)
             report.append(f"Total Requests: {total}")
-            report.append(f"Cache Hit Rate: {self.request_stats['cache_hits'] / total * 100:.1f}%")
-            report.append(f"API Call Rate: {self.request_stats['api_calls'] / total * 100:.1f}%")
-            report.append(f"Sample Fallback Rate: {self.request_stats['sample_fallbacks'] / total * 100:.1f}%")
+            report.append(
+                f"Cache Hit Rate: {self.request_stats['cache_hits'] / total * 100:.1f}%")
+            report.append(
+                f"API Call Rate: {self.request_stats['api_calls'] / total * 100:.1f}%")
+            report.append(
+                f"Sample Fallback Rate: {self.request_stats['sample_fallbacks'] / total * 100:.1f}%")
             report.append("")
 
         report.append("AVAILABLE DATA")
@@ -597,7 +573,8 @@ class DataRetrievalAgent:
             report.append(f"\n{symbol}:")
             if self.data_source == "production":
                 report.append(f"  Cache Status: {details['cache_status']}")
-            report.append(f"  Date Range: {details['first']} to {details['last']}")
+            report.append(
+                f"  Date Range: {details['first']} to {details['last']}")
             report.append(f"  Total Days: {details['count']}")
 
         # Get sample GEX for first symbol
@@ -612,7 +589,8 @@ class DataRetrievalAgent:
                     report.append("-" * 30)
                     report.append(f"Net GEX: ${gex['net_gex']:,.0f}")
                     report.append(f"Spot Price: ${gex['spot_price']:.2f}")
-                    report.append(f"Data Source: {gex.get('data_source', 'unknown')}")
+                    report.append(
+                        f"Data Source: {gex.get('data_source', 'unknown')}")
 
                     if gex.get('flip_point'):
                         report.append(f"Flip Point: ${gex['flip_point']:.2f}")
@@ -658,7 +636,7 @@ class AgentOrchestrator:
             **agent_kwargs: Arguments to pass to each agent
         """
         self.agents = [
-            DataRetrievalAgent(**agent_kwargs) 
+            DataRetrievalAgent(**agent_kwargs)
             for _ in range(num_agents)
         ]
         self.results = {}
@@ -724,7 +702,7 @@ class AgentOrchestrator:
             combined_stats['total_cache_hits'] += agent_stats['request_stats']['cache_hits']
             combined_stats['total_api_calls'] += agent_stats['request_stats']['api_calls']
             combined_stats['total_sample_fallbacks'] += agent_stats['request_stats']['sample_fallbacks']
-            
+
             combined_stats['agent_details'].append({
                 'agent_id': i,
                 'stats': agent_stats

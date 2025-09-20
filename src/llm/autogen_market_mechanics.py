@@ -33,15 +33,18 @@ class AutoGenMarketMechanics:
         config_loader = ConfigLoader()
 
         # Get model and API key from config (use prompt model for LLM analysis)
-        self.model = model or os.getenv("OPEN_MODEL_LLM_PROMPT", config_loader.get("OPEN_MODEL_LLM_PROMPT", "gpt-4o"))
+        self.model = model or os.getenv(
+            "OPEN_MODEL_LLM_PROMPT", config_loader.get("OPEN_MODEL_LLM_PROMPT", "gpt-4o"))
         api_key = os.getenv("OPEN_AI_KEY", config_loader.get("OPEN_AI_KEY"))
 
         if not api_key:
             # Try alternative key names
-            api_key = os.getenv("OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
+            api_key = os.getenv(
+                "OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
 
         if not api_key:
-            raise ValueError("OpenAI API key not found in config or environment")
+            raise ValueError(
+                "OpenAI API key not found in config or environment")
 
         # Initialize AutoGen OpenAI client with model-specific parameters
         client_params = {
@@ -51,14 +54,19 @@ class AutoGenMarketMechanics:
             "max_retries": 3
         }
 
-        # Configure parameters based on model type
+        # Configure token limits based on model type
+        # Note: AutoGen tools are direct Python function calls (no LLM tokens needed)
+        # Only market mechanics analysis uses LLM tokens
+        analysis_tokens = 4000  # For detailed O3-mini market analysis
+
         if "o3" in self.model or "o4" in self.model or "gpt-5" in self.model:
             # O3/O4/GPT-5 models use different parameters
-            client_params["max_completion_tokens"] = 1000
+            client_params["max_completion_tokens"] = analysis_tokens
             # These models don't support temperature or top_p
         else:
             # Standard models (GPT-4o, GPT-4o-mini, etc.)
-            client_params["max_tokens"] = 1000
+            # Note: This is only for market analysis, not tool calls
+            client_params["max_tokens"] = analysis_tokens
             client_params["temperature"] = temperature
             client_params["top_p"] = 0.95
 
@@ -132,7 +140,8 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
             # We're in a loop, need to run in a thread
             import concurrent.futures
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(asyncio.run, self.interpret_mechanics_async(prompt))
+                future = executor.submit(
+                    asyncio.run, self.interpret_mechanics_async(prompt))
                 return future.result()
         except RuntimeError:
             # No event loop, we can create one
@@ -221,7 +230,8 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
                 import re
                 numeric_match = re.search(r'(\d+)', conf_str)
                 if numeric_match:
-                    parsed['confidence'] = min(int(numeric_match.group(1)), 100)
+                    parsed['confidence'] = min(
+                        int(numeric_match.group(1)), 100)
                 # Fallback to text-based confidence
                 elif 'HIGH' in conf_str:
                     parsed['confidence'] = 80
@@ -248,4 +258,3 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
             'narrative': f"LLM interpretation unavailable: {error_msg}",
             'error': True
         }
-

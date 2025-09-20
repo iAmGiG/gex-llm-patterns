@@ -13,25 +13,25 @@ import yaml
 import sqlite3
 from pathlib import Path
 
-from src.utils.date_utils import (
+from utils.date_utils import (
     get_default_date_range,
     parse_date_string,
     is_business_day,
     date_range_trading_days,
     is_opex_week,
-    add_business_days
+    add_business_days,
+    now_iso
 )
-from src.cache.unified_cache import UnifiedCacheManager
-from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
-from src.gex.gex_calculator import GEXCalculator
-from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
-import datetime
+from cache.unified_cache import UnifiedCacheManager
+from gex.enhanced_pattern_detector import EnhancedPatternDetector
+from gex.gex_calculator import GEXCalculator
+from llm.mechanics_prompt_builder import MechanicsPromptBuilder
 
 logger = logging.getLogger(__name__)
 
 # Import autogen_tools at module level with fallback
 try:
-    from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
+    from tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
     AUTOGEN_TOOLS_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"AutoGen tools not available: {e}")
@@ -56,7 +56,8 @@ class MarketMechanicsAgent:
         self.symbol = symbol
         self.config = config or self._load_config()
         self.gex_thresholds = self.config.get('gex_thresholds', {})
-        self.strike_pattern_config = self.config.get('strike_level_patterns', {})
+        self.strike_pattern_config = self.config.get(
+            'strike_level_patterns', {})
         self.cache = UnifiedCacheManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
@@ -66,9 +67,10 @@ class MarketMechanicsAgent:
         if llm_provider is None:
             # Use AutoGen for consistency with base_agent architecture
             try:
-                from src.llm.autogen_market_mechanics import AutoGenMarketMechanics
+                from llm.autogen_market_mechanics import AutoGenMarketMechanics
                 self.llm = AutoGenMarketMechanics()
-                logger.info("Initialized AutoGen LLM for mechanics interpretation")
+                logger.info(
+                    "Initialized AutoGen LLM for mechanics interpretation")
             except Exception as e:
                 logger.warning(f"Could not initialize AutoGen LLM: {e}")
                 self.llm = None
@@ -130,7 +132,8 @@ class MarketMechanicsAgent:
             try:
                 # Try intra-day timestamp format first
                 if ' ' in date and ':' in date:
-                    date_obj = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+                    date_obj = datetime.datetime.strptime(
+                        date, '%Y-%m-%d %H:%M:%S')
                     date_str = date  # Preserve full timestamp
                 else:
                     # Traditional daily date format
@@ -179,7 +182,290 @@ class MarketMechanicsAgent:
             'max_strike': gex_profile.get('max_strike', spot_price)
         }
 
+    def run_experiment(self, experiment_description: str, date: str = "2024-06-28") -> Dict:
+        """
+        Run flexible experiment based on natural language description.
+        Agent decides what tools to call and how to analyze.
+
+        Args:
+            experiment_description: Natural language experiment request
+            date: Date for analysis
+
+        Returns:
+            Experiment results with agent's analysis
+        """
+        logger.info(f"Running experiment: {experiment_description}")
+
+        try:
+            # Step 1: Use LLM to analyze experiment and decide what tools/data are needed
+            tool_plan = self._plan_experiment_tools(experiment_description, date)
+            logger.info(f"Agent tool plan: {tool_plan}")
+
+            # Step 2: Execute the planned tools based on LLM decision
+            experiment_data = self._execute_tool_plan(tool_plan, date)
+
+            # Step 3: Use LLM to analyze results and generate insights
+            result = self._analyze_experiment_results(experiment_description, experiment_data, tool_plan)
+
+            # Add experiment metadata
+            result["experiment_description"] = experiment_description
+            result["experiment_timestamp"] = now_iso()
+            result["agent_used"] = "MarketMechanicsAgent"
+            result["tool_plan"] = tool_plan
+
+            logger.info(f"Experiment completed: {result.get('experiment_type')}")
+            return result
+
+        except Exception as e:
+            logger.error(f"Experiment failed: {e}")
+            return {
+                "status": "error",
+                "experiment_description": experiment_description,
+                "error": str(e),
+                "experiment_timestamp": now_iso()
+            }
+
+    def _plan_experiment_tools(self, experiment_description: str, date: str) -> Dict:
+        """
+        Use LLM to analyze experiment description and decide what tools/data are needed.
+        Returns a tool execution plan.
+        """
+        planning_prompt = f"""
+You are an autonomous market analysis agent. Analyze this experiment request and decide what tools and data are needed.
+
+EXPERIMENT REQUEST: {experiment_description}
+DATE: {date}
+
+AVAILABLE TOOLS:
+1. fetch_options_data(symbol, date) - Get options chain data
+2. calculate_gamma_exposure(options_data) - Calculate GEX metrics
+3. fetch_market_data(symbol, date) - Get underlying price/volume data
+4. enhanced_pattern_detector - Detect strike-level patterns
+5. daily_analysis - Full comprehensive analysis
+
+DECISION FRAMEWORK:
+- For gamma/GEX analysis: Need options data + GEX calculation
+- For pattern detection: Need options data + pattern analysis
+- For volatility analysis: Need market data + options data
+- For timing studies: Need intraday data consideration
+- For strike analysis: Need detailed strike-level data
+
+Respond with a JSON plan:
+{{
+    "experiment_type": "gamma_pinning|volatility_analysis|pattern_detection|comprehensive",
+    "required_tools": ["tool1", "tool2", ...],
+    "data_requirements": ["options_chain", "market_data", "strike_details"],
+    "analysis_focus": "What to focus the analysis on",
+    "reasoning": "Why these tools are needed"
+}}
+"""
+
+        try:
+            response = self.llm.generate(planning_prompt)
+            # Parse JSON response
+            import json
+            if isinstance(response, dict) and 'content' in response:
+                plan_text = response['content']
+            else:
+                plan_text = str(response)
+
+            # Extract JSON from response
+            start = plan_text.find('{')
+            end = plan_text.rfind('}') + 1
+            if start >= 0 and end > start:
+                plan_json = plan_text[start:end]
+                tool_plan = json.loads(plan_json)
+            else:
+                # Fallback if JSON parsing fails
+                tool_plan = {
+                    "experiment_type": "comprehensive",
+                    "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
+                    "data_requirements": ["options_chain"],
+                    "analysis_focus": "general market analysis",
+                    "reasoning": "fallback comprehensive analysis"
+                }
+
+            return tool_plan
+
+        except Exception as e:
+            logger.warning(f"Tool planning failed, using fallback: {e}")
+            # Fallback comprehensive plan
+            return {
+                "experiment_type": "comprehensive",
+                "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
+                "data_requirements": ["options_chain"],
+                "analysis_focus": "general market analysis",
+                "reasoning": "fallback due to planning error"
+            }
+
+    def _execute_tool_plan(self, tool_plan: Dict, date: str) -> Dict:
+        """
+        Execute the tools specified in the LLM-generated plan.
+        Returns collected data for analysis.
+        """
+        experiment_data = {}
+        required_tools = tool_plan.get("required_tools", [])
+
+        try:
+            # Execute tools based on LLM decision
+            if "fetch_options_data" in required_tools:
+                if AUTOGEN_TOOLS_AVAILABLE:
+                    logger.info("LLM decided: fetching options data")
+                    experiment_data["options_data"] = fetch_options_data(self.symbol, date)
+                else:
+                    logger.info("LLM decided: fetching options data (cache fallback)")
+                    # Use cache fallback
+                    cache_data = self.cache_manager.get_daily_data(self.symbol, date)
+                    experiment_data["options_data"] = cache_data
+
+            if "calculate_gamma_exposure" in required_tools and experiment_data.get("options_data"):
+                if AUTOGEN_TOOLS_AVAILABLE:
+                    logger.info("LLM decided: calculating gamma exposure")
+                    experiment_data["gex_metrics"] = calculate_gamma_exposure(experiment_data["options_data"])
+                else:
+                    logger.info("LLM decided: calculating gamma exposure (fallback)")
+                    # Use local GEX calculator
+                    experiment_data["gex_metrics"] = self.gex_calculator.calculate_gex(
+                        experiment_data["options_data"], self.symbol
+                    )
+
+            if "fetch_market_data" in required_tools:
+                if AUTOGEN_TOOLS_AVAILABLE:
+                    logger.info("LLM decided: fetching market data")
+                    experiment_data["market_data"] = fetch_market_data(self.symbol, date)
+
+            if "enhanced_pattern_detector" in required_tools and experiment_data.get("gex_metrics"):
+                logger.info("LLM decided: running pattern detection")
+                patterns = self.pattern_detector.detect_all_patterns(
+                    experiment_data["gex_metrics"], {}, date
+                )
+                experiment_data["patterns"] = patterns
+
+            if "daily_analysis" in required_tools:
+                logger.info("LLM decided: running full daily analysis")
+                # Run existing daily analysis but store intermediate results
+                analysis_result = self.daily_analysis(date)
+                experiment_data.update(analysis_result)
+
+            return experiment_data
+
+        except Exception as e:
+            logger.error(f"Tool execution failed: {e}")
+            # Fallback to basic daily analysis
+            return self.daily_analysis(date)
+
+    def _analyze_experiment_results(self, experiment_description: str, experiment_data: Dict, tool_plan: Dict) -> Dict:
+        """
+        Use LLM to analyze the collected data and generate insights specific to the experiment.
+        """
+        analysis_prompt = f"""
+You are analyzing market data for this experiment: {experiment_description}
+
+TOOL PLAN EXECUTED: {tool_plan.get('reasoning', 'Unknown')}
+EXPERIMENT FOCUS: {tool_plan.get('analysis_focus', 'General analysis')}
+
+DATA COLLECTED:
+"""
+
+        # Add relevant data summaries to prompt
+        if experiment_data.get("gex_metrics"):
+            gex = experiment_data["gex_metrics"]
+            analysis_prompt += f"""
+GEX METRICS:
+- Total Gamma: ${gex.get('total_gamma', 0):,.0f}
+- Net GEX: ${gex.get('net_gex', 0):,.0f}
+- Spot Price: ${gex.get('spot_price', 0):.2f}
+- Gamma Flip Point: ${gex.get('gamma_flip_point', 0):.2f}
+"""
+
+        if experiment_data.get("patterns"):
+            patterns = experiment_data["patterns"]
+            analysis_prompt += f"""
+PATTERNS DETECTED: {len(patterns)} patterns found
+Key Patterns: {[p.get('pattern_type', 'Unknown') for p in patterns[:3]]}
+"""
+
+        analysis_prompt += f"""
+
+ANALYSIS REQUIREMENTS:
+1. Interpret findings specifically for: {experiment_description}
+2. Provide WHO/WHOM/WHAT market mechanics
+3. Generate confidence score (0-100%)
+4. Suggest actionable trading signal if applicable
+5. Explain reasoning in context of the experiment
+
+Respond with JSON:
+{{
+    "experiment_type": "{tool_plan.get('experiment_type', 'general')}",
+    "mechanics_interpretation": {{
+        "who": "Primary market actor",
+        "whom": "Who they're acting against",
+        "what": "What action is being forced",
+        "confidence": 85
+    }},
+    "key_findings": ["finding1", "finding2"],
+    "actionable_signal": {{
+        "action": "buy|sell|wait",
+        "confidence": 80,
+        "rationale": "Why this signal makes sense"
+    }},
+    "experiment_specific_insights": "Analysis specific to the experiment request"
+}}
+"""
+
+        try:
+            response = self.llm.generate(analysis_prompt)
+
+            # Parse JSON response
+            import json
+            if isinstance(response, dict) and 'content' in response:
+                analysis_text = response['content']
+            else:
+                analysis_text = str(response)
+
+            # Extract JSON from response
+            start = analysis_text.find('{')
+            end = analysis_text.rfind('}') + 1
+            if start >= 0 and end > start:
+                analysis_json = analysis_text[start:end]
+                result = json.loads(analysis_json)
+            else:
+                # Fallback structured result
+                result = {
+                    "experiment_type": tool_plan.get('experiment_type', 'general'),
+                    "mechanics_interpretation": {
+                        "who": "Market Makers",
+                        "whom": "Retail Traders",
+                        "what": "Price Discovery",
+                        "confidence": 70
+                    },
+                    "key_findings": ["Analysis completed"],
+                    "actionable_signal": {
+                        "action": "wait",
+                        "confidence": 50,
+                        "rationale": "Insufficient data for clear signal"
+                    },
+                    "experiment_specific_insights": f"Completed analysis for: {experiment_description}"
+                }
+
+            # Merge with experiment data
+            result.update(experiment_data)
+            return result
+
+        except Exception as e:
+            logger.error(f"LLM analysis failed: {e}")
+            # Return experiment data with basic structure
+            result = experiment_data.copy()
+            result.update({
+                "experiment_type": tool_plan.get('experiment_type', 'general'),
+                "status": "completed_with_errors",
+                "error": str(e)
+            })
+            return result
+
     def daily_analysis(self, date) -> Dict:
+        # Store current date for logging
+        self._current_date = date
         """
         Perform complete daily market mechanics analysis.
 
@@ -202,7 +488,8 @@ class MarketMechanicsAgent:
 
             if gex_metrics:
                 # If we got GEX from database, we might not have options data
-                logger.info(f"Using database GEX for {date_str}, skipping options data fetch")
+                logger.info(
+                    f"Using database GEX for {date_str}, skipping options data fetch")
                 options_data = pd.DataFrame()  # Empty DataFrame for downstream functions
             else:
                 # Fallback to normal options data flow
@@ -212,7 +499,8 @@ class MarketMechanicsAgent:
                     return self._empty_analysis()
 
                 # 2. Calculate GEX metrics from options data
-                gex_metrics = self._calculate_gex_metrics(options_data, date_str)
+                gex_metrics = self._calculate_gex_metrics(
+                    options_data, date_str)
 
             # 3. Build comprehensive context
             context = self._build_market_context(
@@ -235,7 +523,8 @@ class MarketMechanicsAgent:
             context['patterns_detected'] = patterns
             signal = self._generate_trading_signal(interpretation, context)
 
-            date_str = date.strftime('%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
+            date_str = date.strftime(
+                '%Y-%m-%d') if hasattr(date, 'strftime') else str(date)
             return {
                 'date': date_str,
                 'mechanics_interpretation': interpretation,
@@ -263,18 +552,22 @@ class MarketMechanicsAgent:
 
         # Use autogen tool which handles cache → API → sample data fallback
         try:
-            result = fetch_options_data(symbol=self.symbol, trading_date=date_str, use_cache=True)
+            result = fetch_options_data(
+                symbol=self.symbol, trading_date=date_str, use_cache=True)
 
             if result['status'] == 'success':
-                logger.info(f"Fetched options data from {result['source']} for {self.symbol} {date_str}")
+                logger.info(
+                    f"Fetched options data from {result['source']} for {self.symbol} {date_str}")
                 return result['data']
             else:
-                logger.error(f"AutoGen fetch failed: {result.get('message', 'Unknown error')}")
+                logger.error(
+                    f"AutoGen fetch failed: {result.get('message', 'Unknown error')}")
                 # Fallback to direct cache access
                 return self.cache.get_options_data(self.symbol, date_str)
 
         except (ConnectionError, TimeoutError) as e:
-            logger.warning(f"AutoGen API connection issue: {e}, falling back to cache")
+            logger.warning(
+                f"AutoGen API connection issue: {e}, falling back to cache")
             return self.cache.get_options_data(self.symbol, date_str)
         except Exception as e:
             logger.error(f"AutoGen tools error: {e}, falling back to cache")
@@ -323,22 +616,26 @@ class MarketMechanicsAgent:
                     'gex_value': total_gex,
                     'regime': row[2] or ('NEGATIVE_GAMMA' if total_gex < 0 else 'POSITIVE_GAMMA'),
                     'flip_level': row[3] or 0,
-                    'gamma_concentration': abs(row[6]) if row[6] else 0,  # Use flip_ratio as proxy
+                    # Use flip_ratio as proxy
+                    'gamma_concentration': abs(row[6]) if row[6] else 0,
                     'call_gamma': row[4] or 0,
                     'put_gamma': row[5] or 0,
-                    'zero_gamma_level': row[3] or 0,  # Use flip point as zero gamma
+                    # Use flip point as zero gamma
+                    'zero_gamma_level': row[3] or 0,
                     'spot_price': row[7] or 0,
                     'source': 'historical_database'
                 }
 
             # Data missing - calculate and populate
-            logger.info(f"No database GEX data for {date_str}, calculating and populating...")
+            logger.info(
+                f"No database GEX data for {date_str}, calculating and populating...")
 
             # Fetch options data for calculation
             options_data = self._fetch_options_data(date_str)
             if options_data is None or options_data.empty:
                 conn.close()
-                logger.warning(f"Cannot calculate GEX for {date_str} - no options data")
+                logger.warning(
+                    f"Cannot calculate GEX for {date_str} - no options data")
                 return None
 
             # Calculate GEX metrics
@@ -354,7 +651,8 @@ class MarketMechanicsAgent:
 
             # Return calculated data with database source flag
             gex_metrics['source'] = 'calculated_and_populated'
-            logger.info(f"Calculated and populated GEX for {date_str}: {gex_metrics.get('net_gex', 0):.2e}")
+            logger.info(
+                f"Calculated and populated GEX for {date_str}: {gex_metrics.get('net_gex', 0):.2e}")
             return gex_metrics
 
         except Exception as e:
@@ -371,7 +669,8 @@ class MarketMechanicsAgent:
             # Get market data for spot price using autogen tools
             if AUTOGEN_TOOLS_AVAILABLE:
                 try:
-                    market_result = fetch_market_data(symbol=self.symbol, end_date=date_str, use_cache=True)
+                    market_result = fetch_market_data(
+                        symbol=self.symbol, end_date=date_str, use_cache=True)
 
                     if market_result['status'] == 'success':
                         market_data = market_result['data']
@@ -382,10 +681,12 @@ class MarketMechanicsAgent:
                         spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
 
                 except (ConnectionError, TimeoutError) as e:
-                    logger.warning(f"AutoGen market data API issue: {e}, using options data fallback")
+                    logger.warning(
+                        f"AutoGen market data API issue: {e}, using options data fallback")
                     spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
                 except Exception as e:
-                    logger.error(f"AutoGen market data error: {e}, using options data fallback")
+                    logger.error(
+                        f"AutoGen market data error: {e}, using options data fallback")
                     spot_price = options_data['underlying_last'].iloc[0] if 'underlying_last' in options_data.columns else 0
             else:
                 # Direct fallback when AutoGen not available
@@ -403,7 +704,8 @@ class MarketMechanicsAgent:
 
                     if gex_result['status'] == 'success':
                         gex_metrics = gex_result['metrics']
-                        logger.info(f"GEX calculation via autogen_tools (fallback): cache_hit={gex_result.get('cache_hit', False)}")
+                        logger.info(
+                            f"GEX calculation via autogen_tools (fallback): cache_hit={gex_result.get('cache_hit', False)}")
 
                         # Convert to expected format
                         gex_profile = {
@@ -413,16 +715,19 @@ class MarketMechanicsAgent:
                             'gex_by_strike': gex_metrics.get('gex_by_strike', {})
                         }
                     else:
-                        raise ValueError(f"AutoGen GEX calculation failed: {gex_result.get('message', 'Unknown error')}")
+                        raise ValueError(
+                            f"AutoGen GEX calculation failed: {gex_result.get('message', 'Unknown error')}")
 
                 except (ConnectionError, TimeoutError) as e:
-                    logger.warning(f"AutoGen GEX API issue: {e}, falling back to direct calculation")
+                    logger.warning(
+                        f"AutoGen GEX API issue: {e}, falling back to direct calculation")
                     gex_profile = self.gex_calculator.calculate_gex_profile(
                         options_data=options_data,
                         underlying_price=spot_price
                     )
                 except Exception as e:
-                    logger.error(f"AutoGen GEX calculation error: {e}, falling back to direct calculation")
+                    logger.error(
+                        f"AutoGen GEX calculation error: {e}, falling back to direct calculation")
                     gex_profile = self.gex_calculator.calculate_gex_profile(
                         options_data=options_data,
                         underlying_price=spot_price
@@ -608,19 +913,22 @@ class MarketMechanicsAgent:
 
             if pattern_name == 'dealer_hedging':
                 # Enhanced with strike-level gamma concentration
-                gamma_config = self.strike_pattern_config.get('gamma_concentration', {})
+                gamma_config = self.strike_pattern_config.get(
+                    'gamma_concentration', {})
                 threshold = gamma_config.get('high_concentration_pct', 0.20)
 
                 gamma_data = strike_patterns.get('gamma_concentration', {})
                 if gamma_data.get('concentration_pct', 0) > threshold:
                     confidence += 50
-                    evidence.append(f"Gamma concentration: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f}")
+                    evidence.append(
+                        f"Gamma concentration: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f}")
 
                 # Strike-level volume validation
                 volume_data = strike_patterns.get('volume_anomalies', {})
                 if volume_data.get('detected', False):
                     confidence += 30
-                    evidence.append(f"Volume anomaly: {volume_data.get('max_volume', 0):,.0f} contracts")
+                    evidence.append(
+                        f"Volume anomaly: {volume_data.get('max_volume', 0):,.0f} contracts")
 
             elif pattern_name == 'gamma_squeeze':
                 if gex_metrics.get('gex_regime') == 'POSITIVE_GAMMA_HIGH':
@@ -631,14 +939,16 @@ class MarketMechanicsAgent:
                 gamma_walls = strike_patterns.get('gamma_walls', {})
                 if gamma_walls.get('resistance_strikes'):
                     confidence += 30
-                    evidence.append(f"Gamma resistance at {gamma_walls.get('resistance_strikes')}")
+                    evidence.append(
+                        f"Gamma resistance at {gamma_walls.get('resistance_strikes')}")
 
             elif pattern_name == 'pin_manipulation':
                 # Enhanced pin detection using Issue #73 validated approach
                 pin_data = strike_patterns.get('pin_setup', {})
                 if pin_data.get('pin_probability', 0) > 0.60:  # Validated 60% threshold
                     confidence += 70
-                    evidence.append(f"Pin setup: {pin_data.get('pin_probability', 0):.1%} probability to ${pin_data.get('target_strike', 0):.0f}")
+                    evidence.append(
+                        f"Pin setup: {pin_data.get('pin_probability', 0):.1%} probability to ${pin_data.get('target_strike', 0):.0f}")
 
                 # Add Friday 3:30 PM context if applicable
                 time_context = context.get('temporal_context', {})
@@ -657,7 +967,8 @@ class MarketMechanicsAgent:
                 })
 
         # Add compound pattern detection (main chat suggestion)
-        compound_patterns = self._detect_compound_patterns(strike_patterns, context)
+        compound_patterns = self._detect_compound_patterns(
+            strike_patterns, context)
         detected_patterns.extend(compound_patterns)
 
         return sorted(detected_patterns, key=lambda x: x['confidence'], reverse=True)
@@ -696,14 +1007,15 @@ class MarketMechanicsAgent:
         pin_data = strike_patterns.get('pin_setup', {})
 
         if (gamma_data.get('concentration_pct', 0) > 0.20 and  # 20% gamma concentration
-            volume_data.get('detected', False) and               # Volume anomaly present
-            temporal_context.get('is_friday_330pm', False)):     # Friday 3:30 PM timing
+            # Volume anomaly present
+            volume_data.get('detected', False) and
+                temporal_context.get('is_friday_330pm', False)):     # Friday 3:30 PM timing
 
             combined_confidence = min(0.95,
-                gamma_data.get('confidence', 0.5) * 0.4 +
-                volume_data.get('confidence', 0.5) * 0.3 +
-                0.85  # Issue #73 validated Friday 3:30 PM boost
-            )
+                                      gamma_data.get('confidence', 0.5) * 0.4 +
+                                      volume_data.get('confidence', 0.5) * 0.3 +
+                                      0.85  # Issue #73 validated Friday 3:30 PM boost
+                                      )
 
             compound_patterns.append({
                 'pattern': 'high_probability_pin',
@@ -729,7 +1041,7 @@ class MarketMechanicsAgent:
         gamma_walls = strike_patterns.get('gamma_walls', {})
         if (volume_data.get('detected', False) and
             gamma_walls.get('resistance_strikes') and
-            gamma_data.get('concentration_pct', 0) > 0.15):
+                gamma_data.get('concentration_pct', 0) > 0.15):
 
             compound_patterns.append({
                 'pattern': 'volume_gamma_breakout',
@@ -753,7 +1065,8 @@ class MarketMechanicsAgent:
                 return {}
 
             # Group by strike and sum absolute gamma exposure
-            gamma_by_strike = options_data.groupby('strike')['gamma'].sum().abs()
+            gamma_by_strike = options_data.groupby(
+                'strike')['gamma'].sum().abs()
             total_gamma = gamma_by_strike.sum()
 
             if total_gamma == 0:
@@ -772,11 +1085,13 @@ class MarketMechanicsAgent:
                 'concentration_pct': concentration_pct,
                 'distance_from_spot': distance_from_spot,
                 'max_gamma_value': max_gamma_value,
-                'confidence': min(1.0, concentration_pct * 2)  # Higher concentration = higher confidence
+                # Higher concentration = higher confidence
+                'confidence': min(1.0, concentration_pct * 2)
             }
 
         except Exception as e:
-            logger.error(f"Error in enhanced gamma concentration detection: {e}")
+            logger.error(
+                f"Error in enhanced gamma concentration detection: {e}")
             return {}
 
     def _detect_volume_anomalies(self, options_data: pd.DataFrame) -> Dict:
@@ -786,14 +1101,16 @@ class MarketMechanicsAgent:
                 return {'detected': False}
 
             # Find strikes with high volume
-            high_volume_threshold = self.config.get('gex_thresholds', {}).get('high_volume_threshold', 100000)
+            high_volume_threshold = self.config.get(
+                'gex_thresholds', {}).get('high_volume_threshold', 100000)
             volume_by_strike = options_data.groupby('strike')['volume'].sum()
 
             # Detect anomalies (>3x average volume)
             avg_volume = volume_by_strike.mean()
             anomaly_threshold = max(high_volume_threshold, avg_volume * 3)
 
-            anomalous_strikes = volume_by_strike[volume_by_strike > anomaly_threshold]
+            anomalous_strikes = volume_by_strike[volume_by_strike >
+                                                 anomaly_threshold]
 
             if anomalous_strikes.empty:
                 return {'detected': False}
@@ -807,7 +1124,8 @@ class MarketMechanicsAgent:
                 'max_volume': int(max_volume),
                 'anomalous_strikes': anomalous_strikes.index.tolist(),
                 'vs_average': max_volume / avg_volume if avg_volume > 0 else 0,
-                'confidence': min(1.0, max_volume / 500000)  # Confidence based on volume level
+                # Confidence based on volume level
+                'confidence': min(1.0, max_volume / 500000)
             }
 
         except Exception as e:
@@ -826,14 +1144,17 @@ class MarketMechanicsAgent:
             total_gamma = gamma_by_strike.abs().sum()
             significant_threshold = total_gamma * 0.20
 
-            significant_strikes = gamma_by_strike[gamma_by_strike.abs() > significant_threshold]
+            significant_strikes = gamma_by_strike[gamma_by_strike.abs(
+            ) > significant_threshold]
 
             if significant_strikes.empty:
                 return {}
 
             # Classify as resistance (above spot) or support (below spot)
-            resistance_strikes = [s for s in significant_strikes.index if s > spot_price]
-            support_strikes = [s for s in significant_strikes.index if s <= spot_price]
+            resistance_strikes = [
+                s for s in significant_strikes.index if s > spot_price]
+            support_strikes = [
+                s for s in significant_strikes.index if s <= spot_price]
 
             return {
                 'resistance_strikes': resistance_strikes,
@@ -849,7 +1170,8 @@ class MarketMechanicsAgent:
         """Detect pin setup using Issue #73 validated methodology."""
         try:
             # Get gamma concentration data
-            gamma_data = self._detect_gamma_concentration_enhanced(options_data, spot_price)
+            gamma_data = self._detect_gamma_concentration_enhanced(
+                options_data, spot_price)
 
             if not gamma_data:
                 return {}
@@ -888,15 +1210,18 @@ class MarketMechanicsAgent:
 
             # Estimate dealer positioning (simplified)
             total_gamma = options_data['gamma'].sum()
-            call_gamma = options_data[options_data['type'] == 'call']['gamma'].sum()
-            put_gamma = options_data[options_data['type'] == 'put']['gamma'].sum()
+            call_gamma = options_data[options_data['type']
+                                      == 'call']['gamma'].sum()
+            put_gamma = options_data[options_data['type']
+                                     == 'put']['gamma'].sum()
 
             # Find approximate gamma flip point
             gamma_by_strike = options_data.groupby('strike')['gamma'].sum()
 
             # Simple flip point estimation
             cumulative_gamma = gamma_by_strike.cumsum()
-            zero_crossings = cumulative_gamma[cumulative_gamma.abs() < abs(total_gamma) * 0.1]
+            zero_crossings = cumulative_gamma[cumulative_gamma.abs() < abs(
+                total_gamma) * 0.1]
 
             flip_point = zero_crossings.index[0] if not zero_crossings.empty else spot_price
 
@@ -915,8 +1240,10 @@ class MarketMechanicsAgent:
 
     def _llm_interpret_mechanics(self, context: Dict, patterns: List[Dict]) -> Dict:
         """Use LLM to interpret market mechanics."""
+        logger.info(f"DEBUG: _llm_interpret_mechanics called, LLM available: {self.llm is not None}")
         if not self.llm:
-            logger.warning("No LLM available, falling back to rule-based interpretation")
+            logger.warning(
+                "No LLM available, falling back to rule-based interpretation")
             return self._rule_based_interpretation(patterns)
 
         # Build LLM prompt
@@ -931,7 +1258,8 @@ class MarketMechanicsAgent:
             # Use duck typing with proper error handling
             logger.debug("Invoking LLM for mechanics interpretation...")
             interpretation = self._invoke_llm_safely(prompt)
-            logger.info(f"LLM interpretation successful: confidence={interpretation.get('confidence', 'Unknown')}")
+            logger.info(
+                f"LLM interpretation successful: confidence={interpretation.get('confidence', 'Unknown')}")
             return interpretation
 
         except Exception as e:
@@ -942,24 +1270,61 @@ class MarketMechanicsAgent:
 
     def _invoke_llm_safely(self, prompt: str) -> Dict:
         """Safely invoke LLM with proper interface detection."""
+        logger.info(f"DEBUG: _invoke_llm_safely called with prompt length: {len(prompt)}")
         # Try structured interpretation method first (preferred)
         try:
             if callable(getattr(self.llm, 'interpret_mechanics', None)):
-                return self.llm.interpret_mechanics(prompt)
-        except (AttributeError, TypeError):
+                logger.info("DEBUG: Using interpret_mechanics method")
+                response = self.llm.interpret_mechanics(prompt)
+                # Log raw LLM response for analysis
+                logger.info("RAW_LLM_RESPONSE_START")
+                logger.info(f"Date: {getattr(self, '_current_date', 'unknown')}")
+                logger.info(f"Symbol: {self.symbol}")
+                logger.info(f"Method: interpret_mechanics")
+                logger.info(f"Prompt_length: {len(prompt)}")
+                logger.info(f"Response_type: {type(response)}")
+                logger.info("RESPONSE_CONTENT:")
+                logger.info(response)
+                logger.info("RAW_LLM_RESPONSE_END")
+                return response
+        except (AttributeError, TypeError) as e:
+            logger.info(f"DEBUG: interpret_mechanics failed: {e}")
             pass
 
         # Try AutoGen-style interpretation
         try:
             if callable(getattr(self.llm, 'analyze_market_mechanics', None)):
-                return self.llm.analyze_market_mechanics(prompt)
-        except (AttributeError, TypeError):
+                logger.info("DEBUG: Using analyze_market_mechanics method")
+                response = self.llm.analyze_market_mechanics(prompt)
+                # Log raw LLM response for analysis
+                logger.info("RAW_LLM_RESPONSE_START")
+                logger.info(f"Date: {getattr(self, '_current_date', 'unknown')}")
+                logger.info(f"Symbol: {self.symbol}")
+                logger.info(f"Method: analyze_market_mechanics")
+                logger.info(f"Prompt_length: {len(prompt)}")
+                logger.info(f"Response_type: {type(response)}")
+                logger.info("RESPONSE_CONTENT:")
+                logger.info(response)
+                logger.info("RAW_LLM_RESPONSE_END")
+                return response
+        except (AttributeError, TypeError) as e:
+            logger.info(f"DEBUG: analyze_market_mechanics failed: {e}")
             pass
 
         # Fall back to generic generate method
         try:
             if callable(getattr(self.llm, 'generate', None)):
                 response = self.llm.generate(prompt)
+                # Log raw LLM response for analysis
+                logger.info("RAW_LLM_RESPONSE_START")
+                logger.info(
+                    f"Date: {getattr(self, '_current_date', 'unknown')}")
+                logger.info(f"Symbol: {self.symbol}")
+                logger.info(f"Prompt_length: {len(prompt)}")
+                logger.info(f"Response_length: {len(response)}")
+                logger.info("RESPONSE_CONTENT:")
+                logger.info(response)
+                logger.info("RAW_LLM_RESPONSE_END")
                 return self._parse_llm_response(response)
         except (AttributeError, TypeError):
             pass
@@ -967,9 +1332,19 @@ class MarketMechanicsAgent:
         # Last resort: try calling the object directly
         try:
             response = self.llm(prompt)
+            # Log raw LLM response for analysis
+            logger.info("RAW_LLM_RESPONSE_START")
+            logger.info(f"Date: {getattr(self, '_current_date', 'unknown')}")
+            logger.info(f"Symbol: {self.symbol}")
+            logger.info(f"Prompt_length: {len(prompt)}")
+            logger.info(f"Response_length: {len(response)}")
+            logger.info("RESPONSE_CONTENT:")
+            logger.info(response)
+            logger.info("RAW_LLM_RESPONSE_END")
             return self._parse_llm_response(response)
         except (AttributeError, TypeError, Exception):
-            raise ValueError(f"LLM object {type(self.llm)} does not implement any recognized interface")
+            raise ValueError(
+                f"LLM object {type(self.llm)} does not implement any recognized interface")
 
     def _rule_based_interpretation(self, patterns: List[Dict]) -> Dict:
         """Fallback rule-based interpretation when LLM unavailable."""
@@ -1016,7 +1391,8 @@ class MarketMechanicsAgent:
         }
 
         # Check for sufficient confidence patterns (configurable threshold)
-        min_confidence = self.config.get('min_signal_confidence', 30)  # Default 30%
+        min_confidence = self.config.get(
+            'min_signal_confidence', 30)  # Default 30%
 
         # Use pattern confidence if interpretation confidence is missing/low
         interp_confidence = interpretation.get('confidence', 0)
@@ -1033,7 +1409,8 @@ class MarketMechanicsAgent:
         patterns = context.get('patterns_detected', [])
         top_pattern = patterns[0]['pattern'] if patterns else None
 
-        logger.info(f"Signal generation: confidence {effective_confidence}% >= {min_confidence}%, pattern: {top_pattern}")
+        logger.info(
+            f"Signal generation: confidence {effective_confidence}% >= {min_confidence}%, pattern: {top_pattern}")
 
         # Apply contrarian logic for specific patterns (check both LLM and pattern detection)
         active_mechanic = primary_mechanic or top_pattern
@@ -1088,7 +1465,8 @@ class MarketMechanicsAgent:
 
         # Bonus for multiple confirming patterns
         if len(patterns) > 1:
-            max_confidence += 10 * (len(patterns) - 1)  # +10% per additional pattern
+            # +10% per additional pattern
+            max_confidence += 10 * (len(patterns) - 1)
 
         # Adjust for context factors
         temporal = context.get('temporal_context', {})
@@ -1134,7 +1512,8 @@ class MarketMechanicsAgent:
             'temporal_context': context.get('temporal_context', {}),
             'strike_distribution': context.get('strike_distribution', {}),
             'volatility_surface': context.get('volatility_surface', {}),
-            'strike_level_patterns': context.get('strike_level_patterns', {})  # Add enhanced patterns
+            # Add enhanced patterns
+            'strike_level_patterns': context.get('strike_level_patterns', {})
         }
 
         # Use prompt builder with exact format
@@ -1230,7 +1609,6 @@ class MarketMechanicsAgent:
         except Exception as e:
             logger.error(f"Error analyzing gamma concentration: {e}")
             return {}
-
 
     def _analyze_strike_distribution(self, options_data: pd.DataFrame) -> Dict:
         """Analyze strike distribution and OI concentration."""
@@ -1425,13 +1803,15 @@ class MarketMechanicsAgent:
                     gex_metrics.get('call_gamma', 0),
                     gex_metrics.get('put_gamma', 0),
                     gex_metrics.get('flip_level', 0),
-                    gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0)
-                        if isinstance(gex_metrics.get('gamma_concentration'), dict)
-                        else gex_metrics.get('gamma_concentration', 0),
+                    gex_metrics.get('gamma_concentration', {}).get(
+                        'concentration_score', 0)
+                    if isinstance(gex_metrics.get('gamma_concentration'), dict)
+                    else gex_metrics.get('gamma_concentration', 0),
                     regime,
                     1.0,  # data_quality_score
-                    0,    # options_count (would need to count from options_data)
-                    datetime.datetime.now().isoformat()
+                    # options_count (would need to count from options_data)
+                    0,
+                    now_iso()
                 ))
             else:
                 # Insert into daily table
@@ -1449,19 +1829,23 @@ class MarketMechanicsAgent:
                     gex_metrics.get('call_gamma', 0),
                     gex_metrics.get('put_gamma', 0),
                     gex_metrics.get('flip_level', 0),
-                    gex_metrics.get('gamma_concentration', {}).get('concentration_score', 0)
-                        if isinstance(gex_metrics.get('gamma_concentration'), dict)
-                        else gex_metrics.get('gamma_concentration', 0),
+                    gex_metrics.get('gamma_concentration', {}).get(
+                        'concentration_score', 0)
+                    if isinstance(gex_metrics.get('gamma_concentration'), dict)
+                    else gex_metrics.get('gamma_concentration', 0),
                     regime,
                     1.0,  # data_quality_score
-                    0,    # options_count (would need to count from options_data)
-                    datetime.datetime.now().isoformat()
+                    # options_count (would need to count from options_data)
+                    0,
+                    now_iso()
                 ))
 
             conn.commit()
             table_type = "intraday" if is_intraday else "daily"
-            logger.debug(f"Populated {table_type} database entry for {self.symbol} {date_str}")
+            logger.debug(
+                f"Populated {table_type} database entry for {self.symbol} {date_str}")
 
         except Exception as e:
-            logger.error(f"Failed to populate database entry for {date_str}: {e}")
+            logger.error(
+                f"Failed to populate database entry for {date_str}: {e}")
             # Don't raise - we still want to return the calculated data

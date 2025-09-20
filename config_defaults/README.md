@@ -2,13 +2,22 @@
 
 This directory contains centralized configuration files for the GEX LLM Patterns system.
 
-## Configuration Files
+## Current Configuration Files
 
-- **`tokenization_config.yaml`** - GEX tokenizer, sequence builder, and price tokenizer parameters
-- **`analysis_config.yaml`** - Statistical analysis and confidence scoring parameters
-- **`gex_calculation_config.yaml`** - GEX calculations and pattern detection parameters
-- **`data_source_config.yaml`** - API clients and data collection parameters
+- **`analysis_config.yaml`** - Core pattern detection, GEX thresholds, and statistical analysis parameters
+- **`continuous_testing_config.yaml`** - Baseline comparison testing and strategy validation parameters
+- **`technical_indicators_config.yaml`** - Technical indicator calculations and adaptive consensus parameters
 - **`trading_config.yaml`** - Trading system and risk management parameters
+
+## Removed Files (Agent-Driven Evolution)
+
+With the implementation of LLM-driven agent autonomy, several static configuration files have been removed:
+- `tokenization_config.yaml` - Tokenization moved to legacy architecture
+- `gex_calculation_config.yaml` - GEX calculations now handled by enhanced pattern detector
+- `data_source_config.yaml` - Data sources now managed by AutoGen tools with fallbacks
+- `baseline_test_config.yaml` - Testing now handled by validation scripts
+- `sample_data_test_config.yaml` - Sample data testing integrated into main validation
+- `technical_only_test_config.yaml` - Technical analysis integrated into main system
 
 ## Usage
 

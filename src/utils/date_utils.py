@@ -405,7 +405,8 @@ def parse_date_string(date_str) -> datetime.datetime:
             return result_date
 
         except (ValueError, IndexError) as e:
-            raise ValueError(f"Unable to parse obfuscated date string: {date_str}") from e
+            raise ValueError(
+                f"Unable to parse obfuscated date string: {date_str}") from e
 
     # Handle standard date formats
     formats_to_try = [
@@ -494,7 +495,8 @@ def is_opex_week(date) -> bool:
 
     # Third Friday of the month
     first_day = date.replace(day=1)
-    first_friday = first_day + datetime.timedelta(days=(4 - first_day.weekday()) % 7)
+    first_friday = first_day + \
+        datetime.timedelta(days=(4 - first_day.weekday()) % 7)
     third_friday = first_friday + datetime.timedelta(weeks=2)
 
     # Check if within OPEX week (Mon-Fri of third Friday week)
@@ -525,6 +527,47 @@ def is_business_day(date_str) -> bool:
     # Check against US market holidays (basic check)
     # This could be enhanced with a proper holiday calendar
     return True
+
+
+def is_valid_trading_date(date_str: str, allow_future: bool = False) -> bool:
+    """
+    Check if a date is a valid trading date (business day and not in future).
+
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        allow_future: If True, allow future dates (default False)
+
+    Returns:
+        True if valid trading date, False otherwise
+    """
+    try:
+        import pytz
+
+        # Parse the date
+        dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+
+        # Check if it's a business day
+        if not is_business_day(date_str):
+            return False
+
+        # Check if it's in the future
+        if not allow_future:
+            # Get current time in EDT/EST
+            eastern = pytz.timezone('America/New_York')
+            now = datetime.datetime.now(eastern).replace(tzinfo=None)
+
+            # Date is in the future if after today
+            if dt.date() > now.date():
+                return False
+
+        # Check if it's too far in the past (before 2000)
+        if dt.year < 2000:
+            return False
+
+        return True
+
+    except (ValueError, TypeError):
+        return False
 
 
 def format_for_filename(dt: datetime.datetime = None) -> str:
@@ -611,11 +654,13 @@ def calculate_days_to_expiration(expiration_dates, trade_dates):
 
     # Handle obfuscated dates by parsing them first
     if isinstance(expiration_dates, pd.Series) and expiration_dates.dtype == 'object':
-        expiration_dates = expiration_dates.apply(lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        expiration_dates = expiration_dates.apply(
+            lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
         expiration_dates = pd.to_datetime(expiration_dates)
 
     if isinstance(trade_dates, pd.Series) and trade_dates.dtype == 'object':
-        trade_dates = trade_dates.apply(lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        trade_dates = trade_dates.apply(
+            lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
         trade_dates = pd.to_datetime(trade_dates)
 
     # Calculate the difference in days

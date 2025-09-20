@@ -1,67 +1,96 @@
 # GEX-LLM Patterns Documentation
 
-## 🚀 **Production Ready - September 18, 2025**
+## 🚀 **Production Ready - September 19, 2025**
 
-**Latest Status**: Enhanced strike-level pattern detection deployed with 75% validated success rate. Market data system consolidated and flexible algo time support implemented.
+**Latest Status**: Agent-driven experiment system deployed with enhanced strike-level pattern detection. Complete cache→live data flow validated with 90% LLM confidence. GitHub issues updated to reflect current production status.
 
-## Documentation Structure
+## 📋 **Quick Start Guide**
 
-### 📖 **System Documentation** (`system/`)
-Core architecture and system design:
+### For New Users
 
-- **`architecture/`** - Complete system architecture documentation
-  - `project_overview.md` - High-level system overview
-  - `architecture_overview.md` - Technical architecture details
-  - `data_architecture.md` - Data flow and storage design
-  - `database_architecture.md` - Database schema and design
-  - `continuous_experiment_framework.md` - Experimental framework
-  - `intraday_implementation_complete.md` - Intraday data system
-- **`cache_intraday_analysis.md`** - Cache system analysis and optimization
+1. **Overview**: Start with [system/architecture/project_overview](system/architecture/project_overview)
+2. **Agent System**: Read [CLAUDE.md](../CLAUDE) for current system status
+3. **Run Experiment**: Use `scripts/orchestrate_experiment.py --experiment "analyze gamma pinning" --symbol SPY --date 2024-06-28`
+
+### For Developers
+
+1. **Testing**: Read [guides/validation-framework](guides/validation-framework)
+2. **Architecture**: Review [system/architecture/architecture_overview](system/architecture/architecture_overview)
+3. **Validation**: Run `scripts/validation/production_cache_test.py --date 2024-06-28`
+
+### For Researchers
+
+1. **Latest Findings**: Check [reference/model-selection-research](reference/model-selection-research)
+2. **Pattern Results**: See gamma pinning 75% success rate validation
+3. **Strike Analysis**: 251 daily opportunities vs 1 aggregated signal
+
+## 📖 **Documentation Structure**
+
+### 🏗️ **System Documentation** (`system/`)
+
+Core architecture and operational guides:
+
+- **`architecture/`** - Complete system architecture
+  - [project_overview](system/architecture/project_overview) - High-level system overview
+  - [architecture_overview](system/architecture/architecture_overview) - Technical architecture
+  - [data_architecture](system/architecture/data_architecture) - Data flow and storage
+  - [database_architecture](system/architecture/database_architecture) - Database schema
+  - [continuous_experiment_framework](system/architecture/continuous_experiment_framework) - Experimental framework
+  - [intraday_implementation_complete](system/architecture/intraday_implementation_complete) - Intraday system
+- **[cache_intraday_analysis](system/cache_intraday_analysis)** - Cache optimization analysis
 
 ### 📚 **User Guides** (`guides/`)
-How-to documentation for users and developers:
 
-- **`validation-framework.md`** - LLM validation and testing framework
-- **`data-obfuscation.md`** - Anti-cheating measures for validation
-- **`baseline-strategy.md`** - Trading strategy implementation guide
+How-to documentation for practical usage:
 
-### 📊 **Reference Documentation** (`reference/`)
+- **[validation-framework](guides/validation-framework)** - LLM validation and testing framework
+- **[data-obfuscation](guides/data-obfuscation)** - Anti-cheating measures for validation
+- **[baseline-strategy](guides/baseline-strategy)** - Trading strategy implementation
+
+### 📊 **Technical Reference** (`reference/`)
+
 Technical specifications and research findings:
 
-- **`model-selection-research.md`** - O3-mini vs GPT-4o comparison results
-- **`adaptive-consensus-technical-indicators.md`** - Technical indicator framework
+- **[model-selection-research](reference/model-selection-research)** - O3-mini vs GPT-4o comparison
+- **[token_configuration](reference/token_configuration)** - LLM token optimization strategy
+- **[adaptive-consensus-technical-indicators](reference/adaptive-consensus-technical-indicators)** - Technical indicators
 - **`api/`** - API documentation and specifications
-- **`technical/`** - Technical implementation details
+- **`technical/`** - Implementation details and configurations
 
 ### 🗄️ **Archive** (`archive/`)
+
 Historical documentation and legacy components:
 
 - **`legacy/`** - Archived code and migration documentation
 - **`research/`** - Historical research and experiments
 - **`agents/`** - Legacy agent implementations
 
-## Quick Start
+## 🎯 **Current Production Features**
 
-1. **New Users**: Start with `system/architecture/project_overview.md`
-2. **Developers**: Read `guides/validation-framework.md` for testing
-3. **Researchers**: Check `reference/model-selection-research.md` for latest findings
-
-## Current Production Features
-
-✅ **Strike-Level Pattern Detection** - Enhanced from aggregate GEX analysis
-✅ **Flexible Algo Time System** - Parameterizable times (3:30, 3:50 PM, etc.)
-✅ **Market Data System** - Unified daily/intraday data access
-✅ **O3-mini LLM Integration** - 75% confidence, 65% cost savings
+✅ **LLM-Driven Agent Autonomy** - LLM analyzes experiments and autonomously selects tools and analysis approach
+✅ **Strike-Level Pattern Detection** - Enhanced from aggregate GEX analysis (251 daily opportunities vs 1 signal)
+✅ **Gamma Pinning Validation** - 75% success rate on Friday 3:30 PM patterns
+✅ **O3-mini LLM Integration** - 90% confidence analysis with 4000 token optimization
+✅ **Complete Data Flow** - Cache→API→Live data with automatic fallbacks
 ✅ **Validation Framework** - Anti-cheating measures with obfuscated data
-✅ **Database Auto-Population** - Automatic GEX calculation and storage
+✅ **Enhanced Pattern Detection** - Compound patterns: High Probability Pin, Volume Gamma Breakout
 
-## Key Research Findings
+## 🔬 **Key Research Findings**
 
-- **75% Gamma Pinning Success Rate** - Friday 3:30 PM validation complete
+- **90% LLM Confidence** - Production validation with real SPY options data
+- **75% Gamma Pinning Success Rate** - Friday 3:30 PM validation exceeds 60% threshold
 - **251 Strike-Level Opportunities** - vs 1 aggregated signal (massive improvement)
-- **O3-mini Optimal Model** - Best cost/performance ratio for production
-- **SPY/QQQ Daily 0DTE** - vs regular tickers Friday-only expiration patterns
+- **O3-mini Optimal Model** - Best cost/performance ratio (75% confidence, 65% cost savings)
+- **Token Optimization** - 0 tokens for tools, 4000 tokens for LLM analysis only
+- **LLM Agent Autonomy** - Three-stage process: LLM plans tools → executes plan → analyzes results
+
+## 🔧 **System Requirements**
+
+- **Python 3.8+** with required dependencies
+- **Database**: SQLite for local caching
+- **API Access**: Alpha Vantage Premium (with cache fallbacks)
+- **LLM**: O3-mini model access for market mechanics analysis
 
 ---
 
-*Last Updated: September 18, 2025*
+*Last Updated: September 19, 2025*

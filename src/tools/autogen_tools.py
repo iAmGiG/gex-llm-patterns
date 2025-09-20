@@ -2,11 +2,17 @@
 Clean Tools Configuration for GEX-LLM Analysis
 Active tools: Alpha Vantage Premium (options & market data), Unified Cache
 
+IMPORTANT: These are direct Python function calls, NOT LLM calls.
+- No token limits needed for tool functions
+- Tools fetch data and perform calculations directly
+- Only the market mechanics analysis uses LLM (O3-mini with 4000 tokens)
+
 Organized by agent type for clean tool assignment and efficient agent workflows.
 """
 
 # Standard library imports
 import logging
+import pandas as pd
 
 # Project imports for date handling
 from src.utils.date_utils import (
@@ -14,8 +20,41 @@ from src.utils.date_utils import (
     add_business_days,
     parse_date_string,
     format_for_filename,
-    calculate_duration_minutes
+    calculate_duration_minutes,
+    is_valid_trading_date
 )
+
+def filter_options_data(df: pd.DataFrame, min_volume: int = 1, min_oi: int = 1) -> pd.DataFrame:
+    """
+    Filter options data to remove strikes with zero or low volume/open interest.
+
+    Args:
+        df: Options DataFrame
+        min_volume: Minimum volume threshold (default 1 to remove 0 volume)
+        min_oi: Minimum open interest threshold (default 1 to remove 0 OI)
+
+    Returns:
+        Filtered DataFrame
+    """
+    if df.empty:
+        return df
+
+    original_count = len(df)
+
+    # Filter by volume if column exists
+    if 'volume' in df.columns:
+        df = df[df['volume'] >= min_volume]
+
+    # Filter by open interest if column exists
+    if 'open_interest' in df.columns:
+        df = df[df['open_interest'] >= min_oi]
+
+    filtered_count = len(df)
+    if filtered_count < original_count:
+        logger.info(f"Filtered options data: {original_count} -> {filtered_count} contracts "
+                   f"(removed {original_count - filtered_count} with volume < {min_volume} or OI < {min_oi})")
+
+    return df
 
 # Third-party imports
 from autogen_core.tools import FunctionTool
@@ -70,16 +109,26 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
         if not trading_date:
             trading_date = today_str()
 
+        # Validate the date
+        if not is_valid_trading_date(trading_date):
+            logger.error(f"Invalid trading date: {trading_date} (future date or non-trading day)")
+            return {
+                'status': 'error',
+                'message': f'Invalid trading date: {trading_date}. Must be a past/current business day.'
+            }
+
         # Check cache first
         if use_cache:
             cached_data = cache_manager.get_options_data(symbol, trading_date)
             if cached_data is not None:
                 logger.info(
                     f"Cache hit for {symbol} options on {trading_date}")
+                # Filter out zero volume/OI strikes
+                filtered_data = filter_options_data(cached_data)
                 return {
                     'status': 'success',
                     'source': 'cache',
-                    'data': cached_data,
+                    'data': filtered_data,
                     'symbol': symbol,
                     'date': trading_date
                 }
@@ -90,12 +139,14 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
             symbol, trading_date)
 
         if api_data is not None and not api_data.empty:
-            # Cache the data
+            # Filter out zero volume/OI strikes
+            filtered_data = filter_options_data(api_data)
+            # Cache the original data, return filtered
             cache_manager.store_options_data(symbol, trading_date, api_data)
             return {
                 'status': 'success',
                 'source': 'alpha_vantage',
-                'data': api_data,
+                'data': filtered_data,
                 'symbol': symbol,
                 'date': trading_date
             }
