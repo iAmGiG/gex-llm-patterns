@@ -6,15 +6,10 @@ Based on statistical pattern analysis, generates concrete trading rules and LLM 
 import sqlite3
 import pandas as pd
 import numpy as np
-import datetime
 
-# Use date_utils instead of datetime
+# Use date_utils for datetime operations
 from src.utils.date_utils import (
-    today_str,
-    now_timestamp,
-    parse_date_string,
-    add_business_days,
-    calculate_duration_minutes
+    now_iso
 )
 
 
@@ -87,7 +82,7 @@ class TradingRulesGenerator:
 
         return self.pattern_stats
 
-    def _generate_trading_rule(self, stats: Dict):
+    def _generate_trading_rule(self, stats):
         """Generate a trading rule from pattern statistics."""
 
         rule = {
@@ -105,7 +100,7 @@ class TradingRulesGenerator:
 
         return rule
 
-    def _calculate_rule_strength(self, stats: Dict) -> str:
+    def _calculate_rule_strength(self, stats):
         """Calculate rule strength based on statistics."""
 
         win_rate = stats['win_rate']
@@ -120,7 +115,7 @@ class TradingRulesGenerator:
         else:
             return "INSUFFICIENT_DATA"
 
-    def generate_llm_prompt(self, date, gex_data: Dict, patterns: List[Dict]) -> str:
+    def generate_llm_prompt(self, date, gex_data, patterns):
         """
         Generate context-aware LLM prompt based on statistical findings.
 
@@ -206,7 +201,7 @@ class TradingRulesGenerator:
 
         return "\n".join(prompt_lines)
 
-    def generate_rules_report(self) -> str:
+    def generate_rules_report(self):
         """Generate a comprehensive trading rules report."""
 
         if not hasattr(self, 'pattern_stats') or not self.pattern_stats:
@@ -215,7 +210,7 @@ class TradingRulesGenerator:
         report_lines = [
             "STATISTICAL TRADING RULES REPORT",
             "=" * 60,
-            f"Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"Generated: {now_iso()}",
             f"Database: {self.db_path}",
             "",
             "PATTERN STATISTICS SUMMARY:",

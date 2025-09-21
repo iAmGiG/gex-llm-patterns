@@ -11,9 +11,10 @@ import pandas as pd
 import numpy as np
 import yaml
 import sqlite3
+import datetime
 from pathlib import Path
 
-from utils.date_utils import (
+from src.utils.date_utils import (
     get_default_date_range,
     parse_date_string,
     is_business_day,
@@ -22,16 +23,16 @@ from utils.date_utils import (
     add_business_days,
     now_iso
 )
-from cache.unified_cache import UnifiedCacheManager
-from gex.enhanced_pattern_detector import EnhancedPatternDetector
-from gex.gex_calculator import GEXCalculator
-from llm.mechanics_prompt_builder import MechanicsPromptBuilder
+from src.cache.unified_cache import UnifiedCacheManager
+from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
+from src.gex.gex_calculator import GEXCalculator
+from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 
 logger = logging.getLogger(__name__)
 
 # Import autogen_tools at module level with fallback
 try:
-    from tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
+    from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
     AUTOGEN_TOOLS_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"AutoGen tools not available: {e}")
@@ -62,6 +63,15 @@ class MarketMechanicsAgent:
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
         self.prompt_builder = MechanicsPromptBuilder()
+
+        # Initialize pattern library (Issue #54)
+        try:
+            from analysis.pattern_library import PatternLibrary
+            self.pattern_library = PatternLibrary()
+            logger.info("Initialized Pattern Library with comprehensive patterns")
+        except ImportError as e:
+            logger.warning(f"Pattern Library not available: {e}")
+            self.pattern_library = None
 
         # Auto-initialize LLM if not provided
         if llm_provider is None:
@@ -182,6 +192,21 @@ class MarketMechanicsAgent:
             'max_strike': gex_profile.get('max_strike', spot_price)
         }
 
+    def _generate_pattern_insights(self, pattern_matches: List[Dict]) -> List[str]:
+        """Generate insights from pattern library matches."""
+        insights = []
+
+        for match in pattern_matches[:3]:  # Top 3 patterns
+            pattern = match.get("pattern")
+            if pattern and hasattr(pattern, "mechanics_description"):
+                insight = f"{match['pattern_name']}: {pattern.mechanics_description}"
+                insights.append(insight)
+            elif isinstance(pattern, dict):
+                insight = f"{match['pattern_name']}: Confidence {match['confidence']:.0%}"
+                insights.append(insight)
+
+        return insights
+
     def run_experiment(self, experiment_description: str, date: str = "2024-06-28") -> Dict:
         """
         Run flexible experiment based on natural language description.
@@ -206,6 +231,26 @@ class MarketMechanicsAgent:
 
             # Step 3: Use LLM to analyze results and generate insights
             result = self._analyze_experiment_results(experiment_description, experiment_data, tool_plan)
+
+            # Step 4: Add pattern library analysis (Issue #54)
+            if self.pattern_library and experiment_data:
+                try:
+                    pattern_matches = self.pattern_library.match_patterns(experiment_data)
+                    if pattern_matches:
+                        result["pattern_library_analysis"] = {
+                            "detected_patterns": [
+                                {
+                                    "pattern": match["pattern_name"],
+                                    "confidence": match["confidence"],
+                                    "category": match["category"]
+                                }
+                                for match in pattern_matches[:3]  # Top 3 matches
+                            ],
+                            "mechanics_insights": self._generate_pattern_insights(pattern_matches)
+                        }
+                        logger.info(f"Pattern library detected {len(pattern_matches)} potential patterns")
+                except Exception as e:
+                    logger.warning(f"Pattern library analysis failed: {e}")
 
             # Add experiment metadata
             result["experiment_description"] = experiment_description

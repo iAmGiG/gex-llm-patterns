@@ -122,7 +122,6 @@ class BaselineComparison:
         for i in range(len(market_data) - 1):
             current_gex = market_data.iloc[i]['total_gex']
             current_price = market_data.iloc[i]['spot_price']
-            next_price = market_data.iloc[i + 1]['spot_price']
 
             # Determine position based on GEX
             if current_gex > 0:  # Positive GEX - go long

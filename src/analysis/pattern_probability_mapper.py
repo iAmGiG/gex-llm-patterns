@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from typing import Dict, Tuple
 
 # Use date_utils instead of datetime
-from utils.date_utils import (
+from src.utils.date_utils import (
     today_str,
     now_timestamp,
     parse_date_string,
@@ -341,7 +341,7 @@ class PatternProbabilityMapper:
 
         # Statistical significance
         if len(returns) > 1:
-            t_stat, p_value = stats.ttest_1samp(returns, 0)
+            _, p_value = stats.ttest_1samp(returns, 0)
         else:
             p_value = 1.0
 

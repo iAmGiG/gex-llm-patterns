@@ -386,9 +386,9 @@ class ConfidenceScorer:
 
         # Fed context factors
         if 'fed_environment' in market_context:
-            fed_env = market_context['fed_environment']
             # Pattern-specific adjustments could go here
             # For now, neutral scoring
+            pass
 
         # Market stress factors
         stress_level = market_context.get('market_stress_level', 'normal')

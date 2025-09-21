@@ -19,8 +19,8 @@ Structure:
     └── [same structure]
 """
 
+import yaml
 import json
-import pandas as pd
 from pathlib import Path
 from datetime import datetime, time
 from typing import Dict, List, Optional, Tuple
@@ -28,7 +28,6 @@ import logging
 
 from src.cache.unified_cache import UnifiedCacheManager
 from src.utils.date_utils import parse_date_string, get_market_open_time, get_market_close_time
-import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +39,10 @@ class IntradayCacheManager(UnifiedCacheManager):
         """Initialize intraday cache manager."""
         super().__init__(base_dir)
 
-        # Intraday directories
+        # Intraday directories (created lazily when needed)
         self.intraday_options_dir = self.base_dir / "intraday_options"
         self.intraday_gex_dir = self.base_dir / "intraday_gex"
         self.intraday_market_dir = self.base_dir / "intraday_market"
-
-        for dir_path in [self.intraday_options_dir, self.intraday_gex_dir, self.intraday_market_dir]:
-            dir_path.mkdir(parents=True, exist_ok=True)
 
         # Load intraday configuration
         self.intraday_config = self._load_intraday_config()
@@ -57,12 +53,14 @@ class IntradayCacheManager(UnifiedCacheManager):
     def _load_intraday_config(self) -> Dict:
         """Load intraday configuration from analysis_config.yaml."""
         try:
-            config_path = Path(__file__).parent.parent.parent / "config_defaults" / "analysis_config.yaml"
+            config_path = Path(__file__).parent.parent.parent / \
+                "config_defaults" / "analysis_config.yaml"
             with open(config_path, 'r') as f:
                 config = yaml.safe_load(f)
                 return config.get('intraday_analysis', {})
         except Exception as e:
-            logger.warning(f"Failed to load intraday config: {e}. Using defaults.")
+            logger.warning(
+                f"Failed to load intraday config: {e}. Using defaults.")
             return {
                 'algo_times': {
                     'market_open': "09:30:00",
@@ -86,7 +84,8 @@ class IntradayCacheManager(UnifiedCacheManager):
         key_times_str = list(config_times.values())
 
         # Get interval from config
-        interval = self.intraday_config.get('data_intervals', {}).get('standard_interval', 10)
+        interval = self.intraday_config.get(
+            'data_intervals', {}).get('standard_interval', 10)
 
         # Build 10-minute intervals from market open to extended close
         start_time = time(9, 30)  # Market open
@@ -159,7 +158,8 @@ class IntradayCacheManager(UnifiedCacheManager):
             # Check market hours
             is_market, session = self._is_market_hours(timestamp)
             if not is_market:
-                logger.warning(f"Timestamp {timestamp} outside market hours - storing anyway")
+                logger.warning(
+                    f"Timestamp {timestamp} outside market hours - storing anyway")
 
             # Create directory structure: symbol/date/
             date_str = self._get_date_from_timestamp(timestamp)
@@ -205,16 +205,20 @@ class IntradayCacheManager(UnifiedCacheManager):
             date_str = self._get_date_from_timestamp(timestamp)
             time_filename = self._get_time_filename(timestamp)
 
-            file_path = self.intraday_options_dir / symbol.upper() / date_str / f"{time_filename}.json"
+            file_path = self.intraday_options_dir / symbol.upper() / date_str / \
+                f"{time_filename}.json"
 
             if file_path.exists():
                 with open(file_path, 'r') as f:
                     cached_data = json.load(f)
 
-                logger.debug(f"Loaded intraday options for {symbol} at {timestamp}")
-                return cached_data.get('data', cached_data)  # Handle both formats
+                logger.debug(
+                    f"Loaded intraday options for {symbol} at {timestamp}")
+                # Handle both formats
+                return cached_data.get('data', cached_data)
 
-            logger.debug(f"No intraday options data for {symbol} at {timestamp}")
+            logger.debug(
+                f"No intraday options data for {symbol} at {timestamp}")
             return None
 
         except Exception as e:
@@ -256,7 +260,8 @@ class IntradayCacheManager(UnifiedCacheManager):
             date_str = self._get_date_from_timestamp(timestamp)
             time_filename = self._get_time_filename(timestamp)
 
-            file_path = self.intraday_gex_dir / symbol.upper() / date_str / f"{time_filename}.json"
+            file_path = self.intraday_gex_dir / symbol.upper() / date_str / \
+                f"{time_filename}.json"
 
             if file_path.exists():
                 with open(file_path, 'r') as f:
@@ -291,7 +296,8 @@ class IntradayCacheManager(UnifiedCacheManager):
             with open(file_path, 'w') as f:
                 json.dump(market_with_metadata, f, indent=2)
 
-            logger.info(f"Stored intraday market data for {symbol} at {timestamp}")
+            logger.info(
+                f"Stored intraday market data for {symbol} at {timestamp}")
             return True
 
         except Exception as e:
@@ -304,7 +310,8 @@ class IntradayCacheManager(UnifiedCacheManager):
             date_str = self._get_date_from_timestamp(timestamp)
             time_filename = self._get_time_filename(timestamp)
 
-            file_path = self.intraday_market_dir / symbol.upper() / date_str / f"{time_filename}.json"
+            file_path = self.intraday_market_dir / symbol.upper() / date_str / \
+                f"{time_filename}.json"
 
             if file_path.exists():
                 with open(file_path, 'r') as f:
@@ -369,7 +376,8 @@ class IntradayCacheManager(UnifiedCacheManager):
 
                         # Try to get GEX data
                         gex_data = self.get_intraday_gex(symbol, timestamp)
-                        market_data = self.get_intraday_market(symbol, timestamp)
+                        market_data = self.get_intraday_market(
+                            symbol, timestamp)
 
                         if gex_data or market_data:
                             friday_data.append({
@@ -412,18 +420,21 @@ class IntradayCacheManager(UnifiedCacheManager):
                         for date_dir in symbol_dir.iterdir():
                             if date_dir.is_dir():
                                 try:
-                                    date_dt = datetime.strptime(date_dir.name, '%Y-%m-%d')
+                                    date_dt = datetime.strptime(
+                                        date_dir.name, '%Y-%m-%d')
                                     if date_dt < cutoff_date:
                                         # Remove entire date directory
                                         import shutil
                                         shutil.rmtree(date_dir)
                                         cleaned_files += 1
-                                        logger.info(f"Cleaned up old data: {date_dir}")
+                                        logger.info(
+                                            f"Cleaned up old data: {date_dir}")
                                 except ValueError:
                                     # Skip invalid date directories
                                     continue
 
-            logger.info(f"Cleaned up {cleaned_files} old intraday data directories")
+            logger.info(
+                f"Cleaned up {cleaned_files} old intraday data directories")
             return cleaned_files
 
         except Exception as e:

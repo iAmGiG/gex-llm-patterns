@@ -139,8 +139,9 @@ class TechnicalIndicatorBaseline:
             Dictionary with calculated indicators
         """
         close_prices = price_data['close']
-        high_prices = price_data['high']
-        low_prices = price_data['low']
+        # Note: high/low prices available if needed for additional indicators
+        # high_prices = price_data['high']
+        # low_prices = price_data['low']
 
         # Use the indicator library functions (MACD + RSI only for validated system)
         # RSI

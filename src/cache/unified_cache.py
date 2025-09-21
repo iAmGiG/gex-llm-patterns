@@ -31,14 +31,14 @@ class UnifiedCacheManager:
         self.base_dir = Path(base_dir)
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Create cache directories
+        # Define cache directories (created lazily when needed)
         self.market_data_dir = self.base_dir / "market_data"
         self.options_dir = self.base_dir / "options"
         self.news_dir = self.base_dir / "news"
         self.metadata_dir = self.base_dir / "metadata"
 
-        for dir_path in [self.market_data_dir, self.options_dir, self.news_dir, self.metadata_dir]:
-            dir_path.mkdir(parents=True, exist_ok=True)
+        # Only create base directory, others created when first used
+        self.base_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize GEX cache manager (lazy loading)
         self._gex_cache = None

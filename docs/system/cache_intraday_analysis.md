@@ -1,24 +1,40 @@
 # Cache System & Intraday Support Analysis
 
-## Current Cache Structure
+> **NOTE**: This document has been superseded by [cache_system_architecture.md](cache_system_architecture.md) which provides current implementation details.
 
-The cache system has significant depth with multiple data types:
+## Current Cache Structure (Updated 2025-09-21)
+
+The cache system uses lazy directory creation and consolidated SQLite storage:
 
 ```bash
-cache/
-├── market_data/          # Stock OHLCV data by symbol
-├── options/              # Options chains by symbol
-├── gex_data/             # Gamma exposure calculations
-├── fed_data/             # Federal Reserve data
-├── news/                 # News data by symbol
-├── pattern_analysis/     # Pattern detection results
-└── database/             # SQLite storage
-
+.cache/
+├── consolidated_historical.db        # Pattern validation & performance results
+├── options/SPY/YYYY-MM-DD.pickle    # Created on-demand when storing options data
+├── market_data/SPY/YYYY-MM-DD.pickle # Created on-demand when storing market data
+├── news/category/YYYY-MM-DD.pickle   # Created on-demand when storing news data
+├── metadata/                         # Created on-demand for cache statistics
+├── intraday_options/SPY/DATE/TIME.json # Created on-demand for intraday storage
+├── intraday_gex/SPY/DATE/TIME.json     # Created on-demand for intraday storage
+└── intraday_market/SPY/DATE/TIME.json  # Created on-demand for intraday storage
 ```
+
+**Key Changes**:
+- ✅ Lazy directory creation (no empty directories)
+- ✅ Consolidated database for pattern results
+- ✅ Intraday timestamp support implemented
+- ✅ All cache components verified as actively used
 
 ## Intraday Support Analysis
 
-### Current Status: DATE-LEVEL Granularity
+### Current Status: INTRADAY TIMESTAMP SUPPORT IMPLEMENTED ✅
+
+**Update 2025-09-21**: Intraday support has been fully implemented:
+- ✅ Timestamp format support: `2024-06-07 15:30:00`
+- ✅ Gamma pinning validation: 75% success rate at Friday 3:30 PM
+- ✅ IntradayCacheManager with 10-minute intervals
+- ✅ Production-ready intraday storage system
+
+### Previous Analysis: DATE-LEVEL Granularity (Historical)
 
 **Cache System**:
 

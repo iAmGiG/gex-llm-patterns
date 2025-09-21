@@ -12,7 +12,7 @@ from typing import Dict, List, Optional
 import logging
 import yaml
 from pathlib import Path
-from src.utils.date_utils import today_str, parse_date_string
+from src.utils.date_utils import today_str
 
 logger = logging.getLogger(__name__)
 
@@ -490,53 +490,3 @@ class BaselineGEXStrategy:
             degradation = ((baseline_ev - llm_ev) / abs(baseline_ev)
                            * 100) if baseline_ev != 0 else 100
             return f"❌ LLM filtering degrades performance by {degradation:.1f}% - model upgrade or prompt engineering needed"
-
-
-def run_baseline_test():
-    """Run baseline strategy test with configuration."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-
-    logger.info("=" * 80)
-    logger.info("BASELINE GEX STRATEGY TEST - Issue #58")
-    logger.info("Testing mechanical negative GEX trading without LLM filtering")
-    logger.info("=" * 80)
-
-    # Initialize strategy with config
-    baseline = BaselineGEXStrategy()
-
-    # Sample data for testing
-    sample_gex = {
-        '2024-01-02': -5e9,   # Negative high
-        '2024-01-03': 2e9,    # Positive (no signal)
-        '2024-01-04': -3e8,   # Negative low
-        '2024-01-05': -1e9,   # Negative low
-        '2024-01-08': 4e9,    # Positive (no signal)
-        '2024-01-09': -2e9,   # Negative high
-        '2024-01-10': 1e8,    # Positive (no signal)
-        '2024-01-11': -5e8,   # Negative low
-    }
-
-    # Generate signals
-    signals = baseline.generate_signals(sample_gex)
-
-    logger.info(f"\nSignals Generated:")
-    for signal in signals[:3]:  # Show first 3
-        logger.info(
-            f"  {signal['date']}: GEX={signal['gex_value']/1e9:.1f}B ({signal['gex_regime']})")
-
-    logger.info(f"\nBaseline Statistics:")
-    logger.info(f"  Total days: {len(sample_gex)}")
-    logger.info(f"  Negative GEX days: {len(signals)}")
-    logger.info(f"  Trade frequency: {len(signals)/len(sample_gex)*100:.1f}%")
-
-    logger.info("\n" + "=" * 80)
-    logger.info(
-        "✅ Baseline strategy ready for comparison with LLM-filtered results")
-    logger.info("=" * 80)
-
-
-if __name__ == "__main__":
-    run_baseline_test()

@@ -1,0 +1,208 @@
+# Pattern Library Configuration - Issue #54
+# Configuration for market mechanics pattern detection and validation
+
+pattern_library:
+  # Pattern detection thresholds
+  detection:
+    min_confidence_threshold: 0.50    # Minimum confidence to report pattern
+    high_conviction_threshold: 0.70   # High conviction signal threshold
+
+  # Pattern categories
+  categories:
+    - squeeze       # Gamma/short/vol squeezes
+    - manipulation  # Dealer trap, OPEX pin, momentum ignition
+    - flow         # Rebalancing, FOMC, institutional flows
+    - volatility   # Vol suppression, vol squeeze, dispersion
+
+  # Success metrics validation
+  validation:
+    min_sample_size: 20               # Minimum samples for statistical validity
+    confidence_interval: 0.95         # 95% confidence interval
+    backtesting_period: 252           # Trading days for backtesting
+
+  # Pattern-specific configurations
+  patterns:
+    gamma_squeeze:
+      enabled: true
+      confidence_threshold: 0.70
+      required_conditions:
+        min_negative_gex: -2000000000    # -$2B minimum
+        max_distance_to_flip: 0.02       # 2% from flip point
+        min_call_concentration: 0.60     # 60% calls vs puts
+        min_volume_spike: 2.0            # 2x average volume
+      success_metrics:
+        expected_win_rate: 0.67          # 67% historical win rate
+        expected_magnitude: 0.032        # 3.2% average move
+        max_holding_days: 3              # Maximum holding period
+
+    opex_pin:
+      enabled: true
+      confidence_threshold: 0.65
+      required_conditions:
+        min_oi_concentration: 0.20       # 20% OI at strike
+        max_distance_from_max_pain: 0.01 # 1% from max pain
+        required_day: "Friday"           # OPEX Friday
+        required_time: "15:30:00"        # 3:30 PM
+      success_metrics:
+        expected_win_rate: 0.75          # 75% validated (Issue #73)
+        expected_accuracy: 0.002         # Pin within 0.2%
+
+    dealer_trap:
+      enabled: true
+      confidence_threshold: 0.65
+      required_conditions:
+        min_systematic_flow_days: 2      # 2+ days of systematic flow
+        min_strike_concentration: 0.30   # 30% at tactical strikes
+        unusual_skew_percentile: 90      # 90th percentile skew
+      success_metrics:
+        expected_win_rate: 0.58
+        expected_magnitude: 0.045        # 4.5% move
+
+    vol_suppression:
+      enabled: true
+      confidence_threshold: 0.60
+      required_conditions:
+        min_iv_hv_spread: 5.0            # IV > HV by 5 points
+        min_straddle_volume: 10000       # 10K straddle volume
+        pre_event_window: 3              # Days before event
+      success_metrics:
+        expected_win_rate: 0.62
+        expected_range_compression: 0.01 # <1% daily range
+
+    quarter_end_rebalance:
+      enabled: true
+      confidence_threshold: 0.55
+      required_conditions:
+        days_to_quarter_end: 5           # Last 5 days of quarter
+        min_flow_divergence: 0.20        # 20% divergence from GEX
+      success_metrics:
+        expected_win_rate: 0.54
+        expected_magnitude: 0.018        # 1.8% move
+
+    fomc_positioning:
+      enabled: true
+      confidence_threshold: 0.65
+      required_conditions:
+        days_to_fomc: 3                  # T-3 to FOMC
+        min_straddle_buying: 1.5         # 1.5x normal
+        min_put_hedging: 1.3            # 1.3x normal puts
+      success_metrics:
+        expected_win_rate: 0.68
+        expected_magnitude: 0.015        # 1.5% on announcement
+
+    short_squeeze:
+      enabled: true
+      confidence_threshold: 0.60
+      required_conditions:
+        min_short_interest: 0.20         # 20% of float
+        min_days_to_cover: 3.0          # 3 days
+        min_borrow_rate: 0.05            # 5% borrow rate
+      success_metrics:
+        expected_win_rate: 0.55
+        expected_magnitude: 0.085        # 8.5% move
+
+    vol_squeeze:
+      enabled: true
+      confidence_threshold: 0.55
+      required_conditions:
+        max_vix_level: 12                # VIX < 12
+        min_bb_squeeze_percentile: 10    # Bottom 10% BB width
+        min_complacency_score: 0.80      # 80% complacency
+      success_metrics:
+        expected_win_rate: 0.70
+        expected_vix_spike: 15           # VIX +15 points
+
+    delta_hedging_cascade:
+      enabled: true
+      confidence_threshold: 0.60
+      required_conditions:
+        min_delta_to_hedge: 1000000      # $1M delta
+        max_distance_to_strike: 0.005    # 0.5% from strike
+        min_momentum_score: 0.70         # 70% momentum
+      success_metrics:
+        expected_win_rate: 0.63
+        expected_extension: 0.013        # 1.3% extension
+
+    liquidity_vacuum:
+      enabled: true
+      confidence_threshold: 0.70
+      required_conditions:
+        min_spread_widening: 2.0         # 2x normal spread
+        min_quote_reduction: 0.50        # 50% quote size drop
+        min_vix_spike: 3.0              # VIX +3 points
+      success_metrics:
+        expected_win_rate: 0.72
+        expected_spike: 0.03             # 3% volatility spike
+
+# LLM integration configuration
+llm_integration:
+  # Prompt generation settings
+  prompt_templates:
+    identification: "pattern_identification"
+    mechanics: "pattern_mechanics_analysis"
+    outcome: "pattern_outcome_prediction"
+    risk: "pattern_risk_assessment"
+
+  # Context requirements for prompts
+  required_context:
+    - net_gex
+    - spot_price
+    - temporal_context
+    - options_flow
+    - strike_distribution
+
+  # Confidence scoring for LLM responses
+  response_validation:
+    min_confidence_for_trade: 0.70
+    require_mechanics_explanation: true
+    require_risk_assessment: true
+
+# Historical validation settings
+historical_validation:
+  # Known events for pattern validation
+  validation_events:
+    - date: "2021-01-27"
+      symbol: "GME"
+      pattern: "gamma_squeeze"
+      verified: true
+
+    - date: "2024-06-21"
+      symbol: "SPY"
+      pattern: "opex_pin"
+      verified: true
+
+    - date: "2018-02-05"
+      symbol: "SPY"
+      pattern: "liquidity_vacuum"
+      verified: true
+
+    - date: "2024-08-05"
+      symbol: "NKY"
+      pattern: "liquidity_vacuum"
+      verified: true
+
+  # Backtesting parameters
+  backtesting:
+    lookback_days: 504         # 2 years of data
+    min_samples_per_pattern: 10
+    confidence_level: 0.95
+
+# Integration with existing systems
+system_integration:
+  # Link to MarketMechanicsAgent
+  market_mechanics_agent:
+    auto_detect_patterns: true
+    include_in_analysis: true
+    pattern_weight_in_confidence: 0.30
+
+  # Link to PatternProbabilityMapper
+  probability_mapper:
+    use_historical_validation: true
+    update_success_metrics: true
+    min_data_quality_score: 0.80
+
+  # Link to confidence scoring
+  confidence_scorer:
+    pattern_base_weight: 0.40
+    context_adjustment_weight: 0.30
+    statistical_validation_weight: 0.30
