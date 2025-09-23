@@ -1,22 +1,63 @@
 # Reports Directory
 
-## Current Reports (`current/`)
+This directory contains various analysis reports and experimental results organized by purpose and audience.
 
-Active and relevant research findings:
+## Structure
 
-- **`final_model_comparison.md`** - O3-mini vs GPT-4o model comparison results
-- **`configuration_fixes_summary.md`** - Important bug fixes and improvements
-- **`baseline_comparison/`** - Statistical validation of LLM vs mechanical strategies
+```
+reports/
+├── validation/              # System validation and testing reports
+│   ├── mc_reports/         # Main Chat validation reports (2025-09-23)
+│   └── daily_tests/        # Daily testing results and raw data
+├── experiments/            # Individual experiment results (YAML format)
+├── archive/               # Historical reports and deprecated analyses
+│   ├── current/           # Previous active reports
+│   └── archived_experiments/  # Historical development iterations
+└── README.md              # This documentation
+```
 
-## Archive (`archive/`)
+## Current Reports by Category
 
-Historical experiments and learning documentation:
+### 🎯 **System Validation** (`validation/mc_reports/`)
+**Purpose:** Comprehensive validation for Main Chat requirements
 
-- **`archived_experiments/`** - Documents evolution from aggregate to strike-level GEX analysis
+- **`MC_COMPREHENSIVE_VALIDATION_FINAL.md`** - Complete system validation summary
+- **`MC_EXECUTIVE_SUMMARY.md`** - High-level system overview and capabilities
+- **`MC_TESTING_METHODOLOGY.md`** - How validation testing was conducted
+- **`MC_VALIDATION_REPORT.md`** - Technical validation details and evidence
+- **`MC_DAILY_0DTE_VALIDATION_*.md`** - Daily 0DTE frequency test results
 
-## Organization
+### 📊 **Test Data** (`validation/daily_tests/`)
+**Purpose:** Raw test datasets and detailed performance metrics
 
-- **`current/`** - Active, relevant reports for current development
-- **`archive/`** - Historical experiments preserved for institutional knowledge
+- **`mc_validation_detailed_*.json`** - Complete test datasets with signal generation data
+- Daily testing logs and performance breakdowns
 
-All temporary test results, scattered validation files, and obsolete experiments have been cleaned up.
+### 🧪 **Experiments** (`experiments/`)
+**Purpose:** Individual experiment results in standardized YAML format
+
+- **Pattern detection experiments** with obfuscated data
+- **LLM analysis results** with WHO/WHOM/WHAT mechanics
+- **GEX calculation validation** with real market data
+
+### 📚 **Archive** (`archive/`)
+**Purpose:** Historical research and development documentation
+
+- **`current/`** - Previous active reports (model comparisons, configuration fixes)
+- **`archived_experiments/`** - Evolution from aggregate to strike-level GEX analysis
+
+## Report Naming Convention
+
+- **`MC_*`** - Reports for Main Chat validation and review
+- **`experiment_*`** - Individual experiment results
+- **`validation_*`** - System testing and validation results
+- **`archive_*`** - Historical or deprecated content
+
+## Key Findings Summary
+
+✅ **System Operational** - Pattern classification framework working with LLM reasoning
+✅ **21 Signals/Month** - Exceeds 15-20 target for daily 0DTE opportunities
+✅ **Quality Controls** - Properly filters invalid patterns to prevent false positives
+✅ **Research Ready** - Can answer "What's happening?" and "Does X lead to Y?" questions
+
+All reports use obfuscated data to prevent memorization and ensure objective analysis.

@@ -28,6 +28,7 @@ from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
 from src.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 from src.utils.unified_reports_manager import unified_reports
+from src.analysis.actionable_patterns import ActionablePatternDetector
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,9 @@ class MarketMechanicsAgent:
         except ImportError as e:
             logger.warning(f"Pattern Library not available: {e}")
             self.pattern_library = None
+
+        # Initialize actionable pattern detector (Issue #77)
+        self.actionable_detector = ActionablePatternDetector(config=config)
 
         # Auto-initialize LLM if not provided
         if llm_provider is None:
@@ -289,6 +293,193 @@ class MarketMechanicsAgent:
                 "experiment_timestamp": now_iso()
             }
 
+    def run_batch_experiments(self, dates: List[str], experiment_template: str = None,
+                             use_obfuscation: bool = True) -> Dict:
+        """
+        Run experiments on multiple dates in a single LLM call for better pattern recognition.
+
+        Args:
+            dates: List of dates to analyze
+            experiment_template: Template for experiment description
+            use_obfuscation: Whether to obfuscate dates/tickers to prevent LLM cheating
+
+        Returns:
+            Dictionary with batch analysis results
+        """
+        try:
+            from src.validation.data_obfuscation import DataObfuscator
+
+            # Prepare data for all dates first
+            batch_data = {}
+            obfuscator = DataObfuscator() if use_obfuscation else None
+
+            # Obfuscate dates if needed
+            if obfuscator:
+                date_mapping = obfuscator.obfuscate_dates(dates)
+                ticker_mapping = obfuscator.obfuscate_tickers([self.symbol])
+                display_symbol = ticker_mapping[self.symbol]
+            else:
+                date_mapping = {d: d for d in dates}
+                display_symbol = self.symbol
+
+            # Collect data for all dates
+            for date in dates:
+                try:
+                    # Fetch options and calculate GEX
+                    options_data = self._fetch_options_data(date)
+                    if options_data is not None and not options_data.empty:
+                        # Get spot price for GEX calculation
+                        spot_price = options_data['underlyingPrice'].iloc[0] if 'underlyingPrice' in options_data.columns else None
+                        gex_data = self.gex_calculator.calculate_dealer_gamma_exposure(
+                            options_data,
+                            spot_price=spot_price
+                        )
+                        # Convert to metrics dict
+                        gex_metrics = {
+                            'total_gamma': gex_data.get('total_dealer_gamma', 0),
+                            'spot_price': gex_data.get('spot_price', spot_price),
+                            'flip_point': gex_data.get('flip_point', 0),
+                            'regime': gex_data.get('regime', 'Unknown')
+                        }
+
+                        # Detect patterns
+                        patterns = self.pattern_detector.detect_all_patterns(
+                            gex_metrics, {}, date
+                        ) if hasattr(self, 'pattern_detector') else []
+
+                        batch_data[date] = {
+                            'gex_metrics': gex_metrics,
+                            'patterns': patterns,
+                            'obfuscated_date': date_mapping[date]
+                        }
+                    else:
+                        batch_data[date] = {
+                            'error': 'No data available',
+                            'obfuscated_date': date_mapping[date]
+                        }
+                except Exception as e:
+                    logger.warning(f"Failed to get data for {date}: {e}")
+                    batch_data[date] = {
+                        'error': str(e),
+                        'obfuscated_date': date_mapping[date]
+                    }
+
+            # Build batch analysis prompt
+            batch_prompt = self._build_batch_prompt(batch_data, display_symbol, experiment_template)
+
+            # Single LLM call for all dates
+            logger.info(f"Analyzing {len(dates)} dates in single batch")
+            batch_analysis = self._analyze_batch_with_llm(batch_prompt)
+
+            # Parse results back to individual dates
+            results = self._parse_batch_results(batch_analysis, dates, batch_data)
+
+            return {
+                'status': 'success',
+                'batch_size': len(dates),
+                'dates_analyzed': dates,
+                'obfuscation_used': use_obfuscation,
+                'batch_analysis': batch_analysis,
+                'individual_results': results,
+                'timestamp': now_iso()
+            }
+
+        except Exception as e:
+            logger.error(f"Batch experiment failed: {e}")
+            return {
+                'status': 'error',
+                'error': str(e),
+                'dates': dates,
+                'timestamp': now_iso()
+            }
+
+    def _build_batch_prompt(self, batch_data: Dict, symbol: str, template: str = None) -> str:
+        """Build prompt for batch LLM analysis."""
+        prompt = f"""Analyze the following {len(batch_data)} trading days for {symbol}.
+Look for patterns across all dates and provide comparative analysis.
+
+DATA FOR EACH DAY:
+"""
+        for date, data in batch_data.items():
+            obfusc_date = data.get('obfuscated_date', date)
+            prompt += f"\n{'='*60}\n{obfusc_date}:\n"
+
+            if 'error' in data:
+                prompt += f"  ERROR: {data['error']}\n"
+            else:
+                gex = data.get('gex_metrics', {})
+                prompt += f"  Total GEX: ${gex.get('total_gamma', 0):,.0f}\n"
+                prompt += f"  Spot Price: ${gex.get('spot_price', 0):.2f}\n"
+                prompt += f"  Flip Point: ${gex.get('flip_point', 0):.2f}\n"
+                prompt += f"  Regime: {gex.get('regime', 'Unknown')}\n"
+
+                if data.get('patterns'):
+                    prompt += f"  Patterns Detected: {', '.join([p.get('pattern', '') for p in data['patterns'][:3]])}\n"
+
+        prompt += f"""
+{'='*60}
+QUESTIONS TO ANSWER:
+1. What patterns do you see across these dates?
+2. Are there consistent mechanics (WHO forcing WHOM to do WHAT)?
+3. What is the highest confidence signal across all dates?
+4. Do you see any temporal patterns (e.g., weekly effects)?
+
+Provide both:
+- OVERALL ANALYSIS: Pattern across all dates
+- PER-DAY SIGNALS: Actionable signal for each date with confidence score
+"""
+        return prompt
+
+    def _analyze_batch_with_llm(self, prompt: str) -> Dict:
+        """Send batch prompt to LLM and get analysis."""
+        try:
+            # Use the prompt builder if available
+            if hasattr(self, 'prompt_builder'):
+                response = self.prompt_builder.llm_client.complete(prompt)
+            else:
+                # Fallback to simple dict response
+                logger.warning("No LLM client available, using mock response")
+                response = {
+                    'overall_analysis': 'Mock batch analysis',
+                    'temporal_patterns': 'No patterns detected in mock mode',
+                    'individual_days': {}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"LLM batch analysis failed: {e}")
+            return {'error': str(e)}
+
+    def _parse_batch_results(self, batch_analysis: Dict, dates: List[str], batch_data: Dict) -> Dict:
+        """Parse batch LLM results back to individual dates."""
+        results = {}
+
+        for date in dates:
+            # Extract individual day analysis from batch
+            day_analysis = batch_analysis.get('individual_days', {}).get(date, {})
+
+            # Combine with existing data
+            results[date] = {
+                'date': date,
+                'gex_metrics': batch_data[date].get('gex_metrics', {}),
+                'patterns_detected': batch_data[date].get('patterns', []),
+                'actionable_signal': day_analysis.get('signal', {
+                    'action': 'wait',
+                    'confidence': 0,
+                    'rationale': 'No clear signal'
+                }),
+                'batch_context': batch_analysis.get('overall_analysis', ''),
+                'mechanics_interpretation': {
+                    'who': day_analysis.get('who', 'Unknown'),
+                    'whom': day_analysis.get('whom', 'Unknown'),
+                    'what': day_analysis.get('what', 'Unknown'),
+                    'confidence': day_analysis.get('confidence', 0)
+                }
+            }
+
+        return results
+
     def _plan_experiment_tools(self, experiment_description: str, date: str) -> Dict:
         """
         Use LLM to analyze experiment description and decide what tools/data are needed.
@@ -375,17 +566,35 @@ Respond with a JSON plan:
             if "fetch_options_data" in required_tools:
                 if AUTOGEN_TOOLS_AVAILABLE:
                     logger.info("LLM decided: fetching options data")
-                    experiment_data["options_data"] = fetch_options_data(self.symbol, date)
+                    result = fetch_options_data(self.symbol, date)
+                    # Extract DataFrame from result dict
+                    if isinstance(result, dict) and result.get('status') == 'success':
+                        experiment_data["options_data"] = result['data']
+                    else:
+                        experiment_data["options_data"] = result
                 else:
                     logger.info("LLM decided: fetching options data (cache fallback)")
                     # Use cache fallback
                     cache_data = self.cache_manager.get_daily_data(self.symbol, date)
                     experiment_data["options_data"] = cache_data
 
-            if "calculate_gamma_exposure" in required_tools and experiment_data.get("options_data"):
+            if "calculate_gamma_exposure" in required_tools and experiment_data.get("options_data") is not None:
                 if AUTOGEN_TOOLS_AVAILABLE:
                     logger.info("LLM decided: calculating gamma exposure")
-                    experiment_data["gex_metrics"] = calculate_gamma_exposure(experiment_data["options_data"])
+                    # calculate_gamma_exposure expects symbol as first param, not options data
+                    gex_result = calculate_gamma_exposure(
+                        symbol=self.symbol,
+                        trading_date=date,
+                        use_cache=True
+                    )
+                    # Handle different return types
+                    if isinstance(gex_result, dict) and gex_result.get('status') == 'success':
+                        experiment_data["gex_metrics"] = gex_result.get('metrics', {})
+                    elif isinstance(gex_result, dict):
+                        experiment_data["gex_metrics"] = gex_result
+                    else:
+                        logger.warning(f"Unexpected GEX result type: {type(gex_result)}")
+                        experiment_data["gex_metrics"] = {}
                 else:
                     logger.info("LLM decided: calculating gamma exposure (fallback)")
                     # Use local GEX calculator
@@ -396,7 +605,15 @@ Respond with a JSON plan:
             if "fetch_market_data" in required_tools:
                 if AUTOGEN_TOOLS_AVAILABLE:
                     logger.info("LLM decided: fetching market data")
-                    experiment_data["market_data"] = fetch_market_data(self.symbol, date)
+                    market_result = fetch_market_data(self.symbol, date)
+                    # Handle different return types from fetch_market_data
+                    if isinstance(market_result, dict) and market_result.get('status') == 'success':
+                        experiment_data["market_data"] = market_result.get('data', {})
+                    elif isinstance(market_result, dict):
+                        experiment_data["market_data"] = market_result
+                    else:
+                        logger.warning(f"Unexpected market data type: {type(market_result)}")
+                        experiment_data["market_data"] = {}
 
             if "enhanced_pattern_detector" in required_tools and experiment_data.get("gex_metrics"):
                 logger.info("LLM decided: running pattern detection")
@@ -1451,10 +1668,48 @@ Respond with JSON:
             'risk_reward': None,
             'entry': None,
             'stop_loss': None,
-            'target': None
+            'target': None,
+            'position_size': None,
+            'pattern': None
         }
 
-        # Check for sufficient confidence patterns (configurable threshold)
+        # Try to generate actionable signals using pattern detector
+        try:
+            gex_metrics = context.get('gex_metrics', {})
+            spot_price = context.get('spot_price')
+
+            if gex_metrics and spot_price:
+                actionable_signals = self.actionable_detector.generate_signals(
+                    gex_metrics=gex_metrics,
+                    market_mechanics=interpretation,
+                    spot_price=spot_price
+                )
+
+                if actionable_signals:
+                    # Use the highest confidence signal
+                    best_signal = max(actionable_signals,
+                                    key=lambda s: s.signal_strength.value is not None)
+
+                    # Convert to trading signal format
+                    signal = {
+                        'action': 'buy' if best_signal.entry_price > spot_price else 'sell',
+                        'confidence': interpretation.get('confidence', 0),
+                        'rationale': best_signal.pattern.mechanics_description,
+                        'risk_reward': best_signal.risk_reward_ratio,
+                        'entry': best_signal.entry_price,
+                        'stop_loss': best_signal.stop_loss,
+                        'target': best_signal.initial_target,
+                        'position_size': best_signal.position_size_pct,
+                        'pattern': best_signal.pattern.pattern_name
+                    }
+
+                    logger.info(f"Generated actionable signal: {best_signal.pattern.pattern_name}")
+                    return signal
+
+        except Exception as e:
+            logger.warning(f"Failed to generate actionable signals: {e}")
+
+        # Fallback to original logic if actionable patterns fail
         min_confidence = self.config.get(
             'min_signal_confidence', 30)  # Default 30%
 
