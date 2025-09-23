@@ -1,8 +1,8 @@
 # GEX-LLM Patterns Documentation
 
-## 🚀 **Production Ready - September 19, 2025**
+## 🚀 **Production Ready - September 22, 2025**
 
-**Latest Status**: Agent-driven experiment system deployed with enhanced strike-level pattern detection. Complete cache→live data flow validated with 90% LLM confidence. GitHub issues updated to reflect current production status.
+**Latest Status**: Enhanced agent autonomy with YAML reporting and data obfuscation implemented. LLM-driven tool selection operational with anti-cheating validation framework. Clean reports structure with unified experiments directory.
 
 ## 📋 **Quick Start Guide**
 
@@ -10,7 +10,8 @@
 
 1. **Overview**: Start with [system/architecture/project_overview](system/architecture/project_overview)
 2. **Agent System**: Read [CLAUDE.md](../CLAUDE) for current system status
-3. **Run Experiment**: Use `scripts/orchestrate_experiment.py --experiment "analyze gamma pinning" --symbol SPY --date 2024-06-28`
+3. **Run Experiment**: Use `scripts/orchestrate_experiment_yaml.py --experiment "analyze gamma exposure patterns" --symbol SPY --date 2024-06-28`
+4. **View Results**: Check `reports/experiments/SPY-2024-06-28-gamma_analysis.yaml`
 
 ### For Developers
 

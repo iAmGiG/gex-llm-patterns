@@ -27,6 +27,7 @@ from src.cache.unified_cache import UnifiedCacheManager
 from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
 from src.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+from src.utils.unified_reports_manager import unified_reports
 
 logger = logging.getLogger(__name__)
 
@@ -257,6 +258,24 @@ class MarketMechanicsAgent:
             result["experiment_timestamp"] = now_iso()
             result["agent_used"] = "MarketMechanicsAgent"
             result["tool_plan"] = tool_plan
+
+            # Save full experiment report with unified reports manager
+            test_type = tool_plan.get('experiment_type', 'general_analysis')
+            try:
+                report_path = unified_reports.save_experiment(
+                    ticker=self.symbol,
+                    date=date,
+                    test_type=test_type,
+                    experiment_description=experiment_description,
+                    tool_plan=tool_plan,
+                    experiment_data=experiment_data,
+                    llm_analysis=result,
+                    obfuscate=True  # Default to obfuscation for anti-cheating
+                )
+                logger.info(f"Saved full report to {report_path}")
+                result["report_path"] = str(report_path)
+            except Exception as e:
+                logger.warning(f"Could not save report: {e}")
 
             logger.info(f"Experiment completed: {result.get('experiment_type')}")
             return result
@@ -1424,11 +1443,11 @@ Respond with JSON:
     def _generate_trading_signal(self, interpretation: Dict, context: Dict) -> Dict:
         """Generate actionable trading signal from mechanics interpretation."""
 
-        # Default signal
+        # Default signal - empty until we have actionable patterns
         signal = {
-            'action': 'HOLD',
-            'confidence': 0,
-            'rationale': 'Insufficient edge detected',
+            'action': None,
+            'confidence': None,
+            'rationale': None,
             'risk_reward': None,
             'entry': None,
             'stop_loss': None,
