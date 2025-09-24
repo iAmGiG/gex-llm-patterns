@@ -1,51 +1,69 @@
-# GEX-LLM Pattern Analysis - Task Tracking
+# GEX LLM Patterns - TODO
 
-## Current Status: Pattern Validation Framework & Cache Optimization Completed (September 21, 2025)
+## Current System Status (September 2025)
+- ✅ **Pattern Validation Framework**: Complete testing system deployed
+- ✅ **Cache System Optimization**: Eliminated 7 unused directories, lazy creation
+- ✅ **Strike-Level Discovery**: 251 opportunities vs 1 aggregated signal
+- ✅ **O3-mini Deployment**: 75% confidence, 65% cost savings
+- ✅ **Batch processing implemented** (Issue #78) - Multiple dates in single LLM call
+- ✅ **Data obfuscation working** - Dates converted to T+0, T+7 format
+- ✅ **Cache system fixed** (Issue #44) - Proper DataFrame extraction
 
-### 🎯 **Architecture: O3-mini Natural Language Market Mechanics**
+## Active Issues
 
-**Core Hypothesis:** "LLM identifies WHO is forcing WHOM to do WHAT in market mechanics"
+### High Priority
+1. **LLM Client Initialization**
+   - MechanicsPromptBuilder missing llm_client attribute
+   - Prevents pattern confidence scoring
+   - Location: src/agents/market_mechanics_agent.py
 
-### ✅ **Recent Achievements**
+2. **Production Deployment** (Issue #71)
+   - Deploy enhanced patterns on live data streams
+   - Statistical validation: enhanced vs basic GEX
+   - Deploy to main trading pipeline
 
-**September 21, 2025:**
-- [x] **Issue #54**: Market Mechanics Pattern Library (15 patterns implemented)
-- [x] **Issue #52**: Temporal Pattern Detection (OPEX, FOMC, gamma pinning timing)
-- [x] **Pattern Validation Framework**: Complete testing system with Windows/Linux compatibility
-- [x] **Cache System Optimization**: Eliminated 7 unused directories, lazy creation, removed unused imports
-- [x] **Documentation**: Comprehensive cache architecture and validation guides
-- [x] **GitHub Issues Updated**: #54, #52, #63 with current status and validation results
+### Medium Priority
+1. **Linux VM Production Testing**
+   - Deploy validation framework on Linux VM
+   - Fix remaining AutoGen import path issues
+   - Test live data integration with real GEX calculations
 
-**September 18, 2025:**
-- [x] **Documentation Security**: Implemented comprehensive security guidelines
-- [x] **Issue #73**: Gamma pinning validated (75% success rate)
-- [x] **Issue #72**: Intra-day timestamp support ('2024-06-07 15:30:00')
-- [x] **Enhanced Patterns**: Strike-level detection with compound signals
+2. **Missing Options Data**
+   - Some dates lack data (e.g., 2024-06-19)
+   - May need alternate data sources
 
-**September 16, 2025:**
-- [x] **Strike-Level Discovery**: 251 opportunities vs 1 aggregated signal
-- [x] **Major Consolidation**: 5,280+ lines removed, streamlined architecture
-- [x] **O3-mini Deployment**: 75% confidence, 65% cost savings
+## Testing Commands
 
-### 🚀 **Active Development**
+### Primary MC Validation (June 2024 Wednesdays)
+```bash
+python scripts/orchestrate_experiment.py \
+  --batch-dates 2024-06-05 2024-06-12 2024-06-19 2024-06-26 \
+  --symbol SPY --confidence-threshold 60 --target-signals 3
+```
 
-#### **Production Deployment (Issue #71)**
-- [ ] Run enhanced patterns on live data streams
-- [ ] Statistical validation: enhanced vs basic GEX
-- [ ] Deploy to main trading pipeline
+### Quick Test Runner
+```bash
+python scripts/run_mc_validation.py --test june
+```
 
-#### **Linux VM Production Testing**
-- [ ] Deploy validation framework on Linux VM
-- [ ] Fix remaining AutoGen import path issues
-- [ ] Test live data integration with real GEX calculations
-- [ ] Validate pattern detection accuracy with historical events
+### Interactive Test Suite
+```bash
+bash scripts/mc_validation_tests.sh
+```
 
-### 📈 **Next Steps**
+## Documentation
+- **MC Testing Guide**: `docs/MC_TESTING_GUIDE.md`
+- **Development Context**: `CLAUDE.md`
+- **Reports**: `reports/validation/`, `reports/experiments/`
 
-1. **Linux VM Testing**: Deploy validation framework on production Linux environment
-2. **Live Data Integration**: Test real GEX calculations with cached data
-3. **Production Deployment**: Full system deployment with validated patterns
+## Success Metrics
+- **Pattern Detection**: 15 patterns implemented with 75% success rate
+- **Strike-Level Analysis**: 251 opportunities identified
+- **Cost Efficiency**: 65% cost savings with O3-mini
+- **MC Validation Target**: 3+ signals at 60%+ confidence from 4 test dates
 
----
-
-**Current Focus**: Pattern validation framework deployed and tested on Windows, ready for Linux VM production testing.
+## Next Steps
+1. Fix LLM client initialization issue
+2. Deploy validation framework on Linux VM
+3. Run live data integration testing
+4. Production deployment with validated patterns
