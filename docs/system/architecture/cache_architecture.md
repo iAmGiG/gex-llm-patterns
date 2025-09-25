@@ -2,11 +2,12 @@
 
 ## Overview
 
-The GEX-LLM-Patterns project uses a multi-layer cache system for efficient data storage and retrieval. The system is designed with lazy directory creation and supports both daily and intraday data storage.
+The GEX-LLM Pattern Analysis system uses a multi-layer cache system optimized for PhD research data storage and retrieval. The system supports both daily and intraday data storage with lazy directory creation for efficiency.
 
 ## Cache System Components
 
 ### 1. UnifiedCacheManager (`src/cache/unified_cache.py`)
+
 **Primary cache interface for live market data storage**
 
 **Purpose**: Stores real market data in pickle format with lazy directory creation
@@ -21,7 +22,8 @@ cache = UnifiedCacheManager()
 ```
 
 **Storage Structure** (created on-demand):
-```
+
+```bash
 .cache/
 ├── options/SPY/2024-08-01.pickle     # Options chains
 ├── market_data/SPY/2024-08-01.pickle # OHLCV data
@@ -30,18 +32,21 @@ cache = UnifiedCacheManager()
 ```
 
 **Key Methods**:
+
 - `store_options_data(symbol, date, df)` - Store options data
 - `get_options_data(symbol, date)` - Retrieve options data
 - `store_market_data(symbol, df, start_date, end_date)` - Store market data
 - `get_market_data(symbol, start_date, end_date)` - Retrieve market data
 
 ### 2. GEXCacheManager (`src/cache/gex_cache_manager.py`)
+
 **SQLite-based storage for GEX calculations and pattern analysis**
 
 **Purpose**: Pre-computed gamma exposure storage with parquet/pickle optimization
 **Database**: `.cache/consolidated_historical.db`
 
 **Tables**:
+
 ```sql
 -- Pattern validation results
 CREATE TABLE pattern_validation_results (
@@ -57,16 +62,19 @@ CREATE TABLE historical_pattern_performance (
 ```
 
 **Key Methods**:
+
 - `store_gex_calculation(symbol, date, gex_data)` - Store GEX results
 - `get_gex_data(symbol, date_range)` - Retrieve GEX calculations
 - `get_pattern_performance(pattern_name)` - Get pattern statistics
 
 ### 3. IntradayCacheManager (`src/cache/intraday_cache.py`)
+
 **Timestamp-based storage for intraday analysis**
 
 **Purpose**: 10-minute interval storage for gamma pinning validation
 **Structure** (created on-demand):
-```
+
+```bash
 .cache/
 ├── intraday_options/SPY/2024-01-17/
 │   ├── 0930.json    # 9:30 AM market open
@@ -79,15 +87,18 @@ CREATE TABLE historical_pattern_performance (
 ```
 
 **Key Features**:
+
 - Supports full timestamps: `2024-06-07 15:30:00`
 - Configurable intervals from `analysis_config.yaml`
-- Optimized for gamma pinning validation (75% success rate)
+- Optimized for gamma pinning validation research
 
 ### 4. ConcurrentGEXProcessor (`src/cache/concurrent_gex_processor.py`)
+
 **High-performance parallel processing for multi-symbol GEX calculations**
 
 **Purpose**: Concurrent processing with ThreadPoolExecutor
 **Features**:
+
 - Multi-symbol parallel processing
 - Memory-efficient batch operations
 - Progress tracking and error handling
@@ -96,6 +107,7 @@ CREATE TABLE historical_pattern_performance (
 ## Data Flow
 
 ### Live Data Collection
+
 ```python
 # 1. Fetch from API/source
 options_data = fetch_options_data("SPY", "2024-08-01")
@@ -113,6 +125,7 @@ gex_cache.store_gex_calculation("SPY", "2024-08-01", gex_data)
 ```
 
 ### Pattern Validation
+
 ```python
 # 1. Historical event validation
 validator = PatternLibraryValidator()
@@ -130,21 +143,25 @@ patterns = validator._detect_patterns_from_data(market_data, date, symbol)
 ## Current Usage Patterns
 
 ### 1. Validation Framework (`scripts/validation/validate_patterns.py`)
+
 - Uses UnifiedCacheManager for live data caching
 - Stores validation results in consolidated_historical.db
 - Lazy directory creation (only creates what's needed)
 
 ### 2. Market Data System (`src/data/market_data_system.py`)
+
 - Uses both UnifiedCacheManager and IntradayCacheManager
 - Handles both daily and intraday data flows
 
 ### 3. MarketMechanicsAgent (`src/agents/market_mechanics_agent.py`)
+
 - Primary consumer of cached data
 - Integrates all cache layers for comprehensive analysis
 
 ## Configuration
 
 **Cache configuration** in `config_defaults/analysis_config.yaml`:
+
 ```yaml
 cache_settings:
   base_directory: ".cache"
@@ -156,33 +173,37 @@ cache_settings:
 ## Performance Optimizations
 
 ### 1. Lazy Directory Creation
+
 - Directories only created when data is actually stored
 - Eliminates unused empty directories
 - Faster initialization
 
 ### 2. Format Selection
+
 - Pickle: Fast serialization for DataFrames
 - Parquet: Efficient columnar storage (with pyarrow)
 - SQLite: Structured data with SQL querying
 
 ### 3. Concurrent Processing
+
 - ThreadPoolExecutor for parallel GEX calculations
 - Memory-efficient batch operations
 - Progress tracking for long-running operations
 
-## Storage Sizes (Typical)
+## Storage Structure
 
 ```bash
 .cache/
-├── consolidated_historical.db        # 16K (pattern results)
-├── options/SPY/2024-08-01.pickle    # ~2MB (full options chain)
-├── market_data/SPY/2024-08.pickle   # ~50KB (monthly OHLCV)
-└── intraday_gex/SPY/2024-08-01/     # ~100KB/interval
+├── consolidated_historical.db        # Pattern validation results
+├── options/SPY/2024-08-01.pickle    # Full options chains
+├── market_data/SPY/2024-08.pickle   # OHLCV market data
+└── intraday_gex/SPY/2024-08-01/     # Intraday GEX calculations
 ```
 
 ## Integration Points
 
 **Used by**:
+
 - `scripts/validation/validate_patterns.py` - Pattern validation
 - `src/agents/market_mechanics_agent.py` - Primary analysis
 - `src/data/market_data_system.py` - Data pipeline
@@ -190,6 +211,7 @@ cache_settings:
 - `src/tools/autogen_tools.py` - AutoGen integration
 
 **Dependencies**:
+
 - `src/utils/date_utils.py` - Date handling
 - `src/utils/config_manager.py` - Configuration
 - `pandas`, `sqlite3`, `pathlib` - Core dependencies
@@ -197,6 +219,7 @@ cache_settings:
 ## Best Practices
 
 ### 1. Use Lazy Loading
+
 ```python
 # Good - only creates directories when storing data
 cache = UnifiedCacheManager()
@@ -206,6 +229,7 @@ cache.store_options_data("SPY", "2024-08-01", df)
 ```
 
 ### 2. Check Cache Before API Calls
+
 ```python
 # Always check cache first
 cached_data = cache.get_options_data("SPY", "2024-08-01")
@@ -216,6 +240,7 @@ if cached_data is None:
 ```
 
 ### 3. Use Appropriate Cache Layer
+
 - **UnifiedCacheManager**: Live market data (options, stocks, news)
 - **GEXCacheManager**: Computed GEX results and pattern analysis
 - **IntradayCacheManager**: Timestamp-specific data for gamma pinning
@@ -223,20 +248,24 @@ if cached_data is None:
 ## Troubleshooting
 
 ### Empty Directories Created
+
 **Issue**: `.cache/options/`, `.cache/market_data/` created but empty
 **Solution**: Directories are created lazily - they'll populate when data is stored
 
 ### Import Errors
+
 **Issue**: `ModuleNotFoundError: No module named 'cache'`
 **Solution**: Use absolute imports: `from src.cache.unified_cache import UnifiedCacheManager`
 
 ### Database Locked
+
 **Issue**: SQLite database locked during concurrent access
 **Solution**: GEXCacheManager handles concurrent access automatically
 
 ## Migration Notes
 
 From previous cache system:
+
 - ✅ Eliminated 7 empty directories created on initialization
 - ✅ Optimized imports (removed unused pandas from intraday_cache.py)
 - ✅ All 4 cache files verified as actively used

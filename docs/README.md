@@ -1,8 +1,8 @@
 # GEX-LLM Patterns Documentation
 
-## 🚀 **Production Ready - September 22, 2025**
+## 🚀 **PhD Research Platform**
 
-**Latest Status**: Enhanced agent autonomy with YAML reporting and data obfuscation implemented. LLM-driven tool selection operational with anti-cheating validation framework. Clean reports structure with unified experiments directory.
+**Latest Status**: CS PhD dissertation research platform investigating whether LLMs can identify actionable patterns in market microstructure better than mechanical approaches. Uses O3-mini for reasoning with data obfuscation validation framework.
 
 ## 📋 **Quick Start Guide**
 
@@ -10,7 +10,7 @@
 
 1. **Overview**: Start with [system/architecture/project_overview](system/architecture/project_overview)
 2. **Agent System**: Read [CLAUDE.md](../CLAUDE) for current system status
-3. **Run Experiment**: Use `scripts/orchestrate_experiment_yaml.py --experiment "analyze gamma exposure patterns" --symbol SPY --date 2024-06-28`
+3. **Run Experiment**: Use `scripts/orchestrate_experiment.py --experiment "analyze gamma exposure patterns" --symbol SPY --date 2024-06-28`
 4. **View Results**: Check `reports/experiments/SPY-2024-06-28-gamma_analysis.yaml`
 
 ### For Developers
@@ -36,9 +36,11 @@ Core architecture and operational guides:
   - [architecture_overview](system/architecture/architecture_overview) - Technical architecture
   - [data_architecture](system/architecture/data_architecture) - Data flow and storage
   - [database_architecture](system/architecture/database_architecture) - Database schema
+  - [cache_architecture](system/architecture/cache_architecture) - Cache system design
   - [continuous_experiment_framework](system/architecture/continuous_experiment_framework) - Experimental framework
   - [intraday_implementation_complete](system/architecture/intraday_implementation_complete) - Intraday system
-- **[cache_intraday_analysis](system/cache_intraday_analysis)** - Cache optimization analysis
+- **`implementation/`** - Technical implementation details
+  - [actionable_patterns](system/implementation/actionable_patterns) - Trading pattern implementation
 
 ### 📚 **User Guides** (`guides/`)
 

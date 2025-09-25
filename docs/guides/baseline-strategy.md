@@ -4,7 +4,7 @@
 
 The Baseline GEX Strategy provides a mechanical trading approach that trades every negative GEX day without LLM filtering. This serves as a performance baseline to prove whether LLM intelligence adds value.
 
-## Current Status: ⚠️ Framework Ready, Awaiting Working LLM
+## Current Status: ✅ Framework Ready for A/B Testing
 
 ### What's Complete ✅
 
@@ -23,11 +23,13 @@ The Baseline GEX Strategy provides a mechanical trading approach that trades eve
    - Model-aware naming convention
    - Tracks tool vs prompt model usage
 
-### What's Blocked ❌
+### LLM Configuration
 
-**Cannot complete baseline comparison because:**
+**Current Setup:**
 
-- GPT-4o-mini fails obfuscated validation (0% accuracy)
+- **Reasoning Model**: O3-mini/O4-mini for pattern analysis
+- **Tool Calling**: GPT-4o-mini for function execution
+- **Validation**: Data obfuscation prevents LLM memorization
 - Need working LLM model first (Issue #62)
 - Current LLM cannot perform genuine market mechanics analysis
 

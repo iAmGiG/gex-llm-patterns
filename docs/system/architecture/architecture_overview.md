@@ -2,17 +2,18 @@
 
 ## System Design
 
-The GEX-LLM Pattern Analysis system is designed as a modular research platform that processes financial options data through multiple stages to discover patterns using Large Language Models.
+The GEX-LLM Pattern Analysis system is a research platform designed for CS PhD dissertation work investigating whether Large Language Models can identify actionable patterns in market microstructure data better than mechanical approaches.
 
 ## High-Level Architecture
 
 ```bash
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Data Sources  │────│  Cache Layer    │────│ Data Pipeline   │
+│   Data Sources  │────│ 2-Tier Storage  │────│ Data Pipeline   │
 │                 │    │                 │    │                 │
-│ • Alpha Vantage │    │ • Historical    │    │ • Rate Limiting │
-│ • SPY/SPX       │    │ • 10yr/24hr TTL │    │ • Validation    │
-│ • Options Data  │    │ • Smart Expiry  │    │ • Processing    │
+│ • Alpha Vantage │    │ • SQLite DB     │    │ • AutoGen Tools │
+│ • Polygon.io    │    │ • Cache Layer   │    │ • Rate Limiting │
+│ • Options Data  │    │ • 24hr TTL      │    │ • Obfuscation   │
+│ • Market Data   │    │ • Auto Fallback │    │ • Validation    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          └───────────────────────┼───────────────────────┘
@@ -21,41 +22,137 @@ The GEX-LLM Pattern Analysis system is designed as a modular research platform t
                     │ GEX Calculation │
                     │                 │
                     │ • Gamma Exposure│
+                    │ • Strike-Level  │
                     │ • Flip Points   │
-                    │ • Key Levels    │
+                    │ • Regime Class. │
                     └─────────────────┘
                                  │
                     ┌─────────────────┐
-                    │  Tokenization   │
+                    │ Pattern Library │
                     │                 │
-                    │ • Dynamic Bins  │
-                    │ • Market States │
-                    │ • Sequences     │
+                    │ • 15 Patterns   │
+                    │ • WHO/WHOM/WHAT │
+                    │ • Success Rates │
+                    │ • Validation    │
                     └─────────────────┘
                                  │
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Pattern Mining  │────│ LLM Integration │────│   Validation    │
+│ LLM Integration │────│ Market Agent    │────│ A/B Validation  │
 │                 │    │                 │    │                 │
-│ • PrefixSpan    │    │ • Autogen       │    │ • Backtesting   │
-│ • Significance  │    │ • GPT-4o-mini   │    │ • Statistics    │
-│ • Filtering     │    │ • Multi-Agent   │    │ • Robustness    │
+│ • O3-mini       │    │ • Single Agent  │    │ • Obfuscated    │
+│ • GPT-4o-mini   │    │ • Tool Calling  │    │ • Batch Tests   │
+│ • Reasoning     │    │ • Experiments   │    │ • Statistics    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+## Core Research Hypothesis
+
+**Primary Question**: Can LLM contextual reasoning about market microstructure (WHO forces WHOM to do WHAT) generate better trading signals than mechanical GEX strategies?
+
+**Methodology**: A/B testing of baseline GEX thresholds vs LLM-enhanced pattern detection on obfuscated historical data.
 
 ## Component Interactions
 
 ### Data Flow
 
-1. **Alpha Vantage API** → **Cache Layer** → **GEX Calculator**
-2. **GEX Results** → **Tokenizer** → **Pattern Miner**  
-3. **Patterns** → **LLM Analyzer** → **Backtester** → **Validator**
+1. **Market Data APIs** → **2-Tier Storage** → **GEX Calculator**
+2. **GEX Metrics** → **Pattern Library** → **Market Mechanics Agent**  
+3. **Agent** → **LLM Analysis** → **Actionable Signals** → **Validation Results**
+
+## Key Components
+
+### MarketMechanicsAgent (`src/agents/market_mechanics_agent.py`)
+
+- **Purpose**: Single-agent architecture for market mechanics interpretation
+- **Core Function**: Translates GEX data into WHO/WHOM/WHAT market narratives
+- **LLM Integration**: Supports multiple LLM providers with fallback handling
+- **Capabilities**: Tool orchestration, batch processing, experimental framework
+
+### Pattern Library (`src/analysis/pattern_library.py`)
+
+- **15 Documented Patterns**: Gamma squeeze, OPEX pin, dealer trap, etc.
+- **Pattern Structure**: Setup conditions, mechanics, expected outcomes, success rates
+- **Historical Validation**: Backtested success rates and sample sizes
+- **LLM Prompts**: Pattern-specific prompt templates for consistent analysis
+
+### GEX Calculator (`src/gex/gex_calculator.py`)
+
+- **Black-Scholes Greeks**: Calculates gamma exposure for dealer positioning
+- **Strike-Level Analysis**: Enhanced beyond aggregate GEX for pattern detection
+- **Regime Classification**: POSITIVE/NEGATIVE gamma with high/low intensity
+- **Flip Point Detection**: Critical levels where dealer hedging behavior changes
+
+### Data Obfuscation (`src/validation/data_obfuscation.py`)
+
+- **Date Anonymization**: "2021-01-28" → "Day T+17" format
+- **Ticker Masking**: "GME" → "STOCK_G", "SPY" → "INDEX_1"
+- **Context Removal**: Strips temporal references and memorizable events
+- **Reversible Mapping**: Maintains consistency for result interpretation
+
+### Validation Framework (`scripts/validation/validate_patterns.py`)
+
+- **Historical Testing**: GME squeeze, VIX spikes, COVID events validation
+- **Live Data Integration**: Uses real market data with AutoGen tools fallback
+- **Database Storage**: Tracks validation results and pattern performance
+- **A/B Testing**: Compares LLM vs baseline approaches systematically
+
+## LLM Architecture
+
+### Dual-Model Setup
+
+- **O3-mini/O4-mini**: Primary reasoning model for pattern interpretation
+- **GPT-4o-mini**: Tool calling and function execution
+- **Reasoning Focus**: Complex market dynamics analysis vs simple tool operations
+
+### Cost Optimization
+
+- **Batch Processing**: Single LLM call analyzes multiple dates
+- **Caching Strategy**: Minimize redundant API calls
+- **Smart Fallbacks**: Cache → API → sample data hierarchy
+
+## Experimental Framework
+
+### Research Design
+
+```python
+# Baseline: Mechanical GEX thresholds
+if gex_metrics['net_gex'] < -5e9:
+    return {"action": "buy", "confidence": 60}
+
+# Enhanced: LLM + Pattern context
+agent = MarketMechanicsAgent()
+result = agent.run_experiment("Analyze mechanics", obfuscated_date)
+return result['actionable_signal']
+```
+
+### Validation Metrics
+
+- **Win Rate**: Percentage of correct predictions
+- **Confidence Calibration**: LLM confidence vs actual outcomes
+- **Statistical Significance**: T-tests comparing baseline vs enhanced
+- **Economic Value**: Risk-adjusted returns after transaction costs
+
+## Production Architecture
+
+### 2-Tier Data System
+
+- **Tier 1**: SQLite database (`.cache/consolidated_historical.db`)
+- **Tier 2**: In-memory cache with 24hr TTL
+- **Performance**: 90%+ hit rate, 3-7 seconds vs 10+ minutes API calls
+- **Cost Control**: Zero API costs for repeated experiments
+
+### Error Handling
+
+- **Graceful Degradation**: System continues with available data sources
+- **Comprehensive Logging**: Debug LLM responses and data flow issues
+- **Fallback Chains**: AutoGen → Cache → Sample data → Warning
 
 ### Key Dependencies
 
 - **Cache** ← All data-dependent components
-- **GEX Calculator** ← Tokenizer, Pattern Miner
-- **Pattern Results** ← LLM Integration
-- **All Results** ← Statistical Validation
+- **GEX Calculator** ← Pattern detection and agent analysis
+- **Pattern Library** ← LLM Integration
+- **Agent Results** ← Statistical Validation
 
 ## Directory Structure
 

@@ -1,57 +1,79 @@
-# Data Architecture for Continuous Experiment Framework
+# Data Architecture for GEX-LLM Pattern Analysis
 
 ## Overview
 
-The continuous experiment framework uses a 2-tier data system optimized for performance and reliability in long-running backtests.
+The GEX-LLM Pattern Analysis system uses a 2-tier data system optimized for PhD research, supporting both historical backtesting and live experimental validation with cost control and obfuscation capabilities.
 
 ## 2-Tier Data System
 
 ### Architecture
 
-```
-Request → Tier 1 (Database) → Tier 2 (Cache) → Warning if no data
+```bash
+Request → Tier 1 (Database) → Tier 2 (Cache) → AutoGen Tools → API → Warning
 ```
 
 ### Components
 
 **Tier 1: Database Direct Access**
-- **Purpose**: Fastest data access for repeated experiments
-- **Implementation**: `src/data/two_tier_system.py`
+
+- **Purpose**: Fastest data access for repeated PhD experiments
+- **Implementation**: Direct SQLite queries via `MarketMechanicsAgent`
 - **Storage**: SQLite at `.cache/consolidated_historical.db`
 - **Performance**: ~3-7 seconds vs 10+ minutes for API calls
-- **Tables**: `options_data`, `market_data`, `gex_data`
+- **Tables**: `daily_gex_metrics`, `intraday_gex_metrics`, `strike_gex_details`
 
 **Tier 2: Cache Fallback**
+
 - **Purpose**: Secondary storage for recently accessed data
 - **Implementation**: `src/cache/unified_cache.py`
-- **Storage**: In-memory + file-based caching
-- **TTL**: 24 hours for most data
-- **Auto-promotion**: Cache hits stored in database for future Tier 1 access
+- **Storage**: In-memory + file-based caching with pickle serialization
+- **TTL**: 24 hours for market data, 10 years for historical options
+- **Auto-promotion**: Cache hits automatically stored in database
+
+**Tier 3: AutoGen Tools Integration**
+
+- **Purpose**: Intelligent data fetching with multiple source fallbacks
+- **Implementation**: `src/tools/autogen_tools.py`
+- **Functions**: `fetch_options_data()`, `calculate_gamma_exposure()`, `fetch_market_data()`
+- **Features**: Cache-aware, API routing, cost optimization
+
+**Tier 4: Direct API Access**
+
+- **Purpose**: Last resort for missing data
+- **APIs**: Alpha Vantage, Polygon.io, multiple providers
+- **Rate Limiting**: Alpha Vantage (75 calls/minute), provider-specific limits
+- **Error Handling**: Graceful degradation with warnings
 
 ### Data Flow
 
-1. **Request Data**: Strategy requests data for specific date/symbol
-2. **Database Check**: Look in SQLite database first (fastest)
-3. **Cache Check**: If not in database, check cache
-4. **Warning**: If no data available, warn user (no sample data fallback)
-5. **Storage**: Any cache hits automatically stored in database
+1. **Experiment Request**: `MarketMechanicsAgent.run_experiment()` needs data for analysis
+2. **Database First**: Check SQLite for existing GEX calculations (fastest path)
+3. **Cache Check**: If not in database, check unified cache for options/market data
+4. **AutoGen Tools**: If cache miss, use intelligent fetching with source routing
+5. **Direct API**: Last resort with rate limiting and error handling
+6. **Data Obfuscation**: Apply date/ticker anonymization for LLM analysis
+7. **Storage Promotion**: Store results in database for future experiments
 
 ## Performance Characteristics
 
-### Expected Hit Rates
-- **Database Hit Rate**: 90%+ for repeated experiments
-- **Cache Hit Rate**: 5-8% (recent data not yet in database)
-- **Data Miss Rate**: <5% (legitimate missing data)
+### Expected Hit Rates (PhD Research Context)
+
+- **Database Hit Rate**: High for repeated pattern validation experiments
+- **Cache Hit Rate**: Moderate for recent data not yet promoted to database
+- **AutoGen Tools Success**: High success rate with intelligent routing
+- **Data Miss Rate**: Low (legitimate data unavailability)
 
 ### Performance Improvements
-- **90%+ faster** than API-only approaches
-- **Zero API costs** for repeated experiments
-- **Fault tolerance** for network issues
-- **Automatic optimization** through tier promotion
+
+- **Significant performance gains** over direct API approaches
+- **Cost optimization** for repeated PhD experiments
+- **LLM batch processing** savings
+- **Research reproducibility** through consistent data access
 
 ## Data Tables
 
 ### options_data
+
 ```sql
 CREATE TABLE options_data (
     date TEXT,
@@ -63,6 +85,7 @@ CREATE TABLE options_data (
 ```
 
 ### market_data
+
 ```sql
 CREATE TABLE market_data (
     date TEXT,
@@ -78,6 +101,7 @@ CREATE TABLE market_data (
 ```
 
 ### gex_data
+
 ```sql
 CREATE TABLE gex_data (
     date TEXT,
@@ -94,6 +118,7 @@ CREATE TABLE gex_data (
 ## Usage Examples
 
 ### Basic Data Fetching
+
 ```python
 from src.data.two_tier_system import TwoTierDataSystem
 
@@ -110,6 +135,7 @@ gex_data = data_system.fetch_gex_data("2024-01-15", "SPY")
 ```
 
 ### Performance Monitoring
+
 ```python
 # Get performance statistics
 stats = data_system.get_performance_stats()
@@ -120,6 +146,7 @@ print(f"Data availability: {stats['data_availability_pct']:.1f}%")
 ## Integration with Continuous Framework
 
 ### Strategy Integration
+
 All strategies (`V0-V4`) use the 2-tier system automatically:
 
 ```python
@@ -135,6 +162,7 @@ class GEXStrategyV2(BaseGEXStrategy):
 ```
 
 ### Batch Processing Integration
+
 The batch LLM processor uses the 2-tier system for efficient data preparation:
 
 ```python
@@ -150,6 +178,7 @@ batch_analysis = batch_processor.prepare_batch_analysis(weekly_data)
 ```
 
 ### Checkpoint Integration
+
 Checkpoints include data system performance metrics:
 
 ```python
@@ -165,11 +194,13 @@ checkpoint = BacktestCheckpoint(
 ## Error Handling
 
 ### Missing Data Behavior
+
 - **Warning Logged**: Clear user notification when data unavailable
 - **Graceful Degradation**: Strategy continues with available data
 - **Performance Tracking**: Miss rates monitored and reported
 
 ### Database Issues
+
 - **Auto-Creation**: Tables created automatically if missing
 - **Fallback**: Cache still available if database fails
 - **Recovery**: System continues operation with degraded performance
@@ -177,6 +208,7 @@ checkpoint = BacktestCheckpoint(
 ## Configuration
 
 ### Database Path
+
 ```yaml
 # config_defaults/baseline_comparison_config.yaml
 data_system:
@@ -186,6 +218,7 @@ data_system:
 ```
 
 ### Performance Tuning
+
 - **Database Location**: SSD recommended for optimal performance
 - **Cache Size**: Configure based on available memory
 - **Batch Size**: Optimize based on typical experiment ranges
@@ -193,11 +226,13 @@ data_system:
 ## Monitoring and Metrics
 
 ### Key Performance Indicators
+
 - **Database Hit Rate**: Should be >90% for mature experiments
 - **Data Availability**: Should be >95% for quality date ranges
 - **Cache Promotion Rate**: Measures system learning efficiency
 
 ### Alerting
+
 - **Low Database Hit Rate**: Indicates need for data population
 - **High Miss Rate**: Suggests poor date range selection
 - **Performance Degradation**: Database or cache issues

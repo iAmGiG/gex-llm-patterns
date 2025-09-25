@@ -20,11 +20,11 @@ The GEX-LLM system uses a hybrid approach with different token configurations fo
 
 **Key Point**: These tools run as pure Python functions. No LLM involvement, no token costs.
 
-### Market Mechanics Analysis (HIGH LLM TOKENS)
+### Market Mechanics Analysis (LLM REASONING)
 
 **Location**: `src/llm/autogen_market_mechanics.py`
-**Type**: O3-mini LLM calls for detailed analysis
-**Token Limit**: 4000 tokens
+**Type**: O3-mini/O4-mini for reasoning, GPT-4o-mini for tool calls
+**Token Limit**: 4000 tokens for analysis
 
 **Configuration**:
 
@@ -43,7 +43,8 @@ client_params["max_tokens"] = 4000
 | Component | Model | Token Limit | Purpose |
 |-----------|-------|-------------|---------|
 | AutoGen Tools | None | 0 | Direct function calls |
-| Market Analysis | O3-mini | 4000 | Detailed reasoning |
+| Market Analysis | O3-mini/O4-mini | 4000 | Pattern reasoning |
+| Tool Calling | GPT-4o-mini | Minimal | Function execution |
 | Data Fetching | None | 0 | Cache/API calls |
 | GEX Calculation | None | 0 | Mathematical operations |
 

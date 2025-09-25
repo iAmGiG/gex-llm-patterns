@@ -4,7 +4,9 @@
 
 **Path**: `.cache/consolidated_historical.db`
 
-**Current Size**: 36KB (as of latest analysis)
+**Purpose**: Central storage for GEX calculations, pattern validation results, and experimental data for PhD research
+
+**Storage**: Sufficient capacity for multi-year historical analysis with intraday support
 
 ## Location Analysis
 
@@ -55,7 +57,7 @@
 
 ## Database Schema Documentation
 
-### Current Tables
+### Current Tables (PhD Research Context)
 
 ```sql
 -- Main GEX aggregations (daily level)
@@ -68,7 +70,7 @@ CREATE TABLE daily_gex_metrics (
     net_put_gex REAL,
     gamma_flip_point REAL,
     flip_ratio REAL,
-    gex_regime TEXT,
+    gex_regime TEXT,              -- POSITIVE/NEGATIVE_GAMMA_HIGH/LOW
     data_quality_score REAL,
     options_count INTEGER,
     created_at TEXT,
@@ -91,23 +93,42 @@ CREATE TABLE strike_gex_details (
     FOREIGN KEY (symbol, date) REFERENCES daily_gex_metrics (symbol, date)
 );
 
--- Pattern detection results
-CREATE TABLE pattern_detections (
-    [schema not fully documented]
+-- Pattern validation results (PhD research)
+CREATE TABLE pattern_validation_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    expected_pattern TEXT NOT NULL,        -- Expected pattern from historical analysis
+    detected_pattern TEXT,                -- LLM-detected pattern
+    confidence REAL,                      -- LLM confidence score
+    validated_at TEXT,
+    data_source TEXT,                     -- 'live', 'cache', 'obfuscated'
+    success BOOLEAN,                      -- Did detection match expectation
+    notes TEXT
 );
 
--- Federal Reserve context data
-CREATE TABLE fed_context (
-    [schema not fully documented]
+-- Historical pattern performance tracking
+CREATE TABLE historical_pattern_performance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pattern_name TEXT NOT NULL,
+    date TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    entry_price REAL,
+    exit_price REAL,
+    return_pct REAL,
+    hold_days INTEGER,
+    success BOOLEAN,
+    created_at TEXT,
+    data_source TEXT
 );
 ```
 
-## Future Intraday Schema (Issue #72)
+## Current Intraday Schema (Issue #72 - Implemented)
 
-### Proposed Intraday Tables
+### Intraday Tables (For PhD Research)
 
 ```sql
--- Intraday GEX metrics (15-minute intervals)
+-- Intraday GEX metrics (supports timestamps like '2024-06-07 15:30:00')
 CREATE TABLE intraday_gex_metrics (
     symbol TEXT,
     timestamp TEXT,               -- YYYY-MM-DD HH:MM:SS format
@@ -116,13 +137,15 @@ CREATE TABLE intraday_gex_metrics (
     net_call_gex REAL,
     net_put_gex REAL,
     gamma_flip_point REAL,
-    gex_regime TEXT,
+    flip_ratio REAL,             -- For pin analysis
+    gex_regime TEXT,             -- Regime classification
+    data_quality_score REAL,
     options_count INTEGER,
     created_at TEXT,
     PRIMARY KEY (symbol, timestamp)
 );
 
--- Intraday strike-level details
+-- Intraday strike-level details (for enhanced pattern detection)
 CREATE TABLE intraday_strike_details (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     symbol TEXT NOT NULL,
@@ -134,6 +157,7 @@ CREATE TABLE intraday_strike_details (
     call_oi INTEGER,
     put_oi INTEGER,
     distance_from_spot REAL,
+    gamma_concentration_pct REAL, -- For Issue #73 gamma pinning validation
     created_at TEXT,
     FOREIGN KEY (symbol, timestamp) REFERENCES intraday_gex_metrics (symbol, timestamp)
 );
@@ -143,16 +167,15 @@ CREATE TABLE intraday_strike_details (
 
 ### Current Performance
 
-- **Size**: 36KB for daily data across multiple symbols
-- **Query Speed**: Subsecond for daily aggregations
-- **Index Strategy**: Primary keys on (symbol, date)
+- **Query Speed**: Optimized for research workloads
+- **Index Strategy**: Primary keys on (symbol, date/timestamp)
+- **Scalability**: Supports both daily and intraday analysis
 
 ### Intraday Scaling
 
-- **15-min intervals**: ~26× size increase per symbol
-- **Expected size**: ~1MB for single symbol, full year intraday
-- **Index needs**: (symbol, timestamp), time-range queries
-- **Partitioning**: Consider monthly tables for very large datasets
+- **Temporal Resolution**: Supports minute-level analysis
+- **Index Strategy**: Optimized for time-range queries
+- **Partitioning**: Scalable design for extended historical periods
 
 ### Optimization Strategies
 
@@ -170,13 +193,30 @@ WHERE strftime('%w', timestamp) = '5'  -- Friday
 
 ## Integration Points
 
-### 2-Tier Data System
+### MarketMechanicsAgent Integration
 
 ```python
-# Database path already configured
-class TwoTierDataSystem:
-    def __init__(self, db_path: str = ".cache/consolidated_historical.db"):
-        self.db_path = Path(db_path)
+# Agent directly queries database for efficiency
+class MarketMechanicsAgent:
+    def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
+        conn = sqlite3.connect("./.cache/consolidated_historical.db")
+        # Support both daily and intraday queries
+        is_intraday = ' ' in date_str and ':' in date_str
+        table = "intraday_gex_metrics" if is_intraday else "daily_gex_metrics"
+```
+
+### Pattern Validation Integration
+
+```python
+# Validation results stored automatically
+def validate_known_events(self) -> Dict:
+    conn = sqlite3.connect(self.db_path)
+    # Store validation results for statistical analysis
+    cursor.execute("""
+        INSERT INTO pattern_validation_results
+        (date, symbol, expected_pattern, detected_pattern, confidence, success)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, validation_data)
 ```
 
 ### Backup Strategy
