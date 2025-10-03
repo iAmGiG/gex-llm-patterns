@@ -47,6 +47,7 @@ Core architecture and operational guides:
 How-to documentation for practical usage:
 
 - **[validation-framework](guides/validation-framework)** - LLM validation and testing framework
+- **[pattern-validation](guides/pattern-validation)** - Pattern taxonomy validation workflow (Issue #79)
 - **[data-obfuscation](guides/data-obfuscation)** - Anti-cheating measures for validation
 - **[baseline-strategy](guides/baseline-strategy)** - Trading strategy implementation
 
