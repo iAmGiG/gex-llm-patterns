@@ -156,7 +156,8 @@ class PatternTaxonomyValidator:
                 # Run experiment with obfuscation
                 result = self.agent.run_experiment(
                     experiment_description=experiment_desc,
-                    date=date_str
+                    date=date_str,
+                    obfuscate=True  # Critical: prevent LLM from seeing real dates/tickers
                 )
 
                 # Check if pattern was detected
@@ -178,15 +179,20 @@ class PatternTaxonomyValidator:
 
                     confidence = mechanics.get('confidence', 0)
 
+                    # Extract obfuscated date from agent result
+                    obfuscation_meta = result.get('obfuscation_metadata', {})
+                    date_obfuscated = obfuscation_meta.get('obfuscated_date', date_str)
+
                     detection = {
                         'date': date_str,
-                        'date_obfuscated': date_str,  # Will be obfuscated in the agent
+                        'date_obfuscated': date_obfuscated,  # From agent's obfuscation_metadata
                         'confidence': confidence,
                         'detected': confidence >= confidence_threshold,
                         'who': mechanics.get('who', 'N/A'),
                         'whom': mechanics.get('whom', 'N/A'),
                         'what': mechanics.get('what', 'N/A'),
-                        'gex_metrics': result.get('gex_metrics', {})
+                        'gex_metrics': result.get('gex_metrics', {}),
+                        'obfuscation_verified': obfuscation_meta.get('obfuscated', False)
                     }
 
                     detections.append(detection)

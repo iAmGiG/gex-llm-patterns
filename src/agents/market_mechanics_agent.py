@@ -91,29 +91,24 @@ class MarketMechanicsAgent:
             self.llm = llm_provider
 
         # Market mechanics patterns library
-        self.mechanics_patterns = {
-            'dealer_hedging': {
-                'description': 'Market makers hedging their gamma exposure',
-                'indicators': ['high_gamma_concentration', 'pin_risk'],
-                'who': 'Dealers/Market Makers',
-                'whom': 'Directional traders',
-                'what': 'Forced buying/selling to maintain delta neutrality'
-            },
-            'gamma_squeeze': {
-                'description': 'Positive feedback loop forcing dealers to chase price',
-                'indicators': ['positive_gamma_high', 'accelerating_delta_hedging'],
-                'who': 'Options flow',
-                'whom': 'Dealers',
-                'what': 'Forced to buy high/sell low amplifying moves'
-            },
-            'pin_manipulation': {
-                'description': 'Large players defending strike levels',
-                'indicators': ['massive_oi_strikes', 'price_magnetism', 'vol_compression'],
-                'who': 'Large options writers',
-                'whom': 'Market price',
-                'what': 'Defending profitable strike levels through spot manipulation'
+        # Use PatternLibrary (src/analysis/) instead of hardcoded patterns
+        if self.pattern_library:
+            self.mechanics_patterns = self._build_mechanics_dict_from_library()
+            logger.info(
+                f"Loaded {len(self.mechanics_patterns)} patterns from PatternLibrary")
+        else:
+            # Fallback to minimal hardcoded patterns (shouldn't happen)
+            logger.warning(
+                "PatternLibrary not available, using minimal fallback")
+            self.mechanics_patterns = {
+                'gamma_squeeze': {
+                    'description': 'Positive feedback loop forcing dealers to chase price',
+                    'indicators': ['positive_gamma_high', 'accelerating_delta_hedging'],
+                    'who': 'Options flow',
+                    'whom': 'Dealers',
+                    'what': 'Forced to buy high/sell low amplifying moves'
+                }
             }
-        }
 
     def _load_config(self) -> Dict:
         """Load configuration from analysis_config.yaml."""
@@ -134,6 +129,22 @@ class MarketMechanicsAgent:
                     'significant_flow_threshold': 5e5
                 }
             }
+
+    def _build_mechanics_dict_from_library(self) -> Dict:
+        """
+        Convert PatternLibrary patterns to mechanics dict format.
+        Bridges between comprehensive PatternLibrary and simplified mechanics dict.
+        """
+        mechanics = {}
+        for name, pattern in self.pattern_library.patterns.items():
+            mechanics[name] = {
+                'description': pattern.mechanics_description,
+                'who': pattern.who,
+                'whom': pattern.whom,
+                'what': pattern.what,
+                'indicators': pattern.identification_criteria
+            }
+        return mechanics
 
     def _normalize_date(self, date) -> tuple[datetime.datetime, str]:
         """Normalize date input to (datetime_obj, date_string) tuple.
@@ -204,7 +215,10 @@ class MarketMechanicsAgent:
 
         return insights
 
-    def run_experiment(self, experiment_description: str, date: str = "2024-06-28") -> Dict:
+    def run_experiment(self,
+                       experiment_description: str,
+                       date: str = "2024-06-28",
+                       obfuscate: bool = False) -> Dict:
         """
         Run flexible experiment based on natural language description.
         Agent decides what tools to call and how to analyze.
@@ -212,24 +226,56 @@ class MarketMechanicsAgent:
         Args:
             experiment_description: Natural language experiment request
             date: Date for analysis
+            obfuscate: If True, strip dates/tickers from LLM prompts (anti-cheating validation)
 
         Returns:
             Experiment results with agent's analysis
         """
         logger.info(f"Running experiment: {experiment_description}")
+        if obfuscate:
+            logger.info(
+                "Obfuscation ENABLED - LLM will not see real dates/tickers")
 
         try:
+            # Step 0: Obfuscate dates/tickers if requested (BEFORE LLM calls)
+            if obfuscate:
+                from src.validation.data_obfuscation import DataObfuscator
+                obfuscator = DataObfuscator()
+                date_mapping = obfuscator.obfuscate_dates([date])
+                ticker_mapping = obfuscator.obfuscate_tickers([self.symbol])
+
+                obfuscated_date = date_mapping[date]
+                obfuscated_ticker = ticker_mapping[self.symbol]
+
+                # Replace date and ticker in experiment description
+                experiment_description_llm = experiment_description.replace(
+                    date, obfuscated_date)
+                experiment_description_llm = experiment_description_llm.replace(
+                    self.symbol, obfuscated_ticker)
+                date_for_llm = obfuscated_date
+
+                logger.info(
+                    f"Obfuscated: {date} → {obfuscated_date}, {self.symbol} → {obfuscated_ticker}")
+            else:
+                experiment_description_llm = experiment_description
+                date_for_llm = date
+                obfuscated_date = None
+                obfuscated_ticker = None
+
             # Step 1: Use LLM to analyze experiment and decide what tools/data are needed
+            # Pass obfuscated description and date to LLM
             tool_plan = self._plan_experiment_tools(
-                experiment_description, date)
+                experiment_description_llm, date_for_llm)
             logger.info(f"Agent tool plan: {tool_plan}")
 
             # Step 2: Execute the planned tools based on LLM decision
+            # Use REAL date for data fetching (cache needs real dates)
             experiment_data = self._execute_tool_plan(tool_plan, date)
 
             # Step 3: Use LLM to analyze results and generate insights
+            # Pass obfuscated description to LLM
             result = self._analyze_experiment_results(
-                experiment_description, experiment_data, tool_plan)
+                experiment_description_llm, experiment_data, tool_plan)
 
             # Step 4: Add pattern library analysis (Issue #54)
             if self.pattern_library and experiment_data:
@@ -259,6 +305,17 @@ class MarketMechanicsAgent:
             result["experiment_timestamp"] = now_iso()
             result["agent_used"] = "MarketMechanicsAgent"
             result["tool_plan"] = tool_plan
+
+            # Add obfuscation metadata if used
+            if obfuscate:
+                result['obfuscation_metadata'] = {
+                    'obfuscated': True,
+                    'real_date': date,
+                    'obfuscated_date': obfuscated_date,
+                    'real_ticker': self.symbol,
+                    'obfuscated_ticker': obfuscated_ticker
+                }
+                logger.info("Obfuscation metadata added to result")
 
             # Save full experiment report with unified reports manager
             test_type = tool_plan.get('experiment_type', 'general_analysis')
@@ -1040,9 +1097,6 @@ Respond with JSON:
             # Add Greeks concentration analysis
             gex_results['gamma_concentration'] = self._analyze_gamma_concentration(
                 options_data, spot_price)
-            # Skip vanna/charm for now - not needed for basic mechanics analysis
-            # gex_results['vanna_estimate'] = self._estimate_vanna_flows(options_data)
-            # gex_results['charm_estimate'] = self._estimate_charm_decay(options_data, date)
 
             return gex_results
 
@@ -1194,7 +1248,7 @@ Respond with JSON:
 
         # Traditional mechanics patterns with enhanced strike-level data
         gex_metrics = context.get('gex_metrics', {})
-        options_flow = context.get('options_flow', {})
+        # options_flow = context.get('options_flow', {})
 
         # Check for each mechanics pattern with enhanced detection
         for pattern_name, pattern_def in self.mechanics_patterns.items():
@@ -2104,13 +2158,16 @@ Respond with JSON:
         Handles both daily and intra-day data population.
         """
         try:
-            # Determine regime
+            # Determine regime using configured thresholds
             net_gex = gex_metrics.get('net_gex', 0)
-            if net_gex < -5e9:
+            positive_high = self.gex_thresholds.get('positive_high', 5e9)
+            negative_high = self.gex_thresholds.get('negative_high', -5e9)
+
+            if net_gex < negative_high:
                 regime = 'NEGATIVE_GAMMA_HIGH'
             elif net_gex < 0:
                 regime = 'NEGATIVE_GAMMA_LOW'
-            elif net_gex > 5e9:
+            elif net_gex > positive_high:
                 regime = 'POSITIVE_GAMMA_HIGH'
             else:
                 regime = 'POSITIVE_GAMMA_LOW'

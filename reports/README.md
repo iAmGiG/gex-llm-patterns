@@ -7,7 +7,9 @@ This directory contains various analysis reports and experimental results organi
 ```
 reports/
 ├── validation/              # System validation and testing reports
-│   ├── mc_reports/         # Main Chat validation reports (2025-09-23)
+│   ├── pattern_taxonomy/   # Pattern taxonomy validation (Issue #79, Oct 2025)
+│   ├── pattern_taxonomy_DEPRECATED_ISSUE81/  # Deprecated: obfuscation bug (Oct 2025)
+│   ├── mc_reports/         # Main Chat validation reports (Sep 2025)
 │   └── daily_tests/        # Daily testing results and raw data
 ├── experiments/            # Individual experiment results (YAML format)
 ├── archive/               # Historical reports and deprecated analyses
@@ -17,6 +19,18 @@ reports/
 ```
 
 ## Current Reports by Category
+
+### 🔬 **Pattern Taxonomy Validation** (`validation/pattern_taxonomy/`)
+**Purpose:** Issue #79 - Validate mechanical patterns using obfuscation testing
+
+**Status:** ⏳ IN PROGRESS - Re-validating with corrected obfuscation (Issue #81 fix)
+
+Pattern validation results testing WHO forces WHOM to do WHAT:
+- **Obfuscation:** LLM receives "Day T+0" instead of "2024-01-02"
+- **Test Period:** Q1 2024 (53 trading days, post-training cutoff)
+- **Threshold:** ≥60% detection rate with ≥30 samples
+
+**⚠️ IMPORTANT:** Previous results moved to `pattern_taxonomy_DEPRECATED_ISSUE81/` due to obfuscation bug discovered Oct 7, 2025. See that directory's README for details.
 
 ### 🎯 **System Validation** (`validation/mc_reports/`)
 **Purpose:** Comprehensive validation for Main Chat requirements

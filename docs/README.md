@@ -60,6 +60,7 @@ Technical specifications and research findings:
 - **[adaptive-consensus-technical-indicators](reference/adaptive-consensus-technical-indicators)** - Technical indicators
 - **`api/`** - API documentation and specifications
 - **`technical/`** - Implementation details and configurations
+  - [agent-feature-audit](reference/technical/agent-feature-audit) - MarketMechanicsAgent method audit (Oct 2025)
 
 ### 🗄️ **Archive** (`archive/`)
 

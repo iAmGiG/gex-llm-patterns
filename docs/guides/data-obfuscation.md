@@ -168,6 +168,63 @@ def validate_event(self, event: MechanicsEvent, obfuscate_data: bool = False) ->
         event_for_analysis = event
 ```
 
+### MarketMechanicsAgent Integration (Issue #81 Fix)
+
+**IMPORTANT**: As of October 7, 2025, the `run_experiment()` method in `MarketMechanicsAgent` now supports proper obfuscation:
+
+```python
+# src/agents/market_mechanics_agent.py
+def run_experiment(self,
+                   experiment_description: str,
+                   date: str = "2024-06-28",
+                   obfuscate: bool = False) -> Dict:
+    """
+    Run flexible experiment based on natural language description.
+
+    Args:
+        experiment_description: Natural language experiment request
+        date: Date for analysis (REAL date for data fetching)
+        obfuscate: If True, strip dates/tickers from LLM prompts (anti-cheating)
+
+    Returns:
+        Experiment results with optional obfuscation metadata
+    """
+
+    if obfuscate:
+        # Step 1: Obfuscate dates/tickers BEFORE LLM sees them
+        obfuscator = DataObfuscator()
+        date_mapping = obfuscator.obfuscate_dates([date])
+        ticker_mapping = obfuscator.obfuscate_tickers([self.symbol])
+
+        obfuscated_date = date_mapping[date]
+        obfuscated_ticker = ticker_mapping[self.symbol]
+
+        # Replace in experiment description
+        experiment_description_llm = experiment_description.replace(date, obfuscated_date)
+        experiment_description_llm = experiment_description_llm.replace(self.symbol, obfuscated_ticker)
+
+        # Step 2: Use REAL date for data fetching (cache needs real dates)
+        experiment_data = self._execute_tool_plan(tool_plan, date)
+
+        # Step 3: Use OBFUSCATED description for LLM analysis
+        result = self._analyze_experiment_results(experiment_description_llm, ...)
+
+        # Step 4: Add metadata
+        result['obfuscation_metadata'] = {
+            'obfuscated': True,
+            'real_date': date,
+            'obfuscated_date': obfuscated_date,
+            'real_ticker': self.symbol,
+            'obfuscated_ticker': obfuscated_ticker
+        }
+```
+
+**Critical Separation**:
+- **LLM-facing data**: Uses obfuscated dates/tickers ("Day T+0", "INDEX_1")
+- **Cache-facing data**: Uses real dates for data retrieval ("2024-01-02")
+
+This ensures the LLM cannot use training knowledge while still accessing correct market data.
+
 ### Obfuscation Application
 
 ```python
@@ -382,12 +439,21 @@ def obfuscate_mag7_tickers():
 - Unbiased LLM capability assessment
 - Production validation confidence
 - Model comparison benchmarks
+- **Pattern taxonomy validation (Issue #79)** - Required for mechanical pattern claims
 
 #### ⚠️ **Optional For**
 
 - Development and debugging (use normal validation for speed)
 - System functionality testing
 - Initial prototyping
+
+#### ❌ **Critical Mistake (Issue #81)**
+
+**What Happened**: Issue #79 validation claimed obfuscation testing but `run_experiment()` had no `obfuscate` parameter. The LLM received real dates/tickers, invalidating claims that patterns worked "without temporal context."
+
+**Fix Applied**: October 7, 2025 - Added `obfuscate=True` parameter to `run_experiment()` method.
+
+**Lesson**: Always verify obfuscation end-to-end. Don't trust flags in report generation alone - check what the LLM actually sees in prompts.
 
 ### Development Workflow
 

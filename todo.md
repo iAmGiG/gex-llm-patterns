@@ -3,69 +3,80 @@
 ## Current System Status (October 2025)
 
 - ✅ **Pattern Taxonomy Framework**: Implemented with 6 core patterns (src/validation/pattern_taxonomy.py)
-- ✅ **Pattern Validation Complete**: 3 mechanical patterns validated via obfuscation tests
 - ✅ **Cache System Optimization**: Eliminated 7 unused directories, lazy creation
 - ✅ **Strike-Level Discovery**: 251 opportunities vs 1 aggregated signal
 - ✅ **O3-mini Deployment**: 75% confidence, 65% cost savings
 - ✅ **Batch processing implemented** (Issue #78) - Multiple dates in single LLM call
 - ✅ **Data obfuscation working** - Dates converted to T+0, T+7 format
 - ✅ **Cache system fixed** (Issue #44) - Proper DataFrame extraction
+- ✅ **Pattern Library Integration** - Agent now uses 15 patterns from src/analysis/
+- ✅ **Obfuscation bug fixed** (Issue #81) - run_experiment() now properly obfuscates
 
 ## Active Issues
 
-### Issue #79: Pattern Taxonomy Validation - ✅ PHASE 1 COMPLETED (Oct 2, 2025)
+### Issue #81: Obfuscation Bug - ✅ RESOLVED (Oct 7, 2025)
 
-**Test Period**: Q1 2024 (53 trading days, Jan 2 - Mar 27)
-**Result**: 3 of 6 patterns validated as mechanical (target was 5-7)
-**Status**: ⚠️ PARTIAL SUCCESS - Sufficient for production deployment
+**Problem**: Issue #79 validation claimed obfuscation testing, but LLM saw real dates/tickers
+**Impact**: Invalidated claims that patterns work "without temporal context"
+**Status**: ✅ FIXED
 
-#### ✅ VALIDATED MECHANICAL PATTERNS (100% success)
+#### What Was Fixed
+- ✅ Added `obfuscate=True` parameter to `run_experiment()`
+- ✅ Updated validator to pass `obfuscate=True`
+- ✅ Verified end-to-end: LLM now sees "Day T+0" and "INDEX_1" instead of real dates/tickers
+- ✅ Tainted reports moved to `pattern_taxonomy_DEPRECATED_ISSUE81/`
+- ✅ Documentation updated in `docs/guides/data-obfuscation.md`
 
-1. ✅ **Gamma Positioning** (100%, 53/53) - Buis et al. 2024
-   - WHO: Option buyers → WHOM: Dealers → WHAT: Forced delta hedging
-   - Constraint: Delta-neutral regulatory mandate
-2. ✅ **Stock Pinning** (100%, 53/53) - Jeannin et al. 2008
-   - WHO: Large OI concentrations → WHOM: Dealers → WHAT: Gamma explosion pins price to strikes
-   - Constraint: Must rehedge constantly at high-OI strikes
-3. ✅ **0DTE Hedging** (100%, 53/53) - Academic support
-   - WHO: 0DTE traders → WHOM: Dealers → WHAT: Rapid gamma changes force immediate hedging
-   - Constraint: 40-50% SPX volume in 0DTE creates exponential risk
+#### Next Steps
+- ⏳ **Re-run Issue #79 validation** - Test all 6 patterns with proper obfuscation
+- ⏳ **Compare results** - Determine if 100% success rates hold or were artifacts
 
-#### ❌ FAILED VALIDATION
+### Issue #79: Pattern Taxonomy Validation - ⚠️ NEEDS RE-VALIDATION
 
-4. ⚠️ **Dealer Trap** (37.7%, 20/53) - Probabilistic, not mechanical (below 60% threshold)
-5. ❌ **Friday 3:30 PM** (0%, 0/53) - Narrative/folklore (temporal dependency, failed obfuscation)
-6. ❌ **Volume Anomaly** (0%, 0/53) - Narrative/folklore (no mechanism, parked for future work)
+**Original Results (TAINTED - Issue #81 bug)**:
+- Gamma Positioning: 100% (53/53)
+- Stock Pinning: 100% (53/53)
+- 0DTE Hedging: 100% (53/53)
+- Dealer Trap: 37.7% (20/53)
+- Friday 3:30 PM: 0% (0/53)
+- Volume Anomaly: 0% (0/53)
 
-#### Validation Criteria (from Issue #79)
+**Status**: ❌ INVALIDATED - LLM saw real dates/tickers, obfuscation didn't work
 
-- **Obfuscation Test**: Pattern works without date/ticker context
-- **Success Rate**: >60% with 30+ samples
-- **Economic Value**: >20bps after transaction costs
-- **Academic Support**: Clear causal mechanism documented
-- **Baseline Comparison**: Beats raw GEX strategy (Issue #58)
+**Re-validation Command** (once API quota available):
+```bash
+python scripts/validation/validate_all_patterns.py \
+  --patterns gamma_positioning stock_pinning 0dte_hedging dealer_trap friday_330_squeeze volume_anomaly \
+  --start-date 2024-01-02 \
+  --end-date 2024-03-29
+```
+
+**Possible Outcomes**:
+- **Best Case**: Similar 100% rates → Confirms patterns truly mechanical
+- **Realistic Case**: 90-95% rates → Still validates patterns
+- **Worst Case**: <60% rates → Patterns were context-dependent
 
 ### Medium Priority
 
 1. **Issue #58 - Baseline Without LLM**
    - Implement raw GEX strategy for comparison
-   - Required for Issue #79 validation
-   - Prove patterns beat random/simple strategies
+   - Prove LLM patterns beat simple strategies
+   - Use `src/analysis/baseline_gex_strategy.py`
 
 2. **Issue #71 - Strike-Level Trading Strategy**
-   - Design trading rules for validated patterns only
-   - Deploy after Issue #79 validation complete
+   - Design trading rules for validated patterns (after re-validation)
+   - Deploy only patterns that pass obfuscation test
 
 3. **Issue #78 - LLM Pattern Analysis Optimization**
-   - Batch processing ✅ done
-   - System optimization ongoing
+   - ✅ Batch processing done
+   - ✅ Obfuscation integrated
 
 ## Testing Commands
 
-### Pattern Taxonomy Validation (Issue #79) - COMPLETED
+### Pattern Taxonomy Validation (Issue #79) - RE-VALIDATION NEEDED
 
 ```bash
-# Single pattern validation
+# Single pattern validation (with proper obfuscation)
 python scripts/validation/validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
@@ -75,13 +86,12 @@ python scripts/validation/validate_pattern_taxonomy.py \
 
 # Batch validation (all patterns)
 python scripts/validation/validate_all_patterns.py \
-  --patterns stock_pinning 0dte_hedging dealer_trap friday_330_squeeze volume_anomaly \
+  --patterns gamma_positioning stock_pinning 0dte_hedging dealer_trap friday_330_squeeze volume_anomaly \
   --start-date 2024-01-02 \
-  --end-date 2024-03-29 \
-  --skip-completed
+  --end-date 2024-03-29
 
 # Results: reports/validation/pattern_taxonomy/
-# Naming: {pattern}_{TICKER}_{daterange}.yaml (e.g., gamma_positioning_SPY_2024Q1.yaml)
+# Old (tainted) results: reports/validation/pattern_taxonomy_DEPRECATED_ISSUE81/
 ```
 
 ### Baseline Comparison (Issue #58)
@@ -97,33 +107,52 @@ python scripts/run_baseline_strategy.py \
 ## Documentation
 
 - **Pattern Taxonomy**: `src/validation/pattern_taxonomy.py`
+- **Pattern Library**: `src/analysis/pattern_library.py` (15 patterns)
 - **Development Context**: `CLAUDE.md`
-- **Issue #79**: Focus on core mechanical patterns
+- **Obfuscation Guide**: `docs/guides/data-obfuscation.md`
+- **Agent Audit**: `docs/AGENT_FEATURE_AUDIT.md`
 - **Reports**: `reports/validation/`, `reports/experiments/`
 
-## Success Metrics (Issue #79) - Achieved
+## Validation Criteria (Issue #79)
 
-- ✅ **Validated Patterns**: 3 mechanical patterns (target was 5-7)
-- ✅ **Obfuscation Pass**: All 3 patterns work without context (100% success)
-- ⏳ **Economic Significance**: Pending - backtest with transaction costs (Phase 2)
-- ✅ **Academic Support**: All 3 have clear causal mechanisms
-- ⏳ **Baseline Beat**: Pending - Issue #58 comparison
+- **Obfuscation Test**: Pattern works without date/ticker context (NOW PROPERLY ENFORCED)
+- **Success Rate**: >60% with 30+ samples
+- **Economic Value**: >20bps after transaction costs
+- **Academic Support**: Clear causal mechanism documented
+- **Baseline Comparison**: Beats raw GEX strategy (Issue #58)
 
 ## Next Steps (Priority Order)
 
-1. ✅ **Issue #79 Phase 1**: Obfuscation validation COMPLETE (Oct 2, 2025)
-   - Results: 3 mechanical patterns validated at 100% success
-   - Documentation: `reports/validation/ISSUE_79_VALIDATION_SUMMARY.md`
-   - GitHub: Issue #79 updated with full results
-2. 🔄 **Issue #79 Phase 2**: Economic backtest for 3 validated patterns (NEXT)
+1. ⏳ **Issue #79 Re-validation** - Run with proper obfuscation (Issue #81 fixed)
+   - Compare new vs deprecated (tainted) results
+   - Update validation summary with corrected methodology
+2. 🔄 **Issue #79 Phase 2**: Economic backtest (after re-validation)
    - Calculate returns after costs (need >20bps)
    - Use `src/analysis/baseline_gex_strategy.py`
-   - Test dealer_trap (37.7%) as probabilistic edge
-3. 🔄 **Issue #58**: Baseline comparison (LLM vs raw GEX)
-   - Prove LLM pattern detection adds value over naive strategy
-4. 🔄 **Issue #71**: Trading strategy for validated patterns only
-   - Design rules for gamma_positioning, stock_pinning, 0dte_hedging
-5. **Future Considerations**:
+4. 🔄 **Issue #58**: Baseline comparison (LLM vs raw GEX)
+   - Prove LLM pattern detection adds value
+5. 🔄 **Issue #71**: Trading strategy for VALIDATED patterns only
+   - Design rules based on re-validation results
+6. **Future Considerations**:
    - Reframe Friday 3:30 as "0DTE Final Hour Gamma Pinning" (mechanism-based)
    - Expand validation to Q2-Q4 2024 or additional symbols (QQQ, IWM)
    - Volume Anomaly: Requires different tooling (LEAP flow tracking)
+
+## Recent Improvements (Oct 7, 2025)
+
+### Issue #81 Fix - Obfuscation Now Works
+- ✅ Added `obfuscate` parameter to `run_experiment()` in MarketMechanicsAgent
+- ✅ Validator updated to use `obfuscate=True`
+- ✅ Removed dead code (vanna/charm comments)
+- ✅ Consolidated hardcoded GEX thresholds to use config
+- ✅ Pattern library integration (15 patterns vs 3 hardcoded)
+- ✅ All 48 agent methods verified as actively used (no dead code)
+
+### Files Modified
+- `src/agents/market_mechanics_agent.py` - Obfuscation + pattern integration
+- `scripts/validation/validate_pattern_taxonomy.py` - Now passes `obfuscate=True`
+- `docs/guides/data-obfuscation.md` - Issue #81 fix documented
+- `docs/AGENT_FEATURE_AUDIT.md` - Complete feature inventory
+
+### Academic Integrity Note
+Catching Issue #81 before publication/advisor meeting demonstrates scientific rigor. Better to find and fix obfuscation bugs now than in peer review.
