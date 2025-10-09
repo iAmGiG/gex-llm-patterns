@@ -13,26 +13,25 @@ metadata:
       expected_patterns: Typical intraday patterns
     test_purpose: General market analysis
     validation_goal: Verify LLM analyzes mechanics without relying on memorized events
-  generated_at: '2025-10-07T23:47:50.930975'
+  generated_at: '2025-10-09T17:54:22.391534'
 tool_execution:
   plan:
     rationale: ''
   data_sources:
-    type: cached
+    type: live
 gex_analysis:
-  spot_price: 434.0
+  total_gamma: -5386475.711553248
+  spot_price: 472.65
+  gamma_concentration: 1.6695538732483919
 llm_analysis:
   market_mechanics:
-    who: Unknown actors
-    whom: Unknown targets
-    what: Unknown action
-    confidence: 0
+    who: Institutional call buyers
+    whom: Dealers and market makers
+    what: "Forced to buy the underlying shares to hedge their short call positions\u2014then forced to unwind these hedges\
+      \ amid a trend reversal"
+    confidence: 80
     time_horizon: Intraday
   trading_signal:
-    action: HOLD
-    confidence: 0
-    rationale: ''
-    risk_reward: ''
     edge_quality: ''
   confidence_reasoning:
     summary: ''
@@ -40,5 +39,5 @@ validation:
   data_quality:
     data_completeness: complete
   analysis_quality:
-    completeness: 0.0
-    confidence: 0
+    completeness: 0.3333333333333333
+    confidence: 80

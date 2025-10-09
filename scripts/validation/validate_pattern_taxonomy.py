@@ -48,6 +48,9 @@ class PatternTaxonomyValidator:
         self.obfuscator = DataObfuscator()
         self.agent = None  # Lazy init
 
+        # Get validation criteria from taxonomy
+        self.criteria = self.taxonomy.criteria
+
         # Validation tracking
         self.test_dates = []
         self.failed_dates = []
@@ -58,14 +61,14 @@ class PatternTaxonomyValidator:
         """Get all trading days in range from cache."""
         logger.info(f"Scanning cache for dates between {start_date} and {end_date}")
 
-        # Get available dates from cache
-        cache_dir = Path('.cache/options') / self.symbol
-        if not cache_dir.exists():
-            logger.error(f"Cache directory not found: {cache_dir}")
+        # Use cache manager to get cache directory (respects configuration)
+        cache_base = self.cache.cache_base_dir / 'options' / self.symbol
+        if not cache_base.exists():
+            logger.error(f"Cache directory not found: {cache_base}")
             return []
 
         available_dates = []
-        for file_path in sorted(cache_dir.glob("*.pickle")):
+        for file_path in sorted(cache_base.glob("*.pickle")):
             date_str = file_path.stem  # e.g., "2024-01-02"
             if start_date <= date_str <= end_date:
                 available_dates.append(date_str)
@@ -116,7 +119,7 @@ class PatternTaxonomyValidator:
         self,
         pattern_name: str,
         dates: List[str],
-        confidence_threshold: float = 60.0
+        confidence_threshold: float = None
     ) -> Dict:
         """
         Validate single pattern using obfuscation test.
@@ -124,16 +127,20 @@ class PatternTaxonomyValidator:
         Args:
             pattern_name: Pattern to validate (e.g., 'gamma_positioning')
             dates: List of dates to test
-            confidence_threshold: Minimum confidence for detection
+            confidence_threshold: Minimum confidence for detection (uses taxonomy criteria if None)
 
         Returns:
             Validation results with pattern detection metrics
         """
+        # Use pattern-specific threshold from taxonomy if not specified
+        if confidence_threshold is None:
+            confidence_threshold = self.criteria.min_success_rate * 100  # Convert 0.60 to 60.0
+
         logger.info(f"=" * 80)
         logger.info(f"PATTERN VALIDATION: {pattern_name}")
         logger.info(f"=" * 80)
         logger.info(f"Testing {len(dates)} dates with obfuscation")
-        logger.info(f"Confidence threshold: {confidence_threshold}%")
+        logger.info(f"Confidence threshold: {confidence_threshold}% (from taxonomy criteria)")
         logger.info(f"Symbol: {self.symbol}")
 
         # Initialize agent if needed
@@ -223,6 +230,8 @@ class PatternTaxonomyValidator:
             'pattern_name': pattern_name,
             'test_metadata': {
                 'symbol': self.symbol,
+                'start_date': dates[0],
+                'end_date': dates[-1],
                 'test_period': f"{dates[0]} to {dates[-1]}",
                 'total_dates_requested': len(dates),
                 'total_dates_tested': total_tested,
@@ -311,15 +320,22 @@ class PatternTaxonomyValidator:
         )
 
     def _generate_verdict(self, success_rate: float, sample_size: int) -> str:
-        """Generate human-readable verdict."""
+        """
+        Generate human-readable verdict with actionable interpretation.
+
+        Verdict Categories:
+        - MECHANICAL (>=60%): Structural pattern, high confidence trading
+        - INVESTIGATE (40-60%): May be profitable (like dealer_trap 37.7%), needs Phase 2 economic test
+        - NARRATIVE (<40%): Likely folklore, not actionable
+        """
         if sample_size < 30:
             return f"INSUFFICIENT_SAMPLES - Need 30+, have {sample_size}"
         elif success_rate >= 60.0:
-            return f"MECHANICAL - {success_rate:.1f}% success with {sample_size} samples (validated)"
-        elif success_rate >= 50.0:
-            return f"PROBABILISTIC - {success_rate:.1f}% success (borderline)"
+            return f"MECHANICAL - {success_rate:.1f}% success with {sample_size} samples (validated for trading)"
+        elif success_rate >= 40.0:
+            return f"INVESTIGATE - {success_rate:.1f}% success (may be profitable edge, run economic backtest)"
         else:
-            return f"NARRATIVE/FOLKLORE - {success_rate:.1f}% success (not validated)"
+            return f"NARRATIVE/FOLKLORE - {success_rate:.1f}% success (not actionable)"
 
     def save_results(self, validation_result: Dict, output_dir: Path = None):
         """Save validation results to YAML file."""
@@ -384,21 +400,20 @@ def main():
         logger.error(f"No dates found in cache for {args.symbol} between {args.start_date} and {args.end_date}")
         return 1
 
-    # Check continuity if requested
-    if args.check_continuity:
-        continuity_report = validator.validate_data_continuity(test_dates)
+    # MANDATORY: Check data continuity before validation
+    continuity_report = validator.validate_data_continuity(test_dates)
 
-        # Save continuity report
-        continuity_path = Path('reports/validation/data_continuity.yaml')
-        continuity_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(continuity_path, 'w') as f:
-            yaml.dump(continuity_report, f, default_flow_style=False)
+    # Save continuity report
+    continuity_path = Path('reports/validation/data_continuity.yaml')
+    continuity_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(continuity_path, 'w') as f:
+        yaml.dump(continuity_report, f, default_flow_style=False)
 
-        logger.info(f"Continuity report saved to: {continuity_path}")
+    logger.info(f"Continuity report saved to: {continuity_path}")
 
-        if continuity_report['continuity_pct'] < 90:
-            logger.warning(f"⚠️  Data continuity is {continuity_report['continuity_pct']:.1f}% - expect some failed fetches")
-            logger.warning("Agent will attempt to fetch missing data via API")
+    if continuity_report['continuity_pct'] < 90:
+        logger.warning(f"⚠️  Data continuity is {continuity_report['continuity_pct']:.1f}% - expect some failed fetches")
+        logger.warning("Agent will attempt to fetch missing data via API")
 
     # Run validation
     logger.info(f"\n🚀 Starting validation for pattern: {args.pattern}")

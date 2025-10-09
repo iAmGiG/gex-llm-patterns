@@ -1,0 +1,45 @@
+pattern_name: gamma_positioning
+test_metadata:
+  symbol: SPY
+  test_period: 2024-01-02 to 2024-01-02
+  total_dates_requested: 1
+  total_dates_tested: 1
+  failed_fetches: 0
+  confidence_threshold: 60.0
+  obfuscation_enabled: true
+  test_date: '2025-10-09T17:54:22.395384'
+detection_metrics:
+  high_confidence_detections: 1
+  low_confidence_detections: 0
+  success_rate_pct: 100.0
+  total_tested: 1
+obfuscation_test:
+  passed: false
+  success_rate: 100.0
+  sample_size: 1
+  required_success_rate: 60.0
+  required_sample_size: 30
+  verdict: INSUFFICIENT_SAMPLES - Need 30+, have 1
+detections:
+- date: '2024-01-02'
+  date_obfuscated: Day T+0
+  confidence: 80
+  detected: true
+  who: Institutional call buyers
+  whom: Dealers and market makers
+  what: "Forced to buy the underlying shares to hedge their short call positions\u2014\
+    then forced to unwind these hedges amid a trend reversal"
+  gex_metrics:
+    total_gamma: -5386475.711553248
+    net_gex: -5386475.711553248
+    gex_value: -5386475.711553248
+    regime: NEGATIVE_GAMMA_LOW
+    flip_level: 283.0995798179196
+    gamma_concentration: 1.6695538732483919
+    call_gamma: 0
+    put_gamma: 0
+    zero_gamma_level: 283.0995798179196
+    spot_price: 472.65
+    source: historical_database
+  obfuscation_verified: true
+failed_dates: []
