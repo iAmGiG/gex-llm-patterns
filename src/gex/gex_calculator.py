@@ -180,6 +180,37 @@ class GEXCalculator:
 
         return gex_data['weighted_gex'].sum()
 
+    def calculate_gex_velocity(
+        self,
+        current_gex: float,
+        previous_gex: float
+    ) -> Dict[str, float]:
+        """
+        Calculate GEX velocity metrics (day-over-day changes).
+
+        Issue #80: Velocity metrics are often the primary signal, not absolute levels.
+
+        Args:
+            current_gex: Net GEX for current date
+            previous_gex: Net GEX for previous date
+
+        Returns:
+            Dict with:
+                - net_gex_change_1d_usd: Absolute change in USD
+                - net_gex_change_1d_pct: Percentage change
+                - gex_acceleration: Rate of change (if multiple periods)
+        """
+        if previous_gex == 0:
+            # Avoid division by zero
+            change_pct = 0.0 if current_gex == 0 else 100.0
+        else:
+            change_pct = ((current_gex - previous_gex) / abs(previous_gex)) * 100
+
+        return {
+            'net_gex_change_1d_usd': current_gex - previous_gex,
+            'net_gex_change_1d_pct': round(change_pct, 2)
+        }
+
     def calculate_gex_profile(self,
                               options_data: pd.DataFrame,
                               underlying_price: float,

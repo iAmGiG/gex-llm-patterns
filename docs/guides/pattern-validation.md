@@ -135,23 +135,35 @@ python scripts/validate_pattern_taxonomy.py \
 
 ## Output Format
 
-### YAML Structure
+### Enhanced YAML Structure (Issue #80)
 
 ```yaml
 pattern_name: gamma_positioning
 test_metadata:
   symbol: SPY
+  start_date: "2024-01-02"
+  end_date: "2024-06-28"
   test_period: "2024-01-02 to 2024-06-28"
   total_dates_requested: 70
   total_dates_tested: 68
   failed_fetches: 2
   obfuscation_enabled: true
 
-detection_metrics:
+performance_metrics:  # Renamed from detection_metrics
+  # Detection (Phase 1: Pattern Recognition)
+  total_tested: 68
+  detection_rate_pct: 66.2  # Renamed from success_rate_pct
   high_confidence_detections: 45
   low_confidence_detections: 23
-  success_rate_pct: 66.2
-  total_tested: 68
+
+  # Prediction (Phase 2: Outcome Validation - populated by backtest)
+  predictive_accuracy_pct: 85.0
+  avg_forward_1d_return_pct: 0.45
+
+  # Economics (Phase 2: Profitability)
+  net_alpha_pct: 0.40  # 45bps - 5bps costs
+  passes_economic_threshold: true  # >20bps requirement
+  is_validated: true
 
 obfuscation_test:
   passed: true
@@ -164,18 +176,60 @@ obfuscation_test:
 detections:
   - date: "2024-01-02"
     date_obfuscated: "Day T+0"
-    confidence: 75
     detected: true
-    who: "Call buyers"
-    whom: "Market makers"
-    what: "Forced delta hedging"
-    data_source: "cache"
+    obfuscation_verified: true
+
+    # Narrative interpretation (grouped)
+    narrative:
+      who: "Institutional options flow"
+      whom: "Dealers"
+      what: "Force dealers to hedge - first buying, then selling"
+      confidence: 75
+      time_horizon: "Intraday"
+
+    # Quantitative evidence (grouped and consolidated)
+    quantitative_evidence:
+      gex_metrics:
+        net_gex_usd: -5386475.71  # Consolidated from total_gamma/net_gex/gex_value
+        net_gex_change_1d_usd: -1200000.00  # Issue #80: Velocity signal
+        net_gex_change_1d_pct: -28.67       # Issue #80: Velocity signal
+        regime: NEGATIVE_GAMMA_LOW
+        flip_level_price: 283.10
+        spot_price: 472.65
+
+      market_metrics:
+        call_gamma: 0
+        put_gamma: 0
+
+      outcome_metrics:  # Populated by backtest script
+        forward_1d_return_pct: 0.45
+        forward_3d_realized_vol: 0.012
+        prediction_materialized: true
+        verification_note: "Price bounced as dealers covered shorts"
   # ... more detections ...
 
 failed_dates:
   - "2024-01-15"
   - "2024-02-03"
 ```
+
+### Key Changes (Issue #80)
+
+1. **Performance Metrics** (renamed from detection_metrics):
+   - `detection_rate_pct` (renamed from success_rate_pct) - pattern found
+   - `predictive_accuracy_pct` - prediction actually worked
+   - `net_alpha_pct` - economic profitability after costs
+
+2. **Velocity Metrics** (GEX day-over-day changes):
+   - `net_gex_change_1d_usd` - absolute change
+   - `net_gex_change_1d_pct` - percentage change
+
+3. **Grouped Structure**:
+   - `narrative` - interpretation (who/whom/what)
+   - `quantitative_evidence` - data (gex_metrics, market_metrics, outcome_metrics)
+
+4. **Consolidated GEX Fields**:
+   - Single `net_gex_usd` replaces redundant fields
 
 ## Success Criteria Summary
 
