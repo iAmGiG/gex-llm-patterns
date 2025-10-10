@@ -386,21 +386,45 @@ class MarketMechanicsAgent:
                         # Get spot price for GEX calculation
                         spot_price = options_data['underlyingPrice'].iloc[
                             0] if 'underlyingPrice' in options_data.columns else 450.0
-                        gex_data = self.gex_calculator.calculate_dealer_gamma_exposure(
+
+                        # Calculate GEX - returns DataFrame with per-strike GEX
+                        gex_df = self.gex_calculator.calculate_dealer_gamma_exposure(
                             options_data,
                             underlying_price=spot_price
                         )
-                        # Convert to metrics dict
-                        gex_metrics = {
-                            'total_gamma': gex_data.get('total_dealer_gamma', 0),
-                            'spot_price': gex_data.get('spot_price', spot_price),
-                            'flip_point': gex_data.get('flip_point', 0),
-                            'regime': gex_data.get('regime', 'Unknown')
-                        }
+
+                        # Aggregate to summary metrics
+                        if not gex_df.empty and 'dealer_gex' in gex_df.columns:
+                            total_gex = gex_df['dealer_gex'].sum()
+                            call_gex = gex_df[gex_df['type'] == 'call']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
+                            put_gex = gex_df[gex_df['type'] == 'put']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
+
+                            # Find gamma flip point (where GEX changes sign)
+                            gex_by_strike = gex_df.groupby('strike')['dealer_gex'].sum()
+                            flip_point = gex_by_strike[gex_by_strike >= 0].index.min() if len(gex_by_strike[gex_by_strike >= 0]) > 0 else spot_price
+
+                            gex_metrics = {
+                                'total_gamma': total_gex,
+                                'net_gex': total_gex,
+                                'call_gamma': call_gex,
+                                'put_gamma': put_gex,
+                                'spot_price': spot_price,
+                                'flip_point': flip_point,
+                                'regime': 'POSITIVE_GAMMA' if total_gex > 0 else 'NEGATIVE_GAMMA'
+                            }
+                        else:
+                            # Fallback if GEX calculation failed
+                            gex_metrics = {
+                                'total_gamma': 0,
+                                'net_gex': 0,
+                                'spot_price': spot_price,
+                                'flip_point': spot_price,
+                                'regime': 'Unknown'
+                            }
 
                         # Detect patterns
                         patterns = self.pattern_detector.detect_all_patterns(
-                            gex_metrics, {}, date
+                            gex_metrics, {}, fed_context={}
                         ) if hasattr(self, 'pattern_detector') else []
 
                         batch_data[date] = {
@@ -414,7 +438,9 @@ class MarketMechanicsAgent:
                             'obfuscated_date': date_mapping[date]
                         }
                 except Exception as e:
+                    import traceback
                     logger.warning(f"Failed to get data for {date}: {e}")
+                    logger.debug(f"Traceback: {traceback.format_exc()}")
                     batch_data[date] = {
                         'error': str(e),
                         'obfuscated_date': date_mapping[date]
@@ -482,18 +508,45 @@ QUESTIONS TO ANSWER:
 3. What is the highest confidence signal across all dates?
 4. Do you see any temporal patterns (e.g., weekly effects)?
 
-Provide both:
-- OVERALL ANALYSIS: Pattern across all dates
-- PER-DAY SIGNALS: Actionable signal for each date with confidence score
+IMPORTANT: Return your analysis in JSON format with this structure:
+{{
+  "overall_analysis": "Your overall analysis here",
+  "individual_days": {{
+    "DATE_KEY": {{
+      "who": "Identify the forcing party",
+      "whom": "Who is being forced",
+      "what": "Specific forced action",
+      "mechanics": "Brief causal chain",
+      "confidence": 0-100 (numeric)
+    }}
+  }}
+}}
+
+Use the obfuscated date keys (e.g., "Day T+0") as the DATE_KEY.
+Confidence must be a number 0-100.
 """
         return prompt
 
     def _analyze_batch_with_llm(self, prompt: str) -> Dict:
         """Send batch prompt to LLM and get analysis."""
         try:
-            # Use the prompt builder if available
-            if hasattr(self, 'prompt_builder'):
-                response = self.prompt_builder.llm_client.complete(prompt)
+            # Use the LLM client if available
+            if hasattr(self, 'llm') and self.llm is not None:
+                response = self.llm.generate(prompt)
+                # Parse response (may be string or dict)
+                if isinstance(response, dict):
+                    return response.get('content', response)
+                else:
+                    # Try to parse as JSON
+                    import json
+                    response_str = str(response)
+                    start = response_str.find('{')
+                    end = response_str.rfind('}') + 1
+                    if start >= 0 and end > start:
+                        return json.loads(response_str[start:end])
+                    else:
+                        # Fallback
+                        return {'overall_analysis': response_str, 'individual_days': {}}
             else:
                 # Fallback to simple dict response
                 logger.warning("No LLM client available, using mock response")
@@ -512,15 +565,19 @@ Provide both:
     def _parse_batch_results(self, batch_analysis: Dict, dates: List[str], batch_data: Dict) -> Dict:
         """Parse batch LLM results back to individual dates."""
         results = {}
+        individual_days = batch_analysis.get('individual_days', {})
 
         for date in dates:
-            # Extract individual day analysis from batch
-            day_analysis = batch_analysis.get(
-                'individual_days', {}).get(date, {})
+            # Get obfuscated date key (e.g., "Day T+0")
+            obfuscated_date = batch_data[date].get('obfuscated_date', date)
+
+            # Try to find analysis using obfuscated date key first, fall back to real date
+            day_analysis = individual_days.get(obfuscated_date, individual_days.get(date, {}))
 
             # Combine with existing data
             results[date] = {
                 'date': date,
+                'obfuscated_date': obfuscated_date,  # Include obfuscated date
                 'gex_metrics': batch_data[date].get('gex_metrics', {}),
                 'patterns_detected': batch_data[date].get('patterns', []),
                 'actionable_signal': day_analysis.get('signal', {

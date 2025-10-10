@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from agents.market_mechanics_agent import MarketMechanicsAgent
 from validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
 from validation.data_obfuscation import DataObfuscator
+from validation.outcome_calculator import OutcomeCalculator
 from cache.unified_cache import UnifiedCacheManager
 
 logging.basicConfig(
@@ -41,7 +42,7 @@ class PatternTaxonomyValidator:
     - Academic Support: Clear causal mechanism
     """
 
-    def __init__(self, symbol: str = "SPY"):
+    def __init__(self, symbol: str = "SPY", calculate_outcomes: bool = True):
         self.symbol = symbol
         self.cache = UnifiedCacheManager()
         self.taxonomy = PatternTaxonomy()
@@ -50,6 +51,10 @@ class PatternTaxonomyValidator:
 
         # Get validation criteria from taxonomy
         self.criteria = self.taxonomy.criteria
+
+        # Outcome calculator (Issue #80)
+        self.calculate_outcomes = calculate_outcomes
+        self.outcome_calculator = OutcomeCalculator(self.cache) if calculate_outcomes else None
 
         # Validation tracking
         self.test_dates = []
@@ -62,7 +67,7 @@ class PatternTaxonomyValidator:
         logger.info(f"Scanning cache for dates between {start_date} and {end_date}")
 
         # Use cache manager to get cache directory (respects configuration)
-        cache_base = self.cache.cache_base_dir / 'options' / self.symbol
+        cache_base = self.cache.options_dir / self.symbol
         if not cache_base.exists():
             logger.error(f"Cache directory not found: {cache_base}")
             return []
@@ -152,79 +157,183 @@ class PatternTaxonomyValidator:
         high_confidence_count = 0
         failed_fetches = []
 
-        for i, date_str in enumerate(dates, 1):
-            logger.info(f"\n[{i}/{len(dates)}] Testing {date_str}...")
+        # Track previous GEX for velocity calculation (Issue #80)
+        previous_gex = None
+
+        # PERFORMANCE OPTIMIZATION: Use batch processing (Issue #78)
+        # Process dates in batches of 10 for 75% API cost reduction
+        batch_size = 10
+        total_batches = (len(dates) + batch_size - 1) // batch_size
+
+        logger.info(f"Processing {len(dates)} dates in {total_batches} batches of {batch_size}")
+
+        for batch_idx in range(0, len(dates), batch_size):
+            batch_dates = dates[batch_idx:batch_idx + batch_size]
+            batch_num = (batch_idx // batch_size) + 1
+
+            logger.info(f"\n{'='*80}")
+            logger.info(f"BATCH {batch_num}/{total_batches}: Processing {len(batch_dates)} dates")
+            logger.info(f"{'='*80}")
 
             try:
-                # Agent will fetch data (with cache fallback → API fallback)
-                # Create experiment description focused on the pattern
-                experiment_desc = self._generate_pattern_experiment(pattern_name, date_str)
+                # Create pattern-specific experiment template
+                experiment_template = self._generate_pattern_experiment(pattern_name, "DATE_PLACEHOLDER")
 
-                # Run experiment with obfuscation
-                result = self.agent.run_experiment(
-                    experiment_description=experiment_desc,
-                    date=date_str,
-                    obfuscate=True  # Critical: prevent LLM from seeing real dates/tickers
+                # Run batch experiment with obfuscation
+                batch_result = self.agent.run_batch_experiments(
+                    dates=batch_dates,
+                    experiment_template=experiment_template,
+                    use_obfuscation=True  # Critical: prevent LLM from seeing real dates/tickers
                 )
 
-                # Check if pattern was detected
-                # Handle both error returns and successful results
-                if result and isinstance(result, dict):
-                    # Debug: log result structure
-                    logger.debug(f"Result keys: {result.keys()}")
-                    logger.debug(f"Full result: {result}")
+                # Check if batch failed
+                if batch_result.get('status') == 'error':
+                    logger.error(f"Batch {batch_num} failed: {batch_result.get('error')}")
+                    failed_fetches.extend(batch_dates)
+                    continue
 
-                    # Check for error status
-                    if result.get('status') == 'error':
-                        logger.warning(f"  ❌ Agent returned error: {result.get('error', 'Unknown error')}")
+                # Process individual results from batch
+                individual_results = batch_result.get('individual_results', {})
+
+                for i, date_str in enumerate(batch_dates, 1):
+                    result = individual_results.get(date_str)
+
+                    if not result:
+                        logger.warning(f"  [{batch_idx + i}/{len(dates)}] {date_str}: No result in batch")
                         failed_fetches.append(date_str)
                         continue
 
-                    # Get mechanics interpretation from result
-                    # NOTE: MarketMechanicsAgent returns 'mechanics_interpretation', not 'llm_analysis'
-                    mechanics = result.get('mechanics_interpretation', {})
+                    logger.info(f"  [{batch_idx + i}/{len(dates)}] Processing {date_str}...")
 
-                    confidence = mechanics.get('confidence', 0)
+                    # Check if pattern was detected
+                    # Handle both error returns and successful results
+                    if result and isinstance(result, dict):
+                        # Debug: log result structure
+                        logger.debug(f"Result keys: {result.keys()}")
+                        logger.debug(f"Full result: {result}")
 
-                    # Extract obfuscated date from agent result
-                    obfuscation_meta = result.get('obfuscation_metadata', {})
-                    date_obfuscated = obfuscation_meta.get('obfuscated_date', date_str)
+                        # Get mechanics interpretation from result
+                        # NOTE: MarketMechanicsAgent returns 'mechanics_interpretation', not 'llm_analysis'
+                        mechanics = result.get('mechanics_interpretation', {})
 
-                    detection = {
-                        'date': date_str,
-                        'date_obfuscated': date_obfuscated,  # From agent's obfuscation_metadata
-                        'confidence': confidence,
-                        'detected': confidence >= confidence_threshold,
-                        'who': mechanics.get('who', 'N/A'),
-                        'whom': mechanics.get('whom', 'N/A'),
-                        'what': mechanics.get('what', 'N/A'),
-                        'gex_metrics': result.get('gex_metrics', {}),
-                        'obfuscation_verified': obfuscation_meta.get('obfuscated', False)
-                    }
+                        confidence = mechanics.get('confidence', 0)
 
-                    detections.append(detection)
+                        # Get obfuscated date from result (Issue #81 fix)
+                        date_obfuscated = result.get('obfuscated_date', date_str)
 
-                    if detection['detected']:
-                        high_confidence_count += 1
-                        logger.info(f"  ✅ DETECTED: {confidence}% confidence")
-                        logger.info(f"     WHO: {detection['who']}")
-                        logger.info(f"     WHOM: {detection['whom']}")
-                        logger.info(f"     WHAT: {detection['what']}")
+                        # Extract GEX metrics
+                        gex_raw = result.get('gex_metrics', {})
+
+                        # Consolidate redundant GEX fields (net_gex = total_gamma = gex_value)
+                        net_gex_usd = gex_raw.get('net_gex') or gex_raw.get('total_gamma') or gex_raw.get('gex_value')
+
+                        # Calculate GEX velocity (Issue #80: day-over-day change is often the signal)
+                        gex_velocity = None
+                        if previous_gex is not None and net_gex_usd is not None:
+                            from src.gex.gex_calculator import GEXCalculator
+                            calculator = GEXCalculator()
+                            gex_velocity = calculator.calculate_gex_velocity(
+                                current_gex=net_gex_usd,
+                                previous_gex=previous_gex
+                            )
+
+                        # Update previous_gex for next iteration
+                        if net_gex_usd is not None:
+                            previous_gex = net_gex_usd
+
+                        detection = {
+                            'date': date_str,
+                            'date_obfuscated': date_obfuscated,
+                            'detected': confidence >= confidence_threshold,
+                            'obfuscation_verified': batch_result.get('obfuscation_used', False),
+
+                            # Narrative interpretation (grouped)
+                            'narrative': {
+                                'who': mechanics.get('who', 'N/A'),
+                                'whom': mechanics.get('whom', 'N/A'),
+                                'what': mechanics.get('what', 'N/A'),
+                                'confidence': confidence,
+                                'time_horizon': mechanics.get('time_horizon', 'Unknown')
+                            },
+
+                            # Quantitative evidence (grouped and consolidated)
+                            'quantitative_evidence': {
+                                'gex_metrics': {
+                                    'net_gex_usd': net_gex_usd,  # Consolidated from total_gamma/net_gex/gex_value
+                                    'net_gex_change_1d_usd': gex_velocity['net_gex_change_1d_usd'] if gex_velocity else None,  # Issue #80: velocity signal
+                                    'net_gex_change_1d_pct': gex_velocity['net_gex_change_1d_pct'] if gex_velocity else None,
+                                    'regime': gex_raw.get('regime'),
+                                    'flip_level_price': gex_raw.get('flip_level') or gex_raw.get('zero_gamma_level'),
+                                    'gamma_concentration': gex_raw.get('gamma_concentration'),
+                                    'spot_price': gex_raw.get('spot_price'),
+                                    'source': gex_raw.get('source')
+                                },
+                                'market_metrics': {
+                                    'call_gamma': gex_raw.get('call_gamma'),
+                                    'put_gamma': gex_raw.get('put_gamma')
+                                }
+                            }
+                            # outcome_metrics will be added by backtest script
+                        }
+
+                        # Add outcome metrics (Issue #80) if enabled
+                        if self.calculate_outcomes and self.outcome_calculator:
+                            try:
+                                detection = self.outcome_calculator.add_outcome_metrics(
+                                    detection, self.symbol
+                                )
+                                logger.debug(f"Added outcome metrics for {date_str}")
+                            except Exception as e:
+                                logger.warning(f"Could not calculate outcomes for {date_str}: {e}")
+
+                        detections.append(detection)
+
+                        if detection['detected']:
+                            high_confidence_count += 1
+                            logger.info(f"  ✅ DETECTED: {confidence}% confidence")
+                            logger.info(f"     WHO: {detection['narrative']['who']}")
+                            logger.info(f"     WHOM: {detection['narrative']['whom']}")
+                            logger.info(f"     WHAT: {detection['narrative']['what']}")
+
+                            # Log outcome metrics if available
+                            if 'outcome_metrics' in detection:
+                                outcome = detection['outcome_metrics']
+                                logger.info(f"     OUTCOME: {outcome.get('forward_1d_return_pct', 'N/A')}% T+1 return")
+                                logger.info(f"     MATERIALIZED: {outcome.get('prediction_materialized', 'N/A')}")
+                        else:
+                            logger.info(f"  ⚠️  Low confidence: {confidence}%")
+
                     else:
-                        logger.info(f"  ⚠️  Low confidence: {confidence}%")
-
-                else:
-                    logger.warning(f"  ❌ No analysis result for {date_str}")
-                    failed_fetches.append(date_str)
+                        logger.warning(f"  ❌ No analysis result for {date_str}")
+                        failed_fetches.append(date_str)
 
             except Exception as e:
-                logger.error(f"  ❌ Error testing {date_str}: {e}")
-                failed_fetches.append(date_str)
-                self.failed_dates.append({'date': date_str, 'error': str(e)})
+                logger.error(f"Batch {batch_num} processing error: {e}")
+                failed_fetches.extend(batch_dates)
+                for date_str in batch_dates:
+                    self.failed_dates.append({'date': date_str, 'error': f"Batch error: {str(e)}"})
 
         # Calculate metrics
         total_tested = len(detections)
         success_rate = (high_confidence_count / total_tested * 100) if total_tested > 0 else 0
+
+        # Calculate outcome metrics (will be populated by backtest)
+        avg_forward_1d_return = None
+        predictive_accuracy = None
+        net_alpha = None
+
+        # Check if outcome_metrics exist in detections (from backtest)
+        detections_with_outcomes = [d for d in detections if 'outcome_metrics' in d]
+        if detections_with_outcomes:
+            forward_returns = [d['outcome_metrics']['forward_1d_return_pct'] for d in detections_with_outcomes]
+            avg_forward_1d_return = sum(forward_returns) / len(forward_returns) if forward_returns else None
+
+            predictions_materialized = [d['outcome_metrics']['prediction_materialized'] for d in detections_with_outcomes]
+            predictive_accuracy = (sum(predictions_materialized) / len(predictions_materialized) * 100) if predictions_materialized else None
+
+            # Calculate net alpha (gross return - estimated 5bps transaction costs)
+            if avg_forward_1d_return is not None:
+                net_alpha = avg_forward_1d_return - 0.05
 
         validation_result = {
             'pattern_name': pattern_name,
@@ -240,11 +349,21 @@ class PatternTaxonomyValidator:
                 'obfuscation_enabled': True,
                 'test_date': datetime.now().isoformat()
             },
-            'detection_metrics': {
+            'performance_metrics': {
+                # Detection metrics (did we find the pattern?)
+                'total_tested': total_tested,
+                'detection_rate_pct': success_rate,  # Renamed from success_rate_pct
                 'high_confidence_detections': high_confidence_count,
                 'low_confidence_detections': total_tested - high_confidence_count,
-                'success_rate_pct': success_rate,
-                'total_tested': total_tested
+
+                # Prediction validation (did it actually work?) - populated by backtest
+                'predictive_accuracy_pct': predictive_accuracy,
+                'avg_forward_1d_return_pct': avg_forward_1d_return,
+
+                # Economic metrics - populated by backtest
+                'net_alpha_pct': net_alpha,
+                'passes_economic_threshold': net_alpha > 0.20 if net_alpha is not None else None,
+                'is_validated': success_rate >= 60.0 and total_tested >= 30
             },
             'obfuscation_test': {
                 'passed': success_rate >= 60.0 and total_tested >= 30,
@@ -387,11 +506,23 @@ def main():
                         help='Confidence threshold (default: 60.0)')
     parser.add_argument('--check-continuity', action='store_true',
                         help='Check data continuity before running test')
+    parser.add_argument('--with-outcomes', action='store_true', default=True,
+                        help='Calculate outcome metrics (Issue #80) - enabled by default')
+    parser.add_argument('--no-outcomes', action='store_false', dest='with_outcomes',
+                        help='Skip outcome calculation (faster, detection only)')
 
     args = parser.parse_args()
 
     # Initialize validator
-    validator = PatternTaxonomyValidator(symbol=args.symbol)
+    validator = PatternTaxonomyValidator(
+        symbol=args.symbol,
+        calculate_outcomes=args.with_outcomes
+    )
+
+    if args.with_outcomes:
+        logger.info("✅ Outcome metrics calculation ENABLED (Issue #80)")
+    else:
+        logger.info("⚠️  Outcome metrics calculation DISABLED (detection only)")
 
     # Get test dates
     test_dates = validator.get_test_date_range(args.start_date, args.end_date)
