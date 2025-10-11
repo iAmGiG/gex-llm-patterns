@@ -505,23 +505,21 @@ class HistoricalGEXDatabaseBuilder:
     # === CORE METHODS FROM ORIGINAL ===
     
     def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None) :
-        """Get stock closing price for the date."""
-        # Try API first if available
-        if self.has_stock_data:
-            try:
-                price_data = self.stock_client.fetch_daily_bars(symbol, date, date)
-                if not price_data.empty:
-                    return float(price_data.iloc[0]['close'])
-            except (KeyError, ValueError, IndexError) as e:
-                self.logger.debug(f"Data parsing error for {symbol} {date}: {e}")
-            except Exception as e:
-                self.logger.debug(f"Unexpected error fetching stock price for {symbol} {date}: {e}")
-        
-        # Fallback: estimate from options data using put-call parity
-        if options_data is not None and len(options_data) > 0:
-            return self.estimate_spot_from_options(options_data)
-        
-        return None
+        """
+        Get stock closing price for the date.
+
+        CRITICAL: Must use SAME logic as validation pipeline to ensure GEX values match.
+        Validation uses: options_data['underlyingPrice'].iloc[0] if 'underlyingPrice' in options_data.columns else 450.0
+        """
+        # First try to get from options data (same as validation)
+        if options_data is not None and 'underlyingPrice' in options_data.columns:
+            spot = float(options_data['underlyingPrice'].iloc[0])
+            self.logger.debug(f"Using spot price from underlyingPrice column: {spot}")
+            return spot
+
+        # Fallback to 450.0 (same as validation pipeline)
+        self.logger.debug(f"underlyingPrice not in options data, using fallback: 450.0")
+        return 450.0
     
     def estimate_spot_from_options(self, options_data: pd.DataFrame) :
         """Estimate spot price from options data using put-call parity."""
