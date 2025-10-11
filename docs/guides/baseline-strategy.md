@@ -59,6 +59,8 @@ baseline_comparison:
   expected_baseline_drawdown: -0.045  # -4.5% max drawdown
 ```
 
+**Note (October 2025)**: `baseline_comparison.py` has been updated to load pattern results from validation YAML files (`reports/validation/pattern_taxonomy/*.yaml`) instead of database queries. See Issue #82 for migration details.
+
 ### Strategy Logic
 
 **Entry Rule:** Trade contrarian on every day when GEX < 0

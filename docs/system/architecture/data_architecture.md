@@ -217,6 +217,8 @@ data_system:
   warn_on_missing: true
 ```
 
+**Update (October 2025)**: The `baseline_comparison.py` analysis module no longer queries the database for pattern results. It now loads from validation YAML files at `reports/validation/pattern_taxonomy/*.yaml`. Database queries are still used for GEX metrics and market data. See `src/analysis/deprecated/README.md` for details on deprecated database-dependent analysis files.
+
 ### Performance Tuning
 
 - **Database Location**: SSD recommended for optimal performance
