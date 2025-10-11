@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 import yaml
 import pandas as pd
+import numpy as np
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -29,6 +30,29 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+def convert_numpy_types(obj):
+    """
+    Recursively convert numpy types to native Python types for YAML serialization.
+
+    Fixes Issue: numpy.float64, numpy.int64, etc. serialize as binary in YAML.
+    Solution: Convert to Python float/int before serialization.
+    """
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, dict):
+        return {key: convert_numpy_types(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_numpy_types(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_numpy_types(item) for item in obj)
+    else:
+        return obj
 
 
 class PatternTaxonomyValidator:
@@ -325,10 +349,20 @@ class PatternTaxonomyValidator:
         # Check if outcome_metrics exist in detections (from backtest)
         detections_with_outcomes = [d for d in detections if 'outcome_metrics' in d]
         if detections_with_outcomes:
-            forward_returns = [d['outcome_metrics']['forward_1d_return_pct'] for d in detections_with_outcomes]
+            # Handle missing forward_1d_return_pct gracefully (happens when forward price data unavailable)
+            forward_returns = [
+                d['outcome_metrics']['forward_1d_return_pct']
+                for d in detections_with_outcomes
+                if 'forward_1d_return_pct' in d['outcome_metrics']
+            ]
             avg_forward_1d_return = sum(forward_returns) / len(forward_returns) if forward_returns else None
 
-            predictions_materialized = [d['outcome_metrics']['prediction_materialized'] for d in detections_with_outcomes]
+            # Handle missing prediction_materialized gracefully
+            predictions_materialized = [
+                d['outcome_metrics']['prediction_materialized']
+                for d in detections_with_outcomes
+                if 'prediction_materialized' in d['outcome_metrics'] and d['outcome_metrics']['prediction_materialized'] is not None
+            ]
             predictive_accuracy = (sum(predictions_materialized) / len(predictions_materialized) * 100) if predictions_materialized else None
 
             # Calculate net alpha (gross return - estimated 5bps transaction costs)
@@ -481,9 +515,12 @@ class PatternTaxonomyValidator:
         filename = f"{pattern_name}_{symbol}_{date_label}.yaml"
         filepath = output_dir / filename
 
+        # Convert numpy types to native Python types before YAML serialization
+        validation_result_clean = convert_numpy_types(validation_result)
+
         # Save as YAML
         with open(filepath, 'w') as f:
-            yaml.dump(validation_result, f, default_flow_style=False, sort_keys=False)
+            yaml.dump(validation_result_clean, f, default_flow_style=False, sort_keys=False)
 
         logger.info(f"\n✅ Results saved to: {filepath}")
         return filepath
