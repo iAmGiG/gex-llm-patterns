@@ -20,6 +20,7 @@ import sqlite3
 from typing import Dict, Optional, List
 from pathlib import Path
 import json
+import pandas as pd
 
 from src.cache.unified_cache import UnifiedCacheManager
 from src.cache.intraday_cache import IntradayCacheManager
@@ -138,13 +139,11 @@ class UnifiedDataSystem:
             return data
 
         # Tier 2: Cache
-        data = self.cache_manager.get_options_data(symbol, date)
-        if data is not None and not (hasattr(data, 'empty') and data.empty):
+        cache_data = self.cache_manager.get_options_data(symbol, date)
+        data = self._convert_cache_result(cache_data)
+        if data:
             self.tier_stats['daily_tier2_hits'] += 1
             logger.debug(f"Cache hit: {symbol} daily options for {date}")
-            # Convert DataFrame to dictionary if needed
-            if hasattr(data, 'to_dict'):
-                data = data.to_dict('records')
             # Store in database for future
             self._store_in_database(date, symbol, data, 'options', is_intraday=False)
             return data
@@ -165,15 +164,12 @@ class UnifiedDataSystem:
             return data
 
         # Tier 2: Cache
-        data = self.cache_manager.get_market_data(symbol, date, date)
-        if data is not None and not (hasattr(data, 'empty') and data.empty):
+        cache_data = self.cache_manager.get_market_data(symbol, date, date)
+        data = self._convert_cache_result(cache_data, single_record=True)
+        if data:
             self.tier_stats['daily_tier2_hits'] += 1
-            # Convert DataFrame to dictionary if needed
-            if hasattr(data, 'to_dict'):
-                data = data.to_dict('records')[0] if len(data) > 0 else None
-            if data:
-                self._store_in_database(date, symbol, data, 'market', is_intraday=False)
-                return data
+            self._store_in_database(date, symbol, data, 'market', is_intraday=False)
+            return data
 
         self.tier_stats['daily_misses'] += 1
         logger.warning(f"⚠️  No daily market data available for {symbol} on {date}")
@@ -190,15 +186,17 @@ class UnifiedDataSystem:
             return data
 
         # Tier 2: Cache
-        data = self.cache_manager.get_or_calculate_gex(symbol, date)
-        if data is not None and not (hasattr(data, 'empty') and data.empty):
+        cache_data = self.cache_manager.get_or_calculate_gex(symbol, date)
+        # GEX data might already be a dict, handle both cases
+        if isinstance(cache_data, dict):
+            data = cache_data
+        else:
+            data = self._convert_cache_result(cache_data, single_record=True)
+
+        if data:
             self.tier_stats['daily_tier2_hits'] += 1
-            # GEX data should already be a dictionary from cache manager
-            if hasattr(data, 'to_dict') and not isinstance(data, dict):
-                data = data.to_dict() if hasattr(data, 'to_dict') else data
-            if data:
-                self._store_in_database(date, symbol, data, 'gex', is_intraday=False)
-                return data
+            self._store_in_database(date, symbol, data, 'gex', is_intraday=False)
+            return data
 
         self.tier_stats['daily_misses'] += 1
         logger.warning(f"⚠️  No daily GEX data available for {symbol} on {date}")
@@ -385,7 +383,8 @@ class UnifiedDataSystem:
                 cursor = conn.execute(query, (timestamp, symbol))
                 row = cursor.fetchone()
                 return dict(row) if row else None
-            except:
+            except sqlite3.Error as e:
+                logger.debug(f"Intraday market query failed: {e}")
                 return None
 
         elif data_type == 'options':
@@ -555,6 +554,29 @@ class UnifiedDataSystem:
         # Check for time component (space and colon indicate timestamp)
         return ' ' in date_or_timestamp and ':' in date_or_timestamp
 
+    def _convert_cache_result(self, data, single_record: bool = False):
+        """
+        Convert cache result (DataFrame or dict) to dictionary.
+
+        Args:
+            data: Data from cache (can be DataFrame, dict, or None)
+            single_record: If True, return single dict instead of list
+
+        Returns:
+            Dictionary, list of dictionaries, or None
+        """
+        if data is None or (hasattr(data, 'empty') and data.empty):
+            return None
+
+        # Convert DataFrame to dict
+        if hasattr(data, 'to_dict'):
+            records = data.to_dict('records')
+            if single_record and len(records) > 0:
+                return records[0]
+            return records if len(records) > 0 else None
+
+        return data
+
     def store_data(self, date_or_timestamp: str, symbol: str,
                    options_data: Dict = None,
                    market_data: Dict = None,
@@ -710,8 +732,12 @@ class UnifiedDataSystem:
 
                 # Add weekday filter if specified
                 if weekday is not None:
+                    # Convert Python weekday (0=Mon, 6=Sun) to SQLite %w (0=Sun, 6=Sat)
+                    # Python: 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+                    # SQLite: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+                    sqlite_weekday = (weekday + 1) % 7
                     base_query += " AND strftime('%w', timestamp) = ?"
-                    params.append(str(weekday))
+                    params.append(str(sqlite_weekday))
 
                 base_query += " ORDER BY timestamp DESC"
 
@@ -791,8 +817,6 @@ class UnifiedDataSystem:
         Convert data to JSON-serializable format.
         Handles pandas Timestamps and other non-serializable types.
         """
-        import pandas as pd
-
         if isinstance(data, list):
             return [self._make_json_serializable(item) for item in data]
         elif isinstance(data, dict):
