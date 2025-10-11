@@ -625,49 +625,78 @@ class HistoricalGEXDatabaseBuilder:
                                     spot_price) :
         """
         Calculate complete GEX profile for a trading day with validation.
+
+        CRITICAL: Must use calculate_dealer_gamma_exposure() to match validation pipeline.
         """
         try:
-            # Prepare options data for GEX calculator (convert format)
-            prepared_data = self.prepare_options_data_for_gex(options_data)
-            
-            if prepared_data.empty:
-                self.logger.warning(f"No valid options data after preparation for {symbol} {date}")
+            # Calculate dealer GEX using the SAME method as validation pipeline
+            # This returns a DataFrame with 'dealer_gex' column for each contract
+            gex_df = self.gex_calc.calculate_dealer_gamma_exposure(
+                options_data,
+                underlying_price=spot_price,
+                open_interest_multiplier=100
+            )
+
+            if gex_df.empty:
+                self.logger.warning(f"GEX calculation returned empty results for {symbol} {date}")
                 return None
-            
-            # Calculate GEX metrics using existing calculator
-            gex_results = self.gex_calc.calculate_daily_gex_metrics(prepared_data, spot_price)
-            
-            if not gex_results or 'net_gex' not in gex_results:
-                return None
-            
-            # Calculate flip point and regime  
-            gex_by_strike = gex_results.get('strikes_detail', {})
-            gamma_flip = gex_results.get('flip_point')
-            gex_regime = gex_results.get('regime', 'unknown')
-            
+
+            # Sum total dealer GEX (this is what validation uses)
+            total_gex = gex_df['dealer_gex'].sum()
+
+            # Separate call and put GEX
+            calls = gex_df[gex_df['type'] == 'call']
+            puts = gex_df[gex_df['type'] == 'put']
+            total_call_gex = calls['dealer_gex'].sum() if len(calls) > 0 else 0
+            total_put_gex = puts['dealer_gex'].sum() if len(puts) > 0 else 0
+
+            # Calculate strike-level GEX for database storage
+            gex_by_strike = {}
+            strike_groups = gex_df.groupby('strike')['dealer_gex'].sum()
+            for strike, gex_value in strike_groups.items():
+                gex_by_strike[str(strike)] = float(gex_value)
+
+            # Calculate gamma flip point (strike where GEX crosses zero)
+            gamma_flip = None
+            strikes_sorted = sorted([(k, v) for k, v in gex_by_strike.items()], key=lambda x: float(x[0]))
+
+            for i in range(len(strikes_sorted) - 1):
+                strike1, gex1 = float(strikes_sorted[i][0]), strikes_sorted[i][1]
+                strike2, gex2 = float(strikes_sorted[i+1][0]), strikes_sorted[i+1][1]
+
+                # Check for sign change
+                if (gex1 > 0 and gex2 < 0) or (gex1 < 0 and gex2 > 0):
+                    # Linear interpolation to find zero crossing
+                    gamma_flip = strike1 + (strike2 - strike1) * abs(gex1) / (abs(gex1) + abs(gex2))
+                    break
+
+            # Determine GEX regime
+            if total_gex > 0:
+                gex_regime = 'positive'
+            elif total_gex < 0:
+                gex_regime = 'negative'
+            else:
+                gex_regime = 'neutral'
+
             # Data quality assessment
             options_count = len(options_data)
             unique_strikes = options_data['strike'].nunique()
             unique_expirations = options_data['expiration'].nunique()
-            
+
             # Quality score based on data completeness (0-100)
             quality_score = min(100, int(
                 (unique_strikes / 50) * 40 +  # Strike coverage (40%)
                 (unique_expirations / 10) * 30 +  # Expiration coverage (30%)
                 (options_count / 500) * 30  # Volume of contracts (30%)
             ))
-            
-            # Calculate total call and put GEX from strikes detail
-            total_call_gex = sum(s.get('call_gex', 0) for s in gex_by_strike.values())
-            total_put_gex = sum(s.get('put_gex', 0) for s in gex_by_strike.values())
-            
+
             gex_profile = {
                 'symbol': symbol,
                 'date': date,
                 'spot_price': spot_price,
-                'total_gex': gex_results.get('net_gex', 0),
-                'net_call_gex': total_call_gex,
-                'net_put_gex': total_put_gex,
+                'total_gex': float(total_gex),
+                'net_call_gex': float(total_call_gex),
+                'net_put_gex': float(total_put_gex),
                 'gamma_flip_point': gamma_flip,
                 'flip_ratio': gamma_flip / spot_price if gamma_flip else None,
                 'gex_regime': gex_regime,
@@ -675,17 +704,19 @@ class HistoricalGEXDatabaseBuilder:
                 'data_quality_score': quality_score,
                 'options_count': options_count
             }
-            
+
             # Validate results
             if not self.validate_gex_results(gex_profile):
                 gex_profile['validation_status'] = 'suspicious'
             else:
                 gex_profile['validation_status'] = 'valid'
-            
+
             return gex_profile
-            
+
         except Exception as e:
             self.logger.error(f"Error calculating GEX for {symbol} {date}: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return None
     
     def get_fed_context(self, date) :
