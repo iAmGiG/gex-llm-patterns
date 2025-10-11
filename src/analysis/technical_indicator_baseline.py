@@ -5,8 +5,8 @@ Implements traditional technical indicators (MACD, RSI, Bollinger Bands) as base
 This provides a benchmark for comparing against O3-mini LLM strategy.
 """
 
-from utils.date_utils import add_business_days
-from utils.indicator_library import rsi, macd
+from src.utils.date_utils import today_str
+from src.utils.indicator_library import rsi, macd
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Optional
@@ -14,12 +14,6 @@ from datetime import timedelta
 import logging
 import yaml
 from pathlib import Path
-import sys
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-# Use existing indicator library and date utilities
 
 logger = logging.getLogger(__name__)
 
@@ -498,8 +492,6 @@ class TechnicalIndicatorBaseline:
 
     def _add_tech_metadata(self, symbol: str, test_period: Optional[str], price_data: pd.DataFrame) -> Dict:
         """Add metadata to technical baseline results."""
-        from utils.date_utils import today_str
-
         # Determine test period from data if not provided
         if test_period is None:
             if 'date' in price_data.columns:
@@ -526,7 +518,7 @@ class TechnicalIndicatorBaseline:
                 'indicators': {
                     'MACD': f"{self.macd_fast}/{self.macd_slow}/{self.macd_signal}",
                     'RSI': f"period={self.rsi_period}, levels={self.rsi_oversold}/{self.rsi_overbought}",
-                    'voting_system': f"Both must agree (required={self.required_agreement})"
+                    'voting_system': f"3-tier consensus (mode={self.voting_mode})"
                 },
                 'position_sizing': f"{self.position_size:.1%}",
                 'risk_management': {

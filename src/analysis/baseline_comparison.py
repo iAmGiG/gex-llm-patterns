@@ -3,7 +3,7 @@ Baseline Comparison System
 Compares pattern-based trading strategies against simple baselines to validate edge.
 """
 
-from utils.date_utils import (
+from src.utils.date_utils import (
     today_str, add_business_days, next_business_day,
     date_range_trading_days, process_date_param, now_iso
 )
@@ -12,12 +12,6 @@ import pandas as pd
 import numpy as np
 from typing import Dict
 import logging
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
 
 logger = logging.getLogger(__name__)
 
