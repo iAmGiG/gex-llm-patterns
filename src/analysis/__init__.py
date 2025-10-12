@@ -5,8 +5,9 @@ This package contains core analysis tools for evaluating pattern effectiveness
 and statistical validation of GEX-based trading strategies.
 """
 
-from .pattern_probability_mapper import PatternProbabilityMapper
+# Import available modules
+from .baseline_comparison import BaselineComparison
 
 __all__ = [
-    'PatternProbabilityMapper'
+    'BaselineComparison'
 ]

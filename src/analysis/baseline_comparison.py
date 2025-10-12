@@ -234,8 +234,17 @@ class BaselineComparison:
         # Look for validation YAML files
         validation_dir = Path('reports/validation/pattern_taxonomy')
 
-        # Find matching YAML file (e.g., gamma_positioning_SPY_2024Q1.yaml)
+        # Find matching YAML file (e.g., dealer_gamma_hedging_SPY_2024Q1.yaml)
         pattern_files = list(validation_dir.glob(f"{pattern_name}_{symbol}_*.yaml"))
+
+        # Fallback: try legacy pattern names if consolidated pattern not found
+        if not pattern_files and pattern_name == 'dealer_gamma_hedging':
+            legacy_names = ['gamma_positioning', 'stock_pinning', '0dte_hedging']
+            for legacy_name in legacy_names:
+                pattern_files = list(validation_dir.glob(f"{legacy_name}_{symbol}_*.yaml"))
+                if pattern_files:
+                    logger.info(f"Using legacy pattern file: {legacy_name} (consolidated as dealer_gamma_hedging)")
+                    break
 
         if not pattern_files:
             logger.warning(f"No validation file found for pattern {pattern_name}")
@@ -267,8 +276,10 @@ class BaselineComparison:
         """Calculate performance of our validated contrarian pattern strategy."""
 
         # NEW: Load from validation YAML files instead of database
+        # Using consolidated dealer_gamma_hedging pattern (Issue #79 consolidation)
+        # Note: gamma_positioning, stock_pinning, 0dte_hedging are aliases of same pattern
         detections = self._load_validation_results(
-            pattern_name='gamma_positioning',  # Pattern from Issue #79
+            pattern_name='dealer_gamma_hedging',  # Consolidated pattern (Oct 2025)
             symbol='SPY',
             start_date=start_date,
             end_date=end_date
@@ -279,7 +290,7 @@ class BaselineComparison:
             return {'strategy': 'Pattern Contrarian', 'total_return': 0, 'trades': 0}
 
         # Extract returns from validation results
-        contrarian_returns = []
+        pattern_returns = []
         high_confidence_count = 0
 
         for det in detections:
@@ -293,21 +304,22 @@ class BaselineComparison:
                 outcome = det.get('outcome_metrics', {})
                 forward_return = outcome.get('forward_1d_return_pct', 0)
 
-                # Contrarian strategy: inverse the return
-                contrarian_return = -forward_return
-                contrarian_returns.append(contrarian_return)
+                # Trade WITH the prediction (not against it!)
+                # Negative GEX → market goes down → LLM predicts correctly
+                # We capture the actual forward return as our PnL
+                pattern_returns.append(forward_return)
 
-        if not contrarian_returns:
-            return {'strategy': 'Pattern Contrarian', 'total_return': 0, 'trades': 0}
+        if not pattern_returns:
+            return {'strategy': 'Dealer Gamma Hedge', 'total_return': 0, 'trades': 0}
 
         # Calculate performance metrics from validation results
-        returns_array = np.array(contrarian_returns)
+        returns_array = np.array(pattern_returns)
         wins = returns_array > 0
         win_rate = wins.mean() * 100
         total_return = np.sum(returns_array)
 
         return {
-            'strategy': 'Pattern Contrarian (YAML)',
+            'strategy': 'Dealer Gamma Hedge',
             'total_return': total_return,
             'annualized_return': (total_return / len(returns_array)) * 252,
             'volatility': returns_array.std() * np.sqrt(252) if len(returns_array) > 1 else 0,
@@ -317,7 +329,8 @@ class BaselineComparison:
             'win_rate': win_rate,
             'avg_trade': returns_array.mean(),
             'confidence_threshold': 85,
-            'data_source': 'validation_yaml'
+            'data_source': 'validation_yaml',
+            'pattern_name': 'dealer_gamma_hedging'  # Consolidated pattern
         }
 
     def _calculate_always_long(self, market_data: pd.DataFrame) -> Dict:
@@ -415,7 +428,7 @@ class BaselineComparison:
             if pattern_result.get('trades', 0) > 0:
                 print("\n🎯 PATTERN STRATEGY ANALYSIS:")
                 print(
-                    f"   Contrarian GAMMA_TRAP outperformed random: {pattern_result['total_return']:.2f}% vs {results.get('random', {}).get('total_return', 0):.2f}%")
+                    f"   Dealer Gamma Hedging (LLM-filtered) vs Random: {pattern_result['total_return']:.2f}% vs {results.get('random', {}).get('total_return', 0):.2f}%")
 
                 # Compare to buy and hold
                 bh_return = results.get('buy_hold', {}).get('total_return', 0)

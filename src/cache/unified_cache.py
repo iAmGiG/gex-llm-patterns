@@ -19,7 +19,10 @@ import pandas as pd
 import logging
 from src.utils.date_utils import (
     now_iso,
-    today_str
+    today_str,
+    get_datetime_now,
+    get_datetime_from_timestamp,
+    subtract_days
 )
 
 
@@ -321,15 +324,12 @@ class UnifiedCacheManager:
     def cleanup_cache(self, older_than_days: int = 30) -> int:
         """Clean up old cache files."""
         try:
-            import datetime
-            cutoff_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
+            cutoff_time = subtract_days(get_datetime_now(), older_than_days)
             cleaned = 0
 
             for file_path in self.base_dir.rglob('*.pickle'):
                 if file_path.is_file():
-                    import datetime
-                    file_time = datetime.datetime.fromtimestamp(
-                        file_path.stat().st_mtime)
+                    file_time = get_datetime_from_timestamp(file_path.stat().st_mtime)
 
                     if file_time < cutoff_time:
                         file_path.unlink()

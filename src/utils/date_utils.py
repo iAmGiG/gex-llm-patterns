@@ -313,6 +313,43 @@ def resolve_anchor(df, anchor_token):
 # === COMMON DATETIME UTILITIES ===
 # Consolidation functions to reduce datetime import duplication across modules
 
+def get_datetime_now() -> datetime.datetime:
+    """
+    Get current datetime object.
+
+    Returns:
+        Current datetime.datetime object
+    """
+    return datetime.datetime.now()
+
+
+def get_datetime_from_timestamp(timestamp: float) -> datetime.datetime:
+    """
+    Convert Unix timestamp to datetime object.
+
+    Args:
+        timestamp: Unix timestamp (seconds since epoch)
+
+    Returns:
+        datetime.datetime object
+    """
+    return datetime.datetime.fromtimestamp(timestamp)
+
+
+def subtract_days(dt: datetime.datetime, days: int) -> datetime.datetime:
+    """
+    Subtract days from a datetime object.
+
+    Args:
+        dt: datetime object
+        days: Number of days to subtract
+
+    Returns:
+        New datetime object with days subtracted
+    """
+    return dt - datetime.timedelta(days=days)
+
+
 def now_iso() -> str:
     """
     Get current timestamp as ISO string.

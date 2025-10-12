@@ -25,6 +25,7 @@ from pathlib import Path
 from datetime import datetime, time
 from typing import Dict, List, Optional, Tuple
 import logging
+import pandas as pd
 
 from src.cache.unified_cache import UnifiedCacheManager
 from src.utils.date_utils import parse_date_string, get_market_open_time, get_market_close_time
