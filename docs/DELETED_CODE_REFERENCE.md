@@ -83,8 +83,34 @@ All deleted code is preserved in git history and can be restored at any time. Us
 
 ---
 
+### src/gex/sample_data_gex.py (447 lines)
+
+**Reason**: Unused legacy sample data interface - superseded by LiveGEXInterface
+
+**Purpose**: Sample data GEX calculation interface for testing
+- Bridge between Alpha Vantage sample data and GEX calculator
+- Used sample_data/ directory for testing
+- Designed for early development before cache system
+
+**Last Updated**: September 16, 2025 (commit 2776aae)
+
+**Git History**: `git log --all -- src/gex/sample_data_gex.py`
+
+**To Restore**:
+```bash
+# View file before deletion
+git show HEAD~1:src/gex/sample_data_gex.py
+
+# Restore file
+git checkout 2776aae -- src/gex/sample_data_gex.py
+```
+
+**Use Case**: If needed for reference when working with sample data. Superseded by LiveGEXInterface which uses cache system instead of sample_data/ directory.
+
+---
+
 ## Commit References
 
-- **data_normalization**: Last commit 2776aae (Sept 14, 2025)
-- **analysis/deprecated**: Last commit 4c98f6a (Oct 11, 2025)
-- **Deletion commit**: (this commit)
+- **data_normalization**: Last commit 2776aae (Sept 14, 2025) - Deleted commit d054dd4
+- **analysis/deprecated**: Last commit 4c98f6a (Oct 11, 2025) - Deleted commit d054dd4
+- **gex/sample_data_gex.py**: Last commit 2776aae (Sept 16, 2025) - Deleted commit (current)
