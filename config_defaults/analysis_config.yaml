@@ -70,6 +70,106 @@ gex_thresholds:
   high_volume_threshold: 1000000  # 1M volume threshold
   significant_flow_threshold: 500000  # 500K flow threshold
 
+# GEX Calculator configuration
+gex_calculation:
+  gex_calculator:
+    # Black-Scholes parameters
+    risk_free_rate: 0.05  # 5% risk-free rate (10-year Treasury)
+    days_per_year: 365.0  # Days used for time-to-expiration conversion
+
+    # GEX calculation parameters
+    percentage_move_multiplier: 0.01  # 1% move multiplier for GEX
+    open_interest_multiplier: 100  # Shares per options contract
+
+    # Regime classification thresholds (normalized GEX)
+    long_gamma_threshold: 0.0001  # Threshold for long gamma regime
+    short_gamma_threshold: -0.0001  # Threshold for short gamma regime
+
+    # Analysis parameters
+    default_price_range_pct: 0.20  # 20% price range for analysis window
+    key_levels_count: 5  # Number of key GEX levels to identify
+
+  live_gex_interface:
+    # Spot price estimation fallback
+    default_spot_price_spy: 500.0  # Default fallback for SPY (DEPRECATED - prefer error)
+    spot_price_estimation_method: "middle_strike"  # Method: "middle_strike" or "atm_options"
+
+# LLM Market Mechanics Configuration
+llm_market_mechanics:
+  autogen_client:
+    # Model configuration
+    default_model: "gpt-4o"  # Default model for market mechanics
+    default_temperature: 0.3  # Lower = more consistent (0.0-2.0)
+    timeout_seconds: 30  # API timeout in seconds
+    max_retries: 3  # Maximum retry attempts
+
+    # Token limits
+    analysis_tokens: 4000  # Tokens for detailed market analysis
+    top_p: 0.95  # Nucleus sampling parameter (0.0-1.0)
+
+  response_parsing:
+    # Confidence mapping (text to numeric)
+    confidence_high: 80  # "High" confidence maps to 80%
+    confidence_medium: 60  # "Medium" confidence maps to 60%
+    confidence_low: 40  # "Low" confidence maps to 40%
+    confidence_default: 50  # Default if unparseable
+
+  system_prompts:
+    # Market mechanics system prompt
+    mechanics_analyst: |
+      You are a market mechanics analyst specializing in dealer positioning and forced hedging flows.
+
+      Your task is to identify WHO is forcing WHOM to do WHAT in the market based on gamma exposure (GEX) data.
+
+      Focus on:
+      1. Dealer hedging mechanics (forced buying/selling due to gamma)
+      2. Squeeze setups (aggressive positioning to force dealer flows)
+      3. Pin dynamics (large OI creating price magnetism)
+      4. Trap patterns (dealers being flipped from long to short gamma)
+
+      Provide specific, actionable intelligence about market mechanics.
+      Be concise and focus on causality chains (X leads to Y leads to Z).
+
+      Format your response as:
+      WHO: [Identify the forcing party - dealers/institutions/retail]
+      WHOM: [Identify who is being forced to act]
+      WHAT: [Specific forced action that will occur]
+      MECHANICS: [Brief explanation of the causal chain]
+      CONFIDENCE: [High/Medium/Low based on data clarity]
+
+  batch_processor:
+    # Batch LLM processing configuration
+    default_batch_size: 5  # Trading days per batch (weekly)
+    max_retries: 3  # Retry attempts for failed batches
+
+  prompt_builder:
+    # IV (Implied Volatility) percentile classification
+    iv_thresholds:
+      extremely_low: 12   # Below 12 VIX
+      low: 15             # 12-15 VIX
+      moderate: 20        # 15-20 VIX
+      elevated: 25        # 20-25 VIX
+      high: 35            # 25-35 VIX
+      # Above 35 = extreme
+
+# Validation configuration
+validation:
+  options_data_validator:
+    # Put-call parity validation threshold
+    put_call_parity_tolerance: 0.2  # Allow 20% deviation from theoretical delta difference
+
+# Options Analysis Configuration
+options_analysis:
+  options_chain_analyzer:
+    # Pattern detection thresholds
+    signal_strength_threshold: 0.6  # Minimum signal strength for pattern detection (0-1)
+    volume_oi_ratio_quantile: 0.8  # Quantile for unusual volume detection
+    otm_put_threshold: 0.95  # OTM threshold as fraction of current price
+    min_unusual_strikes: 3  # Minimum strikes for unusual activity pattern
+    tight_spread_pct: 5.0  # Tight spread percentage threshold
+    min_otm_put_activity: 3  # Minimum OTM puts for spread pattern
+    summer_months: [6, 7, 8]  # June, July, August for seasonal patterns
+
 # Intra-day analysis configuration
 intraday_analysis:
   # Key algo trading times (24-hour format)
