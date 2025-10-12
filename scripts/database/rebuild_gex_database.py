@@ -229,8 +229,8 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
     # Build database
     logger.info(f"\nStarting rebuild...")
     try:
-        builder.build_historical_database(
-            symbol=symbol,
+        builder.build_gex_database(
+            symbols=[symbol],
             start_date=start_date,
             end_date=end_date
         )
