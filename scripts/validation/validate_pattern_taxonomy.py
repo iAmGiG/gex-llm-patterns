@@ -86,9 +86,37 @@ class PatternTaxonomyValidator:
         self.data_gaps = []
         self.results = {}
 
+    def _get_expected_trading_days(self, start_date: str, end_date: str) -> List[str]:
+        """Calculate expected trading days (business days minus US holidays)."""
+        # Generate business days
+        all_dates = pd.date_range(start_date, end_date, freq='B')
+
+        # US market holidays (2024)
+        us_holidays_2024 = {
+            '2024-01-01', '2024-01-15', '2024-02-19', '2024-03-29',
+            '2024-05-27', '2024-07-04', '2024-09-02', '2024-11-28', '2024-12-25'
+        }
+
+        # Filter out holidays
+        trading_days = [
+            d.strftime('%Y-%m-%d')
+            for d in all_dates
+            if d.strftime('%Y-%m-%d') not in us_holidays_2024
+        ]
+
+        return trading_days
+
     def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
-        """Get all trading days in range from cache."""
+        """
+        Get all trading days in range from cache.
+
+        Issue #84 Fix: Validates data coverage and fails fast if insufficient.
+        Requires >=80% coverage for statistical validity (prevents silent incomplete testing).
+        """
         logger.info(f"Scanning cache for dates between {start_date} and {end_date}")
+
+        # Calculate expected trading days
+        expected_dates = self._get_expected_trading_days(start_date, end_date)
 
         # Use cache manager to get cache directory (respects configuration)
         cache_base = self.cache.options_dir / self.symbol
@@ -96,13 +124,47 @@ class PatternTaxonomyValidator:
             logger.error(f"Cache directory not found: {cache_base}")
             return []
 
+        # Scan cache for available dates
         available_dates = []
         for file_path in sorted(cache_base.glob("*.pickle")):
             date_str = file_path.stem  # e.g., "2024-01-02"
             if start_date <= date_str <= end_date:
                 available_dates.append(date_str)
 
-        logger.info(f"Found {len(available_dates)} dates in cache")
+        # Calculate coverage
+        coverage_pct = (len(available_dates) / len(expected_dates) * 100) if expected_dates else 0
+        missing_dates = sorted(set(expected_dates) - set(available_dates))
+
+        logger.info(f"Data coverage: {coverage_pct:.1f}% ({len(available_dates)}/{len(expected_dates)} trading days)")
+
+        # Issue #84: Fail fast if coverage insufficient for statistical validity
+        MIN_COVERAGE_PCT = 80.0
+        if coverage_pct < MIN_COVERAGE_PCT:
+            error_msg = (
+                f"\n{'='*80}\n"
+                f"❌ INSUFFICIENT DATA COVERAGE: {coverage_pct:.1f}%\n"
+                f"{'='*80}\n"
+                f"Expected trading days: {len(expected_dates)}\n"
+                f"Available in cache: {len(available_dates)}\n"
+                f"Missing: {len(missing_dates)}\n"
+                f"Minimum required: {MIN_COVERAGE_PCT}% coverage\n\n"
+                f"First 10 missing dates: {missing_dates[:10]}\n\n"
+                f"📥 COLLECT MISSING DATA:\n"
+                f"   python scripts/data_collection/start_historical_collection.py \\\n"
+                f"     --symbols {self.symbol} \\\n"
+                f"     --start-date {start_date} \\\n"
+                f"     --end-date {end_date}\n\n"
+                f"⚠️  Running validation with <{MIN_COVERAGE_PCT}% coverage may produce\n"
+                f"   misleading results due to selection bias.\n"
+                f"{'='*80}\n"
+            )
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        if missing_dates:
+            logger.warning(f"Missing {len(missing_dates)} dates (within {MIN_COVERAGE_PCT}% threshold)")
+            logger.warning(f"Missing dates: {missing_dates[:5]}{'...' if len(missing_dates) > 5 else ''}")
+
         return available_dates
 
     def validate_data_continuity(self, dates: List[str]) -> Dict:
