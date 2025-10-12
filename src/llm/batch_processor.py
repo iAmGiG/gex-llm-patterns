@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 from datetime import datetime
 import pandas as pd
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+from src.utils.config_manager import get_config
 from src.utils.date_utils import (
     parse_date_string,
     date_range_trading_days,
@@ -32,18 +33,22 @@ class BatchLLMProcessor:
     - Cost optimization: 80% reduction in API calls
     """
 
-    def __init__(self, llm_provider, batch_size: int = 5, max_retries: int = 3):
+    def __init__(self, llm_provider, batch_size: int = None, max_retries: int = None):
         """
         Initialize batch processor.
 
         Args:
             llm_provider: LLM client (O3-mini, GPT-4o, etc.)
-            batch_size: Number of trading days per batch (default: 5 for weekly)
-            max_retries: Maximum retry attempts for failed batches
+            batch_size: Number of trading days per batch (default from config: 5 for weekly)
+            max_retries: Maximum retry attempts for failed batches (default from config: 3)
         """
+        config = get_config()
+
         self.llm = llm_provider
-        self.batch_size = batch_size
-        self.max_retries = max_retries
+        self.batch_size = batch_size if batch_size is not None else config.get(
+            'llm_market_mechanics.batch_processor.default_batch_size', 5)
+        self.max_retries = max_retries if max_retries is not None else config.get(
+            'llm_market_mechanics.batch_processor.max_retries', 3)
         self.prompt_builder = MechanicsPromptBuilder()
 
         # Batch processing state
@@ -365,7 +370,7 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
                             'whom': day_analysis.get('whom', 'Unknown'),
                             'what': day_analysis.get('what', 'Unknown'),
                             'analysis_method': 'batch_llm',
-                            'batch_date': datetime.now().isoformat(),
+                            'batch_date': now_iso(),
                             'metadata': {'date': date, 'batch_size': len(week_chunk)}
                         }
                     else:

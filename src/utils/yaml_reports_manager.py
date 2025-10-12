@@ -1,8 +1,18 @@
 """
 YAML Reports Manager for GEX-LLM Analysis Outputs
 
-Handles saving analysis results in YAML format for better token efficiency.
-Integrates data obfuscation to prevent LLM cheating on known events.
+⚠️ DEPRECATED: This module is deprecated in favor of unified_reports_manager.py
+Please update your imports to:
+    from src.utils.unified_reports_manager import yaml_reports
+
+This file is maintained for backward compatibility only.
+New code should use UnifiedReportsManager which provides:
+- Cleaner directory structure (experiments/, validation/, archive/)
+- Better organization by experiment type
+- All methods from this class are available via backward compatibility wrappers
+- Same YAML format and obfuscation support
+
+Legacy code using this import will continue to work through global alias.
 """
 
 import yaml

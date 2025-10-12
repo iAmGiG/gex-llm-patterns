@@ -7,7 +7,8 @@ from typing import Dict, List
 import logging
 import datetime
 
-# Use date_utils instead of datetime
+from src.utils.config_manager import get_config
+# Use date_utils for datetime operations
 from src.utils.date_utils import (
     today_str,
     now_timestamp,
@@ -21,6 +22,17 @@ logger = logging.getLogger(__name__)
 
 class MechanicsPromptBuilder:
     """Build prompts that match the exact format for market mechanics interpretation."""
+
+    def __init__(self):
+        """Initialize prompt builder with config values."""
+        config = get_config()
+
+        # Load IV thresholds from config
+        self.iv_extremely_low = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.extremely_low', 12)
+        self.iv_low = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.low', 15)
+        self.iv_moderate = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.moderate', 20)
+        self.iv_elevated = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.elevated', 25)
+        self.iv_high = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.high', 35)
 
     @staticmethod
     def build_analysis_prompt(
@@ -162,8 +174,9 @@ class MechanicsPromptBuilder:
             vol_surface = market_context['volatility_surface']
             atm_iv = vol_surface.get('atm_iv', 0)
             if atm_iv > 0:
-                iv_percentile = MechanicsPromptBuilder._get_iv_percentile(
-                    atm_iv)
+                # Use instance method instead of static
+                builder_instance = MechanicsPromptBuilder()
+                iv_percentile = builder_instance._get_iv_percentile(atm_iv)
                 context_section += f"\n- VIX at {atm_iv*100:.0f} ({iv_percentile} volatility environment)"
 
         # Price tests/levels
@@ -335,20 +348,19 @@ KEY PLAYERS:"""
                 'error': str(e)
             }
 
-    @staticmethod
-    def _get_iv_percentile(iv: float) -> str:
-        """Convert IV to percentile description."""
+    def _get_iv_percentile(self, iv: float) -> str:
+        """Convert IV to percentile description using config thresholds."""
         vix_equiv = iv * 100
 
-        if vix_equiv < 12:
+        if vix_equiv < self.iv_extremely_low:
             return "extremely low"
-        elif vix_equiv < 15:
+        elif vix_equiv < self.iv_low:
             return "low"
-        elif vix_equiv < 20:
+        elif vix_equiv < self.iv_moderate:
             return "moderate"
-        elif vix_equiv < 25:
+        elif vix_equiv < self.iv_elevated:
             return "elevated"
-        elif vix_equiv < 35:
+        elif vix_equiv < self.iv_high:
             return "high"
         else:
             return "extreme"

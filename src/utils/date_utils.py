@@ -5,9 +5,9 @@ Utilities for dynamic date handling in data tools.
 import re
 import datetime
 import os
-from config.config_loader import ConfigLoader
+from src.utils.config_manager import get_config
 
-config_loader = ConfigLoader()
+config = get_config()
 
 
 DEFAULT_TIMEZONE = "America/New_York"
@@ -17,7 +17,7 @@ def get_default_timezone() -> str:
     """Return the configured default timezone."""
     return os.getenv(
         "DEFAULT_TIMEZONE",
-        config_loader.get("DEFAULT_TIMEZONE", DEFAULT_TIMEZONE),
+        config.get("DEFAULT_TIMEZONE", DEFAULT_TIMEZONE),
     )
 
 

@@ -1,8 +1,18 @@
 """
 Reports Manager for GEX-LLM Analysis Outputs
 
-Handles saving and organizing all analysis results, calculations, and reports.
-Keeps outputs separate from cache to maintain clean data pipeline.
+⚠️ DEPRECATED: This module is deprecated in favor of unified_reports_manager.py
+Please update your imports to:
+    from src.utils.unified_reports_manager import reports_manager
+
+This file is maintained for backward compatibility only.
+New code should use UnifiedReportsManager which provides:
+- Cleaner directory structure (experiments/, validation/, archive/)
+- YAML format support with obfuscation
+- Better organization by experiment type
+- All methods from this class are available via backward compatibility wrappers
+
+Legacy code using this import will continue to work through global alias.
 """
 
 import json

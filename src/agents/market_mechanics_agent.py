@@ -80,7 +80,7 @@ class MarketMechanicsAgent:
         if llm_provider is None:
             # Use AutoGen for consistency with base_agent architecture
             try:
-                from llm.autogen_market_mechanics import AutoGenMarketMechanics
+                from src.llm.autogen_market_mechanics import AutoGenMarketMechanics
                 self.llm = AutoGenMarketMechanics()
                 logger.info(
                     "Initialized AutoGen LLM for mechanics interpretation")

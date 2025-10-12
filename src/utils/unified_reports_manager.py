@@ -370,6 +370,214 @@ class UnifiedReportsManager:
         files = sorted(self.experiments_dir.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True)
         return files[:limit]
 
+    # ===========================
+    # Additional Methods for Backward Compatibility
+    # ===========================
+
+    def save_gex_results(self, symbol: str, results: Dict[Any, Any],
+                        trading_date: str = None, is_demo: bool = False) -> Path:
+        """
+        Save GEX calculation results (backward compatibility method).
+
+        Args:
+            symbol: Stock symbol
+            results: GEX results dictionary
+            trading_date: Trading date
+            is_demo: Whether this is demo/test data
+        """
+        if not trading_date:
+            trading_date = now_iso().split('T')[0]
+
+        filename = f"{symbol}-{trading_date}-gex_results.yaml"
+        file_path = self.validation_dir / filename
+
+        output = {
+            'metadata': {
+                'symbol': symbol,
+                'date': trading_date,
+                'is_demo': is_demo,
+                'generated_at': now_iso()
+            },
+            'gex_metrics': results.get('metrics', {}),
+            'calculation_method': results.get('calculation_method', 'unknown'),
+            'contracts_analyzed': results.get('contracts_analyzed', 0)
+        }
+
+        with open(file_path, 'w') as f:
+            yaml.dump(output, f, default_flow_style=False, sort_keys=False)
+
+        logger.info(f"Saved GEX results to {file_path}")
+        return file_path
+
+    def save_pattern_analysis(self, pattern_type: str, results: Dict[Any, Any],
+                             symbol: str = None, is_demo: bool = False) -> Path:
+        """
+        Save pattern analysis results (backward compatibility method).
+
+        Args:
+            pattern_type: Type of pattern analyzed
+            results: Analysis results
+            symbol: Stock symbol
+            is_demo: Whether this is demo/test data
+        """
+        timestamp = now_iso().split('T')[0]
+        symbol_part = f"{symbol}-" if symbol else ""
+        filename = f"{symbol_part}{pattern_type}-{timestamp}.yaml"
+        file_path = self.validation_dir / filename
+
+        output = {
+            'metadata': {
+                'pattern_type': pattern_type,
+                'symbol': symbol,
+                'is_demo': is_demo,
+                'generated_at': now_iso()
+            },
+            'analysis': results
+        }
+
+        with open(file_path, 'w') as f:
+            yaml.dump(output, f, default_flow_style=False, sort_keys=False)
+
+        logger.info(f"Saved pattern analysis to {file_path}")
+        return file_path
+
+    def save_analysis_results(self, symbol: str, results: Dict[Any, Any],
+                             trading_date: str, analysis_type: str = 'general') -> Path:
+        """
+        Save generic analysis results (backward compatibility method).
+
+        Args:
+            symbol: Stock symbol
+            results: Analysis results
+            trading_date: Trading date
+            analysis_type: Type of analysis performed
+        """
+        filename = f"{symbol}-{trading_date}-{analysis_type}.yaml"
+        file_path = self.validation_dir / filename
+
+        output = {
+            'metadata': {
+                'symbol': symbol,
+                'date': trading_date,
+                'analysis_type': analysis_type,
+                'generated_at': now_iso()
+            },
+            'results': results
+        }
+
+        with open(file_path, 'w') as f:
+            yaml.dump(output, f, default_flow_style=False, sort_keys=False)
+
+        logger.info(f"Saved analysis results to {file_path}")
+        return file_path
+
+    def save_agent_conversation(self, agent_names: list, messages: list,
+                                final_result: Any = None, context: Dict = None) -> Path:
+        """
+        Save agent conversation logs (backward compatibility method).
+
+        Args:
+            agent_names: List of participating agents
+            messages: Conversation messages
+            final_result: Final result from conversation
+            context: Additional context
+        """
+        timestamp = now_iso().replace(':', '-').split('T')
+        filename = f"agent_conversation-{timestamp[0]}-{timestamp[1][:5]}.yaml"
+        file_path = self.validation_dir / "agent_logs" / filename
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        output = {
+            'metadata': {
+                'agents': agent_names,
+                'message_count': len(messages),
+                'generated_at': now_iso()
+            },
+            'context': context or {},
+            'conversation': messages,
+            'final_result': final_result
+        }
+
+        with open(file_path, 'w') as f:
+            yaml.dump(output, f, default_flow_style=False, sort_keys=False, width=120)
+
+        logger.info(f"Saved agent conversation to {file_path}")
+        return file_path
+
+    def filter_strike_data(self, gex_data: Dict, min_volume: int = 0, min_oi: int = 1) -> Dict:
+        """
+        Filter strike data by volume and open interest (utility method).
+
+        Args:
+            gex_data: GEX data dictionary
+            min_volume: Minimum volume threshold
+            min_oi: Minimum open interest threshold
+
+        Returns:
+            Filtered GEX data
+        """
+        if not gex_data or 'strikes' not in gex_data:
+            return gex_data
+
+        filtered_strikes = []
+        for strike in gex_data.get('strikes', []):
+            volume = strike.get('volume', 0)
+            oi = strike.get('open_interest', 0)
+
+            if volume >= min_volume and oi >= min_oi:
+                filtered_strikes.append(strike)
+
+        filtered_data = gex_data.copy()
+        filtered_data['strikes'] = filtered_strikes
+        filtered_data['filtered_count'] = len(filtered_strikes)
+        filtered_data['original_count'] = len(gex_data.get('strikes', []))
+
+        return filtered_data
+
+    def cleanup_old_results(self, older_than_days: int = 30) -> int:
+        """
+        Move old results to archive (backward compatibility for cleanup_old_results).
+
+        Args:
+            older_than_days: Age threshold in days
+
+        Returns:
+            Number of files archived
+        """
+        self.archive_old_reports(days_old=older_than_days)
+
+        # Count archived files
+        archived_count = len(list(self.archive_dir.glob("*.yaml")))
+        return archived_count
+
+    def get_summary(self) -> Dict:
+        """
+        Get summary of all reports (backward compatibility method).
+
+        Returns:
+            Dictionary with report counts and stats
+        """
+        return {
+            'experiments': {
+                'count': len(list(self.experiments_dir.glob("*.yaml"))),
+                'recent': [f.name for f in self.list_experiments(limit=5)]
+            },
+            'validation': {
+                'count': len(list(self.validation_dir.glob("*.yaml")))
+            },
+            'archived': {
+                'count': len(list(self.archive_dir.glob("*.yaml")))
+            },
+            'total_reports': (
+                len(list(self.experiments_dir.glob("*.yaml"))) +
+                len(list(self.validation_dir.glob("*.yaml")))
+            )
+        }
+
 
 # Global instance
 unified_reports = UnifiedReportsManager()
+
+# Backward compatibility aliases
+reports_manager = unified_reports  # Alias for old imports from reports_manager.py
+yaml_reports = unified_reports  # Alias for old imports from yaml_reports_manager.py

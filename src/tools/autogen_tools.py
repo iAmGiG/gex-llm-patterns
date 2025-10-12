@@ -66,7 +66,7 @@ from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 # from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
 from src.gex.live_gex_interface import LiveGEXInterface
 from src.validation.options_data_validator import OptionsDataValidator
-from src.utils.reports_manager import reports_manager
+from src.utils.unified_reports_manager import reports_manager
 from src.utils.market_intelligence import market_intelligence
 from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
 

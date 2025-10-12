@@ -12,8 +12,8 @@ from typing import Dict, Any
 from autogen_core.models import UserMessage, SystemMessage
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
-# Import config loader
-from config.config_loader import ConfigLoader
+# Import config
+from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -21,76 +21,71 @@ logger = logging.getLogger(__name__)
 class AutoGenMarketMechanics:
     """AutoGen-based market mechanics interpreter using existing infrastructure."""
 
-    def __init__(self, model: str = None, temperature: float = 0.3):
+    def __init__(self, model: str = None, temperature: float = None):
         """
         Initialize AutoGen OpenAI client for mechanics interpretation.
 
         Args:
-            model: Model to use (defaults to config OPEN_MODEL)
-            temperature: Temperature for generation (lower = more consistent)
+            model: Model to use (defaults to config)
+            temperature: Temperature for generation (defaults to config)
         """
         # Load configuration
-        config_loader = ConfigLoader()
+        config = get_config()
 
-        # Get model and API key from config (use prompt model for LLM analysis)
-        self.model = model or os.getenv(
-            "OPEN_MODEL_LLM_PROMPT", config_loader.get("OPEN_MODEL_LLM_PROMPT", "gpt-4o"))
-        api_key = os.getenv("OPEN_AI_KEY", config_loader.get("OPEN_AI_KEY"))
+        # Load LLM config values
+        self.model = model or config.get(
+            'llm_market_mechanics.autogen_client.default_model', 'gpt-4o')
+        temperature = temperature if temperature is not None else config.get(
+            'llm_market_mechanics.autogen_client.default_temperature', 0.3)
+        timeout = config.get(
+            'llm_market_mechanics.autogen_client.timeout_seconds', 30)
+        max_retries = config.get(
+            'llm_market_mechanics.autogen_client.max_retries', 3)
+        analysis_tokens = config.get(
+            'llm_market_mechanics.autogen_client.analysis_tokens', 4000)
+        top_p = config.get('llm_market_mechanics.autogen_client.top_p', 0.95)
 
-        if not api_key:
-            # Try alternative key names
-            api_key = os.getenv(
-                "OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
+        # Load confidence mapping
+        self.confidence_high = config.get(
+            'llm_market_mechanics.response_parsing.confidence_high', 80)
+        self.confidence_medium = config.get(
+            'llm_market_mechanics.response_parsing.confidence_medium', 60)
+        self.confidence_low = config.get(
+            'llm_market_mechanics.response_parsing.confidence_low', 40)
+        self.confidence_default = config.get(
+            'llm_market_mechanics.response_parsing.confidence_default', 50)
+
+        # Load system prompt from config
+        self.system_prompt = config.get('llm_market_mechanics.system_prompts.mechanics_analyst',
+                                        'You are a market mechanics analyst.')
+
+        # Get API key from environment (not stored in config for security)
+        api_key = os.getenv("OPEN_AI_KEY") or os.getenv("OPENAI_API_KEY")
 
         if not api_key:
             raise ValueError(
-                "OpenAI API key not found in config or environment")
+                "OpenAI API key not found in environment (OPEN_AI_KEY or OPENAI_API_KEY)")
 
         # Initialize AutoGen OpenAI client with model-specific parameters
         client_params = {
             "model": self.model,
             "api_key": api_key,
-            "timeout": 30,
-            "max_retries": 3
+            "timeout": timeout,
+            "max_retries": max_retries
         }
 
         # Configure token limits based on model type
-        # Note: AutoGen tools are direct Python function calls (no LLM tokens needed)
-        # Only market mechanics analysis uses LLM tokens
-        analysis_tokens = 4000  # For detailed O3-mini market analysis
-
         if "o3" in self.model or "o4" in self.model or "gpt-5" in self.model:
             # O3/O4/GPT-5 models use different parameters
             client_params["max_completion_tokens"] = analysis_tokens
             # These models don't support temperature or top_p
         else:
             # Standard models (GPT-4o, GPT-4o-mini, etc.)
-            # Note: This is only for market analysis, not tool calls
             client_params["max_tokens"] = analysis_tokens
             client_params["temperature"] = temperature
-            client_params["top_p"] = 0.95
+            client_params["top_p"] = top_p
 
         self.client = OpenAIChatCompletionClient(**client_params)
-
-        self.system_prompt = """You are a market mechanics analyst specializing in dealer positioning and forced hedging flows.
-
-Your task is to identify WHO is forcing WHOM to do WHAT in the market based on gamma exposure (GEX) data.
-
-Focus on:
-1. Dealer hedging mechanics (forced buying/selling due to gamma)
-2. Squeeze setups (aggressive positioning to force dealer flows)
-3. Pin dynamics (large OI creating price magnetism)
-4. Trap patterns (dealers being flipped from long to short gamma)
-
-Provide specific, actionable intelligence about market mechanics.
-Be concise and focus on causality chains (X leads to Y leads to Z).
-
-Format your response as:
-WHO: [Identify the forcing party - dealers/institutions/retail]
-WHOM: [Identify who is being forced to act]
-WHAT: [Specific forced action that will occur]
-MECHANICS: [Brief explanation of the causal chain]
-CONFIDENCE: [High/Medium/Low based on data clarity]"""
 
         logger.info(f"AutoGenMarketMechanics initialized with {self.model}")
 
@@ -232,15 +227,15 @@ CONFIDENCE: [High/Medium/Low based on data clarity]"""
                 if numeric_match:
                     parsed['confidence'] = min(
                         int(numeric_match.group(1)), 100)
-                # Fallback to text-based confidence
+                # Fallback to text-based confidence (use config values)
                 elif 'HIGH' in conf_str:
-                    parsed['confidence'] = 80
+                    parsed['confidence'] = self.confidence_high
                 elif 'MEDIUM' in conf_str or 'MED' in conf_str:
-                    parsed['confidence'] = 60
+                    parsed['confidence'] = self.confidence_medium
                 elif 'LOW' in conf_str:
-                    parsed['confidence'] = 40
+                    parsed['confidence'] = self.confidence_low
                 else:
-                    parsed['confidence'] = 50
+                    parsed['confidence'] = self.confidence_default
 
         # Create a concise narrative if we have the components
         if parsed['who'] != 'Unknown' and parsed['what'] != 'Unknown':

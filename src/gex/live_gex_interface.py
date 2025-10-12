@@ -6,9 +6,9 @@ Replaces SampleDataGEXInterface for production use with live data
 import pandas as pd
 import logging
 
-from gex.gex_calculator import GEXCalculator
-from validation.options_data_validator import OptionsDataValidator
-from validation.data_obfuscation import DataObfuscator
+from src.gex.gex_calculator import GEXCalculator
+from src.validation.options_data_validator import OptionsDataValidator
+from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 
@@ -67,23 +67,29 @@ class LiveGEXInterface:
             # Collect unique dates from the data
             date_strings = set()
             if 'date' in obfuscated_df.columns:
-                date_strings.update(obfuscated_df['date'].dt.strftime('%Y-%m-%d').unique())
+                date_strings.update(
+                    obfuscated_df['date'].dt.strftime('%Y-%m-%d').unique())
             if 'expiration' in obfuscated_df.columns:
-                date_strings.update(obfuscated_df['expiration'].dt.strftime('%Y-%m-%d').unique())
+                date_strings.update(
+                    obfuscated_df['expiration'].dt.strftime('%Y-%m-%d').unique())
 
             # Create mappings
-            date_mapping = self.obfuscator.obfuscate_dates(list(date_strings), trading_date)
+            date_mapping = self.obfuscator.obfuscate_dates(
+                list(date_strings), trading_date)
             ticker_mapping = self.obfuscator.obfuscate_tickers([symbol])
 
             # Apply obfuscation to date columns
             if 'date' in obfuscated_df.columns:
-                obfuscated_df['date'] = obfuscated_df['date'].dt.strftime('%Y-%m-%d').map(date_mapping)
+                obfuscated_df['date'] = obfuscated_df['date'].dt.strftime(
+                    '%Y-%m-%d').map(date_mapping)
             if 'expiration' in obfuscated_df.columns:
-                obfuscated_df['expiration'] = obfuscated_df['expiration'].dt.strftime('%Y-%m-%d').map(date_mapping)
+                obfuscated_df['expiration'] = obfuscated_df['expiration'].dt.strftime(
+                    '%Y-%m-%d').map(date_mapping)
 
             # Apply obfuscation to symbol column
             if 'symbol' in obfuscated_df.columns:
-                obfuscated_df['symbol'] = obfuscated_df['symbol'].map(ticker_mapping)
+                obfuscated_df['symbol'] = obfuscated_df['symbol'].map(
+                    ticker_mapping)
 
             obfuscation_metadata = {
                 'date_mapping': date_mapping,
@@ -91,7 +97,8 @@ class LiveGEXInterface:
                 'obfuscated': True
             }
 
-            logger.info(f"Obfuscated options data: {len(date_strings)} dates, symbol {symbol} -> {ticker_mapping.get(symbol)}")
+            logger.info(
+                f"Obfuscated options data: {len(date_strings)} dates, symbol {symbol} -> {ticker_mapping.get(symbol)}")
             return obfuscated_df, obfuscation_metadata
 
         except Exception as e:
@@ -256,13 +263,15 @@ class LiveGEXInterface:
                     call_gex_data = self.gex_calculator.calculate_dealer_gamma_exposure(
                         call_df, spot_price
                     )
-                    call_gex = self.gex_calculator.calculate_net_gex(call_gex_data)
+                    call_gex = self.gex_calculator.calculate_net_gex(
+                        call_gex_data)
 
                 if not put_df.empty:
                     put_gex_data = self.gex_calculator.calculate_dealer_gamma_exposure(
                         put_df, spot_price
                     )
-                    put_gex = self.gex_calculator.calculate_net_gex(put_gex_data)
+                    put_gex = self.gex_calculator.calculate_net_gex(
+                        put_gex_data)
 
                 net_gex = call_gex + put_gex
 

@@ -10,10 +10,9 @@ import numpy as np
 import logging
 from math import log, sqrt
 from scipy.stats import norm
-from datetime import datetime
 from typing import Dict, Any
 from src.utils.config_manager import get_config
-from src.utils.date_utils import calculate_days_to_expiration
+from src.utils.date_utils import calculate_days_to_expiration, get_datetime_now
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +36,22 @@ class GEXCalculator:
         config = get_config()
         self.risk_free_rate = risk_free_rate or config.get(
             'gex_calculation.gex_calculator.risk_free_rate', 0.05)
+
+        # Load configuration values
+        self.days_per_year = config.get(
+            'gex_calculation.gex_calculator.days_per_year', 365.0)
+        self.percentage_move_multiplier = config.get(
+            'gex_calculation.gex_calculator.percentage_move_multiplier', 0.01)
+        self.open_interest_multiplier = config.get(
+            'gex_calculation.gex_calculator.open_interest_multiplier', 100)
+        self.long_gamma_threshold = config.get(
+            'gex_calculation.gex_calculator.long_gamma_threshold', 0.0001)
+        self.short_gamma_threshold = config.get(
+            'gex_calculation.gex_calculator.short_gamma_threshold', -0.0001)
+        self.default_price_range_pct = config.get(
+            'gex_calculation.gex_calculator.default_price_range_pct', 0.20)
+        self.key_levels_count = config.get(
+            'gex_calculation.gex_calculator.key_levels_count', 5)
 
     def black_scholes_gamma(self,
                             S,
@@ -109,7 +124,8 @@ class GEXCalculator:
                 )
 
         # Convert DTE to years
-        gex_data['time_to_expiry'] = gex_data['days_to_expiration'] / 365.0
+        gex_data['time_to_expiry'] = gex_data['days_to_expiration'] / \
+            self.days_per_year
 
         # Calculate Black-Scholes gamma for each contract
         gex_data['bs_gamma'] = gex_data.apply(
@@ -123,12 +139,12 @@ class GEXCalculator:
         )
 
         # Calculate dealer GEX per contract
-        # Dealer GEX = -1 * Customer OI * Gamma * S^2 * 0.01 * multiplier
+        # Dealer GEX = -1 * Customer OI * Gamma * S^2 * percentage_move * multiplier
         gex_data['dealer_gex'] = (
             -1 * gex_data['open_interest'] *
             gex_data['bs_gamma'] *
             (underlying_price ** 2) *
-            0.01 *
+            self.percentage_move_multiplier *
             open_interest_multiplier
         )
 
@@ -204,7 +220,8 @@ class GEXCalculator:
             # Avoid division by zero
             change_pct = 0.0 if current_gex == 0 else 100.0
         else:
-            change_pct = ((current_gex - previous_gex) / abs(previous_gex)) * 100
+            change_pct = ((current_gex - previous_gex) /
+                          abs(previous_gex)) * 100
 
         return {
             'net_gex_change_1d_usd': current_gex - previous_gex,
@@ -214,7 +231,7 @@ class GEXCalculator:
     def calculate_gex_profile(self,
                               options_data: pd.DataFrame,
                               underlying_price: float,
-                              price_range_pct: float = 0.20) -> Dict[str, Any]:
+                              price_range_pct: float = None) -> Dict[str, Any]:
         """
         Calculate comprehensive GEX profile for market analysis.
 
@@ -229,6 +246,10 @@ class GEXCalculator:
         logger.info(
             f"Calculating comprehensive GEX profile for underlying at ${underlying_price:.2f}")
 
+        # Use config default if not specified
+        if price_range_pct is None:
+            price_range_pct = self.default_price_range_pct
+
         # Calculate base GEX
         gex_data = self.calculate_dealer_gamma_exposure(
             options_data, underlying_price)
@@ -239,7 +260,7 @@ class GEXCalculator:
                 'strike_gex': pd.DataFrame(),
                 'key_levels': [],
                 'gex_range': (0.0, 0.0),
-                'calculation_timestamp': datetime.now()
+                'calculation_timestamp': get_datetime_now()
             }
 
         # Aggregate by strike
@@ -260,7 +281,7 @@ class GEXCalculator:
         # Identify key GEX levels (high absolute GEX values)
         if not relevant_strikes.empty:
             relevant_strikes['abs_gex'] = abs(relevant_strikes['total_gex'])
-            key_levels = relevant_strikes.nlargest(5, 'abs_gex')[
+            key_levels = relevant_strikes.nlargest(self.key_levels_count, 'abs_gex')[
                 ['strike', 'total_gex', 'total_oi']
             ].to_dict('records')
         else:
@@ -281,7 +302,7 @@ class GEXCalculator:
             'gex_range': gex_range,
             'underlying_price': underlying_price,
             'price_range': (price_lower, price_upper),
-            'calculation_timestamp': datetime.now(),
+            'calculation_timestamp': get_datetime_now(),
             'total_contracts': len(gex_data)
         }
 
@@ -300,11 +321,11 @@ class GEXCalculator:
         normalized_gex = net_gex / \
             (underlying_price ** 2) if underlying_price > 0 else 0
 
-        if normalized_gex > 0.0001:  # Threshold for long gamma regime
+        if normalized_gex > self.long_gamma_threshold:
             regime = "Long Gamma"
             description = "Dealers long gamma - suppressive to volatility, mean-reverting environment"
             market_impact = "Supportive on dips, resistant on rallies"
-        elif normalized_gex < -0.0001:  # Threshold for short gamma regime
+        elif normalized_gex < self.short_gamma_threshold:
             regime = "Short Gamma"
             description = "Dealers short gamma - amplifies volatility, momentum environment"
             market_impact = "Selling on dips, buying on rallies"
