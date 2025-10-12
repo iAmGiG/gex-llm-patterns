@@ -506,20 +506,50 @@ class HistoricalGEXDatabaseBuilder:
     
     def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None) :
         """
-        Get stock closing price for the date.
+        Get REAL stock closing price for the date.
 
-        CRITICAL: Must use SAME logic as validation pipeline to ensure GEX values match.
-        Validation uses: options_data['underlyingPrice'].iloc[0] if 'underlyingPrice' in options_data.columns else 450.0
+        CRITICAL: Database must store REAL market prices, NEVER obfuscated values.
+        Obfuscation is ONLY for LLM analysis layer (data_obfuscation.py), not storage.
+
+        Methods (in priority order):
+        1. Check options_data for underlyingPrice column
+        2. Estimate from options using put-call parity
+        3. Fetch from market data API
+        4. ERROR if all methods fail (never store fake/obfuscated data)
         """
-        # First try to get from options data (same as validation)
+        # Method 1: Check for explicit underlying price in options data
         if options_data is not None and 'underlyingPrice' in options_data.columns:
             spot = float(options_data['underlyingPrice'].iloc[0])
-            self.logger.debug(f"Using spot price from underlyingPrice column: {spot}")
+            self.logger.debug(f"Method 1: Got spot price from underlyingPrice column: {spot}")
             return spot
 
-        # Fallback to 450.0 (same as validation pipeline)
-        self.logger.debug(f"underlyingPrice not in options data, using fallback: 450.0")
-        return 450.0
+        # Method 2: Estimate from options data using put-call parity
+        if options_data is not None and not options_data.empty:
+            estimated = self.estimate_spot_from_options(options_data)
+            if estimated:
+                self.logger.info(f"Method 2: Estimated spot price from put-call parity: {estimated:.2f}")
+                return estimated
+
+        # Method 3: Fetch from market data API
+        if self.has_stock_data:
+            try:
+                # Try to get closing price from Polygon
+                price = self.stock_client.get_daily_close(symbol, date)
+                if price:
+                    self.logger.info(f"Method 3: Fetched spot price from API: {price:.2f}")
+                    return price
+            except Exception as e:
+                self.logger.warning(f"Method 3 failed: Could not fetch price from API: {e}")
+
+        # NO FALLBACK TO 450.0 - Raise error instead of storing bad data
+        error_msg = (
+            f"Cannot determine real spot price for {symbol} {date}. "
+            f"All methods failed: underlyingPrice column missing, "
+            f"put-call parity estimation failed, API fetch failed. "
+            f"Database must store REAL prices only - refusing to store obfuscated/fake value."
+        )
+        self.logger.error(error_msg)
+        raise ValueError(error_msg)
     
     def estimate_spot_from_options(self, options_data: pd.DataFrame) :
         """Estimate spot price from options data using put-call parity."""
