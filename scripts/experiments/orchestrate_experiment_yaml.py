@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from agents.market_mechanics_agent import MarketMechanicsAgent
-from src.utils.yaml_reports_manager import yaml_reports_manager
+from src.utils.unified_reports_manager import yaml_reports
 from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
@@ -113,7 +113,7 @@ def main():
         # 4. Save YAML report
         if args.save_yaml:
             print("\n📝 Saving YAML report...")
-            report_path = yaml_reports_manager.save_experiment_results(
+            report_path = yaml_reports.save_experiment_results(
                 ticker=args.symbol,
                 date=args.date,
                 test_type=args.test_type,
