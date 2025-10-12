@@ -119,17 +119,15 @@ This declining profitability is **actually beneficial for academic contribution*
 
 **Timeline**: 2-3 weeks (database rebuild + validation)
 
-### 4. Optional: Close GitHub Issues (Manual)
-**5 issues to close** (analysis complete):
-- #52: Temporal Pattern Detection - "SUBSTANTIALLY COMPLETE"
-- #39: Forward-Test Runner - Out of scope for research
-- #43: Testing Sample Size - Superseded by Issue #79
-- #54: Pattern Library - Status "COMPLETE"
-- #78: LLM Optimization - Deferred performance work
+### 4. Optional: Triage Remaining Open Issues
+**Goal**: Review and update remaining 9 open issues for relevance to PhD research
 
-**Note**: Issue #79 already closed
+**Open Issues** (all are future work, not blocking):
+- Pattern detection enhancements (#74, #75, #13, #6)
+- Data infrastructure improvements (#29, #16, #45)
+- Analysis & documentation (#9, #8)
 
-**Reference**: `.claude/issue_closing_comments.md` has ready-to-use comments
+**Status**: All issues categorized as future research or infrastructure work. None impact Paper #1 timeline.
 
 ---
 
@@ -160,20 +158,23 @@ This declining profitability is **actually beneficial for academic contribution*
 
 ## Active Research Issues
 
-### UNDER REVIEW (Pending Manual Closure)
-See `.claude/issue_closing_comments.md` for:
-- Issue #52: Temporal Pattern Detection
-- Issue #39: Forward-test experiment runner
-- Issue #43: Expand testing sample size
-- Issue #54: Market Mechanics Pattern Library
-- Issue #78: LLM Pattern Analysis & System Optimization
+### Research-Aligned (Open)
+**Pattern Detection (Future Research)**:
+- Issue #74: OI-to-Volume Pattern Detection - Novel emerging interest signals (backlog)
+- Issue #75: Expiration Evolution Tracking - Track positioning patterns over time (enhancement)
+- Issue #13: Short Put Arbitrage Identification - Pattern detection (backlog)
+- Issue #6: Historical Pattern Discovery & Probability Mapping - Research analysis
 
-### KEEP OPEN (Research-Aligned)
-- Issue #74: OI-to-Volume patterns (novel research)
-- Issue #75: Expiration evolution tracking (research methodology)
-- Issue #29: GEX Calculator Enhancements (core data accuracy)
-- Issue #16: Data Validation: Options Chain Quality (data integrity)
-- Issue #45: Unified Data Storage (infrastructure)
+**Data Infrastructure (Lower Priority)**:
+- Issue #29: GEX Calculator Enhancements - Flip points & hedging flow estimation
+- Issue #16: Data Validation: Options Chain Quality Control - Data integrity framework
+- Issue #45: Unified Data Storage and Retrieval System - Infrastructure refactoring
+
+**Analysis & Documentation (Lower Priority)**:
+- Issue #9: Results Analysis & Documentation - General documentation tasks
+- Issue #8: Walk-Forward Backtesting Framework - No-lookahead validation
+
+**Status**: All issues are future enhancements or infrastructure work. None block PhD Paper #1.
 
 ---
 
@@ -190,8 +191,17 @@ See `.claude/issue_closing_comments.md` for:
 - ~~Issue #58: Baseline comparison~~ - ✅ Closed Oct 12
 - ~~Issue #46, #47, #48, #49, #30: Trading infrastructure~~ - ✅ Closed Oct 12
 
+### Non-Research Scope (Closed Oct 12)
+- ~~Issue #52: Temporal Pattern Detection~~ - Substantially complete
+- ~~Issue #54: Market Mechanics Pattern Library~~ - Complete
+- ~~Issue #78: LLM Pattern Analysis & System Optimization~~ - Deferred
+- ~~Issue #39: Forward-test experiment runner~~ - Out of scope
+- ~~Issue #43: Testing sample size expansion~~ - Superseded by #79
+
 ### Technical Bugs Fixed
 - ~~Issue #44: Cache System Bug~~ - ✅ Resolved
+- ~~Issue #83: Database GEX magnitude errors~~ - ✅ Fixed Oct 11
+- ~~Issue #82: src/analysis refactor~~ - ✅ Fixed Oct 11
 - Database corruption (450.0 obfuscation bug) - ✅ Fixed Oct 11
 - OutcomeCalculator path bug - ✅ Fixed Oct 11
 - Validation pipeline coverage bug (Issue #84) - ✅ Fixed Oct 12
