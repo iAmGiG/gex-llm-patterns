@@ -49,20 +49,22 @@
 - **Commit f85a59d**: Fix HistoricalGEXDatabaseBuilder - Store real prices, not obfuscated fallback
 - **Commit 175a9bd**: Fix OutcomeCalculator - Prioritize database lookup over deep ITM inference
 - **Commit 8fc04d0**: Update project status - Q1-Q4 validation complete
+- **Commit c926b9c**: Fix Issue #84 - Add fail-fast validation for data coverage
 
-### ✅ GitHub Issues Closed (Chat B - Oct 12)
-**8 issues closed** - Refocused on research (not trading system):
-- Issue #71: Strike-level trading strategy (not needed)
-- Issue #46, #47, #48, #49: Trading infrastructure (not research)
-- Issue #30: GEX trading signals (not research)
-- Issue #58: Baseline comparison (pattern not profitable)
-- Issue #79: Pattern taxonomy validation (**SUCCESS** - research complete)
+### ✅ GitHub Issues Resolved (Oct 12)
+**9 issues closed/resolved** - Refocused on research:
+- **Issue #84**: Validation Pipeline Design Flaw ✅ RESOLVED (Chat A)
+- **Issue #79**: Pattern taxonomy validation (**SUCCESS** - research complete)
+- **Issue #71**: Strike-level trading strategy (closed - not needed)
+- **Issue #46, #47, #48, #49**: Trading infrastructure (closed - not research)
+- **Issue #30**: GEX trading signals (closed - not research)
+- **Issue #58**: Baseline comparison (closed - pattern not profitable)
 
 ---
 
 ## Next Actions (Priority Order)
 
-### 1. Review Remaining Issues (Chat A) - From Chat B Handoff
+### 1. Review Remaining Issues (Chat A)
 **6 issues need research alignment review**:
 
 **Issue #54** - Market Mechanics Pattern Library
@@ -80,12 +82,7 @@
 - Keep if expanding research validation methodology
 - Close if preparing for live trading
 
-### 2. Prioritize Issue #84 (HIGH PRIORITY)
-**Validation Pipeline Design Flaw**: Only tests cached dates, may bias results
-- **Impact**: Could invalidate research findings
-- **Action**: Fix before publishing research
-
-### 3. Research Direction Decision
+### 2. Research Direction Decision
 **Core research goal**: "Can LLMs detect structural market microstructure patterns without memorization?"
 
 **Status**: ✅ ANSWERED - Yes, LLM detects patterns with 84-100% accuracy
@@ -115,14 +112,15 @@
 - Fixed path to correct gex_database.db
 - Forward returns now accurate
 
+### Issue #84 Validation Pipeline Fix ✅ COMPLETE
+- Root cause: Only tested cached dates without coverage validation
+- Fixed with fail-fast validation requiring ≥80% coverage
+- Q2 limitation documented (27% coverage - insufficient)
+- Documentation: docs/guides/issue-84-resolution.md
+
 ---
 
 ## Active Research Issues
-
-### HIGH PRIORITY
-**Issue #84** - Validation Pipeline Design Flaw
-- Only tests cached dates, may introduce selection bias
-- Must fix before publishing research findings
 
 ### UNDER REVIEW (Pending Research Alignment Assessment)
 - Issue #54: Market Mechanics Pattern Library
@@ -143,6 +141,7 @@
 ## Closed Issues (October 2025)
 
 ### Research Complete
+- ~~Issue #84: Validation Pipeline Design Flaw~~ - ✅ RESOLVED (Oct 12) - Fail-fast coverage validation
 - ~~Issue #79: Pattern Taxonomy Validation~~ - ✅ SUCCESS (Oct 12) - LLM detects patterns accurately
 - ~~Issue #80: Enhanced Output Structure~~ - ✅ Closed Oct 9
 - ~~Issue #81: Obfuscation Bug~~ - ✅ Closed Oct 7
@@ -156,12 +155,13 @@
 - ~~Issue #44: Cache System Bug~~ - ✅ Resolved
 - Database corruption (450.0 obfuscation bug) - ✅ Fixed Oct 11
 - OutcomeCalculator path bug - ✅ Fixed Oct 11
+- Validation pipeline coverage bug (Issue #84) - ✅ Fixed Oct 12
 
 ---
 
 ## Current Blockers
 
-**NONE** - All technical work complete.
+**NONE** - All technical work complete. Issue #84 resolved.
 
 **DECISION NEEDED**: Research direction
 - Test new patterns? (find one with economic edge)
