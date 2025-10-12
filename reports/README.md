@@ -1,77 +1,73 @@
 # Reports Directory
 
-This directory contains various analysis reports and experimental results organized by purpose and audience.
+This directory contains validation reports and historical archives.
 
-## Structure
+## Structure (October 11, 2025)
 
 ```
 reports/
 ├── validation/              # System validation and testing reports
 │   ├── pattern_taxonomy/   # Pattern taxonomy validation (Issue #79, Oct 2025)
 │   ├── pattern_taxonomy_DEPRECATED_ISSUE81/  # Deprecated: obfuscation bug (Oct 2025)
-│   ├── mc_reports/         # Main Chat validation reports (Sep 2025)
 │   └── daily_tests/        # Daily testing results and raw data
-├── experiments/            # Individual experiment results (YAML format)
 ├── archive/               # Historical reports and deprecated analyses
-│   ├── current/           # Previous active reports
 │   └── archived_experiments/  # Historical development iterations
 └── README.md              # This documentation
 ```
 
-## Current Reports by Category
+**Note**: All validation YAML files are gitignored and generated locally. Corrupt Q1-Q3 YAMLs (based on 450.0 database) deleted Oct 11, 2025 - will be regenerated with corrected database.
+
+## Current Status (October 11, 2025)
 
 ### 🔬 **Pattern Taxonomy Validation** (`validation/pattern_taxonomy/`)
-**Purpose:** Issue #79 - Validate mechanical patterns using obfuscation testing
 
-**Status:** ⏳ IN PROGRESS - Re-validating with corrected obfuscation (Issue #81 fix)
+**Purpose:** Issue #79 - Validate `dealer_gamma_hedging` pattern across Q1-Q4 2024
 
-Pattern validation results testing WHO forces WHOM to do WHAT:
-- **Obfuscation:** LLM receives "Day T+0" instead of "2024-01-02"
-- **Test Period:** Q1 2024 (53 trading days, post-training cutoff)
+**Status:** 🔄 RE-VALIDATING - Database rebuilt with REAL prices (no more 450.0!)
+
+**Critical Fix Applied:**
+- **Problem**: Database stored obfuscated 450.0 prices → corrupt forward returns (42.77% Q3 max)
+- **Fix**: `historical_gex_builder.py` now uses put-call parity + API, refuses fake prices
+- **Impact**: All Q1-Q3 validation YAMLs deleted (corrupt), regenerating with corrected database
+
+**Validation Framework:**
+- **Obfuscation:** LLM receives "Day T+0" instead of real dates
+- **Pattern**: `dealer_gamma_hedging` (consolidated from 3 patterns)
+- **Test Period**: Q1-Q4 2024 (198 dates with real spot prices)
 - **Threshold:** ≥60% detection rate with ≥30 samples
 
-**⚠️ IMPORTANT:** Previous results moved to `pattern_taxonomy_DEPRECATED_ISSUE81/` due to obfuscation bug discovered Oct 7, 2025. See that directory's README for details.
-
-### 🎯 **System Validation** (`validation/mc_reports/`)
-**Purpose:** Comprehensive validation for Main Chat requirements
-
-- **`MC_COMPREHENSIVE_VALIDATION_FINAL.md`** - Complete system validation summary
-- **`MC_EXECUTIVE_SUMMARY.md`** - High-level system overview and capabilities
-- **`MC_TESTING_METHODOLOGY.md`** - How validation testing was conducted
-- **`MC_VALIDATION_REPORT.md`** - Technical validation details and evidence
-- **`MC_DAILY_0DTE_VALIDATION_*.md`** - Daily 0DTE frequency test results
-
-### 📊 **Test Data** (`validation/daily_tests/`)
-**Purpose:** Raw test datasets and detailed performance metrics
-
-- **`mc_validation_detailed_*.json`** - Complete test datasets with signal generation data
-- Daily testing logs and performance breakdowns
-
-### 🧪 **Experiments** (`experiments/`)
-**Purpose:** Individual experiment results in standardized YAML format
-
-- **Pattern detection experiments** with obfuscated data
-- **LLM analysis results** with WHO/WHOM/WHAT mechanics
-- **GEX calculation validation** with real market data
+**Background Jobs Running:**
+- Q1 2024: Re-validation with corrected database
+- Q2 2024: Partial (Jun only, Apr-May missing from cache)
+- Q3 2024: Re-validation in progress
+- Q4 2024: Pending data collection completion
 
 ### 📚 **Archive** (`archive/`)
-**Purpose:** Historical research and development documentation
 
-- **`current/`** - Previous active reports (model comparisons, configuration fixes)
+Historical reports and deprecated analyses:
 - **`archived_experiments/`** - Evolution from aggregate to strike-level GEX analysis
 
-## Report Naming Convention
+### ⚠️ **Deprecated** (`validation/pattern_taxonomy_DEPRECATED_ISSUE81/`)
 
-- **`MC_*`** - Reports for Main Chat validation and review
-- **`experiment_*`** - Individual experiment results
-- **`validation_*`** - System testing and validation results
-- **`archive_*`** - Historical or deprecated content
+Previous validation results (obfuscation bug discovered Oct 7, 2025). See that directory's README for details.
 
-## Key Findings Summary
+---
 
-✅ **System Operational** - Pattern classification framework working with LLM reasoning
-✅ **21 Signals/Month** - Exceeds 15-20 target for daily 0DTE opportunities
-✅ **Quality Controls** - Properly filters invalid patterns to prevent false positives
-✅ **Research Ready** - Can answer "What's happening?" and "Does X lead to Y?" questions
+## Key Findings (Q1 2024 - Validated)
 
-All reports use obfuscated data to prevent memorization and ensure objective analysis.
+✅ **Pattern Consolidation** - Three patterns (gamma_positioning, stock_pinning, 0dte_hedging) are identical
+✅ **90.38% Predictive Accuracy** - dealer_gamma_hedging pattern on 53 trading days
+✅ **+0.70% Net Alpha** - After 5bps transaction costs
+✅ **100% Detection Rate** - Pattern detected on all negative GEX days
+
+## Data Quality Issues Resolved
+
+❌ **Database Corruption (Fixed Oct 11, 2025)** - Hardcoded 450.0 obfuscation stored permanently
+- **Impact**: Q3 showed impossible 42.77% daily moves (SPY doesn't move that much!)
+- **Root Cause**: Storage layer violated separation of concerns (obfuscation should be analysis-only)
+- **Fix**: Database rebuilt with real prices using put-call parity estimation
+- **See**: `docs/guides/database-corruption-fix-status.md` for full postmortem
+
+---
+
+*All reports use obfuscated data at analysis time to prevent LLM memorization. Database now stores REAL market data only.*
