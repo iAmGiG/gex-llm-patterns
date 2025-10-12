@@ -403,8 +403,31 @@ class OutcomeCalculator:
                 elif 'underlying_price' in options_data.columns:
                     return float(options_data['underlying_price'].iloc[0])
 
-                # Method 2: Infer from deep ITM call options
-                # Find calls with delta ≈ 1.0 (deep ITM) - their strike + price ≈ underlying
+            # Method 2: Query database for spot_price (PREFERRED - moved before deep ITM inference)
+            # Database was rebuilt Oct 11, 2025 with correct prices
+            try:
+                import sqlite3
+                db_path = Path(".cache/gex_database.db")
+                if db_path.exists():
+                    conn = sqlite3.connect(str(db_path))
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        "SELECT spot_price FROM daily_gex_metrics WHERE date = ? AND symbol = ?",
+                        (date_str, symbol)
+                    )
+                    result = cursor.fetchone()
+                    conn.close()
+
+                    if result and result[0]:
+                        spot_price = float(result[0])
+                        logger.debug(f"Retrieved spot price {spot_price:.2f} from database for {date_str}")
+                        return spot_price
+            except Exception as db_error:
+                logger.warning(f"Database lookup failed: {db_error}")
+
+            # Method 3: Infer from deep ITM call options (FALLBACK - less reliable than database)
+            # Find calls with delta ≈ 1.0 (deep ITM) - their strike + price ≈ underlying
+            if options_data is not None and not options_data.empty:
                 if 'delta' in options_data.columns and 'type' in options_data.columns:
                     deep_itm_calls = options_data[
                         (options_data['type'] == 'call') &
@@ -419,14 +442,14 @@ class OutcomeCalculator:
                         logger.debug(f"Inferred underlying price {underlying:.2f} from deep ITM call")
                         return float(underlying)
 
-                # Method 3: Fallback - use ATM strike as proxy
-                if 'strike' in options_data.columns:
-                    strikes = options_data['strike'].unique()
-                    median_strike = float(pd.Series(strikes).median())
-                    logger.debug(f"Using median strike {median_strike:.2f} as price proxy for {date_str}")
-                    return median_strike
+            # Method 4: Last resort - use median strike (UNRELIABLE for returns!)
+            # WARNING: This is NOT representative of actual underlying price
+            if options_data is not None and not options_data.empty and 'strike' in options_data.columns:
+                strikes = options_data['strike'].unique()
+                median_strike = float(pd.Series(strikes).median())
+                logger.warning(f"Using median strike {median_strike:.2f} as price proxy for {date_str} - returns will be UNRELIABLE!")
+                return median_strike
 
-            # Fallback: could add price data cache lookup here
             logger.warning(f"No price data found for {symbol} on {date_str}")
             return None
 
