@@ -2,7 +2,7 @@
 
 ## 🚀 **PhD Research Platform**
 
-**Latest Status**: CS PhD dissertation research platform investigating whether LLMs can identify actionable patterns in market microstructure better than mechanical approaches. Uses O3-mini for reasoning with data obfuscation validation framework.
+**Latest Status** (October 11, 2025): CS PhD dissertation research platform investigating whether LLMs can identify actionable patterns in market microstructure. Currently validating consolidated `dealer_gamma_hedging` pattern across Q1-Q4 2024 data with fixed database architecture (hardcoded obfuscation removed).
 
 ## 📋 **Quick Start Guide**
 
@@ -49,6 +49,7 @@ How-to documentation for practical usage:
 - **[validation-framework](guides/validation-framework)** - LLM validation and testing framework
 - **[pattern-validation](guides/pattern-validation)** - Pattern taxonomy validation workflow (Issue #79)
 - **[data-obfuscation](guides/data-obfuscation)** - Anti-cheating measures for validation
+- **[validation-data-pipeline-fix](guides/validation-data-pipeline-fix)** - Q3 corruption postmortem and database fix (Oct 11, 2025)
 - **[baseline-strategy](guides/baseline-strategy)** - Trading strategy implementation
 
 ### 📊 **Technical Reference** (`reference/`)
@@ -62,6 +63,13 @@ Technical specifications and research findings:
 - **`technical/`** - Implementation details and configurations
   - [agent-feature-audit](reference/technical/agent-feature-audit) - MarketMechanicsAgent method audit (Oct 2025)
 
+### 🗂️ **Project Documentation** (root `docs/`)
+
+Planning and maintenance documentation:
+
+- **[DELETED_CODE_REFERENCE](DELETED_CODE_REFERENCE)** - Git history for removed code (data_normalization, deprecated analysis, sample_data_gex)
+- **[GEX_MODULE_CONSOLIDATION_PLAN](GEX_MODULE_CONSOLIDATION_PLAN)** - Future optimization plan for LiveGEXInterface consolidation
+
 ### 🗄️ **Archive** (`archive/`)
 
 Historical documentation and legacy components:
@@ -70,24 +78,33 @@ Historical documentation and legacy components:
 - **`research/`** - Historical research and experiments
 - **`agents/`** - Legacy agent implementations
 
-## 🎯 **Current Production Features**
+## 🎯 **Current System Status (October 11, 2025)**
 
-✅ **LLM-Driven Agent Autonomy** - LLM analyzes experiments and autonomously selects tools and analysis approach
-✅ **Strike-Level Pattern Detection** - Enhanced from aggregate GEX analysis (251 daily opportunities vs 1 signal)
-✅ **Gamma Pinning Validation** - 75% success rate on Friday 3:30 PM patterns
-✅ **O3-mini LLM Integration** - 90% confidence analysis with 4000 token optimization
-✅ **Complete Data Flow** - Cache→API→Live data with automatic fallbacks
-✅ **Validation Framework** - Anti-cheating measures with obfuscated data
-✅ **Enhanced Pattern Detection** - Compound patterns: High Probability Pin, Volume Gamma Breakout
+✅ **Pattern Consolidation** - Three patterns (gamma_positioning, stock_pinning, 0dte_hedging) consolidated into `dealer_gamma_hedging`
+✅ **Database Architecture Fixed** - Removed hardcoded obfuscation (450.0) from storage layer
+✅ **Obfuscation Layer Separated** - Database stores real prices, LLM analysis uses obfuscated data
+✅ **Batch Processing** - Multiple dates in single LLM call (75% API cost reduction)
+✅ **Enhanced Output Structure** - Outcome metrics with forward returns, velocity, grouped structure (Issue #80)
+✅ **Q1 2024 Validation** - 90.38% predictive accuracy, +0.70% net alpha (53 trading days)
+🔄 **Q2-Q4 2024 Validation** - In progress after database rebuild with corrected spot prices
 
 ## 🔬 **Key Research Findings**
 
-- **90% LLM Confidence** - Production validation with real SPY options data
-- **75% Gamma Pinning Success Rate** - Friday 3:30 PM validation exceeds 60% threshold
-- **251 Strike-Level Opportunities** - vs 1 aggregated signal (massive improvement)
-- **O3-mini Optimal Model** - Best cost/performance ratio (75% confidence, 65% cost savings)
-- **Token Optimization** - 0 tokens for tools, 4000 tokens for LLM analysis only
-- **LLM Agent Autonomy** - Three-stage process: LLM plans tools → executes plan → analyzes results
+### Validated (Q1 2024):
+- **Pattern Consolidation Discovery** - Three "different" patterns are identical quantitatively (same GEX, outcomes)
+- **90.38% Predictive Accuracy** - dealer_gamma_hedging pattern on 53 trading days
+- **+0.70% Net Alpha** - After 5bps transaction costs (exceeds >20bps threshold)
+- **100% Detection Rate** - Pattern detected on all negative GEX days
+
+### Architecture Lessons (October 11, 2025):
+- **Database Corruption Bug** - Hardcoded 450.0 obfuscation in storage layer caused 95x forward return errors
+- **Separation of Concerns** - Storage layer must store REAL data; obfuscation is analysis-time only
+- **Q3 2024 Corruption** - Showed impossible 42.77% daily moves (physically implausible for SPY)
+- **Fix Applied** - Database builder now refuses fake prices, fetches real data from API/put-call parity
+
+### Pending (Q2-Q4 2024):
+- Database rebuild in progress with corrected spot prices
+- Full-year validation to determine if pattern works consistently or needs regime filter
 
 ## 🔧 **System Requirements**
 
@@ -98,4 +115,14 @@ Historical documentation and legacy components:
 
 ---
 
-*Last Updated: September 19, 2025*
+## 🔧 **Known Issues**
+
+- ⚠️ **Database Rebuild Required** - Q2-Q4 2024 database being rebuilt with corrected spot prices (Chat A working)
+- ⚠️ **Q3 Validation Invalid** - Previous results showed impossible returns due to obfuscated prices in database
+- ⚠️ **Q2 Incomplete** - Only June tested (17 days), Apr-May missing from cache
+
+See `.claude/cross_chat_sync.yaml` for current status.
+
+---
+
+*Last Updated: October 11, 2025*
