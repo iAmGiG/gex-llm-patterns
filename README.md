@@ -26,8 +26,8 @@ We hypothesize that:
 - **Instruments**: SPY, QQQ, IWM, DIA, TLT, GLD options chains + underlying price data
 - **Data Sources**: Alpha Vantage Premium (options) + Polygon.io (stocks) + FRED (Fed data)
 - **Collection Rate**: 75/min (options), 7,200/day (stocks), daily (Fed indicators)
-- **Current Status**: 87,000+ live options contracts + Fed context integration + historical database builder
-- **Key Metrics**: Enhanced GEX (3 metrics), gamma flip points, Fed context patterns, market stress indicators
+- **Current Status**: LLM-driven agent autonomy operational with YAML reporting and data obfuscation
+- **Key Metrics**: Enhanced GEX (3 metrics), gamma flip points, dealer hedging mechanics, WHO/WHOM/WHAT analysis
 - **Market Events**: FOMC meetings, OpEx, earnings, major volatility events with context weighting
 
 ## Architecture

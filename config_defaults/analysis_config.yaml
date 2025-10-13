@@ -1,0 +1,235 @@
+# Analysis Configuration
+# Parameters for statistical analysis and confidence scoring
+
+confidence_scorer:
+  # Base lookback period for pattern analysis (trading days)
+  base_lookback_days: 252
+
+  # Recent weighting period for pattern analysis (trading days)
+  recent_weight_days: 63
+
+  # Minimum sample size for reliable confidence scoring
+  min_sample_size: 20
+
+  # Base confidence scores for different conditions
+  base_scores:
+    statistically_significant: 75
+    not_significant: 25
+    neutral: 50
+
+  # Confidence adjustments
+  adjustments:
+    stress_penalty: 15
+    low_vol_pin_bonus: 10
+    high_vol_gamma_bonus: 10
+    extreme_damping_threshold: 90
+    extreme_damping_factor: 0.5
+
+statistical_validator:
+  # Confidence level for statistical tests (0.95 = 95%)
+  confidence_level: 0.95
+
+  # Minimum sample size for reliable statistical testing
+  min_samples: 30
+
+  # Number of bootstrap iterations for confidence intervals
+  n_bootstrap: 1000
+
+  # Number of permutations for permutation testing
+  n_permutations: 1000
+
+pattern_analyzer:
+  # Minimum win rate threshold for pattern validation (0.6 = 60%)
+  min_win_rate: 0.6
+
+  # Confidence threshold for high-confidence patterns
+  high_confidence_threshold: 85
+
+baseline_comparison:
+  # Confidence threshold for baseline comparison analysis
+  confidence_threshold: 85
+
+  # Statistical significance threshold (p-value)
+  significance_threshold: 0.05
+
+  # Expected baseline strategy performance (trading all negative GEX)
+  expected_baseline_win_rate: 0.43  # 43% win rate typical for unfiltered
+  expected_baseline_ev: -0.0028  # -0.28% expected value per trade
+  expected_baseline_sharpe: -0.15  # Negative Sharpe ratio
+  expected_baseline_drawdown: -0.045  # -4.5% maximum drawdown
+
+gex_thresholds:
+  # GEX regime classification thresholds
+  positive_high: 5000000000  # 5e9 - High positive GEX threshold
+  negative_high: -5000000000  # -5e9 - High negative GEX threshold
+
+  # Gamma concentration metrics
+  gamma_concentration_threshold: 0.7  # 70% concentration threshold
+
+  # Volume and flow thresholds
+  high_volume_threshold: 1000000  # 1M volume threshold
+  significant_flow_threshold: 500000  # 500K flow threshold
+
+# GEX Calculator configuration
+gex_calculation:
+  gex_calculator:
+    # Black-Scholes parameters
+    risk_free_rate: 0.05  # 5% risk-free rate (10-year Treasury)
+    days_per_year: 365.0  # Days used for time-to-expiration conversion
+
+    # GEX calculation parameters
+    percentage_move_multiplier: 0.01  # 1% move multiplier for GEX
+    open_interest_multiplier: 100  # Shares per options contract
+
+    # Regime classification thresholds (normalized GEX)
+    long_gamma_threshold: 0.0001  # Threshold for long gamma regime
+    short_gamma_threshold: -0.0001  # Threshold for short gamma regime
+
+    # Analysis parameters
+    default_price_range_pct: 0.20  # 20% price range for analysis window
+    key_levels_count: 5  # Number of key GEX levels to identify
+
+  live_gex_interface:
+    # Spot price estimation fallback
+    default_spot_price_spy: 500.0  # Default fallback for SPY (DEPRECATED - prefer error)
+    spot_price_estimation_method: "middle_strike"  # Method: "middle_strike" or "atm_options"
+
+# LLM Market Mechanics Configuration
+llm_market_mechanics:
+  autogen_client:
+    # Model configuration
+    default_model: "gpt-4o"  # Default model for market mechanics
+    default_temperature: 0.3  # Lower = more consistent (0.0-2.0)
+    timeout_seconds: 30  # API timeout in seconds
+    max_retries: 3  # Maximum retry attempts
+
+    # Token limits
+    analysis_tokens: 4000  # Tokens for detailed market analysis
+    top_p: 0.95  # Nucleus sampling parameter (0.0-1.0)
+
+  response_parsing:
+    # Confidence mapping (text to numeric)
+    confidence_high: 80  # "High" confidence maps to 80%
+    confidence_medium: 60  # "Medium" confidence maps to 60%
+    confidence_low: 40  # "Low" confidence maps to 40%
+    confidence_default: 50  # Default if unparseable
+
+  system_prompts:
+    # Market mechanics system prompt
+    mechanics_analyst: |
+      You are a market mechanics analyst specializing in dealer positioning and forced hedging flows.
+
+      Your task is to identify WHO is forcing WHOM to do WHAT in the market based on gamma exposure (GEX) data.
+
+      Focus on:
+      1. Dealer hedging mechanics (forced buying/selling due to gamma)
+      2. Squeeze setups (aggressive positioning to force dealer flows)
+      3. Pin dynamics (large OI creating price magnetism)
+      4. Trap patterns (dealers being flipped from long to short gamma)
+
+      Provide specific, actionable intelligence about market mechanics.
+      Be concise and focus on causality chains (X leads to Y leads to Z).
+
+      Format your response as:
+      WHO: [Identify the forcing party - dealers/institutions/retail]
+      WHOM: [Identify who is being forced to act]
+      WHAT: [Specific forced action that will occur]
+      MECHANICS: [Brief explanation of the causal chain]
+      CONFIDENCE: [High/Medium/Low based on data clarity]
+
+  batch_processor:
+    # Batch LLM processing configuration
+    default_batch_size: 5  # Trading days per batch (weekly)
+    max_retries: 3  # Retry attempts for failed batches
+
+  prompt_builder:
+    # IV (Implied Volatility) percentile classification
+    iv_thresholds:
+      extremely_low: 12   # Below 12 VIX
+      low: 15             # 12-15 VIX
+      moderate: 20        # 15-20 VIX
+      elevated: 25        # 20-25 VIX
+      high: 35            # 25-35 VIX
+      # Above 35 = extreme
+
+# Validation configuration
+validation:
+  options_data_validator:
+    # Put-call parity validation threshold
+    put_call_parity_tolerance: 0.2  # Allow 20% deviation from theoretical delta difference
+
+# Options Analysis Configuration
+options_analysis:
+  options_chain_analyzer:
+    # Pattern detection thresholds
+    signal_strength_threshold: 0.6  # Minimum signal strength for pattern detection (0-1)
+    volume_oi_ratio_quantile: 0.8  # Quantile for unusual volume detection
+    otm_put_threshold: 0.95  # OTM threshold as fraction of current price
+    min_unusual_strikes: 3  # Minimum strikes for unusual activity pattern
+    tight_spread_pct: 5.0  # Tight spread percentage threshold
+    min_otm_put_activity: 3  # Minimum OTM puts for spread pattern
+    summer_months: [6, 7, 8]  # June, July, August for seasonal patterns
+
+# Intra-day analysis configuration
+intraday_analysis:
+  # Key algo trading times (24-hour format)
+  algo_times:
+    market_open: "09:30:00"      # Market open
+    algo_10am: "10:00:00"        # 10 AM algo updates
+    fomc_230pm: "14:30:00"       # FOMC/Fed 2:30 PM (special days)
+    gamma_330pm: "15:30:00"      # Gamma 3:30 PM (key validation time)
+    gamma_340pm: "15:40:00"      # Gamma 3:40 PM
+    gamma_350pm: "15:50:00"      # Gamma 3:50 PM
+    market_close: "16:00:00"     # Market close
+    extended_close: "16:15:00"   # Extended ETF close
+
+  # Market session configuration
+  market_session:
+    start_time: "09:30:00"       # Regular session start
+    end_time: "16:15:00"         # Extended session end
+    timezone: "America/New_York" # Market timezone
+
+  # Data collection intervals
+  data_intervals:
+    standard_interval: 10        # 10-minute snapshots
+    high_frequency_interval: 1   # 1-minute for critical times
+
+# Strike-level pattern detection configuration
+strike_level_patterns:
+  # Gamma concentration thresholds
+  gamma_concentration:
+    min_concentration_pct: 0.15    # 15% minimum concentration to detect
+    high_concentration_pct: 0.20   # 20% for high-confidence signals
+    max_distance_from_spot: 0.05   # 5% maximum distance from spot price
+
+  # Volume anomaly detection
+  volume_anomalies:
+    base_threshold: 100000         # 100K contracts minimum
+    multiplier_threshold: 3.0      # 3x average volume
+    confidence_volume: 500000      # 500K for high confidence
+
+  # Gamma walls detection
+  gamma_walls:
+    significance_threshold: 0.20   # 20% of total gamma
+    min_strikes_required: 2        # Minimum strikes for wall
+    proximity_range: 0.03          # 3% range around spot
+
+  # Pin setup configuration (Issue #73 validated)
+  pin_setup:
+    base_probability_multiplier: 2.0     # Base concentration to probability
+    friday_330pm_probability: 0.75       # Issue #73 validated success rate
+    min_concentration_for_pin: 0.15      # 15% minimum for pin detection
+    validated_setup_threshold: 0.15      # Threshold for validated Friday setup
+
+  # Compound pattern thresholds
+  compound_patterns:
+    high_probability_pin:
+      min_gamma_concentration: 0.20      # 20% gamma concentration required
+      require_volume_anomaly: true       # Volume anomaly must be present
+      require_friday_330pm: true         # Friday 3:30 PM timing required
+      combined_confidence_cap: 0.95      # Maximum combined confidence
+
+    volume_gamma_breakout:
+      min_gamma_concentration: 0.15      # 15% gamma concentration
+      require_gamma_walls: true          # Gamma resistance/support required
+      base_confidence: 0.75               # Base confidence level

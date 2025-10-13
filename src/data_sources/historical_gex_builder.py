@@ -20,7 +20,7 @@ Builds comprehensive historical GEX database by combining:
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.polygon_client import PolygonClient
 from src.data_sources.fed_data_integration import FedDataIntegration
-from src.gex.calculator import GEXCalculator
+from src.gex.gex_calculator import GEXCalculator
 from src.data_sources.historical_collector import HistoricalOptionsCollector
 from src.utils.date_utils import now_iso, now_timestamp, parse_date_string, calculate_duration_minutes
 import logging
@@ -505,23 +505,51 @@ class HistoricalGEXDatabaseBuilder:
     # === CORE METHODS FROM ORIGINAL ===
     
     def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None) :
-        """Get stock closing price for the date."""
-        # Try API first if available
+        """
+        Get REAL stock closing price for the date.
+
+        CRITICAL: Database must store REAL market prices, NEVER obfuscated values.
+        Obfuscation is ONLY for LLM analysis layer (data_obfuscation.py), not storage.
+
+        Methods (in priority order):
+        1. Check options_data for underlyingPrice column
+        2. Estimate from options using put-call parity
+        3. Fetch from market data API
+        4. ERROR if all methods fail (never store fake/obfuscated data)
+        """
+        # Method 1: Check for explicit underlying price in options data
+        if options_data is not None and 'underlyingPrice' in options_data.columns:
+            spot = float(options_data['underlyingPrice'].iloc[0])
+            self.logger.debug(f"Method 1: Got spot price from underlyingPrice column: {spot}")
+            return spot
+
+        # Method 2: Estimate from options data using put-call parity
+        if options_data is not None and not options_data.empty:
+            estimated = self.estimate_spot_from_options(options_data)
+            if estimated:
+                self.logger.info(f"Method 2: Estimated spot price from put-call parity: {estimated:.2f}")
+                return estimated
+
+        # Method 3: Fetch from market data API
         if self.has_stock_data:
             try:
-                price_data = self.stock_client.fetch_daily_bars(symbol, date, date)
-                if not price_data.empty:
-                    return float(price_data.iloc[0]['close'])
-            except (KeyError, ValueError, IndexError) as e:
-                self.logger.debug(f"Data parsing error for {symbol} {date}: {e}")
+                # Try to get closing price from Polygon
+                price = self.stock_client.get_daily_close(symbol, date)
+                if price:
+                    self.logger.info(f"Method 3: Fetched spot price from API: {price:.2f}")
+                    return price
             except Exception as e:
-                self.logger.debug(f"Unexpected error fetching stock price for {symbol} {date}: {e}")
-        
-        # Fallback: estimate from options data using put-call parity
-        if options_data is not None and len(options_data) > 0:
-            return self.estimate_spot_from_options(options_data)
-        
-        return None
+                self.logger.warning(f"Method 3 failed: Could not fetch price from API: {e}")
+
+        # NO FALLBACK TO 450.0 - Raise error instead of storing bad data
+        error_msg = (
+            f"Cannot determine real spot price for {symbol} {date}. "
+            f"All methods failed: underlyingPrice column missing, "
+            f"put-call parity estimation failed, API fetch failed. "
+            f"Database must store REAL prices only - refusing to store obfuscated/fake value."
+        )
+        self.logger.error(error_msg)
+        raise ValueError(error_msg)
     
     def estimate_spot_from_options(self, options_data: pd.DataFrame) :
         """Estimate spot price from options data using put-call parity."""
@@ -625,49 +653,78 @@ class HistoricalGEXDatabaseBuilder:
                                     spot_price) :
         """
         Calculate complete GEX profile for a trading day with validation.
+
+        CRITICAL: Must use calculate_dealer_gamma_exposure() to match validation pipeline.
         """
         try:
-            # Prepare options data for GEX calculator (convert format)
-            prepared_data = self.prepare_options_data_for_gex(options_data)
-            
-            if prepared_data.empty:
-                self.logger.warning(f"No valid options data after preparation for {symbol} {date}")
+            # Calculate dealer GEX using the SAME method as validation pipeline
+            # This returns a DataFrame with 'dealer_gex' column for each contract
+            gex_df = self.gex_calc.calculate_dealer_gamma_exposure(
+                options_data,
+                underlying_price=spot_price,
+                open_interest_multiplier=100
+            )
+
+            if gex_df.empty:
+                self.logger.warning(f"GEX calculation returned empty results for {symbol} {date}")
                 return None
-            
-            # Calculate GEX metrics using existing calculator
-            gex_results = self.gex_calc.calculate_daily_gex_metrics(prepared_data, spot_price)
-            
-            if not gex_results or 'net_gex' not in gex_results:
-                return None
-            
-            # Calculate flip point and regime  
-            gex_by_strike = gex_results.get('strikes_detail', {})
-            gamma_flip = gex_results.get('flip_point')
-            gex_regime = gex_results.get('regime', 'unknown')
-            
+
+            # Sum total dealer GEX (this is what validation uses)
+            total_gex = gex_df['dealer_gex'].sum()
+
+            # Separate call and put GEX
+            calls = gex_df[gex_df['type'] == 'call']
+            puts = gex_df[gex_df['type'] == 'put']
+            total_call_gex = calls['dealer_gex'].sum() if len(calls) > 0 else 0
+            total_put_gex = puts['dealer_gex'].sum() if len(puts) > 0 else 0
+
+            # Calculate strike-level GEX for database storage
+            gex_by_strike = {}
+            strike_groups = gex_df.groupby('strike')['dealer_gex'].sum()
+            for strike, gex_value in strike_groups.items():
+                gex_by_strike[str(strike)] = float(gex_value)
+
+            # Calculate gamma flip point (strike where GEX crosses zero)
+            gamma_flip = None
+            strikes_sorted = sorted([(k, v) for k, v in gex_by_strike.items()], key=lambda x: float(x[0]))
+
+            for i in range(len(strikes_sorted) - 1):
+                strike1, gex1 = float(strikes_sorted[i][0]), strikes_sorted[i][1]
+                strike2, gex2 = float(strikes_sorted[i+1][0]), strikes_sorted[i+1][1]
+
+                # Check for sign change
+                if (gex1 > 0 and gex2 < 0) or (gex1 < 0 and gex2 > 0):
+                    # Linear interpolation to find zero crossing
+                    gamma_flip = strike1 + (strike2 - strike1) * abs(gex1) / (abs(gex1) + abs(gex2))
+                    break
+
+            # Determine GEX regime
+            if total_gex > 0:
+                gex_regime = 'positive'
+            elif total_gex < 0:
+                gex_regime = 'negative'
+            else:
+                gex_regime = 'neutral'
+
             # Data quality assessment
             options_count = len(options_data)
             unique_strikes = options_data['strike'].nunique()
             unique_expirations = options_data['expiration'].nunique()
-            
+
             # Quality score based on data completeness (0-100)
             quality_score = min(100, int(
                 (unique_strikes / 50) * 40 +  # Strike coverage (40%)
                 (unique_expirations / 10) * 30 +  # Expiration coverage (30%)
                 (options_count / 500) * 30  # Volume of contracts (30%)
             ))
-            
-            # Calculate total call and put GEX from strikes detail
-            total_call_gex = sum(s.get('call_gex', 0) for s in gex_by_strike.values())
-            total_put_gex = sum(s.get('put_gex', 0) for s in gex_by_strike.values())
-            
+
             gex_profile = {
                 'symbol': symbol,
                 'date': date,
                 'spot_price': spot_price,
-                'total_gex': gex_results.get('net_gex', 0),
-                'net_call_gex': total_call_gex,
-                'net_put_gex': total_put_gex,
+                'total_gex': float(total_gex),
+                'net_call_gex': float(total_call_gex),
+                'net_put_gex': float(total_put_gex),
                 'gamma_flip_point': gamma_flip,
                 'flip_ratio': gamma_flip / spot_price if gamma_flip else None,
                 'gex_regime': gex_regime,
@@ -675,17 +732,19 @@ class HistoricalGEXDatabaseBuilder:
                 'data_quality_score': quality_score,
                 'options_count': options_count
             }
-            
+
             # Validate results
             if not self.validate_gex_results(gex_profile):
                 gex_profile['validation_status'] = 'suspicious'
             else:
                 gex_profile['validation_status'] = 'valid'
-            
+
             return gex_profile
-            
+
         except Exception as e:
             self.logger.error(f"Error calculating GEX for {symbol} {date}: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return None
     
     def get_fed_context(self, date) :

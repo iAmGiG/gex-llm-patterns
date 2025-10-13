@@ -5,7 +5,8 @@ Tools for analyzing options chain data with focus on patterns like
 Short Put Arbitrage and other institutional flow behaviors.
 """
 
-from utils.date_utils import now_iso
+from src.utils.date_utils import now_iso
+from src.utils.config_manager import get_config
 import logging
 import sys
 import os
@@ -17,6 +18,16 @@ class OptionsChainAnalyzer:
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
+
+        # Load configuration
+        config = get_config()
+        self.signal_strength_threshold = config.get('options_analysis.options_chain_analyzer.signal_strength_threshold', 0.6)
+        self.volume_oi_ratio_quantile = config.get('options_analysis.options_chain_analyzer.volume_oi_ratio_quantile', 0.8)
+        self.otm_put_threshold = config.get('options_analysis.options_chain_analyzer.otm_put_threshold', 0.95)
+        self.min_unusual_strikes = config.get('options_analysis.options_chain_analyzer.min_unusual_strikes', 3)
+        self.tight_spread_pct = config.get('options_analysis.options_chain_analyzer.tight_spread_pct', 5.0)
+        self.min_otm_put_activity = config.get('options_analysis.options_chain_analyzer.min_otm_put_activity', 3)
+        self.summer_months = config.get('options_analysis.options_chain_analyzer.summer_months', [6, 7, 8])
 
     def detect_short_put_arbitrage_signals(self, options_df):
         """
@@ -64,7 +75,7 @@ class OptionsChainAnalyzer:
             # Combine signals for pattern detection
             signal_strength = self._calculate_pattern_strength(
                 results["signals"])
-            results["pattern_detected"] = signal_strength > 0.6
+            results["pattern_detected"] = signal_strength > self.signal_strength_threshold
             results["signal_strength"] = signal_strength
 
             # Add detailed metrics
@@ -87,7 +98,7 @@ class OptionsChainAnalyzer:
             0)
 
         # Find strikes with unusually high volume vs OI
-        high_vol_threshold = puts_with_ratios["vol_oi_ratio"].quantile(0.8)
+        high_vol_threshold = puts_with_ratios["vol_oi_ratio"].quantile(self.volume_oi_ratio_quantile)
         unusual_puts = puts_with_ratios[
             (puts_with_ratios["vol_oi_ratio"] > high_vol_threshold) &
             (puts_with_ratios["volume"] > 0)
@@ -96,10 +107,10 @@ class OptionsChainAnalyzer:
         # Look for OTM puts specifically
         current_price = self._estimate_underlying_price(puts)
         otm_unusual_puts = unusual_puts[unusual_puts["strike"]
-                                        < current_price * 0.95]
+                                        < current_price * self.otm_put_threshold]
 
         return {
-            "detected": len(otm_unusual_puts) >= 3,  # Multiple strikes
+            "detected": len(otm_unusual_puts) >= self.min_unusual_strikes,
             "unusual_strikes": otm_unusual_puts["strike"].tolist(),
             "volume_ratios": otm_unusual_puts["vol_oi_ratio"].tolist(),
             "total_volume": otm_unusual_puts["volume"].sum(),
@@ -126,7 +137,7 @@ class OptionsChainAnalyzer:
         # High volume, tight spreads = urgency
         urgent_calls = calls_with_activity[
             (calls_with_activity["volume_score"] > 0.3) &
-            (calls_with_activity["spread_pct"] < 5.0)  # Tight spreads
+            (calls_with_activity["spread_pct"] < self.tight_spread_pct)
         ]
 
         return {
@@ -145,11 +156,11 @@ class OptionsChainAnalyzer:
 
         # Focus on OTM puts with volume
         otm_puts_with_volume = puts[
-            (puts["strike"] < current_price * 0.95) &
+            (puts["strike"] < current_price * self.otm_put_threshold) &
             (puts["volume"] > 0)
         ].copy()
 
-        if len(otm_puts_with_volume) < 3:
+        if len(otm_puts_with_volume) < self.min_otm_put_activity:
             return {"detected": False, "reason": "Insufficient OTM put activity"}
 
         # Check for coordinated activity across strikes
@@ -172,9 +183,9 @@ class OptionsChainAnalyzer:
 
     def _check_seasonal_context(self):
         """Check if current period matches summer month pattern."""
-        from datetime import datetime
-        current_month = datetime.now().month
-        is_summer = current_month in [6, 7, 8]  # June, July, August
+        from src.utils.date_utils import get_datetime_now
+        current_month = get_datetime_now().month
+        is_summer = current_month in self.summer_months
 
         return {
             "is_summer_period": is_summer,
@@ -268,7 +279,7 @@ def test_with_alpha_vantage_demo():
     try:
         # Use the updated Alpha Vantage client
         from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-        from src.cache import UnifiedCacheManager
+        from src.cache.unified_cache import UnifiedCacheManager
 
         # Initialize client with cache
         cache = UnifiedCacheManager()

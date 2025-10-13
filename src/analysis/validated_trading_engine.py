@@ -30,7 +30,7 @@ def calculate_kelly_position(win_rate, avg_win, avg_loss) -> float:
     return max(0, min(0.25, kelly * 0.25))
 
 
-def track_mae(trades_df) :
+def track_mae(trades_df):
     """Track how far trades go against you before winning (Maximum Adverse Excursion)."""
     mae_stats = {
         'avg_mae_winners': 0.0,
@@ -114,7 +114,7 @@ class ValidatedTradingEngine:
 
     def evaluate_gamma_trap_contrarian(self, gex_data: Dict, market_data: Dict,
                                        fed_context: Dict = None,
-                                       pattern_confidence: float = 0) :
+                                       pattern_confidence: float = 0):
         """
         Evaluate GAMMA_TRAP contrarian trading rule.
 
@@ -237,7 +237,7 @@ class ValidatedTradingEngine:
         # Return Kelly position size in dollars
         return account_value * kelly_fraction
 
-    def get_risk_parameters(self, rule_name) :
+    def get_risk_parameters(self, rule_name):
         """Get risk management parameters for a rule."""
 
         if rule_name not in self.rules:
@@ -254,7 +254,7 @@ class ValidatedTradingEngine:
             'expected_return': rule['expected_stats']['avg_return'] * 100
         }
 
-    def validate_rule_performance(self, rule_name) :
+    def validate_rule_performance(self, rule_name):
         """Validate current rule performance vs statistical expectations."""
 
         if rule_name not in self.rules:
@@ -282,7 +282,7 @@ class ValidatedTradingEngine:
 
 def create_production_trading_signal(date, gex_data: Dict, market_data: Dict,
                                      pattern_results: List[Dict],
-                                     fed_context: Dict = None) :
+                                     fed_context: Dict = None):
     """
     Create production trading signal with statistical validation.
 
@@ -325,69 +325,3 @@ def create_production_trading_signal(date, gex_data: Dict, market_data: Dict,
                     'gamma_trap_contrarian')
 
     return trading_signal
-
-
-def test_production_rules():
-    """Test production trading rules with sample data."""
-
-    print("PRODUCTION TRADING RULES TEST")
-    print("=" * 50)
-
-    # Sample data that should trigger contrarian rule
-    gex_data = {
-        'net_gex': -5_000_000,
-        'flip_point': 450.0,
-        'gex_regime': 'NEGATIVE_GAMMA_LOW'
-    }
-
-    market_data = {
-        'spot_price': 449.0  # Close to flip point
-    }
-
-    fed_context = {
-        'is_fomc_week': False,
-        'days_to_fomc': 10
-    }
-
-    pattern_results = [{
-        'pattern': 'gamma_trap',
-        'signal': 'CONTRARIAN',
-        'confidence': 90.0,
-        'expected_win_rate': 57.1
-    }]
-
-    # Create trading signal
-    signal = create_production_trading_signal(
-        '2024-01-15', gex_data, market_data, pattern_results, fed_context
-    )
-
-    print(f"Overall Action: {signal['overall_action']}")
-
-    if signal['overall_action'] == 'CONTRARIAN_TRADE':
-        primary = signal['primary_signal']
-        print(f"Direction: {primary['direction']}")
-        print(f"Position Size: {primary['position_size']:.1%}")
-        print(f"Stop Loss: {primary['stop_loss']:.1%}")
-        print(f"Profit Target: {primary['profit_target']:.1%}")
-        print(f"Risk/Reward: {primary['risk_reward_ratio']:.1f}:1")
-
-        print(f"\nConditions Met:")
-        for condition in primary['conditions_met']:
-            print(f"  ✅ {condition}")
-
-        risk = signal['risk_assessment']
-        print(f"\nRisk Parameters:")
-        print(f"  Expected Win Rate: {risk['expected_win_rate']:.1f}%")
-        print(f"  Expected Return: {risk['expected_return']:.2f}%")
-        print(f"  Max Holding: {risk['max_holding_days']} days")
-
-        validation = signal['statistical_validation']
-        print(f"\nStatistical Validation:")
-        for note in validation['validation_notes']:
-            print(f"  📊 {note}")
-
-    return signal
-
-
-if __name__ == "__main__":
-    test_production_rules()

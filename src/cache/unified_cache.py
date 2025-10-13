@@ -16,9 +16,14 @@ samples/                 # Synthetic data (separate)
 import json
 from pathlib import Path
 import pandas as pd
-import datetime
 import logging
-from src.utils.date_utils import now_iso
+from src.utils.date_utils import (
+    now_iso,
+    today_str,
+    get_datetime_now,
+    get_datetime_from_timestamp,
+    subtract_days
+)
 
 
 class UnifiedCacheManager:
@@ -29,14 +34,14 @@ class UnifiedCacheManager:
         self.base_dir = Path(base_dir)
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Create cache directories
+        # Define cache directories (created lazily when needed)
         self.market_data_dir = self.base_dir / "market_data"
         self.options_dir = self.base_dir / "options"
         self.news_dir = self.base_dir / "news"
         self.metadata_dir = self.base_dir / "metadata"
 
-        for dir_path in [self.market_data_dir, self.options_dir, self.news_dir, self.metadata_dir]:
-            dir_path.mkdir(parents=True, exist_ok=True)
+        # Only create base directory, others created when first used
+        self.base_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize GEX cache manager (lazy loading)
         self._gex_cache = None
@@ -181,7 +186,7 @@ class UnifiedCacheManager:
                 end = df['timestamp'].max().strftime('%Y-%m-%d')
                 date_range = f"{start}_{end}"
             elif not date_range:
-                date_range = datetime.datetime.now().strftime('%Y-%m-%d')
+                date_range = today_str()
 
             # Path: .cache/news/SPY/2024-01-01_2024-12-31.json
             category_dir = self.news_dir / category
@@ -319,13 +324,12 @@ class UnifiedCacheManager:
     def cleanup_cache(self, older_than_days: int = 30) -> int:
         """Clean up old cache files."""
         try:
-            cutoff_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
+            cutoff_time = subtract_days(get_datetime_now(), older_than_days)
             cleaned = 0
 
             for file_path in self.base_dir.rglob('*.pickle'):
                 if file_path.is_file():
-                    file_time = datetime.datetime.fromtimestamp(
-                        file_path.stat().st_mtime)
+                    file_time = get_datetime_from_timestamp(file_path.stat().st_mtime)
 
                     if file_time < cutoff_time:
                         file_path.unlink()
@@ -376,14 +380,15 @@ class UnifiedCacheManager:
                     f"No options data available for GEX calculation: {symbol} {trading_date}")
                 return None
 
-            # 3. Calculate GEX using existing engine
-            from src.gex.sample_data_gex import SampleDataGEXInterface
-            gex_interface = SampleDataGEXInterface()
+            # 3. Calculate GEX using live data engine
+            from src.gex.live_gex_interface import LiveGEXInterface
+            gex_interface = LiveGEXInterface()
 
-            gex_results = gex_interface.calculate_gex_metrics(
-                options_data,
+            gex_results = gex_interface.calculate_gex_for_symbol(
                 symbol=symbol,
-                trading_date=trading_date
+                trading_date=trading_date,
+                spot_price=None,  # Auto-detect from data
+                options_data=options_data  # Pass the live cached data
             )
 
             if gex_results and gex_results.get('status') == 'success':

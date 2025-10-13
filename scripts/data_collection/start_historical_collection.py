@@ -15,9 +15,9 @@ from pathlib import Path
 
 # Add src to path
 project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root / 'src'))
+sys.path.append(str(project_root))
 
-from data_sources.historical_collector import HistoricalOptionsCollector
+from src.data_sources.historical_collector import HistoricalOptionsCollector
 
 
 def setup_logging(log_level='INFO', log_file=None):

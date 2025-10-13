@@ -59,9 +59,8 @@ class GEXCacheManager:
         self.gex_cache_dir.mkdir(parents=True, exist_ok=True)
         self.index_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create common symbol directories
-        for symbol in ['SPY', 'SPX', 'QQQ', 'IWM']:
-            (self.gex_cache_dir / symbol).mkdir(exist_ok=True)
+        # Symbol directories created lazily when first used (on-demand)
+        # This aligns with the lazy loading philosophy used in UnifiedCacheManager
 
     def _setup_index(self):
         """Initialize SQLite index for fast GEX lookup."""

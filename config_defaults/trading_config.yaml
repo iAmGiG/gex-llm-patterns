@@ -1,0 +1,62 @@
+# Trading Configuration
+# Parameters for trading systems and risk management
+
+validated_trading_engine:
+  # Position sizing parameters
+  position_sizing:
+    # Conservative position size (percentage of portfolio)
+    conservative_position_pct: 1.5
+
+    # Kelly Criterion optimal position size (percentage)
+    kelly_optimal_pct: 7.1
+
+    # Maximum position size allowed (percentage)
+    max_position_pct: 10.0
+
+  # Risk management parameters
+  risk_management:
+    # Stop loss percentage
+    stop_loss_pct: 1.0
+
+    # Profit target percentage
+    profit_target_pct: 1.5
+
+    # Maximum holding period (days)
+    max_holding_days: 2
+
+    # Daily loss limit (percentage of portfolio)
+    daily_loss_limit_pct: 2.0
+
+  # Pattern-specific parameters
+  gamma_trap_strategy:
+    # Minimum confidence threshold for entry
+    min_confidence: 75.0
+
+    # Maximum distance from flip point (percentage)
+    max_flip_distance: 5.0
+
+    # Required GEX regime for pattern
+    required_gex_regime: "negative"
+
+    # FOMC avoidance window (days)
+    fomc_avoidance_days: 7
+
+concurrent_gex_processor:
+  # Maximum worker threads for concurrent processing
+  max_workers: 4
+
+  # Batch size for processing operations
+  batch_size: 100
+
+  # Memory usage threshold for batch processing (MB)
+  memory_threshold_mb: 1000
+
+cache_management:
+  # Cache expiration time (hours)
+  default_cache_hours: 24
+
+  # Maximum cache size (MB)
+  max_cache_size_mb: 500
+
+  # Cache cleanup interval (hours)
+  cleanup_interval_hours: 6

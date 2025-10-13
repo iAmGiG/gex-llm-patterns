@@ -1,0 +1,147 @@
+# Continuous Testing Configuration
+# Parameterized config for all testing types with command-line overrides
+
+# Test Configuration - All dates parameterized via command line
+test_config:
+  default_symbol: "SPY"  # Override with --symbol
+  # Dates fully parameterized - no defaults to force intentional selection
+  account_size: 50000  # For P&L visualization
+  commission: 0.001    # 0.1% per trade
+  slippage: 0.001      # 0.1% per trade
+  min_trades_for_significance: 20  # Statistical significance threshold (lowered for shorter tests)
+
+# Experiment Configuration - Built dynamically in test
+experiment_config:
+  # Experiment types will be set via --experiment-type parameter
+  # Naming will be auto-generated: {experiment_type}_{symbol}_{start_date}_{end_date}
+  auto_generate_names: true
+
+# Strategy Parameters
+strategies:
+  raw_gex_baseline:
+    name: "Raw Negative GEX"
+    description: "Trade every negative GEX day mechanically"
+    enabled: true
+    position_sizing: 0.015  # 1.5% conservative
+
+  technical_baseline:
+    name: "Technical Indicators"
+    description: "MACD + RSI weighted voting"
+    enabled: false  # Disabled - focusing on GEX vs LLM only
+    position_sizing: 0.015  # 1.5% conservative
+
+  llm_strategy:
+    name: "O3-mini LLM"
+    description: "MarketMechanicsAgent with WHO/WHOM/WHAT analysis"
+    enabled: true
+    confidence_threshold: 50  # Standard threshold for gamma concentration detection
+    max_trades_per_test: 100  # Flexible for continuous testing
+    # Enhanced pattern detection settings
+    enhanced_patterns:
+      gamma_concentration: true      # Primary pattern for 0DTE validation
+      volume_anomaly: true          # Secondary pattern
+      compound_patterns: true       # High probability combinations
+    # LLM-specific risk adjustments
+    position_sizing_by_confidence:
+      30-50: 0.01   # 1% position for low confidence
+      50-70: 0.015  # 1.5% position for medium confidence
+      70-100: 0.02  # 2% position for high confidence
+
+# Risk Management (consistent across all strategies)
+risk_management:
+  stop_loss_pct: 0.01      # 1% stop loss
+  profit_target_pct: 0.015 # 1.5% profit target
+  max_holding_days: 2      # Maximum holding period
+  daily_loss_limit: 0.02  # 2% daily loss limit
+
+# Performance Targets - Configurable for different test types
+targets:
+  # 0DTE Daily Validation targets
+  daily_0dte:
+    hypothesis_confirmation: 0.60  # 60%+ success rate (primary target)
+    friday_baseline: 0.75         # Friday's validated 75% success rate
+    minimum_viable: 0.50          # Minimum to be considered working
+
+  # General performance targets
+  standard_performance:
+    win_rate: 0.60         # 60%+ win rate
+    expected_value: 0.005  # 0.5%+ expected value per trade
+    sharpe_ratio: 1.0      # Sharpe ratio >1.0
+    max_drawdown: 0.03     # Maximum drawdown <3%
+
+  # Baseline comparison targets
+  vs_mechanical:
+    beat_raw_gex: 0.43     # Beat baseline 43%
+    positive_ev: 0.0       # Positive EV (turn negative to positive)
+
+# Data Sources
+data_sources:
+  market_data:
+    primary: "alpha_vantage_premium"
+    fallback: "autogen_tools_cache"
+    use_cache: true
+
+  options_data:
+    primary: "alpha_vantage_premium"
+    fallback: "cache_only"  # Changed from sample_data to ensure real data only
+    use_cache: true
+
+# Output Configuration
+output:
+  save_detailed_results: true
+  results_directory: "reports/baseline_comparison"
+  include_metadata: true
+  log_level: "INFO"
+
+# Multi-ticker Testing Plan
+multi_ticker_plan:
+  tickers:
+    - symbol: "SPY"
+      price_range: "$450+"
+      account_size: 50000
+      description: "S&P 500 ETF baseline"
+
+    - symbol: "QQQ"
+      price_range: "$350+"
+      account_size: 50000
+      description: "NASDAQ technology focus"
+
+    - symbol: "AAPL"
+      price_range: "$175+"
+      account_size: 50000
+      description: "Individual blue chip"
+
+    - symbol: "MSFT"
+      price_range: "$350+"
+      account_size: 50000
+      description: "High-value individual stock"
+
+# Expected Baseline Performance (from historical analysis)
+expected_baseline:
+  raw_gex:
+    win_rate: 0.43
+    expected_value: -0.0028  # -0.28% typical
+    sharpe_ratio: -0.15
+    max_drawdown: -0.045     # -4.5%
+    trade_frequency: 0.32    # 32% of days
+
+  technical_indicators:
+    win_rate: 0.51
+    expected_value: 0.001    # +0.1% typical
+    sharpe_ratio: 0.5
+    max_drawdown: -0.025     # -2.5%
+    trade_frequency: 0.07    # 7% of days (selective)
+
+# LLM Configuration
+llm_config:
+  model: "O3-mini"
+  agent_class: "MarketMechanicsAgent"
+  analysis_method: "WHO/WHOM/WHAT market mechanics"
+  cost_per_query: 0.00176  # $0.00176 per query
+  timeout_seconds: 30
+  retry_attempts: 2
+  # Agent-specific configuration
+  min_signal_confidence: 30  # Lowered from default 50% to generate more signals
+  gex_thresholds:
+    gamma_concentration_threshold: 0.5  # Lowered from 0.7 for more sensitivity
+    significant_gex_threshold: 300000000  # 300M instead of 500M for more pattern detection

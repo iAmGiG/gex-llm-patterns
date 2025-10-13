@@ -2,26 +2,14 @@
 GEX Calculation Module
 
 Core gamma exposure calculation engine for dealer positioning analysis.
-Provides comprehensive GEX calculations, validation, market regime analysis,
-and advanced Greeks computations including second and third-order derivatives.
+Production-ready GEX calculations and pattern detection.
 """
 
-from .calculator import GEXCalculator
-from .validator import GEXValidator
-from .greeks import AdvancedGreeks
-
-# Legacy imports (existing modules)
-try:
-    from .flip_point_detector import FlipPointDetector
-    from .level_aggregator import LevelAggregator
-    from .gex_calculator import GEXCalculator as LegacyGEXCalculator
-except ImportError:
-    pass
+from .gex_calculator import GEXCalculator
+from .enhanced_pattern_detector import EnhancedPatternDetector
+# Sample data interface removed - use LiveGEXInterface with real data only
 
 __all__ = [
-    'GEXCalculator', 
-    'GEXValidator',
-    'AdvancedGreeks',
-    'FlipPointDetector', 
-    'LevelAggregator'
+    'GEXCalculator',
+    'EnhancedPatternDetector'
 ]

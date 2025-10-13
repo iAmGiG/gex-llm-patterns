@@ -5,6 +5,7 @@ Validates and cleans Alpha Vantage options data for GEX calculations.
 
 import pandas as pd
 import logging
+from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +39,13 @@ class OptionsDataValidator:
         Argsict_mode: If True, raises errors on validation failures.
                         If False, logs warnings and attempts to fix.
         """
+        config = get_config()
+
         self.strict_mode = strict_mode
         self.validation_report = {}
+
+        # Load validation thresholds from config
+        self.put_call_parity_tolerance = config.get('validation.options_data_validator.put_call_parity_tolerance', 0.2)
 
     def validate(self, df):
         """
@@ -232,7 +238,7 @@ class OptionsDataValidator:
                     if 'delta' in df.columns:
                         delta_diff = abs(
                             (call_data['delta'] - put_data['delta']) - 1)
-                        if delta_diff > 0.2:  # Allow 20% deviation
+                        if delta_diff > self.put_call_parity_tolerance:
                             msg = f"Put-call parity violation for {symbol} {strike} {exp}: delta diff={delta_diff:.3f}"
                             self.validation_report['warnings'].append(msg)
 
@@ -315,8 +321,13 @@ class OptionsDataValidator:
 
         # Calculate average days to expiry
         if 'date' in df.columns and 'expiration' in df.columns:
-            days_to_exp = (df['expiration'] - df['date']).dt.days
-            metrics['avg_days_to_expiry'] = days_to_exp.mean()
+            try:
+                from src.utils.date_utils import calculate_days_to_expiration
+                days_to_exp = calculate_days_to_expiration(df['expiration'], df['date'])
+                metrics['avg_days_to_expiry'] = days_to_exp.mean()
+            except Exception as e:
+                logger.warning(f"Could not calculate days to expiry: {e}")
+                metrics['avg_days_to_expiry'] = None
 
         # IV distribution
         if 'implied_volatility' in df.columns:

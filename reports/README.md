@@ -1,120 +1,73 @@
-# Reports Directory Structure
+# Reports Directory
 
-This directory contains all analysis outputs, calculation results, and generated reports.
-**IMPORTANT**: This is separate from `.cache/` which only stores raw input data.
+This directory contains validation reports and historical archives.
 
-## Directory Structure
+## Structure (October 11, 2025)
 
 ```
 reports/
-├── gex_calculations/          # GEX calculation results and metrics
-├── pattern_analysis/          # Pattern detection and LLM analysis outputs
-├── data_quality/             # Data validation and quality reports
-├── agent_outputs/            # Multi-agent conversation logs and results
-├── demo_results/             # Testing and demo outputs (safe to delete)
-└── README.md                 # This file
+├── validation/              # System validation and testing reports
+│   ├── pattern_taxonomy/   # Pattern taxonomy validation (Issue #79, Oct 2025)
+│   ├── pattern_taxonomy_DEPRECATED_ISSUE81/  # Deprecated: obfuscation bug (Oct 2025)
+│   └── daily_tests/        # Daily testing results and raw data
+├── archive/               # Historical reports and deprecated analyses
+│   └── archived_experiments/  # Historical development iterations
+└── README.md              # This documentation
 ```
 
-## Usage Guidelines
+**Note**: All validation YAML files are gitignored and generated locally. Corrupt Q1-Q3 YAMLs (based on 450.0 database) deleted Oct 11, 2025 - will be regenerated with corrected database.
 
-### ✅ **Store Here**
-- GEX calculation results (JSON/CSV)
-- Pattern analysis reports
-- Agent conversation logs
-- Data quality assessments
-- Generated charts and visualizations
-- Research findings and summaries
-- Demo and testing outputs
+## Current Status (October 11, 2025)
 
-### ❌ **Don't Store Here**
-- Raw market data (belongs in `.cache/`)
-- Original options chains (belongs in `.cache/`)
-- Input datasets (belongs in `samples/` or `.cache/`)
-- Source code or configuration files
+### 🔬 **Pattern Taxonomy Validation** (`validation/pattern_taxonomy/`)
 
-## File Naming Conventions
+**Purpose:** Issue #79 - Validate `dealer_gamma_hedging` pattern across Q1-Q4 2024
 
-### GEX Calculations
-```
-gex_calculations/
-├── SPY_2024-01-15_gex_results.json
-├── SPX_2024-01-15_gex_results.json
-└── daily_gex_summary_2024-01.csv
-```
+**Status:** 🔄 RE-VALIDATING - Database rebuilt with REAL prices (no more 450.0!)
 
-### Pattern Analysis
-```
-pattern_analysis/
-├── short_put_arbitrage_2024-01-15.json
-├── pattern_detection_log_2024-01.txt
-└── llm_analysis_SPY_jan2024.md
-```
+**Critical Fix Applied:**
+- **Problem**: Database stored obfuscated 450.0 prices → corrupt forward returns (42.77% Q3 max)
+- **Fix**: `historical_gex_builder.py` now uses put-call parity + API, refuses fake prices
+- **Impact**: All Q1-Q3 validation YAMLs deleted (corrupt), regenerating with corrected database
 
-### Agent Outputs
-```
-agent_outputs/
-├── multi_agent_conversation_20240115_143022.json
-├── data_retrieval_log_SPY_jan2024.txt
-└── gex_calculation_session_20240115.json
-```
+**Validation Framework:**
+- **Obfuscation:** LLM receives "Day T+0" instead of real dates
+- **Pattern**: `dealer_gamma_hedging` (consolidated from 3 patterns)
+- **Test Period**: Q1-Q4 2024 (198 dates with real spot prices)
+- **Threshold:** ≥60% detection rate with ≥30 samples
 
-### Demo Results
-```
-demo_results/
-├── test_gex_calculation_20240115.json
-├── sample_pattern_analysis.json
-└── agent_workflow_demo.txt
-```
+**Background Jobs Running:**
+- Q1 2024: Re-validation with corrected database
+- Q2 2024: Partial (Jun only, Apr-May missing from cache)
+- Q3 2024: Re-validation in progress
+- Q4 2024: Pending data collection completion
 
-## File Formats
+### 📚 **Archive** (`archive/`)
 
-### Recommended Formats
-- **JSON**: Structured data, API responses, calculation results
-- **CSV**: Tabular data, time series, summary statistics
-- **Markdown**: Analysis reports, documentation, summaries
-- **TXT**: Logs, conversation transcripts, debugging output
+Historical reports and deprecated analyses:
+- **`archived_experiments/`** - Evolution from aggregate to strike-level GEX analysis
 
-### Timestamp Format
-Use ISO format for timestamps: `YYYYMMDD_HHMMSS`
-- Example: `20240115_143022` for 2024-01-15 14:30:22
+### ⚠️ **Deprecated** (`validation/pattern_taxonomy_DEPRECATED_ISSUE81/`)
 
-## Cleanup Policy
+Previous validation results (obfuscation bug discovered Oct 7, 2025). See that directory's README for details.
 
-### Keep Indefinitely
-- `gex_calculations/` - Research results
-- `pattern_analysis/` - Analysis outputs
-- `data_quality/` - Quality assessments
+---
 
-### Regular Cleanup (Monthly)
-- `demo_results/` - Testing outputs
-- Old files in `agent_outputs/` (>30 days)
+## Key Findings (Q1 2024 - Validated)
 
-### Git Tracking
-- Include report structure in git
-- **Exclude large data files** with .gitignore
-- Include sample reports as examples
+✅ **Pattern Consolidation** - Three patterns (gamma_positioning, stock_pinning, 0dte_hedging) are identical
+✅ **90.38% Predictive Accuracy** - dealer_gamma_hedging pattern on 53 trading days
+✅ **+0.70% Net Alpha** - After 5bps transaction costs
+✅ **100% Detection Rate** - Pattern detected on all negative GEX days
 
-## Integration with Tools
+## Data Quality Issues Resolved
 
-Tools should save outputs using this pattern:
-```python
-import json
-from datetime import datetime
-from pathlib import Path
+❌ **Database Corruption (Fixed Oct 11, 2025)** - Hardcoded 450.0 obfuscation stored permanently
+- **Impact**: Q3 showed impossible 42.77% daily moves (SPY doesn't move that much!)
+- **Root Cause**: Storage layer violated separation of concerns (obfuscation should be analysis-only)
+- **Fix**: Database rebuilt with real prices using put-call parity estimation
+- **See**: `docs/guides/database-corruption-fix-status.md` for full postmortem
 
-def save_gex_results(symbol, results):
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    filename = f"{symbol}_{timestamp}_gex_results.json"
-    
-    reports_dir = Path("reports/gex_calculations")
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    
-    with open(reports_dir / filename, 'w') as f:
-        json.dump(results, f, indent=2)
-```
+---
 
-This separation ensures:
-- Clean cache containing only input data
-- Organized research outputs
-- Easy cleanup of temporary results
-- Clear distinction between data and analysis
+*All reports use obfuscated data at analysis time to prevent LLM memorization. Database now stores REAL market data only.*

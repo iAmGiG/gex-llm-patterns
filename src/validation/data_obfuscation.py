@@ -4,7 +4,34 @@ Data Obfuscation Utilities for LLM Trading Validation
 This module provides functions to remove temporal and ticker references
 that could allow LLMs to use training knowledge rather than genuine analysis.
 
-Critical for Issue #134: Validate LLM trading decisions without data leakage.
+Critical for Issue #61: Validate LLM trading decisions without data leakage.
+
+Key Problem Solved:
+    LLMs can "cheat" by recognizing famous market events from training data:
+    - "GameStop January 2021" → LLM recalls documented squeeze mechanics
+    - "COVID crash March 2020" → LLM knows about put hedging dynamics
+
+    This obfuscation ensures genuine analytical capability testing.
+
+Transformations:
+    - Dates: "2021-01-28" → "Day T+17"
+    - Tickers: "GME" → "STOCK_G", "SPY" → "INDEX_1"
+    - Context: Remove market event references (COVID, Fed, specific years)
+
+Usage:
+    from src.validation.data_obfuscation import DataObfuscator
+
+    obfuscator = DataObfuscator()
+
+    # Obfuscate dates
+    date_mapping = obfuscator.obfuscate_dates(["2021-01-25", "2021-01-28"])
+
+    # Obfuscate tickers
+    ticker_mapping = obfuscator.obfuscate_tickers(["GME", "SPY"])
+
+    # Result: Anonymous data that LLM must analyze genuinely
+
+See docs/data-obfuscation.md for comprehensive documentation.
 """
 
 import pandas as pd

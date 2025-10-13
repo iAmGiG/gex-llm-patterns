@@ -57,7 +57,6 @@ class StatisticalValidator:
             if not isinstance(data, dict):
                 continue
 
-            total_occurrences = data.get('total_occurrences', 0)
             valid_returns = data.get('valid_returns', 0)
 
             if valid_returns < self.min_samples:
@@ -418,9 +417,9 @@ class StatisticalValidator:
             'analysis_date': now_iso()
         }
 
-        # Basic statistics
-        mean_return = np.mean(returns)
-        win_rate = np.sum(returns > 0) / len(returns)
+        # Basic statistics (calculated but not used in this function)
+        # mean_return = np.mean(returns)
+        # win_rate = np.sum(returns > 0) / len(returns)
 
         # 1. One-sample t-test (vs zero return)
         t_stat, t_p_value = self.t_test_one_sample(returns, null_mean=0.0)

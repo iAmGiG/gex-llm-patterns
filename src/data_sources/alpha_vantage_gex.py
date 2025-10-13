@@ -192,7 +192,7 @@ class AlphaVantageGEXClient:
         """
         if not self._check_rate_limit():
             cached_only = self.cache.get_market_data(
-                symbol, start_date, end_date, "daily_stock"
+                symbol, start_date, end_date
             )
             if cached_only is not None:
                 return cached_only
@@ -208,7 +208,7 @@ class AlphaVantageGEXClient:
 
             # Check cache first
             cached_data = self.cache.get_market_data(
-                symbol, processed_start, processed_end, "daily_stock"
+                symbol, processed_start, processed_end
             )
             if cached_data is not None:
                 self.logger.info(f"Using cached stock data for {symbol}")
@@ -217,10 +217,15 @@ class AlphaVantageGEXClient:
             self.logger.info(
                 f"Fetching stock data for {symbol} from {processed_start} to {processed_end}")
 
-            # Determine outputsize based on date range
+            # Determine outputsize based on whether we need historical data
+            end_date_obj = datetime.datetime.strptime(processed_end, "%Y-%m-%d")
+            now = datetime.datetime.now()
+            days_from_now = (now - end_date_obj).days
+
+            # Use full output if requesting historical data (>30 days old) or large range
             days_range = (datetime.datetime.strptime(processed_end, "%Y-%m-%d") -
                           datetime.datetime.strptime(processed_start, "%Y-%m-%d")).days
-            use_full = days_range > 100
+            use_full = days_from_now > 30 or days_range > 100
 
             params = {
                 "function": "TIME_SERIES_DAILY",
@@ -274,9 +279,7 @@ class AlphaVantageGEXClient:
             df = localize_df(df, get_default_timezone())
 
             # Cache for future use (critical for rate limits)
-            self.cache.set_market_data(
-                symbol, processed_start, processed_end, "daily_stock", df
-            )
+            self.cache.store_market_data(symbol, df, processed_start, processed_end)
 
             return df
 
