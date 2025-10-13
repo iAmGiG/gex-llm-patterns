@@ -119,6 +119,13 @@ ipython_config.py
 # Sample data (Alpha Vantage examples - keep local only)
 sample_data/
 
+# Generated reports (validation outputs, experiment results)
+reports/validation/**/*.yaml
+reports/experiments/*.yaml
+reports/testing/
+!reports/validation/**/README.md
+!reports/**/README.md
+
 # CSV files from cache/deprecated (data outputs, not research results)
 .cache/**/*.csv
 deprecated/**/*.csv
@@ -234,3 +241,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .clauderc
+config/config.json

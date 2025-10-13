@@ -3,21 +3,13 @@ Baseline Comparison System
 Compares pattern-based trading strategies against simple baselines to validate edge.
 """
 
-from utils.date_utils import (
-    today_str, add_business_days, next_business_day,
-    date_range_trading_days, process_date_param, now_iso
-)
 import sqlite3
 import pandas as pd
 import numpy as np
-from typing import Dict
-import logging
-import sys
+from typing import Dict, Optional, List
 from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
+import logging
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -122,7 +114,6 @@ class BaselineComparison:
         for i in range(len(market_data) - 1):
             current_gex = market_data.iloc[i]['total_gex']
             current_price = market_data.iloc[i]['spot_price']
-            next_price = market_data.iloc[i + 1]['spot_price']
 
             # Determine position based on GEX
             if current_gex > 0:  # Positive GEX - go long
@@ -233,53 +224,114 @@ class BaselineComparison:
 
         return {'strategy': 'Random Baseline', 'total_return': 0}
 
+    def _load_validation_results(self, pattern_name: str, symbol: str = 'SPY',
+                                 start_date: str = None, end_date: str = None) -> List[Dict]:
+        """
+        Load pattern validation results from YAML files.
+
+        Returns list of detections with outcome metrics.
+        """
+        # Look for validation YAML files
+        validation_dir = Path('reports/validation/pattern_taxonomy')
+
+        # Find matching YAML file (e.g., dealer_gamma_hedging_SPY_2024Q1.yaml)
+        pattern_files = list(validation_dir.glob(f"{pattern_name}_{symbol}_*.yaml"))
+
+        # Fallback: try legacy pattern names if consolidated pattern not found
+        if not pattern_files and pattern_name == 'dealer_gamma_hedging':
+            legacy_names = ['gamma_positioning', 'stock_pinning', '0dte_hedging']
+            for legacy_name in legacy_names:
+                pattern_files = list(validation_dir.glob(f"{legacy_name}_{symbol}_*.yaml"))
+                if pattern_files:
+                    logger.info(f"Using legacy pattern file: {legacy_name} (consolidated as dealer_gamma_hedging)")
+                    break
+
+        if not pattern_files:
+            logger.warning(f"No validation file found for pattern {pattern_name}")
+            return []
+
+        # Load the most recent file
+        validation_file = sorted(pattern_files)[-1]
+
+        with open(validation_file, 'r') as f:
+            validation_data = yaml.safe_load(f)
+
+        detections = validation_data.get('detections', [])
+
+        # Filter by date range if specified
+        if start_date or end_date:
+            filtered = []
+            for det in detections:
+                det_date = det.get('date')
+                if start_date and det_date < start_date:
+                    continue
+                if end_date and det_date > end_date:
+                    continue
+                filtered.append(det)
+            return filtered
+
+        return detections
+
     def _calculate_pattern_strategy(self, conn: sqlite3.Connection, start_date: str, end_date: str) -> Dict:
         """Calculate performance of our validated contrarian pattern strategy."""
 
-        # Get pattern trades with returns (our existing analysis)
-        pattern_query = f'''
-            SELECT 
-                p.date,
-                p.confidence,
-                (d2.spot_price - d1.spot_price) / d1.spot_price * 100 as directional_return,
-                (d1.spot_price - d2.spot_price) / d1.spot_price * 100 as contrarian_return,
-                CASE WHEN d2.spot_price > d1.spot_price THEN 1 ELSE 0 END as directional_win,
-                CASE WHEN d1.spot_price > d2.spot_price THEN 1 ELSE 0 END as contrarian_win
-            FROM pattern_detections p
-            JOIN daily_gex_metrics d1 ON p.symbol = d1.symbol AND p.date = d1.date
-            LEFT JOIN daily_gex_metrics d2 
-                ON d2.symbol = 'SPY'
-                AND date(d2.date) = date(p.date, '+1 day')
-            WHERE p.symbol = 'SPY' 
-            AND d2.spot_price IS NOT NULL
-            AND p.date BETWEEN '{start_date}' AND '{end_date}'
-            AND p.confidence >= 85  -- High confidence only
-        '''
+        # NEW: Load from validation YAML files instead of database
+        # Using consolidated dealer_gamma_hedging pattern (Issue #79 consolidation)
+        # Note: gamma_positioning, stock_pinning, 0dte_hedging are aliases of same pattern
+        detections = self._load_validation_results(
+            pattern_name='dealer_gamma_hedging',  # Consolidated pattern (Oct 2025)
+            symbol='SPY',
+            start_date=start_date,
+            end_date=end_date
+        )
 
-        pattern_trades = pd.read_sql(pattern_query, conn)
+        if not detections:
+            logger.warning("No pattern detections found in validation files")
+            return {'strategy': 'Pattern Contrarian', 'total_return': 0, 'trades': 0}
 
-        if not pattern_trades.empty:
-            # Use contrarian returns (validated strategy)
-            contrarian_returns = pattern_trades['contrarian_return'].values
-            contrarian_wins = pattern_trades['contrarian_win'].values
+        # Extract returns from validation results
+        pattern_returns = []
+        high_confidence_count = 0
 
-            total_return = np.sum(contrarian_returns)
-            win_rate = np.mean(contrarian_wins) * 100
+        for det in detections:
+            # Check confidence threshold (>= 85 for high confidence)
+            confidence = det.get('narrative', {}).get('confidence', 0)
 
-            return {
-                'strategy': 'Pattern Contrarian',
-                'total_return': total_return,
-                'annualized_return': (total_return / len(pattern_trades)) * 252,
-                'volatility': contrarian_returns.std() * np.sqrt(252) if len(contrarian_returns) > 1 else 0,
-                'sharpe': (contrarian_returns.mean() * np.sqrt(252)) / (contrarian_returns.std() * np.sqrt(252)) if contrarian_returns.std() > 0 else 0,
-                'max_drawdown': self._calculate_max_drawdown(contrarian_returns),
-                'trades': len(contrarian_returns),
-                'win_rate': win_rate,
-                'avg_trade': contrarian_returns.mean(),
-                'confidence_threshold': 85
-            }
+            if confidence >= 85:
+                high_confidence_count += 1
 
-        return {'strategy': 'Pattern Contrarian', 'total_return': 0, 'trades': 0}
+                # Get outcome metrics
+                outcome = det.get('outcome_metrics', {})
+                forward_return = outcome.get('forward_1d_return_pct', 0)
+
+                # Trade WITH the prediction (not against it!)
+                # Negative GEX → market goes down → LLM predicts correctly
+                # We capture the actual forward return as our PnL
+                pattern_returns.append(forward_return)
+
+        if not pattern_returns:
+            return {'strategy': 'Dealer Gamma Hedge', 'total_return': 0, 'trades': 0}
+
+        # Calculate performance metrics from validation results
+        returns_array = np.array(pattern_returns)
+        wins = returns_array > 0
+        win_rate = wins.mean() * 100
+        total_return = np.sum(returns_array)
+
+        return {
+            'strategy': 'Dealer Gamma Hedge',
+            'total_return': total_return,
+            'annualized_return': (total_return / len(returns_array)) * 252,
+            'volatility': returns_array.std() * np.sqrt(252) if len(returns_array) > 1 else 0,
+            'sharpe': (returns_array.mean() * np.sqrt(252)) / (returns_array.std() * np.sqrt(252)) if returns_array.std() > 0 else 0,
+            'max_drawdown': self._calculate_max_drawdown(returns_array),
+            'trades': len(returns_array),
+            'win_rate': win_rate,
+            'avg_trade': returns_array.mean(),
+            'confidence_threshold': 85,
+            'data_source': 'validation_yaml',
+            'pattern_name': 'dealer_gamma_hedging'  # Consolidated pattern
+        }
 
     def _calculate_always_long(self, market_data: pd.DataFrame) -> Dict:
         """Always long strategy - buy every day, sell next day."""
@@ -376,7 +428,7 @@ class BaselineComparison:
             if pattern_result.get('trades', 0) > 0:
                 print("\n🎯 PATTERN STRATEGY ANALYSIS:")
                 print(
-                    f"   Contrarian GAMMA_TRAP outperformed random: {pattern_result['total_return']:.2f}% vs {results.get('random', {}).get('total_return', 0):.2f}%")
+                    f"   Dealer Gamma Hedging (LLM-filtered) vs Random: {pattern_result['total_return']:.2f}% vs {results.get('random', {}).get('total_return', 0):.2f}%")
 
                 # Compare to buy and hold
                 bh_return = results.get('buy_hold', {}).get('total_return', 0)

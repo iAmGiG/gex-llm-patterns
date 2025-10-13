@@ -7,7 +7,8 @@ from typing import Dict, List
 import logging
 import datetime
 
-# Use date_utils instead of datetime
+from src.utils.config_manager import get_config
+# Use date_utils for datetime operations
 from src.utils.date_utils import (
     today_str,
     now_timestamp,
@@ -21,6 +22,17 @@ logger = logging.getLogger(__name__)
 
 class MechanicsPromptBuilder:
     """Build prompts that match the exact format for market mechanics interpretation."""
+
+    def __init__(self):
+        """Initialize prompt builder with config values."""
+        config = get_config()
+
+        # Load IV thresholds from config
+        self.iv_extremely_low = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.extremely_low', 12)
+        self.iv_low = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.low', 15)
+        self.iv_moderate = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.moderate', 20)
+        self.iv_elevated = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.elevated', 25)
+        self.iv_high = config.get('llm_market_mechanics.prompt_builder.iv_thresholds.high', 35)
 
     @staticmethod
     def build_analysis_prompt(
@@ -45,9 +57,44 @@ class MechanicsPromptBuilder:
         # Format date
         date_str = date.strftime("%B %d, %Y")
 
-        # Build GEX analysis section
-        gex_section = f"""GEX ANALYSIS - {date_str}
-- Net GEX: ${gex_metrics.get('net_gex', 0)/1e9:.1f}B ({gex_metrics.get('gex_regime', 'UNKNOWN')})
+        # Enhanced GEX analysis with strike-level intelligence
+        gex_section = f"""ENHANCED GEX ANALYSIS - {date_str}
+- Net GEX: ${gex_metrics.get('net_gex', 0)/1e9:.1f}B ({gex_metrics.get('gex_regime', 'UNKNOWN')})"""
+
+        # Add strike-level intelligence if available
+        if 'strike_level_patterns' in market_context:
+            patterns = market_context['strike_level_patterns']
+
+            # Gamma concentration intelligence
+            gamma_data = patterns.get('gamma_concentration', {})
+            if gamma_data:
+                gex_section += f"""
+- GAMMA CONCENTRATION: {gamma_data.get('concentration_pct', 0):.1%} at ${gamma_data.get('max_strike', 0):.0f} strike
+- Distance from spot: {gamma_data.get('distance_from_spot', 0):.3f}% ({abs(gamma_data.get('distance_from_spot', 0)):.1%} away)"""
+
+            # Volume anomalies
+            volume_data = patterns.get('volume_anomalies', {})
+            if volume_data.get('detected', False):
+                gex_section += f"""
+- VOLUME ANOMALY: {volume_data.get('max_volume', 0):,.0f} contracts at ${volume_data.get('max_volume_strike', 0):.0f} ({volume_data.get('vs_average', 0):.1f}x average)"""
+
+            # Pin setup intelligence (Issue #73 validated)
+            pin_data = patterns.get('pin_setup', {})
+            if pin_data.get('pin_probability', 0) > 0.60:
+                validation_note = " (75% VALIDATED SETUP)" if pin_data.get('validated_setup', False) else ""
+                gex_section += f"""
+- PIN SETUP: {pin_data.get('pin_probability', 0):.1%} probability toward ${pin_data.get('target_strike', 0):.0f}{validation_note}"""
+
+            # Gamma walls
+            gamma_walls = patterns.get('gamma_walls', {})
+            if gamma_walls.get('resistance_strikes') or gamma_walls.get('support_strikes'):
+                resistance = gamma_walls.get('resistance_strikes', [])
+                support = gamma_walls.get('support_strikes', [])
+                gex_section += f"""
+- GAMMA WALLS: Resistance at {resistance[:3]}, Support at {support[:3]} ({gamma_walls.get('strength', 'medium')} strength)"""
+
+        # Add basic GEX metrics
+        gex_section += f"""
 - Flip point: ${gex_metrics.get('flip_point', 0):.0f}
 - Current price: ${gex_metrics.get('spot_price', 0):.2f}"""
 
@@ -127,8 +174,9 @@ class MechanicsPromptBuilder:
             vol_surface = market_context['volatility_surface']
             atm_iv = vol_surface.get('atm_iv', 0)
             if atm_iv > 0:
-                iv_percentile = MechanicsPromptBuilder._get_iv_percentile(
-                    atm_iv)
+                # Use instance method instead of static
+                builder_instance = MechanicsPromptBuilder()
+                iv_percentile = builder_instance._get_iv_percentile(atm_iv)
                 context_section += f"\n- VIX at {atm_iv*100:.0f} ({iv_percentile} volatility environment)"
 
         # Price tests/levels
@@ -154,7 +202,18 @@ class MechanicsPromptBuilder:
 
 {context_section}
 
-QUESTION: What market mechanics are at play? Who is positioning for what?"""
+QUESTION: Analyze the market mechanics using the WHO forces WHOM to do WHAT framework.
+
+WHO: Identify the key market participant taking action (retail traders, institutions, dealers, etc.)
+WHOM: Identify who is being forced to respond (dealers, market makers, other participants)
+WHAT: Describe the specific forced action (buy/sell, hedge, rebalance)
+
+Provide your analysis in this exact format:
+WHO: [Primary actor]
+WHOM: [Forced participant]
+WHAT: [Specific forced action]
+CONFIDENCE: [0-100%]
+NARRATIVE: [2-3 sentence explanation of the mechanics]"""
 
         return prompt
 
@@ -289,176 +348,20 @@ KEY PLAYERS:"""
                 'error': str(e)
             }
 
-    @staticmethod
-    def _get_iv_percentile(iv: float) -> str:
-        """Convert IV to percentile description."""
+    def _get_iv_percentile(self, iv: float) -> str:
+        """Convert IV to percentile description using config thresholds."""
         vix_equiv = iv * 100
 
-        if vix_equiv < 12:
+        if vix_equiv < self.iv_extremely_low:
             return "extremely low"
-        elif vix_equiv < 15:
+        elif vix_equiv < self.iv_low:
             return "low"
-        elif vix_equiv < 20:
+        elif vix_equiv < self.iv_moderate:
             return "moderate"
-        elif vix_equiv < 25:
+        elif vix_equiv < self.iv_elevated:
             return "elevated"
-        elif vix_equiv < 35:
+        elif vix_equiv < self.iv_high:
             return "high"
         else:
             return "extreme"
 
-    @staticmethod
-    def build_gamma_squeeze_example() -> Dict:
-        """Build example for gamma squeeze pattern."""
-
-        prompt = """GEX ANALYSIS - January 15, 2024
-- Net GEX: -$5.2B (NEGATIVE_GAMMA_LOW)
-- Flip point: $450
-- Current price: $449.50
-- Key strikes: Heavy put OI at $445, call walls at $455
-
-OPTIONS FLOW:
-- Morning: Large sweep orders for $455 calls (10,000 contracts)
-- Afternoon: Repeated testing of $450 level
-- Unusual: Put selling at $445 despite negative gamma
-
-CONTEXT:
-- Day before OPEX
-- VIX at 15 (low volatility environment)
-- 3 failed attempts to break $450 today
-
-QUESTION: What market mechanics are at play? Who is positioning for what?"""
-
-        expected_response = """MARKET MECHANICS ANALYSIS:
-
-PATTERN IDENTIFIED: "Gamma Squeeze Setup"
-
-KEY PLAYERS:
-1. Dealers: Trapped short gamma at $450 (forced buyers if breached)
-2. Aggressor: Accumulating $455 calls to amplify dealer short position
-3. Support Player: Selling $445 puts to create floor (likely same entity)
-
-MECHANICS:
-- Dealers must buy ~$500M notional per $1 move above $450
-- Aggressor knows this and is setting up cascade
-- Put selling at $445 creates risk reversal structure
-
-LIKELY OUTCOME:
-- 70% probability: Break above $450 triggers dealer buying to $455
-- 30% probability: Fail at $450, rapid unwind to $445 put wall
-
-ACTIONABLE INTELLIGENCE:
-- JOIN the squeeze above $450.25 (dealers become forced buyers)
-- AVOID shorts until $455 call wall
-- EXIT if rejection at $450 (squeeze failed)"""
-
-        return {
-            'prompt': prompt,
-            'expected_response': expected_response,
-            'pattern': 'gamma_squeeze',
-            'key_mechanics': 'Dealers trapped short gamma being forced to buy'
-        }
-
-    @staticmethod
-    def build_dealer_trap_example() -> Dict:
-        """Build example for dealer trap pattern."""
-
-        prompt = """GEX ANALYSIS - March 20, 2024
-- Net GEX: $8.5B (POSITIVE_GAMMA_HIGH)
-- Flip point: $510
-- Current price: $515.00
-- Key strikes: Massive call OI at $520, put wall at $500
-
-OPTIONS FLOW:
-- Morning: Systematic put buying at $510 strike (50,000 contracts)
-- Afternoon: Spot pushed lower on light volume
-- Unusual: Zero hedge flow from dealers despite move
-
-CONTEXT:
-- FOMC tomorrow
-- VIX at 18 (moderate volatility)
-- Dealers long gamma, dampening moves
-
-QUESTION: What market mechanics are at play? Who is positioning for what?"""
-
-        expected_response = """MARKET MECHANICS ANALYSIS:
-
-PATTERN IDENTIFIED: "Dealer Trap"
-
-KEY PLAYERS:
-1. Large Institution: Buying puts to force dealer selling
-2. Dealers: Long gamma but will flip short at $510
-3. Market: Unaware of impending regime change
-
-MECHANICS:
-- Institution buying $510 puts to flip dealers negative
-- Once flipped, dealers become forced sellers
-- Positive feedback loop ready to trigger
-
-LIKELY OUTCOME:
-- 80% probability: Break below $510 accelerates to $500
-- 20% probability: Hold above $510, trap fails
-
-ACTIONABLE INTELLIGENCE:
-- PREPARE for volatility expansion below $510
-- BUY puts or put spreads while IV still low
-- WATCH for dealer flip confirmation at $510"""
-
-        return {
-            'prompt': prompt,
-            'expected_response': expected_response,
-            'pattern': 'dealer_trap',
-            'key_mechanics': 'Institution forcing dealers to flip from long to short gamma'
-        }
-
-    @staticmethod
-    def build_pin_manipulation_example() -> Dict:
-        """Build example for pin manipulation pattern."""
-
-        prompt = """GEX ANALYSIS - February 16, 2024
-- Net GEX: -$2.1B (NEGATIVE_GAMMA_LOW)
-- Flip point: $445
-- Current price: $450.00
-- Key strikes: Enormous OI at $450 (500k contracts combined)
-
-OPTIONS FLOW:
-- Morning: Delta-neutral straddle selling at $450
-- Afternoon: Price magnetically returns to $450 after each move
-- Unusual: Immediate selling on rallies, buying on dips
-
-CONTEXT:
-- OPEX day (monthly expiration)
-- VIX at 14 (low volatility)
-- 5 touches of $450 in last 2 hours
-
-QUESTION: What market mechanics are at play? Who is positioning for what?"""
-
-        expected_response = """MARKET MECHANICS ANALYSIS:
-
-PATTERN IDENTIFIED: "OPEX Pin Manipulation"
-
-KEY PLAYERS:
-1. Large MM/Fund: Short straddles at $450, defending position
-2. Dealers: Negative gamma but balanced at pin
-3. Retail: Getting chopped in false breakouts
-
-MECHANICS:
-- Massive straddle seller defending $450 for max profit
-- Any move away triggers defensive flow
-- Time decay accelerating into close
-
-LIKELY OUTCOME:
-- 90% probability: Close within $1 of $450
-- 10% probability: Late break if news hits
-
-ACTIONABLE INTELLIGENCE:
-- SELL iron condors around $450
-- AVOID directional trades today
-- WAIT for Monday for cleaner setup"""
-
-        return {
-            'prompt': prompt,
-            'expected_response': expected_response,
-            'pattern': 'opex_pin',
-            'key_mechanics': 'Large straddle seller defending strike for maximum profit'
-        }

@@ -6,15 +6,28 @@ This directory contains the core modules for the GEX-LLM pattern analysis projec
 
 ```
 src/
-├── cache/                  # Unified caching system for API data
+├── analysis/              # Pattern analysis and baseline comparison tools
+├── cache/                 # Unified caching system for API data
 ├── data_sources/          # Alpha Vantage API client for options/stock data
-├── gex/                   # GEX calculation modules (to be implemented)
+├── gex/                   # GEX calculation modules
 ├── tokenization/          # LLM sequence generation (to be implemented)
 ├── utils/                 # General utilities (date, agent operations)
-└── validation/           # Data obfuscation and validation tools
+└── validation/            # Data obfuscation and validation tools
 ```
 
 ## Core Modules
+
+### `analysis/`
+Pattern analysis and baseline comparison tools for validating LLM performance:
+- **baseline_gex_strategy.py** - Mechanical baseline strategy (no LLM intelligence)
+- **baseline_comparison.py** - Compare LLM vs baseline performance (uses validation YAMLs)
+- **technical_indicator_baseline.py** - Traditional indicator baseline (MACD + RSI)
+- **statistical_validator.py** - Statistical significance testing framework
+- **pattern_library.py** - 15 WHO/WHOM/WHAT pattern definitions (Issue #54)
+- **confidence_scorer.py** - Multi-factor confidence scoring system
+- **actionable_patterns.py** - Convert patterns to trading signals
+- **validated_trading_engine.py** - Production trading engine with risk management
+- **deprecated/** - Database-dependent files (see Issue #82)
 
 ### `cache/`
 Unified caching system optimized for financial data:

@@ -5,9 +5,9 @@ Utilities for dynamic date handling in data tools.
 import re
 import datetime
 import os
-from config.config_loader import ConfigLoader
+from src.utils.config_manager import get_config
 
-config_loader = ConfigLoader()
+config = get_config()
 
 
 DEFAULT_TIMEZONE = "America/New_York"
@@ -17,7 +17,7 @@ def get_default_timezone() -> str:
     """Return the configured default timezone."""
     return os.getenv(
         "DEFAULT_TIMEZONE",
-        config_loader.get("DEFAULT_TIMEZONE", DEFAULT_TIMEZONE),
+        config.get("DEFAULT_TIMEZONE", DEFAULT_TIMEZONE),
     )
 
 
@@ -313,6 +313,43 @@ def resolve_anchor(df, anchor_token):
 # === COMMON DATETIME UTILITIES ===
 # Consolidation functions to reduce datetime import duplication across modules
 
+def get_datetime_now() -> datetime.datetime:
+    """
+    Get current datetime object.
+
+    Returns:
+        Current datetime.datetime object
+    """
+    return datetime.datetime.now()
+
+
+def get_datetime_from_timestamp(timestamp: float) -> datetime.datetime:
+    """
+    Convert Unix timestamp to datetime object.
+
+    Args:
+        timestamp: Unix timestamp (seconds since epoch)
+
+    Returns:
+        datetime.datetime object
+    """
+    return datetime.datetime.fromtimestamp(timestamp)
+
+
+def subtract_days(dt: datetime.datetime, days: int) -> datetime.datetime:
+    """
+    Subtract days from a datetime object.
+
+    Args:
+        dt: datetime object
+        days: Number of days to subtract
+
+    Returns:
+        New datetime object with days subtracted
+    """
+    return dt - datetime.timedelta(days=days)
+
+
 def now_iso() -> str:
     """
     Get current timestamp as ISO string.
@@ -373,9 +410,10 @@ def add_business_days(date_str, days) -> str:
 def parse_date_string(date_str) -> datetime.datetime:
     """
     Parse various date string formats to datetime object.
+    Supports both real dates and obfuscated dates from data obfuscation system.
 
     Args:
-        date_str: Date string in various formats
+        date_str: Date string in various formats, including obfuscated "Day T+N" format
 
     Returns:
         datetime.datetime object
@@ -383,6 +421,31 @@ def parse_date_string(date_str) -> datetime.datetime:
     Raises:
         ValueError: If date string cannot be parsed
     """
+    # Handle obfuscated date format (e.g., "Day T+0", "Day T+5", "Day T-2")
+    if isinstance(date_str, str) and date_str.startswith("Day T"):
+        try:
+            # Extract the offset from "Day T+N" or "Day T-N" format
+            if "T+" in date_str:
+                offset_str = date_str.split("T+")[1]
+                offset = int(offset_str)
+            elif "T-" in date_str:
+                offset_str = date_str.split("T-")[1]
+                offset = -int(offset_str)
+            else:  # "Day T+0" case
+                offset = 0
+
+            # Use a base date for obfuscated dates (arbitrary but consistent)
+            # This allows date arithmetic to work properly
+            base_date = datetime.datetime(2020, 1, 1)  # Arbitrary base date
+            result_date = base_date + datetime.timedelta(days=offset)
+
+            return result_date
+
+        except (ValueError, IndexError) as e:
+            raise ValueError(
+                f"Unable to parse obfuscated date string: {date_str}") from e
+
+    # Handle standard date formats
     formats_to_try = [
         '%Y-%m-%d',
         '%Y-%m-%d %H:%M:%S',
@@ -453,6 +516,33 @@ def next_business_day(date_str) -> str:
     return add_business_days(date_str, 1)
 
 
+def is_opex_week(date) -> bool:
+    """
+    Check if date is in OPEX week (third Friday of the month).
+
+    Args:
+        date: Date as string (YYYY-MM-DD) or datetime object
+
+    Returns:
+        True if date is in OPEX week
+    """
+    # Ensure date is a datetime object
+    if isinstance(date, str):
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+
+    # Third Friday of the month
+    first_day = date.replace(day=1)
+    first_friday = first_day + \
+        datetime.timedelta(days=(4 - first_day.weekday()) % 7)
+    third_friday = first_friday + datetime.timedelta(weeks=2)
+
+    # Check if within OPEX week (Mon-Fri of third Friday week)
+    week_start = third_friday - datetime.timedelta(days=third_friday.weekday())
+    week_end = week_start + datetime.timedelta(days=4)
+
+    return week_start <= date <= week_end
+
+
 def is_business_day(date_str) -> bool:
     """
     Check if a date is a business day (Monday-Friday, excluding holidays).
@@ -474,6 +564,47 @@ def is_business_day(date_str) -> bool:
     # Check against US market holidays (basic check)
     # This could be enhanced with a proper holiday calendar
     return True
+
+
+def is_valid_trading_date(date_str: str, allow_future: bool = False) -> bool:
+    """
+    Check if a date is a valid trading date (business day and not in future).
+
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        allow_future: If True, allow future dates (default False)
+
+    Returns:
+        True if valid trading date, False otherwise
+    """
+    try:
+        import pytz
+
+        # Parse the date
+        dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+
+        # Check if it's a business day
+        if not is_business_day(date_str):
+            return False
+
+        # Check if it's in the future
+        if not allow_future:
+            # Get current time in EDT/EST
+            eastern = pytz.timezone('America/New_York')
+            now = datetime.datetime.now(eastern).replace(tzinfo=None)
+
+            # Date is in the future if after today
+            if dt.date() > now.date():
+                return False
+
+        # Check if it's too far in the past (before 2000)
+        if dt.year < 2000:
+            return False
+
+        return True
+
+    except (ValueError, TypeError):
+        return False
 
 
 def format_for_filename(dt: datetime.datetime = None) -> str:
@@ -536,3 +667,40 @@ def get_market_close_time(date_str, timezone: str = "America/New_York") -> datet
     # Localize to market timezone
     tz = pytz.timezone(timezone)
     return tz.localize(market_close)
+
+
+def calculate_days_to_expiration(expiration_dates, trade_dates):
+    """
+    Calculate days to expiration for options data.
+    Handles both pandas Series and individual dates, and supports obfuscated dates.
+
+    Args:
+        expiration_dates: pandas Series or single date value representing expiration dates
+        trade_dates: pandas Series or single date value representing trade dates
+
+    Returns:
+        pandas Series or int: Days to expiration for each option contract
+    """
+    import pandas as pd
+
+    # Convert to pandas datetime if not already
+    if not isinstance(expiration_dates, pd.Series):
+        expiration_dates = pd.to_datetime(expiration_dates)
+    if not isinstance(trade_dates, pd.Series):
+        trade_dates = pd.to_datetime(trade_dates)
+
+    # Handle obfuscated dates by parsing them first
+    if isinstance(expiration_dates, pd.Series) and expiration_dates.dtype == 'object':
+        expiration_dates = expiration_dates.apply(
+            lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        expiration_dates = pd.to_datetime(expiration_dates)
+
+    if isinstance(trade_dates, pd.Series) and trade_dates.dtype == 'object':
+        trade_dates = trade_dates.apply(
+            lambda x: parse_date_string(str(x)) if isinstance(x, str) else x)
+        trade_dates = pd.to_datetime(trade_dates)
+
+    # Calculate the difference in days
+    days_diff = (expiration_dates - trade_dates).dt.days
+
+    return days_diff

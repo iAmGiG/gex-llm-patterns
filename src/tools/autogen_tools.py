@@ -1,12 +1,18 @@
 """
 Clean Tools Configuration for GEX-LLM Analysis
-Active tools: Alpha Vantage (options), Polygon.io (market data), Sample Data (fallback)
+Active tools: Alpha Vantage Premium (options & market data), Unified Cache
+
+IMPORTANT: These are direct Python function calls, NOT LLM calls.
+- No token limits needed for tool functions
+- Tools fetch data and perform calculations directly
+- Only the market mechanics analysis uses LLM (O3-mini with 4000 tokens)
 
 Organized by agent type for clean tool assignment and efficient agent workflows.
 """
 
 # Standard library imports
 import logging
+import pandas as pd
 
 # Project imports for date handling
 from src.utils.date_utils import (
@@ -14,8 +20,41 @@ from src.utils.date_utils import (
     add_business_days,
     parse_date_string,
     format_for_filename,
-    calculate_duration_minutes
+    calculate_duration_minutes,
+    is_valid_trading_date
 )
+
+def filter_options_data(df: pd.DataFrame, min_volume: int = 1, min_oi: int = 1) -> pd.DataFrame:
+    """
+    Filter options data to remove strikes with zero or low volume/open interest.
+
+    Args:
+        df: Options DataFrame
+        min_volume: Minimum volume threshold (default 1 to remove 0 volume)
+        min_oi: Minimum open interest threshold (default 1 to remove 0 OI)
+
+    Returns:
+        Filtered DataFrame
+    """
+    if df.empty:
+        return df
+
+    original_count = len(df)
+
+    # Filter by volume if column exists
+    if 'volume' in df.columns:
+        df = df[df['volume'] >= min_volume]
+
+    # Filter by open interest if column exists
+    if 'open_interest' in df.columns:
+        df = df[df['open_interest'] >= min_oi]
+
+    filtered_count = len(df)
+    if filtered_count < original_count:
+        logger.info(f"Filtered options data: {original_count} -> {filtered_count} contracts "
+                   f"(removed {original_count - filtered_count} with volume < {min_volume} or OI < {min_oi})")
+
+    return df
 
 # Third-party imports
 from autogen_core.tools import FunctionTool
@@ -24,10 +63,10 @@ import pandas as pd
 # Project imports - only tools actually used
 from src.cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-from src.data_sources.polygon_client import PolygonClient
-from src.gex.sample_data_gex import SampleDataGEXInterface
+# from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
+from src.gex.live_gex_interface import LiveGEXInterface
 from src.validation.options_data_validator import OptionsDataValidator
-from src.utils.reports_manager import reports_manager
+from src.utils.unified_reports_manager import reports_manager
 from src.utils.market_intelligence import market_intelligence
 from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
 
@@ -45,7 +84,7 @@ ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 # Initialize shared components
 cache_manager = UnifiedCacheManager()
 alpha_vantage_client = AlphaVantageGEXClient()
-sample_gex = SampleDataGEXInterface()
+live_gex = LiveGEXInterface()
 validator = OptionsDataValidator()
 
 ##################################
@@ -70,16 +109,26 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
         if not trading_date:
             trading_date = today_str()
 
+        # Validate the date
+        if not is_valid_trading_date(trading_date):
+            logger.error(f"Invalid trading date: {trading_date} (future date or non-trading day)")
+            return {
+                'status': 'error',
+                'message': f'Invalid trading date: {trading_date}. Must be a past/current business day.'
+            }
+
         # Check cache first
         if use_cache:
             cached_data = cache_manager.get_options_data(symbol, trading_date)
             if cached_data is not None:
                 logger.info(
                     f"Cache hit for {symbol} options on {trading_date}")
+                # Filter out zero volume/OI strikes
+                filtered_data = filter_options_data(cached_data)
                 return {
                     'status': 'success',
                     'source': 'cache',
-                    'data': cached_data,
+                    'data': filtered_data,
                     'symbol': symbol,
                     'date': trading_date
                 }
@@ -90,26 +139,23 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
             symbol, trading_date)
 
         if api_data is not None and not api_data.empty:
-            # Cache the data
+            # Filter out zero volume/OI strikes
+            filtered_data = filter_options_data(api_data)
+            # Cache the original data, return filtered
             cache_manager.store_options_data(symbol, trading_date, api_data)
             return {
                 'status': 'success',
                 'source': 'alpha_vantage',
-                'data': api_data,
+                'data': filtered_data,
                 'symbol': symbol,
                 'date': trading_date
             }
 
-        # Fallback to sample data
-        logger.warning(f"No API data available, using sample data")
-        sample_data = sample_gex.load_sample_options(symbol, trading_date)
-
+        # No fallback to sample data - return error
+        logger.error(f"No live options data available for {symbol} on {trading_date}")
         return {
-            'status': 'success',
-            'source': 'sample',
-            'data': sample_data,
-            'symbol': symbol,
-            'date': trading_date
+            'status': 'error',
+            'message': f'No live options data available for {symbol} on {trading_date}'
         }
 
     except Exception as e:
@@ -153,31 +199,26 @@ def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str
                     'symbol': symbol
                 }
 
-        # Try Polygon if API key available
-        polygon = PolygonClient()
-        if polygon.test_connection():
-            market_data = polygon.fetch_daily_bars(
-                symbol, start_date, end_date)
-            if market_data is not None:
-                cache_manager.store_market_data(symbol, market_data)
-                return {
-                    'status': 'success',
-                    'source': 'polygon',
-                    'data': market_data,
-                    'symbol': symbol
-                }
+        # Try Alpha Vantage Premium for market data
+        logger.info(f"Fetching {symbol} market data from Alpha Vantage Premium")
+        market_data = alpha_vantage_client.fetch_underlying_data(
+            symbol, start_date, end_date)
 
-        # Fallback to sample data
-        logger.warning("Using sample market data")
-        from src.cache import SampleDataLoader
-        sample_loader = SampleDataLoader()
-        sample_data = sample_loader.get_sample_stocks(symbol)
+        if market_data is not None and not market_data.empty:
+            # Cache the data
+            cache_manager.store_market_data(symbol, market_data)
+            return {
+                'status': 'success',
+                'source': 'alpha_vantage_premium',
+                'data': market_data,
+                'symbol': symbol
+            }
 
+        # No fallback to sample data - return error
+        logger.error(f"No live market data available for {symbol}")
         return {
-            'status': 'success',
-            'source': 'sample',
-            'data': sample_data,
-            'symbol': symbol
+            'status': 'error',
+            'message': f'No live market data available for {symbol}'
         }
 
     except Exception as e:
@@ -236,11 +277,12 @@ def calculate_gamma_exposure(symbol: str = "SPY", trading_date: str = None, spot
 
         options_df = options_result['data']
 
-        # Calculate GEX using sample interface (works with any data)
-        gex_results = sample_gex.calculate_gex_for_symbol(
-            symbol,
-            trading_date,
-            spot_price
+        # Calculate GEX using live interface (works with any data)
+        gex_results = live_gex.calculate_gex_for_symbol(
+            symbol=symbol,
+            trading_date=trading_date,
+            spot_price=spot_price,
+            options_data=options_df  # Pass the live fetched data
         )
 
         # Save results to reports (not cache!)
@@ -303,6 +345,93 @@ def validate_options_data(options_df):
 # ===========================
 # Analysis Tools
 # ===========================
+
+def fetch_algo_time_analysis(symbol: str = "SPY",
+                            start_date: str = None,
+                            end_date: str = None,
+                            algo_time: str = "15:30:00",
+                            weekday_filter: str = None):
+    """
+    Fetch data for specific algo times with flexible parameters.
+
+    Perfect for advanced plays that happen at different algo times like 3:50 PM.
+    Supports both 0DTE tickers (SPY/QQQ daily) and regular tickers (Friday only).
+
+    Args:
+        symbol: Trading symbol (SPY/QQQ have daily 0DTE, others Friday only)
+        start_date: Start date (YYYY-MM-DD), defaults to 5 days ago
+        end_date: End date (YYYY-MM-DD), defaults to today
+        algo_time: Algo time to analyze (15:30:00, 15:50:00, etc.) or name like 'gamma_350pm'
+        weekday_filter: Specific weekday ('monday', 'friday', etc.) or None for smart detection
+
+    Returns:
+        Dictionary with algo time analysis data
+    """
+    try:
+        from src.data.market_data_system import UnifiedDataSystem
+        from src.utils.date_utils import get_processed_date_range
+
+        # Initialize data system
+        data_system = UnifiedDataSystem()
+
+        # Process date range
+        if not start_date or not end_date:
+            start_date, end_date = get_processed_date_range(start_date, end_date, default_days_back=14)
+
+        # Handle algo time names vs raw times
+        if ':' not in algo_time:
+            # It's a name like 'gamma_350pm'
+            algo_time = data_system.get_algo_time_from_config(algo_time)
+
+        # Convert weekday filter to number if specified
+        weekday_map = {
+            'monday': 0, 'tuesday': 1, 'wednesday': 2,
+            'thursday': 3, 'friday': 4
+        }
+        weekday_num = None
+        if weekday_filter:
+            weekday_num = weekday_map.get(weekday_filter.lower())
+
+        # Fetch algo time data
+        algo_data = data_system.get_algo_time_data(
+            start_date=start_date,
+            end_date=end_date,
+            symbol=symbol,
+            algo_time=algo_time,
+            weekday=weekday_num
+        )
+
+        # Get symbol info for context
+        has_daily_0dte = symbol.upper() in ['SPY', 'QQQ']
+
+        return {
+            'success': True,
+            'symbol': symbol,
+            'algo_time': algo_time,
+            'date_range': f"{start_date} to {end_date}",
+            'weekday_filter': weekday_filter,
+            'has_daily_0dte': has_daily_0dte,
+            'data_points': len(algo_data),
+            'algo_data': algo_data,
+            'analysis_notes': {
+                'symbol_type': 'Daily 0DTE available' if has_daily_0dte else 'Friday expiration only',
+                'recommended_times': [
+                    '15:30:00 (3:30 PM - Standard gamma time)',
+                    '15:40:00 (3:40 PM - Mid-session)',
+                    '15:50:00 (3:50 PM - Advanced plays, late algo)',
+                    '16:00:00 (Market close)'
+                ]
+            }
+        }
+
+    except Exception as e:
+        logger.error(f"Error in fetch_algo_time_analysis: {e}")
+        return {
+            'success': False,
+            'error': f"Algo time analysis failed: {e}",
+            'symbol': symbol,
+            'algo_time': algo_time
+        }
 
 def find_gex_flip_points(symbol: str = "SPY", trading_date: str = None):
     """
@@ -374,13 +503,13 @@ def _interpret_flip_point(metrics: dict):
 # Market Intelligence Tools
 ##################################
 
-def analyze_query_intent(query):
+def analyze_query_intent(query: str):
     """
     Analyze user query to extract trading intent and market context.
-    
+
     Args:
         query: User's natural language query
-        
+
     Returns:
         Dictionary with extracted ticker, sector, dates, and context
     """
@@ -668,6 +797,14 @@ find_flip_points_tool = FunctionTool(
 )
 find_flip_points_tool.agent_types = [ANALYSIS_AGENT]
 
+# Flexible algo time analysis tool
+algo_time_analysis_tool = FunctionTool(
+    func=fetch_algo_time_analysis,
+    name="fetch_algo_time_analysis",
+    description="Fetch data for specific algo times (3:30, 3:50, etc.) with support for 0DTE vs Friday-only symbols"
+)
+algo_time_analysis_tool.agent_types = [ANALYSIS_AGENT, DATA_AGENT]
+
 # Market intelligence tools
 query_analysis_tool = FunctionTool(
     func=analyze_query_intent,
@@ -701,6 +838,7 @@ _data_tools_raw = [
     fetch_options_tool,     # Options chain data from Alpha Vantage or cache
     fetch_market_tool,      # Market data from Polygon.io or cache
     query_analysis_tool,    # Query intent analysis with market intelligence
+    algo_time_analysis_tool, # Flexible algo time data (3:30, 3:50, etc.)
     # Note: validate_data_tool removed - can't pass DataFrame through AutoGen
 ]
 DATA_COLLECTION_TOOLS = [tool for tool in _data_tools_raw if tool is not None]
@@ -718,6 +856,7 @@ _analysis_tools_raw = [
     fetch_options_tool,         # Data access for analysis
     calculate_gex_tool,         # GEX calculations for patterns
     find_flip_points_tool,      # Flip point analysis for patterns
+    algo_time_analysis_tool,    # Flexible algo time analysis (3:30, 3:50, etc.)
     query_analysis_tool,        # Market intelligence and query parsing
     technical_confluence_tool,  # Technical-GEX confluence analysis
     historical_gex_tool,        # Historical GEX range analysis
