@@ -280,6 +280,185 @@ Instead of mechanical rules, the AI sees the data and thinks:
 
 ---
 
+## Technical Concepts for Non-Technical Reviewers
+
+### What is a Python @dataclass? (Layman's Explanation)
+
+**The Simple Answer**: A `@dataclass` is like a **structured form with labeled boxes** - a template that ensures consistent data organization.
+
+**Real-World Analogy #1: Paper Forms**
+
+Think of a paper form at a doctor's office:
+
+```
+Patient Information Form
+├─ Name: [_______________]
+├─ Date of Birth: [_______________]
+├─ Address: [_______________]
+└─ Emergency Contact: [_______________]
+```
+
+This form has:
+
+- **Specific fields** (Name, DOB, Address)
+- **Clear structure** (each field has a label)
+- **Type expectations** (DOB should be a date, not text)
+
+A `@dataclass` is the computer programming equivalent - a template with named fields.
+
+**Real-World Analogy #2: Driver's License**
+
+A driver's license has:
+
+- **Name** (text)
+- **DOB** (date)
+- **License Number** (alphanumeric)
+- **Photo** (image)
+- **Expiration Date** (date)
+
+Every driver's license has the **same fields in the same order** - this is what a `@dataclass` does for data in computer programs.
+
+**Why Not Just Use Plain Text?**
+
+**Without @dataclass (Plain Text)**:
+
+```
+"Gamma Squeeze pattern: dealers forced to hedge, works 67% of time,
+expect 2-5% move"
+```
+
+**Problems**:
+
+- ❌ Where does "67%" come from? (Success rate? Confidence? Sample size?)
+- ❌ What if someone types "seventy percent" instead of "70%"?
+- ❌ Can't automatically check if all required information is present
+- ❌ Can't search/sort/compare patterns programmatically
+
+**With @dataclass (Structured)**:
+
+```python
+@dataclass
+class MarketPattern:
+    pattern_name: str = "Gamma Squeeze"
+    success_rate: float = 0.67  # Must be a number between 0 and 1
+    expected_move: str = "2-5% in 1-3 days"
+    who: str = "Retail traders"
+    whom: str = "Dealers"
+    what: str = "Force hedge buying"
+```
+
+**Benefits**:
+
+- ✅ Computer knows `success_rate` must be a number (can't accidentally put text)
+- ✅ Can automatically check if all required fields are filled
+- ✅ Can search: "Show me all patterns with success_rate > 60%"
+- ✅ Can compare: "Which pattern has highest expected_move?"
+- ✅ Type safety: Prevents mistakes like putting a date in the name field
+
+**The Layman's Explanation**:
+
+**"A @dataclass is like a digital form template that:**
+
+1. **Ensures consistency** - every pattern has the same fields
+2. **Prevents errors** - computer checks field types automatically
+3. **Enables automation** - can search, sort, and compare patterns programmatically
+4. **Improves reproducibility** - anyone using the template gets the same structure"
+
+**Why This Matters for Research**:
+
+Using `@dataclass` instead of unstructured text means:
+
+- ✅ **Reproducible**: Other researchers can use the same template
+- ✅ **Testable**: Can programmatically verify all patterns have required fields
+- ✅ **Scalable**: Easy to add new patterns without breaking existing code
+- ✅ **Scientific**: Structured data enables statistical analysis
+
+**Bottom Line for Non-Programmers**:
+
+"Think of `@dataclass` as the difference between:
+
+- **Unstructured**: Writing notes on random scraps of paper
+- **Structured**: Using a standardized lab notebook with labeled sections
+
+Both contain information, but only the structured approach enables systematic scientific research."
+
+---
+
+### Pattern Library: The Cookbook Analogy
+
+**Think of the Pattern Library like a **cookbook for market behavior** - but instead of recipes for food, we have "recipes" for detecting market patterns.
+
+**What is a "Pattern"?**
+
+A pattern is a **structured template** that describes:
+
+1. **WHO** is taking action (e.g., "Retail traders buying calls")
+2. **WHOM** they're affecting (e.g., "Dealers/Market Makers")
+3. **WHAT** forced action results (e.g., "Accelerating hedge buying")
+
+**The Cookbook Analogy**
+
+Imagine a cookbook where each recipe has:
+
+- **Ingredients**: The market conditions needed (like "Net GEX < -$2B", "Price near flip point")
+- **Instructions**: How to identify the pattern (step-by-step criteria)
+- **Expected Result**: What happens next (like "2-5% price move in 1-3 days")
+- **Success Rate**: How often this recipe works (67% historical success)
+
+**Our Pattern Library = 15 "Recipe Cards"**
+
+Each card is organized into categories (like cookbook chapters):
+
+- **Squeeze Patterns** (2 recipes) - When someone gets trapped and forced to buy/sell
+- **Manipulation Patterns** (3 recipes) - When dealers position markets strategically
+- **Volatility Patterns** (4 recipes) - When volatility itself drives behavior
+- **Flow Patterns** (6 recipes) - When institutional flows force market moves
+
+**Why This Structure Matters**
+
+Instead of saying "I have a hunch the market will go up," the pattern library forces us to:
+
+1. **Name the mechanism**: Which specific pattern is happening?
+2. **Show the evidence**: Do current conditions match the "ingredients"?
+3. **Predict outcomes**: What specific move do we expect?
+4. **Track results**: Did the prediction materialize?
+
+**Example "Recipe Card" in Plain English**:
+
+```
+Pattern: "Gamma Squeeze"
+
+WHO: Retail traders buying call options
+WHOM: Market makers (dealers) who sold those calls
+WHAT: Dealers forced to buy more stock as price rises (to hedge)
+
+Ingredients (Conditions):
+- Dealers are net short gamma (negative GEX)
+- Price is near a "flip point" (critical level)
+- Lots of call options concentrated at higher strikes
+- More call buying happening than normal
+
+Expected Result:
+- Price moves up 2-5% over 1-3 days
+- Works 67% of the time historically
+
+How We Test It:
+1. Remove all dates/tickers (prevent LLM cheating)
+2. Give LLM just the numbers (GEX levels, strikes, etc.)
+3. Ask: "What's happening here and what happens next?"
+4. Check if LLM's prediction matches the pattern template
+```
+
+**The Big Insight**:
+
+By using structured templates (those @dataclass things we just explained!), we can **programmatically test** whether the LLM identifies patterns correctly - not just rely on subjective human judgment. This makes the research reproducible and scientifically rigorous.
+
+**Key Point for Non-Technical Reviewers**:
+
+The pattern library isn't just a list of "things that happened before" - it's a **structured framework for testing whether the LLM understands WHY markets move**, not just that they moved.
+
+---
+
 ## The Hard Problem: Detecting Patterns in Stochastic Systems
 
 ### Wait - How Can You "Detect Patterns" in Random Markets?
@@ -333,11 +512,13 @@ Result: You CAN predict "dealers will amplify volatility" even though
 #### 2. What We Actually Detect: Forced Actions, Not Future Prices
 
 **We are NOT predicting**:
+
 - ❌ "SPY will close at $478.50 tomorrow"
 - ❌ "SPY will rise 2.3% by Friday"
 - ❌ "The exact price path will be X"
 
 **We ARE detecting**:
+
 - ✅ "Dealers are constrained to hedge by buying into rallies"
 - ✅ "This hedging will AMPLIFY moves (direction uncertain)"
 - ✅ "Volatility will be ELEVATED relative to baseline"
@@ -413,6 +594,7 @@ The rule missed the CONTEXT.
 ```
 
 **Advantages**:
+
 - ✅ Captures causal structure
 - ✅ Handles uncertainty probabilistically
 - ✅ Formally rigorous
@@ -463,6 +645,7 @@ P(HIGH_NEGATIVE → LOW_NEGATIVE) = 0.15
 ```
 
 **Advantages**:
+
 - ✅ Captures temporal dynamics
 - ✅ Mathematically tractable
 - ✅ Well-studied inference algorithms

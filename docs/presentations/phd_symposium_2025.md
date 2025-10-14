@@ -909,8 +909,154 @@ def verify_prediction(llm_response, actual_data):
 
 ---
 
+## Presentation Preparation Timeline (10 Days)
+
+### Week 1: Days 1-7
+
+**Days 1-2**: Memorize Core Content
+- Elevator pitch (30 seconds)
+- Key talking points for each slide
+- Transition phrases between slides
+- Q&A responses
+
+**Days 3-4**: Create Slides
+- Use structure provided above
+- Include flow diagrams
+- Add results table from validation
+- Visual aids for obfuscation example
+
+**Days 5-6**: Practice Presenting
+- Full run-through with timing
+- Record yourself (video/audio)
+- Identify weak explanations
+- Refine transitions
+
+**Day 7**: Full Dress Rehearsal
+- Present to a friend/colleague
+- Get feedback on clarity
+- Adjust based on confusion points
+
+### Week 2: Days 8-10
+
+**Day 8**: Refine Slides
+- Incorporate practice feedback
+- Simplify any confusing diagrams
+- Add speaker notes for each slide
+
+**Day 9**: Memorize Q&A
+- Practice all prepared Q&A responses
+- Anticipate follow-up questions
+- Prepare "I don't know, but..." responses
+
+**Day 10**: Confidence Building
+- One final run-through
+- Focus on delivery, not content
+- Get good sleep before symposium
+
+---
+
+## Presentation Delivery Tips
+
+### Pacing
+- **Total time**: Aim for 14 minutes (leave 1 minute buffer for 15-min slot)
+- **Practice with timer**: Record yourself to ensure timing
+- **Don't rush**: Better to cover less material clearly than rush through everything
+- **Build in flexibility**: Have backup slides you can skip if running over
+
+### Body Language
+- **Stand still**: Don't pace (distracting)
+- **Gesture naturally**: Use hands to emphasize points
+- **Eye contact**: Scan the audience, don't stare at slides
+- **Posture**: Stand up straight, confident but not arrogant
+- **Avoid barriers**: Don't stand behind podium if possible
+
+### Voice
+- **Speak clearly**: Enunciate technical terms
+- **Vary pace**: Slow down for complex explanations
+- **Pause for effect**: After key points (100% detection, etc.)
+- **Volume**: Loud enough for back row
+- **Avoid filler words**: Practice removing "um", "uh", "like"
+
+### Transitions
+Use transition phrases between slides:
+- "Now that we've seen the problem, let me show you the solution..."
+- "With the methodology in place, here are the key results..."
+- "These results raise an important question about profitability..."
+- "Let me position this in the broader literature..."
+
+### Handling Nervousness
+- **Breathe**: Take a breath before starting
+- **Acknowledge it**: "I'm excited to share this work..."
+- **Focus on content**: You know this material better than anyone
+- **Remember**: Audience wants you to succeed
+- **Have water nearby**: Dry mouth is common when nervous
+
+### Handling Questions
+
+**If you know the answer**:
+- Pause briefly to think
+- Answer concisely
+- Connect back to main thesis if possible
+
+**If you don't know the answer**:
+Template: "That's an excellent question. [Acknowledge validity] → [What we can say from current results] → [Admit limitation honestly] → [Why it matters for future research] → [Would you have suggestions?]"
+
+Example: "That's an excellent question about bear market performance. From our current results, the pattern worked across three different quarters with varying volatility. However, we haven't tested in a sustained bear market like 2008. The dealer hedging constraint should still exist (it's regulatory), but magnitude might differ. This would be important future research. Do you have suggestions for testing this given data constraints?"
+
+---
+
+## Final Checklist
+
+**Day Before**:
+- [ ] Slides finalized and loaded on presentation computer
+- [ ] Backup copy on USB drive
+- [ ] Backup copy emailed to yourself
+- [ ] Presenter remote batteries checked (if using)
+- [ ] Professional attire prepared
+- [ ] Good night's sleep (8 hours)
+
+**Day Of**:
+- [ ] Arrive 15 minutes early
+- [ ] Test laptop/projector connection
+- [ ] Test slide animations/transitions
+- [ ] Have water bottle nearby
+- [ ] Review key talking points (don't cram)
+- [ ] Deep breath, confident posture
+
+**During Presentation**:
+- [ ] Start with clear introduction
+- [ ] Stick to timing (aim for 14 min)
+- [ ] Make eye contact with audience
+- [ ] Pause if audience looks confused
+- [ ] Signal transitions clearly
+- [ ] End with clear conclusion
+
+**After Presentation**:
+- [ ] Thank audience for questions
+- [ ] Provide contact info for follow-up
+- [ ] Network with interested attendees
+- [ ] Debrief with advisor
+- [ ] Note any recurring questions for future talks
+
+---
+
+## Key Mantras (Repeat Often)
+
+- "I'm the expert on this work"
+- "Detection ≠ Profitability" (your strongest defense)
+- "100% detection across 181 days proves structural understanding"
+- "This is the first validation of LLM structural reasoning in market microstructure"
+- "Profitability variance STRENGTHENS the methodology validation"
+- "We're measuring understanding, not trading edge"
+
+---
+
 **End of Presentation**
 
 *Thank you for your attention!*
 
 *Questions?*
+
+---
+
+**Good luck - you've got this!**
