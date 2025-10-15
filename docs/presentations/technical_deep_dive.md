@@ -318,7 +318,7 @@ realized_vol = np.std(log_returns, ddof=1)
 
 #### Verification Decision Tree
 
-```
+```bash
 Is net_gex < 0 (negative gamma)?
 ├─ YES: Dealers should AMPLIFY moves
 │   ├─ Did price move >0.3% daily OR >0.5% extreme?
@@ -523,7 +523,7 @@ significant_move_3d = 0.50%      # ~0.8 std dev above mean
 
 **Verification**:
 
-```
+```bash
 Test Case: Jan 8-9, 2024
 Corrupted: price_t = $473.60 (wrong), return = -14.48% (95x error)
 Corrected: price_t = $474.60 (correct), return = -0.15% (verified against market data)
@@ -537,7 +537,7 @@ Corrected: price_t = $474.60 (correct), return = -0.15% (verified against market
 
 For detection rate:
 
-```
+```bash
 H0: Detection rate = 50% (random)
 H1: Detection rate = 100% (observed)
 n = 53 (Q1 sample)
@@ -548,7 +548,7 @@ Conclusion: 53 samples MORE than sufficient to distinguish 100% from 50%
 
 For accuracy rate:
 
-```
+```bash
 H0: Accuracy = 50% (random)
 H1: Accuracy = 90% (observed)
 n = 53
@@ -584,7 +584,7 @@ Conclusion: 53 samples sufficient for 95% confidence
 
 **Confidence Distribution (Q1 2024)**:
 
-```
+```bash
 Mean confidence: 72%
 Std dev: 12%
 Range: 60-95%
@@ -623,7 +623,7 @@ Range: 60-95%
 
 **2. Counterfactual Test**:
 
-```
+```bash
 If causation:
 - Negative GEX → amplified moves (dealers forced to hedge)
 - Positive GEX → dampened moves (dealers absorb volatility)
@@ -818,7 +818,7 @@ Observed: Clear directional effects matching causal prediction ✅
 
 **Template Response**:
 
-```
+```bash
 "That's an excellent question. [Acknowledge validity]
 
 What we can say from our current results is [cite evidence].
@@ -832,7 +832,7 @@ Would you have suggestions for how to test that?"
 
 **Example**:
 
-```
+```bash
 Q: "How do you know this works in bear markets?"
 
 A: "That's an excellent question about regime dependence.
@@ -863,6 +863,7 @@ All patterns in this research stem from a **fundamental regulatory constraint**:
 **What This Means**:
 
 When customers buy options from dealers:
+
 1. Dealers take the opposite side (short the options)
 2. Regulation requires dealers to hedge (stay market-neutral)
 3. Dealers must buy/sell the underlying stock to offset risk
@@ -875,6 +876,7 @@ When customers buy options from dealers:
 **Paper**: Avellaneda, M., & Lipkin, M. D. (2003). *"A market-induced mechanism for stock pinning."* Quantitative Finance, 3(6), 417-425.
 
 **Key Finding**:
+
 - Options open interest creates "gravitational pull" toward strikes
 - Dealers hedge dynamically as expiration approaches
 - Creates price clustering at high OI strikes (pinning effect)
@@ -886,6 +888,7 @@ When customers buy options from dealers:
 **Paper**: Frey, R., & Stremme, A. (1997). *"Market volatility and feedback effects from dynamic hedging."* Mathematical Finance, 7(4), 351-374.
 
 **Key Finding**:
+
 - Delta hedging by dealers creates positive feedback loops
 - When dealers are short gamma, hedging amplifies price moves
 - Market impact of hedging is non-linear near gamma flip points
@@ -897,6 +900,7 @@ When customers buy options from dealers:
 **Paper**: Gao, X., et al. (2024). *"Gamma positioning and market quality."* ScienceDirect / Journal of Financial Markets.
 
 **Key Finding** (Recent 2024 Research):
+
 - Aggregate dealer gamma exposure predicts intraday volatility
 - Negative gamma regimes exhibit higher realized volatility
 - Effect is stronger on days with significant option expiration
@@ -908,6 +912,7 @@ When customers buy options from dealers:
 **Paper**: Garleanu, N., Pedersen, L. H., & Poteshman, A. M. (2009). *"Demand-based option pricing."* Review of Financial Studies, 22(10), 4259-4299.
 
 **Key Finding**:
+
 - End-user demand for options creates hedging requirements
 - Market makers charge premia to compensate for hedging costs
 - Demand imbalances create predictable price pressure
@@ -918,11 +923,13 @@ When customers buy options from dealers:
 
 **Source**: SqueezeMetrics (squeezemetrics.com)
 **White Papers**:
+
 - "Gamma Exposure (GEX) and Volatility Suppression" (2019)
 - "The Volatility Feedback Loop" (2020)
 - "Market Maker Hedging Flows" (2021)
 
 **Key Contributions**:
+
 - Formalized GEX calculation methodology (now industry standard)
 - Empirical validation across thousands of market days
 - Bridged academic theory with practitioner application
@@ -932,10 +939,12 @@ When customers buy options from dealers:
 #### 6. Additional Key References
 
 **Black, F., & Scholes, M. (1973)**. *"The pricing of options and corporate liabilities."* Journal of Political Economy, 81(3), 637-654.
+
 - **Foundation**: Original options pricing model (Black-Scholes)
 - **Relevance**: Gamma calculation derives from this framework
 
 **Grossman, S. J. (1988)**. *"An analysis of the implications for stock and futures price volatility of program trading and dynamic hedging strategies."* Journal of Business, 61(3), 275-298.
+
 - **Historical Context**: Portfolio insurance and 1987 crash
 - **Relevance**: Early evidence of hedging amplification effects
 
@@ -953,7 +962,7 @@ When customers buy options from dealers:
 
 ### The Theory-to-Practice Pipeline
 
-```
+```bash
 Academic Research (1997-2024)
     ↓
 Market Microstructure Theory

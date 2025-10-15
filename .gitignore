@@ -170,6 +170,10 @@ run_simple_agent.sh
 run_sentiment_agent.sh
 package-lock.json
 
+# Local markdown formatting scripts (one-time fixes, not for repo)
+scripts/fix_code_blocks.py
+scripts/fix_closing_tags.py
+
 # Deprecated backtest scripts backup
 scripts/deprecated_backtest_scripts/
 

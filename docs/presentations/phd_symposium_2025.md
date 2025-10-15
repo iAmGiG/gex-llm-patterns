@@ -628,12 +628,14 @@ Pattern profitability varies by regime (Q1: +70bps, Q4: -1bps), but detection st
 **Current Status**: Validation complete, awaiting advisor guidance on publication approach
 
 **Evidence Collected**:
+
 - 181 trading days across 3 quarters
 - 100% detection rate maintained
 - 87-98% predictive accuracy
 - Obfuscation testing passed
 
 **Potential Publication Angles**:
+
 1. **Methodology paper**: Novel obfuscation testing framework (AI/ML venues)
 2. **Market microstructure paper**: LLM pattern detection in finance (Finance journals)
 3. **Interdisciplinary paper**: Constraint reasoning in complex systems (Management Science)
@@ -641,15 +643,18 @@ Pattern profitability varies by regime (Q1: +70bps, Q4: -1bps), but detection st
 ### Future Research Directions
 
 **Investigate Alpha Decline**:
+
 - Why does profitability vary (Q1: +70bps → Q4: -1bps) when detection stays constant?
 - Volatility regime factors, market efficiency changes, 0DTE market structure evolution
 
 **Extend Validation**:
+
 - Different asset classes (bonds, FX, commodities)
 - Different time periods (2020-2022 high-volatility regime)
 - Different LLM models (compare GPT-4, Claude, o3-mini)
 
 **Generalize Methodology**:
+
 - Apply obfuscation testing to other domains (supply chain, healthcare, logistics)
 - Develop automated pattern discovery framework
 - Create constraint detection benchmark
@@ -748,16 +753,19 @@ Pattern profitability varies by regime (Q1: +70bps, Q4: -1bps), but detection st
 ### System Architecture Choices
 
 **Single-Agent vs. Multi-Agent**:
+
 - Initially designed multi-agent system (DataAgent, GEXAgent, PatternAgent)
 - **Pivoted to single agent**: Complexity overhead provided no value
 - LLM handles all reasoning; Python handles all calculation
 
 **Why Not AutoGen Orchestration?**:
+
 - Patterns are deterministic calculations (Black-Scholes)
 - No need for agent debate/consensus
 - Direct function calls faster and more reliable
 
 **Validation Framework**:
+
 - `PatternTaxonomy` class defines pattern types (MECHANICAL, PROBABILISTIC, NARRATIVE)
 - `OutcomeCalculator` provides objective verification (rule-based, no human judgment)
 - `DataObfuscator` ensures no temporal context leakage
@@ -765,6 +773,7 @@ Pattern profitability varies by regime (Q1: +70bps, Q4: -1bps), but detection st
 ### Reproducibility
 
 **All results are reproducible**:
+
 ```bash
 # Exact command used for Q1 2024 validation
 python scripts/validation/validate_pattern_taxonomy.py \
@@ -914,24 +923,28 @@ def verify_prediction(llm_response, actual_data):
 ### Week 1: Days 1-7
 
 **Days 1-2**: Memorize Core Content
+
 - Elevator pitch (30 seconds)
 - Key talking points for each slide
 - Transition phrases between slides
 - Q&A responses
 
 **Days 3-4**: Create Slides
+
 - Use structure provided above
 - Include flow diagrams
 - Add results table from validation
 - Visual aids for obfuscation example
 
 **Days 5-6**: Practice Presenting
+
 - Full run-through with timing
 - Record yourself (video/audio)
 - Identify weak explanations
 - Refine transitions
 
 **Day 7**: Full Dress Rehearsal
+
 - Present to a friend/colleague
 - Get feedback on clarity
 - Adjust based on confusion points
@@ -939,16 +952,19 @@ def verify_prediction(llm_response, actual_data):
 ### Week 2: Days 8-10
 
 **Day 8**: Refine Slides
+
 - Incorporate practice feedback
 - Simplify any confusing diagrams
 - Add speaker notes for each slide
 
 **Day 9**: Memorize Q&A
+
 - Practice all prepared Q&A responses
 - Anticipate follow-up questions
 - Prepare "I don't know, but..." responses
 
 **Day 10**: Confidence Building
+
 - One final run-through
 - Focus on delivery, not content
 - Get good sleep before symposium
@@ -958,12 +974,14 @@ def verify_prediction(llm_response, actual_data):
 ## Presentation Delivery Tips
 
 ### Pacing
+
 - **Total time**: Aim for 14 minutes (leave 1 minute buffer for 15-min slot)
 - **Practice with timer**: Record yourself to ensure timing
 - **Don't rush**: Better to cover less material clearly than rush through everything
 - **Build in flexibility**: Have backup slides you can skip if running over
 
 ### Body Language
+
 - **Stand still**: Don't pace (distracting)
 - **Gesture naturally**: Use hands to emphasize points
 - **Eye contact**: Scan the audience, don't stare at slides
@@ -971,6 +989,7 @@ def verify_prediction(llm_response, actual_data):
 - **Avoid barriers**: Don't stand behind podium if possible
 
 ### Voice
+
 - **Speak clearly**: Enunciate technical terms
 - **Vary pace**: Slow down for complex explanations
 - **Pause for effect**: After key points (100% detection, etc.)
@@ -978,13 +997,16 @@ def verify_prediction(llm_response, actual_data):
 - **Avoid filler words**: Practice removing "um", "uh", "like"
 
 ### Transitions
+
 Use transition phrases between slides:
+
 - "Now that we've seen the problem, let me show you the solution..."
 - "With the methodology in place, here are the key results..."
 - "These results raise an important question about profitability..."
 - "Let me position this in the broader literature..."
 
 ### Handling Nervousness
+
 - **Breathe**: Take a breath before starting
 - **Acknowledge it**: "I'm excited to share this work..."
 - **Focus on content**: You know this material better than anyone
@@ -994,6 +1016,7 @@ Use transition phrases between slides:
 ### Handling Questions
 
 **If you know the answer**:
+
 - Pause briefly to think
 - Answer concisely
 - Connect back to main thesis if possible
@@ -1008,6 +1031,7 @@ Example: "That's an excellent question about bear market performance. From our c
 ## Final Checklist
 
 **Day Before**:
+
 - [ ] Slides finalized and loaded on presentation computer
 - [ ] Backup copy on USB drive
 - [ ] Backup copy emailed to yourself
@@ -1016,6 +1040,7 @@ Example: "That's an excellent question about bear market performance. From our c
 - [ ] Good night's sleep (8 hours)
 
 **Day Of**:
+
 - [ ] Arrive 15 minutes early
 - [ ] Test laptop/projector connection
 - [ ] Test slide animations/transitions
@@ -1024,6 +1049,7 @@ Example: "That's an excellent question about bear market performance. From our c
 - [ ] Deep breath, confident posture
 
 **During Presentation**:
+
 - [ ] Start with clear introduction
 - [ ] Stick to timing (aim for 14 min)
 - [ ] Make eye contact with audience
@@ -1032,6 +1058,7 @@ Example: "That's an excellent question about bear market performance. From our c
 - [ ] End with clear conclusion
 
 **After Presentation**:
+
 - [ ] Thank audience for questions
 - [ ] Provide contact info for follow-up
 - [ ] Network with interested attendees

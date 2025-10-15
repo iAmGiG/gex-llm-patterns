@@ -1,206 +1,387 @@
-# GEX-LLM Pattern Analysis
+# GEX-LLM Pattern Analysis: LLM Structural Reasoning in Financial Markets
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ## Overview
 
-This research project uses Large Language Models to identify exploitable patterns in daily Gamma Exposure (GEX) calculations combined with price action, detecting when dealer hedging constraints create predictable market movements.
+**Academic Research**: PhD project investigating whether Large Language Models can detect and reason about structural constraints in financial markets without memorizing training data.
 
-The experiment feeds tokenized sequences of options-derived metrics (GEX levels, gamma flip points, volatility skew) and price data from Alpha Vantage's historical options API into GPT-4o-mini/GPT-4o via Microsoft's Autogen framework to discover multi-timeframe patterns that traditional single-indicator models miss.
+**Core Innovation**: Obfuscation testing framework that validates LLM structural understanding by removing all temporal and contextual information (dates, tickers, events) before analysis.
 
-## Research Hypothesis
+**Research Question**: Can LLMs identify mechanical patterns driven by dealer hedging constraints (WHO forces WHOM to do WHAT) using only gamma exposure metrics?
 
-**Can LLMs identify patterns in dealer hedging constraints through GEX analysis that provide exploitable trading opportunities?**
+**Answer**: **YES** - validated across 181 trading days with 100% detection rate and 87-98% predictive accuracy using obfuscated data.
 
-We hypothesize that:
+## Project Status (October 2025)
 
-1. **Dealer gamma hedging** creates predictable market movements during certain conditions
-2. **Multi-timeframe GEX patterns** contain information not captured by traditional indicators  
-3. **LLMs can discover** these patterns through sequence analysis of tokenized market states
-4. **Discovered patterns** will show statistical significance and out-of-sample performance
+### Completed
 
-## Data Scope
+- ✅ **Pattern Library**: 15 comprehensive market mechanics patterns with WHO→WHOM→WHAT framework
+- ✅ **Validation Framework**: Complete obfuscation testing system for historical validation
+- ✅ **Data Infrastructure**: Historical GEX database, options data cache, automated collection
+- ✅ **LLM Integration**: O3-mini deployment with structured reasoning prompts
+- ✅ **Obfuscation System**: Date/ticker anonymization to prevent training data leakage
+- ✅ **Documentation**: 38+ markdown files covering methodology, implementation, and findings
 
-- **Historical Period**: 2008-present (15+ years of options data via automated collection)
-- **Instruments**: SPY, QQQ, IWM, DIA, TLT, GLD options chains + underlying price data
-- **Data Sources**: Alpha Vantage Premium (options) + Polygon.io (stocks) + FRED (Fed data)
-- **Collection Rate**: 75/min (options), 7,200/day (stocks), daily (Fed indicators)
-- **Current Status**: LLM-driven agent autonomy operational with YAML reporting and data obfuscation
-- **Key Metrics**: Enhanced GEX (3 metrics), gamma flip points, dealer hedging mechanics, WHO/WHOM/WHAT analysis
-- **Market Events**: FOMC meetings, OpEx, earnings, major volatility events with context weighting
+### In Progress
+
+- 🔄 **Paper #1**: Workshop submission to IEEE LLM-Finance 2025 (deadline: Oct 26, 2025)
+- 🔄 **HPCC Validation**: Full 2024 validation (Q1-Q4) + 2023/2025 out-of-sample testing
+- 🔄 **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM
+- 🔄 **Sequential GEX**: 5-day lookback analysis for temporal constraint detection
+
+See [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) for detailed roadmap.
+
+## Research Contributions
+
+### 1. Novel Validation Methodology
+
+**Obfuscation Testing Framework**:
+
+- Remove dates → "Day T+0", "Day T+1"
+- Remove tickers → "INDEX_1", "STOCK_G"
+- Remove events → No FOMC, earnings, COVID references
+- **Result**: Forces LLM to reason from pure mechanics, not memorize training data
+
+**Applications**: Can be applied to any domain requiring validation of LLM structural understanding (medical diagnosis, supply chain, engineering systems).
+
+### 2. Market Microstructure Pattern Detection
+
+**15 Documented Patterns** implementing dealer hedging constraints:
+
+- Gamma Squeeze, Stock Pinning, 0DTE Hedging
+- OPEX Pin, Volatility Suppression/Squeeze
+- Delta Hedging Cascade, Liquidity Vacuum
+- FOMC Positioning, Earnings Straddle
+- Quarter-End Rebalancing, Window Dressing
+- Dealer Trap, Correlation Breakdown
+- Momentum Ignition, Dispersion Trade
+
+Each pattern documented with:
+
+- Setup conditions, mechanics description
+- WHO (actor), WHOM (counterparty), WHAT (forced action)
+- Historical examples, success metrics
+- LLM prompts, identification criteria
+
+### 3. Empirical Evidence for LLM Structural Reasoning
+
+**Key Finding**: Detection ≠ Profitability
+
+| Quarter | Detection Rate | Predictive Accuracy | Net Alpha | Interpretation |
+|---------|----------------|---------------------|-----------|----------------|
+| Q1 2024 | 100% | 96.2% | +70 bps | Profitable regime |
+| Q3 2024 | 100% | 98.4% | +4 bps | Barely profitable |
+| Q4 2024 | 100% | 98.4% | -1 bps | Unprofitable |
+
+**Significance**: Proves LLM detects **structural mechanics** (which remain constant) rather than fitting to profitable anomalies (which vary by regime).
+
+### 4. Pattern Taxonomy
+
+**MECHANICAL vs. NARRATIVE classification**:
+
+- **MECHANICAL**: Pattern exists due to structural constraints (passes obfuscation test ≥60% detection)
+- **NARRATIVE**: Pattern requires context/memorization (fails obfuscation test <60% detection)
+
+**Validated**: All three tested patterns (gamma positioning, stock pinning, 0DTE hedging) achieved 100% detection → MECHANICAL classification.
 
 ## Architecture
 
-```bash
-src/
-├── data_sources/          # API clients (Alpha Vantage + Polygon.io + Fed/FOMC)
-│   ├── alpha_vantage_gex.py      # Premium options API client
-│   ├── polygon_client.py         # Stock data integration  
-│   ├── fed_data_integration.py   # FOMC/Fed economic context
-│   └── historical_gex_builder.py # Production database builder
+```
+gex-llm-patterns/
+├── src/
+│   ├── agents/                    # LLM market mechanics agent (single-agent design)
+│   │   └── market_mechanics_agent.py    # Core reasoning engine
+│   ├── analysis/                  # Pattern library & validation
+│   │   ├── pattern_library.py            # 15 documented patterns
+│   │   ├── baseline_comparison.py        # Statistical baselines
+│   │   └── outcome_calculator.py         # Objective outcome verification
+│   ├── gex/                       # Gamma exposure calculations
+│   │   ├── gex_calculator.py             # Black-Scholes GEX engine
+│   │   └── enhanced_pattern_detector.py  # Pattern matching
+│   ├── llm/                       # LLM integration
+│   │   ├── autogen_market_mechanics.py   # O3-mini interface
+│   │   └── mechanics_prompt_builder.py   # Structured prompts
+│   ├── validation/                # Obfuscation & testing
+│   │   ├── data_obfuscation.py           # Date/ticker anonymization
+│   │   ├── pattern_taxonomy.py           # MECHANICAL/NARRATIVE classification
+│   │   └── outcome_calculator.py         # Forward return verification
+│   ├── data_sources/              # Data collection
+│   │   ├── historical_gex_builder.py     # SQLite database builder
+│   │   ├── alpha_vantage_gex.py          # Options API client
+│   │   └── polygon_client.py             # Stock data client
+│   └── utils/                     # Core utilities
+│       ├── date_utils.py                 # Obfuscated date handling
+│       ├── config_manager.py             # Configuration system
+│       └── reports_manager.py            # YAML report generation
 ├── scripts/
-│   ├── data_collection/   # 24/7 automated collection system
-│   │   └── automation/    # Persistent collection services  
-│   ├── analysis/          # Data analysis and exploration
-│   └── testing/           # System validation and QA
-├── cache/                 # Unified caching system (auto-expanding)
-├── gex/                   # GEX calculation engine (Black-Scholes, flip points)
-├── agents/               # AutoGen 0.7.4 multi-agent framework
-├── utils/                # Consolidated datetime utilities (20+ files)
-├── tokenization/         # Dynamic tokenizer for LLM sequence generation
-└── validation/          # Data obfuscation for unbiased LLM testing
+│   ├── validation/                # Validation pipeline
+│   │   ├── validate_pattern_taxonomy.py  # Full validation framework
+│   │   └── validate_patterns.py          # Pattern library testing
+│   ├── database/                  # Database management
+│   │   └── rebuild_gex_database.py       # Historical GEX builder
+│   └── analysis/                  # Analysis tools
+│       └── gamma_pinning_validator.py    # Pattern-specific validation
+├── docs/
+│   ├── presentations/             # PhD symposium, papers
+│   │   ├── phd_symposium_2025.md         # Full presentation guide
+│   │   ├── fundamentals_explained.md     # Non-technical explanation
+│   │   └── technical_deep_dive.md        # Implementation details
+│   ├── system/                    # System documentation
+│   │   └── SYSTEM_FLOW_SIMPLE.md         # Methodology flowcharts
+│   └── guides/                    # Implementation guides
+│       └── validation-framework.md       # Validation usage guide
+└── config_defaults/               # Configuration templates
+    ├── analysis_config.yaml              # Pattern thresholds
+    └── pattern_library_config.yaml       # Pattern-specific settings
 ```
 
-## Development Phases
+## Key Modules
 
-### Phase 1: Data Infrastructure ✅
+### Pattern Detection Pipeline
 
-- **Status**: Complete - 24/7 automated collection system operational
-- **Achievement**: 87,000+ options contracts, persistent collection, API rate management
-- **Data Sources**: Alpha Vantage (options) + Polygon.io (stocks) + Fed/FOMC data fully integrated
-- **New**: Fed economic context integration with FOMC calendar and market stress indicators
+```python
+# Example: Single-day pattern detection with obfuscation
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.validation.data_obfuscation import DataObfuscator
 
-### Phase 2: GEX Calculation Engine ✅  
+# Initialize agent
+agent = MarketMechanicsAgent()
+obfuscator = DataObfuscator()
 
-- **Status**: Complete - Full Greeks calculations with advanced derivatives
-- **Achievement**: Black-Scholes engine, flip point detection, comprehensive validation
-- **Features**: Second/third-order Greeks, GEX caching, auto-calculation pipeline
-- **New**: Historical GEX database builder with production-grade features (concurrency, resume, validation)
+# Fetch and obfuscate data
+gex_data = agent.fetch_gex_data(symbol="SPY", date="2024-01-05")
+obfuscated_data = obfuscator.obfuscate(gex_data)
+# Result: date="Day T+0", symbol="INDEX_1"
 
-### Phase 3: Agent Framework ✅
+# LLM analysis (no temporal context)
+detection = agent.detect_pattern(obfuscated_data)
+# Returns: {
+#   'pattern': 'gamma_positioning',
+#   'who': 'Dealers with negative gamma',
+#   'whom': 'Market participants',
+#   'what': 'Force dealers to amplify volatility',
+#   'confidence': 0.85
+# }
 
-- **Status**: Complete - AutoGen 0.7.4 multi-agent system operational  
-- **Achievement**: Agent communication, tool integration, workflow automation
-- **Capabilities**: Data retrieval, GEX calculation, pattern analysis agents
-- **New**: Consolidated datetime utilities across 20+ files for consistent time handling
+# Verify outcome (forward returns)
+outcome = calculate_outcome(date="2024-01-05", horizon=1)
+# Returns: {
+#   'forward_1d_return_pct': 0.49,
+#   'prediction_materialized': True
+# }
+```
 
-### Phase 4: Pattern Mining & LLM Integration ⏳
+### Full Validation Run
 
-- **Status**: Ready for implementation with real data
-- **Next**: Sequential pattern mining, GPT-4o analysis of collected data
-- **Goal**: Discovered patterns with mechanical explanations
+```bash
+# Validate pattern across full quarter with obfuscation
+python scripts/validation/validate_pattern_taxonomy.py \
+  --pattern gamma_positioning \
+  --symbol SPY \
+  --start-date 2024-01-02 \
+  --end-date 2024-03-29 \
+  --with-outcomes
 
-### Phase 5: Validation & Analysis ⏳
-
-- **Status**: Framework prepared, awaiting pattern discovery
-- **Goal**: Statistically significant, out-of-sample validated results
+# Output: reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q1.yaml
+# Contains:
+# - Test metadata (dates, coverage, thresholds)
+# - Performance metrics (detection rate, accuracy, alpha)
+# - Obfuscation test verdict (MECHANICAL/NARRATIVE)
+# - All daily detection results with outcomes
+```
 
 ## Getting Started
 
 ### Prerequisites
 
 - Python 3.10+
-- Alpha Vantage API key (free tier: 25 calls/day, or premium: 75 calls/min)
-- Polygon.io API key (free tier: 7,200 calls/day)
-- OpenAI API key for GPT-4o-mini/GPT-4o (for pattern analysis)
-- Linux/Unix environment for persistent collection sessions
+- OpenAI API key (for O3-mini LLM)
+- Polygon.io API key (for options/stock data)
+- HPCC access (for full historical validation) OR local development
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/iAmGiG/gex-llm-patterns.git
 cd gex-llm-patterns
 
-# Set up configuration (add API keys to config/config.json)
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure API keys
+cp config_defaults/config.json config/config.json
+# Edit config/config.json with your API keys:
 # {
-#   "ALPHA_VANTAGE_KEY": "your_alpha_vantage_key",
-#   "POLYGON_IO": "your_polygon_key", 
-#   "OPEN_AI_KEY": "your_openai_key"
+#   "OPEN_AI_KEY": "your_openai_key",
+#   "POLYGON_IO": "your_polygon_key"
 # }
 
-# Install dependencies
-pip install requests pandas asyncio
-
 # Verify setup
-python -c "from src.cache.unified_cache import UnifiedCacheManager; print('Setup OK')"
+python -c "from src.analysis.pattern_library import PatternLibrary; print('Setup OK')"
 ```
 
-### Quick Start
+### Quick Start: Pattern Library
 
-#### 1. Start Automated Data Collection
-```bash
-# Start persistent collection (runs 24/7)
-python scripts/data_collection/automation/automated_data_collector.py
-
-# Monitor progress  
-python scripts/data_collection/automation/monitor_collection.py
-```
-
-#### 2. Analyze Collected Data
 ```python
-from src.cache.unified_cache import UnifiedCacheManager
+from src.analysis.pattern_library import PatternLibrary
 
-cache = UnifiedCacheManager()
-summary = cache.get_options_cache_summary()
+# Load pattern library
+library = PatternLibrary()
 
-print(f"Options data: {summary['total_contracts']:,} contracts")
-print(f"Symbols: {list(summary['tickers'].keys())}")
+# List all patterns
+for name, pattern in library.patterns.items():
+    print(f"{name}: {pattern.success_metrics.success_rate:.0%} success rate")
+
+# Get specific pattern
+gamma_squeeze = library.get_pattern('gamma_squeeze')
+print(gamma_squeeze.mechanics_description)
+# Output: "Call buying forces dealers to buy shares as price rises,
+#          creating positive feedback loop"
+
+# Generate LLM prompt for pattern
+prompt = library.generate_llm_prompt(
+    pattern_name='gamma_squeeze',
+    prompt_type='identification',
+    context_data={'net_gex': -8.5, 'strikes': '565-570'}
+)
 ```
 
-#### 3. Explore Options Data Structure  
+### Quick Start: Pattern Validation
+
 ```bash
-python scripts/analysis/explain_options_data.py
+# Test single pattern (local development)
+python scripts/validation/validate_patterns.py \
+  --pattern gamma_positioning \
+  --symbol SPY \
+  --date 2024-01-05
+
+# Full quarter validation (requires HPCC or extensive local cache)
+python scripts/validation/validate_pattern_taxonomy.py \
+  --pattern gamma_positioning \
+  --symbol SPY \
+  --start-date 2024-01-02 \
+  --end-date 2024-03-29 \
+  --with-outcomes
 ```
-
-## Current Status
-
-- ✅ **Data Infrastructure**: 24/7 automated collection system operational  
-- ✅ **Real Data**: 87,000+ live options contracts cached and growing
-- ✅ **API Integration**: Alpha Vantage + Polygon.io + Fed/FOMC data fully integrated
-- ✅ **GEX Engine**: Complete Black-Scholes implementation with advanced Greeks
-- ✅ **Agent Framework**: AutoGen 0.7.4 multi-agent system ready
-- ✅ **Fed Integration**: FOMC calendar, economic indicators, market stress analysis
-- ✅ **Historical Database**: Production-ready GEX database builder with enterprise features
-- ✅ **Code Quality**: Consolidated datetime utilities, comprehensive code review applied
-- ✅ **Organized Codebase**: Clean scripts structure, comprehensive testing
-- ⏳ **Pattern Discovery**: Ready for LLM analysis of collected data with Fed context
-- ⏳ **Research Phase**: Statistical validation and backtesting framework
 
 ## Documentation
 
-Comprehensive documentation is available in the `docs/` folder:
+Comprehensive documentation available in `docs/`:
 
-- **[Project Overview](docs/architecture/project_overview.md)**: Complete research vision, current status, and development roadmap
-- **[Implementation Status](docs/technical/implementation_status.md)**: Technical guide showing what's built and what's next
-- **[Architecture Overview](docs/architecture/architecture_overview.md)**: System design and component interactions
-- **[Agent Framework](docs/agents/agent_framework.md)**: Autogen multi-agent setup and workflows  
-- **[Data Pipeline](docs/technical/data_pipeline.md)**: Alpha Vantage integration, caching, and processing
-- **[GEX Calculations](docs/technical/gex_calculations.md)**: Mathematical GEX framework
-- **[Fed Integration Summary](docs/technical/fed_integration_summary.md)**: FOMC/Fed data integration system
-- **[Historical GEX Database](docs/technical/historical_gex_database_implementation.md)**: Production database builder
-- **[Tools and Utils](docs/technical/tools_and_utils.md)**: Consolidated utilities and datetime handling
-- **[Research Methodology](docs/research/research_methodology.md)**: Statistical validation and testing approach
-- **[Documentation Guidelines](docs/README.md)**: How to organize and format project documentation
+### Research & Presentations
+
+- **[PhD Symposium 2025](docs/presentations/phd_symposium_2025.md)**: Complete presentation with methodology, results, Q&A
+- **[Fundamentals Explained](docs/presentations/fundamentals_explained.md)**: Non-technical introduction to concepts
+- **[Technical Deep Dive](docs/presentations/technical_deep_dive.md)**: Implementation details and code walkthrough
+
+### System Documentation
+
+- **[System Flow Guide](docs/SYSTEM_FLOW_SIMPLE.md)**: Visual methodology flowcharts
+- **[Validation Framework](docs/guides/validation-framework.md)**: How to run pattern validations
+- **[Pattern Library Guide](docs/guides/pattern-library-guide.md)**: Using the 15-pattern library
+
+### Session Logs
+
+- **[CLAUDE.md](CLAUDE.md)**: Development history and current project status
+
+## Research Papers (In Progress)
+
+### Paper #1: Workshop Submission (Due Oct 26, 2025)
+
+**Title**: "Validating Market Microstructure Constraints Through LLM Pattern Detection: Evidence from Options Markets"
+
+**Venue**: IEEE LLM-Finance 2025 (workshop at IEEE BigData 2025, Macau)
+
+**Contribution**: Novel obfuscation testing framework for validating LLM structural reasoning
+
+**Status**: Writing in progress ([Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88))
+
+### Paper #2: Sequential GEX Analysis
+
+**Title**: TBD - Temporal dynamics of dealer constraints
+
+**Contribution**: 5-day lookback analysis shows LLM reasoning about constraint trajectories (accumulation, relief, reversal, persistence)
+
+**Status**: Methodology design ([Issue #89](https://github.com/iAmGiG/gex-llm-patterns/issues/89))
+
+### Paper #3: Cross-Asset Generalization
+
+**Title**: TBD - Individual equity pattern detection
+
+**Contribution**: Extending validation to individual equities (AAPL, TSLA, NVDA, JPM, XOM) to demonstrate cross-asset generalization
+
+**Status**: Planning ([Issue #87](https://github.com/iAmGiG/gex-llm-patterns/issues/87))
+
+## Current Research Focus
+
+### Active GitHub Issues
+
+- **[Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88)**: Paper #1 submission (workshop, Oct 26 deadline)
+- **[Issue #86](https://github.com/iAmGiG/gex-llm-patterns/issues/86)**: HPCC validation verification (2023-2025 dataset)
+- **[Issue #89](https://github.com/iAmGiG/gex-llm-patterns/issues/89)**: Sequential GEX analysis (5-day lookback)
+- **[Issue #87](https://github.com/iAmGiG/gex-llm-patterns/issues/87)**: Individual equities extension (cross-asset)
+
+### Key Findings
+
+1. **LLMs can detect structural constraints** - 100% detection rate with obfuscated data across 181 days
+2. **Detection ≠ Profitability** - Pattern detection remains constant (100%) while economic outcomes vary (+70bps to -1bps), proving structural understanding
+3. **Obfuscation testing works** - All tested patterns passed ≥60% threshold for MECHANICAL classification
+4. **Cross-pattern generalization** - Same methodology detects gamma positioning, stock pinning, and 0DTE hedging (three manifestations of dealer constraints)
 
 ## Contributing
 
-This is an academic research project. Contributions are welcome, particularly:
+This is an active PhD research project. Contributions welcome in:
 
-- **Data Quality**: Improving options data validation and cleaning
-- **GEX Calculations**: Enhancing gamma exposure calculation accuracy
-- **Pattern Mining**: Advanced sequential pattern algorithms
-- **Statistical Validation**: Robust testing frameworks
-- **Documentation**: Research methodology and findings
+- **Pattern Discovery**: Identifying new dealer hedging patterns
+- **Validation Testing**: Running validations on different time periods/symbols
+- **LLM Experimentation**: Testing different models (GPT-4, Claude, etc.)
+- **Cross-Domain Application**: Applying obfuscation testing to other domains
+- **Documentation**: Improving guides and examples
+
+Please open an issue before starting major work.
+
+## Research Ethics & Disclaimers
+
+- **Academic Research**: All results for academic publication, not trading advice
+- **No Market Manipulation**: Uses publicly available data only
+- **Transparency**: Methodology and code are open source
+- **Risk Disclaimer**: Past performance (detection rates, accuracy) does not guarantee future results
+- **Not Financial Advice**: This research demonstrates LLM capabilities, not profitable trading strategies
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see [LICENSE](LICENSE) for details.
 
-**Note**: The current AGPL v3 license ensures open source compliance but may be restrictive for future commercial applications. Consider transitioning to a more flexible license (MIT, Apache 2.0, or dual licensing) to maintain control over future academic and commercial opportunities.
+**Future License Consideration**: AGPL v3 ensures open source compliance but may restrict commercial applications. Consider transitioning to MIT or dual licensing for academic/commercial flexibility.
 
-## Research Ethics
+## Citation
 
-- **No Market Manipulation**: All research is for academic purposes
-- **Data Privacy**: Uses publicly available market data only  
-- **Transparency**: All methodology and code are open source
-- **Risk Disclaimer**: Past performance does not guarantee future results
+If you use this methodology or code in your research, please cite:
+
+```bibtex
+@misc{gex-llm-patterns-2025,
+  author = {[Your Name]},
+  title = {Validating LLM Structural Reasoning in Financial Markets via Obfuscation Testing},
+  year = {2025},
+  publisher = {GitHub},
+  url = {https://github.com/iAmGiG/gex-llm-patterns}
+}
+```
 
 ## Contact
 
-For questions about this research, please open an issue on GitHub or refer to the project documentation in `@docs/`.
+**Researcher**: PhD Candidate, Computer Science
+**Project**: LLM Structural Reasoning in Market Microstructure
+**Code**: <https://github.com/iAmGiG/gex-llm-patterns>
+**Issues**: <https://github.com/iAmGiG/gex-llm-patterns/issues>
 
 ---
 
-*This research explores the intersection of market microstructure, gamma exposure calculations, and modern AI techniques for pattern discovery in financial markets.*
+**Last Updated**: October 14, 2025
+**Project Status**: Validation framework deployed, Paper #1 in progress
+**Next Milestone**: IEEE LLM-Finance 2025 workshop submission (Oct 26)
+
+*This research explores the intersection of large language models, market microstructure, and validation methodology for testing AI structural reasoning capabilities.*

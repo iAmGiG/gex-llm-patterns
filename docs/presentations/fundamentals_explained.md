@@ -290,7 +290,7 @@ Instead of mechanical rules, the AI sees the data and thinks:
 
 Think of a paper form at a doctor's office:
 
-```
+```bash
 Patient Information Form
 ├─ Name: [_______________]
 ├─ Date of Birth: [_______________]
@@ -322,7 +322,7 @@ Every driver's license has the **same fields in the same order** - this is what 
 
 **Without @dataclass (Plain Text)**:
 
-```
+```yaml
 "Gamma Squeeze pattern: dealers forced to hedge, works 67% of time,
 expect 2-5% move"
 ```
@@ -425,7 +425,7 @@ Instead of saying "I have a hunch the market will go up," the pattern library fo
 
 **Example "Recipe Card" in Plain English**:
 
-```
+```yaml
 Pattern: "Gamma Squeeze"
 
 WHO: Retail traders buying call options
