@@ -4,8 +4,10 @@ Uses AutoGen framework for consistent LLM interaction across the system
 """
 
 import os
+import json
 import asyncio
 import logging
+from pathlib import Path
 from typing import Dict, Any
 
 # AutoGen imports
@@ -59,12 +61,17 @@ class AutoGenMarketMechanics:
         self.system_prompt = config.get('llm_market_mechanics.system_prompts.mechanics_analyst',
                                         'You are a market mechanics analyst.')
 
-        # Get API key from environment (not stored in config for security)
+        # Get API key - try environment first, then config/config.json (for HPCC shared systems)
         api_key = os.getenv("OPEN_AI_KEY") or os.getenv("OPENAI_API_KEY")
 
         if not api_key:
+            # Fallback: try loading from config/config.json (HPCC workaround)
+            api_key = self._load_api_key_from_json_config()
+
+        if not api_key:
             raise ValueError(
-                "OpenAI API key not found in environment (OPEN_AI_KEY or OPENAI_API_KEY)")
+                "OpenAI API key not found in environment (OPEN_AI_KEY or OPENAI_API_KEY) "
+                "or config/config.json (OPEN_AI_KEY)")
 
         # Initialize AutoGen OpenAI client with model-specific parameters
         client_params = {
@@ -88,6 +95,34 @@ class AutoGenMarketMechanics:
         self.client = OpenAIChatCompletionClient(**client_params)
 
         logger.info(f"AutoGenMarketMechanics initialized with {self.model}")
+
+    def _load_api_key_from_json_config(self) -> str:
+        """
+        Load API key from config/config.json file.
+
+        This is a fallback for shared HPCC systems where environment variables
+        don't work properly. Returns None if file doesn't exist or key not found.
+        """
+        try:
+            # Find project root (where config/ directory should be)
+            current = Path(__file__)
+            while current.parent != current:
+                config_path = current / 'config' / 'config.json'
+                if config_path.exists():
+                    with open(config_path, 'r') as f:
+                        config_data = json.load(f)
+                    api_key = config_data.get('OPEN_AI_KEY')
+                    if api_key:
+                        logger.info("Loaded OpenAI API key from config/config.json (HPCC mode)")
+                        return api_key
+                current = current.parent
+
+            logger.debug("config/config.json not found or no OPEN_AI_KEY")
+            return None
+
+        except Exception as e:
+            logger.debug(f"Could not load API key from config/config.json: {e}")
+            return None
 
     async def interpret_mechanics_async(self, prompt: str) -> Dict[str, Any]:
         """

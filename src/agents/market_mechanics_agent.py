@@ -384,12 +384,17 @@ class MarketMechanicsAgent:
                     options_data = self._fetch_options_data(date)
                     if options_data is not None and not options_data.empty:
                         # Get spot price for GEX calculation
-                        if 'underlyingPrice' not in options_data.columns:
-                            logger.error(
-                                f"Missing underlyingPrice for {date}, skipping")
-                            continue
-
-                        spot_price = options_data['underlyingPrice'].iloc[0]
+                        # Try underlyingPrice column first, then estimate from put-call parity
+                        if 'underlyingPrice' in options_data.columns:
+                            spot_price = options_data['underlyingPrice'].iloc[0]
+                        else:
+                            # Fallback: estimate from options using put-call parity
+                            spot_price = self._estimate_spot_from_options(options_data)
+                            if not spot_price:
+                                logger.error(
+                                    f"Missing underlyingPrice and could not estimate for {date}, skipping")
+                                continue
+                            logger.info(f"Estimated spot price from put-call parity: {spot_price:.2f}")
 
                         # Calculate GEX - returns DataFrame with per-strike GEX
                         gex_df = self.gex_calculator.calculate_dealer_gamma_exposure(
@@ -985,6 +990,66 @@ Respond with JSON:
         except Exception as e:
             logger.error(f"AutoGen tools error: {e}, falling back to cache")
             return self.cache.get_options_data(self.symbol, date_str)
+
+    def _estimate_spot_from_options(self, options_data: pd.DataFrame) -> Optional[float]:
+        """
+        Estimate spot price from options data using put-call parity.
+
+        This is a fallback when underlyingPrice is not in the cached options data.
+        Uses the same algorithm as HistoricalGEXBuilder.estimate_spot_from_options().
+
+        Args:
+            options_data: DataFrame with options chains (calls and puts)
+
+        Returns:
+            Estimated spot price or None if estimation fails
+        """
+        try:
+            calls = options_data[options_data['type'] == 'call']
+            puts = options_data[options_data['type'] == 'put']
+
+            if len(calls) == 0 or len(puts) == 0:
+                return None
+
+            # Find strikes with both calls and puts
+            common_strikes = set(calls['strike'].values) & set(puts['strike'].values)
+
+            if not common_strikes:
+                return None
+
+            # Use put-call parity: S = K + C - P (approximately, ignoring time value)
+            best_estimates = []
+
+            for strike in sorted(common_strikes):
+                call_data = calls[calls['strike'] == strike]
+                put_data = puts[puts['strike'] == strike]
+
+                if len(call_data) > 0 and len(put_data) > 0:
+                    call_price = call_data['mark'].iloc[0] if call_data['mark'].iloc[0] > 0 else call_data['last'].iloc[0]
+                    put_price = put_data['mark'].iloc[0] if put_data['mark'].iloc[0] > 0 else put_data['last'].iloc[0]
+
+                    if call_price > 0 and put_price > 0:
+                        spot_estimate = strike + call_price - put_price
+                        # Only consider reasonable estimates (within 50% of strike)
+                        if 0.5 * strike <= spot_estimate <= 1.5 * strike:
+                            best_estimates.append(spot_estimate)
+
+            if best_estimates:
+                # Return median estimate to avoid outliers
+                median_estimate = sorted(best_estimates)[len(best_estimates) // 2]
+
+                # Verify estimate is reasonable (within typical market ranges)
+                if median_estimate < 10 or median_estimate > 10000:  # SPY/SPX range check
+                    logger.warning(f"Suspicious spot estimate: {median_estimate}")
+                    return None
+
+                return median_estimate
+
+            return None
+
+        except Exception as e:
+            logger.warning(f"Error estimating spot price from options: {e}")
+            return None
 
     def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
         """Fetch GEX data from database, calculate and populate if missing.
