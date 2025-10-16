@@ -1,0 +1,241 @@
+# LLM Prompt Templates Configuration
+# Issue #90: Config-based prompt system to test for prompt bias
+# Created: 2025-10-16
+
+# Prompt template selection
+# Options: standard, unbiased, reasoning
+default_template: "standard"
+
+# Template definitions
+prompt_templates:
+
+  # STANDARD: Current prompt (baseline with regime labels)
+  # Used for: Q1-Q4 2024 validation
+  # Detection Rate: 100% (may be inflated by regime labels)
+  standard:
+    name: "Standard Prompt (with regime labels)"
+    description: "Original prompt including regime classification labels"
+
+    # Data inclusion flags
+    include_regime_label: true         # Show "NEGATIVE_GAMMA" / "POSITIVE_GAMMA"
+    include_pattern_hints: true        # Show detected patterns from rule-based system
+    include_flip_point: true           # Show gamma flip point
+    include_spot_price: true           # Show current spot price
+    include_gex_magnitude: true        # Show total GEX value
+
+    # Question framing
+    question_style: "leading"          # "What patterns do you see?" (presumes patterns)
+    null_hypothesis_allowed: false     # LLM must provide WHO/WHOM/WHAT for every day
+
+    # Response structure
+    response_format: "json"
+    required_fields:
+      - "who"          # Must identify forcing party
+      - "whom"         # Must identify forced party
+      - "what"         # Must identify forced action
+      - "confidence"   # 0-100 numeric
+      - "mechanics"    # Brief explanation
+
+    # Use case
+    use_for:
+      - "Baseline detection"
+      - "Pattern discovery"
+      - "High-confidence signals"
+
+
+  # UNBIASED: No regime labels (tests for prompt bias)
+  # Used for: Issue #90 validation
+  # Detection Rate: TBD (expected 70-85%)
+  unbiased:
+    name: "Unbiased Prompt (no regime labels)"
+    description: "Prompt without regime labels to test for bias"
+
+    # Data inclusion flags
+    include_regime_label: false        # ⚠️ NO REGIME LABELS
+    include_pattern_hints: false       # ⚠️ NO PATTERN HINTS
+    include_flip_point: true           # Still show flip point (structural data)
+    include_spot_price: true           # Still show spot price
+    include_gex_magnitude: true        # Still show raw GEX value (no classification)
+
+    # Question framing
+    question_style: "neutral"          # "Do you detect any mechanics?" (open-ended)
+    null_hypothesis_allowed: true      # LLM can say "no pattern detected"
+
+    # Response structure
+    response_format: "json"
+    required_fields:
+      - "pattern_detected"  # Boolean: true/false
+      - "who"               # Only if pattern_detected=true
+      - "whom"              # Only if pattern_detected=true
+      - "what"              # Only if pattern_detected=true
+      - "confidence"        # 0 if no pattern, 1-100 if pattern
+      - "reasoning"         # Why pattern detected or not
+
+    # Use case
+    use_for:
+      - "Bias testing"
+      - "Academic validation"
+      - "Baseline comparison"
+
+
+  # REASONING: Optimized for o3-mini reasoning models
+  # Used for: Advanced validation with chain-of-thought
+  # Detection Rate: TBD (expected higher accuracy)
+  reasoning:
+    name: "Reasoning Model Prompt (o3-mini optimized)"
+    description: "Prompt optimized for reasoning models with CoT"
+
+    # Data inclusion flags
+    include_regime_label: false        # No labels - let model reason
+    include_pattern_hints: false       # No hints - let model discover
+    include_flip_point: true           # Structural data provided
+    include_spot_price: true
+    include_gex_magnitude: true
+    include_velocity_metrics: true     # Add GEX change over time
+
+    # Question framing
+    question_style: "chain_of_thought"  # "Reason through the mechanics step-by-step"
+    null_hypothesis_allowed: true       # Can conclude no pattern
+    require_evidence: true              # Must cite specific data points
+
+    # Response structure
+    response_format: "json_with_reasoning"
+    required_fields:
+      - "step_1_data_analysis"    # What does the data show?
+      - "step_2_mechanism_inference"  # What mechanism could cause this?
+      - "step_3_constraint_identification"  # What constraints exist?
+      - "step_4_confidence_assessment"  # How confident?
+      - "pattern_detected"        # Final boolean
+      - "who"                     # If pattern detected
+      - "whom"
+      - "what"
+      - "confidence"              # 0-100
+
+    # Use case
+    use_for:
+      - "High-accuracy validation"
+      - "Complex pattern detection"
+      - "Causal reasoning"
+
+# Question templates by style
+question_templates:
+
+  leading:
+    overall_analysis: "Analyze the following {n} trading days for {symbol}. Look for patterns across all dates and provide comparative analysis."
+    individual_days: |
+      QUESTIONS TO ANSWER:
+      1. What patterns do you see across these dates?
+      2. Are there consistent mechanics (WHO forcing WHOM to do WHAT)?
+      3. What is the highest confidence signal across all dates?
+      4. Do you see any temporal patterns (e.g., weekly effects)?
+
+  neutral:
+    overall_analysis: "Analyze the following {n} trading days for {symbol}. Determine if any consistent market mechanics are present."
+    individual_days: |
+      QUESTIONS TO ANSWER:
+      1. Do you detect any consistent mechanics across these dates? If yes, what?
+      2. If mechanics exist, identify: WHO is forcing WHOM to do WHAT
+      3. Confidence level (0-100): How certain are you a pattern exists?
+      4. For days with no clear pattern, set confidence to 0 and explain why
+
+  chain_of_thought:
+    overall_analysis: "Analyze the following {n} trading days for {symbol}. Reason through the market mechanics step-by-step using the framework below."
+    individual_days: |
+      REASONING FRAMEWORK:
+      For each day, work through these steps:
+
+      STEP 1 - DATA ANALYSIS:
+      - What is the GEX magnitude and direction?
+      - Where is spot price relative to flip point?
+      - Are there any velocity indicators (GEX change over time)?
+
+      STEP 2 - MECHANISM INFERENCE:
+      - What market mechanisms could produce this data?
+      - Consider: dealer hedging, pinning, gamma squeeze, normal flow
+
+      STEP 3 - CONSTRAINT IDENTIFICATION:
+      - What constraints exist for dealers? (delta neutrality, risk limits)
+      - Are dealers FORCED to act, or is this discretionary?
+      - What alternative actions could dealers take?
+
+      STEP 4 - CONFIDENCE ASSESSMENT:
+      - How strong is the evidence for this mechanism?
+      - Could this be normal market activity?
+      - Assign confidence 0-100 (0 = no pattern, 100 = certain pattern)
+
+# Data formatting by template
+data_formatting:
+
+  standard:
+    show_regime: true
+    regime_format: "Regime: {regime}"
+    show_patterns: true
+    pattern_format: "Patterns Detected: {patterns}"
+    gex_format: "Total GEX: ${total_gex:,.0f}"
+
+  unbiased:
+    show_regime: false
+    show_patterns: false
+    gex_format: "Net GEX: ${net_gex:,.0f} (raw value, unclassified)"
+    flip_format: "Zero-gamma level: ${flip_point:.0f}"
+
+  reasoning:
+    show_regime: false
+    show_patterns: false
+    gex_format: |
+      GEX Data:
+      - Current: ${net_gex:,.0f}
+      - 1-day change: ${gex_change_1d:+,.0f} ({gex_change_1d_pct:+.1f}%)
+      - Spot: ${spot_price:.2f}
+      - Zero-gamma: ${flip_point:.0f}
+      - Distance: {distance_pct:.1f}%
+
+# Validation metadata
+# Track which prompt was used for each validation run
+metadata:
+  version: "1.0"
+  created: "2025-10-16"
+  issue: "#90"
+  purpose: "Test for prompt bias in pattern detection"
+
+  validation_runs:
+    - run_id: "Q1_2024_standard"
+      template: "standard"
+      dates: "2024-01-02 to 2024-03-29"
+      detection_rate: 100.0
+      note: "Baseline with regime labels"
+
+    - run_id: "Q2_2024_standard"
+      template: "standard"
+      dates: "2024-04-01 to 2024-06-28"
+      detection_rate: 100.0
+      note: "Baseline with regime labels"
+
+    # Future runs to be added
+    # - run_id: "Q2_2024_unbiased"
+    #   template: "unbiased"
+    #   dates: "2024-04-01 to 2024-06-28"
+    #   detection_rate: TBD
+    #   note: "Test without regime labels"
+
+# Usage examples
+usage_examples:
+  command_line: |
+    # Use standard prompt (default)
+    python scripts/validation/validate_pattern_taxonomy.py --pattern gamma_positioning --prompt-template standard
+
+    # Use unbiased prompt (Issue #90 testing)
+    python scripts/validation/validate_pattern_taxonomy.py --pattern gamma_positioning --prompt-template unbiased
+
+    # Use reasoning prompt (o3-mini)
+    python scripts/validation/validate_pattern_taxonomy.py --pattern gamma_positioning --prompt-template reasoning
+
+  programmatic: |
+    from src.utils.config_manager import get_config
+
+    # Load prompt config
+    config = get_config()
+    prompt_config = config.get('llm_prompts.prompt_templates.unbiased')
+
+    # Check if regime labels should be included
+    include_regime = prompt_config.get('include_regime_label', False)

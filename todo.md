@@ -1,12 +1,23 @@
 # GEX LLM Patterns - TODO
 
-## Current Status (October 12, 2025 - 21:30)
+## Current Status (October 16, 2025 - 17:25)
 
-### 🎉 MAJOR MILESTONE: Full 2024 Multi-Pattern Validation Complete
+### ✅ COMPLETE: Issue #90 - Prompt Bias Discovery and Revalidation
 
-**Academic Success**: LLM methodology validated across 3 pattern types throughout full 2024 year (Q1, Q3, Q4)
+**Status**: All 3 patterns revalidated with unbiased prompts, advisor update sent
 
-**Critical Finding**: Methodology detects structural patterns consistently even as economic profitability declines - proving detection is based on market mechanics, not profit optimization.
+**Final Results** (Full Year 2024 - 242 trading days):
+
+| Pattern | Biased | Unbiased | Delta | Accuracy |
+|---------|--------|----------|-------|----------|
+| gamma_positioning | 100% | **69.4%** | -30.6% | 92.5% |
+| stock_pinning | 100% | **67.4%** | -32.6% | 90.4% |
+| 0dte_hedging | 100% | **77.7%** | -22.3% | 90.8% |
+| **Average** | **100%** | **71.5%** | **-28.5%** | **91.2%** |
+
+**Key Finding**: ALL 3 patterns pass 60% mechanical threshold with unbiased prompts. Proves structural detection without regime label hints.
+
+**Next**: Awaiting advisor guidance on presentation strategy (lead with 71%, 100%, or both)
 
 ---
 
@@ -85,21 +96,59 @@ This declining profitability is **actually beneficial for academic contribution*
 
 ---
 
+## Recent Completion (October 16, 2025)
+
+### ✅ Issue #90: Prompt Bias Discovery and Config-Based Templates
+
+**Problem Discovered**: Original validation showed LLM regime labels ("NEGATIVE_GAMMA") and pattern hints in prompts - essentially revealing the answer.
+
+**Solution Implemented**:
+- Created `config_defaults/llm_prompts.yaml` with 3 prompt templates
+- Refactored `MarketMechanicsAgent._build_batch_prompt()` to load from config
+- Added `--prompt-template` CLI flag to validation scripts
+- Revalidated all 3 patterns with unbiased prompts (no labels, no hints)
+
+**Results**: Detection dropped from 100% → 71.5% (avg), but all 3 patterns still pass 60% mechanical threshold with 91% accuracy.
+
+**Impact**: STRENGTHENS paper - proves structural detection without label leakage. More academically defensible than 100% detection.
+
+**Files**:
+- `gamma_positioning_SPY_2024_unbiased.yaml`
+- `stock_pinning_SPY_2024_unbiased.yaml`
+- `0dte_hedging_SPY_2024_unbiased.yaml`
+- `docs/advisor_update_prompt_bias_oct2025.md`
+
+**GitHub**: Issue #90 documented, awaiting closure decision from advisor
+
+---
+
 ## Next Actions (Priority Order)
 
-### 1. PhD Paper #1: Write First Draft (READY)
+### 1. PhD Paper #1: Write First Draft (AWAITING ADVISOR INPUT)
+
 **Goal**: Complete first draft of methodology validation paper
 
-**Status**: ✅ All evidence collected and documented
-- 181 trading days validated (Q1, Q3, Q4 2024)
-- 100% detection rate across 3 patterns
-- 87-98% predictive accuracy maintained
-- Obfuscation testing passed
-- Comprehensive analysis document complete
+**Status**: ✅ All evidence collected - PAUSED pending advisor guidance
 
-**Timeline**: 2-3 weeks for first draft
+**Evidence Ready**:
+- ✅ Full 2024 validation (242 days, 3 patterns)
+- ✅ **Biased prompts**: 100% detection, 91-98% accuracy (Q1-Q4 quarterly)
+- ✅ **Unbiased prompts**: 71.5% detection, 91.2% accuracy (full year)
+- ✅ Both pass 60% mechanical threshold
+- ✅ Obfuscation testing validated
+- ✅ Multi-pattern generalization proven
 
-**Note**: Profitability variance is a STRENGTH (proves structural detection, not profit optimization) - not a research blocker
+**Pending Decision**: Presentation strategy
+- **Option A**: Lead with unbiased 71% (conservative)
+- **Option B**: Present both equally (ablation study)
+- **Option C**: Lead with biased 100% (acknowledge limitation)
+
+**Current Work** (while waiting):
+- Chat B: Updating paper outline with all 3 scenarios
+- Chat B: Drafting methods section (works for any option)
+- Chat B: Creating comparison tables/figures
+
+**Timeline**: Advisor update sent Oct 16, read same day. Once decision received, 2-3 weeks for complete first draft.
 
 ### 2. Optional: Investigate Profitability Factors (Future Work)
 **Goal**: Understand why profitability varied across quarters (Paper #2 or #3 material)

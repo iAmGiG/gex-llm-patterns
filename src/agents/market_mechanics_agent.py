@@ -349,7 +349,7 @@ class MarketMechanicsAgent:
             }
 
     def run_batch_experiments(self, dates: List[str], experiment_template: str = None,
-                              use_obfuscation: bool = True) -> Dict:
+                              use_obfuscation: bool = True, prompt_template: str = None) -> Dict:
         """
         Run experiments on multiple dates in a single LLM call for better pattern recognition.
 
@@ -357,6 +357,8 @@ class MarketMechanicsAgent:
             dates: List of dates to analyze
             experiment_template: Template for experiment description
             use_obfuscation: Whether to obfuscate dates/tickers to prevent LLM cheating
+            prompt_template: Prompt template name (standard/unbiased/reasoning)
+                           If None, uses default from config
 
         Returns:
             Dictionary with batch analysis results
@@ -459,9 +461,9 @@ class MarketMechanicsAgent:
                         'obfuscated_date': date_mapping[date]
                     }
 
-            # Build batch analysis prompt
+            # Build batch analysis prompt with specified template
             batch_prompt = self._build_batch_prompt(
-                batch_data, display_symbol, experiment_template)
+                batch_data, display_symbol, template=prompt_template)
 
             # Single LLM call for all dates
             logger.info(f"Analyzing {len(dates)} dates in single batch")
@@ -476,6 +478,7 @@ class MarketMechanicsAgent:
                 'batch_size': len(dates),
                 'dates_analyzed': dates,
                 'obfuscation_used': use_obfuscation,
+                'prompt_template_used': prompt_template or 'default',
                 'batch_analysis': batch_analysis,
                 'individual_results': results,
                 'timestamp': now_iso()
@@ -491,12 +494,41 @@ class MarketMechanicsAgent:
             }
 
     def _build_batch_prompt(self, batch_data: Dict, symbol: str, template: str = None) -> str:
-        """Build prompt for batch LLM analysis."""
-        prompt = f"""Analyze the following {len(batch_data)} trading days for {symbol}.
-Look for patterns across all dates and provide comparative analysis.
+        """
+        Build prompt for batch LLM analysis using config-based templates.
 
-DATA FOR EACH DAY:
-"""
+        Args:
+            batch_data: Dictionary of date -> data mappings
+            symbol: Trading symbol
+            template: Prompt template name (standard/unbiased/reasoning)
+                     If None, uses default from config
+
+        Returns:
+            Formatted prompt string
+        """
+        from src.utils.config_manager import get_config
+
+        # Load prompt config
+        config = get_config()
+        template_name = template or config.get('llm_prompts.default_template', 'standard')
+
+        # Get template config
+        template_config = config.get(f'llm_prompts.prompt_templates.{template_name}', {})
+        if not template_config:
+            logger.warning(f"Template '{template_name}' not found, using standard")
+            template_config = config.get('llm_prompts.prompt_templates.standard', {})
+
+        # Get question template
+        question_style = template_config.get('question_style', 'leading')
+        question_template = config.get(f'llm_prompts.question_templates.{question_style}', {})
+
+        # Build header
+        overall_analysis = question_template.get('overall_analysis',
+            "Analyze the following {n} trading days for {symbol}.")
+        prompt = overall_analysis.format(n=len(batch_data), symbol=symbol)
+        prompt += "\n\nDATA FOR EACH DAY:\n"
+
+        # Build data section for each day
         for date, data in batch_data.items():
             obfusc_date = data.get('obfuscated_date', date)
             prompt += f"\n{'='*60}\n{obfusc_date}:\n"
@@ -505,39 +537,61 @@ DATA FOR EACH DAY:
                 prompt += f"  ERROR: {data['error']}\n"
             else:
                 gex = data.get('gex_metrics', {})
-                prompt += f"  Total GEX: ${gex.get('total_gamma', 0):,.0f}\n"
+
+                # Always show GEX magnitude and spot price
+                prompt += f"  Net GEX: ${gex.get('total_gamma', 0):,.0f}\n"
                 prompt += f"  Spot Price: ${gex.get('spot_price', 0):.2f}\n"
                 prompt += f"  Flip Point: ${gex.get('flip_point', 0):.2f}\n"
-                prompt += f"  Regime: {gex.get('regime', 'Unknown')}\n"
 
-                if data.get('patterns'):
+                # Conditionally show regime label (Issue #90 - this is the bias)
+                if template_config.get('include_regime_label', True):
+                    prompt += f"  Regime: {gex.get('regime', 'Unknown')}\n"
+
+                # Conditionally show pattern hints
+                if template_config.get('include_pattern_hints', True) and data.get('patterns'):
                     prompt += f"  Patterns Detected: {', '.join([p.get('pattern', '') for p in data['patterns'][:3]])}\n"
 
-        prompt += f"""
-{'='*60}
-QUESTIONS TO ANSWER:
-1. What patterns do you see across these dates?
-2. Are there consistent mechanics (WHO forcing WHOM to do WHAT)?
-3. What is the highest confidence signal across all dates?
-4. Do you see any temporal patterns (e.g., weekly effects)?
+        # Add question section
+        prompt += f"\n{'='*60}\n"
+        individual_questions = question_template.get('individual_days',
+            "QUESTIONS TO ANSWER:\n1. What patterns do you see?")
+        prompt += individual_questions + "\n\n"
 
-IMPORTANT: Return your analysis in JSON format with this structure:
-{{
-  "overall_analysis": "Your overall analysis here",
-  "individual_days": {{
-    "DATE_KEY": {{
-      "who": "Identify the forcing party",
-      "whom": "Who is being forced",
-      "what": "Specific forced action",
-      "mechanics": "Brief causal chain",
-      "confidence": 0-100 (numeric)
-    }}
-  }}
-}}
+        # Add response format instructions
+        null_allowed = template_config.get('null_hypothesis_allowed', False)
+        response_format = template_config.get('response_format', 'json')
 
-Use the obfuscated date keys (e.g., "Day T+0") as the DATE_KEY.
-Confidence must be a number 0-100.
-"""
+        if response_format == 'json':
+            prompt += "IMPORTANT: Return your analysis in JSON format with this structure:\n"
+            prompt += "{\n"
+            prompt += '  "overall_analysis": "Your overall analysis here",\n'
+            prompt += '  "individual_days": {\n'
+            prompt += '    "DATE_KEY": {\n'
+
+            if null_allowed:
+                prompt += '      "pattern_detected": true/false,\n'
+
+            prompt += '      "who": "Identify the forcing party",\n'
+            prompt += '      "whom": "Who is being forced",\n'
+            prompt += '      "what": "Specific forced action",\n'
+            prompt += '      "mechanics": "Brief causal chain",\n'
+            prompt += '      "confidence": 0-100 (numeric)\n'
+            prompt += '    }\n'
+            prompt += '  }\n'
+            prompt += '}\n\n'
+
+            if null_allowed:
+                prompt += "NOTE: For days with no clear pattern, set pattern_detected=false and confidence=0.\n"
+
+        prompt += "Use the obfuscated date keys (e.g., 'Day T+0') as the DATE_KEY.\n"
+        prompt += "Confidence must be a number 0-100.\n"
+
+        # Log template used (for debugging Issue #90)
+        logger.info(f"Built prompt using template: {template_name}")
+        logger.debug(f"Template config: regime_label={template_config.get('include_regime_label')}, "
+                    f"pattern_hints={template_config.get('include_pattern_hints')}, "
+                    f"null_allowed={null_allowed}")
+
         return prompt
 
     def _analyze_batch_with_llm(self, prompt: str) -> Dict:

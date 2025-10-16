@@ -210,7 +210,8 @@ class PatternTaxonomyValidator:
         self,
         pattern_name: str,
         dates: List[str],
-        confidence_threshold: float = None
+        confidence_threshold: float = None,
+        prompt_template: str = None
     ) -> Dict:
         """
         Validate single pattern using obfuscation test.
@@ -219,6 +220,7 @@ class PatternTaxonomyValidator:
             pattern_name: Pattern to validate (e.g., 'gamma_positioning')
             dates: List of dates to test
             confidence_threshold: Minimum confidence for detection (uses taxonomy criteria if None)
+            prompt_template: Prompt template to use (standard/unbiased/reasoning). None = use config default.
 
         Returns:
             Validation results with pattern detection metrics
@@ -265,11 +267,12 @@ class PatternTaxonomyValidator:
                 # Create pattern-specific experiment template
                 experiment_template = self._generate_pattern_experiment(pattern_name, "DATE_PLACEHOLDER")
 
-                # Run batch experiment with obfuscation
+                # Run batch experiment with obfuscation and specified prompt template
                 batch_result = self.agent.run_batch_experiments(
                     dates=batch_dates,
                     experiment_template=experiment_template,
-                    use_obfuscation=True  # Critical: prevent LLM from seeing real dates/tickers
+                    use_obfuscation=True,  # Critical: prevent LLM from seeing real dates/tickers
+                    prompt_template=prompt_template  # Issue #90: config-based prompt selection
                 )
 
                 # Check if batch failed
@@ -443,6 +446,7 @@ class PatternTaxonomyValidator:
                 'failed_fetches': len(failed_fetches),
                 'confidence_threshold': confidence_threshold,
                 'obfuscation_enabled': True,
+                'prompt_template': prompt_template or 'default',  # Issue #90: track which prompt was used
                 'test_date': datetime.now().isoformat()
             },
             'performance_metrics': {
@@ -609,6 +613,10 @@ def main():
                         help='Calculate outcome metrics (Issue #80) - enabled by default')
     parser.add_argument('--no-outcomes', action='store_false', dest='with_outcomes',
                         help='Skip outcome calculation (faster, detection only)')
+    parser.add_argument('--prompt-template', type=str, default=None,
+                        choices=['standard', 'unbiased', 'reasoning'],
+                        help='Prompt template to use (Issue #90): standard (with regime labels), '
+                             'unbiased (no labels), reasoning (o3-mini). Default from config.')
 
     args = parser.parse_args()
 
@@ -647,10 +655,16 @@ def main():
 
     # Run validation
     logger.info(f"\n🚀 Starting validation for pattern: {args.pattern}")
+    if args.prompt_template:
+        logger.info(f"📝 Using prompt template: {args.prompt_template} (Issue #90)")
+    else:
+        logger.info(f"📝 Using default prompt template from config")
+
     validation_result = validator.validate_pattern_with_obfuscation(
         pattern_name=args.pattern,
         dates=test_dates,
-        confidence_threshold=args.confidence
+        confidence_threshold=args.confidence,
+        prompt_template=args.prompt_template
     )
 
     # Save results
