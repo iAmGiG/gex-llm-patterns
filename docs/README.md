@@ -49,6 +49,7 @@ How-to documentation for practical usage:
 - **[validation-framework](guides/validation-framework)** - LLM validation and testing framework
 - **[pattern-validation](guides/pattern-validation)** - Pattern taxonomy validation workflow (Issue #79)
 - **[data-obfuscation](guides/data-obfuscation)** - Anti-cheating measures for validation
+- **[gex-metrics-explained](guides/gex-metrics-explained)** - Why we use net GEX and metric choice justification (Oct 16, 2025)
 - **[validation-data-pipeline-fix](guides/validation-data-pipeline-fix)** - Q3 corruption postmortem and database fix (Oct 11, 2025)
 - **[baseline-strategy](guides/baseline-strategy)** - Trading strategy implementation
 - **[report-manager-consolidation](guides/report-manager-consolidation)** - Report manager consolidation (Issue #63, Oct 12, 2025)
