@@ -384,8 +384,12 @@ class MarketMechanicsAgent:
                     options_data = self._fetch_options_data(date)
                     if options_data is not None and not options_data.empty:
                         # Get spot price for GEX calculation
-                        spot_price = options_data['underlyingPrice'].iloc[
-                            0] if 'underlyingPrice' in options_data.columns else 450.0
+                        if 'underlyingPrice' not in options_data.columns:
+                            logger.error(
+                                f"Missing underlyingPrice for {date}, skipping")
+                            continue
+
+                        spot_price = options_data['underlyingPrice'].iloc[0]
 
                         # Calculate GEX - returns DataFrame with per-strike GEX
                         gex_df = self.gex_calculator.calculate_dealer_gamma_exposure(
@@ -396,12 +400,16 @@ class MarketMechanicsAgent:
                         # Aggregate to summary metrics
                         if not gex_df.empty and 'dealer_gex' in gex_df.columns:
                             total_gex = gex_df['dealer_gex'].sum()
-                            call_gex = gex_df[gex_df['type'] == 'call']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
-                            put_gex = gex_df[gex_df['type'] == 'put']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
+                            call_gex = gex_df[gex_df['type'] == 'call']['dealer_gex'].sum(
+                            ) if 'type' in gex_df.columns else 0
+                            put_gex = gex_df[gex_df['type'] == 'put']['dealer_gex'].sum(
+                            ) if 'type' in gex_df.columns else 0
 
                             # Find gamma flip point (where GEX changes sign)
-                            gex_by_strike = gex_df.groupby('strike')['dealer_gex'].sum()
-                            flip_point = gex_by_strike[gex_by_strike >= 0].index.min() if len(gex_by_strike[gex_by_strike >= 0]) > 0 else spot_price
+                            gex_by_strike = gex_df.groupby(
+                                'strike')['dealer_gex'].sum()
+                            flip_point = gex_by_strike[gex_by_strike >= 0].index.min() if len(
+                                gex_by_strike[gex_by_strike >= 0]) > 0 else spot_price
 
                             gex_metrics = {
                                 'total_gamma': total_gex,
@@ -572,7 +580,8 @@ Confidence must be a number 0-100.
             obfuscated_date = batch_data[date].get('obfuscated_date', date)
 
             # Try to find analysis using obfuscated date key first, fall back to real date
-            day_analysis = individual_days.get(obfuscated_date, individual_days.get(date, {}))
+            day_analysis = individual_days.get(
+                obfuscated_date, individual_days.get(date, {}))
 
             # Combine with existing data
             results[date] = {
