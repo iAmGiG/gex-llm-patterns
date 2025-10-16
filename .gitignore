@@ -121,6 +121,7 @@ sample_data/
 
 # Generated reports (validation outputs, experiment results)
 reports/validation/**/*.yaml
+!reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q*.yaml  # Exception: Commit full 2024 for paper evidence
 reports/experiments/*.yaml
 reports/testing/
 !reports/validation/**/README.md
