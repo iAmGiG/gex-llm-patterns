@@ -329,7 +329,8 @@ class UnifiedCacheManager:
 
             for file_path in self.base_dir.rglob('*.pickle'):
                 if file_path.is_file():
-                    file_time = get_datetime_from_timestamp(file_path.stat().st_mtime)
+                    file_time = get_datetime_from_timestamp(
+                        file_path.stat().st_mtime)
 
                     if file_time < cutoff_time:
                         file_path.unlink()
