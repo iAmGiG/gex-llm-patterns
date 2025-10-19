@@ -247,3 +247,9 @@ cython_debug/
 .pypirc
 .clauderc
 config/config.json
+
+# Figure generation scripts (local only - may need adjustments)
+scripts/visualization/generate_figure*.py
+
+# Presentation tool tests (experimental only)
+docs/presentations/oct22_research/tool_tests/
