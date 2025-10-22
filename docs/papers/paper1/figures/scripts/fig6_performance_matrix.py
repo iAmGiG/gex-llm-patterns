@@ -38,6 +38,7 @@ print("=" * 60)
 print("FIGURE 6: PATTERN DETECTION PERFORMANCE (YAML DATA)")
 print("=" * 60)
 
+
 def load_pattern_data(pattern_name):
     """Load validation metrics from YAML file."""
     filepath = REPORTS_DIR / f"{pattern_name}_SPY_2024_unbiased.yaml"
@@ -56,6 +57,7 @@ def load_pattern_data(pattern_name):
         'sample_size': perf['total_tested'],
         'detections': perf['high_confidence_detections'] + perf['low_confidence_detections']
     }
+
 
 # Load data from YAML files
 patterns_data = {
@@ -155,7 +157,7 @@ markers = ['o', 's', '^']
 sizes = [s * 2 for s in samples]  # Scale by detection count
 
 for i, (pattern, det, acc, size, color, marker) in enumerate(
-    zip(patterns, detection, accuracy, sizes, colors, markers)):
+        zip(patterns, detection, accuracy, sizes, colors, markers)):
 
     ax.scatter(det, acc, s=size, c=color, marker=marker,
                alpha=0.7, edgecolors='black', linewidth=2,
@@ -166,7 +168,8 @@ for i, (pattern, det, acc, size, color, marker) in enumerate(
                 xy=(det, acc), xytext=(10, 10),
                 textcoords='offset points',
                 fontsize=10, fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor=color, alpha=0.7),
+                bbox=dict(boxstyle='round,pad=0.5',
+                          facecolor=color, alpha=0.7),
                 zorder=4)
 
 # Add threshold lines
@@ -223,19 +226,21 @@ for i, (pattern, det, acc, color) in enumerate(zip(pattern_names, detection, acc
     ax.text(det, acc + 0.5, pattern,
             ha='center', va='bottom', fontsize=11, fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='white',
-                     edgecolor='black', linewidth=1.5, alpha=0.95),
+                      edgecolor='black', linewidth=1.5, alpha=0.95),
             zorder=5)
 
     # Metrics BELOW the point
     ax.text(det, acc - 0.5, f'{det:.1f}% det\n{acc:.1f}% acc',
             ha='center', va='top', fontsize=9,
             bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow',
-                     edgecolor='gray', linewidth=1, alpha=0.9),
+                      edgecolor='gray', linewidth=1, alpha=0.9),
             zorder=5)
 
 # Add threshold lines
-ax.axhline(y=90, color='green', linestyle='--', linewidth=2.5, alpha=0.6, label='90% Accuracy Benchmark')
-ax.axvline(x=60, color='red', linestyle='--', linewidth=2.5, alpha=0.6, label='60% Mechanical Threshold')
+ax.axhline(y=90, color='green', linestyle='--', linewidth=2.5,
+           alpha=0.6, label='90% Accuracy Benchmark')
+ax.axvline(x=60, color='red', linestyle='--', linewidth=2.5,
+           alpha=0.6, label='60% Mechanical Threshold')
 
 # Configure axes
 ax.set_xlabel('Detection Rate (%)', fontsize=14, fontweight='bold')

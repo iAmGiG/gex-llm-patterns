@@ -18,6 +18,7 @@ Unbiased (Full 2024):
 - 0dte_hedging_SPY_2024_unbiased.yaml
 """
 
+from matplotlib.lines import Line2D
 import yaml
 import matplotlib.pyplot as plt
 import numpy as np
@@ -45,6 +46,7 @@ print("=" * 60)
 print("FIGURE 7: BIASED VS UNBIASED COMPARISON (YAML DATA)")
 print("=" * 60)
 
+
 def load_pattern_data(pattern_name, suffix):
     """Load validation metrics from YAML file."""
     filepath = REPORTS_DIR / f"{pattern_name}_SPY_{suffix}.yaml"
@@ -67,6 +69,7 @@ def load_pattern_data(pattern_name, suffix):
         'sample_size': perf['total_tested']
     }
 
+
 def load_biased_avg(pattern_name):
     """Load and average Q3 & Q4 data for biased comparison (both are biased prompts)."""
     q3_data = load_pattern_data(pattern_name, '2024Q3')
@@ -82,6 +85,7 @@ def load_biased_avg(pattern_name):
         'accuracy': (q3_data['accuracy'] + q4_data['accuracy']) / 2,
         'sample_size': q3_data['sample_size'] + q4_data['sample_size']
     }
+
 
 # Load data from YAML files
 patterns = ['gamma_positioning', 'stock_pinning', '0dte_hedging']
@@ -108,16 +112,21 @@ for rate in unbiased_detection:
     ci_lower.append(max(0, rate - margin))
     ci_upper.append(min(100, rate + margin))
 
-ci_error_lower = [unbiased_detection[i] - ci_lower[i] for i in range(len(patterns))]
-ci_error_upper = [ci_upper[i] - unbiased_detection[i] for i in range(len(patterns))]
+ci_error_lower = [unbiased_detection[i] - ci_lower[i]
+                  for i in range(len(patterns))]
+ci_error_upper = [ci_upper[i] - unbiased_detection[i]
+                  for i in range(len(patterns))]
 
-print(f"\nLoaded biased data (Q3+Q4 2024 avg, N={biased_data[patterns[0]]['sample_size']}):")
+print(
+    f"\nLoaded biased data (Q3+Q4 2024 avg, N={biased_data[patterns[0]]['sample_size']}):")
 for i, p in enumerate(patterns):
-    print(f"  {p}: {biased_detection[i]:.1f}% detection, {biased_accuracy[i]:.1f}% accuracy")
+    print(
+        f"  {p}: {biased_detection[i]:.1f}% detection, {biased_accuracy[i]:.1f}% accuracy")
 
 print(f"\nLoaded unbiased data (Full 2024, N={n_unbiased}):")
 for i, p in enumerate(patterns):
-    print(f"  {p}: {unbiased_detection[i]:.1f}% detection, {unbiased_accuracy[i]:.1f}% accuracy")
+    print(
+        f"  {p}: {unbiased_detection[i]:.1f}% detection, {unbiased_accuracy[i]:.1f}% accuracy")
 
 # ============================================================================
 # VERSION 1: Clean Detection Comparison (REBUILT FROM SCRATCH)
@@ -151,15 +160,16 @@ ax.set_ylim(0, 115)
 ax.grid(axis='y', alpha=0.3, linestyle=':', linewidth=1)
 
 # Legend with threshold explanation and sample sizes
-from matplotlib.lines import Line2D
 legend_elements = [
-    plt.Rectangle((0,0),1,1, facecolor='#2E86AB', edgecolor='black', alpha=0.9, linewidth=1.5,
+    plt.Rectangle((0, 0), 1, 1, facecolor='#2E86AB', edgecolor='black', alpha=0.9, linewidth=1.5,
                   label=f'Biased Prompts (Q3+Q4, N={biased_data[patterns[0]]["sample_size"]})'),
-    plt.Rectangle((0,0),1,1, facecolor='#F77F00', edgecolor='black', alpha=0.9, linewidth=1.5,
+    plt.Rectangle((0, 0), 1, 1, facecolor='#F77F00', edgecolor='black', alpha=0.9, linewidth=1.5,
                   label=f'Unbiased Prompts (Full 2024, N={n_unbiased})'),
-    Line2D([0], [0], color='red', linestyle='--', linewidth=2.5, alpha=0.7, label='60% Mechanical Threshold'),
+    Line2D([0], [0], color='red', linestyle='--', linewidth=2.5,
+           alpha=0.7, label='60% Mechanical Threshold'),
 ]
-ax.legend(handles=legend_elements, loc='lower right', fontsize=10, framealpha=0.95, edgecolor='black')
+ax.legend(handles=legend_elements, loc='lower right',
+          fontsize=10, framealpha=0.95, edgecolor='black')
 
 # Add value labels on bars
 for bar1, bar2 in zip(bars1, bars2):

@@ -18,6 +18,7 @@ This document provides detailed comparison of pattern detection results using bi
 ### Biased Prompt (Standard Template)
 
 **What LLM Sees**:
+
 ```
 Day T+0
   Net GEX: -$32,905,699,168
@@ -27,6 +28,7 @@ Day T+0
 ```
 
 **Characteristics**:
+
 - Shows regime classification ("NEGATIVE_GAMMA" / "POSITIVE_GAMMA")
 - Includes pattern hints from rule-based detection
 - Leading questions presume patterns exist
@@ -37,6 +39,7 @@ Day T+0
 ### Unbiased Prompt (New Template)
 
 **What LLM Sees**:
+
 ```
 Day T+0
   Net GEX: -$32,905,699,168 (raw value, unclassified)
@@ -45,6 +48,7 @@ Day T+0
 ```
 
 **Characteristics**:
+
 - Raw GEX values only (no classification labels)
 - No pattern hints from rule-based system
 - Neutral questions allow null hypothesis
@@ -66,6 +70,7 @@ Day T+0
 | **Average** | **100.0%** | **71.5%** | **-28.5%** | 726 total |
 
 **Observations**:
+
 - Consistent ~25-33% drop across all patterns
 - All unbiased rates exceed 60% mechanical threshold
 - 0dte_hedging shows smallest drop (22.3%) - strongest structural signal
@@ -80,6 +85,7 @@ Day T+0
 | **Average** | **91-94%** | **91.2%** | **-1.8%** |
 
 **Observations**:
+
 - Accuracy remains HIGH (90-92%) with unbiased prompts
 - Minimal degradation (< 2% on average)
 - Proves patterns are real (predictions materialize)
@@ -95,6 +101,7 @@ Day T+0
 | 0dte_hedging | 72.0% - 83.4% | ✅ Strong (lower bound > 70%) |
 
 **Total Detections**:
+
 - Biased: 726/726 (100%)
 - Unbiased: 519/726 (71.5%)
 - Materialized: 473/519 (91.2%)
@@ -137,16 +144,19 @@ Day T+0
 ### Why Both Results Strengthen the Paper
 
 **Presenting 71.5% Alone**:
+
 - ✅ Conservative, defensible
 - ✅ Proves no label leakage
 - ⚠️ May undersell capability
 
 **Presenting 100% Alone**:
+
 - ✅ Shows full capability
 - ⚠️ Vulnerable to bias criticism
 - ⚠️ May appear "too perfect"
 
 **Presenting Both (Ablation Study)**:
+
 - ✅ Transparent methodology
 - ✅ Shows 71-100% robust range
 - ✅ Demonstrates thorough validation
@@ -162,16 +172,19 @@ Day T+0
 **Definition**: Dealers forced to hedge delta as spot moves relative to flip point
 
 **Results**:
+
 - Biased: 100% detection, 96-98% accuracy
 - Unbiased: 69.4% detection, 92.5% accuracy
 - Drop: -30.6% detection, -4.5% accuracy
 
 **Interpretation**:
+
 - Moderate structural signal (69.4%)
 - High accuracy maintained (92.5%)
 - Benefits from regime label hints (30.6% boost)
 
 **Example Days**:
+
 - April 1, 2024: Detected (unbiased), materialized with -0.62% return
 - April 5, 2024: NOT detected (unbiased), actually had negative GEX but minimal impact
 
@@ -180,16 +193,19 @@ Day T+0
 **Definition**: Open interest concentration pins spot to strike via dealer hedging
 
 **Results**:
+
 - Biased: 100% detection, 86-92% accuracy
 - Unbiased: 67.4% detection, 90.4% accuracy
 - Drop: -32.6% detection, stable accuracy
 
 **Interpretation**:
+
 - Moderate structural signal (67.4%)
 - Accuracy actually IMPROVED slightly (90.4% vs 86-92%)
 - Most sensitive to regime label removal (32.6% drop)
 
 **Why Sensitivity?**:
+
 - Pinning requires identifying concentration
 - Without labels, harder to distinguish from normal GEX
 - Still detects clear cases (67.4%)
@@ -199,16 +215,19 @@ Day T+0
 **Definition**: Same-day expiration creates forced hedging behavior
 
 **Results**:
+
 - Biased: 100% detection, 89-92% accuracy
 - Unbiased: 77.7% detection, 90.8% accuracy
 - Drop: -22.3% detection, stable accuracy
 
 **Interpretation**:
+
 - **Strongest structural signal** (77.7%)
 - Least sensitive to regime labels (22.3% drop)
 - High accuracy maintained (90.8%)
 
 **Why Strongest?**:
+
 - 0DTE mechanics are most mechanical
 - Time decay creates unambiguous constraints
 - Pattern is "obvious" from GEX structure
@@ -327,6 +346,7 @@ These results address potential concerns about circular reasoning or label leaka
 **Our Recommendation**: Present both results with unbiased as primary (Option B variant)
 
 **Rationale**:
+
 1. **Academic rigor**: Unbiased 71.5% is more defensible than 100%
 2. **Transparency**: Shows we tested thoroughly and found/fixed bias
 3. **Robustness**: 71-100% range demonstrates pattern is real
@@ -334,6 +354,7 @@ These results address potential concerns about circular reasoning or label leaka
 5. **Accuracy proof**: 91-92% across both configs proves patterns materialize
 
 **Paper Structure**:
+
 - **Results**: Lead with unbiased 71.5% (Table 1)
 - **Ablation**: Show biased 100% as sensitivity analysis (Table 2)
 - **Discussion**: Emphasize 71-100% robust range, not single point estimate
@@ -341,11 +362,13 @@ These results address potential concerns about circular reasoning or label leaka
 ### For Future Work
 
 **Chain-of-Thought Prompts (Reasoning Template)**:
+
 - Test o3-mini reasoning model with structured CoT
 - Expected: Higher accuracy, similar detection rate
 - Timeline: After Paper #1 submission
 
 **Temporal Split Testing**:
+
 - Test unbiased prompts by quarter (Q1, Q2, Q3, Q4)
 - Check for regime-dependent detection rates
 - Timeline: Paper #2 or #3 material
@@ -355,16 +378,19 @@ These results address potential concerns about circular reasoning or label leaka
 ## Files Referenced
 
 ### Unbiased Results (New)
+
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml`
 - `reports/validation/pattern_taxonomy/stock_pinning_SPY_2024_unbiased.yaml`
 - `reports/validation/pattern_taxonomy/0dte_hedging_SPY_2024_unbiased.yaml`
 
 ### Biased Results (Original)
+
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q*.yaml` (Q1, Q3, Q4)
 - `reports/validation/pattern_taxonomy/stock_pinning_SPY_2024Q*.yaml` (Q1, Q3, Q4)
 - `reports/validation/pattern_taxonomy/0dte_hedging_SPY_2024Q*.yaml` (Q1, Q3, Q4)
 
 ### Configuration
+
 - `config_defaults/llm_prompts.yaml` - All prompt templates
 
 ---

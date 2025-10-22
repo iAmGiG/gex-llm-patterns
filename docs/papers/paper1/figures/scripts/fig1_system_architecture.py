@@ -24,7 +24,9 @@ plt.rcParams.update({
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
 })
 
-OUTPUT_DIR = Path(__file__).parent.parent.parent / "docs" / "papers" / "paper1" / "figures"
+OUTPUT_DIR = Path(__file__).parent.parent.parent / \
+    "docs" / "papers" / "paper1" / "figures"
+
 
 def create_figure():
     """Create system architecture flowchart."""
@@ -65,34 +67,36 @@ def create_figure():
     def draw_box(pos, color, title, subtitle=''):
         x, y, w, h = pos
         box = FancyBboxPatch((x, y), w, h,
-                            boxstyle="round,pad=0.05",
-                            edgecolor='black', facecolor=color,
-                            linewidth=1.5)
+                             boxstyle="round,pad=0.05",
+                             edgecolor='black', facecolor=color,
+                             linewidth=1.5)
         ax.add_patch(box)
         ax.text(x + w/2, y + h/2 + 0.15, title,
-               ha='center', va='center', fontweight='bold', fontsize=9)
+                ha='center', va='center', fontweight='bold', fontsize=9)
         if subtitle:
             ax.text(x + w/2, y + h/2 - 0.15, subtitle,
-                   ha='center', va='center', fontsize=7, style='italic')
+                    ha='center', va='center', fontsize=7, style='italic')
 
     # Draw components
-    draw_box(components['options_data'], color_data, 'Options Data', 'Raw SPY chain')
+    draw_box(components['options_data'], color_data,
+             'Options Data', 'Raw SPY chain')
     draw_box(components['gex_calc'], color_process, 'GEX\nCalculator')
     draw_box(components['obfuscator'], color_process, 'Data\nObfuscator')
     draw_box(components['llm_agent'], color_llm, 'LLM Agent', 'GPT-o3-mini')
     draw_box(components['outcome_calc'], color_process, 'Outcome\nCalculator')
-    draw_box(components['stat_validator'], color_output, 'Statistical\nValidator')
+    draw_box(components['stat_validator'],
+             color_output, 'Statistical\nValidator')
 
     # Draw output boxes (smaller, different style)
     def draw_output(pos, text, color='#FFFACD'):
         x, y, w, h = pos
         box = FancyBboxPatch((x, y), w, h,
-                            boxstyle="round,pad=0.03",
-                            edgecolor='gray', facecolor=color,
-                            linewidth=0.8, linestyle='--')
+                             boxstyle="round,pad=0.03",
+                             edgecolor='gray', facecolor=color,
+                             linewidth=0.8, linestyle='--')
         ax.add_patch(box)
         ax.text(x + w/2, y + h/2, text,
-               ha='center', va='center', fontsize=6.5, family='monospace')
+                ha='center', va='center', fontsize=6.5, family='monospace')
 
     # Output examples
     draw_output(outputs['opts_out'], 'Strike: 480\nOI: 12,500\nIV: 14.2%')
@@ -148,13 +152,16 @@ def create_figure():
         ax.plot([x1, waypoint1_x], [y1, waypoint1_y], **path_style)
 
         # Segment 2: down from waypoint1 to waypoint2
-        ax.plot([waypoint1_x, waypoint2_x], [waypoint1_y, waypoint2_y], **path_style)
+        ax.plot([waypoint1_x, waypoint2_x], [
+                waypoint1_y, waypoint2_y], **path_style)
 
         # Segment 3: left from waypoint2 to waypoint3
-        ax.plot([waypoint2_x, waypoint3_x], [waypoint2_y, waypoint3_y], **path_style)
+        ax.plot([waypoint2_x, waypoint3_x], [
+                waypoint2_y, waypoint3_y], **path_style)
 
         # Segment 4: down to final destination with arrow
-        arrow = FancyArrowPatch((waypoint3_x, waypoint3_y), (x_end, y_end), **arrow_style)
+        arrow = FancyArrowPatch(
+            (waypoint3_x, waypoint3_y), (x_end, y_end), **arrow_style)
         ax.add_patch(arrow)
 
     draw_routed_arrow(components['llm_agent'], components['outcome_calc'])
@@ -162,27 +169,32 @@ def create_figure():
 
     # Add title
     ax.text(5, 7.7, 'Pattern Validation Pipeline Architecture',
-           ha='center', fontsize=12, fontweight='bold')
+            ha='center', fontsize=12, fontweight='bold')
 
     # Add legend for colors
     legend_y = 0.8
     legend_elements = [
-        mpatches.Rectangle((0, 0), 1, 1, fc=color_data, ec='black', label='Data Source'),
-        mpatches.Rectangle((0, 0), 1, 1, fc=color_process, ec='black', label='Processing'),
-        mpatches.Rectangle((0, 0), 1, 1, fc=color_llm, ec='black', label='LLM Analysis'),
-        mpatches.Rectangle((0, 0), 1, 1, fc=color_output, ec='black', label='Validation'),
+        mpatches.Rectangle((0, 0), 1, 1, fc=color_data,
+                           ec='black', label='Data Source'),
+        mpatches.Rectangle((0, 0), 1, 1, fc=color_process,
+                           ec='black', label='Processing'),
+        mpatches.Rectangle((0, 0), 1, 1, fc=color_llm,
+                           ec='black', label='LLM Analysis'),
+        mpatches.Rectangle((0, 0), 1, 1, fc=color_output,
+                           ec='black', label='Validation'),
     ]
     ax.legend(handles=legend_elements, loc='lower center',
-             ncol=4, frameon=True, fontsize=7)
+              ncol=4, frameon=True, fontsize=7)
 
     # Add note about obfuscation (moved down to accommodate new spacing)
     ax.text(5, 2.0,
-           'Obfuscation prevents training data leakage: dates → "Day T+N", tickers → "INDEX_1"',
-           ha='center', fontsize=7, style='italic', color='#666666',
-           bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray', alpha=0.7))
+            'Obfuscation prevents training data leakage: dates → "Day T+N", tickers → "INDEX_1"',
+            ha='center', fontsize=7, style='italic', color='#666666',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray', alpha=0.7))
 
     plt.tight_layout()
     return fig
+
 
 def main():
     """Generate Figure 1."""
@@ -200,6 +212,7 @@ def main():
 
     print("✅ Figure 1 complete!")
     print("Shows complete validation pipeline from raw data to statistical results")
+
 
 if __name__ == '__main__':
     main()

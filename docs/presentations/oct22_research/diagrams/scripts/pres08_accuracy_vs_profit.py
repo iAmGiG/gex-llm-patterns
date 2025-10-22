@@ -13,9 +13,7 @@ This divergence is our strongest evidence:
 """
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
 from pathlib import Path
-import numpy as np
 
 # PRESENTATION SETTINGS
 plt.rcParams.update({

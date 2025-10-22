@@ -24,18 +24,21 @@
 ## Section-by-Section Breakdown
 
 ### 1. Introduction (5.0K)
+
 - ✅ Research gap identified
 - ✅ Contributions outlined
 - ✅ Paper structure preview
 - **Status**: Ready for advisor review
 
 ### 2. Background and Related Work (3.3K)
+
 - ✅ Dealer hedging mechanics explained
 - ✅ Prior work on gamma exposure
 - ✅ LLMs in finance literature review
 - **Status**: Ready for advisor review
 
 ### 3. Methodology (13K)
+
 - ✅ Terminology and definitions
 - ✅ Pattern taxonomy (3 levels)
 - ✅ Obfuscation framework
@@ -45,6 +48,7 @@
 - **Status**: Most comprehensive section, ready
 
 ### 4. Experimental Setup (6.4K)
+
 - ✅ Data sources and preparation
 - ✅ Pattern specifications
 - ✅ Validation pipeline architecture
@@ -52,6 +56,7 @@
 - **Status**: Ready for advisor review
 
 ### 5. Results (6.3K)
+
 - ✅ Primary finding: 71.5% unbiased detection
 - ✅ Ablation study: Prompt bias sensitivity
 - ✅ Pattern-specific analysis (3 patterns)
@@ -61,6 +66,7 @@
 - **Status**: 95% complete (optional expansion available)
 
 ### 6. Discussion (8.6K)
+
 - ✅ Interpretation of findings
 - ✅ Comparison to prior work
 - ✅ Limitations and scope
@@ -68,12 +74,14 @@
 - **Status**: Ready for advisor review
 
 ### 7. Conclusion (6.9K)
+
 - ✅ Key contributions summarized
 - ✅ Future work outlined
 - ✅ Broader implications discussed
 - **Status**: Ready for advisor review
 
 ### 8. References (14K)
+
 - ✅ 13 core papers verified via web search
 - ✅ BibTeX entries formatted and ready
 - ✅ All citations cross-referenced
@@ -86,6 +94,7 @@
 **Total**: 8 must-have figures (from 25 PNG files available), ~1.9 MB for core set
 
 **Recommended Files**:
+
 1. `figure1_system_architecture.png` (200 KB)
 2. `figure2_obfuscation_example.png` (297 KB)
 3. `figure3_detection_vs_profitability.png` (191 KB) - **FIXED Oct 17**
@@ -98,6 +107,7 @@
 **Note**: Chat B created improved versions for Figures 4, 6, 7 (see `FIGURE_INVENTORY.md` for full catalog)
 
 ### Issue #91: Core Methodology Visualizations ✅ CLOSED
+
 1. **Figure 1**: System Architecture Diagram (220 KB)
    - 6-stage validation pipeline
    - Color-coded components
@@ -114,6 +124,7 @@
    - Demonstrates prompt bias impact
 
 ### Issue #92: Key Results Visualizations ✅ CLOSED
+
 3. **Figure 3**: Detection vs Profitability Divergence ⭐ CRITICAL
    - THE visual anchor of the paper
    - **FIXED Oct 17**: Annotations now show correct quarterly variation (100% → 84%)
@@ -126,6 +137,7 @@
    - 100% above 60% mechanical threshold
 
 ### Issue #93: Supporting Visualizations ✅ CLOSED
+
 4. **Figure 4**: GEX Profile Visualization
    - **IMPROVED**: Chat B created version with huge NET GEX annotation
    - Recommendation: Use `figure4_gex_profile_clean.png` (236 KB)
@@ -151,18 +163,21 @@
 ## Tables Status (All Complete ✅)
 
 ### Table 1: Obfuscation Transformations
+
 - **Location**: `03_methodology.md:116`
 - **Purpose**: Shows preserved vs removed data
 - **Format**: 5 rows × 4 columns
 - **Status**: Embedded in markdown, ready for LaTeX
 
 ### Table 2: Primary Results - Unbiased Prompt Detection
+
 - **Location**: `05_results.md:13`
 - **Purpose**: Main results (detection rates, accuracy, CI)
 - **Format**: 4 rows × 5 columns (includes Average row)
 - **Status**: Embedded in markdown, ready for LaTeX
 
 ### Table 3: Prompt Template Comparison
+
 - **Location**: `05_results.md:38`
 - **Purpose**: Ablation study (biased vs unbiased)
 - **Format**: 4 rows × 6 columns (includes Average row)
@@ -175,6 +190,7 @@
 ## Validation Data Status (All Complete ✅)
 
 ### Full 2024 Unbiased Validation (Primary Results)
+
 - ✅ **gamma_positioning**: 69.4% detection, 92.5% accuracy (263 KB)
 - ✅ **stock_pinning**: 67.4% detection, 90.4% accuracy (263 KB)
 - ✅ **0dte_hedging**: 77.7% detection, 90.8% accuracy (266 KB)
@@ -182,11 +198,13 @@
 - **Location**: `reports/validation/pattern_taxonomy/*_unbiased.yaml`
 
 ### Q2 2024 Biased Validation (Sensitivity Analysis)
+
 - ✅ **gamma_positioning**: 100% detection, 91.7% accuracy (68 KB)
 - **Sample**: N=61 days
 - **Location**: `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q2.yaml`
 
 ### Quarterly Breakdown (Used in Figure 3)
+
 - ✅ Q1 2024: 100% detection, 96.2% accuracy, +21 bps alpha
 - ✅ Q2 2024: 100% detection, 91.7% accuracy, +16 bps alpha (biased prompt)
 - ✅ Q3 2024: 100% detection, 98.4% accuracy, +4 bps alpha
@@ -216,9 +234,11 @@
 ## Remaining Tasks
 
 ### 1. LaTeX Conversion (HIGH PRIORITY)
+
 **Timeline**: Oct 18-22 (5 days)
 
 **Tasks**:
+
 - [ ] Convert 8 markdown sections to LaTeX
 - [ ] Format 3 tables using `booktabs` package
 - [ ] Include 8 figures with captions
@@ -226,24 +246,29 @@
 - [ ] Ensure IEEE two-column format compliance
 
 **Resources**:
+
 - IEEE template: `IEEEtran.cls` (standard)
 - Table guide: See `TABLE_SUMMARY.md`
 - Figure specs: 300 DPI PNG, 3.5" width
 - Reference format: IEEE citation style
 
 ### 2. Optional Expansions (MEDIUM PRIORITY)
+
 **Timeline**: If time permits (Oct 23-24)
 
 **Options**:
+
 - [ ] Expand Section 5.4 (Temporal Consistency) with quarterly breakdown
 - [ ] Add Figure 9 (Causal Network) - deferred from Issue #94
 - [ ] Add Figure 10 (Power Analysis) - deferred from Issue #94
 - [ ] Additional robustness checks
 
 ### 3. Formatting Polish (LOW PRIORITY)
+
 **Timeline**: Oct 24-25 (final cleanup)
 
 **Tasks**:
+
 - [ ] Proofread all sections
 - [ ] Check cross-references (figures, tables, sections)
 - [ ] Verify all citations present
@@ -273,6 +298,7 @@
 ## Key Metrics
 
 **Paper Statistics**:
+
 - **Text**: ~50 KB markdown (8 sections)
 - **Figures**: 8 core figures (~1.9 MB), 25 PNG files total (~5.6 MB)
 - **Tables**: 3 main tables
@@ -282,12 +308,14 @@
 - **Target Length**: ~8-10 pages IEEE two-column
 
 **Validation Coverage**:
+
 - **Temporal**: Full year 2024 (242 trading days, 96.8% coverage)
 - **Patterns**: 3 dealer constraint types
 - **Configurations**: 2 prompt templates (biased vs unbiased)
 - **Total Tests**: 726 pattern-day combinations
 
 **Results Summary**:
+
 - **Primary Finding**: 71.5% unbiased detection (conservative)
 - **Accuracy**: 91.2% prediction materialization
 - **Statistical Significance**: All patterns p < 0.001
@@ -298,6 +326,7 @@
 ## Contact and Coordination
 
 **Chat Structure**:
+
 - **Main Chat** (Claude Desktop): Primary writing, advisor communication
 - **Chat A** (this session): Technical implementation, data analysis
 - **Chat B** (Claude Code): Figure creation, visualization
@@ -305,6 +334,7 @@
 **Sync File**: `.claude/sync.yaml` (single source of truth)
 
 **Active GitHub Issues**:
+
 - ✅ #91: Core Methodology Visualizations - CLOSED Oct 17
 - ✅ #92: Key Results Visualizations - CLOSED Oct 17
 - ✅ #93: Supporting Visualizations - CLOSED Oct 17
@@ -316,18 +346,21 @@
 ## Next Steps
 
 **Immediate** (Next 48 hours):
+
 1. Begin LaTeX conversion of Section 1 (Introduction)
 2. Set up IEEE template with proper packages
 3. Convert Table 1 to LaTeX format
 4. Include Figure 1 with caption
 
 **This Week** (Oct 18-22):
+
 1. Complete all 8 section conversions
 2. Format all 3 tables
 3. Include all 8 figures
 4. Compile complete draft PDF
 
 **Final Week** (Oct 23-26):
+
 1. Proofread and polish
 2. Optional expansions if time
 3. Final compilation

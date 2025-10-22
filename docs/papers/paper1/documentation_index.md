@@ -23,6 +23,7 @@
 ## Document Organization
 
 ### Core Paper Sections (8 files)
+
 **Location**: `docs/papers/paper1/`
 
 1. `01_introduction.md` (5.0K) - Research gap and contributions
@@ -39,11 +40,14 @@
 ---
 
 ### Figures Documentation (4 files)
+
 **Location**: `docs/papers/paper1/`
 
 #### `FIGURE_INVENTORY.md` (16K) ⭐ START HERE
+
 **Purpose**: Master figure catalog and recommendations
 **Contents**:
+
 - Complete inventory of all 25 PNG files
 - Figure-by-figure breakdown with file sizes
 - Clear recommendations for which version to use
@@ -56,8 +60,10 @@
 ---
 
 #### `FIGURE_REVIEW.md` (11K)
+
 **Purpose**: Quality assessment and issue tracking
 **Contents**:
+
 - Quality review of all 19 original figures
 - Issues identified (Figure 3, 4, 6)
 - Resolution status (all fixed)
@@ -69,8 +75,10 @@
 ---
 
 #### `FIGURE_FIXES_SUMMARY.md` (7K)
+
 **Purpose**: Chat B's improvement process documentation
 **Contents**:
+
 - Original issues in Figures 4, 6, 7, 8
 - Fixes applied by Chat B
 - Before/after comparisons
@@ -82,8 +90,10 @@
 ---
 
 #### `figures/captions.md` (12K)
+
 **Purpose**: Complete figure captions for all 8 core figures
 **Contents**:
+
 - Detailed caption text for each figure
 - Key messages to emphasize
 - Section cross-references
@@ -94,11 +104,14 @@
 ---
 
 ### Tables Documentation (1 file)
+
 **Location**: `docs/papers/paper1/`
 
 #### `TABLE_SUMMARY.md` (4.8K)
+
 **Purpose**: Table formatting guide for LaTeX conversion
 **Contents**:
+
 - All 3 main tables (Obfuscation, Primary Results, Prompt Comparison)
 - LaTeX package recommendations
 - IEEE format guidelines
@@ -109,11 +122,14 @@
 ---
 
 ### Supporting Documentation (4 files)
+
 **Location**: `docs/papers/paper1/`
 
 #### `PAPER1_STATUS_SUMMARY.md` (13K) ⭐ OVERALL STATUS
+
 **Purpose**: Comprehensive paper completion status
 **Contents**:
+
 - Overall completion (90% - formatting pending)
 - Section-by-section breakdown
 - Timeline to Oct 26 deadline
@@ -125,8 +141,10 @@
 ---
 
 #### `methodology_clarifications.md` (13K)
+
 **Purpose**: Technical Q&A for Main Chat's questions
 **Contents**:
+
 - Pattern vs Rule vs Constraint definitions
 - State machine terminology justification
 - Obfuscation technical details
@@ -138,8 +156,10 @@
 ---
 
 #### `biased_vs_unbiased_comparison.md` (14K)
+
 **Purpose**: Detailed ablation study analysis
 **Contents**:
+
 - Prompt bias impact quantification (-28.5% avg)
 - Pattern-by-pattern comparison
 - Statistical significance tests
@@ -150,8 +170,10 @@
 ---
 
 #### `full_year_2024_validation.md` (19K)
+
 **Purpose**: Comprehensive validation results
 **Contents**:
+
 - Full year 2024 results (242 days)
 - Quarterly breakdown
 - Detection-profitability divergence analysis
@@ -163,7 +185,7 @@
 
 ## Figure Files Quick Reference
 
-### Core 8 Figures (RECOMMENDED FOR PAPER):
+### Core 8 Figures (RECOMMENDED FOR PAPER)
 
 | Figure | Filename | Size | Creator | Notes |
 |--------|----------|------|---------|-------|
@@ -184,7 +206,7 @@
 
 **Location**: `scripts/visualization/`
 
-### Active Scripts (11 files):
+### Active Scripts (11 files)
 
 1. `generate_figure1_system_architecture.py` - Chat A
 2. `generate_figure2_obfuscation_example.py` - Chat A
@@ -207,16 +229,19 @@
 **All Embedded in Section Files**:
 
 ### Table 1: Obfuscation Transformations
+
 - **Location**: `03_methodology.md:116`
 - **Format**: 5 rows × 4 columns
 - **Purpose**: Shows preserved vs removed data
 
 ### Table 2: Primary Results
+
 - **Location**: `05_results.md:13`
 - **Format**: 4 rows × 5 columns (includes Average)
 - **Purpose**: Main detection rates and accuracy
 
 ### Table 3: Prompt Comparison
+
 - **Location**: `05_results.md:38`
 - **Format**: 4 rows × 6 columns (includes Average)
 - **Purpose**: Ablation study (biased vs unbiased)
@@ -225,17 +250,20 @@
 
 ## Key Findings Summary
 
-### Primary Results (Unbiased Prompts):
+### Primary Results (Unbiased Prompts)
+
 - **Detection**: 71.5% average (all patterns >60% threshold)
 - **Accuracy**: 91.2% (predictions materialize)
 - **Sample**: 726 tests (242 days × 3 patterns)
 
-### Prompt Bias Impact:
+### Prompt Bias Impact
+
 - **Detection Drop**: -28.5% average (100% → 71.5%)
 - **Accuracy Stable**: -1.0% change (92.2% → 91.2%)
 - **Interpretation**: LLM detects structure without label hints
 
-### Detection-Profitability Divergence:
+### Detection-Profitability Divergence
+
 - **Detection**: Remains 84-100% (Q2-Q4 2024)
 - **Alpha**: Declines +2 → -1 bps
 - **Implication**: Methodology detects structure not profits
@@ -244,7 +272,8 @@
 
 ## File Locations
 
-### Paper Content:
+### Paper Content
+
 ```
 docs/papers/paper1/
 ├── 01_introduction.md
@@ -273,7 +302,8 @@ docs/papers/paper1/
     ├── ... (25 PNG files total)
 ```
 
-### Scripts:
+### Scripts
+
 ```
 scripts/visualization/
 ├── generate_figure1_system_architecture.py
@@ -309,21 +339,27 @@ scripts/visualization/
 ## Common Questions
 
 ### Q: Which figure file should I use for Figure X?
+
 **A**: See `FIGURE_INVENTORY.md` - Section "Recommended Figures for Paper"
 
 ### Q: What issues were found with the figures?
+
 **A**: See `FIGURE_REVIEW.md` - All issues resolved (Figure 3 fixed, Figures 4/6 improved)
 
 ### Q: How do I format tables for LaTeX?
+
 **A**: See `TABLE_SUMMARY.md` - Has package recommendations and examples
 
 ### Q: What's the overall paper status?
+
 **A**: See `PAPER1_STATUS_SUMMARY.md` - 90% complete, LaTeX conversion next
 
 ### Q: Where are all the figure captions?
+
 **A**: See `figures/captions.md` - Complete captions for all 8 core figures
 
 ### Q: How do I cite the figures in LaTeX?
+
 **A**: See `FIGURE_INVENTORY.md` - Section "LaTeX Integration Plan"
 
 ---

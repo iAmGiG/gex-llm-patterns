@@ -14,6 +14,7 @@ Accurate information:
 
 import graphviz
 
+
 def generate_pattern_taxonomy():
     """Generate 3-level pattern taxonomy hierarchy."""
 
@@ -36,55 +37,55 @@ def generate_pattern_taxonomy():
 
     # Default node styling
     dot.attr('node',
-        fontname='Arial',
-        fontsize='12',
-        style='filled,rounded',
-        shape='box'
-    )
+             fontname='Arial',
+             fontsize='12',
+             style='filled,rounded',
+             shape='box'
+             )
 
     # ============ LEVEL 0: ROOT ============
     dot.node('root',
-        'GEX Pattern Taxonomy\n\nClassification by Detection Mechanism',
-        fillcolor='#D5DBDB',
-        color='#566573',
-        penwidth='3',
-        fontsize='14',
-        fontname='Arial Bold',
-        shape='box',
-        style='rounded,filled'
-    )
+             'GEX Pattern Taxonomy\n\nClassification by Detection Mechanism',
+             fillcolor='#D5DBDB',
+             color='#566573',
+             penwidth='3',
+             fontsize='14',
+             fontname='Arial Bold',
+             shape='box',
+             style='rounded,filled'
+             )
 
     # ============ LEVEL 1: PATTERN TYPES ============
 
     # Structural (mechanical, constraint-based)
     dot.node('structural',
-        'STRUCTURAL\n\n✅ Mechanical Constraints\n✅ Regulatory/Physical Limits\n✅ Obfuscation-Resistant',
-        fillcolor='#D5F4E6',
-        color='#229954',
-        penwidth='3',
-        width='2.5',
-        height='1.2'
-    )
+             'STRUCTURAL\n\n✅ Mechanical Constraints\n✅ Regulatory/Physical Limits\n✅ Obfuscation-Resistant',
+             fillcolor='#D5F4E6',
+             color='#229954',
+             penwidth='3',
+             width='2.5',
+             height='1.2'
+             )
 
     # Statistical (data-driven patterns)
     dot.node('statistical',
-        'STATISTICAL\n\n📊 Data-Driven Patterns\n📊 Historical Correlations\n⚠️ Context-Dependent',
-        fillcolor='#FEF5E7',
-        color='#D68910',
-        penwidth='3',
-        width='2.5',
-        height='1.2'
-    )
+             'STATISTICAL\n\n📊 Data-Driven Patterns\n📊 Historical Correlations\n⚠️ Context-Dependent',
+             fillcolor='#FEF5E7',
+             color='#D68910',
+             penwidth='3',
+             width='2.5',
+             height='1.2'
+             )
 
     # Narrative (requires temporal context)
     dot.node('narrative',
-        'NARRATIVE\n\n❌ Time-Dependent\n❌ Requires Context\n❌ Obfuscation-Vulnerable',
-        fillcolor='#FADBD8',
-        color='#C0392B',
-        penwidth='3',
-        width='2.5',
-        height='1.2'
-    )
+             'NARRATIVE\n\n❌ Time-Dependent\n❌ Requires Context\n❌ Obfuscation-Vulnerable',
+             fillcolor='#FADBD8',
+             color='#C0392B',
+             penwidth='3',
+             width='2.5',
+             height='1.2'
+             )
 
     # ============ LEVEL 2: VALIDATED STRUCTURAL PATTERNS ============
 
@@ -98,39 +99,39 @@ def generate_pattern_taxonomy():
         )
 
         c.node('gamma_pos',
-            'Gamma Positioning\n\n🎯 Detection: 100%\n✓ Accuracy: 96.2% (Q1)\n\nDealer Constraint:\nDelta neutrality mandate',
-            fillcolor='#ABEBC6',
-            color='#229954',
-            penwidth='2',
-            width='2.2'
-        )
+               'Gamma Positioning\n\n🎯 Detection: 100%\n✓ Accuracy: 96.2% (Q1)\n\nDealer Constraint:\nDelta neutrality mandate',
+               fillcolor='#ABEBC6',
+               color='#229954',
+               penwidth='2',
+               width='2.2'
+               )
 
         c.node('stock_pin',
-            'Stock Pinning\n\n🎯 Detection: 100%\n✓ Accuracy: 86.5% (Q1)\n\nDealer Constraint:\nGamma concentration at strikes',
-            fillcolor='#ABEBC6',
-            color='#229954',
-            penwidth='2',
-            width='2.2'
-        )
+               'Stock Pinning\n\n🎯 Detection: 100%\n✓ Accuracy: 86.5% (Q1)\n\nDealer Constraint:\nGamma concentration at strikes',
+               fillcolor='#ABEBC6',
+               color='#229954',
+               penwidth='2',
+               width='2.2'
+               )
 
         c.node('dte_hedge',
-            '0DTE Hedging\n\n🎯 Detection: 100%\n✓ Accuracy: 90.4% (Q1)\n\nDealer Constraint:\nExponential time decay',
-            fillcolor='#ABEBC6',
-            color='#229954',
-            penwidth='2',
-            width='2.2'
-        )
+               '0DTE Hedging\n\n🎯 Detection: 100%\n✓ Accuracy: 90.4% (Q1)\n\nDealer Constraint:\nExponential time decay',
+               fillcolor='#ABEBC6',
+               color='#229954',
+               penwidth='2',
+               width='2.2'
+               )
 
     # ============ LEVEL 2: STATISTICAL PATTERNS (NOT VALIDATED) ============
 
     dot.node('volume_anom',
-        'Volume Anomaly\n\n⏳ Not Yet Tested\n\nPattern:\nUnusual volume spikes',
-        fillcolor='#FAE5D3',
-        color='#D68910',
-        penwidth='2',
-        width='2.0',
-        style='rounded,filled,dashed'
-    )
+             'Volume Anomaly\n\n⏳ Not Yet Tested\n\nPattern:\nUnusual volume spikes',
+             fillcolor='#FAE5D3',
+             color='#D68910',
+             penwidth='2',
+             width='2.0',
+             style='rounded,filled,dashed'
+             )
 
     # ============ LEVEL 2: NARRATIVE PATTERNS (FAILED) ============
 
@@ -144,20 +145,20 @@ def generate_pattern_taxonomy():
         )
 
         c.node('friday_330',
-            'Friday 3:30 PM Squeeze\n\n❌ Failed\n\nRequires:\nKnowing day/time context',
-            fillcolor='#F5B7B1',
-            color='#C0392B',
-            penwidth='2',
-            width='2.0'
-        )
+               'Friday 3:30 PM Squeeze\n\n❌ Failed\n\nRequires:\nKnowing day/time context',
+               fillcolor='#F5B7B1',
+               color='#C0392B',
+               penwidth='2',
+               width='2.0'
+               )
 
         c.node('dealer_trap',
-            'Dealer Trap Setup\n\n❌ Failed\n\nRequires:\nTemporal context awareness',
-            fillcolor='#F5B7B1',
-            color='#C0392B',
-            penwidth='2',
-            width='2.0'
-        )
+               'Dealer Trap Setup\n\n❌ Failed\n\nRequires:\nTemporal context awareness',
+               fillcolor='#F5B7B1',
+               color='#C0392B',
+               penwidth='2',
+               width='2.0'
+               )
 
     # ============ EDGES - HIERARCHY ============
 
@@ -172,7 +173,8 @@ def generate_pattern_taxonomy():
     dot.edge('structural', 'dte_hedge', penwidth='2', color='#229954')
 
     # Statistical to volume anomaly
-    dot.edge('statistical', 'volume_anom', penwidth='2', color='#D68910', style='dashed')
+    dot.edge('statistical', 'volume_anom', penwidth='2',
+             color='#D68910', style='dashed')
 
     # Narrative to failed patterns
     dot.edge('narrative', 'friday_330', penwidth='2', color='#C0392B')
@@ -192,6 +194,7 @@ def generate_pattern_taxonomy():
     print(f"✅ Generated: {output_path}.png (pattern taxonomy, hierarchical)")
 
     return dot
+
 
 if __name__ == '__main__':
     print("Generating pattern taxonomy diagram...\n")

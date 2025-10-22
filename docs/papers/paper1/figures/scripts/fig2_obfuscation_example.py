@@ -10,7 +10,6 @@ After: Day T+N format, INDEX_1, no context
 """
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from pathlib import Path
 
@@ -22,7 +21,9 @@ plt.rcParams.update({
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
 })
 
-OUTPUT_DIR = Path(__file__).parent.parent.parent / "docs" / "papers" / "paper1" / "figures"
+OUTPUT_DIR = Path(__file__).parent.parent.parent / \
+    "docs" / "papers" / "paper1" / "figures"
+
 
 def create_figure():
     """Create before/after obfuscation comparison - rebuilt from scratch."""
@@ -121,26 +122,27 @@ def create_figure():
 
     # Arrow connecting panels (behind boxes)
     arrow = FancyArrowPatch((5.2, 4.5), (6.8, 4.5),
-                           arrowstyle='->', mutation_scale=25,
-                           linewidth=3, color='#333333', zorder=0)
+                            arrowstyle='->', mutation_scale=25,
+                            linewidth=3, color='#333333', zorder=0)
     ax.add_patch(arrow)
 
     # Legend boxes at bottom
     ax.text(6, 0.7, 'PRESERVED: GEX values, spot prices (quantitative structure)',
             ha='center', va='center', fontsize=8.5, style='italic',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='lightblue',
-                     edgecolor='blue', linewidth=1.5, alpha=0.8))
+                      edgecolor='blue', linewidth=1.5, alpha=0.8))
 
     ax.text(6, 0.15, 'REMOVED: Dates, tickers, event context (temporal/narrative info)',
             ha='center', va='center', fontsize=8.5, style='italic',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='lightcoral',
-                     edgecolor='red', linewidth=1.5, alpha=0.8))
+                      edgecolor='red', linewidth=1.5, alpha=0.8))
 
     # Main title
     fig.text(0.5, 0.96, 'Obfuscation Testing: Preventing Training Data Memorization',
              ha='center', fontsize=13, fontweight='bold')
 
     return fig
+
 
 def main():
     """Generate Figure 2."""
@@ -161,6 +163,7 @@ def main():
     print("✅ Figure 2 complete!")
     print("Shows before/after obfuscation - key methodological contribution")
     print("=" * 60)
+
 
 if __name__ == '__main__':
     main()

@@ -8,7 +8,7 @@ Shows the progression from biased prompts to validated methodology:
 """
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, FancyBboxPatch
+from matplotlib.patches import Rectangle
 from pathlib import Path
 
 # PRESENTATION SETTINGS

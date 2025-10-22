@@ -17,10 +17,8 @@ Data sources:
 
 import yaml
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
 from pathlib import Path
-import numpy as np
 
 # IEEE two-column format
 plt.rcParams.update({
@@ -39,6 +37,7 @@ plt.rcParams.update({
 BASE_DIR = Path(__file__).parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
+
 
 def load_quarterly_data():
     """Load quarterly validation data for gamma_positioning pattern."""
@@ -70,6 +69,7 @@ def load_quarterly_data():
 
     return data
 
+
 def load_unbiased_data():
     """Load unbiased full-year validation data."""
     filepath = REPORTS_DIR / 'gamma_positioning_SPY_2024_unbiased.yaml'
@@ -89,6 +89,7 @@ def load_unbiased_data():
         'sample_size': perf['total_tested']
     }
 
+
 def create_figure(quarterly_data, unbiased_data):
     """Create dual-axis chart showing detection vs profitability divergence."""
 
@@ -102,7 +103,8 @@ def create_figure(quarterly_data, unbiased_data):
     # Primary y-axis: Detection Rate
     color_detection = '#2E86AB'  # Blue
     ax1.set_xlabel('Quarter', fontweight='bold')
-    ax1.set_ylabel('Detection Rate (%)', fontweight='bold', color=color_detection)
+    ax1.set_ylabel('Detection Rate (%)', fontweight='bold',
+                   color=color_detection)
     line1 = ax1.plot(quarters, detection_rates, 'o-', color=color_detection,
                      linewidth=2.5, markersize=8, label='Detection Rate (Biased Prompts)', zorder=3)
     ax1.tick_params(axis='y', labelcolor=color_detection)
@@ -124,19 +126,20 @@ def create_figure(quarterly_data, unbiased_data):
     # Add horizontal line for unbiased detection rate with label
     if unbiased_data:
         unbiased_line = ax1.axhline(y=unbiased_data['detection_rate'], color=color_detection,
-                   linestyle='--', linewidth=1.5, alpha=0.7, zorder=2)
+                                    linestyle='--', linewidth=1.5, alpha=0.7, zorder=2)
         # Add text label on the line
         ax1.text(0.02, unbiased_data['detection_rate'] + 1,
-                f"Unbiased: {unbiased_data['detection_rate']:.1f}%",
-                fontsize=7, color=color_detection, style='italic',
-                transform=ax1.get_yaxis_transform())
+                 f"Unbiased: {unbiased_data['detection_rate']:.1f}%",
+                 fontsize=7, color=color_detection, style='italic',
+                 transform=ax1.get_yaxis_transform())
 
     # Add 60% threshold line with label positioned near left
-    threshold_line = ax1.axhline(y=60, color='red', linestyle=':', linewidth=1.5, alpha=0.6, zorder=1)
+    threshold_line = ax1.axhline(
+        y=60, color='red', linestyle=':', linewidth=1.5, alpha=0.6, zorder=1)
     # Add text label on the line (left side, slightly above line)
     ax1.text(0.02, 60 + 0.5, '60% Threshold',
-            fontsize=7, color='red', style='italic', ha='left',
-            transform=ax1.get_yaxis_transform())
+             fontsize=7, color='red', style='italic', ha='left',
+             transform=ax1.get_yaxis_transform())
 
     # Secondary y-axis: Net Alpha
     ax2 = ax1.twinx()
@@ -169,11 +172,11 @@ def create_figure(quarterly_data, unbiased_data):
              f'Net Alpha: {alpha_first:+.0f} → {alpha_last:+.0f} bps (profitability declines)',
              ha='center', fontsize=9, style='italic',
              bbox=dict(boxstyle='round,pad=0.5', facecolor='#f0f0f0',
-                      edgecolor='gray', linewidth=1, alpha=0.9))
+                       edgecolor='gray', linewidth=1, alpha=0.9))
 
     # Title
     plt.title('Pattern Detection Persists Above Threshold Despite Declining Profitability',
-             fontweight='bold', pad=15)
+              fontweight='bold', pad=15)
 
     # Combined legend - only show actual plotted lines (not reference lines)
     legend_elements = [
@@ -186,17 +189,20 @@ def create_figure(quarterly_data, unbiased_data):
     # Position legend to avoid Q3 data point at (Q3 2024, 100%)
     # Use 'center right' or specific coordinates
     ax1.legend(handles=legend_elements, loc='center right', framealpha=0.95,
-              edgecolor='gray', fontsize=9)
+               edgecolor='gray', fontsize=9)
 
     # Add sample sizes as text at very bottom (below statistics box)
-    sample_text = ' | '.join([f"{q}: N={quarterly_data[q]['sample_size']}" for q in quarters])
+    sample_text = ' | '.join(
+        [f"{q}: N={quarterly_data[q]['sample_size']}" for q in quarters])
     fig.text(0.5, 0.01, sample_text, ha='center', fontsize=7,
-            style='italic', color='gray')
+             style='italic', color='gray')
 
     # Use tight_layout with space for bottom annotation
-    plt.tight_layout(rect=[0, 0.12, 1, 0.98])  # Extra bottom space for statistics box
+    # Extra bottom space for statistics box
+    plt.tight_layout(rect=[0, 0.12, 1, 0.98])
 
     return fig
+
 
 def main():
     """Generate Figure 3."""
@@ -244,6 +250,7 @@ def main():
     print(f"  Detection: {det_range} (stays above threshold)")
     print(f"  Profitability: {alpha_range} (declines to unprofitable)")
     print("  Proves LLM detects STRUCTURE not PROFITS")
+
 
 if __name__ == '__main__':
     main()

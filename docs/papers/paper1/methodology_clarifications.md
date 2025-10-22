@@ -39,6 +39,7 @@
 > "We exclusively test Type 1 patterns (structural constraint patterns) where dealer behavior is forced by regulatory requirements or risk limits. We explicitly exclude statistical anomalies without causal mechanisms (Type 2) and narrative explanations without empirical validation (Type 3)."
 
 **Why This Matters**:
+
 - Type 1: LLM reasoning about constraints (what we test)
 - Type 2: LLM finding correlations (data mining, not our goal)
 - Type 3: LLM storytelling (circular reasoning risk)
@@ -52,6 +53,7 @@
 **Answer: NO** - More precise terminology needed.
 
 **What We Actually Do**:
+
 - Detect market **conditions** that activate dealer **constraints**
 - NOT: Track state transitions through formal state machine
 
@@ -64,6 +66,7 @@
 > "LLMs test *qualitative reasoning about constraints* in high-dimensional market context. Formal methods excel at proving properties of specified systems but cannot integrate unstructured information (volatility surface shape, strike concentration patterns, cross-asset dynamics) that determines whether constraints bind in practice."
 
 **Additional Justification**:
+
 1. **High-dimensional context**: GEX surface, OI distribution, realized vs implied vol - hard to formalize
 2. **Qualitative reasoning**: "Is concentration strong enough to pin?" requires judgment
 3. **Testing understanding**: We validate LLM reasoning capability, not prove constraint existence
@@ -80,6 +83,7 @@
 **Answer: YES - Critical distinction**
 
 **Definitions**:
+
 - **Market Regime** (structural, observable): Gamma positioning state, volatility level
 - **Market Sentiment** (psychological, unobservable): Participant beliefs (bullish/bearish)
 
@@ -94,6 +98,7 @@
 > **Negative Gamma Regime**: Market state where dealers hold net short gamma exposure. To maintain delta neutrality (regulatory requirement), dealers must trade in the same direction as price moves: sell into rallies (as delta increases) and buy into dips (as delta decreases). This forced hedging behavior amplifies price volatility and creates directional momentum.
 
 **Mathematical Expression**:
+
 ```
 Net Dealer Gamma = Σ(Call Gamma × OI × multiplier) - Σ(Put Gamma × OI × multiplier)
 
@@ -112,6 +117,7 @@ If Net Gamma < 0:
 **From Code Analysis** (`src/validation/data_obfuscation.py`):
 
 **PRESERVED** (quantitative structure):
+
 - ✅ GEX values (Net GEX, Call GEX, Put GEX) - **absolute dollar values**
 - ✅ Spot prices - **absolute prices preserved** (not normalized)
 - ✅ Strike relationships (distance to flip point, concentration levels)
@@ -119,6 +125,7 @@ If Net Gamma < 0:
 - ✅ Volatility metrics (realized vol, IV if included)
 
 **REMOVED** (temporal/contextual):
+
 - ❌ Real dates → "Day T+0", "Day T+1", etc.
 - ❌ Real tickers → "INDEX_1" (SPY), "STOCK_A" (AAPL), etc.
 - ❌ Calendar references (months, years, day of week)
@@ -131,6 +138,7 @@ If Net Gamma < 0:
 ### Q: Temporal relationships - What's preserved?
 
 **Code Analysis** (lines 95-109):
+
 ```python
 for date in sorted_dates:
     days_diff = (date - self.base_date).days
@@ -141,10 +149,12 @@ for date in sorted_dates:
 ```
 
 **PRESERVED**:
+
 - ✅ Relative day differences (T+0, T+1, T+7) - **sequential ordering maintained**
 - ✅ Time series continuity (can see if patterns develop over days)
 
 **REMOVED**:
+
 - ❌ Day of week (can't distinguish Monday vs Friday)
 - ❌ Days to expiration (no calendar context for option expiry)
 - ❌ Month/quarter information
@@ -164,6 +174,7 @@ for date in sorted_dates:
 **Answer**: Empirically determined from pattern taxonomy framework (Issue #79)
 
 **Justification**:
+
 1. **Statistical**: Binomial test with n=50 days, p=0.5 (random) → 60% is ~1.4 standard deviations above chance
 2. **Practical**: 60% implies pattern detectable on majority of days (not rare anomaly)
 3. **Conservative**: Higher than 50% (chance) but lower than 80% (very strong signal)
@@ -176,6 +187,7 @@ for date in sorted_dates:
 **YES - This is the core test**
 
 **Formalization**:
+
 - **WHO**: Constrained agent (dealers with gamma exposure)
 - **WHOM**: Counterparty forced to transact (directional traders, market makers)
 - **WHAT**: Specific action constraint requires (sell rallies, buy dips, hedge flow)
@@ -184,6 +196,7 @@ for date in sorted_dates:
 > "The WHO→WHOM→WHAT framework tests **causal chain identification**: WHO faces the constraint (dealers), WHOM is affected (counterparties), WHAT action is forced (hedging behavior). This structured output format ensures LLM explicitly identifies causal mechanisms rather than correlational patterns."
 
 **Why This Matters**:
+
 - Tests understanding of *mechanisms* (causal)
 - Not just pattern recognition (correlational)
 - Requires identifying agency and forced actions
@@ -203,6 +216,7 @@ for date in sorted_dates:
 > "This work validates LLM ability to **recognize** pre-defined dealer constraint patterns with known causal mechanisms (delta hedging, gamma exposure). We do not test unsupervised pattern discovery. Each tested pattern has an established academic literature documenting the underlying constraint (citations provided)."
 
 **Why This Distinction Matters**:
+
 - Recognition: Tests understanding of known mechanisms
 - Discovery: Tests data mining (different research question)
 - We're validating reasoning, not finding new patterns
@@ -224,7 +238,7 @@ for date in sorted_dates:
 
 ## Summary: Key Messages for Paper
 
-### Terminology to Use Consistently:
+### Terminology to Use Consistently
 
 1. **"Dealer constraint patterns"** (not just "patterns")
 2. **"Constraint activation detection"** (not "state machine")
@@ -232,14 +246,14 @@ for date in sorted_dates:
 4. **"Pattern validation"** (not "pattern discovery")
 5. **"Causal chain identification"** (WHO→WHOM→WHAT framework)
 
-### Critical Distinctions to Make:
+### Critical Distinctions to Make
 
 1. **We test only Type 1 (structural constraints)** - exclude statistical anomalies and narratives
 2. **Obfuscation preserves structure, removes context** - quantitative GEX preserved, temporal info removed
 3. **Recognition, not discovery** - validate understanding of known patterns, not mine for new ones
 4. **Regime detection, not sentiment analysis** - observable states, not beliefs
 
-### Methodological Strengths to Emphasize:
+### Methodological Strengths to Emphasize
 
 1. **Rigorous obfuscation** - prevents training data leakage
 2. **Multiple pattern types** - proves generalization, not cherry-picking

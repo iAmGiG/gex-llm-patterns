@@ -26,6 +26,7 @@
 **Purpose**: Shows complete 6-stage validation pipeline
 
 **Files Available**:
+
 - ✅ `figure1_system_architecture.png` (200 KB) - **USE THIS**
 
 **Script**: `generate_figure1_system_architecture.py`
@@ -41,6 +42,7 @@
 **Purpose**: Before/after comparison demonstrating data obfuscation
 
 **Files Available**:
+
 - ✅ `figure2_obfuscation_example.png` (297 KB) - **USE THIS**
 
 **Script**: `generate_figure2_obfuscation_example.py`
@@ -57,6 +59,7 @@
 **Purpose**: THE visual anchor - detection stable while profitability declines
 
 **Files Available**:
+
 - ✅ `figure3_detection_vs_profitability_300dpi.png` (221 KB) - **USE THIS** (paper version)
 - ✅ `figure3_detection_vs_profitability_600dpi.png` (478 KB) - **USE THIS** (presentation version)
 
@@ -67,6 +70,7 @@
 **Quality**: Excellent - Publication ready
 
 **Updates**:
+
 - **Oct 17**: Fixed misleading annotations, added Q1 data
 - **Oct 18**: Layout optimization (6 iterations)
   - Y-axis now uses full vertical space (60-103%)
@@ -85,12 +89,14 @@
 **Purpose**: Illustrates GEX structure that LLM analyzes
 
 **Files Available** (4 versions):
+
 1. `figure4_gex_profile_example.png` (246 KB) - Original, good
 2. `figure4_gex_profile_comparison.png` (206 KB) - Original side-by-side
 3. ✅ `figure4_gex_profile_clean.png` (236 KB) - **USE THIS** (improved)
 4. `figure4_gex_comparison_clean.png` (240 KB) - Improved side-by-side
 
 **Scripts**:
+
 - `generate_figure4_gex_profile.py` (original)
 - `generate_figure4_gex_profile_fixed.py` (improved)
 
@@ -99,6 +105,7 @@
 **Quality**: **Excellent** - Best visualization quality in paper
 
 **Improvements Made**:
+
 - Huge NET GEX annotation (16pt bold, impossible to miss)
 - Better color contrast (red #E74C3C vs green #27AE60)
 - Enhanced dealer constraint explanation box
@@ -113,6 +120,7 @@
 **Purpose**: Shows all patterns concentrated above 60% threshold
 
 **Files Available** (2 versions):
+
 1. ✅ `figure5_confidence_distribution.png` - **USE THIS** (grouped bar chart)
 2. `figure5_confidence_distribution_kde.png` - KDE smooth version (legend repositioned Oct 18)
 
@@ -123,6 +131,7 @@
 **Quality**: Excellent - clear grouped bar chart
 
 **Updates**:
+
 - **Oct 18**: Complete redesign from overlapping histogram → grouped bar chart
   - Patterns now side-by-side instead of stacked (clearly distinguishable)
   - Legend: upper left (sparse area)
@@ -139,6 +148,7 @@
 **Purpose**: Multi-pattern performance comparison
 
 **Files Available** (YAML-based versions, Oct 18):
+
 1. ✅ `figure6_pattern_performance_bars_yaml.png` - **USE THIS** (grouped bar chart)
 2. `figure6_detection_vs_accuracy_scatter_yaml.png` - Scatter plot (polished Oct 18)
 3. `figure6_performance_matrix_yaml.png` - Quadrant visualization
@@ -150,6 +160,7 @@
 **Quality**: Excellent - Publication ready
 
 **Updates**:
+
 - **Oct 18 AM**: Rebuilt with actual YAML data (was hardcoded)
 - **Oct 18 PM**: Visual polish (3 iterations)
   - Scatter plot: Smaller markers (×2 instead of ×3)
@@ -166,6 +177,7 @@
 **Purpose**: Demonstrates prompt bias impact on detection
 
 **Files Available** (5 versions):
+
 1. ✅ `figure7_biased_unbiased_comparison.png` (309 KB) - **USE THIS** (original dual y-axis)
 2. `figure7_simple_detection_comparison.png` (222 KB) - Detection only
 3. `figure7_detection_comparison_clean.png` (276 KB) - Improved with delta annotations
@@ -173,6 +185,7 @@
 5. `figure7_minimal_publication.png` (116 KB) - Minimal design
 
 **Scripts**:
+
 - `generate_figure7_biased_unbiased.py` (original)
 - `generate_figure7_biased_unbiased_fixed.py` (improved)
 
@@ -181,6 +194,7 @@
 **Quality**: All versions good, improved versions add clarity
 
 **Recommendation**:
+
 - **Primary**: Use `figure7_biased_unbiased_comparison.png` (original dual y-axis, works well)
 - **Alternative**: Use `figure7_detection_comparison_clean.png` (has delta annotations, clearer message)
 
@@ -191,6 +205,7 @@
 **Purpose**: Shows validation pipeline progression (726 → 519 → 473)
 
 **Files Available** (3 versions):
+
 1. ✅ `figure8_validation_funnel.png` (187 KB) - **USE THIS** (traditional funnel)
 2. `figure8_validation_flow.png` (269 KB) - Sankey-style flow
 3. `figure8_validation_breakdown.png` (240 KB) - By pattern breakdown
@@ -209,7 +224,7 @@
 
 **Location**: `scripts/visualization/`
 
-### By Figure:
+### By Figure
 
 | Figure | Scripts | Status |
 |--------|---------|--------|
@@ -228,7 +243,7 @@
 
 ## Recommended Figures for Paper
 
-### Core 8 Figures (Must Include):
+### Core 8 Figures (Must Include)
 
 1. ✅ **Figure 1**: `figure1_system_architecture.png` (200 KB)
 2. ✅ **Figure 2**: `figure2_obfuscation_example.png` (297 KB)
@@ -247,24 +262,29 @@
 
 **Available for appendix or backup**:
 
-### Figure 4 Alternatives:
+### Figure 4 Alternatives
+
 - `figure4_gex_profile_example.png` (original, still good)
 - `figure4_gex_comparison_clean.png` (side-by-side comparison)
 
-### Figure 5 Alternatives:
+### Figure 5 Alternatives
+
 - `figure5_confidence_distribution_kde.png` (smooth curves)
 
-### Figure 6 Alternatives:
+### Figure 6 Alternatives
+
 - `figure6_detection_heatmap.png` (heatmap format, has cosmetic issue)
 - `figure6_detection_vs_accuracy_scatter.png` (scatter plot)
 - `figure6_performance_matrix.png` (quadrant viz)
 
-### Figure 7 Alternatives:
+### Figure 7 Alternatives
+
 - `figure7_detection_comparison_clean.png` (with delta annotations)
 - `figure7_detection_and_accuracy_panels.png` (dual panel)
 - `figure7_minimal_publication.png` (minimal design)
 
-### Figure 8 Alternatives:
+### Figure 8 Alternatives
+
 - `figure8_validation_flow.png` (Sankey style)
 - `figure8_validation_breakdown.png` (by pattern)
 
@@ -272,35 +292,41 @@
 
 ## Quality Issues Summary
 
-### ✅ RESOLVED Issues:
+### ✅ RESOLVED Issues
 
 **Figure 3** (FIXED Oct 17):
+
 - Problem: Misleading annotations showing wrong detection trend
 - Fix: Regenerated with correct data-driven annotations
 - Status: **Now publication-ready**
 
 **Figure 4** (IMPROVED Oct 16):
+
 - Problem: NET GEX annotation too small
 - Fix: Created improved version with huge annotation
 - Status: **Use improved version**
 
 **Figure 6** (IMPROVED Oct 16):
+
 - Problem: Original heatmap had duplicate columns (misleading format)
 - Fix: Created bar chart version with clear presentation
 - Status: **Use improved bar chart version**
 
 **Figure 7** (IMPROVED Oct 16):
+
 - Problem: Original dual y-axis could be clearer
 - Fix: Created version with delta annotations
 - Status: **Both versions good, improved adds clarity**
 
-### ⚠️ Minor Issues (Non-Blocking):
+### ⚠️ Minor Issues (Non-Blocking)
 
 **Figure 2**: Unicode emoji font warnings during generation
+
 - Impact: COSMETIC ONLY - PNG output is perfect
 - Action: None needed
 
 **Figure 6 Heatmaps**: Duplicate columns showing stable values
+
 - Impact: COSMETIC ONLY - Data is accurate, format is suboptimal
 - Action: Use improved bar chart instead (recommended above)
 
@@ -326,13 +352,15 @@
 
 ## File Management
 
-### Current State:
+### Current State
+
 - ✅ All PNG files in: `docs/papers/paper1/figures/`
 - ✅ All scripts in: `scripts/visualization/`
 - ✅ All captions in: `docs/papers/paper1/figures/captions.md`
 - ✅ No stray .py or .m files in figures directory
 
-### Disk Usage:
+### Disk Usage
+
 - **25 PNG files**: ~5.6 MB total
 - **11 Python scripts**: ~50 KB total
 - **Documentation**: ~40 KB (captions.md, FIGURE_*.md files)
@@ -341,7 +369,8 @@
 
 ## LaTeX Integration Plan
 
-### Figure Placement:
+### Figure Placement
+
 ```latex
 \begin{figure}[t]
 \centering
@@ -351,7 +380,8 @@
 \end{figure}
 ```
 
-### Special Case - Figure 3 (Full Width):
+### Special Case - Figure 3 (Full Width)
+
 ```latex
 \begin{figure*}[t]
 \centering

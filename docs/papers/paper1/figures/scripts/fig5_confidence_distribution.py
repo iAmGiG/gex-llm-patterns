@@ -15,7 +15,6 @@ import yaml
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
-from collections import Counter
 
 # IEEE two-column format
 plt.rcParams.update({
@@ -34,6 +33,7 @@ plt.rcParams.update({
 BASE_DIR = Path(__file__).parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
+
 
 def load_confidence_scores(pattern_name):
     """Extract confidence scores from validation YAML file."""
@@ -54,6 +54,7 @@ def load_confidence_scores(pattern_name):
             confidences.append(conf)
 
     return confidences
+
 
 def create_figure(confidence_data):
     """Create grouped bar chart showing confidence distributions for all three patterns."""
@@ -124,13 +125,15 @@ def create_figure(confidence_data):
             mean_conf = np.mean(confidences)
             above_60 = sum(1 for c in confidences if c >= 60)
             pct_above = (above_60 / len(confidences)) * 100
-            stats_text.append(f"{labels[pattern]}: {mean_conf:.1f}% mean, {pct_above:.1f}% ≥60%")
+            stats_text.append(
+                f"{labels[pattern]}: {mean_conf:.1f}% mean, {pct_above:.1f}% ≥60%")
 
     stats_str = '\n'.join(stats_text)
     # Positioned in mid-right where there's empty space
     ax.text(0.98, 0.55, stats_str, transform=ax.transAxes,
             fontsize=9, verticalalignment='center', horizontalalignment='right',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.95, edgecolor='gray'),
+            bbox=dict(boxstyle='round', facecolor='wheat',
+                      alpha=0.95, edgecolor='gray'),
             zorder=5)
 
     # Set x-axis limits (focus on data range)
@@ -139,6 +142,7 @@ def create_figure(confidence_data):
     plt.tight_layout()
 
     return fig
+
 
 def create_kde_figure(confidence_data):
     """Create smooth KDE plot as alternative visualization."""
@@ -191,6 +195,7 @@ def create_kde_figure(confidence_data):
 
     return fig
 
+
 def main():
     """Generate Figure 5."""
     print("Loading confidence scores from validation data...")
@@ -234,6 +239,7 @@ def main():
 
     print("\n✅ Figure 5 complete!")
     print("Shows all three patterns concentrated above 60% threshold")
+
 
 if __name__ == '__main__':
     main()

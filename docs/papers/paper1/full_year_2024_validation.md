@@ -25,17 +25,20 @@
 ### Individual Pattern Details
 
 **Gamma Positioning** (Primary Pattern):
+
 - **Detection**: 69.4% (unbiased) vs 100% (biased)
 - **Accuracy**: 92.5%
 - **Net Alpha**: +5.6 bps
 - **Interpretation**: Most conservative detection, highest accuracy
 
 **Stock Pinning** (Alternative Framing):
+
 - **Detection**: 67.4% (unbiased) vs 100% (biased)
 - **Accuracy**: 90.4%
 - **Interpretation**: Similar mechanics, slightly lower accuracy
 
 **0DTE Hedging** (Time-Specific Framing):
+
 - **Detection**: 77.7% (unbiased) vs 100% (biased)
 - **Accuracy**: 90.8%
 - **Interpretation**: Highest detection rate (0DTE focus resonates with LLM)
@@ -56,6 +59,7 @@
 ### Expected vs Actual Trading Days
 
 **Calendar Analysis**:
+
 - **Calendar trading days**: 261 days (based on business day calendar)
 - **Actually tested**: 242 days
 - **Missing**: 19 days
@@ -64,6 +68,7 @@
 **Missing Days Breakdown**:
 
 #### Confirmed Market Holidays (9 days)
+
 These are official US market closures where no trading occurred:
 
 | Date | Holiday | NYSE Status |
@@ -79,6 +84,7 @@ These are official US market closures where no trading occurred:
 | 2024-12-25 | Christmas | ✅ Closed |
 
 #### Data Unavailable Dates (10 days)
+
 These dates were business days but data could not be fetched:
 
 | Date | Day of Week | Notes |
@@ -95,11 +101,13 @@ These dates were business days but data could not be fetched:
 | 2024-06-06 | Thursday | Unknown reason |
 
 **Pattern in Missing Data**:
+
 - **7 out of 10** are Fridays (weekly options expiration)
 - February/March concentrated (tax season volatility?)
 - Likely data quality issues on high-volume expiration days
 
 **Impact on Validation**:
+
 - ✅ Missing days are **NOT failures** - they're data availability gaps
 - ✅ 242 days still provides **strong statistical power** (need >30)
 - ✅ No systematic bias (missing days appear random/data-related)
@@ -112,6 +120,7 @@ These dates were business days but data could not be fetched:
 ### Detection Performance
 
 **Detection Statistics**:
+
 - **Total days tested**: 242
 - **Pattern detected**: 168 days (high confidence)
 - **Pattern detected**: 74 days (low confidence, but >60%)
@@ -121,6 +130,7 @@ These dates were business days but data could not be fetched:
 **Why 69.4% Detection?**
 
 This is LOWER than quarterly tests (100% in Q1/Q3/Q4), likely due to:
+
 1. **Unbiased prompt template**: More conservative than pattern-specific prompts
 2. **Year-round testing**: Includes low-volatility periods where GEX is present but muted
 3. **Stricter threshold**: May be filtering marginal cases that quarterly tests caught
@@ -139,6 +149,7 @@ This is LOWER than quarterly tests (100% in Q1/Q3/Q4), likely due to:
 ### Predictive Accuracy
 
 **Prediction Verification**:
+
 - **Total detections**: 168 + 74 = 242 (includes all tested days)
 - **Predictions materialized**: 92.5%
 - **Predictions failed**: 7.5%
@@ -146,11 +157,13 @@ This is LOWER than quarterly tests (100% in Q1/Q3/Q4), likely due to:
 **What "Materialized" Means**:
 
 For negative GEX regime (most common):
+
 - ✅ Forward 1-day move >0.3% (dealer amplification occurred)
 - ✅ Realized volatility >1.0% daily (elevated vol as predicted)
 - ✅ Max 3-day gain/loss >0.5% (meaningful range observed)
 
 **Example Verification** (from 2024-01-02):
+
 ```yaml
 Detection: "Dealers will amplify volatility due to negative GEX"
 Outcome:
@@ -165,6 +178,7 @@ Verdict: MATERIALIZED ✅
 ### Economic Performance
 
 **Return Statistics**:
+
 - **Avg forward 1-day return**: +0.106%
 - **Transaction cost assumption**: 5 bps (0.05%)
 - **Net alpha**: +5.6 bps (0.056%)
@@ -189,11 +203,13 @@ Verdict: MATERIALIZED ✅
 **Coverage**: 53 days tested (84% of quarter)
 
 From the full-year data (Q1 subset):
+
 - **Detection**: Included in 69.4% overall rate
 - **Accuracy**: Included in 92.5% overall rate
 - **Net Alpha**: Contributed to +5.6 bps overall
 
 **Comparison to Q1 Standalone Test** (pattern-specific prompt):
+
 - Q1 standalone: 100% detection, 96.2% accuracy, +21 bps net alpha
 - Q1 in full-year: Lower detection (unbiased prompt effect)
 
@@ -210,10 +226,12 @@ Included in full-year 242-day dataset. No separate Q2 validation was run with pa
 **Coverage**: 64 days tested (98% of quarter)
 
 From the full-year data (Q3 subset):
+
 - Included in overall metrics
 - No separate breakdown available in unbiased test
 
 **Comparison to Q3 Standalone Test** (pattern-specific prompt):
+
 - Q3 standalone: 100% detection, 98.4% accuracy, +4 bps net alpha
 
 ### Q4 2024 Performance
@@ -222,10 +240,12 @@ From the full-year data (Q3 subset):
 **Coverage**: 64 days tested (98% of quarter)
 
 From the full-year data (Q4 subset):
+
 - Included in overall metrics
 - Ends on 2024-12-31 (verified)
 
 **Comparison to Q4 Standalone Test** (pattern-specific prompt):
+
 - Q4 standalone: 100% detection, 98.4% accuracy, -1 bps net alpha
 
 ---
@@ -235,16 +255,19 @@ From the full-year data (Q4 subset):
 ### 1. Detection Consistency Across Prompts
 
 **Pattern-Specific Prompts** (Q1, Q3, Q4 standalone tests):
+
 - Detection: 100%
 - Accuracy: 96-98%
 - Sample: 181 days total
 
 **Unbiased Prompt** (Full year test):
+
 - Detection: 69.4%
 - Accuracy: 92.5%
 - Sample: 242 days total
 
 **Interpretation**:
+
 - ✅ Both prompt types detect the pattern successfully (>60% threshold)
 - ✅ Pattern-specific prompts more sensitive (catch 100% of cases)
 - ✅ Unbiased prompt more selective (catches 69% of cases)
@@ -253,11 +276,13 @@ From the full-year data (Q4 subset):
 **Which is better for research?**
 
 For **methodology validation** (Paper #1):
+
 - Use BOTH results to show robustness across prompt designs
 - Unbiased: Shows pattern detection without leading questions
 - Pattern-specific: Shows maximum sensitivity when primed
 
 For **trading application**:
+
 - Use pattern-specific prompts (higher detection rate)
 
 ### 2. The Detection ≠ Profitability Evidence
@@ -273,11 +298,13 @@ For **trading application**:
 **Why This Matters**:
 
 If we were **overfitting** or **cherry-picking**:
+
 - We'd test ONLY profitable periods (Q1) and hide Q4
 - We'd show ONLY pattern-specific prompts and hide unbiased results
 - We'd adjust thresholds until alpha looked good
 
 Instead, we show:
+
 - ✅ Full year including unprofitable quarters
 - ✅ Both prompt types (unbiased and pattern-specific)
 - ✅ Detection stays high even when alpha declines
@@ -289,11 +316,13 @@ Instead, we show:
 **Sample Size Analysis**:
 
 To detect pattern at 69.4% vs random (50%):
+
 - Required sample: n = 30 (for 80% power)
 - Actual sample: n = 242
 - **Power**: >99% ✅
 
 To distinguish 92.5% accuracy from 80%:
+
 - Required sample: n = 50
 - Actual sample: n = 242
 - **Power**: >99% ✅
@@ -321,6 +350,7 @@ To distinguish 92.5% accuracy from 80%:
 We now have TWO complete 2024 validations:
 
 **Test A: Pattern-Specific Prompts** (Q1 + Q3 + Q4)
+
 - Method: Separate quarterly tests with targeted prompts
 - Coverage: 181 days (Q1=53, Q3=64, Q4=64)
 - Detection: 100% in all quarters
@@ -328,6 +358,7 @@ We now have TWO complete 2024 validations:
 - Net Alpha: +21 bps (Q1), +4 bps (Q3), -1 bps (Q4)
 
 **Test B: Unbiased Prompt** (Full year)
+
 - Method: Single full-year test with neutral prompt
 - Coverage: 242 days (all quarters)
 - Detection: 69.4% overall
@@ -345,12 +376,14 @@ Unbiased prompt example:
 > "Analyze market mechanics. Identify WHO forces WHOM to do WHAT."
 
 **Effect**:
+
 - Pattern-specific: Primes LLM to look for gamma hedging (catches ALL cases)
 - Unbiased: Forces LLM to discover constraint from scratch (catches STRONG cases)
 
 **Which is correct?**
 
 BOTH are valid:
+
 - ✅ Unbiased shows pattern detection without leading (stronger proof)
 - ✅ Pattern-specific shows maximum sensitivity (useful for trading)
 
@@ -375,6 +408,7 @@ BOTH are valid:
 ### For PhD Paper #1 (Methodology Validation)
 
 ✅ **Sufficient Evidence Collected**:
+
 - 242 days (unbiased) + 181 days (pattern-specific) = 423 total test days
 - Multiple prompt designs tested
 - Multiple quarters tested (different volatility regimes)
@@ -382,11 +416,13 @@ BOTH are valid:
 - Accuracy remains high across all tests (92-98%)
 
 ✅ **No Cherry-Picking**:
+
 - Full year tested (not just profitable periods)
 - Unbiased prompt used (not just pattern-specific)
 - Unprofitable quarters included (Q4 negative alpha)
 
 ✅ **Statistical Rigor**:
+
 - Sample size >30 required, achieved 242
 - Coverage >80% required, achieved 94%
 - Detection >60% required, achieved 69-100%
@@ -397,17 +433,20 @@ BOTH are valid:
 ### For Trading Application
 
 ⚠️ **Pattern Valid but Marginal**:
+
 - Detection: ✅ Pattern is real
 - Accuracy: ✅ Predictions materialize
 - Profitability: ⚠️ +5.6 bps net alpha (marginal)
 
 **Options for Improvement**:
+
 1. Add volatility filter (only trade when VIX >15)
 2. Add regime filter (only trade when |GEX| >$5B)
 3. Add timing filter (avoid low-volume periods)
 4. Combine with momentum signals
 
 **Next Steps**:
+
 - Investigate alpha decline (Q1: +21 bps → Q4: -1 bps)
 - Test volatility-filtered version
 - Compare to 2022-2023 high-volatility periods
@@ -419,16 +458,19 @@ BOTH are valid:
 ### Data Sources
 
 **Options Data**: Polygon.io API
+
 - Full options chains (all strikes, all expiries)
 - End-of-day snapshots (after 4:00 PM ET)
 - Includes: strikes, OI, IV, bid/ask, greeks
 
 **Spot Prices**: Multiple sources with validation
+
 - Primary: Polygon.io
 - Validation: Database historical prices
 - Fallback: Deep ITM call inference (rarely used)
 
 **Historical Database**: SQLite
+
 - Pre-computed GEX metrics for 2024
 - Enables fast validation (no recalculation)
 - Rebuilt October 11, 2025 (fixed API mismatch bug)
@@ -436,16 +478,19 @@ BOTH are valid:
 ### Calculation Methods
 
 **GEX Calculation**: Black-Scholes formula
+
 - Gamma per option: ∂²V/∂S² (second partial derivative)
 - Aggregate: Sum across all strikes and expiries
 - Sign convention: Dealer perspective (negative = short gamma)
 
 **Outcome Verification**: Rule-based logic
+
 - Forward returns: (Price_T+1 - Price_T) / Price_T
 - Realized volatility: Std dev of daily returns (3-day window)
 - Prediction materialized: Boolean (threshold-based)
 
 **Obfuscation**: Data sanitization
+
 - Dates → "Day T+0", "Day T+1", etc.
 - Tickers → "INDEX_1", "STOCK_G", etc.
 - Preserves only mechanical metrics (GEX, strikes, OI)
@@ -453,6 +498,7 @@ BOTH are valid:
 ### Reproducibility
 
 **Exact Command**:
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 
@@ -526,6 +572,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 ### Full List of Missing Dates
 
 **Market Holidays (9)**:
+
 1. 2024-01-15 (Monday) - MLK Day
 2. 2024-02-19 (Monday) - Presidents' Day
 3. 2024-03-29 (Friday) - Good Friday
@@ -537,6 +584,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 9. 2024-12-25 (Wednesday) - Christmas
 
 **Data Unavailable (10)**:
+
 1. 2024-02-02 (Friday)
 2. 2024-02-09 (Friday)
 3. 2024-02-16 (Friday) - Monthly OPEX
@@ -553,17 +601,20 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Market Holidays**: NYSE closed, no trading occurred, no data to fetch.
 
 **Friday Concentration** (7 out of 10):
+
 - Fridays are weekly options expiration days
 - High trading volume and complexity
 - Data provider may have quality issues on these days
 - GEX calculations require complete options chains (missing data causes failure)
 
 **Feb-Mar Concentration** (7 out of 10):
+
 - Potential tax season volatility
 - Data provider issues during specific period?
 - Possible API rate limiting or service disruptions
 
 **Impact Assessment**:
+
 - Random/data-related gaps (not systematic bias)
 - 242 days still provides strong statistical power
 - No reason to believe missing days would change results

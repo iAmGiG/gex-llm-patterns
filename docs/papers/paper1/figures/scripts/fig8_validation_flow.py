@@ -15,7 +15,6 @@ Data sources:
 
 import yaml
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch
 import numpy as np
 from pathlib import Path
@@ -42,6 +41,7 @@ print("=" * 60)
 print("FIGURE 8: VALIDATION FUNNEL (YAML DATA)")
 print("=" * 60)
 
+
 def load_pattern_data(pattern_name):
     """Load validation metrics from YAML file."""
     filepath = REPORTS_DIR / f"{pattern_name}_SPY_2024_unbiased.yaml"
@@ -58,15 +58,18 @@ def load_pattern_data(pattern_name):
         'detection_rate': perf['detection_rate_pct'],
         'accuracy': perf['predictive_accuracy_pct'],
         'sample_size': perf['total_tested'],
-        'detections': perf['high_confidence_detections']  # Only count high-confidence (>60%) as detected
+        # Only count high-confidence (>60%) as detected
+        'detections': perf['high_confidence_detections']
     }
+
 
 # Load data from YAML files
 patterns_full = ['gamma_positioning', 'stock_pinning', '0dte_hedging']
 patterns_data = {p: load_pattern_data(p) for p in patterns_full}
 
 # Pattern labels for display
-pattern_labels = ['Gamma\nPositioning', 'Stock\nPinning', '0DTE\nHedging', 'Overall\nAverage']
+pattern_labels = ['Gamma\nPositioning', 'Stock\nPinning',
+                  '0DTE\nHedging', 'Overall\nAverage']
 
 # Extract per-pattern metrics
 detection_rates = [patterns_data[p]['detection_rate'] for p in patterns_full]
@@ -81,27 +84,32 @@ avg_detection_rate = np.mean(detection_rates)
 avg_accuracy = np.mean(accuracies)
 
 # Calculate materialized predictions (detected × accuracy)
-materialized_per_pattern = [int(detections_list[i] * (accuracies[i] / 100)) for i in range(len(patterns_full))]
+materialized_per_pattern = [int(
+    detections_list[i] * (accuracies[i] / 100)) for i in range(len(patterns_full))]
 total_materialized = sum(materialized_per_pattern)
 
 # Calculate percentages
 detection_pct = (total_detected / total_tests) * 100
-materialization_pct = (total_materialized / total_detected) * 100 if total_detected > 0 else 0
+materialization_pct = (total_materialized / total_detected) * \
+    100 if total_detected > 0 else 0
 overall_success_pct = (total_materialized / total_tests) * 100
 
 # Calculate success rates per pattern (detection × accuracy)
-success_rates = [(d/100) * (a/100) * 100 for d, a in zip(detection_rates, accuracies)]
+success_rates = [(d/100) * (a/100) * 100 for d,
+                 a in zip(detection_rates, accuracies)]
 
 print(f"\nLoaded data from YAML files:")
 print(f"  Total days per pattern: {total_days}")
 print(f"  Total tests: {total_tests}")
 print(f"  Total detected: {total_detected} ({detection_pct:.1f}%)")
-print(f"  Total materialized: {total_materialized} ({materialization_pct:.1f}% of detected)")
+print(
+    f"  Total materialized: {total_materialized} ({materialization_pct:.1f}% of detected)")
 print(f"  Overall success: {overall_success_pct:.1f}%")
 
 print(f"\nPer-pattern breakdown:")
 for i, p in enumerate(patterns_full):
-    print(f"  {p}: {detection_rates[i]:.1f}% detection, {accuracies[i]:.1f}% accuracy, {success_rates[i]:.1f}% success")
+    print(
+        f"  {p}: {detection_rates[i]:.1f}% detection, {accuracies[i]:.1f}% accuracy, {success_rates[i]:.1f}% success")
 
 # ============================================================================
 # VERSION 1: Traditional Funnel Diagram (SCALED DOWN)
@@ -110,7 +118,8 @@ for i, p in enumerate(patterns_full):
 fig, ax = plt.subplots(figsize=(9, 6))  # Reduced from (10, 8)
 
 # Funnel data
-stages = ['Total Pattern Tests', 'LLM Detection', 'Predicted Patterns\nMaterialized']
+stages = ['Total Pattern Tests', 'LLM Detection',
+          'Predicted Patterns\nMaterialized']
 values = [total_tests, total_detected, total_materialized]
 colors = ['#2E86AB', '#F77F00', '#06A77D']
 
@@ -240,7 +249,7 @@ for (start, end, value, label) in arrows:
 
     ax.annotate('', xy=end, xytext=start,
                 arrowprops=dict(arrowstyle='->', lw=linewidth,
-                              color='gray', alpha=alpha))
+                                color='gray', alpha=alpha))
 
     # Add label at midpoint (LARGER edge tooltips)
     mid_x = (start[0] + end[0]) / 2

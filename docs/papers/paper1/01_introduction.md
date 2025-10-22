@@ -5,12 +5,14 @@
 [DRAFT NEEDED]
 
 **Key Points to Cover**:
+
 - Large language models (LLMs) increasingly used for financial market analysis
 - Critical question: Can LLMs understand market microstructure mechanisms, or just pattern-match from training data?
 - Market microstructure = dealer constraints forcing predictable hedging behavior
 - Need rigorous validation methodology to distinguish understanding from memorization
 
 **Opening Hook Ideas**:
+
 - "Recent advances in large language models (LLMs) have sparked interest in their application to financial market analysis. However, a critical question remains unanswered: Can these models genuinely understand market microstructure mechanisms, or are they merely pattern-matching from historical data in their training corpus?"
 - Or: "Dealer hedging behavior in options markets creates predictable price dynamics when regulatory constraints (delta neutrality) and risk limits (gamma exposure) force market makers into specific actions. We ask: Can large language models reason about these structural constraints without temporal context?"
 
@@ -21,6 +23,7 @@
 [DRAFT NEEDED]
 
 **Key Points to Cover**:
+
 - **LLMs in Finance Literature**: Existing work shows LLMs can predict prices, analyze sentiment, but...
   - Most studies don't test *understanding* of mechanisms (just correlations)
   - Vulnerable to training data leakage (LLM recalls "GameStop Jan 2021")
@@ -88,11 +91,13 @@ The remainder of this paper proceeds as follows:
 ## Notes for Writing
 
 **Tone**: Balance accessibility with rigor
+
 - Explain LLM methodology clearly for finance audience
 - Explain dealer constraints clearly for AI/ML audience
 - Avoid jargon where possible, define when necessary
 
 **Defensive Writing**: Preempt common criticisms
+
 - Address data leakage concerns upfront (obfuscation)
 - Acknowledge limitations transparently (confidence calibration, validation not discovery)
 - Emphasize conservative approach (71% > 100% for credibility)

@@ -12,6 +12,7 @@
 We test **dealer constraint patterns** - recurring market structures that arise when regulatory requirements (delta neutrality mandate) or risk limits (gamma exposure thresholds) force dealers into predictable hedging behavior.
 
 **Precise Hierarchy**:
+
 1. **Constraint** (causal mechanism): Regulatory/risk requirement forcing behavior
    - Example: Delta neutrality mandate, margin requirements, position limits
 
@@ -25,6 +26,7 @@ We test **dealer constraint patterns** - recurring market structures that arise 
 Market state where dealers hold net short gamma exposure. To maintain delta neutrality (regulatory requirement), dealers must trade in the same direction as price moves: sell into rallies (as delta increases) and buy into dips (as delta decreases). This forced hedging behavior amplifies price volatility and creates directional momentum.
 
 Mathematical expression:
+
 ```
 Net Dealer Gamma = Σ(Call Gamma × OI × multiplier) - Σ(Put Gamma × OI × multiplier)
 
@@ -35,6 +37,7 @@ If Net Gamma < 0:
 ```
 
 **Structural Regime vs Sentiment**:
+
 - **Market Regime** (structural, observable): Gamma positioning state, volatility level, measurable from options data
 - **Market Sentiment** (psychological, unobservable): Participant beliefs (bullish/bearish), cannot be directly measured
 
@@ -45,24 +48,30 @@ This work detects structural market regimes (dealer gamma positioning), not part
 ## 3.2 Pattern Taxonomy: Three-Level Classification
 
 ### Type 1: Structural Constraint Patterns ← **WE TEST ONLY THIS**
+
 Patterns where dealer behavior is forced by:
+
 - Regulatory requirements (delta neutrality, position limits)
 - Risk limits (gamma exposure, margin requirements)
 - Physical constraints (time decay, settlement mechanics)
 
 **Characteristics**:
+
 - Clear causal mechanism (WHO forces WHOM to do WHAT)
 - Predictable under specific conditions
 - Cannot be avoided by constrained agents
 - Observable in market data (GEX, OI distribution)
 
 **Examples**:
+
 - `gamma_positioning`: Negative gamma forces directional hedging
 - `stock_pinning`: OI concentration at strikes creates hedging flow
 - `0dte_hedging`: Same-day expiration forces accelerated hedging
 
 ### Type 2: Statistical Regularities
+
 Empirical patterns without established causal mechanisms:
+
 - Correlations in historical data
 - Seasonal effects without explanation
 - Volume anomalies without structural driver
@@ -70,7 +79,9 @@ Empirical patterns without established causal mechanisms:
 **Why We Exclude**: Risk of data mining, no causal validation
 
 ### Type 3: Narrative Explanations
+
 Post-hoc storytelling without empirical validation:
+
 - "Markets always rally in December" (selection bias)
 - "Friday 3:30 PM squeeze" (requires temporal context)
 - Context-dependent patterns (not mechanical)
@@ -88,6 +99,7 @@ We exclusively test Type 1 patterns (structural constraint patterns) where deale
 
 **The Training Data Leakage Problem**:
 LLMs trained on vast corpora may have encountered descriptions of famous market events:
+
 - "GameStop January 2021 squeeze"
 - "COVID crash March 2020 volatility"
 - "Fed rate hikes 2022-2023"
@@ -100,6 +112,7 @@ Strip all temporal and contextual information, forcing LLM to reason from quanti
 ### 3.3.2 Obfuscation Transformations
 
 **PRESERVED** (quantitative structure):
+
 - ✅ GEX values (Net GEX, Call GEX, Put GEX) - absolute dollar values
 - ✅ Spot prices - absolute prices preserved (not normalized)
 - ✅ Strike relationships (distance to flip point, concentration levels)
@@ -107,6 +120,7 @@ Strip all temporal and contextual information, forcing LLM to reason from quanti
 - ✅ Volatility metrics (realized vol, IV)
 
 **REMOVED** (temporal/contextual):
+
 - ❌ Real dates → "Day T+0", "Day T+1", etc.
 - ❌ Real tickers → "INDEX_1" (SPY), "STOCK_A" (AAPL), etc.
 - ❌ Calendar references (months, years, day of week)
@@ -136,6 +150,7 @@ LLM cannot use Friday 3:30 PM effects, monthly expiration patterns, or seasonal 
 ### Framework Definition
 
 We require LLM to explicitly identify causal chains:
+
 - **WHO**: Constrained agent (dealers with gamma exposure)
 - **WHOM**: Counterparty affected (directional traders, market makers)
 - **WHAT**: Specific action constraint requires (sell rallies, buy dips, hedge flow)
@@ -143,6 +158,7 @@ We require LLM to explicitly identify causal chains:
 **This tests causal reasoning**, not correlational pattern recognition.
 
 **Example Output**:
+
 ```
 WHO: "Dealers with negative gamma exposure"
 WHOM: "Market participants"
@@ -152,6 +168,7 @@ TIME_HORIZON: "1-3 days"
 ```
 
 **Why This Matters**:
+
 - Tests understanding of *mechanisms* (causal)
 - Not just pattern recognition (correlational)
 - Requires identifying agency and forced actions
@@ -166,6 +183,7 @@ TIME_HORIZON: "1-3 days"
 **Mechanical Classification Threshold: 60%**
 
 **Justification**:
+
 1. **Statistical**: Binomial test with n=50 days, p=0.5 (random) → 60% is ~1.4 standard deviations above chance
 2. **Practical**: 60% implies pattern detectable on majority of days (not rare anomaly)
 3. **Conservative**: Higher than 50% (chance) but lower than 80% (very strong signal)
@@ -179,6 +197,7 @@ We classify patterns as **MECHANICAL** if detection rate ≥60% and sample size 
 
 **Acknowledged Limitation**:
 LLM confidence scores may not be well-calibrated (known limitation of GPT-4 series). We address this by:
+
 1. Using a conservative threshold (60%)
 2. Measuring prediction accuracy independently
 3. Comparing results across different prompt configurations (biased vs unbiased)
@@ -199,6 +218,7 @@ Confidence scores (0-100%) are extracted from LLM structured output without post
 ### 3.6.2 Template Comparison
 
 **Biased Prompt (Standard Template)**:
+
 ```
 Day T+0
   Net GEX: -$32,905,699,168
@@ -208,12 +228,14 @@ Day T+0
 ```
 
 **Characteristics**:
+
 - Shows regime classification ("NEGATIVE_GAMMA" / "POSITIVE_GAMMA")
 - Includes pattern hints from rule-based detection
 - Leading questions presume patterns exist
 - Cannot respond "no pattern detected"
 
 **Unbiased Prompt (New Template)**:
+
 ```
 Day T+0
   Net GEX: -$32,905,699,168 (raw value, unclassified)
@@ -222,6 +244,7 @@ Day T+0
 ```
 
 **Characteristics**:
+
 - Raw GEX values only (no classification labels)
 - No pattern hints from rule-based system
 - Neutral questions allow null hypothesis
@@ -233,6 +256,7 @@ Day T+0
 **Sensitivity Analysis**: Biased prompts (100% detection, 91-94% accuracy)
 
 **Rationale**:
+
 - Unbiased results prove structural detection without label leakage
 - 71.5% is conservative, defensible lower bound
 - 100% biased result shows upper bound with contextual hints
@@ -246,17 +270,20 @@ Day T+0
 
 **Prediction Materialization Check**:
 For each detected pattern, we calculate:
+
 1. **Forward returns** (T+1, T+3 price movements)
 2. **Realized volatility** (did volatility amplify as predicted?)
 3. **Directional consistency** (did price move as mechanism suggests?)
 
 **Rule-based Verification**:
 Materialization is determined algorithmically (not subjectively):
+
 - Pattern predicts volatility amplification → measure realized vol T+1
 - Pattern predicts directional pressure → measure forward return
 - Pattern predicts mean reversion → measure price return to level
 
 **Key Metrics**:
+
 - **Detection Rate**: % of days where pattern detected (confidence ≥60%)
 - **Predictive Accuracy**: % of detections where prediction materialized
 - **Net Alpha**: Average forward return - transaction costs (5 bps)
@@ -268,11 +295,13 @@ Materialization is determined algorithmically (not subjectively):
 ### Pattern Classification Thresholds
 
 **MECHANICAL Pattern** (structural constraint):
+
 - Detection rate ≥60% with obfuscation
 - Sample size ≥30 days (statistical significance)
 - Predictive accuracy ≥60% (predictions materialize)
 
 **NARRATIVE Pattern** (context-dependent):
+
 - Detection rate <60% with obfuscation
 - OR: Requires temporal context (fails obfuscation test)
 - OR: No consistent causal mechanism
@@ -287,11 +316,13 @@ Materialization is determined algorithmically (not subjectively):
 ### What This Work Tests
 
 **Pattern Validation** (recognition of pre-defined constraints):
+
 - Tests LLM ability to recognize dealer constraint patterns with known causal mechanisms
 - Each pattern has established academic literature documenting underlying constraint
 - Validates understanding, not discovery
 
 **NOT Pattern Discovery** (unsupervised mining):
+
 - We do not test unsupervised pattern discovery
 - Different research question (data mining vs understanding)
 

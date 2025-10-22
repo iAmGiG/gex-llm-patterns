@@ -118,7 +118,7 @@ ax.axvline(x=spot_price, color='#3498DB', linestyle='--', linewidth=4,
 ax.text(spot_price, ax.get_ylim()[1] * 0.95, f'Spot: ${spot_price:.0f}',
         ha='center', va='top', fontsize=13, fontweight='bold',
         bbox=dict(boxstyle='round,pad=0.6', facecolor='#3498DB',
-                 edgecolor='black', linewidth=2, alpha=0.9),
+                  edgecolor='black', linewidth=2, alpha=0.9),
         color='white', zorder=11)
 
 # NET GEX ANNOTATION - MOVED TO BOTTOM-LEFT for style consistency
@@ -130,7 +130,7 @@ ax.text(0.02, 0.05, full_text, transform=ax.transAxes,
         fontsize=14, fontweight='bold', color='darkred',
         verticalalignment='bottom', horizontalalignment='left',
         bbox=dict(boxstyle='round,pad=0.8', facecolor='#FFE6E6',
-                 edgecolor='darkred', linewidth=2.5, alpha=0.95),
+                  edgecolor='darkred', linewidth=2.5, alpha=0.95),
         zorder=12)
 
 # ATM region shading (behind bars)
@@ -143,7 +143,7 @@ ax.text((atm_left + atm_right) / 2, ax.get_ylim()[0] * 0.85,
         'ATM\nRegion', ha='center', va='center',
         fontsize=10, fontweight='bold', style='italic',
         bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow',
-                 alpha=0.7, edgecolor='orange', linewidth=2),
+                  alpha=0.7, edgecolor='orange', linewidth=2),
         zorder=11)
 
 # Dealer constraint explanation box (moved to bottom-right corner)
@@ -157,7 +157,7 @@ constraint_text = (
 ax.text(0.98, 0.05, constraint_text, transform=ax.transAxes,
         fontsize=10, verticalalignment='bottom', horizontalalignment='right',
         bbox=dict(boxstyle='round,pad=0.8', facecolor='wheat',
-                 edgecolor='brown', linewidth=2, alpha=0.95),
+                  edgecolor='brown', linewidth=2, alpha=0.95),
         family='monospace')
 
 # Labels
@@ -188,7 +188,8 @@ colors_neg = ['#E74C3C' if g < 0 else '#27AE60' for g in gex_values]
 ax1.bar(strikes, gex_values, width=4.5, color=colors_neg, alpha=0.85,
         edgecolor='black', linewidth=1)
 ax1.axhline(y=0, color='black', linestyle='-', linewidth=2, alpha=0.6)
-ax1.axvline(x=spot_price, color='#3498DB', linestyle='--', linewidth=3.5, alpha=0.9)
+ax1.axvline(x=spot_price, color='#3498DB',
+            linestyle='--', linewidth=3.5, alpha=0.9)
 ax1.axvspan(spot_price - 10, spot_price + 10, alpha=0.2, color='yellow')
 
 ax1.set_xlabel('Strike Price ($)', fontsize=12, fontweight='bold')
@@ -203,7 +204,7 @@ ax1.text(0.98, 0.5, f'Net GEX:\n${actual_net_gex:.1f}B',
          transform=ax1.transAxes, fontsize=14, fontweight='bold',
          color='darkred', verticalalignment='center', horizontalalignment='right',
          bbox=dict(boxstyle='round,pad=0.8', facecolor='#FFE6E6',
-                  edgecolor='darkred', linewidth=2.5, alpha=0.95))
+                   edgecolor='darkred', linewidth=2.5, alpha=0.95))
 
 # RIGHT: Positive GEX (inverted for illustration)
 gex_values_pos = -gex_values
@@ -212,7 +213,8 @@ colors_pos = ['#27AE60' if g > 0 else '#E74C3C' for g in gex_values_pos]
 ax2.bar(strikes, gex_values_pos, width=4.5, color=colors_pos, alpha=0.85,
         edgecolor='black', linewidth=1)
 ax2.axhline(y=0, color='black', linestyle='-', linewidth=2, alpha=0.6)
-ax2.axvline(x=spot_price, color='#3498DB', linestyle='--', linewidth=3.5, alpha=0.9)
+ax2.axvline(x=spot_price, color='#3498DB',
+            linestyle='--', linewidth=3.5, alpha=0.9)
 ax2.axvspan(spot_price - 10, spot_price + 10, alpha=0.2, color='lightgreen')
 
 ax2.set_xlabel('Strike Price ($)', fontsize=12, fontweight='bold')
@@ -227,7 +229,7 @@ ax2.text(0.98, 0.5, f'Net GEX:\n${net_gex_pos:.1f}B',
          transform=ax2.transAxes, fontsize=14, fontweight='bold',
          color='darkgreen', verticalalignment='center', horizontalalignment='right',
          bbox=dict(boxstyle='round,pad=0.8', facecolor='#E6FFE6',
-                  edgecolor='darkgreen', linewidth=2.5, alpha=0.95))
+                   edgecolor='darkgreen', linewidth=2.5, alpha=0.95))
 
 # Overall title
 fig.suptitle('GEX Profile Comparison: Negative vs Positive Gamma Regimes',

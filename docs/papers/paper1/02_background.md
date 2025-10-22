@@ -5,6 +5,7 @@
 [DRAFT NEEDED]
 
 **Literature to Cover**:
+
 - Financial text analysis and sentiment (BERT, GPT applications)
 - Price prediction using LLMs
 - Trading strategy generation
@@ -14,6 +15,7 @@
 Most existing work focuses on *performance* (prediction accuracy) without testing *understanding* (causal reasoning about mechanisms)
 
 **Key Citations Needed**:
+
 - [ ] Recent LLM finance surveys
 - [ ] GPT-4 financial applications
 - [ ] Limitations of training data leakage
@@ -25,6 +27,7 @@ Most existing work focuses on *performance* (prediction accuracy) without testin
 [DRAFT NEEDED]
 
 **Core Theory**:
+
 - Dealer delta neutrality requirements (regulatory mandate)
 - Gamma exposure and hedging flow
 - Options market making and inventory management
@@ -32,19 +35,25 @@ Most existing work focuses on *performance* (prediction accuracy) without testin
 **Established Patterns** (Type 1 - Structural Constraints):
 
 ### 2.2.1 Gamma Positioning
+
 **Literature**: [Citations needed - dealer gamma hedging papers]
+
 - Negative gamma regime forces pro-cyclical hedging
 - Amplifies volatility through forced buying/selling
 - Well-documented in market microstructure literature
 
 ### 2.2.2 Stock Pinning
+
 **Literature**: [Citations needed - options expiration pinning]
+
 - OI concentration at strikes creates hedging pressure
 - Dealers hedge delta → price gravitates toward high OI strikes
 - Strongest near expiration (time decay accelerates)
 
 ### 2.2.3 0DTE Hedging
+
 **Literature**: [Citations needed - same-day expiration effects]
+
 - Same-day expiration creates forced rebalancing
 - Gamma exposure extremely concentrated
 - Recent phenomenon (0DTE volume explosion 2022-2024)
@@ -56,6 +65,7 @@ Most existing work focuses on *performance* (prediction accuracy) without testin
 [DRAFT NEEDED]
 
 **Existing Approaches**:
+
 1. **Historical Backtesting**: Test rules on historical data
    - Problem: Data mining bias, overfitting
 

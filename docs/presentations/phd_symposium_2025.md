@@ -1110,18 +1110,21 @@ Example: "That's an excellent question about bear market performance. From our c
 **The Four Key Players:**
 
 #### 1. **Retail Traders** (Individual Investors)
+
 - Regular people trading from home
 - Small capital ($1K-$100K typical)
 - Buy options for speculation ("YOLO calls")
 - **Directional**: Betting on price moves
 
 #### 2. **Institutional Investors** (Big Money)
+
 - Pension funds, hedge funds, mutual funds
 - Massive capital ($100M-$100B)
 - Use options for hedging portfolios
 - **Directional but sophisticated**
 
 #### 3. **Market Makers** (The Constrained - WHO WE MODEL)
+
 - **Must** provide liquidity (SEC requirement)
 - **Must** stay delta neutral (regulation)
 - Drive ~80% of intraday volume
@@ -1131,6 +1134,7 @@ Example: "That's an excellent question about bear market performance. From our c
 **Key insight**: They're passive responders to order flow - this makes their behavior predictable.
 
 #### 4. **Dealers** (The Strategists)
+
 - Understand market maker mechanics
 - Position BEFORE forced hedging occurs
 - Can "front-run" mechanical flows
@@ -1153,6 +1157,7 @@ That's an **option** - the right (not obligation) to buy something at a set pric
 - **Put Option**: Right to SELL stock (want price to go DOWN)
 
 **Example:**
+
 ```bash
 Apple stock trading at $180
 Call option: Right to buy at $185 before next Friday
@@ -1224,18 +1229,21 @@ At expiration (0DTE):
 **Why Dealers MUST Stay Delta Neutral:**
 
 **Regulatory Requirements:**
+
 - **SEC Rule 15c3-1**: Net Capital Rule - higher capital charges for unhedged positions
 - **FINRA Rule 4210**: Margin requirements for market makers
 - **Basel III / Dodd-Frank**: Bank capital requirements
 - **Internal VaR limits**: Risk management systems force hedging
 
 **Consequences of NOT hedging:**
+
 - Lose market maker license
 - Lose payment for order flow (PFOF) revenue
 - Regulatory penalties
 - Capital requirement increases
 
 **Example:**
+
 ```bash
 Dealer sells 1000 call options:
 - Each call has delta = 0.50
@@ -1249,6 +1257,7 @@ If stock moves and delta changes to 0.55:
 ```
 
 **Key distinction**:
+
 - **Delta** (the Greek) = measure of exposure
 - **Delta Neutral** (regulatory mandate) = required state of zero exposure
 - **Gamma** makes staying delta neutral expensive and creates urgency
@@ -1260,6 +1269,7 @@ If stock moves and delta changes to 0.55:
 **Definition**: Aggregate gamma across ALL market options, from dealers' perspective.
 
 **Calculation:**
+
 ```python
 For each option:
   GEX = gamma × open_interest × 100 shares/contract × ±1 (sign)
@@ -1268,6 +1278,7 @@ Total GEX = sum across ALL options
 ```
 
 **Sign Convention:**
+
 ```bash
 Dealer perspective (not retail):
 
@@ -1283,6 +1294,7 @@ Positive GEX (dealers LONG gamma):
 ```
 
 **Magnitude Matters:**
+
 ```bash
 Small GEX (± $2B): Mild pressure
 Large GEX (± $25B): EXTREME pressure (urgency high)
@@ -1309,6 +1321,7 @@ Effect is inverted bell curve:
 | **Who acts** | Traders choose to act | Dealers FORCED to act |
 
 **Real-world example:**
+
 ```bash
 Same day, same stock:
 
@@ -1329,6 +1342,7 @@ Our system detects REGIME, not sentiment.
 **Key Statistic**: Market makers account for ~80% of daily trading volume through hedging.
 
 **What this means:**
+
 ```bash
 Typical trading day:
 ├─ 20% of volume: Directional traders (retail + institutions)
@@ -1343,6 +1357,7 @@ When dealers are short gamma (negative GEX):
 ```
 
 **Example cascade:**
+
 ```bash
 Step 1: Retail buys $100M of calls (directional 20%)
 Step 2: Market makers sell those calls (provide liquidity)

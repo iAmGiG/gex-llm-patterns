@@ -35,21 +35,21 @@ All figures optimized for presentation (1920x1080, 120 DPI, high contrast colors
 
 ## Figure Selection Recommendations
 
-### Core Slides (Must Include):
+### Core Slides (Must Include)
 
 1. **pres02_greeks_gamma.png** - Foundation for understanding GEX
 2. **pres12_system_flow_compact.png** - Shows complete methodology
 3. **pres09_llm_causal_framework.png** - Main contribution/takeaway
 4. **pres08_accuracy_vs_profit.png** - Key empirical finding
 
-### Optional Depending on Time:
+### Optional Depending on Time
 
 - **pres06_forced_hedging_loop.png** - If explaining dealer constraints in detail
 - **pres05_methodology_refinement.png** - If discussing prompt bias investigation
 - **pres07_detection_progression.png** - If showing methodological progression
 - **pres10_pattern_taxonomy.png** - If discussing pattern classification
 
-### Appendix Only:
+### Appendix Only
 
 - **pres03_gex_vs_gamma.png** - Use if audience asks "what is GEX?"
 - **pres11_system_architecture_layered.png** - Use if asked about technical architecture
@@ -84,6 +84,7 @@ All generation scripts available in `scripts/` folder with matching pres## namin
 - `scripts/pres10_pattern_taxonomy.py`
 
 **Missing scripts** (can recreate if needed):
+
 - pres06_forced_hedging_loop.py
 - pres11_system_architecture_layered.py
 - pres12_system_flow_compact.py
@@ -93,6 +94,7 @@ All generation scripts available in `scripts/` folder with matching pres## namin
 ## Figure Quality Notes
 
 **Optimization for Presentation**:
+
 - ✅ High contrast (no yellow/pastel colors)
 - ✅ Thick lines (5-6pt vs 2-3pt for paper)
 - ✅ Large text (18-28pt vs 9-13pt for paper)
@@ -101,6 +103,7 @@ All generation scripts available in `scripts/` folder with matching pres## namin
 - ✅ Screen-optimized DPI (120 vs 300/600 for paper)
 
 **All figures verified for**:
+
 - Readability from back of room
 - Color visibility in bright lighting
 - No overlapping elements
