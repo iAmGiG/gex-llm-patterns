@@ -1,0 +1,112 @@
+# Data Obfuscation Pattern Configuration
+#
+# This file defines patterns for removing temporal and contextual references
+# that could allow LLMs to use training knowledge rather than genuine analysis.
+#
+# See: docs/guides/data-obfuscation.md for usage documentation
+
+# Temporal patterns removed from text to prevent LLM training data leakage
+temporal_patterns:
+  # Full date formats (e.g., "January 28, 2021")
+  - pattern: '\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b'
+    replacement: 'Period A'
+    description: 'Full date format with month name (January 28, 2021 → Period A)'
+
+  # Month-year formats (e.g., "March 2020")
+  - pattern: '\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\b'
+    replacement: 'Period A'
+    description: 'Month and year format (March 2020 → Period A)'
+
+  # Market regime references (e.g., "2020 bear market")
+  - pattern: '\b\d{4}\s+(bear|bull)\s+market\b'
+    replacement: 'Market Period'
+    description: 'Year-specific market regime (2020 bear market → Market Period)'
+
+  # COVID-19 pandemic references
+  - pattern: '\bCOVID[-\s]19\b'
+    replacement: 'Economic Event A'
+    description: 'COVID-19 pandemic mention (prevents LLM from recalling March 2020 crash)'
+
+  # Generic pandemic references
+  - pattern: '\bpandemic\b'
+    replacement: 'Economic Event A'
+    description: 'Generic pandemic references (pandemic → Economic Event A)'
+
+  # Federal Reserve references
+  - pattern: '\b(Fed|Federal Reserve)\b'
+    replacement: 'Central Bank'
+    description: 'Federal Reserve mentions (prevents LLM from recalling specific policy events)'
+
+  # Interest rate references
+  - pattern: '\binterest rate\b'
+    replacement: 'monetary policy'
+    description: 'Interest rate mentions (interest rate → monetary policy)'
+
+  # Economic cycle references
+  - pattern: '\b(recession|recovery)\b'
+    replacement: 'economic cycle'
+    description: 'Recession/recovery mentions (prevents temporal context)'
+
+  # Catch-all for remaining 4-digit years
+  - pattern: '\b\d{4}\b'
+    replacement: 'YEAR'
+    description: 'Any remaining 4-digit year (2020 → YEAR)'
+
+# Standard ticker symbol mappings for consistency across experiments
+# These are hardcoded to ensure reproducibility (academic requirement)
+standard_tickers:
+  # Equity Indices
+  SPY: 'INDEX_1'          # S&P 500 ETF
+  QQQ: 'INDEX_2'          # Nasdaq-100 ETF
+  DIA: 'INDEX_3'          # Dow Jones ETF
+  IWM: 'INDEX_4'          # Russell 2000 ETF
+
+  # Volatility Products
+  VXX: 'VOLATILITY_INDEX' # VIX Short-Term Futures ETF
+  UVXY: 'VOLATILITY_2X'   # 2x VIX ETF
+
+  # MAG7 (Magnificent 7 tech stocks)
+  AAPL: 'STOCK_A'         # Apple
+  MSFT: 'STOCK_B'         # Microsoft
+  GOOGL: 'STOCK_C'        # Google (Alphabet)
+  AMZN: 'STOCK_D'         # Amazon
+  NVDA: 'STOCK_E'         # Nvidia
+  META: 'STOCK_F'         # Meta (Facebook)
+  TSLA: 'STOCK_G'         # Tesla
+
+  # Other common symbols (meme stocks, etc.)
+  GME: 'STOCK_H'          # GameStop
+  AMC: 'STOCK_I'          # AMC Entertainment
+
+# Configuration for unknown ticker generation
+unknown_ticker_handling:
+  enabled: true           # Allow unknown tickers (dynamic generation)
+  prefix: 'STOCK_'        # Prefix for generated ticker names
+  start_after: 'I'        # Start from STOCK_J (after last standard ticker STOCK_I)
+  warn_on_unknown: true   # Log warning when unknown ticker encountered
+
+# Validation patterns for obfuscation quality checks
+validation:
+  # Date patterns that should NOT appear in obfuscated text
+  forbidden_date_patterns:
+    - '\b\d{4}-\d{2}-\d{2}\b'          # YYYY-MM-DD
+    - '\b\d{1,2}/\d{1,2}/\d{4}\b'      # MM/DD/YYYY
+    - '\b\d{4}\.\d{2}\.\d{2}\b'        # YYYY.MM.DD
+
+  # Terms that ARE our obfuscated patterns (exclude from ticker validation)
+  excluded_obfuscated_terms:
+    - 'STOCK_'
+    - 'INDEX'
+    - 'VOLATILITY'
+    - 'PERIOD'
+    - 'MARKET'
+    - 'ECONOMIC'
+    - 'EVENT'
+    - 'CENTRAL'
+    - 'BANK'
+    - 'YEAR'
+
+# Performance notes:
+# - Patterns are pre-compiled at DataObfuscator initialization
+# - 180-day batch validation: 250ms → 25ms (10x speedup)
+# - Memory overhead: ~2KB for compiled pattern cache
