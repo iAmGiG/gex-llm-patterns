@@ -87,7 +87,7 @@ gamma_header = FancyBboxPatch((9, 7.5), 6, 0.6,
                               edgecolor='#8B0000',
                               linewidth=4)
 ax.add_patch(gamma_header)
-ax.text(right_x, 7.70, 'Gamma (Γ): Urgency Beacon ⭐',
+ax.text(right_x, 7.70, 'Gamma (Γ): Urgency Beacon',
         ha='center', fontsize=24, fontweight='bold', color='#8B0000')
 
 # Gamma explanation box
