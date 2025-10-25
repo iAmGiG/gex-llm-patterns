@@ -21,8 +21,7 @@ plt.rcParams.update({
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
 })
 
-OUTPUT_DIR = Path(__file__).parent.parent.parent / \
-    "docs" / "papers" / "paper1" / "figures"
+OUTPUT_DIR = Path(__file__).parent
 
 
 def create_figure():
@@ -138,7 +137,7 @@ def create_figure():
                       edgecolor='red', linewidth=1.5, alpha=0.8))
 
     # Main title
-    fig.text(0.5, 0.96, 'Obfuscation Testing: Preventing Training Data Memorization',
+    fig.text(0.515, 0.85, 'Obfuscation Testing: Preventing Training Data Memorization',
              ha='center', fontsize=13, fontweight='bold')
 
     return fig
@@ -154,7 +153,7 @@ def main():
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / 'figure2_obfuscation_example.png'
+    output_file = OUTPUT_DIR / '../fig2_prompt_bias_comparison.png'
     fig.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"✅ Saved: {output_file}")
 
