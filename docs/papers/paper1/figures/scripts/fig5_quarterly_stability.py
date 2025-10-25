@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Figure 3: Detection vs Profitability Divergence
+Generate Figure 5: Quarterly Stability Analysis
 
 THE MOST CRITICAL FIGURE in Paper #1.
 
@@ -34,7 +34,7 @@ plt.rcParams.update({
 })
 
 # Data paths
-BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
 
@@ -228,18 +228,11 @@ def main():
     print("\nGenerating figure...")
     fig = create_figure(quarterly_data, unbiased_data)
 
-    # Save paper version (300 DPI)
+    # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file_paper = OUTPUT_DIR / 'figure3_detection_vs_profitability_300dpi.png'
-    fig.savefig(output_file_paper, dpi=300, bbox_inches='tight')
-    print(f"✅ Saved (paper): {output_file_paper}")
-
-    # Save presentation version (600 DPI) to presentations folder
-    PRES_DIR = BASE_DIR / "docs" / "presentations" / "oct22_research" / "diagrams"
-    PRES_DIR.mkdir(parents=True, exist_ok=True)
-    output_file_pres = PRES_DIR / 'figure3_detection_vs_profitability_600dpi.png'
-    fig.savefig(output_file_pres, dpi=600, bbox_inches='tight')
-    print(f"✅ Saved (presentation): {output_file_pres}")
+    output_file = OUTPUT_DIR / 'fig5_quarterly_stability.png'
+    fig.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"✅ Saved: {output_file}")
 
     plt.close()
 

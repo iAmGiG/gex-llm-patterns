@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Figure 7: Biased vs Unbiased Prompt Comparison (YAML DATA VERSION)
+Figure 4: Detection Rate Comparison - Biased vs Unbiased (YAML DATA VERSION)
 
 Loads actual validation results from YAML files instead of hardcoded values.
 Compares biased prompts (Q2 2024, 100% detection) vs unbiased prompts (full 2024).
@@ -38,7 +38,7 @@ plt.rcParams.update({
 })
 
 # Data paths
-BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
 
@@ -190,14 +190,15 @@ for i in range(len(pattern_labels)):
             fontsize=10, fontweight='bold', style='italic', color='darkred')
 
 plt.tight_layout()
-output1 = OUTPUT_DIR / 'figure7_detection_comparison_yaml.png'
+output1 = OUTPUT_DIR / 'fig4_detection_comparison.png'
 plt.savefig(output1, dpi=300, bbox_inches='tight')
-print(f"✅ Version 1 (clean bars): {output1}")
+print(f"✅ Figure 4 (Detection Comparison): {output1}")
 plt.close()
 
 # ============================================================================
-# VERSION 2: Detection + Accuracy Combined Panels
+# VERSION 2: Detection + Accuracy Combined Panels (DISABLED - not needed for paper)
 # ============================================================================
+if False:  # Disabled
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
@@ -268,9 +269,9 @@ fig.suptitle(f'Biased vs Unbiased Prompt Comparison (Biased: Q3+Q4 N={biased_dat
              fontsize=14, fontweight='bold', y=1.02)
 
 plt.tight_layout()
-output2 = OUTPUT_DIR / 'figure7_detection_and_accuracy_panels_yaml.png'
+output2 = OUTPUT_DIR / 'fig4_detection_and_accuracy_alternate.png'
 plt.savefig(output2, dpi=300, bbox_inches='tight')
-print(f"✅ Version 2 (dual panels): {output2}")
+print(f"✅ Alternate (dual panels): {output2}")
 plt.close()
 
 # ============================================================================
@@ -310,13 +311,13 @@ for bar in bars2:
             fontsize=9, fontweight='bold')
 
 plt.tight_layout()
-output3 = OUTPUT_DIR / 'figure7_minimal_publication_yaml.png'
+output3 = OUTPUT_DIR / 'fig4_minimal_alternate.png'
 plt.savefig(output3, dpi=300, bbox_inches='tight')
-print(f"✅ Version 3 (minimal): {output3}")
+print(f"✅ Alternate (minimal): {output3}")
 plt.close()
 
 print("=" * 60)
-print("FIGURE 7 GENERATION COMPLETE (WITH YAML DATA)")
+print("FIGURE 4 GENERATION COMPLETE (WITH YAML DATA)")
 print("=" * 60)
 print("\nKey Improvements:")
 print("  • Loaded actual data from biased (Q2) and unbiased (full 2024) YAML files")

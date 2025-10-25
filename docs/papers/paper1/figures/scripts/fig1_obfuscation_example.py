@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Figure 2: Obfuscation Example (REBUILT FROM SCRATCH)
+Generate Figure 1: Obfuscation Example (REBUILT FROM SCRATCH)
 
 Shows before/after comparison of data obfuscation.
 Demonstrates how temporal context is stripped to prevent training data memorization.
@@ -144,22 +144,22 @@ def create_figure():
 
 
 def main():
-    """Generate Figure 2."""
+    """Generate Figure 1."""
     print("=" * 60)
-    print("GENERATING FIGURE 2 (REBUILT FROM SCRATCH)")
+    print("GENERATING FIGURE 1: OBFUSCATION METHODOLOGY")
     print("=" * 60)
 
     fig = create_figure()
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / '../fig2_prompt_bias_comparison.png'
+    output_file = OUTPUT_DIR / '../fig1_obfuscation_example.png'
     fig.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"✅ Saved: {output_file}")
 
     plt.close()
 
-    print("✅ Figure 2 complete!")
+    print("✅ Figure 1 complete!")
     print("Shows before/after obfuscation - key methodological contribution")
     print("=" * 60)
 

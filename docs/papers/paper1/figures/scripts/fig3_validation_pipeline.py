@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Figure 1: System Architecture Diagram
+Generate Figure 3: Validation Pipeline Architecture
 
 Shows the validation pipeline flow from raw options data through to statistical validation.
 
@@ -203,7 +203,7 @@ def main():
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / '../fig1_system_architecture.png'
+    output_file = OUTPUT_DIR / '../fig3_validation_pipeline.png'
     fig.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"✅ Saved: {output_file}")
 

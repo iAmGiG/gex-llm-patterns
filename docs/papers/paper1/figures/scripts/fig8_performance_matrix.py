@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Figure 6: Pattern Detection Performance (YAML DATA VERSION)
+Figure 8: Multi-Pattern Performance Summary (YAML DATA VERSION)
 
 Loads actual validation results from YAML files instead of hardcoded values.
 Creates multiple visualizations showing detection rate, accuracy, and success metrics.
@@ -30,7 +30,7 @@ plt.rcParams.update({
 })
 
 # Data paths
-BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
 
@@ -140,14 +140,15 @@ ax.text(0.98, 0.30, textstr, transform=ax.transAxes, fontsize=10,
         bbox=props, fontweight='bold')
 
 plt.tight_layout()
-output1 = OUTPUT_DIR / 'figure6_pattern_performance_bars_yaml.png'
+output1 = OUTPUT_DIR / 'fig8_performance_matrix.png'
 plt.savefig(output1, dpi=300, bbox_inches='tight')
-print(f"✅ Version 1 (bars): {output1}")
+print(f"✅ Figure 8 (Performance Matrix): {output1}")
 plt.close()
 
 # ============================================================================
-# VERSION 2: Detection vs Accuracy Scatter Plot
+# VERSION 2: Detection vs Accuracy Scatter Plot (DISABLED - not needed for paper)
 # ============================================================================
+if False:  # Disabled
 
 fig, ax = plt.subplots(figsize=(9, 7))
 
@@ -202,9 +203,9 @@ ax.text(0.98, 0.02, textstr, transform=ax.transAxes, fontsize=9,
         verticalalignment='bottom', horizontalalignment='right', bbox=props)
 
 plt.tight_layout()
-output2 = OUTPUT_DIR / 'figure6_detection_vs_accuracy_scatter_yaml.png'
+output2 = OUTPUT_DIR / 'fig8_scatter_alternate.png'
 plt.savefig(output2, dpi=300, bbox_inches='tight')
-print(f"✅ Version 2 (scatter): {output2}")
+print(f"✅ Alternate (scatter): {output2}")
 plt.close()
 
 # ============================================================================
@@ -253,13 +254,13 @@ ax.grid(True, alpha=0.25, linestyle=':', linewidth=1)
 ax.legend(loc='lower right', fontsize=10, framealpha=0.95, edgecolor='black')
 
 plt.tight_layout()
-output3 = OUTPUT_DIR / 'figure6_performance_matrix_yaml.png'
+output3 = OUTPUT_DIR / 'fig8_bars_alternate.png'
 plt.savefig(output3, dpi=300, bbox_inches='tight')
-print(f"✅ Version 3 (matrix): {output3}")
+print(f"✅ Alternate (bars): {output3}")
 plt.close()
 
 print("=" * 60)
-print("FIGURE 6 GENERATION COMPLETE (WITH YAML DATA)")
+print("FIGURE 8 GENERATION COMPLETE (WITH YAML DATA)")
 print("=" * 60)
 print("\nKey Improvements:")
 print("  • Loaded actual data from unbiased YAML validation files")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Figure 5: Detection Confidence Distribution
+Generate Figure 7: Confidence Score Distribution
 
 Shows distribution of LLM confidence scores across three patterns (N=242 days each).
 Demonstrates that all patterns show strong concentration above the 60% threshold.
@@ -30,9 +30,9 @@ plt.rcParams.update({
 })
 
 # Data paths
-BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
-OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
+OUTPUT_DIR = Path(__file__).parent.parent
 
 
 def load_confidence_scores(pattern_name):
@@ -59,8 +59,8 @@ def load_confidence_scores(pattern_name):
 def create_figure(confidence_data):
     """Create grouped bar chart showing confidence distributions for all three patterns."""
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(10, 5), dpi=300)
+    # Create figure (reduced height to eliminate white space)
+    fig, ax = plt.subplots(figsize=(10, 4), dpi=300)
 
     # Define bins (0-100% in 10% intervals)
     bins = np.arange(0, 105, 10)
@@ -105,17 +105,17 @@ def create_figure(confidence_data):
     ax.axvline(x=60, color='red', linestyle='--', linewidth=2.5,
                label='Mechanical Threshold (60%)', zorder=2, alpha=0.8)
 
-    # Labels and title
-    ax.set_xlabel('Confidence Score (%)', fontweight='bold')
-    ax.set_ylabel('Frequency (Number of Days)', fontweight='bold')
+    # Labels and title (increased font sizes)
+    ax.set_xlabel('Confidence Score (%)', fontweight='bold', fontsize=11)
+    ax.set_ylabel('Frequency (Number of Days)', fontweight='bold', fontsize=11)
     ax.set_title('Distribution of Detection Confidence Scores Across Three Patterns',
-                 fontweight='bold', pad=15)
+                 fontweight='bold', pad=15, fontsize=12)
 
     # Grid
     ax.grid(True, alpha=0.3, axis='y', zorder=0)
 
-    # Legend (upper left since data is sparse there)
-    ax.legend(loc='upper left', framealpha=0.98, edgecolor='gray', fontsize=9)
+    # Legend (upper left since data is sparse there) - increased font
+    ax.legend(loc='upper left', framealpha=0.98, edgecolor='gray', fontsize=10)
 
     # Add statistics text box
     stats_text = []
@@ -129,9 +129,9 @@ def create_figure(confidence_data):
                 f"{labels[pattern]}: {mean_conf:.1f}% mean, {pct_above:.1f}% ≥60%")
 
     stats_str = '\n'.join(stats_text)
-    # Positioned in mid-right where there's empty space
+    # Positioned in mid-right where there's empty space - increased font
     ax.text(0.98, 0.55, stats_str, transform=ax.transAxes,
-            fontsize=9, verticalalignment='center', horizontalalignment='right',
+            fontsize=10, verticalalignment='center', horizontalalignment='right',
             bbox=dict(boxstyle='round', facecolor='wheat',
                       alpha=0.95, edgecolor='gray'),
             zorder=5)
@@ -197,7 +197,7 @@ def create_kde_figure(confidence_data):
 
 
 def main():
-    """Generate Figure 5."""
+    """Generate Figure 7."""
     print("Loading confidence scores from validation data...")
 
     patterns = ['gamma_positioning', 'stock_pinning', '0dte_hedging']
@@ -223,21 +223,23 @@ def main():
 
     # Save histogram
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / 'figure5_confidence_distribution.png'
+    output_file = OUTPUT_DIR / 'fig7_confidence_distribution.png'
     fig_hist.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"✅ Saved: {output_file}")
     plt.close(fig_hist)
 
-    print("\nGenerating KDE (smooth) figure...")
-    fig_kde = create_kde_figure(confidence_data)
+    # KDE version disabled - not needed for paper
+    if False:
+        print("\nGenerating KDE (smooth) figure...")
+        fig_kde = create_kde_figure(confidence_data)
 
-    # Save KDE version
-    output_file_kde = OUTPUT_DIR / 'figure5_confidence_distribution_kde.png'
-    fig_kde.savefig(output_file_kde, dpi=300, bbox_inches='tight')
-    print(f"✅ Saved KDE version: {output_file_kde}")
-    plt.close(fig_kde)
+        # Save KDE version
+        output_file_kde = OUTPUT_DIR / 'fig7_confidence_kde_alternate.png'
+        fig_kde.savefig(output_file_kde, dpi=300, bbox_inches='tight')
+        print(f"✅ Saved KDE version: {output_file_kde}")
+        plt.close(fig_kde)
 
-    print("\n✅ Figure 5 complete!")
+    print("\n✅ Figure 7 complete!")
     print("Shows all three patterns concentrated above 60% threshold")
 
 

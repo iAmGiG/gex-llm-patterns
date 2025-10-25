@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Figure 4: GEX Profile Visualization (YAML-BASED REPRESENTATIVE EXAMPLE)
+Figure 2: GEX Profile Example (YAML-BASED REPRESENTATIVE EXAMPLE)
 
 Uses actual net GEX values from validation data to create representative GEX profile.
 Shows what negative/positive gamma regimes look like to illustrate input data for LLM.
@@ -32,7 +32,7 @@ plt.rcParams.update({
 })
 
 # Data paths
-BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 REPORTS_DIR = BASE_DIR / "reports" / "validation" / "pattern_taxonomy"
 OUTPUT_DIR = BASE_DIR / "docs" / "papers" / "paper1" / "figures"
 
@@ -172,14 +172,15 @@ ax.set_xlim(strikes[0] - 3, strikes[-1] + 3)
 ax.tick_params(axis='both', labelsize=10)
 
 plt.tight_layout()
-output1 = OUTPUT_DIR / 'figure4_gex_profile_yaml.png'
+output1 = OUTPUT_DIR / 'fig2_gex_profile.png'
 plt.savefig(output1, dpi=300, bbox_inches='tight')
-print(f"✅ Version 1 (clean): {output1}")
+print(f"✅ Figure 2 (GEX Profile): {output1}")
 plt.close()
 
 # ============================================================================
-# VERSION 2: Side-by-Side Positive vs Negative (IMPROVED)
+# VERSION 2: Side-by-Side Positive vs Negative (DISABLED - not needed for paper)
 # ============================================================================
+if False:  # Disabled
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
@@ -236,13 +237,13 @@ fig.suptitle('GEX Profile Comparison: Negative vs Positive Gamma Regimes',
              fontsize=15, fontweight='bold', y=1.00)
 
 plt.tight_layout()
-output2 = OUTPUT_DIR / 'figure4_gex_comparison_yaml.png'
+output2 = OUTPUT_DIR / 'fig2_gex_comparison_alternate.png'
 plt.savefig(output2, dpi=300, bbox_inches='tight')
-print(f"✅ Version 2 (comparison): {output2}")
+print(f"✅ Alternate (comparison): {output2}")
 plt.close()
 
 print("=" * 60)
-print("FIGURE 4 GENERATION COMPLETE (WITH YAML-BASED DATA)")
+print("FIGURE 2 GENERATION COMPLETE (WITH YAML-BASED DATA)")
 print("=" * 60)
 print("\nKey Improvements:")
 print("  • Used actual net GEX value from validation data")
