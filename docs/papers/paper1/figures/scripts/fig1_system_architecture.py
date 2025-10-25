@@ -24,16 +24,15 @@ plt.rcParams.update({
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
 })
 
-OUTPUT_DIR = Path(__file__).parent.parent.parent / \
-    "docs" / "papers" / "paper1" / "figures"
+OUTPUT_DIR = Path(__file__).parent
 
 
 def create_figure():
     """Create system architecture flowchart."""
 
-    fig, ax = plt.subplots(figsize=(7.5, 5), dpi=300)
+    fig, ax = plt.subplots(figsize=(7.5, 3.5), dpi=300)
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 8)
+    ax.set_ylim(1.5, 8)
     ax.axis('off')
 
     # Define colors
@@ -187,7 +186,7 @@ def create_figure():
               ncol=4, frameon=True, fontsize=7)
 
     # Add note about obfuscation (moved down to accommodate new spacing)
-    ax.text(5, 2.0,
+    ax.text(5, 2.5,
             'Obfuscation prevents training data leakage: dates → "Day T+N", tickers → "INDEX_1"',
             ha='center', fontsize=7, style='italic', color='#666666',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray', alpha=0.7))
@@ -204,7 +203,7 @@ def main():
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / 'figure1_system_architecture.png'
+    output_file = OUTPUT_DIR / '../fig1_system_architecture.png'
     fig.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"✅ Saved: {output_file}")
 
