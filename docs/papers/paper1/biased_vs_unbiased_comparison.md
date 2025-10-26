@@ -19,7 +19,7 @@ This document provides detailed comparison of pattern detection results using bi
 
 **What LLM Sees**:
 
-```
+```bash
 Day T+0
   Net GEX: -$32,905,699,168
   Regime: NEGATIVE_GAMMA           ← Shows the answer
@@ -40,7 +40,7 @@ Day T+0
 
 **What LLM Sees**:
 
-```
+```bash
 Day T+0
   Net GEX: -$32,905,699,168 (raw value, unclassified)
   Zero-gamma level: $485.00
@@ -275,7 +275,7 @@ Day T+0
 
 ### Figure 1: Detection Rate Comparison (Bar Chart)
 
-```
+```bash
 Suggested Visualization:
 - X-axis: Three patterns
 - Y-axis: Detection rate (0-100%)
@@ -288,7 +288,7 @@ Suggested Visualization:
 
 ### Figure 2: Accuracy Stability (Scatter Plot)
 
-```
+```bash
 Suggested Visualization:
 - X-axis: Detection rate (60-100%)
 - Y-axis: Prediction accuracy (80-100%)
@@ -300,7 +300,7 @@ Suggested Visualization:
 
 ### Figure 3: Prompt Bias Impact (Delta Chart)
 
-```
+```bash
 Suggested Visualization:
 - X-axis: Three patterns
 - Y-axis: Change in detection rate (-40% to 0%)
@@ -371,7 +371,7 @@ These results address potential concerns about circular reasoning or label leaka
 
 - Test unbiased prompts by quarter (Q1, Q2, Q3, Q4)
 - Check for regime-dependent detection rates
-- Timeline: Paper #2 or #3 material
+- Timeline: Deferred (see `docs/papers/research_roadmap.md` for updated plan)
 
 ---
 

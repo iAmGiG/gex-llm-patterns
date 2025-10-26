@@ -113,77 +113,24 @@ Transparent about limitations → builds credibility
 
 ## 7.4 Future Work
 
-### 7.4.1 Immediate Extensions
+Future work should validate detection across multiple asset classes and market regimes to establish generalizability. Intraday analysis with high-frequency data could reveal microstructure patterns invisible at daily granularity, particularly for 0DTE options. Testing ensemble methods across multiple LLMs could distinguish model-specific artifacts from robust pattern detection through consensus mechanisms.
 
-**Reasoning Models** (High Priority):
-Test o3-mini reasoning model with chain-of-thought prompts:
+**Specific Research Directions**:
 
-- Expected: Higher accuracy, similar detection rate
-- Hypothesis: Explicit reasoning improves causal identification
-- Timeline: Next 3-6 months
+**Cross-Asset Validation** (Paper #3, Q2 2026):
+Extend methodology to individual equities to test generalization beyond index options. Compare dealer dynamics between market-making (index) and hedging (single-name) contexts across 10-20 high-liquidity stocks.
 
-**Multi-Asset Validation** (High Priority):
-Extend to individual stocks, commodities, FX options:
+**Sequential Analysis** (Paper #2, Q1 2026):
+Test temporal constraint detection using 5-day lookback windows to identify trajectory patterns (accumulation, relief, reversal, persistence) and compare predictive accuracy versus single-day snapshots.
 
-- Tests generalization beyond index options
-- Different dealer dynamics (market making vs hedging)
-- Timeline: Next 6-12 months
+**Ensemble LLM Methods**:
+Test multiple architectures (GPT-4, o3-mini, Claude, open-source) to identify model-specific artifacts versus robust pattern detection. Reasoning models (o3-mini) may improve causal identification through explicit chain-of-thought.
 
-**Confidence Calibration Analysis** (Medium Priority):
-Compare stated confidence to empirical accuracy:
+**Intraday Microstructure**:
+Apply obfuscation testing to high-frequency data, particularly around 0DTE option expirations where dealer hedging constraints operate at minute-level granularity.
 
-- Assess calibration quality
-- Develop post-processing adjustments if needed
-- Timeline: Next 6-12 months
-
-### 7.4.2 Medium-Term Research
-
-**Temporal Pattern Analysis** (Paper #2 Candidate):
-Test patterns requiring multi-day context:
-
-- Expiration evolution tracking
-- Pattern development over time
-- Regime transition detection
-- Timeline: 12-18 months
-
-**Pattern Discovery** (Paper #3 Candidate):
-Unsupervised pattern mining with LLMs:
-
-- Move from validation → discovery
-- Different methodological challenges (data mining risks)
-- Requires different evaluation framework
-- Timeline: 18-24 months
-
-**Comparative LLM Analysis** (Paper #4 Candidate):
-Test multiple LLM architectures:
-
-- GPT-4 vs o3-mini vs Claude vs open-source
-- Reasoning capabilities comparison
-- Structured output quality assessment
-- Timeline: 12-18 months
-
-### 7.4.3 Long-Term Vision
-
-**Hybrid Systems**:
-Combine formal verification + LLM reasoning:
-
-- Formal methods: Prove constraint properties mathematically
-- LLM reasoning: Assess practical materialization from context
-- Complementary strengths → robust validation
-
-**Real-Time Applications**:
-Deploy obfuscation-validated LLM for live market monitoring:
-
-- Automated constraint detection
-- Explainable alerts (WHO→WHOM→WHAT)
-- Regulatory reporting (market structure surveillance)
-
-**Multi-Domain Generalization**:
-Apply obfuscation testing framework beyond finance:
-
-- Healthcare: Causal reasoning about treatment mechanisms
-- Engineering: Understanding of physical constraints
-- Law: Reasoning about regulatory implications
+**Pattern Discovery**:
+Move from validation to unsupervised pattern mining, though this requires different evaluation frameworks to address data mining risks.
 
 ---
 

@@ -330,7 +330,11 @@ Comprehensive documentation available in `docs/`:
 
 **Contribution**: Extending validation to individual equities (AAPL, TSLA, NVDA, JPM, XOM) to demonstrate cross-asset generalization
 
-**Status**: Planning ([Issue #87](https://github.com/iAmGiG/gex-llm-patterns/issues/87))
+**Status**: Planned (Q2 2026)
+
+---
+
+**Detailed Roadmap**: See [`docs/papers/research_roadmap.md`](docs/papers/research_roadmap.md) for complete multi-paper plan, timelines, and future work (Papers #4+)
 
 ## Current Research Focus
 
