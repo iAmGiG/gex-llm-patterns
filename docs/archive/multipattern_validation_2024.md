@@ -99,8 +99,14 @@ The fact that detection and accuracy remain stable while profitability varies is
 **For Future Trading Application** (out of scope):
 
 - Would need to understand regime-specific factors (volatility, market efficiency, etc.)
-- This is a separate research question for potential Paper #2 or #3
+- This is a separate research question (deferred to future work)
 - Not relevant to validating the pattern detection methodology
+
+> **Note** (Oct 25, 2025): Paper #2/3 direction has evolved. See `docs/papers/research_roadmap.md` for current plan:
+>
+> - **Paper #2**: Sequential GEX Analysis (temporal dynamics, Issue #89)
+> - **Paper #3**: Cross-Asset Generalization (individual equities)
+> - Alpha decline investigation → Fold into Paper #2 discussion section (not standalone)
 
 ---
 
