@@ -59,7 +59,7 @@ class PatternAnalysisTeam:
 
 ### Pattern Analysis Workflow
 
-```
+```python
 ┌─────────────────┐
 │  New Pattern    │
 │   Discovered    │
