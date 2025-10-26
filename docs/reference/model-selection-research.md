@@ -53,7 +53,7 @@
 
 **Example working prompt**:
 
-```bash
+```
 You are a financial analyst.
 
 Analyze this options data:
@@ -78,7 +78,7 @@ CONFIDENCE: [0-100]
 
 ### Production Architecture
 
-```bash
+```
 Market Analysis → O3-mini ($0.002/query)
 Data Fetching → GPT-4o-mini ($0.0001/query)
 Complex Scenarios → GPT-4o fallback ($0.005/query)
@@ -90,7 +90,7 @@ Complex Scenarios → GPT-4o fallback ($0.005/query)
 
 ### O3-mini Response (COVID Crash Scenario)
 
-```bash
+```
 WHO: Dealers
 WHAT: They must buy the underlying on upward moves and sell on
       downward moves to maintain their hedge in response to long
@@ -105,7 +105,7 @@ boost the move.
 
 ### GPT-4o Response (Same Scenario)
 
-```bash
+```
 WHO: Dealers
 WHAT: Maintain neutral stance, causing market participants to
       act independently without significant dealer-induced flows

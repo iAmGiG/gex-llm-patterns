@@ -48,7 +48,7 @@ test_metadata:
 
 **The Data Flow Problem**:
 
-```python
+```
 validate_pattern_taxonomy.py
   ↓
 1. get_test_date_range('2024-04-01', '2024-06-28')
@@ -171,7 +171,7 @@ stats = builder.build_gex_database(
 - **Database**: `.cache/gex_database.db` (populated)
 
 **Known Gaps** (from cache availability):
-```yaml
+```
 Apr 1-May 31: No options cache data available
 Jun 4, Jun 6: Missing from cache
 Jun 19: Missing from cache
@@ -201,7 +201,7 @@ for row in cursor.fetchall():
 ```
 
 **Expected Output**:
-```yaml
+```
 2024-07-08: $545.23 (GEX: -$15.2B)  # NOT 450.0!
 2024-07-09: $547.89 (GEX: -$14.8B)
 ...

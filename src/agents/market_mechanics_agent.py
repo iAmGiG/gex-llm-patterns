@@ -349,7 +349,7 @@ class MarketMechanicsAgent:
             }
 
     def run_batch_experiments(self, dates: List[str], experiment_template: str = None,
-                              use_obfuscation: bool = True, prompt_template: str = None) -> Dict:
+                              use_obfuscation: bool = True) -> Dict:
         """
         Run experiments on multiple dates in a single LLM call for better pattern recognition.
 
@@ -357,8 +357,6 @@ class MarketMechanicsAgent:
             dates: List of dates to analyze
             experiment_template: Template for experiment description
             use_obfuscation: Whether to obfuscate dates/tickers to prevent LLM cheating
-            prompt_template: Prompt template name (standard/unbiased/reasoning)
-                           If None, uses default from config
 
         Returns:
             Dictionary with batch analysis results
@@ -386,17 +384,8 @@ class MarketMechanicsAgent:
                     options_data = self._fetch_options_data(date)
                     if options_data is not None and not options_data.empty:
                         # Get spot price for GEX calculation
-                        # Try underlyingPrice column first, then estimate from put-call parity
-                        if 'underlyingPrice' in options_data.columns:
-                            spot_price = options_data['underlyingPrice'].iloc[0]
-                        else:
-                            # Fallback: estimate from options using put-call parity
-                            spot_price = self._estimate_spot_from_options(options_data)
-                            if not spot_price:
-                                logger.error(
-                                    f"Missing underlyingPrice and could not estimate for {date}, skipping")
-                                continue
-                            logger.info(f"Estimated spot price from put-call parity: {spot_price:.2f}")
+                        spot_price = options_data['underlyingPrice'].iloc[
+                            0] if 'underlyingPrice' in options_data.columns else 450.0
 
                         # Calculate GEX - returns DataFrame with per-strike GEX
                         gex_df = self.gex_calculator.calculate_dealer_gamma_exposure(
@@ -407,16 +396,12 @@ class MarketMechanicsAgent:
                         # Aggregate to summary metrics
                         if not gex_df.empty and 'dealer_gex' in gex_df.columns:
                             total_gex = gex_df['dealer_gex'].sum()
-                            call_gex = gex_df[gex_df['type'] == 'call']['dealer_gex'].sum(
-                            ) if 'type' in gex_df.columns else 0
-                            put_gex = gex_df[gex_df['type'] == 'put']['dealer_gex'].sum(
-                            ) if 'type' in gex_df.columns else 0
+                            call_gex = gex_df[gex_df['type'] == 'call']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
+                            put_gex = gex_df[gex_df['type'] == 'put']['dealer_gex'].sum() if 'type' in gex_df.columns else 0
 
                             # Find gamma flip point (where GEX changes sign)
-                            gex_by_strike = gex_df.groupby(
-                                'strike')['dealer_gex'].sum()
-                            flip_point = gex_by_strike[gex_by_strike >= 0].index.min() if len(
-                                gex_by_strike[gex_by_strike >= 0]) > 0 else spot_price
+                            gex_by_strike = gex_df.groupby('strike')['dealer_gex'].sum()
+                            flip_point = gex_by_strike[gex_by_strike >= 0].index.min() if len(gex_by_strike[gex_by_strike >= 0]) > 0 else spot_price
 
                             gex_metrics = {
                                 'total_gamma': total_gex,
@@ -461,9 +446,9 @@ class MarketMechanicsAgent:
                         'obfuscated_date': date_mapping[date]
                     }
 
-            # Build batch analysis prompt with specified template
+            # Build batch analysis prompt
             batch_prompt = self._build_batch_prompt(
-                batch_data, display_symbol, template=prompt_template)
+                batch_data, display_symbol, experiment_template)
 
             # Single LLM call for all dates
             logger.info(f"Analyzing {len(dates)} dates in single batch")
@@ -478,7 +463,6 @@ class MarketMechanicsAgent:
                 'batch_size': len(dates),
                 'dates_analyzed': dates,
                 'obfuscation_used': use_obfuscation,
-                'prompt_template_used': prompt_template or 'default',
                 'batch_analysis': batch_analysis,
                 'individual_results': results,
                 'timestamp': now_iso()
@@ -494,41 +478,12 @@ class MarketMechanicsAgent:
             }
 
     def _build_batch_prompt(self, batch_data: Dict, symbol: str, template: str = None) -> str:
-        """
-        Build prompt for batch LLM analysis using config-based templates.
+        """Build prompt for batch LLM analysis."""
+        prompt = f"""Analyze the following {len(batch_data)} trading days for {symbol}.
+Look for patterns across all dates and provide comparative analysis.
 
-        Args:
-            batch_data: Dictionary of date -> data mappings
-            symbol: Trading symbol
-            template: Prompt template name (standard/unbiased/reasoning)
-                     If None, uses default from config
-
-        Returns:
-            Formatted prompt string
-        """
-        from src.utils.config_manager import get_config
-
-        # Load prompt config
-        config = get_config()
-        template_name = template or config.get('llm_prompts.default_template', 'standard')
-
-        # Get template config
-        template_config = config.get(f'llm_prompts.prompt_templates.{template_name}', {})
-        if not template_config:
-            logger.warning(f"Template '{template_name}' not found, using standard")
-            template_config = config.get('llm_prompts.prompt_templates.standard', {})
-
-        # Get question template
-        question_style = template_config.get('question_style', 'leading')
-        question_template = config.get(f'llm_prompts.question_templates.{question_style}', {})
-
-        # Build header
-        overall_analysis = question_template.get('overall_analysis',
-            "Analyze the following {n} trading days for {symbol}.")
-        prompt = overall_analysis.format(n=len(batch_data), symbol=symbol)
-        prompt += "\n\nDATA FOR EACH DAY:\n"
-
-        # Build data section for each day
+DATA FOR EACH DAY:
+"""
         for date, data in batch_data.items():
             obfusc_date = data.get('obfuscated_date', date)
             prompt += f"\n{'='*60}\n{obfusc_date}:\n"
@@ -537,61 +492,39 @@ class MarketMechanicsAgent:
                 prompt += f"  ERROR: {data['error']}\n"
             else:
                 gex = data.get('gex_metrics', {})
-
-                # Always show GEX magnitude and spot price
-                prompt += f"  Net GEX: ${gex.get('total_gamma', 0):,.0f}\n"
+                prompt += f"  Total GEX: ${gex.get('total_gamma', 0):,.0f}\n"
                 prompt += f"  Spot Price: ${gex.get('spot_price', 0):.2f}\n"
                 prompt += f"  Flip Point: ${gex.get('flip_point', 0):.2f}\n"
+                prompt += f"  Regime: {gex.get('regime', 'Unknown')}\n"
 
-                # Conditionally show regime label (Issue #90 - this is the bias)
-                if template_config.get('include_regime_label', True):
-                    prompt += f"  Regime: {gex.get('regime', 'Unknown')}\n"
-
-                # Conditionally show pattern hints
-                if template_config.get('include_pattern_hints', True) and data.get('patterns'):
+                if data.get('patterns'):
                     prompt += f"  Patterns Detected: {', '.join([p.get('pattern', '') for p in data['patterns'][:3]])}\n"
 
-        # Add question section
-        prompt += f"\n{'='*60}\n"
-        individual_questions = question_template.get('individual_days',
-            "QUESTIONS TO ANSWER:\n1. What patterns do you see?")
-        prompt += individual_questions + "\n\n"
+        prompt += f"""
+{'='*60}
+QUESTIONS TO ANSWER:
+1. What patterns do you see across these dates?
+2. Are there consistent mechanics (WHO forcing WHOM to do WHAT)?
+3. What is the highest confidence signal across all dates?
+4. Do you see any temporal patterns (e.g., weekly effects)?
 
-        # Add response format instructions
-        null_allowed = template_config.get('null_hypothesis_allowed', False)
-        response_format = template_config.get('response_format', 'json')
+IMPORTANT: Return your analysis in JSON format with this structure:
+{{
+  "overall_analysis": "Your overall analysis here",
+  "individual_days": {{
+    "DATE_KEY": {{
+      "who": "Identify the forcing party",
+      "whom": "Who is being forced",
+      "what": "Specific forced action",
+      "mechanics": "Brief causal chain",
+      "confidence": 0-100 (numeric)
+    }}
+  }}
+}}
 
-        if response_format == 'json':
-            prompt += "IMPORTANT: Return your analysis in JSON format with this structure:\n"
-            prompt += "{\n"
-            prompt += '  "overall_analysis": "Your overall analysis here",\n'
-            prompt += '  "individual_days": {\n'
-            prompt += '    "DATE_KEY": {\n'
-
-            if null_allowed:
-                prompt += '      "pattern_detected": true/false,\n'
-
-            prompt += '      "who": "Identify the forcing party",\n'
-            prompt += '      "whom": "Who is being forced",\n'
-            prompt += '      "what": "Specific forced action",\n'
-            prompt += '      "mechanics": "Brief causal chain",\n'
-            prompt += '      "confidence": 0-100 (numeric)\n'
-            prompt += '    }\n'
-            prompt += '  }\n'
-            prompt += '}\n\n'
-
-            if null_allowed:
-                prompt += "NOTE: For days with no clear pattern, set pattern_detected=false and confidence=0.\n"
-
-        prompt += "Use the obfuscated date keys (e.g., 'Day T+0') as the DATE_KEY.\n"
-        prompt += "Confidence must be a number 0-100.\n"
-
-        # Log template used (for debugging Issue #90)
-        logger.info(f"Built prompt using template: {template_name}")
-        logger.debug(f"Template config: regime_label={template_config.get('include_regime_label')}, "
-                    f"pattern_hints={template_config.get('include_pattern_hints')}, "
-                    f"null_allowed={null_allowed}")
-
+Use the obfuscated date keys (e.g., "Day T+0") as the DATE_KEY.
+Confidence must be a number 0-100.
+"""
         return prompt
 
     def _analyze_batch_with_llm(self, prompt: str) -> Dict:
@@ -639,8 +572,7 @@ class MarketMechanicsAgent:
             obfuscated_date = batch_data[date].get('obfuscated_date', date)
 
             # Try to find analysis using obfuscated date key first, fall back to real date
-            day_analysis = individual_days.get(
-                obfuscated_date, individual_days.get(date, {}))
+            day_analysis = individual_days.get(obfuscated_date, individual_days.get(date, {}))
 
             # Combine with existing data
             results[date] = {
@@ -1044,66 +976,6 @@ Respond with JSON:
         except Exception as e:
             logger.error(f"AutoGen tools error: {e}, falling back to cache")
             return self.cache.get_options_data(self.symbol, date_str)
-
-    def _estimate_spot_from_options(self, options_data: pd.DataFrame) -> Optional[float]:
-        """
-        Estimate spot price from options data using put-call parity.
-
-        This is a fallback when underlyingPrice is not in the cached options data.
-        Uses the same algorithm as HistoricalGEXBuilder.estimate_spot_from_options().
-
-        Args:
-            options_data: DataFrame with options chains (calls and puts)
-
-        Returns:
-            Estimated spot price or None if estimation fails
-        """
-        try:
-            calls = options_data[options_data['type'] == 'call']
-            puts = options_data[options_data['type'] == 'put']
-
-            if len(calls) == 0 or len(puts) == 0:
-                return None
-
-            # Find strikes with both calls and puts
-            common_strikes = set(calls['strike'].values) & set(puts['strike'].values)
-
-            if not common_strikes:
-                return None
-
-            # Use put-call parity: S = K + C - P (approximately, ignoring time value)
-            best_estimates = []
-
-            for strike in sorted(common_strikes):
-                call_data = calls[calls['strike'] == strike]
-                put_data = puts[puts['strike'] == strike]
-
-                if len(call_data) > 0 and len(put_data) > 0:
-                    call_price = call_data['mark'].iloc[0] if call_data['mark'].iloc[0] > 0 else call_data['last'].iloc[0]
-                    put_price = put_data['mark'].iloc[0] if put_data['mark'].iloc[0] > 0 else put_data['last'].iloc[0]
-
-                    if call_price > 0 and put_price > 0:
-                        spot_estimate = strike + call_price - put_price
-                        # Only consider reasonable estimates (within 50% of strike)
-                        if 0.5 * strike <= spot_estimate <= 1.5 * strike:
-                            best_estimates.append(spot_estimate)
-
-            if best_estimates:
-                # Return median estimate to avoid outliers
-                median_estimate = sorted(best_estimates)[len(best_estimates) // 2]
-
-                # Verify estimate is reasonable (within typical market ranges)
-                if median_estimate < 10 or median_estimate > 10000:  # SPY/SPX range check
-                    logger.warning(f"Suspicious spot estimate: {median_estimate}")
-                    return None
-
-                return median_estimate
-
-            return None
-
-        except Exception as e:
-            logger.warning(f"Error estimating spot price from options: {e}")
-            return None
 
     def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
         """Fetch GEX data from database, calculate and populate if missing.

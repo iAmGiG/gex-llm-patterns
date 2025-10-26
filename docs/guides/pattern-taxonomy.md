@@ -61,7 +61,7 @@ For a pattern to be validated as real:
 ### Dealer State Machine
 Market makers are constrained to limited actions:
 
-```bash
+```
 Market Condition → Dealer Constraint → Forced Action → Observable Pattern
 ```
 

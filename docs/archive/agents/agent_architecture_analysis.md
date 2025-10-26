@@ -9,7 +9,7 @@
 
 ## Intended Workflow (Your Vision)
 
-```yaml
+```
 1. DATA_AGENT: Get data → Store in cache → Calculate GEX
 2. PATTERN_AGENT: Identify patterns → Analyze signals  
 3. BACKTEST_AGENT: Historical validation → Statistical analysis
@@ -27,7 +27,7 @@
 
 ### What We're Actually Doing
 
-```bash
+```
 Human/Claude → Direct script execution → Analysis → Results
 ```
 

@@ -62,73 +62,6 @@ Each file contains:
 - Outcome metrics (forward returns, realized volatility)
 - Full daily-level detection results with obfuscation verification
 
-## Prompt Bias and Template System (Issue #90)
-
-### The Bias Discovery
-
-**Finding**: The original validation achieved 100% detection rate, but analysis revealed the LLM was shown regime labels ("NEGATIVE_GAMMA") in the prompt - essentially seeing the answer.
-
-**Test Results** (April 1-5, 2024 with unbiased prompt):
-- Detection rate: **80%** (down from 100%)
-- LLM said "no pattern detected" on 1 of 5 days
-- Proves the 100% detection rate was partially inflated by prompt bias
-
-### Prompt Template System
-
-Three prompt templates are available (see `config_defaults/llm_prompts.yaml`):
-
-**1. Standard (baseline)**:
-- Includes regime labels ("NEGATIVE_GAMMA")
-- Includes pattern hints from rule-based system
-- Leading questions ("What patterns do you see?")
-- Used for: Q1-Q4 2024 validation
-
-**2. Unbiased (academic validation)**:
-- **No regime labels** - LLM sees raw GEX values only
-- **No pattern hints** - pure structural reasoning
-- Neutral questions ("Do you detect mechanics?")
-- Null hypothesis allowed (can say "no pattern")
-- Used for: Testing prompt bias (Issue #90)
-
-**3. Reasoning (o3-mini optimized)**:
-- Chain-of-thought framework
-- Requires evidence citation
-- Multi-step reasoning process
-- Used for: Advanced validation (future work)
-
-### Usage
-
-```bash
-# Standard prompt (with regime labels - default)
-python scripts/validation/validate_pattern_taxonomy.py \
-  --pattern gamma_positioning --symbol SPY \
-  --start-date 2024-01-02 --end-date 2024-03-27 \
-  --prompt-template standard --with-outcomes
-
-# Unbiased prompt (no regime labels - for academic rigor)
-python scripts/validation/validate_pattern_taxonomy.py \
-  --pattern gamma_positioning --symbol SPY \
-  --start-date 2024-01-02 --end-date 2024-03-27 \
-  --prompt-template unbiased --with-outcomes
-
-# Reasoning prompt (chain-of-thought)
-python scripts/validation/validate_pattern_taxonomy.py \
-  --pattern gamma_positioning --symbol SPY \
-  --start-date 2024-01-02 --end-date 2024-03-27 \
-  --prompt-template reasoning --with-outcomes
-```
-
-### Academic Implications
-
-The prompt bias does not invalidate the research:
-
-1. **Obfuscation still works**: Even with regime labels, LLM cannot rely on date/ticker memorization
-2. **Expected detection rate**: 70-85% is realistic for unbiased prompts (based on limited testing)
-3. **Accuracy remains high**: Pattern predictions still materialize at 87-98% rates
-4. **Transparent methodology**: Paper can discuss both biased and unbiased results
-
-**Recommendation for Paper #1**: Acknowledge the bias, present both results, discuss as limitation and future work.
-
 ## Reproducibility
 
 All validation results are reproducible using:
@@ -138,8 +71,7 @@ export OPEN_AI_KEY="..." && \
 export PYTHONPATH=/path/to/gex-llm-patterns:$PYTHONPATH && \
 python scripts/validation/validate_pattern_taxonomy.py \
   --pattern PATTERN_NAME --symbol SPY \
-  --start-date 2024-01-02 --end-date 2024-03-27 \
-  --prompt-template standard --with-outcomes
+  --start-date 2024-01-02 --end-date 2024-03-27 --with-outcomes
 ```
 
 ## Research Contribution
@@ -154,4 +86,4 @@ See comprehensive analysis in: `docs/archive/multipattern_validation_2024.md`
 
 ---
 
-*Last Updated: October 16, 2025 - Added Issue #90 prompt bias documentation*
+*Last Updated: October 12, 2025*

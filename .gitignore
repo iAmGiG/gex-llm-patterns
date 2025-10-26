@@ -121,7 +121,6 @@ sample_data/
 
 # Generated reports (validation outputs, experiment results)
 reports/validation/**/*.yaml
-!reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q*.yaml  # Exception: Commit full 2024 for paper evidence
 reports/experiments/*.yaml
 reports/testing/
 !reports/validation/**/README.md
@@ -170,10 +169,6 @@ install_dependencies.sh
 run_simple_agent.sh
 run_sentiment_agent.sh
 package-lock.json
-
-# Local markdown formatting scripts (one-time fixes, not for repo)
-scripts/fix_code_blocks.py
-scripts/fix_closing_tags.py
 
 # Deprecated backtest scripts backup
 scripts/deprecated_backtest_scripts/
@@ -247,9 +242,3 @@ cython_debug/
 .pypirc
 .clauderc
 config/config.json
-
-# Figure generation scripts (local only - may need adjustments)
-scripts/visualization/generate_figure*.py
-
-# Presentation tool tests (experimental only)
-docs/presentations/oct22_research/tool_tests/

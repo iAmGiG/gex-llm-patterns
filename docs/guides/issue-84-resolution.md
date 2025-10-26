@@ -103,7 +103,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Error Message Format**:
-```python
+```
 ================================================================================
 ❌ INSUFFICIENT DATA COVERAGE: 26.6%
 ================================================================================

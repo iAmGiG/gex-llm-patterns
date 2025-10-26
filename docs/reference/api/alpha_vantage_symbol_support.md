@@ -57,7 +57,7 @@ Since Alpha Vantage doesn't support index options, use these ETF proxies:
 
 ### API Response Analysis
 
-```yaml
+```
 Index Options (SPX, NDX): 
 - Response: 200 OK
 - Data Field: Missing (empty response)

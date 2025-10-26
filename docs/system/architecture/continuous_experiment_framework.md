@@ -34,32 +34,27 @@ Implement a production-ready continuous experiment system based on the RH2MAS re
 ### 3. GEX Strategy Framework (V0-V4)
 
 **V0: Raw GEX Baseline** (Current BaselineGEXStrategy)
-
 - Fixed mechanical rules: Negative GEX → Short bias
 - Thresholds: `gex_thresholds.negative_high: -5e9`
 - Simple gamma exposure aggregation
 
 **V1: Enhanced Technical GEX** (Current TechnicalIndicatorBaseline)
-
 - MACD + RSI + GEX combination with consensus voting
 - 68.8% signal rate (33 signals from 48 trading days)
 - Dynamic risk management: 50% weak signals, 100% strong consensus
 
 **V2: Strike-Level GEX Discovery** (New - addresses Issue #71)
-
 - Individual strike analysis instead of aggregate GEX
 - High-volume strike detection (>100K contracts)
 - Gamma concentration mapping and extreme imbalances (>10:1 ratios)
 - Target: 20+ high-quality signals per month vs current 1-3
 
 **V3: Multi-Strike Pattern Recognition** (Enhanced)
-
 - Strike clustering analysis for options laddering patterns
 - Expiration-specific behaviors and gamma walls
 - Strike-specific hedging requirements and flip points
 
 **V4: LLM-Enhanced GEX Analysis** (Current MarketMechanicsAgent + Batch)
-
 - O3-mini with WHO/WHOM/WHAT market mechanics analysis
 - Batch processing: 1 LLM call per week analyzing all 5 days
 - Rich context: Strike-level data + market mechanics + dealer positioning
@@ -67,21 +62,18 @@ Implement a production-ready continuous experiment system based on the RH2MAS re
 ### 4. Advanced Metrics System
 
 **Real-time Capture**:
-
 - Enhanced trade tracking with strike-level attribution
 - GEX regime monitoring (positive/negative transitions)
 - Options Greeks effectiveness (gamma, delta concentrations)
 - Risk-adjusted metrics: Sharpe ratio, Calmar ratio, max drawdown
 
 **GEX-Specific Metrics**:
-
 - Strike hit rates vs volume predictions
 - Gamma flip point accuracy
 - Dealer hedging pressure effectiveness
 - Pin risk vs realized pinning behavior
 
 **Performance by GEX Regime**:
-
 - Positive GEX environment performance
 - Negative GEX environment performance
 - Transition period capture rates
@@ -90,7 +82,7 @@ Implement a production-ready continuous experiment system based on the RH2MAS re
 
 ### Core Files to Implement
 
-```bash
+```
 scripts/runs/
 ├── gex_continuous_backtest.py          # Main orchestrator
 ├── checkpoint_manager.py               # State persistence
@@ -128,7 +120,7 @@ python scripts/analysis/generate_gex_results_summary.py --advanced --strike-leve
 
 ## Data Flow Architecture
 
-```bash
+```
 Options Data (Database/Cache/API) → GEXCalculator → Strike-Level GEX
                                                           ↓
 Strategy-Specific Data:
@@ -161,19 +153,16 @@ Strategy-Specific Data:
 ## Integration Points
 
 **Data Sources**:
-
 - `consolidated_historical.db`: Primary options and GEX data
 - `UnifiedCacheManager`: Secondary caching layer
 - AutoGen tools: API fallback system
 
 **Caching Layer**:
-
 - SQLite database for GEX calculations
 - JSON checkpoints for experiment state
 - Memory caching for repeated calculations
 
 **Monitoring**:
-
 - Status tracking with progress reporting
 - GEX regime change detection
 - Strike-level performance attribution
@@ -190,22 +179,18 @@ Strategy-Specific Data:
 ### From RH2MAS Stock System → GEX Options System
 
 **Stock Sentiment → Options GEX Analysis**:
-
 - RH2MAS: News sentiment analysis for stock decisions
 - GEX System: Strike-level gamma exposure for options decisions
 
 **Batch Processing Adaptation**:
-
 - RH2MAS: Weekly news sentiment batching
 - GEX System: Weekly options data + strike analysis batching
 
 **Fallback Strategy**:
-
 - RH2MAS: News API → Neutral sentiment
 - GEX System: Database → Cache → API → Sample data
 
 **Strategy Versioning**:
-
 - RH2MAS: V0-V4 sentiment sophistication
 - GEX System: V0-V4 GEX analysis sophistication
 

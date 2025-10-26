@@ -121,7 +121,7 @@ Existing code continues to work through backward compatibility:
 - No production code needs immediate changes
 
 ### 3. Cleaner Directory Structure
-```python
+```
 reports/
 ├── experiments/        # LLM experiments and pattern detection
 │   ├── gamma_analysis/

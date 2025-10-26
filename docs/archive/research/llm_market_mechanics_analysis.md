@@ -52,7 +52,7 @@ class MarketMechanicsAgent:
 
 ### Input Context Structure
 
-```bash
+```
 GEX ANALYSIS - [Date]
 - Net GEX: [Value] ([Regime])
 - Flip point: [Price Level]  
@@ -74,7 +74,7 @@ QUESTION: What market mechanics are at play? Who is positioning for what?
 
 ### Expected LLM Response Format
 
-```bash
+```
 MARKET MECHANICS ANALYSIS:
 
 PATTERN IDENTIFIED: "[Pattern Name]"

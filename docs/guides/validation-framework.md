@@ -193,7 +193,7 @@ Compare normal vs obfuscated validation:
 
 Results saved to `reports/validation_experiments/`:
 
-```python
+```
 validation_experiments/
 ├── README.md                                    # Usage documentation
 ├── covid_crash_2020_20250914_220456.json      # Individual result (JSON)

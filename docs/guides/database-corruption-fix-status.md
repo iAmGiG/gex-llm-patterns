@@ -44,7 +44,7 @@ def get_stock_price(self, symbol, date, options_data):
 **CRITICAL PRINCIPLE VIOLATED**: Separation of Concerns
 
 **Correct Flow**:
-```bash
+```
 Real Market Data → Cache (pickle files)
                  ↓
               Database (real spot prices)
@@ -59,7 +59,7 @@ Real Market Data → Cache (pickle files)
 ```
 
 **WRONG (what was happening)**:
-```python
+```
 ??? → Database (450.0 obfuscated) ← WRONG LAYER!
    ↓
 OutcomeCalculator (corrupt forward returns)
