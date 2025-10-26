@@ -82,7 +82,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 **Example Sequential Prompt**:
 
-```
+```bash
 Sequential GEX Data (Day T-4 to Day T+0):
 
 Day T-4: Net GEX: -$2.1B (negative gamma)
