@@ -36,12 +36,14 @@ class ValidationDataExtractor:
         with open(filepath, 'r') as f:
             return yaml.safe_load(f)
 
-    def extract_time_series(self, pattern: str = "gamma_positioning") -> pd.DataFrame:
+    def extract_time_series(self, pattern: str = "gamma_positioning", use_unbiased: bool = True) -> pd.DataFrame:
         """
         Extract time series data from validation reports.
 
         Args:
             pattern: Pattern name (gamma_positioning, stock_pinning, 0dte_hedging)
+            use_unbiased: If True, use *_unbiased.yaml files (recommended for statistical validation)
+                         If False, use quarterly Q*.yaml files
 
         Returns:
             DataFrame with columns: date, net_gex, spot_price, forward_return_t1,
@@ -49,8 +51,15 @@ class ValidationDataExtractor:
         """
         logger.info(f"Extracting time series for pattern: {pattern}")
 
-        # Load all quarterly reports for this pattern
-        yaml_files = sorted(self.validation_dir.glob(f"{pattern}_SPY_2024Q*.yaml"))
+        # Load validation reports
+        if use_unbiased:
+            # Use unbiased full-year file (consistent methodology)
+            yaml_files = sorted(self.validation_dir.glob(f"{pattern}_SPY_2024_unbiased.yaml"))
+            logger.info("Using unbiased full-year validation file (recommended)")
+        else:
+            # Use quarterly reports (mixed methodologies)
+            yaml_files = sorted(self.validation_dir.glob(f"{pattern}_SPY_2024Q*.yaml"))
+            logger.info("Using quarterly validation files")
 
         if not yaml_files:
             logger.warning(f"No YAML files found for pattern {pattern}")
@@ -134,17 +143,18 @@ class ValidationDataExtractor:
 
         return df
 
-    def extract_full_year(self, pattern: str = "gamma_positioning") -> pd.DataFrame:
+    def extract_full_year(self, pattern: str = "gamma_positioning", use_unbiased: bool = True) -> pd.DataFrame:
         """
         Extract full 2024 data (all quarters combined).
 
         Args:
             pattern: Pattern name
+            use_unbiased: If True, use *_unbiased.yaml files (recommended)
 
         Returns:
             DataFrame with full year time series
         """
-        df = self.extract_time_series(pattern)
+        df = self.extract_time_series(pattern, use_unbiased=use_unbiased)
 
         if len(df) == 0:
             logger.warning("No data extracted")
@@ -178,8 +188,8 @@ def main():
     """Main execution."""
     extractor = ValidationDataExtractor()
 
-    # Extract gamma positioning data (full year)
-    df = extractor.extract_full_year(pattern="gamma_positioning")
+    # Extract gamma positioning data (full year - UNBIASED methodology)
+    df = extractor.extract_full_year(pattern="gamma_positioning", use_unbiased=True)
 
     if len(df) > 0:
         # Save to CSV
