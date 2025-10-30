@@ -100,49 +100,47 @@ class LeadLagAnalysis:
         """
         logger.info("Step 1: Preparing data and classifying regimes...")
 
-        # TODO: Implement actual data loading from cache
-        # For now, create stub structure with realistic distributions
-        np.random.seed(42)
-        n_days = 242
+        # Load extracted time series from CSV
+        csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
 
-        # Simulate GEX with negative bias
-        gex_values = np.random.randn(n_days) * 3e9 - 0.5e9
+        if not csv_path.exists():
+            raise FileNotFoundError(
+                f"Time series CSV not found at {csv_path}. "
+                "Run scripts/statistical_validation/extract_validation_data.py first."
+            )
 
-        # Simulate returns with volatility proportional to negative GEX
-        base_vol = 0.003
-        gex_factor = np.where(gex_values < -2e9, 2.0, np.where(gex_values > 2e9, 0.8, 1.0))
-        returns = np.random.randn(n_days) * base_vol * gex_factor
+        data = pd.read_csv(csv_path)
+        data['date'] = pd.to_datetime(data['date'])
 
-        data = pd.DataFrame({
-            'date': pd.date_range(self.start_date, periods=n_days, freq='B'),
-            'net_gex': gex_values,
-            'close': 475 * (1 + returns).cumprod(),
-            'fwd_return': returns,
-            'fwd_abs_return': np.abs(returns)
+        # Select and rename columns for lead-lag analysis
+        data = data[[
+            'date', 'net_gex', 'spot_price', 'forward_return_t1',
+            'realized_vol_t1', 'gex_regime'
+        ]].copy()
+
+        data = data.rename(columns={
+            'spot_price': 'close',
+            'forward_return_t1': 'fwd_return',
+            'realized_vol_t1': 'fwd_abs_return'
         })
 
-        # Calculate rolling forward volatility
-        data['fwd_vol'] = data['fwd_abs_return'].rolling(3).std().shift(-3)
-
-        # Classify GEX regimes
-        data['gex_regime'] = pd.cut(
-            data['net_gex'],
-            bins=[-np.inf, self.neg_threshold, self.pos_threshold, np.inf],
-            labels=['Negative', 'Neutral', 'Positive']
-        )
+        # Calculate rolling forward volatility (3-day)
+        data['fwd_vol'] = data['fwd_abs_return'].rolling(3).std()
 
         # Binary indicator for negative GEX
         data['is_negative_gex'] = (data['net_gex'] < self.neg_threshold).astype(int)
 
-        # Drop NaN from rolling calculations
+        # Drop rows with missing values
         data = data.dropna()
 
         # Log statistics
         logger.info(f"Total observations: {len(data)}")
+        logger.info(f"Date range: {data['date'].min()} to {data['date'].max()}")
+        logger.info(f"GEX range: ${data['net_gex'].min()/1e9:.2f}B to ${data['net_gex'].max()/1e9:.2f}B")
         logger.info(f"Regime distribution:")
         for regime in ['Negative', 'Neutral', 'Positive']:
             count = (data['gex_regime'] == regime).sum()
-            pct = count / len(data) * 100
+            pct = count / len(data) * 100 if len(data) > 0 else 0
             logger.info(f"  {regime}: {count} days ({pct:.1f}%)")
 
         self.data = data

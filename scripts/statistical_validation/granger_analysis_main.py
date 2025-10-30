@@ -82,15 +82,29 @@ class GrangerAnalysis:
         """
         logger.info("Step 1: Preparing data...")
 
-        # TODO: Implement data loading from cache
-        # For now, create stub structure
-        data = pd.DataFrame({
-            'date': pd.date_range(self.start_date, self.end_date, freq='B'),
-            'gex': np.random.randn(242) * 2e9,  # Placeholder
-            'realized_vol': np.random.rand(242) * 0.01  # Placeholder
+        # Load extracted time series from CSV
+        csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
+
+        if not csv_path.exists():
+            raise FileNotFoundError(
+                f"Time series CSV not found at {csv_path}. "
+                "Run scripts/statistical_validation/extract_validation_data.py first."
+            )
+
+        data = pd.read_csv(csv_path)
+        data['date'] = pd.to_datetime(data['date'])
+
+        # Rename columns for Granger analysis
+        data = data.rename(columns={
+            'net_gex': 'gex',
+            'realized_vol_t1': 'realized_vol'
         })
 
+        # Drop rows with missing values
+        data = data[['date', 'gex', 'realized_vol']].dropna()
+
         logger.info(f"Loaded {len(data)} trading days")
+        logger.info(f"Date range: {data['date'].min()} to {data['date'].max()}")
         logger.info(f"GEX range: ${data['gex'].min()/1e9:.2f}B to ${data['gex'].max()/1e9:.2f}B")
         logger.info(f"Volatility range: {data['realized_vol'].min():.4f} to {data['realized_vol'].max():.4f}")
 
