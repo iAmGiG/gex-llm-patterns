@@ -115,7 +115,7 @@ for i, p in enumerate(patterns_full):
 # VERSION 1: Traditional Funnel Diagram (IEEE SINGLE-COLUMN SIZE)
 # ============================================================================
 
-fig, ax = plt.subplots(figsize=(3, 3.5))  # IEEE single-column width
+fig, ax = plt.subplots(figsize=(3, 2.75))  # IEEE single-column width
 
 # Funnel data
 stages = ['Total Pattern Tests', 'LLM Detection',
@@ -129,7 +129,7 @@ widths = [(v / total_tests) * max_width for v in values]
 
 # Y positions for each stage (compact)
 y_positions = [2.3, 1.6, 0.9]
-height = 0.45
+height = 0.4
 
 # Draw funnel stages as rectangles
 for i, (stage, value, width, y_pos, color) in enumerate(zip(stages, values, widths, y_positions, colors)):
