@@ -115,7 +115,7 @@ for i, p in enumerate(patterns_full):
 # VERSION 1: Traditional Funnel Diagram (IEEE SINGLE-COLUMN SIZE)
 # ============================================================================
 
-fig, ax = plt.subplots(figsize=(3.5, 4))  # IEEE single-column width
+fig, ax = plt.subplots(figsize=(3, 3.5))  # IEEE single-column width
 
 # Funnel data
 stages = ['Total Pattern Tests', 'LLM Detection',
@@ -177,7 +177,7 @@ ax.text(0, 0.2, success_text,
 
 # Configure axes (tight for single-column)
 ax.set_xlim(-2, 2)  # Narrow for single-column
-ax.set_ylim(0.05, 2.9)
+ax.set_ylim(0.01, 2.7)
 ax.axis('off')
 
 # Title (compact for single-column)
