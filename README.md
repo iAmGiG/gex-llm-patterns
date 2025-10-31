@@ -2,6 +2,89 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Phase 1](https://img.shields.io/badge/Phase%201-Complete-success.svg)](https://github.com/iAmGiG/gex-llm-patterns/issues/88)
+[![Research](https://img.shields.io/badge/Research-PhD%20Project-purple.svg)](docs/papers/research_roadmap.md)
+
+[![Validation](https://img.shields.io/badge/2024%20Validation-Complete-brightgreen.svg)](reports/validation/pattern_taxonomy/)
+[![Detection Rate](https://img.shields.io/badge/Detection%20Rate-71.5%25%20Unbiased-orange.svg)](docs/presentations/phd_symposium_2025.md)
+[![Accuracy](https://img.shields.io/badge/Predictive%20Accuracy-91.2%25-green.svg)](docs/presentations/phd_symposium_2025.md)
+[![Documentation](https://img.shields.io/badge/docs-40%2B%20files-informational.svg)](docs/)
+
+[![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
+[![SQLite](https://img.shields.io/badge/Database-SQLite-003B57.svg)](https://www.sqlite.org/)
+[![Polygon.io](https://img.shields.io/badge/Data-Polygon.io-7C3AED.svg)](https://polygon.io/)
+[![Matplotlib](https://img.shields.io/badge/Viz-Matplotlib-11557c.svg)](https://matplotlib.org/)
+[![Graphviz](https://img.shields.io/badge/Diagrams-Graphviz-2C3E50.svg)](https://graphviz.org/)
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Key Results](#-key-results)
+- [Quick Links](#-quick-links)
+- [Research Roadmap](#-research-roadmap)
+- [Project Status](#project-status-october-2025)
+- [Getting Started](#getting-started)
+- [Documentation](#documentation)
+
+---
+
+## 🎯 Key Results
+
+> **Main Finding**: LLMs can detect structural market constraints without temporal context
+
+| Metric | Unbiased (Conservative) | Biased (Sensitive) |
+|--------|------------------------|-------------------|
+| **Detection Rate** | 71.5% | 100% |
+| **Predictive Accuracy** | 91.2% | 87-98% |
+| **Test Coverage** | 242 days (2024) | 181 days (Q1,Q3,Q4) |
+| **Obfuscation** | ✅ Full (no dates/tickers) | ✅ Full (no dates/tickers) |
+| **Pattern Types** | 3 validated | 3 validated |
+
+**Significance**: Detection remains stable (71-100%) while profitability varies (+70bps → -1bps), proving LLM detects **structural mechanics**, not profitable anomalies.
+
+---
+
+## 🔗 Quick Links
+
+| Category | Link | Description |
+|----------|------|-------------|
+| 📊 **Research** | [Research Roadmap](docs/papers/research_roadmap.md) | Multi-paper strategy (Phase 1-3) |
+| 🎤 **Presentation** | [PhD Symposium 2025](docs/presentations/phd_symposium_2025.md) | Complete presentation guide |
+| 📖 **Fundamentals** | [Concepts Explained](docs/presentations/fundamentals_explained.md) | Non-technical introduction |
+| 🔧 **Implementation** | [Technical Deep Dive](docs/presentations/technical_deep_dive.md) | Code walkthrough |
+| 📈 **Validation** | [Pattern Taxonomy](reports/validation/pattern_taxonomy/) | Full 2024 test results |
+| 🐛 **Issues** | [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) | Active development tracker |
+
+---
+
+## 🗺️ Research Roadmap
+
+```
+Phase 1: Methodology Validation ✅ COMPLETE
+├─ Obfuscation testing framework
+├─ 15 pattern library (WHO→WHOM→WHAT)
+├─ Full 2024 validation (242 days, 3 patterns)
+└─ Symposium presentation delivered
+
+Phase 2: Temporal Dynamics 🔄 IN PROGRESS
+├─ Sequential GEX (5-day lookback)
+├─ Constraint trajectory detection
+└─ Target: Q1 2026 journal submission
+
+Phase 3: Cross-Asset Generalization 📋 PLANNED
+├─ Individual equities (AAPL, TSLA, NVDA, etc.)
+├─ Index vs single-name comparison
+└─ Target: Q2 2026 journal submission
+
+Future: Discovery & Applications 💭 CONCEPTUAL
+├─ Pattern discovery (unsupervised)
+├─ Comparative LLM analysis
+└─ Real-time monitoring systems
+```
+
+---
 
 ## Overview
 
