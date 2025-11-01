@@ -62,6 +62,21 @@ def detect_gamma_accumulation(gex_5day: list) -> dict:
     """
     import numpy as np
 
+    # Minimum magnitude threshold
+    mean_magnitude = np.mean([abs(x) for x in gex_5day])
+    end_magnitude = abs(gex_5day[4])
+
+    if mean_magnitude < 5e9 or end_magnitude < 8e9:
+        return {
+            'detected': False,
+            'magnitude_growth': 0,
+            'monotonic': False,
+            'accelerating': False,
+            'confidence': 0,
+            'pattern_type': 'gamma_accumulation',
+            'rejection_reason': 'Magnitude below significance threshold'
+        }
+
     # Primary rule: 30% magnitude increase
     mag_growth = (abs(gex_5day[4]) / abs(gex_5day[0])) - 1
     primary_met = mag_growth >= 0.30
@@ -158,6 +173,21 @@ same_sign = all([sign(GEX[i]) == sign(GEX[0]) for i in range(5)])
 def detect_gamma_relief(gex_5day: list) -> dict:
     """Detect gamma relief pattern."""
     import numpy as np
+
+    # Minimum magnitude threshold
+    mean_magnitude = np.mean([abs(x) for x in gex_5day])
+    start_magnitude = abs(gex_5day[0])
+
+    if mean_magnitude < 5e9 or start_magnitude < 8e9:
+        return {
+            'detected': False,
+            'magnitude_decline': 0,
+            'monotonic': False,
+            'accelerating': False,
+            'confidence': 0,
+            'pattern_type': 'gamma_relief',
+            'rejection_reason': 'Magnitude below significance threshold'
+        }
 
     # Primary rule: 30% magnitude decrease
     mag_decline = 1 - (abs(gex_5day[4]) / abs(gex_5day[0]))
@@ -344,9 +374,23 @@ def detect_persistent_gamma(gex_5day: list) -> dict:
     import numpy as np
     from scipy.stats import linregress
 
-    # Primary rule: Low coefficient of variation
+    # Minimum magnitude threshold
     abs_gex = [abs(x) for x in gex_5day]
-    cv = np.std(abs_gex) / np.mean(abs_gex)
+    mean_magnitude = np.mean(abs_gex)
+
+    if mean_magnitude < 5e9:
+        return {
+            'detected': False,
+            'coefficient_of_variation': 0,
+            'tight_range': False,
+            'no_trend': False,
+            'confidence': 0,
+            'pattern_type': 'persistent_gamma',
+            'rejection_reason': 'Magnitude below significance threshold'
+        }
+
+    # Primary rule: Low coefficient of variation
+    cv = np.std(abs_gex) / mean_magnitude
     primary_met = cv < 0.15
 
     # Secondary rule 1: Tight range
@@ -356,7 +400,7 @@ def detect_persistent_gamma(gex_5day: list) -> dict:
 
     # Secondary rule 2: No trend
     slope, _, r_value, _, _ = linregress(range(5), abs_gex)
-    normalized_slope = abs(slope) / np.mean(abs_gex)
+    normalized_slope = abs(slope) / mean_magnitude
     no_trend = normalized_slope < 0.05
 
     # Exclusion: Same sign
@@ -441,10 +485,151 @@ def classify_sequential_pattern(gex_5day: list) -> dict:
     # No pattern detected
     return {
         'detected': False,
-        'pattern_type': 'no_pattern',
-        'confidence': 0
+        'pattern_type': 'no_clear_pattern',
+        'confidence': 0,
+        'reasoning': 'No pattern meets detection criteria'
     }
 ```
+
+---
+
+## Pattern Significance Thresholds
+
+### Minimum Magnitude Requirement
+
+**Problem**: Should patterns with trivial GEX magnitudes be classified?
+
+**Example Edge Case**:
+```python
+# Low magnitude "persistent" pattern
+gex = [-$2.1B, -$2.0B, -$2.2B, -$2.1B, -$2.0B]
+# CV = 3.8% (< 15% → technically "persistent")
+# But: Magnitude too low to create meaningful dealer constraints
+```
+
+**Decision**: Require minimum magnitude for all patterns
+
+### Threshold Values
+
+```python
+PATTERN_SIGNIFICANCE_THRESHOLDS = {
+    'min_gex_magnitude': 5e9,      # $5B - Below this, classify as "no_clear_pattern"
+    'min_confidence': 40,           # Below this, classify as "no_clear_pattern"
+}
+```
+
+**Rationale**:
+- ✅ **Prevents noise classification**: Trivial variations aren't meaningful patterns
+- ✅ **Aligns with Paper #1**: Focused on "large constraints" that force dealer behavior
+- ✅ **Empirically justified**: 2024 SPY GEX typically $10B-$60B (median ~$35B)
+- ✅ **Conservative threshold**: $5B is ~15% of typical magnitude
+
+### Implementation
+
+```python
+def classify_sequential_pattern(gex_5day: list) -> dict:
+    """
+    Classify 5-day window into exactly one pattern type.
+
+    Returns single pattern with highest priority if multiple detected.
+    Requires minimum magnitude and confidence for classification.
+    """
+    # Check minimum magnitude threshold first
+    mean_magnitude = np.mean([abs(x) for x in gex_5day])
+    if mean_magnitude < 5e9:  # $5B threshold
+        return {
+            'detected': False,
+            'pattern_type': 'no_clear_pattern',
+            'confidence': 0,
+            'reasoning': f'Mean magnitude ${mean_magnitude/1e9:.1f}B below $5B threshold'
+        }
+
+    # Check in priority order
+    reversal = detect_gamma_reversal(gex_5day)
+    if reversal['detected'] and reversal['confidence'] >= 40:
+        return reversal
+
+    accumulation = detect_gamma_accumulation(gex_5day)
+    if accumulation['detected'] and accumulation['confidence'] >= 40:
+        return accumulation
+
+    relief = detect_gamma_relief(gex_5day)
+    if relief['detected'] and relief['confidence'] >= 40:
+        return relief
+
+    persistent = detect_persistent_gamma(gex_5day)
+    if persistent['detected'] and persistent['confidence'] >= 40:
+        return persistent
+
+    # Pattern detected but confidence too low
+    return {
+        'detected': False,
+        'pattern_type': 'no_clear_pattern',
+        'confidence': 0,
+        'reasoning': 'Patterns detected but confidence below 40 threshold'
+    }
+```
+
+### Pattern-Specific Minimum Magnitudes
+
+Some patterns already enforce higher thresholds:
+
+```python
+PATTERN_SPECIFIC_THRESHOLDS = {
+    'gamma_accumulation': {
+        'min_magnitude': 5e9,    # General threshold
+        'min_end_magnitude': 8e9  # Final day must be significant
+    },
+    'gamma_relief': {
+        'min_magnitude': 5e9,    # General threshold
+        'min_start_magnitude': 8e9  # Start must be significant to "relieve"
+    },
+    'gamma_reversal': {
+        'min_magnitude': 5e9,    # Both sides > $5B (already enforced)
+    },
+    'persistent_gamma': {
+        'min_magnitude': 5e9,    # Must be persistently significant
+    }
+}
+```
+
+### Example Cases
+
+```python
+# CASE 1: Low magnitude persistent → NO PATTERN
+gex = [-2.1e9, -2.0e9, -2.2e9, -2.1e9, -2.0e9]
+# CV = 3.8% (< 15%) → would be "persistent"
+# But mean magnitude = $2.1B < $5B → "no_clear_pattern"
+
+# CASE 2: Moderate magnitude accumulation → DETECTED
+gex = [-6e9, -7e9, -8e9, -8.5e9, -9e9]
+# 50% growth, mean magnitude = $7.7B > $5B → "gamma_accumulation"
+
+# CASE 3: Tiny variation with high magnitude → PERSISTENT
+gex = [-35e9, -36e9, -35.5e9, -35e9, -36e9]
+# CV = 1.5%, mean magnitude = $35.5B >> $5B → "persistent_gamma"
+
+# CASE 4: Pattern detected but low confidence → NO PATTERN
+gex = [-10e9, -11e9, -12e9, -12.5e9, -13e9]
+# 30% growth (meets primary), but confidence = 35 < 40 → "no_clear_pattern"
+```
+
+### Why This Matters for Paper #2
+
+**Academic Rigor**:
+- Prevents claiming patterns exist when GEX is economically trivial
+- Reduces false positive rate (improves precision)
+- Makes results more defensible ("We only classified meaningful constraints")
+
+**Expected Impact**:
+- ~5-10% of windows may fall below threshold (SPY 2024)
+- Improves signal-to-noise ratio
+- Increases accuracy (fewer spurious classifications)
+
+**Null Hypothesis Testing**:
+- Allows LLM to naturally output `pattern_detected: false`
+- Tests whether LLM respects magnitude significance
+- Provides baseline rate for "no pattern" classification
 
 ---
 

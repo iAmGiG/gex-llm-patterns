@@ -79,17 +79,21 @@ day_data:
     question_style: "sequential_neutral"
     null_hypothesis_allowed: true
 
+    # Pattern significance thresholds
+    min_gex_magnitude: 5e9                # $5B - Below this, classify as "no_clear_pattern"
+    min_confidence: 40                     # Below this, classify as "no_clear_pattern"
+
     # Response structure
     response_format: "json"
     required_fields:
       - "pattern_detected"                # Boolean
-      - "trajectory_type"                 # NEW: "accumulation" | "relief" | "reversal" | "persistent" | "none"
+      - "trajectory_type"                 # "accumulation" | "relief" | "reversal" | "persistent" | "no_clear_pattern"
       - "who"                             # If pattern detected
       - "whom"
       - "what"
-      - "confidence"                      # 0-100
-      - "time_horizon"                    # NEW: "T+1" | "T+1 to T+3"
-      - "trajectory_reasoning"            # NEW: Why this trajectory classification?
+      - "confidence"                      # 0-100 (0 = no pattern or below threshold)
+      - "time_horizon"                    # "T+1" | "T+1 to T+3"
+      - "trajectory_reasoning"            # Why this trajectory classification?
 ```
 
 ### Add to `question_templates:`:
@@ -182,7 +186,7 @@ SEQUENTIAL ANALYSIS FRAMEWORK:
 Respond in JSON format:
 {
   "pattern_detected": true/false,
-  "trajectory_type": "accumulation" | "relief" | "reversal" | "persistent" | "none",
+  "trajectory_type": "accumulation" | "relief" | "reversal" | "persistent" | "no_clear_pattern",
   "who": "...",
   "whom": "...",
   "what": "...",
@@ -190,6 +194,11 @@ Respond in JSON format:
   "time_horizon": "T+1" | "T+1 to T+3",
   "trajectory_reasoning": "Why this trajectory classification?"
 }
+
+Note: Classify as "no_clear_pattern" if:
+- Mean GEX magnitude < $5B (too small to create meaningful constraints)
+- Confidence < 40 (pattern unclear or ambiguous)
+- No pattern meets detection criteria
 ```
 
 ---
