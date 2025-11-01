@@ -609,6 +609,11 @@ def main():
                         help='Calculate outcome metrics (Issue #80) - enabled by default')
     parser.add_argument('--no-outcomes', action='store_false', dest='with_outcomes',
                         help='Skip outcome calculation (faster, detection only)')
+    parser.add_argument('--output-dir', type=str, default=None,
+                        help='Output directory for validation results (default: reports/validation/pattern_taxonomy)')
+    parser.add_argument('--prompt-template', type=str, default='unbiased',
+                        choices=['unbiased', 'biased'],
+                        help='Prompt template to use (default: unbiased, biased is deprecated)')
 
     args = parser.parse_args()
 
@@ -654,7 +659,8 @@ def main():
     )
 
     # Save results
-    output_path = validator.save_results(validation_result)
+    output_dir = Path(args.output_dir) if args.output_dir else None
+    output_path = validator.save_results(validation_result, output_dir=output_dir)
 
     # Print final verdict
     obfuscation_test = validation_result['obfuscation_test']
