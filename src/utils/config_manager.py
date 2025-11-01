@@ -60,7 +60,7 @@ class ConfigManager:
 
         for config_file in self.config_dir.glob('*.yaml'):
             try:
-                with open(config_file, 'r') as f:
+                with open(config_file, 'r', encoding='utf-8') as f:
                     config_data = yaml.safe_load(f)
 
                 # Use filename (without extension) as config section name
