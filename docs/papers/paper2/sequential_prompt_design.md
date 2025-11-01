@@ -83,6 +83,15 @@ day_data:
     min_gex_magnitude: 5e9                # $5B - Below this, classify as "no_clear_pattern"
     min_confidence: 40                     # Below this, classify as "no_clear_pattern"
 
+    # Time horizon expectations (prevent hedging)
+    expected_time_horizons:
+      accumulation: "T+1"                  # Pressure releases sharply
+      relief: "T+1"                        # Calm materializes immediately
+      reversal: "T+1"                      # Regime flip causes spike
+      persistent: "T+1 to T+3"             # Continuation plays out over days
+
+    detect_hedging: true                   # Flag mismatched time horizons
+
     # Response structure
     response_format: "json"
     required_fields:
@@ -92,7 +101,7 @@ day_data:
       - "whom"
       - "what"
       - "confidence"                      # 0-100 (0 = no pattern or below threshold)
-      - "time_horizon"                    # "T+1" | "T+1 to T+3"
+      - "time_horizon"                    # "T+1" | "T+1 to T+3" (be specific, avoid hedging)
       - "trajectory_reasoning"            # Why this trajectory classification?
 ```
 
@@ -122,7 +131,10 @@ day_data:
 
       4. PREDICTION:
          - Based on 5-day trajectory, predict Day T+1 behavior
-         - Time horizon: Just T+1, or extended (T+1 to T+3)?
+         - Time horizon: Choose ONE based on pattern mechanism:
+           * T+1: Immediate next-day effect (use for sharp releases, reversals)
+           * T+1 to T+3: Multi-day effect (use ONLY if accumulation builds over time)
+           * Be specific - do not default to multi-day if unsure
          - Confidence: 0 if no pattern, 1-100 if pattern detected
 ```
 
@@ -217,37 +229,102 @@ thresholds = {
 }
 ```
 
-### Verification Logic
+### Verification Logic with Time Horizon Matching
 
 ```python
-def verify_trajectory(predicted_type, actual_vol, actual_direction):
+def verify_trajectory(predicted_type, time_horizon, forward_data):
     """
     Verify if predicted trajectory matches realized outcome.
 
     Args:
         predicted_type: "accumulation" | "relief" | "reversal" | "persistent"
-        actual_vol: Realized volatility at T+1 (%)
-        actual_direction: Price direction (up/down/flat)
+        time_horizon: "T+1" | "T+1 to T+3"
+        forward_data: Dict with {
+            'forward_1d_vol': float,     # T+1 realized volatility
+            'forward_3d_max': float,      # T+1 to T+3 max range
+            'forward_3d_avg': float       # T+1 to T+3 avg volatility
+        }
 
     Returns:
         bool: True if prediction verified
     """
+    # Select metric based on time horizon
+    if time_horizon == "T+1":
+        metric = forward_data['forward_1d_vol']
+    elif time_horizon == "T+1 to T+3":
+        metric = forward_data['forward_3d_max']  # Use max range for multi-day
+    else:
+        raise ValueError(f"Invalid time_horizon: {time_horizon}")
+
+    # Verify against pattern-specific thresholds
     if predicted_type == 'accumulation':
         # Pressure building → expect high vol when released
-        return actual_vol > 0.86  # P75
+        threshold = 0.86 if time_horizon == "T+1" else 1.48  # P75 for T+1, T+3
+        return metric > threshold
 
     elif predicted_type == 'relief':
         # Pressure easing → expect low vol
-        return actual_vol < 0.22  # P25
+        threshold = 0.22 if time_horizon == "T+1" else 0.44  # P25 for T+1, T+3
+        return metric < threshold
 
     elif predicted_type == 'reversal':
         # Regime change → expect extreme vol
-        return actual_vol > 1.32  # P90
+        threshold = 1.32 if time_horizon == "T+1" else 2.32  # P90 for T+1, T+3
+        return metric > threshold
 
     elif predicted_type == 'persistent':
         # Sustained constraint → expect moderate vol
-        return 0.38 < actual_vol < 0.58  # P50 ± 20%
+        if time_horizon == "T+1":
+            return 0.38 < metric < 0.58  # P50 ± 20%
+        else:  # T+1 to T+3
+            return 0.70 < metric < 1.06  # P50 ± 20% for T+3
 ```
+
+### Expected Time Horizon by Pattern Type
+
+**To discourage hedging, document expected time horizons:**
+
+```python
+EXPECTED_TIME_HORIZONS = {
+    'accumulation': 'T+1',        # Pressure releases sharply next day
+    'relief': 'T+1',               # Calm materializes immediately
+    'reversal': 'T+1',             # Regime flip causes immediate spike
+    'persistent': 'T+1 to T+3'     # Continuation plays out over multiple days
+}
+```
+
+**Hedging Detection Logic:**
+
+```python
+def detect_hedging(predicted_type, time_horizon):
+    """
+    Flag potential hedging behavior.
+
+    Returns:
+        (is_hedging: bool, reason: str)
+    """
+    expected = EXPECTED_TIME_HORIZONS[predicted_type]
+
+    # Flag if LLM picks multi-day for patterns that should be immediate
+    if expected == 'T+1' and time_horizon == 'T+1 to T+3':
+        return (True, f"{predicted_type} typically manifests T+1, not multi-day")
+
+    # Flag if LLM picks immediate for persistent patterns
+    if expected == 'T+1 to T+3' and time_horizon == 'T+1':
+        return (True, f"{predicted_type} typically extends beyond T+1")
+
+    return (False, "Time horizon matches expected pattern behavior")
+```
+
+**Why This Matters:**
+- ✅ **Prevents hedging abuse** - LLM can't say "T+1 to T+3" for everything
+- ✅ **Tests understanding** - Different patterns have different timeframes
+- ✅ **Enables analysis** - Can report hedging rate (% of predictions with mismatched horizon)
+
+**Expected Distribution (if LLM understands mechanics):**
+- 75% predictions use expected time horizon
+- 15% justifiable exceptions (e.g., "accumulation extreme, expect T+1 to T+3")
+- 10% hedging/unclear cases
 
 **Rationale**:
 - ✅ Data-driven (empirical distribution from SPY 2024)
