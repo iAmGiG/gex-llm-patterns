@@ -316,6 +316,116 @@ def verify_pattern_outcome(
 
 ---
 
+## Multi-Year Threshold Strategy
+
+### Problem: Should thresholds change across years?
+
+**Context**: Paper #2 will validate patterns across 2023-2025 (~714 days)
+
+**Challenge**: Different years may have different volatility regimes
+- 2023: Likely higher baseline volatility (post-COVID normalization)
+- 2024: Lower baseline volatility (100% negative GEX, stable regime)
+- 2025: Unknown (data TBD)
+
+### Threshold Options
+
+#### Option A: Fixed Thresholds (Use 2024 values for all years)
+```yaml
+# Same thresholds for all years
+thresholds_fixed:
+  accumulation: 0.86  # P75 from 2024
+  relief: 0.22        # P25 from 2024
+  reversal: 1.32      # P90 from 2024
+  persistent: 0.48    # P50 from 2024
+```
+
+**Pros**: Clean comparison, tests temporal consistency
+**Cons**: May not account for regime differences
+
+#### Option B: Year-Specific Thresholds (Recalculate per year)
+```yaml
+# Different thresholds per year
+thresholds_2023: {accumulation: 1.12, ...}  # P75 from 2023
+thresholds_2024: {accumulation: 0.86, ...}  # P75 from 2024
+thresholds_2025: {accumulation: 0.95, ...}  # P75 from 2025
+```
+
+**Pros**: Accounts for regime differences
+**Cons**: NOT comparable, looks like p-hacking, methodologically weak
+
+#### Option C: Pooled Thresholds (Calculate from 3-year combined)
+```yaml
+# Combined 2023-2025 data (~714 days)
+thresholds_pooled:
+  accumulation: 0.92  # P75 from 3-year pool (estimated)
+  relief: 0.25        # P25 from 3-year pool
+  reversal: 1.40      # P90 from 3-year pool
+  persistent: 0.52    # P50 from 3-year pool
+```
+
+**Pros**: Most stable estimates, accounts for regime diversity, defensible
+**Cons**: Masks year-specific patterns, requires full dataset
+
+### Recommended Hybrid Approach ✅
+
+**Phase 1 (Issue #108): Use 2024-only thresholds**
+```yaml
+baseline_validation:
+  data_source: "2024_spy_only"
+  thresholds: "2024_p75_p25_p90_p50"
+  purpose: "Establish baseline, validate sequential patterns work"
+```
+
+**Phase 2 (Issue #107, OPTIONAL): Use pooled thresholds**
+```yaml
+multi_year_extension:
+  data_source: "2023_2025_pooled"
+  thresholds: "pooled_p75_p25_p90_p50"
+  purpose: "Demonstrate robustness across regimes"
+
+  # Also report year-specific hit rates (not threshold changes!)
+  year_specific_analysis:
+    2023: {hit_rate: "TBD%", baseline: 25%, thresholds: "pooled"}
+    2024: {hit_rate: "TBD%", baseline: 25%, thresholds: "pooled"}
+    2025: {hit_rate: "TBD%", baseline: 25%, thresholds: "pooled"}
+```
+
+### Academic Justification
+
+**Why Pooled (Option C) for final paper?**
+1. **Most data** → Most stable percentile estimates (~714 days vs ~242)
+2. **Regime diversity** → Tests patterns across high/low vol environments
+3. **Single bar** → Clean comparison, no "moving goalposts"
+4. **Defensible** → "We used the full empirical distribution"
+
+**Why NOT year-specific (Option B)?**
+1. **Not comparable** → Can't claim "consistent predictive power"
+2. **P-hacking perception** → Changing thresholds looks like data mining
+3. **Weaker claim** → "Patterns work with custom thresholds" is less impressive
+
+**Why report year-specific hit rates?**
+- Tests if patterns degrade in certain regimes
+- Addresses reviewer concerns about regime stability
+- Shows transparency (not hiding regime differences)
+
+### Expected Threshold Shifts
+
+**Estimate based on volatility regimes:**
+
+| Threshold | 2024 Only | Pooled 2023-2025 | Shift |
+|-----------|-----------|------------------|-------|
+| P75 (Accumulation) | 0.86% | ~0.92% | +7% |
+| P25 (Relief) | 0.22% | ~0.25% | +14% |
+| P90 (Reversal) | 1.32% | ~1.40% | +6% |
+| P50 (Persistent) | 0.48% | ~0.52% | +8% |
+
+**Interpretation**:
+- Higher pooled thresholds → Slightly harder to verify patterns (more conservative)
+- Expected ~5-10% increase due to 2023 higher vol regime
+- Makes Phase 1 (2024-only) results slightly optimistic, Phase 2 more rigorous
+
+---
+
 ## References
 
 **Data Source**: `reports/statistical_validation/gamma_positioning_timeseries_2024.csv`
