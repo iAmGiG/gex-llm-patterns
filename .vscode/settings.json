@@ -24,7 +24,7 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     "[markdown]": {
-        "editor.defaultFormatter": "vscode.markdown-language-features"
+        "editor.formatOnSave": false
     },
     "python.linting.flake8Args": [
         "--ignore=E402",
