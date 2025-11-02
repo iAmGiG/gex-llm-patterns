@@ -242,3 +242,30 @@ cython_debug/
 .pypirc
 .clauderc
 config/config.json
+
+# LaTeX
+# =====
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.pdfsync
+*.nav
+*.snm
+*.vrb
+
+# LaTeX output PDFs (compiled documents)
+docs/papers/**/latex/*.pdf
+
+# LaTeX temporary archives
+*.tar.gz
+*.zip

@@ -1,0 +1,59 @@
+\section{Experimental Setup}
+
+% Based on Issue #108 5-day implementation plan
+
+\subsection{Dataset}
+
+% Symbol: SPY (S\&P 500 ETF)
+% Period: 2024 (Q1, Q3, Q4 validated)
+% Trading days: 242 (96\% coverage)
+% 5-day windows: 248 (252 days - 4 warmup)
+% Regime: 100\% negative GEX (structural finding)
+
+\subsection{Data Obfuscation}
+
+% Following Paper \#1 methodology:
+% - Dates → "Day T+0", "Day T+1", etc.
+% - Tickers → "INDEX\_1"
+% - No temporal references, event labels, or regime indicators
+% - Present only: GEX magnitudes, spot prices (5-day sequences)
+
+\subsection{Pattern Detection Pipeline}
+
+% Step 1: Sliding window (5-day sequences)
+% Step 2: Calculate trajectory metrics (magnitude growth, CV, trend)
+% Step 3: Apply detection rules (primary + secondary + exclusions)
+% Step 4: Classify pattern type (priority order: Reversal > Accumulation > Relief > Persistent)
+% Step 5: Filter by significance (\$5B minimum magnitude, 40 minimum confidence)
+
+\subsection{Outcome Verification}
+
+% For each detected pattern:
+% 1. Look up T+1 realized volatility from data
+% 2. Compare vs pattern-specific threshold
+% 3. Record: detected (yes/no), verified (yes/no)
+% 4. Calculate hit rate = verified / detected
+
+\subsection{Baseline Comparison}
+
+% Compare sequential (5-day) vs single-day (Paper \#1):
+% - Detection rate (\% of windows with pattern detected)
+% - Predictive accuracy (\% of predictions verified)
+% - Confidence (average confidence score)
+% - Alpha (transaction-cost adjusted returns, for transparency)
+
+\subsection{Statistical Validation}
+
+% Binomial test per pattern:
+% \begin{verbatim}
+% from scipy.stats import binom_test
+% p_value = binom_test(hits, detections, baseline, alternative='greater')
+% \end{verbatim}
+
+% Granger causality (Issue \#99):
+% - Differenced GEX vs level volatility
+% - Result: Some significant lags (p < 0.05) at lags 1-2
+
+% Lead-lag analysis (Issue \#100):
+% - Within-regime tests (2024 all negative)
+% - Result: No linear correlation (validates structural vs statistical detection)

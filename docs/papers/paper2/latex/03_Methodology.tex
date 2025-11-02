@@ -1,0 +1,66 @@
+\section{Methodology}
+
+% Based on sequential_pattern_detection_rules.md and outcome_verification_thresholds.md
+
+\subsection{Sequential Pattern Detection Framework}
+
+% TODO: Formal definitions of 4 pattern types
+% - Gamma Accumulation (30\% magnitude increase over 5 days)
+% - Gamma Relief (30\% magnitude decrease over 5 days)
+% - Gamma Reversal (sign flip with zero crossing)
+% - Persistent Gamma (CV < 15\%, stable magnitude)
+
+% Each pattern includes:
+% - Primary detection rule (quantitative threshold)
+% - Secondary validation rules (quality checks)
+% - Exclusion criteria (prevent false positives)
+% - Confidence scoring (0-100)
+
+\subsection{Pattern Significance Thresholds}
+
+% Minimum magnitude requirements to prevent noise classification:
+% - \$5B minimum mean GEX magnitude (general threshold)
+% - \$8B minimum for accumulation end magnitude
+% - \$8B minimum for relief start magnitude
+% - 40 minimum confidence score
+
+% Rationale:
+% - 2024 SPY GEX typically \$10B-\$60B (median ~\$35B)
+% - \$5B = ~15\% of typical magnitude (conservative)
+% - Prevents spurious pattern detection on trivial variations
+
+\subsection{Outcome Verification Thresholds}
+
+% Empirically-driven from 2024 SPY data (242 days, 100\% negative GEX regime):
+
+% T+1 Volatility Distribution:
+% - Mean: 0.62\%
+% - P25 (low vol): 0.22\%
+% - P50 (median): 0.48\%
+% - P75 (high vol): 0.86\%
+% - P90 (extreme vol): 1.32\%
+
+% Pattern-specific predictions (conservative thresholds):
+% - Accumulation: forward\_1d\_realized\_vol > 0.86\% (P75)
+% - Relief: forward\_1d\_realized\_vol < 0.22\% (P25)
+% - Reversal: forward\_1d\_realized\_vol > 1.32\% (P90)
+% - Persistent: forward\_1d\_realized\_vol < 0.48\% (P50)
+
+\subsection{Statistical Framework}
+
+% Binomial test for pattern success:
+% - Null hypothesis: Hit rate = baseline percentile (random)
+% - Alternative: Hit rate > baseline + 10pp (pattern has signal)
+% - Significance threshold: p < 0.05
+
+% GO/NO-GO criteria:
+% - GO (Full Paper \#2): ≥2 patterns with hit rate > baseline + 10pp AND ≥1 pattern with p < 0.05
+% - NO-GO (Fold into Paper \#1): All patterns ≈ baseline, no statistical significance
+
+\subsection{Multi-Year Threshold Strategy}
+
+% Phase 1 (2024 baseline): Use 2024-specific thresholds
+% Phase 2 (OPTIONAL): Use pooled thresholds from 2023-2025 combined data
+% - More stable estimates (~714 days vs ~242)
+% - Single bar for clean comparison
+% - Expected ~5-10\% increase in thresholds (more conservative)

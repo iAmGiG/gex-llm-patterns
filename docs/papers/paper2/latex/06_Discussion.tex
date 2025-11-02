@@ -1,0 +1,61 @@
+\section{Discussion}
+
+% TODO: Discussion to be written after Phase 1 results
+% Expected themes based on scope_boundaries.md:
+
+\subsection{Temporal Reasoning in LLMs}
+
+% Key finding: [TBD - Does 5-day context improve or degrade detection?]
+% Interpretation:
+% - If improved: LLMs detect multi-day constraint trajectories (temporal reasoning)
+% - If neutral: Single snapshots sufficient (dealer constraints local, not sequential)
+% - If degraded: Too much context introduces noise (LLM limitation)
+
+\subsection{Structural Understanding vs Statistical Patterns}
+
+% "The persistence of high detection accuracy ([TBD]\%) with marginal
+% profitability ([TBD] bps) across both single-day and sequential approaches
+% demonstrates our methodology measures constraint detection, not alpha generation.
+% This consistency strengthens claims of structural reasoning validation while
+% avoiding p-hacking toward profitable outcomes."
+
+% Granger causality results (Issue \#99):
+% - Some significant lags (p < 0.05) at lags 1-2
+% - BUT: Limited explanatory power (R² low)
+% - Interpretation: LLM detects causal mechanisms (dealers must hedge),
+%   not linear statistical patterns
+
+\subsection{Single-Regime Limitation (2024 Data)}
+
+% Reversal pattern: 0\% occurrence (100\% negative GEX regime)
+% Implication:
+% - Cannot test all 4 patterns in Phase 1
+% - Natural motivation for Phase 2 (multi-year validation with regime variation)
+% - Sets up: "Future work: Test Reversal in 2023/2025 data"
+
+\subsection{Pattern Significance Thresholds}
+
+% \$5B minimum magnitude requirement:
+% - [TBD]\% of windows rejected as "no\_clear\_pattern"
+% - Effect on results: [Improved precision? Reduced false positives?]
+% - Academic value: More defensible claims (only meaningful constraints)
+
+\subsection{Implications for Systematic Strategy Development}
+
+% NOT the focus (scope\_boundaries.md: pure CS, not trading optimization)
+% BUT: Brief mention of practical relevance
+% - Detection ≠ profitability (marginal alpha)
+% - Value: Risk management, constraint awareness, structural understanding
+% - NOT: Alpha generation tool
+
+\subsection{Limitations}
+
+% 1. Single asset (SPY only, index-level)
+%    - Deferred to Paper \#3: Strike-level and individual equities
+% 2. Single year (2024 baseline)
+%    - Addressed in Phase 2 (if GO decision)
+% 3. Single regime (100\% negative GEX)
+%    - Natural consequence of 2024 market structure (0DTE explosion)
+% 4. No context-aware features (VIX, volume, news)
+%    - Intentional (obfuscation testing constraint)
+%    - Deferred to Paper \#4+

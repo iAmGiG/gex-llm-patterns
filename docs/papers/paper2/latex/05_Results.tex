@@ -1,0 +1,77 @@
+\section{Results}
+
+% TODO: Results to be populated after Phase 1 validation (Issue #108)
+% Expected structure based on outcome_verification_thresholds.md:
+
+\subsection{Pattern Detection Rates}
+
+% Table: Pattern frequency distribution
+% \begin{table}[h]
+% \centering
+% \caption{Sequential Pattern Detection (2024, N=248 windows)}
+% \begin{tabular}{lrrr}
+% \toprule
+% Pattern & Detected & Frequency & Mean Confidence \\
+% \midrule
+% Gamma Accumulation & TBD & TBD\% & TBD \\
+% Gamma Relief & TBD & TBD\% & TBD \\
+% Gamma Reversal & 0 & 0.0\% & N/A \\
+% Persistent Gamma & TBD & TBD\% & TBD \\
+% No Clear Pattern & TBD & TBD\% & N/A \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+% Note: Reversal pattern 0\% due to 100\% negative GEX regime in 2024
+% (single-regime limitation, documented in scope\_boundaries.md)
+
+\subsection{Outcome Verification Rates}
+
+% Table: Hit rates vs baselines
+% \begin{table}[h]
+% \centering
+% \caption{Pattern Verification vs Empirical Baselines}
+% \begin{tabular}{lrrrr}
+% \toprule
+% Pattern & Hit Rate & Baseline & Lift & p-value \\
+% \midrule
+% Accumulation & TBD\% & 25\% & TBD pp & TBD \\
+% Relief & TBD\% & 25\% & TBD pp & TBD \\
+% Reversal & N/A & 10\% & N/A & N/A \\
+% Persistent & TBD\% & 50\% & TBD pp & TBD \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+\subsection{Sequential vs Single-Day Comparison}
+
+% Table: Performance comparison
+% \begin{table}[h]
+% \centering
+% \caption{Sequential (5-day) vs Single-Day Baseline (Paper \#1)}
+% \begin{tabular}{lrr}
+% \toprule
+% Metric & Single-Day & Sequential & Change \\
+% \midrule
+% Detection Rate & 71.5\% & TBD\% & TBD pp \\
+% Predictive Accuracy & 91.2\% & TBD\% & TBD pp \\
+% Average Confidence & ~72\% & TBD\% & TBD pp \\
+% Net Alpha (bps) & +5.6 & TBD & TBD bps \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+\subsection{Alpha Transparency}
+
+% Following scope\_boundaries.md alpha policy:
+% "Sequential patterns achieved [TBD]\% detection with [TBD]\% prediction accuracy.
+% Economic alpha remained marginal (+[TBD] bps), consistent with Paper \#1 (+5.6 bps),
+% reinforcing that our methodology validates STRUCTURAL understanding rather than
+% profitable trading strategies."
+
+\subsection{GO/NO-GO Decision}
+
+% Based on results:
+% - [GO if: ≥2 patterns with hit rate > baseline + 10pp AND p < 0.05]
+% - [NO-GO if: All patterns ≈ baseline, no significance]
+% - Recommendation: [Proceed to Phase 2 multi-year / Stop at Phase 1]
