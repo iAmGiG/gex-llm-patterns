@@ -5,6 +5,7 @@ IEEE conference paper format implementing the obfuscation testing methodology fo
 ## Quick Compilation
 
 ### Automated Build Script (Recommended)
+
 ```bash
 # Linux/macOS/Git Bash
 chmod +x build.sh
@@ -13,9 +14,11 @@ chmod +x build.sh
 # Windows PowerShell
 bash build.sh
 ```
+
 Automatically runs all compilation passes.
 
 ### Manual Compilation
+
 ```bash
 pdflatex Main.tex
 bibtex Main
@@ -50,6 +53,7 @@ See [COMPILE_INSTRUCTIONS.md](COMPILE_INSTRUCTIONS.md) for detailed instructions
 ## Output
 
 **Expected PDF**:
+
 - Pages: 11
 - Size: ~1.9 MB
 - Format: IEEE two-column conference paper
@@ -87,13 +91,15 @@ All figures referenced as `../figures/figN_*.png`:
 Install MiKTeX from https://miktex.org/download
 
 Add to PATH:
-```
+
+```bash
 C:\Users\<username>\AppData\Local\Programs\MiKTeX\miktex\bin\x64
 ```
 
 ### Missing Packages
 
 MiKTeX should auto-install. If not:
+
 ```bash
 mpm --install packagename
 ```
@@ -116,6 +122,7 @@ Or use the automated script (if available) to prepare Overleaf package.
 ## Clean Build
 
 Remove temporary files:
+
 ```bash
 # Windows
 del *.aux *.log *.out *.bbl *.blg *.toc
@@ -123,12 +130,6 @@ del *.aux *.log *.out *.bbl *.blg *.toc
 # PowerShell
 Remove-Item *.aux, *.log, *.out, *.bbl, *.blg, *.toc
 ```
-
-## Contact
-
-- **Author**: Christopher Regan (cregan1@kennesaw.edu)
-- **Advisor**: Ying Xie (yxie2@kennesaw.edu)
-- **Institution**: Kennesaw State University
 
 ## License
 
