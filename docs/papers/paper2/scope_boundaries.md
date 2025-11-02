@@ -30,6 +30,29 @@
 - Multi-year validation (2023, 2024, 2025)
 - Conservative thresholds (P75/P25)
 
+**⚠️ Reversal Pattern Limitation (2024 Data):**
+- **Problem**: 2024 SPY had 100% negative GEX regime (no sign flips)
+- **Occurrence**: 0% in 2024 baseline data (0 out of 248 windows)
+- **Solution**: Implement detection logic, document limitation, defer testing
+- **Strategy**:
+  ```yaml
+  phase_1_2024:
+    patterns_tested: [Accumulation, Relief, Persistent]
+    patterns_implemented: [Accumulation, Relief, Reversal, Persistent]
+    reversal_status: "Code complete, 0% occurrence, untestable"
+    documentation: "Single-regime limitation noted in paper"
+
+  phase_2_multi_year:
+    patterns_tested: [Accumulation, Relief, Reversal, Persistent]
+    reversal_status: "Testable when 2023/2025 data added (expect 2-5% occurrence)"
+  ```
+- **Academic Handling**:
+  - Include Reversal in pattern taxonomy (complete framework)
+  - Report: "Reversal pattern: 0% occurrence in 2024 single-regime data"
+  - Defer empirical validation to multi-year extension
+  - Sets up natural Phase 2 motivation ("test all 4 patterns across regimes")
+- **Why NOT Redefine**: Reversal = sign flip is theoretically meaningful; magnitude-based alternative would be different pattern type
+
 ### 2. Robustness Checks (Appendix)
 - Window size sensitivity (3-day, 7-day vs 5-day baseline)
 - Threshold sensitivity (P66/P33 moderate, P90/P10 aggressive)

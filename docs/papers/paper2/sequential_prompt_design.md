@@ -215,6 +215,114 @@ Note: Classify as "no_clear_pattern" if:
 
 ---
 
+## Confidence Scoring Strategy
+
+### Phase 1: LLM Self-Reported Confidence (Baseline)
+
+**Approach**: Let LLM assess confidence (0-100) based on pattern clarity
+
+**Confidence Bands** (guidance for LLM):
+```yaml
+confidence_interpretation:
+  0: "No pattern detected"
+  1-39: "Pattern unclear or below significance threshold"
+  40-59: "Weak pattern - marginal evidence"
+  60-79: "Moderate confidence - clear pattern with some ambiguity"
+  80-89: "Strong confidence - unambiguous pattern"
+  90-100: "Very strong - textbook example"
+```
+
+**Why LLM Self-Report for Phase 1:**
+- ✅ Simplest to implement (no additional calculations)
+- ✅ Tests if LLM can self-assess uncertainty
+- ✅ Comparable to Paper #1 methodology
+- ✅ Provides baseline for calibration analysis
+
+**Expected LLM Behavior:**
+```python
+# If LLM understands uncertainty:
+expected_distribution = {
+    'weak_patterns': {'confidence': 40-60, 'prevalence': '20%'},
+    'moderate_patterns': {'confidence': 60-79, 'prevalence': '60%'},
+    'strong_patterns': {'confidence': 80-100, 'prevalence': '20%'}
+}
+
+# If LLM is poorly calibrated (like Paper #1):
+likely_distribution = {
+    'all_patterns': {'confidence': 70-80, 'prevalence': '90%'}  # Overconfident
+}
+```
+
+### Phase 2: Calibration Analysis (Future Work)
+
+**Compare LLM confidence vs empirical pattern strength:**
+
+```python
+def analyze_confidence_calibration(predictions, outcomes):
+    """
+    Test if LLM confidence correlates with actual pattern strength.
+
+    Pattern strength metrics:
+    - Magnitude change ratio (for accumulation/relief)
+    - Monotonicity score (% transitions in same direction)
+    - Coefficient of variation (for persistent)
+    """
+    for pred in predictions:
+        llm_confidence = pred['confidence']
+        pattern_strength = calculate_pattern_strength(pred['gex_window'])
+
+        # Correlation test
+        correlation = pearsonr(llm_confidences, pattern_strengths)
+
+    # Report:
+    # - Correlation: r = 0.45 (moderate)
+    # - Calibration plot: Show LLM confidence vs verification rate
+    # - Recommendation: Consider hybrid scoring for Paper #3
+```
+
+**Hybrid Scoring (Possible Future):**
+```python
+def hybrid_confidence(llm_confidence, pattern_metrics):
+    """
+    Combine LLM assessment with deterministic pattern strength.
+    """
+    pattern_strength = calculate_pattern_strength(pattern_metrics)
+    # 70% LLM reasoning + 30% empirical strength
+    return llm_confidence * 0.7 + pattern_strength * 100 * 0.3
+```
+
+### Validation Reporting
+
+**Report Both Metrics:**
+```yaml
+validation_results:
+  llm_confidence:
+    mean: 72
+    median: 75
+    distribution: {40-59: 15%, 60-79: 65%, 80-100: 20%}
+
+  empirical_pattern_strength:
+    mean: 0.68  # 0-1 scale
+    correlation_with_llm: 0.42  # Moderate correlation
+
+  calibration_curve:
+    confidence_60_70: {predicted: 65%, actual_verification: 58%}
+    confidence_70_80: {predicted: 75%, actual_verification: 72%}
+    confidence_80_90: {predicted: 85%, actual_verification: 79%}
+```
+
+**Paper Interpretation:**
+- "LLM self-reported confidence moderately correlated with pattern strength (r=0.42)"
+- "Slight overconfidence observed (calibration curve below diagonal)"
+- "Future work: Hybrid scoring combining LLM reasoning and deterministic metrics"
+
+**Implementation Note:**
+- Day 1-4: Use raw LLM confidence (0-100)
+- Day 5: Analyze correlation with pattern strength and verification rate
+- Paper: Report both LLM confidence and empirical calibration
+
+---
+
 ## Verification Thresholds - APPROVED ✅
 
 ### Quartile-Based Outcome Verification
@@ -336,10 +444,47 @@ def detect_hedging(predicted_type, time_horizon):
 
 ## Implementation Checklist
 
+### 0. Pattern Distribution Validation (Day 0 - BLOCKER) 🚨
+
+**CRITICAL**: Validate pattern distribution on 2024 data BEFORE full implementation
+
+- [ ] Create `analyze_pattern_distribution.py` utility script
+- [ ] Load 2024 SPY GEX data (242 days → 238 windows of 5 days)
+- [ ] Apply pattern detection rules to all windows:
+  ```python
+  for window in sliding_windows(gex_data, window_size=5):
+      pattern = classify_sequential_pattern(window)
+      distribution[pattern['pattern_type']] += 1
+  ```
+- [ ] Report distribution:
+  ```
+  Expected:
+  - Persistent: 50-70% (~119-167 windows)
+  - Accumulation: 15-25% (~36-60 windows)
+  - Relief: 10-20% (~24-48 windows)
+  - Reversal: 0% (0 windows - single regime)
+  ```
+- [ ] **GO/NO-GO Decision**:
+  - ✅ GO if each pattern (except Reversal) has ≥30 windows
+  - ⚠️ CAUTION if any pattern has 15-29 windows (low power)
+  - 🚫 NO-GO if any pattern has <15 windows (insufficient data)
+- [ ] **If NO-GO**: Adjust detection thresholds to increase rare pattern occurrence OR defer pattern to multi-year
+- [ ] Document actual distribution in `reports/validation/sequential_2024/pattern_distribution.json`
+
+**Why This is Critical**:
+- Statistical power: Need ≥30 samples per pattern for meaningful binomial tests
+- Prevents wasted effort: If Accumulation only occurs 5 times, can't validate it
+- Threshold tuning: May need to adjust 30% growth threshold if too restrictive
+
+**Estimated Time**: 2-4 hours
+
+---
+
 ### 1. Configuration (Day 1)
 - [ ] Add `sequential_unbiased` template to `llm_prompts.yaml`
 - [ ] Add `sequential_neutral` question template
 - [ ] Add trajectory calculation settings
+- [ ] Add pattern significance thresholds (min_gex_magnitude: 5e9, min_confidence: 40)
 
 ### 2. Prompt Builder Extension (Day 2)
 - [ ] Extend `MechanicsPromptBuilder` with `build_sequential_prompt()`
