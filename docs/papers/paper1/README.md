@@ -1,149 +1,170 @@
 # Paper #1: LLM-Based Validation of Dealer Constraint Patterns in Options Markets
 
-**Working Title**: "Validating Large Language Model Understanding of Market Microstructure: An Obfuscation Testing Framework for Dealer Constraint Patterns"
+**Working Title**: "Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing"
 
-**Status**: Draft in progress (Option A - lead with unbiased 71% results)
+**Status**: LaTeX conversion in progress
 
 **Target Venue**: TBD (Financial Markets, Computational Finance, or AI in Finance journal)
 
-**Timeline**: First draft target Oct 26, 2025
+---
+
+## Repository Structure
+
+### `latex/` - LaTeX Project Files
+Complete IEEE-format LaTeX project ready for compilation or Overleaf upload.
+
+**Core Files**:
+- `Main.tex` - Main document with abstract, sections, acknowledgments
+- `00_Header.tex` - Preamble with all packages and settings
+- `01_Introduction.tex` - Introduction section
+- `02_Related_work.tex` - Background and related work
+- `03_Methodology.tex` - Methodology (obfuscation testing, WHO→WHOM→WHAT)
+- `04_Experimental_setup.tex` - Data sources, pattern specifications
+- `05_Results.tex` - Primary findings and ablation study
+- `06_Discussion.tex` - Interpretation and limitations
+- `07_Conclusion.tex` - Contributions and future work (or `conclusion/conclusion.tex`)
+- `references.bib` - BibTeX bibliography (13 core papers)
+
+**Note**:
+- All tables are embedded directly in the section .tex files (no separate tables/ directory).
+- Figure paths in .tex files reference `../figures/` to use the shared figures folder at paper1 level.
+
+### `analysis/` - Research Artifacts
+Actual research data and analysis used to write the paper.
+
+**Files**:
+- `validation_results_2024.md` - Full 2024 validation results (242 days, 3 patterns)
+- `prompt_bias_analysis.md` - Detailed ablation study (biased vs unbiased prompts)
+- `methodology_qa.md` - Technical Q&A and design decisions
+
+### `figures/` - Generated Visualizations
+All figure files generated for the paper (25 PNG files, ~5.6 MB total).
+
+**Core 8 Figures** (recommended for paper):
+1. `figure1_system_architecture.png` (200 KB) - Validation pipeline
+2. `figure2_obfuscation_example.png` (297 KB) - Obfuscation methodology
+3. `figure3_detection_vs_profitability.png` (191 KB) - Key finding visualization
+4. `figure4_gex_profile_clean.png` (236 KB) - GEX profile example
+5. `figure5_confidence_distribution.png` (181 KB) - Detection confidence
+6. `figure6_pattern_performance_bars.png` (263 KB) - Pattern-specific results
+7. `figure7_biased_unbiased_comparison.png` (309 KB) - Ablation study
+8. `figure8_validation_funnel.png` (187 KB) - Validation funnel
+
+**Supporting Files**:
+- `captions.md` - Detailed captions for all figures
+
+### `archive/` - Superseded Documentation
+Historical documents from the drafting process.
+
+**Subdirectories**:
+- `draft_sections/` - Original markdown drafts (superseded by LaTeX)
+  - `01_introduction.md` through `08_references.md`
+
+**Files** (meta-documentation from drafting phase):
+- `documentation_index.md` - Original documentation index
+- `figure_inventory.md` - Figure catalog and selection process
+- `figure_review.md` - Quality review of generated figures
+- `paper1_status_summary.md` - Historical status tracking
+- `paper_preparation_qa.md` - Drafting process Q&A
+- `table_summary.md` - Table formatting guide
+
+### Root Files
+
+- `README.md` - This file
+
+**Note**: `references.bib` is maintained only in `latex/` directory to avoid duplication.
 
 ---
 
-## Paper Structure
+## Key Results Summary
 
-This folder contains all draft materials for Paper #1, organized by standard academic paper sections:
+**Primary Findings** (Unbiased Prompts):
+- **Detection Rate**: 71.5% average (all patterns >60% threshold)
+- **Prediction Accuracy**: 91.2% (predictions materialize)
+- **Sample Size**: 726 tests (242 days × 3 patterns)
 
-### 1. Introduction (`01_introduction.md`)
-- Research question and motivation
-- Gap in existing literature
-- Key contributions
-- Paper roadmap
+**Prompt Bias Impact** (Ablation Study):
+- **Detection Drop**: -28.5% (100% → 71.5%)
+- **Accuracy Stable**: -1.0% (92.2% → 91.2%)
+- **Interpretation**: LLM detects structure without label hints
 
-### 2. Background and Related Work (`02_background.md`)
-- LLMs in financial markets (existing work)
-- Market microstructure theory (dealer constraints)
-- Pattern validation methodologies
-- Positioning our contribution
-
-### 3. Methodology (`03_methodology.md`)
-- Pattern taxonomy (Type 1: structural constraints)
-- Obfuscation testing framework
-- WHO→WHOM→WHAT causal identification
-- Detection thresholds and validation criteria
-- **Reference**: `methodology_clarifications.md` for technical details
-
-### 4. Experimental Setup (`04_experimental_setup.md`)
-- Data sources and coverage
-- Pattern definitions (gamma_positioning, stock_pinning, 0dte_hedging)
-- Prompt template configurations (biased vs unbiased)
-- Validation pipeline implementation
-- **Reference**: `full_year_2024_validation.md` for complete results
-
-### 5. Results (`05_results.md`)
-- Primary finding: 71.5% unbiased detection (Option A)
-- Ablation study: 100% biased detection (sensitivity analysis)
-- Pattern-specific breakdown
-- Statistical significance
-- **Reference**: `biased_vs_unbiased_comparison.md` for detailed analysis
-
-### 6. Discussion (`06_discussion.md`)
-- Interpretation of findings
-- Why 71% proves structural detection (not memorization)
-- Prompt bias implications
-- Limitations and threats to validity
-- Comparison to alternative approaches
-
-### 7. Conclusion (`07_conclusion.md`)
-- Summary of contributions
-- Implications for LLM-based market analysis
-- Future work (reasoning models, temporal patterns, etc.)
-
-### 8. References (`08_references.md`)
-- Dealer hedging literature
-- LLM evaluation methodologies
-- Market microstructure theory
-- **Reference**: `references_list.md` for bibliography
+**Detection-Profitability Divergence**:
+- **Detection**: Remains 84-100% across quarters
+- **Alpha**: Declines from +2 bps to -1 bps
+- **Implication**: Methodology detects structure, not profits
 
 ---
 
-## Supporting Documents
+## Pattern Specifications
 
-### Evidence Files
-- `biased_vs_unbiased_comparison.md` - Detailed comparison for results section
-- `full_year_2024_validation.md` - Complete validation results (242 days)
-- `methodology_clarifications.md` - Technical Q&A for methods section
-- `paper_preparation_qa.md` - General paper preparation notes
-- `methodology_paper_outline.md` - Original outline (being replaced by this structure)
+### 1. Gamma Positioning
+**Type**: Structural constraint (dealer hedging)
+**Detection**: 69.4% (unbiased)
+**Accuracy**: 92.5%
 
-### Data Sources
-- Primary results: `/reports/validation/pattern_taxonomy/*_unbiased.yaml`
-- Sensitivity analysis: `/reports/validation/pattern_taxonomy/*_2024Q*.yaml`
-- Configuration: `/config_defaults/llm_prompts.yaml`
+### 2. Stock Pinning
+**Type**: Strike-level price gravity
+**Detection**: 67.4% (unbiased)
+**Accuracy**: 90.4%
 
----
-
-## Writing Guidelines
-
-### Tone and Style
-- Academic rigor with clear explanations
-- Emphasize novel methodology contribution (obfuscation testing)
-- Transparent about limitations (confidence calibration, pattern validation scope)
-- Defensive against common criticisms (data leakage, cherry-picking)
-
-### Key Messages (Option A Decision)
-1. **71.5% unbiased detection proves structural pattern recognition** (not memorization)
-2. **91.2% accuracy shows predictions materialize** (patterns are real)
-3. **Prompt bias ablation demonstrates methodological rigor** (sensitivity analysis)
-4. **Multi-pattern validation shows generalization** (not cherry-picking one pattern)
-5. **Conservative lower bound is more defensible than 100%** (avoids "too perfect")
-
-### Terminology Standards
-- Use "dealer constraint patterns" (not just "patterns")
-- "Constraint activation detection" (not "state machine")
-- "Structural regimes" (not "sentiment")
-- "Pattern validation" (not "pattern discovery")
-- "Obfuscation testing" (our novel framework)
+### 3. 0DTE Hedging
+**Type**: Intraday hedging flows
+**Detection**: 77.7% (unbiased)
+**Accuracy**: 90.8%
 
 ---
 
-## Current Status
+## Compilation Instructions
 
-**Timeline**: First draft target Oct 26, 2025
-**Primary Author**: Main Chat (Claude Desktop)
-**Supporting**: Chat A (Claude Code - technical validation), Chat B (Claude Code - paper writing)
+### Local Compilation
+```bash
+cd latex/
+pdflatex Main.tex
+bibtex Main
+pdflatex Main.tex
+pdflatex Main.tex
+```
 
-**Decision**: Option A selected by advisor (lead with unbiased 71% results)
+### Overleaf
+1. Zip the `latex/` directory
+2. Upload to Overleaf as a new project
+3. Ensure compiler is set to pdfLaTeX
+4. Bibliography processor: BibTeX
 
-**Validation Status**:
-- ✅ Full 2024 unbiased validation **COMPLETE** (Oct 16, 2025)
-- ✅ All 3 patterns tested: gamma_positioning, stock_pinning, 0dte_hedging
-- ✅ Prompt bias sensitivity analysis **COMPLETE**
-- ✅ Primary results ready for paper writing
+---
 
-**Key Results**:
-- **71.5% average detection rate** (unbiased prompts, full obfuscation)
-- **91.2% predictive accuracy** (predictions materialize)
-- **All patterns pass 60% mechanical threshold** (N=242 days each)
-- **Prompt bias quantified**: +30% detection boost with regime labels, minimal accuracy change
+## Scripts and Data Sources
 
-**Files Generated**:
-- `UNBIASED_VALIDATION_SUMMARY.md` - Primary results for paper
+**Visualization Scripts**: `../../scripts/visualization/`
+- 11 Python scripts for generating all figures
+
+**Validation Data**: `../../reports/validation/pattern_taxonomy/`
 - `gamma_positioning_SPY_2024_unbiased.yaml` (263 KB)
 - `stock_pinning_SPY_2024_unbiased.yaml` (263 KB)
 - `0dte_hedging_SPY_2024_unbiased.yaml` (266 KB)
-- `gamma_positioning_SPY_2024Q2.yaml` (68 KB, biased prompt for comparison)
+- `gamma_positioning_SPY_2024Q2.yaml` (68 KB, biased prompt)
+
+**Configuration**: `../../config_defaults/llm_prompts.yaml`
+- Pattern specifications and prompt templates
 
 ---
 
-## Next Steps
+## Citation (Provisional)
 
-1. ✅ Structure created with section templates
-2. ✅ Unbiased validation complete (Oct 16, 2025)
-3. ⏳ Draft each section using supporting documents
-4. ⏳ Create figures and tables from results
-5. ⏳ Compile full draft for advisor review
-6. ⏳ Revise based on feedback
-7. ⏳ Submit to target venue
+```bibtex
+@article{regan2025inferring,
+  title={Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing},
+  author={Regan, Christopher and Xie, Ying},
+  journal={TBD},
+  year={2025},
+  institution={Kennesaw State University}
+}
+```
 
-**Current Priority**: Main Chat to begin drafting using completed validation results
+---
+
+## Contact
+
+**Primary Author**: Christopher Regan (cregan1@kennesaw.edu)
+**Advisor**: Ying Xie (yxie2@kennesaw.edu)
+**Institution**: Kennesaw State University, Department of Computer Science

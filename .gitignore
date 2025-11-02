@@ -185,6 +185,7 @@ services/cache_service_status.sh
 # Deployment Tools (environment-specific)
 tools/deployment/
 *.sh
+!docs/papers/**/latex/build.sh
 
 # SEC Edgar data
 sec-edgar-filings/
