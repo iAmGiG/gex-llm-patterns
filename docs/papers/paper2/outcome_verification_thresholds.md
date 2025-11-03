@@ -9,6 +9,7 @@
 ## 2024 Baseline Volatility Distribution
 
 ### T+1 Forward Volatility (Realized)
+
 - **Mean**: 0.62%
 - **Median (P50)**: 0.48%
 - **P25 (Low vol)**: 0.22%
@@ -16,6 +17,7 @@
 - **P90 (Extreme vol)**: 1.32%
 
 ### T+3 Forward Volatility
+
 - **Mean**: 1.09%
 - **Median (P50)**: 0.88%
 - **P75 (High vol)**: 1.48%
@@ -34,6 +36,7 @@
 **Verification Thresholds**:
 
 #### Option A: Conservative (Recommended for Paper #2)
+
 ```yaml
 verification:
   forward_1d_realized_vol: ">0.86%"  # P75 threshold (top quartile)
@@ -43,6 +46,7 @@ verification:
 ```
 
 #### Option B: Moderate
+
 ```yaml
 verification:
   forward_1d_realized_vol: ">0.72%"  # P66 threshold (top third)
@@ -52,6 +56,7 @@ verification:
 ```
 
 #### Option C: Aggressive (High bar)
+
 ```yaml
 verification:
   forward_1d_realized_vol: ">1.32%"  # P90 threshold (top decile)
@@ -73,6 +78,7 @@ verification:
 **Verification Thresholds**:
 
 #### Option A: Conservative (Recommended)
+
 ```yaml
 verification:
   forward_1d_realized_vol: "<0.22%"  # P25 threshold (bottom quartile)
@@ -82,6 +88,7 @@ verification:
 ```
 
 #### Option B: Moderate
+
 ```yaml
 verification:
   forward_1d_realized_vol: "<0.35%"  # P33 threshold (bottom third)
@@ -103,6 +110,7 @@ verification:
 **Verification Thresholds**:
 
 #### Option A: Aggressive (Recommended - Expect Spike)
+
 ```yaml
 verification:
   forward_1d_realized_vol: ">1.32%"  # P90 threshold (top decile)
@@ -112,6 +120,7 @@ verification:
 ```
 
 #### Option B: Moderate
+
 ```yaml
 verification:
   forward_1d_realized_vol: ">0.86%"  # P75 threshold
@@ -134,6 +143,7 @@ verification:
 **Verification Thresholds**:
 
 #### Option A: Conservative (Recommended)
+
 ```yaml
 verification:
   forward_1d_realized_vol: "<0.48%"  # P50 threshold (below median)
@@ -143,6 +153,7 @@ verification:
 ```
 
 #### Option B: Strict
+
 ```yaml
 verification:
   forward_1d_realized_vol: "<0.22%"  # P25 threshold (bottom quartile)
@@ -159,6 +170,7 @@ verification:
 ### How to Interpret Hit Rates
 
 **Pattern Success Criteria**:
+
 - **Null Hypothesis**: Hit rate = baseline percentile (random)
 - **Alternative**: Hit rate > baseline + 10pp (pattern has signal)
 
@@ -196,16 +208,19 @@ if p_value < 0.05:
 **For Paper #2**, test all patterns with multiple thresholds:
 
 ### Phase 1: Primary Analysis (Conservative Thresholds)
+
 - Use P75/P25 thresholds for all patterns
 - Report hit rates and binomial p-values
 - This is the main result
 
 ### Phase 2: Robustness Check (Moderate Thresholds)
+
 - Use P66/P33 thresholds
 - Show results are stable across threshold choices
 - Include in appendix
 
 ### Phase 3: Extreme Event Detection (Aggressive Thresholds)
+
 - Use P90/P10 thresholds
 - Test if patterns predict extreme moves
 - Valuable for risk management applications
@@ -217,18 +232,22 @@ if p_value < 0.05:
 ### Best Case Scenarios (If Patterns Work)
 
 **Gamma Accumulation**:
+
 - Conservative: 40-50% hit rate vs 25% baseline
 - Binomial p < 0.01 with N = 30+ detections
 
 **Gamma Relief**:
+
 - Conservative: 35-45% hit rate vs 25% baseline
 - Binomial p < 0.05 with N = 30+ detections
 
 **Gamma Reversal**:
+
 - Aggressive: 25-35% hit rate vs 10% baseline
 - Hard to test (need regime variation)
 
 **Persistent Gamma**:
+
 - Conservative: 60-70% hit rate vs 50% baseline
 - Easiest to validate (most common in 2024)
 
@@ -267,10 +286,12 @@ persistent_gamma:
 ### Step 3: GO/NO-GO Decision
 
 **GO (Full Paper #2)**:
+
 - At least 2 patterns show hit rate > baseline + 10pp
 - At least 1 pattern has p < 0.05
 
 **NO-GO (Fold into Paper #1 discussion)**:
+
 - All patterns show hit rate ≈ baseline
 - No statistical significance
 
@@ -323,6 +344,7 @@ def verify_pattern_outcome(
 **Context**: Paper #2 will validate patterns across 2023-2025 (~714 days)
 
 **Challenge**: Different years may have different volatility regimes
+
 - 2023: Likely higher baseline volatility (post-COVID normalization)
 - 2024: Lower baseline volatility (100% negative GEX, stable regime)
 - 2025: Unknown (data TBD)
@@ -330,6 +352,7 @@ def verify_pattern_outcome(
 ### Threshold Options
 
 #### Option A: Fixed Thresholds (Use 2024 values for all years)
+
 ```yaml
 # Same thresholds for all years
 thresholds_fixed:
@@ -343,6 +366,7 @@ thresholds_fixed:
 **Cons**: May not account for regime differences
 
 #### Option B: Year-Specific Thresholds (Recalculate per year)
+
 ```yaml
 # Different thresholds per year
 thresholds_2023: {accumulation: 1.12, ...}  # P75 from 2023
@@ -354,6 +378,7 @@ thresholds_2025: {accumulation: 0.95, ...}  # P75 from 2025
 **Cons**: NOT comparable, looks like p-hacking, methodologically weak
 
 #### Option C: Pooled Thresholds (Calculate from 3-year combined)
+
 ```yaml
 # Combined 2023-2025 data (~714 days)
 thresholds_pooled:
@@ -369,6 +394,7 @@ thresholds_pooled:
 ### Recommended Hybrid Approach ✅
 
 **Phase 1 (Issue #108): Use 2024-only thresholds**
+
 ```yaml
 baseline_validation:
   data_source: "2024_spy_only"
@@ -377,6 +403,7 @@ baseline_validation:
 ```
 
 **Phase 2 (Issue #107, OPTIONAL): Use pooled thresholds**
+
 ```yaml
 multi_year_extension:
   data_source: "2023_2025_pooled"
@@ -393,17 +420,20 @@ multi_year_extension:
 ### Academic Justification
 
 **Why Pooled (Option C) for final paper?**
+
 1. **Most data** → Most stable percentile estimates (~714 days vs ~242)
 2. **Regime diversity** → Tests patterns across high/low vol environments
 3. **Single bar** → Clean comparison, no "moving goalposts"
 4. **Defensible** → "We used the full empirical distribution"
 
 **Why NOT year-specific (Option B)?**
+
 1. **Not comparable** → Can't claim "consistent predictive power"
 2. **P-hacking perception** → Changing thresholds looks like data mining
 3. **Weaker claim** → "Patterns work with custom thresholds" is less impressive
 
 **Why report year-specific hit rates?**
+
 - Tests if patterns degrade in certain regimes
 - Addresses reviewer concerns about regime stability
 - Shows transparency (not hiding regime differences)
@@ -420,6 +450,7 @@ multi_year_extension:
 | P50 (Persistent) | 0.48% | ~0.52% | +8% |
 
 **Interpretation**:
+
 - Higher pooled thresholds → Slightly harder to verify patterns (more conservative)
 - Expected ~5-10% increase due to 2023 higher vol regime
 - Makes Phase 1 (2024-only) results slightly optimistic, Phase 2 more rigorous
@@ -431,6 +462,7 @@ multi_year_extension:
 **Data Source**: `reports/statistical_validation/gamma_positioning_timeseries_2024.csv`
 
 **Related Issues**:
+
 - Issue #99: Granger causality (validates predictive relationship)
 - Issue #100: Lead-lag analysis (validates regime effects)
 - Issue #107: Paper #2 sequential GEX analysis

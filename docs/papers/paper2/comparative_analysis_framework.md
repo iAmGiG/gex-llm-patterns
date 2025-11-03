@@ -23,6 +23,7 @@
 **Definition**: % of days where LLM detects a pattern
 
 **Baseline (Paper #1, 2024 unbiased prompt)**:
+
 ```yaml
 single_day_detection:
   data_source: "reports/validation/paper1_unbiased_2024.json"
@@ -31,6 +32,7 @@ single_day_detection:
 ```
 
 **Sequential (Paper #2)**:
+
 ```yaml
 sequential_detection:
   data_source: "reports/validation/sequential_2024/"
@@ -39,6 +41,7 @@ sequential_detection:
 ```
 
 **Statistical Test**: **McNemar's Test** (paired proportions)
+
 ```python
 from statsmodels.stats.contingency_tables import mcnemar
 
@@ -55,11 +58,13 @@ result = mcnemar(table, exact=False, correction=True)
 ```
 
 **Why McNemar's Test:**
+
 - ✅ Paired data (same days analyzed by both methods)
 - ✅ Tests if methods disagree systematically (not just random)
 - ✅ Handles "both detected" vs "one detected" cases
 
 **Interpretation**:
+
 - `b > c` and p < 0.05: Sequential detects patterns single-day missed (improvement)
 - `c > b` and p < 0.05: Single-day detects patterns sequential missed (regression)
 - p ≥ 0.05: No significant difference in detection rate
@@ -71,6 +76,7 @@ result = mcnemar(table, exact=False, correction=True)
 **Definition**: % of detected patterns that verify against outcome thresholds
 
 **Baseline (Paper #1)**:
+
 ```yaml
 single_day_accuracy:
   total_detected: 168
@@ -80,6 +86,7 @@ single_day_accuracy:
 ```
 
 **Sequential (Paper #2)**:
+
 ```yaml
 sequential_accuracy:
   total_detected: TBD
@@ -88,6 +95,7 @@ sequential_accuracy:
 ```
 
 **Statistical Test**: **Two-Proportion Z-Test**
+
 ```python
 from statsmodels.stats.proportion import proportions_ztest
 
@@ -99,11 +107,13 @@ z_stat, p_value = proportions_ztest(counts, nobs, alternative='larger')
 ```
 
 **Why Two-Proportion Test:**
+
 - ✅ Independent proportions (accuracy of detected patterns)
 - ✅ Tests if sequential predictions verify at higher rate
 - ✅ One-sided test (H1: sequential > single-day)
 
 **Interpretation**:
+
 - Accuracy Δ > 2pp and p < 0.05: Meaningful improvement
 - Accuracy Δ < 2pp: Marginal or no improvement
 - Accuracy Δ < 0: Regression (sequential less accurate)
@@ -115,6 +125,7 @@ z_stat, p_value = proportions_ztest(counts, nobs, alternative='larger')
 **Definition**: Mean LLM-reported confidence (0-100) for detected patterns
 
 **Baseline (Paper #1)**:
+
 ```yaml
 single_day_confidence:
   mean: 72  # Estimated (Paper #1 reported ~70-75 typical)
@@ -123,6 +134,7 @@ single_day_confidence:
 ```
 
 **Sequential (Paper #2)**:
+
 ```yaml
 sequential_confidence:
   mean: TBD
@@ -131,6 +143,7 @@ sequential_confidence:
 ```
 
 **Statistical Test**: **Welch's t-test** (unequal variances)
+
 ```python
 from scipy.stats import ttest_ind
 
@@ -143,11 +156,13 @@ t_stat, p_value = ttest_ind(
 ```
 
 **Why Welch's t-test:**
+
 - ✅ Continuous variable (confidence scores)
 - ✅ Doesn't assume equal variances
 - ✅ Tests if sequential confidences are significantly higher
 
 **Interpretation**:
+
 - Mean Δ > 10pts and p < 0.05: Sequential increases confidence meaningfully
 - Mean Δ 5-10pts: Modest improvement
 - Mean Δ < 5pts: No practical difference
@@ -161,6 +176,7 @@ t_stat, p_value = ttest_ind(
 **Definition**: % of detected patterns that do NOT verify
 
 **Baseline (Paper #1)**:
+
 ```yaml
 single_day_fpr:
   false_positives: 14  # 168 detected - 154 verified
@@ -169,6 +185,7 @@ single_day_fpr:
 ```
 
 **Sequential (Paper #2)**:
+
 ```yaml
 sequential_fpr:
   false_positives: TBD
@@ -179,6 +196,7 @@ sequential_fpr:
 **Statistical Test**: Same as accuracy (inverse metric)
 
 **Interpretation**:
+
 - Lower FPR = Better (fewer spurious detections)
 - Ideal: Detection ↑ AND FPR ↓ (more patterns, higher precision)
 
@@ -211,6 +229,7 @@ pattern_comparison = {
 **Analysis**: Which patterns benefit most from temporal context?
 
 **Hypothesis**:
+
 - **Accumulation**: Should improve (5-day trend clearer than snapshot)
 - **Relief**: Should improve (declining pressure visible in sequence)
 - **Persistent**: May not improve (single day sufficient for stable regime)
@@ -219,9 +238,10 @@ pattern_comparison = {
 
 ## GO/NO-GO Decision Criteria (Day 5)
 
-### ✅ GO - Proceed to Phase 2 (Multi-Year) IF:
+### ✅ GO - Proceed to Phase 2 (Multi-Year) IF
 
 **Strong Evidence:**
+
 1. Detection rate increases ≥5pp (p < 0.05), OR
 2. Accuracy improves ≥2pp (p < 0.05), OR
 3. Confidence increases ≥10pts (p < 0.05)
@@ -230,7 +250,8 @@ pattern_comparison = {
 4. No metric regresses >3pp
 
 **Example**:
-```
+
+```bash
 Detection: 69.4% → 75.2% (+5.8pp, p=0.012) ✅
 Accuracy: 91.7% → 93.1% (+1.4pp, p=0.18) (NS but not regressing)
 Confidence: 72 → 81 (+9pts, p=0.045) (marginal)
@@ -239,15 +260,17 @@ Confidence: 72 → 81 (+9pts, p=0.045) (marginal)
 
 ---
 
-### ⚠️ CAUTION - Mixed Results IF:
+### ⚠️ CAUTION - Mixed Results IF
 
 **Marginal Improvements:**
+
 1. Detection +2-4pp (p > 0.05), OR
 2. Accuracy +1-2pp (marginal), OR
 3. Trade-offs (detection ↑, accuracy ↓)
 
 **Example**:
-```
+
+```bash
 Detection: 69.4% → 72.1% (+2.7pp, p=0.12) (NS)
 Accuracy: 91.7% → 93.0% (+1.3pp, p=0.24) (NS)
 Confidence: 72 → 77 (+5pts, p=0.08) (marginal)
@@ -258,15 +281,17 @@ Confidence: 72 → 77 (+5pts, p=0.08) (marginal)
 
 ---
 
-### 🚫 NO-GO - Fold into Paper #1 Discussion IF:
+### 🚫 NO-GO - Fold into Paper #1 Discussion IF
 
 **No Improvement or Regression:**
+
 1. Detection decreases >3pp, OR
 2. Accuracy decreases >2pp, OR
 3. No significant improvements on ANY metric
 
 **Example**:
-```
+
+```bash
 Detection: 69.4% → 67.8% (-1.6pp, p=0.35) ⚠️
 Accuracy: 91.7% → 90.2% (-1.5pp, p=0.28) ⚠️
 Confidence: 72 → 74 (+2pts, p=0.45) (NS)
@@ -274,6 +299,7 @@ Confidence: 72 → 74 (+2pts, p=0.45) (NS)
 ```
 
 **Academic Handling**:
+
 - Add to Paper #1 discussion: "We tested sequential context; no improvement observed"
 - Explains why temporal dynamics are limited (stable regime)
 - Honest null result (still publishable finding)
@@ -405,6 +431,7 @@ def generate_comparison_report():
 ## Expected Results (Baseline Estimates)
 
 ### Best Case (Strong Sequential Advantage)
+
 ```yaml
 best_case:
   detection_rate: 69.4% → 77% (+7.6pp, p=0.003) ✅
@@ -415,6 +442,7 @@ best_case:
 ```
 
 ### Moderate Case (Marginal Improvement)
+
 ```yaml
 moderate_case:
   detection_rate: 69.4% → 72.8% (+3.4pp, p=0.06) ⚠️
@@ -425,6 +453,7 @@ moderate_case:
 ```
 
 ### Null Case (No Improvement)
+
 ```yaml
 null_case:
   detection_rate: 69.4% → 70.1% (+0.7pp, p=0.42) (NS)
@@ -435,6 +464,7 @@ null_case:
 ```
 
 **Academic Value of Null Result:**
+
 - ✅ Still publishable: "We tested H1, found no support"
 - ✅ Explains regime dependency: "2024 stable regime limits temporal signal"
 - ✅ Sets up multi-year: "May differ in regime-change periods (2023)"
@@ -467,6 +497,7 @@ mde = zt_ind_solve_power(
 **Interpretation**: We can reliably detect accuracy improvements ≥6pp
 
 **Sample Size Adequate?**
+
 - ✅ For 5pp detection rate change: 80% power with n=240
 - ✅ For 3pp accuracy change: 65% power (marginal)
 - ⚠️ For 10pt confidence change: 75% power (acceptable)
@@ -475,7 +506,7 @@ mde = zt_ind_solve_power(
 
 ## Files Generated
 
-```
+```bash
 reports/validation/sequential_2024/
 ├── comparative_analysis_summary.json     # All metrics
 ├── statistical_tests.json                # p-values, CIs
@@ -492,15 +523,18 @@ reports/validation/sequential_2024/
 ## Related Documents
 
 **Paper #1 Baseline**:
+
 - `reports/validation/paper1_unbiased_2024.json`
 - Detection: 69.4%, Accuracy: 91.7%
 
 **Paper #2 Design**:
+
 - `sequential_prompt_design.md` - Template and methodology
 - `outcome_verification_thresholds.md` - Verification framework
 - `sequential_pattern_detection_rules.md` - Pattern detection logic
 
 **Related Issues**:
+
 - Issue #107: Paper #2 Sequential GEX Analysis
 - Issue #108: Implementation (5-day plan)
 

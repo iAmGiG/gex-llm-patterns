@@ -9,11 +9,13 @@
 ## Pattern 1: Gamma Accumulation
 
 ### Definition
+
 Dealer gamma constraint intensifies over 5 days (magnitude increasing), creating pressure that will eventually release.
 
 ### Detection Criteria
 
 **Primary Rule**: Magnitude increases >= 30%
+
 ```python
 abs(GEX_4) > abs(GEX_0) * 1.30
 ```
@@ -21,6 +23,7 @@ abs(GEX_4) > abs(GEX_0) * 1.30
 **Secondary Rules** (at least 1 must be true):
 
 1. **Monotonic Growth**:
+
    ```python
    # At least 3 out of 4 transitions show increasing magnitude
    increases = sum([abs(GEX[i+1]) > abs(GEX[i]) for i in range(4)])
@@ -28,6 +31,7 @@ abs(GEX_4) > abs(GEX_0) * 1.30
    ```
 
 2. **Accelerating Growth**:
+
    ```python
    # Growth rate increases over time
    early_growth = abs(GEX_2) / abs(GEX_0)
@@ -36,6 +40,7 @@ abs(GEX_4) > abs(GEX_0) * 1.30
    ```
 
 **Exclusions**: Reject if regime flip occurs
+
 ```python
 # All 5 days must have same sign
 same_sign = all([sign(GEX[i]) == sign(GEX[0]) for i in range(5)])
@@ -136,11 +141,13 @@ gex = [-10e9, -8e9, -12e9, -9e9, -13.5e9]  # 35% growth but erratic
 ## Pattern 2: Gamma Relief
 
 ### Definition
+
 Dealer gamma constraint relaxes over 5 days (magnitude decreasing), reducing hedging pressure.
 
 ### Detection Criteria
 
 **Primary Rule**: Magnitude decreases >= 30%
+
 ```python
 abs(GEX_4) < abs(GEX_0) * 0.70
 ```
@@ -148,6 +155,7 @@ abs(GEX_4) < abs(GEX_0) * 0.70
 **Secondary Rules** (at least 1 must be true):
 
 1. **Monotonic Decline**:
+
    ```python
    # At least 3 out of 4 transitions show decreasing magnitude
    decreases = sum([abs(GEX[i+1]) < abs(GEX[i]) for i in range(4)])
@@ -155,6 +163,7 @@ abs(GEX_4) < abs(GEX_0) * 0.70
    ```
 
 2. **Accelerating Relief**:
+
    ```python
    # Decline rate increases over time
    early_decline = abs(GEX_2) / abs(GEX_0)
@@ -163,6 +172,7 @@ abs(GEX_4) < abs(GEX_0) * 0.70
    ```
 
 **Exclusions**: Reject if regime flip occurs
+
 ```python
 same_sign = all([sign(GEX[i]) == sign(GEX[0]) for i in range(5)])
 ```
@@ -244,11 +254,13 @@ gex = [-10e9, -9.5e9, -9e9, -8.8e9, -8.5e9]  # Only 15% decline
 ## Pattern 3: Gamma Reversal
 
 ### Definition
+
 Dealer positioning flips from one side of the market to the other (sign change), forcing abrupt hedging flow reversal.
 
 ### Detection Criteria
 
 **Primary Rule**: Sign flip
+
 ```python
 sign(GEX_0) != sign(GEX_4)
 ```
@@ -256,12 +268,14 @@ sign(GEX_0) != sign(GEX_4)
 **Secondary Rules** (both must be true):
 
 1. **Zero Crossing Detected**:
+
    ```python
    # At least one day has abs(GEX) < $1B (near zero)
    crossed_zero = any([abs(GEX[i]) < 1e9 for i in range(5)])
    ```
 
 2. **Magnitude Significant on Both Sides**:
+
    ```python
    # Start and end magnitudes both > $5B
    significant_start = abs(GEX_0) > 5e9
@@ -332,11 +346,13 @@ gex = [-40e9, -38e9, -35e9, -33e9, -30e9]  # All negative
 ## Pattern 4: Persistent Gamma
 
 ### Definition
+
 Dealer positioning remains stable over 5 days (no significant change), suggesting continued hedging regime.
 
 ### Detection Criteria
 
 **Primary Rule**: Low coefficient of variation
+
 ```python
 CV = std(abs(GEX)) / mean(abs(GEX))
 persistent = CV < 0.15  # Less than 15% variation
@@ -345,6 +361,7 @@ persistent = CV < 0.15  # Less than 15% variation
 **Secondary Rules** (at least 1 must be true):
 
 1. **Tight Range**:
+
    ```python
    # Max/min ratio < 1.20 (within 20% range)
    max_gex = max([abs(GEX[i]) for i in range(5)])
@@ -353,6 +370,7 @@ persistent = CV < 0.15  # Less than 15% variation
    ```
 
 2. **No Trend**:
+
    ```python
    # Linear regression slope near zero
    from scipy.stats import linregress
@@ -362,6 +380,7 @@ persistent = CV < 0.15  # Less than 15% variation
    ```
 
 **Exclusions**: Reject if sign flip
+
 ```python
 same_sign = all([sign(GEX[i]) == sign(GEX[0]) for i in range(5)])
 ```
@@ -500,6 +519,7 @@ def classify_sequential_pattern(gex_5day: list) -> dict:
 **Problem**: Should patterns with trivial GEX magnitudes be classified?
 
 **Example Edge Case**:
+
 ```python
 # Low magnitude "persistent" pattern
 gex = [-$2.1B, -$2.0B, -$2.2B, -$2.1B, -$2.0B]
@@ -519,6 +539,7 @@ PATTERN_SIGNIFICANCE_THRESHOLDS = {
 ```
 
 **Rationale**:
+
 - ✅ **Prevents noise classification**: Trivial variations aren't meaningful patterns
 - ✅ **Aligns with Paper #1**: Focused on "large constraints" that force dealer behavior
 - ✅ **Empirically justified**: 2024 SPY GEX typically $10B-$60B (median ~$35B)
@@ -617,16 +638,19 @@ gex = [-10e9, -11e9, -12e9, -12.5e9, -13e9]
 ### Why This Matters for Paper #2
 
 **Academic Rigor**:
+
 - Prevents claiming patterns exist when GEX is economically trivial
 - Reduces false positive rate (improves precision)
 - Makes results more defensible ("We only classified meaningful constraints")
 
 **Expected Impact**:
+
 - ~5-10% of windows may fall below threshold (SPY 2024)
 - Improves signal-to-noise ratio
 - Increases accuracy (fewer spurious classifications)
 
 **Null Hypothesis Testing**:
+
 - Allows LLM to naturally output `pattern_detected: false`
 - Tests whether LLM respects magnitude significance
 - Provides baseline rate for "no pattern" classification

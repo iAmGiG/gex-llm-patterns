@@ -13,6 +13,7 @@
 **DECISION (Nov 1, 2025)**: Raw data only, NO pre-calculated trajectory summary
 
 **Per-Day Data Provided**:
+
 ```yaml
 day_data:
   net_gex: -2.1e9        # Raw GEX value (dollars)
@@ -23,6 +24,7 @@ day_data:
 **NO Trajectory Summary** - LLM must recognize patterns from raw sequence
 
 **Rationale**:
+
 - ✅ **Maintains Paper #1 consistency**: Gave LLM raw GEX, it detected patterns
 - ✅ **True test of temporal reasoning**: Can LLM identify escalation/relief from sequences?
 - ✅ **More academically defensible**: "LLM detected escalating gamma" > "We labeled it escalating"
@@ -30,17 +32,20 @@ day_data:
 - ✅ **Stronger signal if successful**: Lower detection rate expected, but more meaningful
 
 **Expected Impact**:
+
 - Detection rate: Likely **lower** than with hints (65-70% vs 71.5% baseline)
 - If improves over single-day → **stronger evidence** of temporal understanding
 - More impressive academically (LLM derives trajectory itself)
 
 **Fallback Plan**:
+
 - If Phase 1 shows NO improvement, run Phase 1b WITH trajectory summaries as ablation study
 - Test if hints improve detection (measures benefit of pre-calculation)
 
 ### 2. Excluded Data (Phase 1 Baseline)
 
 **NOT included in Phase 1**:
+
 - ❌ Regime labels ("NEGATIVE_GAMMA" / "POSITIVE_GAMMA")
 - ❌ Strike-level concentrations
 - ❌ Volume anomalies
@@ -53,7 +58,7 @@ day_data:
 
 ## Template Configuration
 
-### Add to `config_defaults/llm_prompts.yaml`:
+### Add to `config_defaults/llm_prompts.yaml`
 
 ```yaml
   # SEQUENTIAL: 5-day trajectory analysis (Paper #2)
@@ -105,7 +110,7 @@ day_data:
       - "trajectory_reasoning"            # Why this trajectory classification?
 ```
 
-### Add to `question_templates:`:
+### Add to `question_templates:`
 
 ```yaml
   sequential_neutral:
@@ -142,7 +147,7 @@ day_data:
 
 ## Example Prompt (What LLM Sees)
 
-```
+```bash
 You are analyzing dealer hedging constraints for INDEX_1 over a 5-day period.
 
 SEQUENTIAL GEX DATA (Day T-4 to Day T+0):
@@ -222,6 +227,7 @@ Note: Classify as "no_clear_pattern" if:
 **Approach**: Let LLM assess confidence (0-100) based on pattern clarity
 
 **Confidence Bands** (guidance for LLM):
+
 ```yaml
 confidence_interpretation:
   0: "No pattern detected"
@@ -233,12 +239,14 @@ confidence_interpretation:
 ```
 
 **Why LLM Self-Report for Phase 1:**
+
 - ✅ Simplest to implement (no additional calculations)
 - ✅ Tests if LLM can self-assess uncertainty
 - ✅ Comparable to Paper #1 methodology
 - ✅ Provides baseline for calibration analysis
 
 **Expected LLM Behavior:**
+
 ```python
 # If LLM understands uncertainty:
 expected_distribution = {
@@ -281,6 +289,7 @@ def analyze_confidence_calibration(predictions, outcomes):
 ```
 
 **Hybrid Scoring (Possible Future):**
+
 ```python
 def hybrid_confidence(llm_confidence, pattern_metrics):
     """
@@ -294,6 +303,7 @@ def hybrid_confidence(llm_confidence, pattern_metrics):
 ### Validation Reporting
 
 **Report Both Metrics:**
+
 ```yaml
 validation_results:
   llm_confidence:
@@ -312,11 +322,13 @@ validation_results:
 ```
 
 **Paper Interpretation:**
+
 - "LLM self-reported confidence moderately correlated with pattern strength (r=0.42)"
 - "Slight overconfidence observed (calibration curve below diagonal)"
 - "Future work: Hybrid scoring combining LLM reasoning and deterministic metrics"
 
 **Implementation Note:**
+
 - Day 1-4: Use raw LLM confidence (0-100)
 - Day 5: Analyze correlation with pattern strength and verification rate
 - Paper: Report both LLM confidence and empirical calibration
@@ -328,6 +340,7 @@ validation_results:
 ### Quartile-Based Outcome Verification
 
 **Empirical Distribution** (from SPY 2024 historical data):
+
 ```python
 thresholds = {
     'accumulation': 0.86%,  # P75 - Top quartile realized vol
@@ -425,16 +438,19 @@ def detect_hedging(predicted_type, time_horizon):
 ```
 
 **Why This Matters:**
+
 - ✅ **Prevents hedging abuse** - LLM can't say "T+1 to T+3" for everything
 - ✅ **Tests understanding** - Different patterns have different timeframes
 - ✅ **Enables analysis** - Can report hedging rate (% of predictions with mismatched horizon)
 
 **Expected Distribution (if LLM understands mechanics):**
+
 - 75% predictions use expected time horizon
 - 15% justifiable exceptions (e.g., "accumulation extreme, expect T+1 to T+3")
 - 10% hedging/unclear cases
 
 **Rationale**:
+
 - ✅ Data-driven (empirical distribution from SPY 2024)
 - ✅ Conservative (quartiles, not extremes)
 - ✅ Testable (binomial tests for statistical significance)
@@ -451,19 +467,23 @@ def detect_hedging(predicted_type, time_horizon):
 - [ ] Create `analyze_pattern_distribution.py` utility script
 - [ ] Load 2024 SPY GEX data (242 days → 238 windows of 5 days)
 - [ ] Apply pattern detection rules to all windows:
+
   ```python
   for window in sliding_windows(gex_data, window_size=5):
       pattern = classify_sequential_pattern(window)
       distribution[pattern['pattern_type']] += 1
   ```
+
 - [ ] Report distribution:
-  ```
+
+  ```bash
   Expected:
   - Persistent: 50-70% (~119-167 windows)
   - Accumulation: 15-25% (~36-60 windows)
   - Relief: 10-20% (~24-48 windows)
   - Reversal: 0% (0 windows - single regime)
   ```
+
 - [ ] **GO/NO-GO Decision**:
   - ✅ GO if each pattern (except Reversal) has ≥30 windows
   - ⚠️ CAUTION if any pattern has 15-29 windows (low power)
@@ -472,6 +492,7 @@ def detect_hedging(predicted_type, time_horizon):
 - [ ] Document actual distribution in `reports/validation/sequential_2024/pattern_distribution.json`
 
 **Why This is Critical**:
+
 - Statistical power: Need ≥30 samples per pattern for meaningful binomial tests
 - Prevents wasted effort: If Accumulation only occurs 5 times, can't validate it
 - Threshold tuning: May need to adjust 30% growth threshold if too restrictive
@@ -481,18 +502,21 @@ def detect_hedging(predicted_type, time_horizon):
 ---
 
 ### 1. Configuration (Day 1)
+
 - [ ] Add `sequential_unbiased` template to `llm_prompts.yaml`
 - [ ] Add `sequential_neutral` question template
 - [ ] Add trajectory calculation settings
 - [ ] Add pattern significance thresholds (min_gex_magnitude: 5e9, min_confidence: 40)
 
 ### 2. Prompt Builder Extension (Day 2)
+
 - [ ] Extend `MechanicsPromptBuilder` with `build_sequential_prompt()`
 - [ ] Implement 5-day data formatting
 - [ ] Implement trajectory summary calculation
 - [ ] Add day label obfuscation ("Day T-4", etc.)
 
 ### 3. Validation Script (Day 3)
+
 - [ ] Create `validate_sequential_patterns.py`
 - [ ] Implement 5-day window sliding logic
 - [ ] Query GEX database for lookback windows
@@ -500,12 +524,14 @@ def detect_hedging(predicted_type, time_horizon):
 - [ ] Parse trajectory-specific responses
 
 ### 4. Outcome Verification (Day 4)
+
 - [ ] Create `SequentialOutcomeVerifier` class
 - [ ] Calculate empirical threshold distribution
 - [ ] Implement trajectory-specific verification logic
 - [ ] Generate comparison tables (single-day vs sequential)
 
 ### 5. Analysis (Day 5)
+
 - [ ] Compare detection rates (71.5% baseline vs sequential)
 - [ ] Compare accuracy (91.2% baseline vs sequential)
 - [ ] Analyze confidence by trajectory type
@@ -515,12 +541,14 @@ def detect_hedging(predicted_type, time_horizon):
 
 ## Success Metrics (Phase 1 - 2024 Baseline)
 
-### Proceed to Phase 2 IF:
+### Proceed to Phase 2 IF
+
 - Accuracy improves by ≥2pp (91.2% → 93.2%+), OR
 - Confidence increases on persistent patterns (72% → 85%+), OR
 - False positives decrease significantly
 
-### Stop at Phase 1 IF:
+### Stop at Phase 1 IF
+
 - Accuracy same or worse (≤91.2%)
 - No meaningful improvement in any metric
 - Added complexity not justified
@@ -529,7 +557,7 @@ def detect_hedging(predicted_type, time_horizon):
 
 ## Files to Create
 
-```
+```bash
 config_defaults/
 └── llm_prompts.yaml                     # Add sequential_unbiased template
 
