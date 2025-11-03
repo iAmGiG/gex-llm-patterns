@@ -40,9 +40,11 @@ Request → Tier 1 (Database) → Tier 2 (Cache) → AutoGen Tools → API → W
 **Tier 4: Direct API Access**
 
 - **Purpose**: Last resort for missing data
-- **APIs**: Alpha Vantage, Polygon.io, multiple providers
-- **Rate Limiting**: Alpha Vantage (75 calls/minute), provider-specific limits
+- **Primary API**: Alpha Vantage (options chain data, 75 calls/minute)
+- **Secondary API**: Polygon.io (stock prices only, used for specific test cases, 5 calls/minute)
+- **Rate Limiting**: Enforced per provider specifications
 - **Error Handling**: Graceful degradation with warnings
+- **Configuration**: API keys stored in `config/config.json` (not tracked in git)
 
 ### Data Flow
 

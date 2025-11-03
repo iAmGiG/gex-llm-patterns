@@ -12,7 +12,7 @@
 
 [![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003B57.svg)](https://www.sqlite.org/)
-[![Polygon.io](https://img.shields.io/badge/Data-Polygon.io-7C3AED.svg)](https://polygon.io/)
+[![Alpha Vantage](https://img.shields.io/badge/Data-Alpha%20Vantage%20Premium-0066CC.svg)](https://www.alphavantage.co/)
 [![Matplotlib](https://img.shields.io/badge/Viz-Matplotlib-11557c.svg)](https://matplotlib.org/)
 [![Graphviz](https://img.shields.io/badge/Diagrams-Graphviz-2C3E50.svg)](https://graphviz.org/)
 
