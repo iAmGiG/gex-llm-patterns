@@ -1,0 +1,53 @@
+{
+  "test_timestamp": "2025-11-03T22:45:06.202931",
+  "test_type": "text_parsing",
+  "models_tested": [
+    "o3-mini",
+    "o4-mini",
+    "o3"
+  ],
+  "results": [
+    {
+      "model": "o3-mini",
+      "success": true,
+      "result": {
+        "who": "Options buyers (or speculators) creating the negative gamma exposure",
+        "whom": "Options dealers (market makers)",
+        "what": "They force dealers to dynamically hedge by buying in up moves and selling in down moves",
+        "confidence": 90,
+        "narrative": "WHO: Options buyers (or speculators) creating the negative gamma exposure  \nWHOM: Options dealers (market makers)  \nWHAT: They force dealers to dynamically hedge by buying in up moves and selling in down moves  \nCONFIDENCE: 90  \nMECHANICS: The data shows a very high net negative gamma, meaning dealers are short gamma. As prices move away from the zero\u2010gamma level, dealers must hedge their positions\u2014buying as prices rise and selling as they fall. This dynamic hedging, initiated by options buyers\u2019 positions, effectively forces dealers into trades that can amplify market moves.",
+        "mechanics": "The data shows a very high net negative gamma, meaning dealers are short gamma. As prices move away from the zero\u2010gamma level, dealers must hedge their positions\u2014buying as prices rise and selling as they fall. This dynamic hedging, initiated by options buyers\u2019 positions, effectively forces dealers into trades that can amplify market moves.",
+        "key_insight": "Options buyers (or speculators) creating the negative gamma exposure forcing Options dealers (market makers) to They force dealers to dynamically hedge by buying in up moves and selling in down moves"
+      },
+      "quality": "\u2705 GOOD"
+    },
+    {
+      "model": "o4-mini",
+      "success": true,
+      "result": {
+        "who": "Dealers (option market\u2010makers) holding large negative gamma",
+        "whom": "Underlying equity market/liquidity providers",
+        "what": "Forced to sell the index into any price dip (and conversely buy into rallies) to stay delta\u2010neutral",
+        "confidence": 80,
+        "narrative": "WHO: Dealers (option market\u2010makers) holding large negative gamma  \nWHOM: Underlying equity market/liquidity providers  \nWHAT: Forced to sell the index into any price dip (and conversely buy into rallies) to stay delta\u2010neutral  \nCONFIDENCE: 80  \nMECHANICS: With net GEX at \u2013$32.5 B and spot (472.87) below the zero\u2010gamma mark (476.32), dealers are short gamma. A drop in the index makes their delta shortfall grow, so they must offload stock into the weakness; a bounce would compel them to buy back. This dynamic hedging amplifies moves, effectively forcing dealers to trade in step with price changes.",
+        "mechanics": "With net GEX at \u2013$32.5 B and spot (472.87) below the zero\u2010gamma mark (476.32), dealers are short gamma. A drop in the index makes their delta shortfall grow, so they must offload stock into the weakness; a bounce would compel them to buy back. This dynamic hedging amplifies moves, effectively forcing dealers to trade in step with price changes.",
+        "key_insight": "Dealers (option market\u2010makers) holding large negative gamma forcing Underlying equity market/liquidity providers to Forced to sell the index into any price dip (and conversely buy into rallies) to stay delta\u2010neutral"
+      },
+      "quality": "\u2705 GOOD"
+    },
+    {
+      "model": "o3",
+      "success": true,
+      "result": {
+        "who": "Short-gamma option dealers/market-makers",
+        "whom": "The dealers themselves (their risk-desk trading algos are compelled by risk rules)",
+        "what": "Forced delta-hedging in the underlying: sell as INDEX_1 falls, buy as it rises",
+        "confidence": 80,
+        "narrative": "WHO: Short-gamma option dealers/market-makers  \nWHOM: The dealers themselves (their risk-desk trading algos are compelled by risk rules)  \nWHAT: Forced delta-hedging in the underlying: sell as INDEX_1 falls, buy as it rises  \nCONFIDENCE: 80  \nMECHANICS: Net GEX is \u2013$32.49 B and spot ($472.87) sits below the zero-gamma level ($476.32), placing dealers deep in a negative-gamma regime. When gamma is negative, dealers\u2019 option books lose delta neutrality as price moves; risk mandates require they neutralize this by trading the underlying in the same direction as the move (pro-cyclically). Thus every incremental price change effectively forces the dealer hedgers to act, amplifying the move.",
+        "mechanics": "Net GEX is \u2013$32.49 B and spot ($472.87) sits below the zero-gamma level ($476.32), placing dealers deep in a negative-gamma regime. When gamma is negative, dealers\u2019 option books lose delta neutrality as price moves; risk mandates require they neutralize this by trading the underlying in the same direction as the move (pro-cyclically). Thus every incremental price change effectively forces the dealer hedgers to act, amplifying the move.",
+        "key_insight": "Short-gamma option dealers/market-makers forcing The dealers themselves (their risk-desk trading algos are compelled by risk rules) to Forced delta-hedging in the underlying: sell as INDEX_1 falls, buy as it rises"
+      },
+      "quality": "\u2705 GOOD"
+    }
+  ]
+}

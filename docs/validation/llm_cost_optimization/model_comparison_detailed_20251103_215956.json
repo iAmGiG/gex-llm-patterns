@@ -1,0 +1,45 @@
+{
+  "test_config": {
+    "models_tested": [
+      "gpt-4o",
+      "o3-mini",
+      "gpt-5-mini"
+    ],
+    "n_samples": 0,
+    "ground_truth_file": "gamma_positioning_SPY_2024Q1.yaml",
+    "timestamp": "2025-11-03T21:59:56.981946"
+  },
+  "detailed_results": [],
+  "summary": {
+    "gpt-4o": {
+      "total_queries": 0,
+      "detected": 0,
+      "detection_rate_pct": 0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 0,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    },
+    "o3-mini": {
+      "total_queries": 0,
+      "detected": 0,
+      "detection_rate_pct": 0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 0,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    },
+    "gpt-5-mini": {
+      "total_queries": 0,
+      "detected": 0,
+      "detection_rate_pct": 0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 0,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    }
+  }
+}

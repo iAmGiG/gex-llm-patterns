@@ -1,0 +1,226 @@
+{
+  "test_config": {
+    "models_tested": [
+      "gpt-4o",
+      "o3-mini",
+      "gpt-5-mini"
+    ],
+    "n_samples": 10,
+    "ground_truth_file": "gamma_positioning_SPY_2024Q1.yaml",
+    "timestamp": "2025-11-03T22:02:23.645287"
+  },
+  "detailed_results": [
+    {
+      "model": "gpt-4o",
+      "date": "2024-02-26",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-02-06",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-03-20",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-03-19",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-01-18",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-02-15",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-01-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-03-13",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-02-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-4o",
+      "date": "2024-03-04",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-02-26",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-02-06",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-03-20",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-03-19",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-01-18",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-02-15",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-01-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-03-13",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-02-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "o3-mini",
+      "date": "2024-03-04",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-02-26",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-02-06",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-03-20",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-03-19",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-01-18",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-02-15",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-01-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-03-13",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-02-22",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    },
+    {
+      "model": "gpt-5-mini",
+      "date": "2024-03-04",
+      "detected": false,
+      "error": "MarketMechanicsAgent.__init__() got an unexpected keyword argument 'model'"
+    }
+  ],
+  "summary": {
+    "gpt-4o": {
+      "total_queries": 10,
+      "detected": 0,
+      "detection_rate_pct": 0.0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 10,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    },
+    "o3-mini": {
+      "total_queries": 10,
+      "detected": 0,
+      "detection_rate_pct": 0.0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 10,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    },
+    "gpt-5-mini": {
+      "total_queries": 10,
+      "detected": 0,
+      "detection_rate_pct": 0.0,
+      "matches": 0,
+      "match_rate_pct": 0,
+      "errors": 10,
+      "total_cost_usd": 0,
+      "avg_cost_per_query_usd": 0
+    }
+  }
+}
