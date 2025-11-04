@@ -80,6 +80,7 @@ env_test/
 # Old/backup config files
 *.cfg.bak
 *.toml.bak
+*.bak
 .pep8
 .isort.cfg
 
