@@ -65,8 +65,9 @@
 Phase 1: Methodology Validation ✅ COMPLETE
 ├─ Obfuscation testing framework
 ├─ 15 pattern library (WHO→WHOM→WHAT)
-├─ Full 2024 validation (242 days, 3 patterns)
-└─ Symposium presentation delivered
+├─ Full 2024 validation (252 days, 3 patterns)
+├─ Symposium presentation delivered
+└─ Paper #1 submitted to IEEE LLM-Finance 2025
 
 Phase 2: Temporal Dynamics 🔄 IN PROGRESS
 ├─ Sequential GEX (5-day lookback)
@@ -101,8 +102,7 @@ Future: Discovery & Applications 💭 CONCEPTUAL
 
 Both approaches prove LLM detects structural dealer constraints even when temporal context is removed.
 
-*10 days missing due to data availability gaps (mostly high-volume Friday expirations)
-**Q2 excluded due to insufficient data coverage (~27% availability)
+**Q2 excluded due to insufficient data coverage (~27% availability) - remaining quarters represent full 2024 validation coverage
 
 ## Project Status (October 2025)
 
@@ -114,15 +114,15 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 - ✅ **LLM Integration**: O3-mini deployment with structured reasoning prompts
 - ✅ **Obfuscation System**: Date/ticker anonymization with 35x performance optimization
 - ✅ **Documentation**: 40+ markdown files covering methodology, implementation, and findings
-- ✅ **Full 2024 Validation**: 242 trading days (96% coverage) tested with unbiased prompts
+- ✅ **Full 2024 Validation**: 252 trading days (100% coverage) tested with unbiased prompts
 - ✅ **Quarterly Validation**: 181 trading days (Q1, Q3, Q4) tested with pattern-specific prompts
 - ✅ **Prompt Bias Analysis**: Biased vs unbiased prompt comparison complete
 - ✅ **Symposium Presentation**: PhD symposium delivered (October 2025)
-- ✅ **Paper #1 Draft**: 10-page IEEE format draft with 8 figures, under advisor review
+- ✅ **Paper #1 Submitted**: IEEE LLM-Finance 2025 workshop (submitted Oct 26, 2025) - [Workshop](https://intelligentfinance.github.io/IEEE-LLM-finance-2025/index.html) | [Host Conference](https://conferences.cis.um.edu.mo/ieeebigdata2025/)
 
 ### In Progress
 
-- ⏳ **Paper #1 Submission**: IEEE LLM-Finance 2025 workshop (deadline: Oct 26, 2025)
+- ⏳ **Paper #1 Review**: Awaiting reviews from IEEE LLM-Finance 2025 (4-6 weeks)
 - 🔄 **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM (Issue #87)
 - 🔄 **Sequential GEX**: 5-day lookback analysis for temporal constraint detection (Issue #89)
 
