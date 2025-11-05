@@ -86,6 +86,7 @@ These documents validate the rigor of the research methodology.
 |----------|---------|--------|
 | [prompt_bias_mitigation.md](methodology/prompt_bias_mitigation.md) | Bias analysis + neutral framework | ✅ Implementation complete |
 | [negative_controls_design.md](methodology/negative_controls_design.md) | 4-test validation framework | ⚠️ **PARTIAL** (Tests 1-3 complete, Test 4 required) |
+| [alternative-approaches-considered.md](methodology/alternative-approaches-considered.md) | Why LLMs vs PFNs/PPD/deep learning | ✅ Reference for lit review |
 
 **Negative Controls Results**:
 1. ✅ Prompt comparison: 80% neutral vs 100% leading (conservative calibration)
