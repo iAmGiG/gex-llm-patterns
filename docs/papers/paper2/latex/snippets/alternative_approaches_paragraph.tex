@@ -1,0 +1,27 @@
+%% ============================================================================
+%% METHODOLOGY SECTION - Alternative Approaches Justification
+%% ============================================================================
+%%
+%% This snippet can be inserted into Section 3.1 (Methodology) to justify
+%% why LLMs were chosen over alternative approaches.
+%%
+%% Citations: \cite{muller2021pfn,salvatier2016pymc3,bingham2019pyro,hochreiter1997lstm,vaswani2017attention}
+%% ============================================================================
+
+\subsection{Methodological Approach: LLMs vs Alternatives}
+
+We considered several alternative approaches for detecting dealer constraint trajectories in sequential GEX data, including Prior-Fitted Networks~\cite{muller2021pfn}, probabilistic programming frameworks~\cite{salvatier2016pymc3,bingham2019pyro}, and traditional deep learning architectures~\cite{hochreiter1997lstm,vaswani2017attention}. We selected LLMs for three primary reasons:
+
+\textbf{First, mechanistic interpretability.} LLMs uniquely provide qualitative explanations of \textit{WHO} forces \textit{WHOM} to do \textit{WHAT}, directly addressing our research question about constraint reasoning. Alternative approaches (PFNs, LSTM, Transformers trained from scratch) are pattern matchers that cannot explain the underlying causal mechanism. While probabilistic programming~\cite{salvatier2016pymc3,bingham2019pyro} can model dealer hedging explicitly, it requires full mathematical specification of the hedging function and proprietary dealer inventory data unavailable to researchers.
+
+\textbf{Second, zero-shot generalization.} LLMs leverage pre-trained world knowledge about market mechanics, requiring no training data or regime-specific calibration. This is critical given the recent structural shift from 0DTE options proliferation (2022-2024), which makes historical training data potentially misleading for approaches requiring supervised learning~\cite{muller2021pfn,hochreiter1997lstm}.
+
+\textbf{Third, rapid iteration for validation.} Our negative control framework (Tests 1-4) requires testing prompt variations to ensure discrimination between strong and weak constraints. LLMs enable prompt-based iteration measured in days, while neural approaches require retraining measured in weeks to months.
+
+Future work could compare mechanistic reasoning (LLMs) with statistical pattern matching (PFNs~\cite{muller2021pfn}, deep learning~\cite{hochreiter1997lstm,vaswani2017attention}) to quantify the value of interpretability versus raw predictive performance. Hybrid approaches combining LLM qualitative detection with quantitative forecasting models may be valuable for production deployment.
+
+%% ============================================================================
+%% ALTERNATIVE: Shorter version (1 paragraph instead of 3)
+%% ============================================================================
+
+% \textbf{Methodological Approach.} We selected LLMs over alternatives (Prior-Fitted Networks~\cite{muller2021pfn}, probabilistic programming~\cite{salvatier2016pymc3,bingham2019pyro}, deep learning~\cite{hochreiter1997lstm,vaswani2017attention}) for three reasons: (1)~mechanistic interpretability through WHO$\rightarrow$WHOM$\rightarrow$WHAT reasoning unavailable in pattern matching approaches, (2)~zero-shot generalization without training data or regime-specific calibration, and (3)~rapid prompt-based iteration for negative control validation versus weeks-long retraining cycles.
