@@ -64,3 +64,52 @@
 % - More stable estimates (~714 days vs ~242)
 % - Single bar for clean comparison
 % - Expected ~5-10\% increase in thresholds (more conservative)
+
+\subsection{Prompt Bias Mitigation and Negative Controls}
+
+% Neutral Framework Implementation
+% To ensure our 100\% detection rate reflects genuine market constraints rather than prompt bias,
+% we implemented a neutral prompt framework with three key modifications:
+%
+% 1. System prompt: "assess WHETHER" constraints exist (vs. "identify WHO is forcing WHOM")
+% 2. Explicit YES/NO branching: Permission to detect no pattern
+% 3. Null hypothesis support: Confidence = 0 is valid, trajectory types include "incoherent" and "none"
+%
+% Implementation: src/llm/mechanics\_prompt\_builder.py:456-559 (build\_sequential\_prompt\_neutral)
+
+% Negative Control Validation (N=30 total tests)
+% Through systematic negative control testing, we developed a calibrated prompt framework
+% that achieved 80\% sensitivity on historical patterns while maintaining 80\% specificity
+% against random noise and 100\% rejection of negligible gamma constraints~\cite{kummerfeld2024dance,ribeiro2020checklist}.
+% This conservative calibration prioritizes avoiding false positives, accepting moderate
+% reduction in sensitivity as a methodologically appropriate trade-off for exploratory
+% research~\cite{nixon2023calibration,guo2017calibration}.
+%
+% We conducted three negative control experiments:
+%
+% \textbf{Test 1: Prompt Comparison} (N=10 real Q1 2024 GEX windows)
+% - Leading prompt detection: 100\% (10/10)
+% - Neutral prompt detection: 80\% (8/10)
+% - Detection difference: 20 percentage points
+% - Interpretation: Two borderline cases (15\% and 6\% magnitude changes) correctly
+%   rejected as within normal market variation
+%
+% \textbf{Test 2: Random Synthetic GEX} (N=10 noise windows)
+% - GEX values: Random uniform(-\$20B, +\$20B)
+% - Detection rate: 20\% (2/10 false positives)
+% - Result: PASS (<30\% threshold)
+% - Validates: Framework distinguishes signal from noise
+%
+% \textbf{Test 3: Zero-GEX} (N=10 negligible constraint windows)
+% - GEX values: Near-zero (<\$0.1B)
+% - Detection rate: 0\% (0/10 false positives)
+% - Result: PASS (<10\% threshold)
+% - Validates: Framework correctly detects absence of constraints
+%
+% \textbf{Key Finding: Mechanical Guidance Reduces False Positives by 60\%}
+% Counterintuitively, we found that mechanical confidence guidance (e.g., ``1 counter-trend
+% day = 70-100 confidence'') reduced false positives by 60\% compared to qualitative
+% guidance (v3a: 20\% FP vs v3b: 50\% FP), suggesting LLMs benefit from concrete
+% calibration anchors when performing temporal pattern recognition~\cite{zhang2024prompt,white2023pattern}.
+% This empirical finding contributes to the broader literature on prompt engineering for
+% structured reasoning tasks.

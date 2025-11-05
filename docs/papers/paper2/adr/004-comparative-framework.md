@@ -1,9 +1,16 @@
-# Comparative Analysis Framework: Single-Day vs Sequential
+# ADR 004: Comparative Analysis Framework
 
-**Purpose**: Define statistical methodology for comparing Paper #1 (single-day) vs Paper #2 (sequential) approaches
-
+**Status**: Accepted
 **Date**: November 1, 2025
-**Status**: Design phase
+**Context**: Paper #2's value depends on whether sequential analysis outperforms single-day baseline. Need rigorous statistical framework for comparison.
+**Decision**: Use same-window matched-pairs design comparing single-day vs 5-day detection on identical test set, with McNemar's test for accuracy comparison and Cohen's d for effect sizes.
+**Consequences**: Ensures fair comparison (same data); detects small improvements; avoids inflated p-values from independent samples.
+
+---
+
+## Purpose
+
+Define statistical methodology for comparing Paper #1 (single-day) vs Paper #2 (sequential) approaches
 
 ---
 

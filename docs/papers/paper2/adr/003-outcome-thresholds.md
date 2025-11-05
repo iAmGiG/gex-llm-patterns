@@ -1,6 +1,16 @@
-# Sequential GEX Pattern: Outcome Verification Thresholds
+# ADR 003: Outcome Verification Thresholds
 
-**Purpose**: Define empirically-driven thresholds for verifying sequential pattern predictions
+**Status**: Accepted
+**Date**: November 3, 2025
+**Context**: Need objective criteria to verify if LLM predictions about volatility/direction are correct. Must avoid arbitrary thresholds that could bias results.
+**Decision**: Use P75/P25 percentiles from 2024 SPY baseline distribution to define "elevated" vs "suppressed" volatility and "material" vs "trivial" moves.
+**Consequences**: Thresholds are data-driven and regime-specific; verification is reproducible; conservative (only 25% of baseline days exceed thresholds).
+
+---
+
+## Purpose
+
+Define empirically-driven thresholds for verifying sequential pattern predictions
 
 **Data Source**: 2024 SPY validation data (242 trading days, 100% negative GEX regime)
 

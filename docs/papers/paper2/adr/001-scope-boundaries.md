@@ -1,7 +1,16 @@
-# Paper #2 Scope Boundaries
+# ADR 001: Paper #2 Scope Boundaries
 
-**Date**: 2025-11-01
-**Purpose**: Define what's IN vs OUT of scope for Paper #2 to prevent mission creep
+**Status**: Accepted
+**Date**: November 1, 2025
+**Context**: Paper #2 extends Paper #1's single-day framework to multi-day sequential analysis. Need clear boundaries to prevent scope creep into other domains (cross-asset, trading systems, etc.)
+**Decision**: Focus exclusively on temporal dynamics (5-day sequences) for SPY, deferring cross-asset and trading system work to future papers.
+**Consequences**: Enables focused 2-month implementation timeline; cross-asset analysis deferred to Paper #3; trading system deployment out of scope for PhD.
+
+---
+
+## Purpose
+
+Define what's IN vs OUT of scope for Paper #2 to prevent mission creep
 
 ---
 

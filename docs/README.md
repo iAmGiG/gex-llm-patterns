@@ -1,165 +1,268 @@
-# GEX-LLM Patterns Documentation
+# Documentation
 
-## 🚀 **PhD Research Platform**
-
-**Latest Status** (October 12, 2025): CS PhD dissertation research platform investigating whether LLMs can understand market microstructure mechanics (WHY and WHEN patterns exist). **MAJOR MILESTONE**: Successfully validated LLM methodology across 3 pattern types throughout full 2024 year (181 trading days), proving LLMs can detect structural patterns without memorization.
-
-## 📋 **Quick Start Guide**
-
-### For New Users
-
-1. **Overview**: Start with [system/architecture/project_overview](system/architecture/project_overview)
-2. **Agent System**: Read [CLAUDE.md](../CLAUDE) for current system status
-3. **Run Experiment**: Use `scripts/orchestrate_experiment.py --experiment "analyze gamma exposure patterns" --symbol SPY --date 2024-06-28`
-4. **View Results**: Check `reports/experiments/SPY-2024-06-28-gamma_analysis.yaml`
-
-### For Developers
-
-1. **Testing**: Read [guides/validation-framework](guides/validation-framework)
-2. **Architecture**: Review [system/architecture/architecture_overview](system/architecture/architecture_overview)
-3. **Validation**: Run `scripts/validation/production_cache_test.py --date 2024-06-28`
-
-### For Researchers
-
-1. **Latest Findings**: Check [reference/model-selection-research](reference/model-selection-research)
-2. **Pattern Results**: See gamma pinning 75% success rate validation
-3. **Strike Analysis**: 251 daily opportunities vs 1 aggregated signal
-
-## 📖 **Documentation Structure**
-
-### 🏗️ **System Documentation** (`system/`)
-
-Core architecture and operational guides:
-
-- **`architecture/`** - Complete system architecture
-  - [project_overview](system/architecture/project_overview) - High-level system overview
-  - [architecture_overview](system/architecture/architecture_overview) - Technical architecture
-  - [data_architecture](system/architecture/data_architecture) - Data flow and storage
-  - [database_architecture](system/architecture/database_architecture) - Database schema
-  - [cache_architecture](system/architecture/cache_architecture) - Cache system design
-  - [continuous_experiment_framework](system/architecture/continuous_experiment_framework) - Experimental framework
-  - [intraday_implementation_complete](system/architecture/intraday_implementation_complete) - Intraday system
-- **`implementation/`** - Technical implementation details
-  - [actionable_patterns](system/implementation/actionable_patterns) - Trading pattern implementation
-
-### 📚 **User Guides** (`guides/`)
-
-How-to documentation for practical usage:
-
-- **[validation-framework](guides/validation-framework)** - LLM validation and testing framework
-- **[pattern-validation](guides/pattern-validation)** - Pattern taxonomy validation workflow (Issue #79)
-- **[data-obfuscation](guides/data-obfuscation)** - Anti-cheating measures for validation
-- **[validation-data-pipeline-fix](guides/validation-data-pipeline-fix)** - Q3 corruption postmortem and database fix (Oct 11, 2025)
-- **[baseline-strategy](guides/baseline-strategy)** - Trading strategy implementation
-- **[report-manager-consolidation](guides/report-manager-consolidation)** - Report manager consolidation (Issue #63, Oct 12, 2025)
-
-### 📊 **Technical Reference** (`reference/`)
-
-Technical specifications, research findings, and code reference documentation:
-
-- **[model-selection-research](reference/model-selection-research)** - O3-mini vs GPT-4o comparison
-- **[token-configuration](reference/token-configuration)** - LLM token optimization strategy
-- **[adaptive-consensus-technical-indicators](reference/adaptive-consensus-technical-indicators)** - Technical indicators
-- **[deleted-code-reference](reference/deleted-code-reference)** - Git history for removed code (data_normalization, deprecated analysis, sample_data_gex)
-- **[unused-code-reference](reference/unused-code-reference)** - Orphaned/unused code tracking (src/strategies/, Oct 12, 2025)
-- **[gex-module-consolidation-plan](reference/gex-module-consolidation-plan)** - Future optimization plan for LiveGEXInterface consolidation
-- **`api/`** - API documentation and specifications
-- **`technical/`** - Implementation details and configurations
-  - [agent-feature-audit](reference/technical/agent-feature-audit) - MarketMechanicsAgent method audit (Oct 2025)
-
-### 🗄️ **Archive** (`archive/`)
-
-Historical documentation and legacy components:
-
-- **[multipattern_validation_2024](archive/multipattern_validation_2024)** - Full 2024 multi-pattern validation analysis (Oct 2025)
-- **`legacy/`** - Archived code and migration documentation
-- **`research/`** - Historical research and experiments
-- **`agents/`** - Legacy agent implementations
-
-## 🎯 **Current System Status (October 12, 2025)**
-
-✅ **Full 2024 Multi-Pattern Validation COMPLETE** - 181 trading days across Q1, Q3, Q4 2024
-✅ **Research Question Answered** - LLMs can detect structural market microstructure patterns without memorization
-✅ **100% Detection Rate** - Maintained across all 9 quarter-pattern combinations
-✅ **87-98% Predictive Accuracy** - Maintained across all quarters and pattern types
-✅ **Obfuscation Testing Passes** - All patterns MECHANICAL (work without temporal context)
-✅ **Cross-Pattern Generalization** - Same methodology works for gamma_positioning, stock_pinning, 0dte_hedging
-✅ **Regime Robustness** - Detection/accuracy stable across varying market conditions
-📝 **Ready for PhD Paper #1** - Sufficient evidence for methodology validation paper
-
-## 🔬 **Key Research Findings**
-
-### Research Success (Full 2024)
-
-**Core Research Question**: "Can LLMs identify and interpret market microstructure patterns (WHY/WHEN) without memorization?"
-
-**Answer**: **YES** ✅
-
-**Evidence**:
-
-- **100% detection** across 181 trading days, 3 pattern types, 3 quarters
-- **87-98% predictive accuracy** - predictions materialize regardless of profitability
-- **Passes obfuscation testing** - works without temporal context
-- **Cross-pattern generalization** - same methodology detects different constraint types
-- **Regime robustness** - detection/accuracy stable across varying market conditions
-
-### Full Year Results Table
-
-| Pattern | Quarter | Detection | Accuracy | Sample |
-|---------|---------|-----------|----------|--------|
-| gamma_positioning | Q1 | 100% | 96.2% | 53 |
-| gamma_positioning | Q3 | 100% | 98.4% | 64 |
-| gamma_positioning | Q4 | 100% | 98.4% | 64 |
-| stock_pinning | Q1 | 100% | 86.5% | 53 |
-| stock_pinning | Q3 | 100% | 92.2% | 64 |
-| stock_pinning | Q4 | 100% | 92.1% | 64 |
-| 0dte_hedging | Q1 | 100% | 90.4% | 53 |
-| 0dte_hedging | Q3 | 100% | 92.2% | 64 |
-| 0dte_hedging | Q4 | 100% | 88.9% | 64 |
-
-### Key Insights
-
-**1. Pattern Consolidation Discovery**: Three tested patterns are narrative variations of one underlying mechanism - dealer gamma hedging constraints. LLM correctly identifies the same structural mechanic across different framings.
-
-**2. Detection ≠ Profitability**: Detection and accuracy remain stable while profitability varies across quarters. This proves the LLM detects structural mechanisms, not just profitable patterns.
-
-**3. Methodology Validation**: Obfuscation testing proves LLMs can reason about market microstructure mechanics (WHY patterns exist, WHEN they're mechanical) without memorizing training data.
-
-### Technical Lessons (October 2025)
-
-- **Database Architecture** - Storage layer must store real data; obfuscation is analysis-time only
-- **Coverage Validation** - Must verify ≥80% data completeness to prevent selection bias (Issue #84)
-- **Outcome Calculation** - Database lookup must execute before fallback inference methods
-
-## 🔧 **System Requirements**
-
-- **Python 3.8+** with required dependencies
-- **Database**: SQLite for local caching
-- **API Access**: Alpha Vantage Premium (with cache fallbacks)
-- **LLM**: O3-mini model access for market mechanics analysis
+**Last Updated**: November 4, 2025
 
 ---
 
-## 📚 **Key Documentation**
+## Quick Navigation
 
-- **[multipattern_validation_2024.md](archive/multipattern_validation_2024.md)** - Comprehensive analysis of full 2024 multi-pattern validation with research framing
-- **[CLAUDE.md](../CLAUDE.md)** - Current system status and next steps
-- **[todo.md](../todo.md)** - Task tracking and completed milestones
+### New to the Project?
 
-## 📊 **Validation Reports**
+1. Start with [System Overview](system/architecture/01-project-overview.md)
+2. Read [Architecture Overview](system/architecture/02-architecture-overview.md)
+3. Understand [GEX Metrics](guides/02-gex-metrics-explained.md)
+4. Explore [Pattern Taxonomy](guides/03-pattern-taxonomy.md)
 
-All validation results stored in `reports/validation/pattern_taxonomy/`:
+### Looking for Something Specific?
 
-- `gamma_positioning_SPY_2024Q*.yaml` (Q1, Q3, Q4)
-- `stock_pinning_SPY_2024Q*.yaml` (Q1, Q3, Q4)
-- `0dte_hedging_SPY_2024Q*.yaml` (Q1, Q3, Q4)
-
-## 🔧 **Known Limitations**
-
-- ⚠️ **Q2 2024 Data Gap** - Only June data collected (27% coverage, insufficient for validation)
-  - Q2 results not included in full year analysis
-  - Q1, Q3, Q4 provide sufficient evidence (181 trading days)
+- **Research Papers** → [papers/](papers/)
+- **User Guides** → [guides/](guides/)
+- **System Architecture** → [system/architecture/](system/architecture/)
+- **Validation Methodology** → [validation/](validation/)
+- **Presentations** → [presentations/](presentations/)
+- **Change History** → [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
-*Last Updated: October 12, 2025*
+## Directory Structure
+
+```
+docs/
+├── CHANGELOG.md                    # Project evolution tracking
+├── README.md                       # This file (navigation hub)
+│
+├── papers/                         # Research papers
+│   ├── adr/                        # Cross-paper architecture decisions
+│   ├── planning/                   # Research planning docs
+│   ├── paper1/                     # Paper #1 (single-day, submitted Oct 2025)
+│   └── paper2/                     # Paper #2 (sequential, in progress)
+│
+├── guides/                         # User-facing how-to guides
+│   ├── 02-gex-metrics-explained.md
+│   ├── 03-pattern-taxonomy.md
+│   ├── 04-pattern-validation.md
+│   ├── 05-data-obfuscation.md
+│   ├── 06-validation-framework.md
+│   ├── 07-yaml-reporting.md
+│   ├── 08-baseline-strategy.md
+│   └── 09-documentation-security.md
+│
+├── system/                         # System architecture & implementation
+│   ├── architecture/               # Design documents
+│   │   ├── 01-project-overview.md
+│   │   ├── 02-architecture-overview.md
+│   │   ├── 03-data-architecture.md
+│   │   ├── 04-database-architecture.md
+│   │   ├── 05-cache-architecture.md
+│   │   └── 06-continuous-experiment.md
+│   └── implementation/             # Implementation notes
+│       ├── actionable-patterns.md
+│       ├── intraday-implementation.md
+│       └── llm-cost-optimization/
+│
+├── validation/                     # Validation methodology
+│   └── statistical/                # Statistical validation methods
+│       ├── granger-causality-pipeline.md
+│       └── lead-lag-pipeline.md
+│
+├── presentations/                  # Educational and presentation materials
+│   ├── 2025-symposium.md          # PhD symposium (Oct 2025)
+│   ├── fundamentals-explained.md   # Market mechanics education
+│   ├── technical-deep-dive.md      # System deep dive
+│   └── archive/                    # Historical presentations
+│
+├── reference/                      # Technical reference
+│   ├── api/                        # API documentation
+│   ├── technical/                  # Technical specs
+│   └── model-selection-research.md
+│
+└── archive/                        # Historical/deprecated content
+    ├── sessions/                   # Old session logs
+    ├── guides/                     # Deprecated guides
+    ├── reference/                  # Deprecated reference docs
+    └── presentations/              # Old presentations
+```
+
+---
+
+## Documentation Standards
+
+### Naming Conventions
+
+**Files**: All lowercase with hyphens (`kebab-case`)
+- ✅ `gex-metrics-explained.md`
+- ✅ `2025-symposium.md`
+- ❌ `gex_metrics_explained.md` (no underscores)
+- ❌ `GEX_METRICS.md` (no capitals)
+
+**Exception**: `README.md` (uppercase standard)
+
+### Sequencing
+
+**Guides**: Numbered for linear progression (02-09)
+- `02-gex-metrics-explained.md` → Foundation
+- `03-pattern-taxonomy.md` → Core concepts
+- `04-pattern-validation.md` → Methodology
+- ... logical progression
+
+**Architecture**: Numbered by dependency (01-06)
+- `01-project-overview.md` → Start here
+- `02-architecture-overview.md` → High-level design
+- `03-data-architecture.md` → Data layer
+- ... builds on previous
+
+**ADRs**: Numbered chronologically (001, 002, ...)
+- Paper-specific: `papers/paper2/adr/001-scope-boundaries.md`
+- Cross-paper: `papers/adr/001-validation-script-naming.md`
+
+### Cross-References
+
+All docs include **Navigation** sections with:
+- **Prerequisites**: What to read first
+- **Related**: Similar/connected topics
+- **Next**: Where to go next
+- **Issues**: Relevant GitHub issues
+
+---
+
+## Major Sections
+
+### Papers
+
+**Paper #1** (Single-Day Framework):
+- **Status**: ✅ Submitted (Oct 26, 2025)
+- **Results**: 100% detection, 87-98% accuracy (181 trading days)
+- **Finding**: Detection stable despite alpha decline (Q1→Q4)
+- **Location**: [papers/paper1/](papers/paper1/)
+
+**Paper #2** (Sequential Framework):
+- **Status**: 🔄 Phase 1 complete, Phase 2 pending
+- **Innovation**: 5-day temporal trajectory analysis
+- **Components**: SequentialGEXFetcher, neutral prompts, negative controls
+- **Location**: [papers/paper2/](papers/paper2/)
+
+**Cross-Paper ADRs**:
+- Architecture decisions affecting multiple papers
+- Validation script naming conventions
+- Shared infrastructure design
+- **Location**: [papers/adr/](papers/adr/)
+
+### Guides
+
+Sequential how-to documentation for users:
+- **Foundation**: GEX metrics, pattern taxonomy
+- **Methodology**: Validation framework, obfuscation
+- **Output**: YAML reporting, baseline strategy
+- **Security**: Documentation security guidelines
+
+**Start**: [guides/02-gex-metrics-explained.md](guides/02-gex-metrics-explained.md)
+
+### System
+
+Architecture and implementation documentation:
+- **Architecture**: 6 docs covering system design (01-06)
+- **Implementation**: Specific feature implementations
+- **Cost Optimization**: LLM model selection and optimization
+
+**Start**: [system/architecture/01-project-overview.md](system/architecture/01-project-overview.md)
+
+### Validation
+
+Research validation methodology:
+- **Statistical**: Granger causality, lead-lag analysis
+- **Negative Controls**: Paper #2 bias mitigation
+- **Pattern Validation**: Obfuscation testing
+
+**Location**: [validation/](validation/)
+
+### Presentations
+
+Educational materials and symposium presentations:
+- **2025 Symposium**: Paper #1 results (October 2025)
+- **Fundamentals**: Market mechanics education
+- **Technical Deep Dive**: System architecture walkthrough
+
+**Location**: [presentations/](presentations/)
+
+---
+
+## Recent Updates (November 2025)
+
+### Documentation Reorganization (Nov 4)
+
+- Standardized all files to `kebab-case` naming
+- Sequenced guides (02-09) and architecture (01-06)
+- Created cross-paper ADR structure
+- Archived 11 deprecated files
+- **Impact**: 103 file operations, clear domain separation
+
+### Paper #2 Phase 1 Complete (Nov 4)
+
+- Implemented SequentialGEXFetcher (5-day windows)
+- Created neutral prompt framework
+- Built negative controls validation
+- Fixed 3 critical bugs
+- **Result**: Proof-of-concept validated (120 windows)
+
+### Architecture Documentation (Nov 4)
+
+- Created architecture separation ADR (Paper #1 vs #2)
+- Documented shared vs paper-specific components
+- Defined extension pattern for future papers
+- **Impact**: Clear boundaries for Paper #3 planning
+
+**Full History**: See [CHANGELOG.md](CHANGELOG.md)
+
+---
+
+## File Statistics
+
+### Active Documentation
+
+- **Papers**: 2 papers, 9 ADRs, 6 methodology docs, 4 session logs
+- **Guides**: 8 sequenced guides
+- **System**: 6 architecture docs, 3 implementation docs
+- **Presentations**: 3 active, 1 archived
+- **Total**: ~90 markdown files
+
+### Size
+
+- **Active docs**: ~2.5 MB
+- **Archived**: ~3.5 MB
+- **Total**: ~6 MB
+
+---
+
+## Contributing
+
+### Adding New Documentation
+
+1. **Determine type**: Guide, architecture, ADR, or session log?
+2. **Choose location**: `guides/`, `system/`, `papers/adr/`, `papers/paper{N}/sessions/`
+3. **Follow naming**: `kebab-case`, number if sequential
+4. **Add navigation**: Prerequisites, related, next sections
+5. **Update parent README**: Link from appropriate section
+
+### Deprecating Documentation
+
+1. Move to `archive/` with appropriate subdirectory
+2. Update references in active docs
+3. Note in [CHANGELOG.md](CHANGELOG.md)
+4. Keep for historical reference (don't delete)
+
+---
+
+## Navigation
+
+**Start Here**:
+- [System Overview](system/architecture/01-project-overview.md)
+- [GEX Metrics Explained](guides/02-gex-metrics-explained.md)
+- [Paper #1 README](papers/paper1/README.md)
+- [Paper #2 README](papers/paper2/README.md)
+
+**Key References**:
+- [CHANGELOG.md](CHANGELOG.md) - Project evolution
+- [papers/adr/](papers/adr/) - Cross-paper decisions
+- [validation/](validation/) - Research methodology
+
+**GitHub**: [Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) | [Projects](https://github.com/iAmGiG/gex-llm-patterns/projects)

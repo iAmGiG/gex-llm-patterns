@@ -1,6 +1,16 @@
-# Sequential GEX Pattern Detection Rules
+# ADR 002: Sequential Pattern Detection Rules
 
-**Purpose**: Formal algorithmic definitions for detecting 4 sequential gamma exposure patterns
+**Status**: Accepted
+**Date**: November 3, 2025
+**Context**: Paper #2 introduces 4 new pattern types based on multi-day GEX trajectories. Need formal definitions to ensure reproducibility and prevent detection ambiguity.
+**Decision**: Define 4 patterns (Accumulation, Relief, Reversal, Persistent) with quantitative thresholds based on P75/P25 percentiles from 2024 data.
+**Consequences**: Patterns are data-driven rather than arbitrary; thresholds validated against baseline; detection logic is fully deterministic.
+
+---
+
+## Purpose
+
+Formal algorithmic definitions for detecting 4 sequential gamma exposure patterns
 
 **Input**: 5-day GEX time series `[GEX_0, GEX_1, GEX_2, GEX_3, GEX_4]`
 

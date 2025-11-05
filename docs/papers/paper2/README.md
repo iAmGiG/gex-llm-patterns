@@ -1,15 +1,52 @@
 # Paper #2: Sequential GEX Analysis (Temporal Dynamics)
 
-**Status**: Planning Phase (Nov 2025)
+**Status**: Phase 1 Complete (Nov 2025), Phase 2 Pending
 **Target**: Journal submission Q1 2026 (6-8 pages)
 **Branch**: `paper2-sequential-gex`
 **Dependency**: Paper #1 acceptance
+**Issues**: #89, #107, #108
+
+---
+
+## Quick Navigation
+
+### Start Here
+
+- **New to Paper #2?** → Read [Research Question](#research-question) below
+- **Need design decisions?** → See [ADRs](#architecture-decision-records-adr) (stable references)
+- **Want implementation history?** → See [Session Logs](#session-logs) (chronological work)
+- **Checking methodology?** → See [Methodology](#methodology-validation) (rigor validation)
+
+### File Organization
+
+```
+paper2/
+├── README.md                              # This file (navigation hub)
+├── adr/                                   # Architecture Decision Records (STABLE)
+│   ├── 001-scope-boundaries.md            # What's in/out of scope
+│   ├── 002-sequential-pattern-rules.md    # 4 pattern types defined
+│   ├── 003-outcome-thresholds.md          # Verification criteria
+│   ├── 004-comparative-framework.md       # Statistical comparison approach
+│   ├── 005-prompt-design.md               # Prompt architecture (original + neutral)
+│   ├── 006-sequential-gex-architecture.md # Sequential data fetching design
+│   └── 007-agent-architecture-analysis.md # LLM agent framework decisions
+├── methodology/                           # Research Methodology (EVOLVING)
+│   ├── negative_controls_design.md        # 3-test validation plan (ready to run)
+│   └── prompt_bias_mitigation.md          # Bias analysis + neutral framework
+├── sessions/                              # Session Logs (CHRONOLOGICAL)
+│   ├── 2025-11-03_implementation.md       # Phase 1 implementation
+│   └── 2025-11-04_phase1_completion.md    # Bug fixes + proof-of-concept
+├── drafts/                                # Paper drafts
+├── figures/                               # Result figures
+├── tables/                                # LaTeX tables
+└── latex/                                 # LaTeX source
+```
 
 ---
 
 ## Research Question
 
-Can LLMs detect dealer constraint *trajectories* over time, not just single-day snapshots?
+Can LLMs detect dealer constraint **trajectories** over time, not just single-day snapshots?
 
 **Current Approach** (Paper #1):
 
@@ -25,16 +62,50 @@ Can LLMs detect dealer constraint *trajectories* over time, not just single-day 
 
 ---
 
-## Motivation (Advisor Input)
+## Architecture Decision Records (ADR)
 
-> "Currently you are looking on single day gamma exposure, will it be worthy look at most recent 5 days to detect the hidden force? I mean the sequential changes of gamma exposure would bring more info on dealers intention. This could be a next more comprehensive paper **even before going to individual stocks**"
+These are **stable decisions** that define the framework. Read these for authoritative design choices.
 
-**Why Sequential Before Cross-Asset (Paper #3)?**
+| ADR | Topic | Purpose | Status |
+|-----|-------|---------|--------|
+| [001](adr/001-scope-boundaries.md) | Scope Boundaries | What's in/out of Paper #2 | ✅ Accepted |
+| [002](adr/002-sequential-pattern-rules.md) | Pattern Rules | 4 trajectory types defined | ✅ Accepted |
+| [003](adr/003-outcome-thresholds.md) | Outcome Thresholds | P75/P25 verification criteria | ✅ Accepted |
+| [004](adr/004-comparative-framework.md) | Comparative Framework | Statistical comparison methodology | ✅ Accepted |
+| [005](adr/005-prompt-design.md) | Prompt Design | Prompt architecture (original + neutral) | ✅ Accepted (revised Nov 4) |
+| [006](adr/006-sequential-gex-architecture.md) | Sequential GEX Fetcher | 5-day window retrieval design | ✅ Accepted |
+| [007](adr/007-agent-architecture-analysis.md) | Agent Framework | LLM agent architecture decisions | ✅ Accepted |
 
-- ✅ Uses existing SPY 2024 data (no new collection)
-- ✅ 5 days implementation (vs 6-9 days for equities)
-- ✅ Lower risk (test on validated dataset)
-- ✅ Natural progression: Temporal → Cross-asset
+---
+
+## Methodology (Validation)
+
+These documents validate the rigor of the research methodology.
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [prompt_bias_mitigation.md](methodology/prompt_bias_mitigation.md) | Bias analysis + neutral framework | ✅ Implementation complete |
+| [negative_controls_design.md](methodology/negative_controls_design.md) | 3-test validation framework | ✅ **COMPLETE** (Nov 4, 2025) |
+
+**Negative Controls Results** (30 tests completed):
+1. ✅ Prompt comparison: 80% neutral vs 100% leading (conservative calibration)
+2. ✅ Random synthetic GEX: 20% false positives (passed <30% threshold)
+3. ✅ Zero-GEX: 0% false positives (passed <10% threshold)
+
+**Key Finding**: Mechanical confidence guidance reduced false positives by **60%** compared to qualitative guidance (v3a: 20% FP vs v3b: 50% FP)
+
+**Decision**: ✅ v3a neutral prompt **ACCEPTED** for Phase 2 validation
+
+---
+
+## Session Logs (Chronological)
+
+Development history in chronological order. Read these to understand how the project evolved.
+
+| Date | Session | What Happened |
+|------|---------|---------------|
+| [Nov 3](sessions/2025-11-03_implementation.md) | Phase 1 Implementation | Built SequentialGEXFetcher, validation script, unit tests (2,800 lines) |
+| [Nov 4](sessions/2025-11-04_phase1_completion.md) | Bugs + Rigor Analysis | Fixed 3 critical bugs, created neutral framework, negative controls ready |
 
 ---
 
@@ -64,9 +135,60 @@ Can LLMs detect dealer constraint *trajectories* over time, not just single-day 
 - Example: -$5B → -$4.9B → -$5.1B → -$5.2B (sustained)
 - Prediction: Volatility stays elevated
 
+**See**: [adr/002_sequential_pattern_rules.md](adr/002_sequential_pattern_rules.md) for formal definitions
+
 ---
 
-## Methodology
+## Phase 1 Results (Proof-of-Concept)
+
+**Status**: ✅ Complete (Nov 4, 2025)
+
+**Tested**: 120 windows (Jan 8 - Jul 3, 2024)
+
+**Results**:
+- Detection rate: 100% (120/120)
+- Confidence range: 70-85%
+- Model: o4-mini-2025-04-16
+- Data quality: Real GEX values verified ($8-14B range)
+
+**Trajectory Distribution**:
+- Persistent: 60% (most common in 2024 negative GEX regime)
+- Accumulation: 25%
+- Relief: 10%
+- Reversal: 5% (rare - 2024 was 100% negative GEX)
+
+**Interpretation**: 100% detection likely reflects market reality (dealer constraints present daily in 2024), but must validate with negative controls before concluding.
+
+---
+
+## Next Steps
+
+### Immediate (Ready Now)
+
+1. **Run negative controls**:
+   ```bash
+   python scripts/validation/validate_p2_negative_controls.py --all
+   ```
+
+2. **Analyze results**: Check `reports/validation/paper2/negative_controls_*.yaml`
+
+3. **Make go/no-go decision**:
+   - If ALL PASS → Proceed to Phase 2 validation
+   - If ANY FAIL → Iterate on methodology
+
+### Phase 2 Scope Options
+
+| Option | Windows | Timeline | Pros | Cons |
+|--------|---------|----------|------|------|
+| **A: Q1 Only** | 60 | 1 week | Fast, matches Paper #1 | Limited regime variation |
+| **B: Full 2024** | 249 | 3-4 weeks | Comprehensive | Long timeline, high API cost |
+| **C: Q1 + Q3** | 124 | 2 weeks | Balanced | Mixed approach |
+
+**Decision**: Pending negative control results
+
+---
+
+## Implementation Details
 
 ### Dataset
 
@@ -80,10 +202,17 @@ Can LLMs detect dealer constraint *trajectories* over time, not just single-day 
 - Ticker: "INDEX_1" (no "SPY")
 - Context: No events, VIX, news
 
-### Validation
+### Validation Script
 
-- Compare single-day (Paper #1 baseline) vs sequential (Paper #2 test)
-- Metrics: Detection rate, accuracy, confidence, false positives
+**Script**: `scripts/validation/validate_p2_sequential_patterns.py`
+
+**Usage**:
+```bash
+python scripts/validation/validate_p2_sequential_patterns.py \
+  --start-date 2024-01-08 \
+  --end-date 2024-03-29 \
+  --output-dir reports/validation/paper2
+```
 
 ---
 
@@ -107,49 +236,32 @@ Can LLMs detect dealer constraint *trajectories* over time, not just single-day 
 
 ---
 
-## Implementation Plan (5 Days)
+## Related Work
 
-| Day | Task | Output |
-|-----|------|--------|
-| 1 | Database query extension (5-day windows) | `get_sequential_gex()` function |
-| 2 | Sequential prompt template | New prompt builder |
-| 3-4 | Validation runs (169 windows) | YAML results files |
-| 5 | Comparative analysis | Single vs sequential comparison |
+**Paper #1**: Single-day explanatory framework (submitted Oct 26, 2025)
+- Detection rate: 100%
+- Accuracy: 87-98%
+- Net alpha: Declined Q1→Q4 (proves detection ≠ profit optimization)
 
----
-
-## File Organization
-
-```bash
-paper2/
-├── README.md                          # This file
-├── planning.md                        # Detailed implementation plan
-├── sequential_methodology.md          # Methodology documentation
-├── drafts/                            # Paper drafts
-├── figures/                           # Result figures
-│   └── scripts/                       # Figure generation
-└── tables/                            # LaTeX tables
-```
+**Paper #3** (Future): Cross-asset extension (SPY → QQQ, IWM)
 
 ---
 
 ## GitHub Issues
 
-- **#89**: Sequential GEX Analysis - Paper #2 Extension (OPEN)
-- **#101**: Venue Research for Paper #2 Submission (NEW - to be created)
+- **#89**: Sequential GEX Analysis - Paper #2 Extension
+- **#107**: Implementation progress tracking
+- **#108**: Phase 1 completion and rigor validation
 
 ---
 
-## Next Steps
+## Contact & Collaboration
 
-1. ✅ Create paper2 folder structure
-2. 🔄 Create venue research GitHub issue
-3. ⏳ Research target journals/venues
-4. ⏳ Implement 5-day lookback validation
-5. ⏳ Run comparative analysis
-6. ⏳ Determine if sequential adds value
-7. ⏳ Write Paper #2 draft (if positive results)
+- **Primary Investigator**: [Your Name]
+- **Advisor**: [Advisor Name]
+- **Branch**: `paper2-sequential-gex`
+- **Timeline**: Start after Paper #1 acceptance (Jan 2026), submit Q1 2026
 
 ---
 
-**Timeline**: Start after Paper #1 acceptance (Jan 2026), submit Q1 2026
+**Last Updated**: November 4, 2025

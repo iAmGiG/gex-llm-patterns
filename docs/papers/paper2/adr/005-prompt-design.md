@@ -1,8 +1,18 @@
-# Sequential Prompt Template Design - Paper #2
+# ADR 005: Sequential Prompt Design
 
-**Status**: Approved (Nov 1, 2025)
-**Issue**: #89, #107
-**Purpose**: Define prompt structure for 5-day sequential GEX analysis
+**Status**: Accepted
+**Date**: November 1, 2025 (Revised November 4, 2025 - Neutral Framework)
+**Context**: Paper #2 requires prompts that present 5-day GEX sequences to the LLM. Must maintain obfuscation (no dates/tickers) while avoiding bias toward positive detection.
+**Decision**: Use tabular format showing Day T-4 through T+0 with net GEX, flip point, and spot price. System prompt is neutral ("assess whether constraints exist"), not leading ("identify the constraint").
+**Consequences**: Maintains methodological rigor from Paper #1; enables temporal pattern detection; neutral framework allows for non-detection outcomes.
+
+**Related Issues**: #89, #107
+
+---
+
+## Purpose
+
+Define prompt structure for 5-day sequential GEX analysis
 
 ---
 
