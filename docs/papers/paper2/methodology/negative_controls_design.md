@@ -288,6 +288,88 @@ This finding suggests LLMs benefit from concrete calibration anchors in temporal
 - ✅ Achieved: 0% false positives (0-10% threshold)
 - ✅ Validates: Framework correctly detects absence of constraints
 
+**Test 4: Low-GEX (Weak Constraints)** - ⚠️ **PENDING** (Issue #111)
+- ❌ Not yet tested: Realistic but weak GEX periods
+- 🎯 Objective: Verify discrimination of pattern strength in real market conditions
+- 📊 Target: <50% detection on low-GEX windows ($1-3B range)
+- ⏱️ Status: REQUIRED before Phase 2 decision
+
+---
+
+## 8. Critical Finding: Test 4 Required (Nov 4, 2025)
+
+### Problem Identified
+
+**Q1 2024 Validation Results**:
+- 61 windows tested → **100% detection rate**
+- All windows had high GEX (avg $13.95B)
+- Zero windows with <$5B average GEX
+
+**Methodological Concern**:
+> "100% will be called out by reviewers. We're using an LLM to see 'sequential patterns' - either we're approaching this wrong or it's a tee ball game for the LLM, just saying 'yep sure looks pattern like to me' when asked if it sees a pattern."
+
+### The Gap
+
+**What Tests 1-3 Validated**:
+- ✅ LLM rejects synthetic noise (Test 2: 80% rejection)
+- ✅ LLM rejects zero-GEX (Test 3: 100% rejection)
+- ✅ LLM discriminates real vs fake data
+
+**What's Missing**:
+- ❌ LLM discrimination of **pattern strength** in realistic data
+- ❌ Can LLM say "pattern exists but too weak to matter"?
+- ❌ Or does it just say "yes" to any real GEX sequence?
+
+**Root Cause**: Q1 2024 had no weak periods. All 61 windows were high-GEX regime, so LLM never had opportunity to reject a realistic but weak pattern.
+
+### Test 4 Design (Issue #111)
+
+**Dataset**: 10-20 synthetic windows with realistic but LOW GEX
+- GEX range: $1-3B (below typical trading significance)
+- Price movements: Real 2024 SPY daily returns
+- Structure: 5-day windows with day-to-day variation
+
+**Pass Criteria**: Detection rate <50%
+
+**Expected LLM Response**:
+```
+Pattern: accumulation (GEX $1.0B → $2.8B)
+Classification: REJECT - insufficient magnitude
+Reasoning: "While trajectory shows accumulation, GEX magnitudes
+           are too low (<$5B) to impose meaningful dealer hedging
+           constraints on SPY underlying."
+Confidence: 0
+```
+
+**Timeline**: 2 days (before Phase 2 decision)
+
+### Impact on Methodology
+
+**If Test 4 Passes** (<50% detection):
+- ✅ Validates LLM discriminates magnitude, not just synthetic/zero
+- ✅ 100% Q1 detection is legitimate (all windows genuinely high-GEX)
+- ✅ Proceed to Phase 2 with confidence
+
+**If Test 4 Fails** (>50% detection):
+- ❌ Prompt is a "yes machine" on realistic data
+- ❌ Need v4 re-calibration
+- ❌ Re-run Q1 2024 validation
+- ❌ Phase 2 delayed 1-2 weeks
+
+### Comparison to Paper #1
+
+**Paper #1 (Single-Day)**:
+- No negative controls performed
+- Accepted 100% detection without scrutiny
+- Relied solely on obfuscation testing
+
+**Paper #2 (Sequential) - More Rigorous**:
+- 4 negative controls (Tests 1-4)
+- Flagged 100% detection as potential issue
+- Test 4 required before accepting results
+
+**Methodological Advancement**: Paper #2 demonstrates higher validation rigor by catching potential flaw before submission.
+
 ---
 
 ### References
@@ -304,28 +386,34 @@ This finding suggests LLMs benefit from concrete calibration anchors in temporal
 
 [6] White, J., et al. (2023). "A Prompt Pattern Catalog to Enhance Prompt Engineering with ChatGPT." *arXiv:2302.11382*.
 
-## 7. Current Status
+## 9. Current Status
 
 **Implementation**: ✅ COMPLETE (Nov 4, 2025)
 
 - [x] Script created and tested
-- [x] All 3 tests implemented
+- [x] Tests 1-3 implemented
+- [ ] **Test 4 implementation** - ⚠️ PENDING (Issue #111)
 - [x] CLI ready
 - [x] Documentation complete
 - [x] Neutral prompt framework implemented ([see code](../../../../src/llm/mechanics_prompt_builder.py#L456-L559))
 
-**Testing**: ✅ COMPLETE (Nov 4, 2025)
+**Testing**: ⚠️ PARTIAL (Tests 1-3 complete, Test 4 pending)
 
 - [x] Run Test 1 (prompt comparison) - 80% neutral vs 100% leading
 - [x] Run Test 2 (random synthetic) - 20% false positives ✅
 - [x] Run Test 3 (zero-GEX) - 0% false positives ✅
-- [x] Analyze results - Conservative calibration validated
-- [x] Make go/no-go decision - **GO**: Proceed with v3a to Q1 2024 validation
-- [x] Update methodology section with actual results
+- [x] Q1 2024 validation complete - 61 windows, 100% detection
+- [x] Identify methodological gap - Test 4 required
+- [ ] **Run Test 4 (low-GEX)** - ⚠️ REQUIRED for Phase 2 decision
+- [ ] Make final go/no-go decision - **PENDING Test 4 results**
 
-**Decision**: ✅ ACCEPTED - v3a neutral prompt ready for Phase 2 (Q1 2024 validation, 60 windows)
+**Decision**: ⚠️ **PROVISIONAL** - v3a passed Tests 1-3, but Test 4 required before Phase 2
 
-**Key Finding**: Mechanical confidence guidance reduces false positives by 60% compared to qualitative guidance
+**Phase 2 Status**: **BLOCKED** pending Test 4 completion
+
+**Key Findings**:
+1. ✅ Mechanical confidence guidance reduces false positives by 60%
+2. ⚠️ 100% Q1 detection requires Test 4 validation (magnitude discrimination)
 
 ---
 
@@ -333,5 +421,5 @@ This finding suggests LLMs benefit from concrete calibration anchors in temporal
 
 **Prerequisites**: [../adr/005_prompt_design.md](../adr/005_prompt_design.md) (understand neutral framework)
 **Related**: [prompt_bias_mitigation.md](prompt_bias_mitigation.md) (why neutral prompts needed)
-**Next Steps**: Run validation tests, analyze results
-**GitHub Issues**: #89, #107, #108
+**Next Steps**: **Implement Test 4 (Issue #111)** before Phase 2 decision
+**GitHub Issues**: #89 (Sequential GEX), #107 (Phase 2 blocked), #108 (Phase 1 complete), #110 (Prompt calibration), #111 (Test 4 - CRITICAL)

@@ -70,6 +70,29 @@ Chronological development history for Paper #2 Sequential GEX Analysis.
 
 ---
 
+### [Session 04: Test 4 Requirement](session-04-test4-requirement.md)
+**Date**: November 4, 2025
+**Focus**: 100% detection concern and methodological gap identification
+
+**Problem Identified**:
+- Q1 2024 validation: 100% detection rate (61/61 windows)
+- User concern: "100% will be called out by reviewers"
+- Root cause: Never tested discrimination on realistic but weak GEX periods
+
+**Gap Analysis**:
+- ✅ Tests 1-3 validated rejection of synthetic/zero-GEX
+- ❌ Never tested: Can LLM say "pattern too weak" on realistic data?
+- Q1 2024 reality: All 61 windows had high GEX (avg $13.95B), zero weak periods
+
+**Action Required**: Test 4 - Low-GEX Negative Control (Issue #111)
+- Dataset: 10-20 synthetic windows with $1-3B GEX (realistic but weak)
+- Pass criteria: <50% detection rate
+- Timeline: 2 days before Phase 2 decision
+
+**Impact**: Phase 2 BLOCKED until Test 4 validates magnitude discrimination
+
+---
+
 ## Consolidation History
 
 **Original**: 9 files, 116KB (Nov 4, 2025 before consolidation)

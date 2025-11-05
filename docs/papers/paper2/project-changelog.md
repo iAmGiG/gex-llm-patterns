@@ -6,6 +6,43 @@ Track major architectural decisions, framework changes, and research milestones.
 
 ## November 2025
 
+### Paper #2 Test 4 Required - Phase 2 Blocked (Nov 4, 2025)
+
+**What Changed**:
+
+- Q1 2024 validation complete: 61 windows, **100% detection rate**
+- Critical methodological gap identified: Never tested discrimination on realistic but weak GEX
+- Issue #111 created: Test 4 - Low-GEX Negative Control
+- Phase 2 decision blocked pending Test 4 completion
+
+**Problem Identified**:
+
+User concern: "100% will be called out by reviewers. We're using an LLM to see 'sequential patterns' - either we're approaching this wrong or it's a tee ball game for the LLM."
+
+**Root Cause**:
+- Tests 1-3 validated rejection of synthetic/zero-GEX (easy tests)
+- Never tested: Can LLM discriminate pattern **strength** in realistic data? (hard test)
+- Q1 2024 had zero weak periods (all windows >$5B avg GEX)
+
+**Test 4 Design**:
+- Dataset: 10-20 synthetic windows with $1-3B GEX (realistic but weak)
+- Pass criteria: <50% detection rate
+- Purpose: Prove LLM can say "pattern too weak" on realistic data
+
+**Impact**:
+- Phase 2 timeline delayed 1 week for Test 4
+- If Test 4 passes: Proceed to Phase 2 with confidence
+- If Test 4 fails: Re-calibrate prompt (v4), re-run Q1 2024
+- Demonstrates higher methodological rigor than Paper #1
+
+**Comparison to Paper #1**:
+- Paper #1: No negative controls, accepted 100% detection
+- Paper #2: 4 negative controls, flagged 100% as potential issue proactively
+
+**Issues**: #111 (CRITICAL), #89, #107 (blocked), #108 (blocked), #110
+
+---
+
 ### Paper #2 Negative Controls Complete (Nov 4, 2025)
 
 **What Changed**:

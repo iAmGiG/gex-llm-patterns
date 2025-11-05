@@ -1,10 +1,10 @@
 # Paper #2: Sequential GEX Analysis (Temporal Dynamics)
 
-**Status**: Phase 1 Complete (Nov 2025), Phase 2 Pending
+**Status**: Phase 1 Complete, Phase 2 **BLOCKED** (Test 4 required)
 **Target**: Journal submission Q1 2026 (6-8 pages)
 **Branch**: `paper2-sequential-gex`
 **Dependency**: Paper #1 acceptance
-**Issues**: #89, #107, #108
+**Issues**: #89, #107, #108, #110, **#111 (CRITICAL - Test 4)**
 
 ---
 
@@ -85,16 +85,30 @@ These documents validate the rigor of the research methodology.
 | Document | Purpose | Status |
 |----------|---------|--------|
 | [prompt_bias_mitigation.md](methodology/prompt_bias_mitigation.md) | Bias analysis + neutral framework | ✅ Implementation complete |
-| [negative_controls_design.md](methodology/negative_controls_design.md) | 3-test validation framework | ✅ **COMPLETE** (Nov 4, 2025) |
+| [negative_controls_design.md](methodology/negative_controls_design.md) | 4-test validation framework | ⚠️ **PARTIAL** (Tests 1-3 complete, Test 4 required) |
 
-**Negative Controls Results** (30 tests completed):
+**Negative Controls Results**:
 1. ✅ Prompt comparison: 80% neutral vs 100% leading (conservative calibration)
 2. ✅ Random synthetic GEX: 20% false positives (passed <30% threshold)
 3. ✅ Zero-GEX: 0% false positives (passed <10% threshold)
+4. ⚠️ **Low-GEX: PENDING** (Issue #111 - CRITICAL)
 
-**Key Finding**: Mechanical confidence guidance reduced false positives by **60%** compared to qualitative guidance (v3a: 20% FP vs v3b: 50% FP)
+**Q1 2024 Validation**: 61 windows, **100% detection rate**
 
-**Decision**: ✅ v3a neutral prompt **ACCEPTED** for Phase 2 validation
+**Critical Issue Identified** (Nov 4, 2025):
+- Q1 had zero weak GEX periods (all windows >$5B avg)
+- Tests 1-3 validated rejection of synthetic/zero-GEX
+- **Missing**: Test discrimination on realistic but weak GEX periods
+- **User concern**: "100% will be called out by reviewers"
+
+**Test 4 Required** (Issue #111):
+- Dataset: 10-20 synthetic windows with $1-3B GEX (realistic but weak)
+- Pass criteria: <50% detection rate
+- Purpose: Prove LLM can discriminate pattern strength, not just synthetic/zero
+
+**Key Finding**: Mechanical confidence guidance reduced false positives by **60%** (v3a: 20% FP vs v3b: 50% FP)
+
+**Decision**: ⚠️ **PROVISIONAL** - v3a passed Tests 1-3, but Test 4 required before Phase 2
 
 ---
 
