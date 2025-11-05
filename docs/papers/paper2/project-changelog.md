@@ -6,6 +6,56 @@ Track major architectural decisions, framework changes, and research milestones.
 
 ## November 2025
 
+### Alternative Approaches Documentation (Nov 5, 2025)
+
+**What Changed**:
+
+- Comprehensive 36KB reference document analyzing 6 alternative approaches
+- Added 5 verified BibTeX citations for methodology justification
+- Created ready-to-use LaTeX snippet for paper Section 3.1
+
+**Approaches Evaluated and Rejected**:
+
+1. **Prior-Fitted Networks (PFNs)** - Müller et al. 2021
+   - Reason: Black box, no WHO/WHOM/WHAT explanations, 2-3 month scope
+   - Future: Paper #3 comparison study
+
+2. **Probabilistic Programming** (PyMC3/Pyro) - Salvatier 2016, Bingham 2019
+   - Reason: Requires full dealer model specification, proprietary data needed
+   - Future: Paper #4 hybrid system
+
+3. **Deep Learning** (LSTM/Transformer) - Hochreiter 1997, Vaswani 2017
+   - Reason: Black box, training data required, overfitting risk
+   - Future: Paper #3 comparison
+
+4. **Traditional Time Series** (ARIMA/GARCH)
+   - Reason: No mechanistic interpretation, already in literature
+   - Use: Baseline comparison
+
+5. **Hybrid Ensembles** (LLM+ML)
+   - Reason: Scope complexity, difficult to isolate contributions
+   - Future: Paper #4 production optimization
+
+**Why LLMs for Paper #2**:
+- ✅ Mechanistic interpretability (WHO→WHOM→WHAT)
+- ✅ Zero-shot generalization (no training data)
+- ✅ Rapid iteration (prompt vs retrain)
+- ✅ Speed to publication (3 weeks vs 2-3 months)
+
+**Documentation**:
+- `docs/papers/paper2/methodology/alternative-approaches-considered.md`
+- `docs/papers/paper2/latex/references.bib` (5 new citations)
+- `docs/papers/paper2/latex/snippets/alternative_approaches_paragraph.tex`
+
+**Impact**:
+- Strengthens methodology justification for peer review
+- Provides roadmap for Papers #3 and #4
+- Supports literature review Section 2.3
+
+**Commits**: 64599a0, ed6053e
+
+---
+
 ### Paper #2 Test 4 Required - Phase 2 Blocked (Nov 4, 2025)
 
 **What Changed**:
