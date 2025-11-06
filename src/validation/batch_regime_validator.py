@@ -32,6 +32,9 @@ import time
 from openai import OpenAI, APIError
 import yaml
 
+# Import prompt builder for consistent prompts
+from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+
 # Get project root
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 DATA_CACHE = PROJECT_ROOT / ".cache"
@@ -59,6 +62,7 @@ class BatchRegimeValidator:
             api_key: OpenAI API key (or use OPENAI_API_KEY env var)
         """
         self.client = OpenAI(api_key=api_key)
+        self.prompt_builder = MechanicsPromptBuilder()
         self.batch_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "batch_jobs"
         self.batch_dir.mkdir(parents=True, exist_ok=True)
 
@@ -93,32 +97,18 @@ class BatchRegimeValidator:
 
         for i, window in enumerate(windows):
             end_date = window.get('end_date', f'Window_{i}')
-            gex_values = window.get('gex_values', [])
+            gex_sequence = window.get('gex_sequence', [])
 
-            # Create regime detection prompt (simplified for batch context)
+            # Build regime detection prompt using consistent MechanicsPromptBuilder
+            # This ensures batch API uses identical prompts as sync validator
+            prompt_text = self.prompt_builder.build_regime_prompt(
+                gex_sequence=gex_sequence,
+                end_date=end_date
+            )
+
+            # OpenAI Batch API format - single user message with full prompt
             messages = [
-                {
-                    "role": "system",
-                    "content": """You are a market mechanics analyst specializing in dealer gamma exposure.
-Analyze 30-day GEX sequences to identify persistent market regimes.
-
-Classify as:
-- persistent_positive: >70% days positive, >$5B avg, ≤5 flips
-- persistent_negative: >70% days negative, >$5B avg, ≤5 flips
-- transitional: Frequent direction changes
-- low_conviction: Persistent sign but <$5B avg
-- no_regime: Insufficient structure
-
-Respond with JSON: {"regime_type": "...", "regime_detected": bool, "confidence": 0-100, "reasoning": "..."}"""
-                },
-                {
-                    "role": "user",
-                    "content": f"""Analyze this 30-day GEX sequence (Day T-29 to Day T+0):
-
-{format_gex_for_prompt(gex_values)}
-
-Is this a persistent regime? Classify and provide confidence (0-100)."""
-                }
+                {"role": "user", "content": prompt_text}
             ]
 
             # OpenAI Batch API format
@@ -129,7 +119,7 @@ Is this a persistent regime? Classify and provide confidence (0-100)."""
                 "body": {
                     "model": model,
                     "messages": messages,
-                    "temperature": 0.7
+                    "temperature": 0.0  # Deterministic classification (matches sync validator)
                 }
             }
 

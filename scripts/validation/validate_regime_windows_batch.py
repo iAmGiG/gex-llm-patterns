@@ -116,12 +116,25 @@ def prepare_windows(
             logger.warning(f"Window has {len(gex_sequence)} days, expected {window_size} - skipping")
             continue
 
-        # Extract GEX values (obfuscated format not needed for batch file, just values)
-        gex_values = [entry['net_gex'] for entry in gex_sequence]
+        # CRITICAL: Apply obfuscation to GEX sequence (required for research validity)
+        # LLM must not see real dates - prevents temporal context cheating
+        gex_sequence_obfuscated = []
+        for j, day in enumerate(gex_sequence):
+            # Compute day offset: if 30 days, first day is T-29, last day is T+0
+            day_offset = j - window_size + 1
+            day_label = f"Day T{day_offset:+d}" if day_offset != 0 else "Day T+0"
+
+            obfuscated_day = {
+                'date': day_label,  # e.g., "Day T-29", "Day T+0"
+                'net_gex_usd': day.get('net_gex', 0),
+                'positive_gex': day.get('positive_gex', 0),
+                'negative_gex': day.get('negative_gex', 0)
+            }
+            gex_sequence_obfuscated.append(obfuscated_day)
 
         windows.append({
             "end_date": end_date_window,
-            "gex_values": gex_values,
+            "gex_sequence": gex_sequence_obfuscated,  # Full obfuscated sequence (not just values)
             "start_date": gex_sequence[0]['date'] if gex_sequence else None
         })
 
