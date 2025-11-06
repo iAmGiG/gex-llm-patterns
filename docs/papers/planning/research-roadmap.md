@@ -1,7 +1,7 @@
 # Research Roadmap: LLM-Based Market Microstructure Analysis
 
-**Last Updated**: October 25, 2025
-**Status**: Paper #1 submitted (Oct 26), Papers #2-3 planned
+**Last Updated**: November 5, 2025
+**Status**: Paper #1 submitted (Oct 26), Paper #2 pivoted to 30-day regimes (Nov 5)
 
 ---
 
@@ -20,7 +20,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 | Paper | Status | Timeline | Contribution |
 |-------|--------|----------|--------------|
 | **Paper #1** | ✅ Submitted | Oct 2025 | Baseline obfuscation methodology (single-day, SPY) |
-| **Paper #2** | 📋 Planned | Q1 2026 | Temporal dynamics (sequential GEX analysis) |
+| **Paper #2** | 🔄 In Progress | Q1 2026 | 30-day regime detection (pivoted Nov 5 from 5-day approach) |
 | **Paper #3** | 📋 Planned | Q2 2026 | Cross-asset generalization (individual equities) |
 | **Paper #4+** | 💭 Future | 2026+ | Pattern discovery, comparative LLMs, hybrid systems |
 
@@ -56,79 +56,67 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 ---
 
-## Paper #2: Sequential GEX Analysis (Journal)
+## Paper #2: Regime Detection via Sequential GEX (Journal)
 
-### Status: 📋 Planned - Q1 2026
+### Status: 🔄 In Progress - Q1 2026 (Pivoted Nov 5, 2025)
 
-**Title**: TBD - "Temporal Dynamics of Dealer Constraints: Sequential Gamma Exposure Analysis with LLMs"
+**⚠️ STRATEGIC PIVOT (November 5, 2025)**
+
+**Original Plan**: 5-day trajectory analysis (accumulation/relief/reversal)
+- Result: 98-100% detection across all conditions (2020 weak GEX vs 2024 strong GEX)
+- Finding: Detects universal daily hedging (trivial), not distinctive patterns (interesting)
+- Decision: Pivot to 30-day regime windows for meaningful selectivity (30-50% expected detection)
+
+---
+
+**Current Approach**: 30-Day Regime Detection
+
+**Title**: TBD - "LLM Detection of Persistent Dealer Gamma Regimes: 0DTE Evolution and Regime Persistence"
 
 **Target**: Journal submission (6-8 pages)
 
-**Motivation** (Advisor Input):
-> "Currently you are looking on single day gamma exposure, will it be worthy look at most recent 5 days to detect the hidden force? I mean the sequential changes of gamma exposure would bring more info on dealers intention. This could be a next more comprehensive paper **even before going to individual stocks**"
-
 **Research Questions**:
 
-1. Can LLMs detect constraint *trajectories* (not just snapshots)?
-2. Does sequential context improve predictive accuracy over single-day?
-3. What temporal patterns emerge in dealer hedging behavior?
+1. Can LLMs identify **persistent market regimes** from dealer gamma positioning?
+2. Did 0DTE proliferation (2020→2024) increase regime persistence?
+3. How do LLMs discriminate persistent regimes from transitional periods?
 
 **Methodology**:
 
-- **5-day lookback windows** (Day T-4 to Day T+0)
-- **Maintain obfuscation**: "Day T-4", "Day T-3", etc. (no real dates)
-- **New pattern taxonomy**: Accumulation, relief, reversal, persistence
-- **Comparison**: Single-day vs sequential detection
-
-**Example Sequential Prompt**:
-
-```bash
-Sequential GEX Data (Day T-4 to Day T+0):
-
-Day T-4: Net GEX: -$2.1B (negative gamma)
-Day T-3: Net GEX: -$3.2B (negative gamma INCREASING)
-Day T-2: Net GEX: -$4.1B (negative gamma INCREASING)
-Day T-1: Net GEX: -$4.8B (negative gamma INCREASING)
-Day T+0: Net GEX: -$5.2B (negative gamma PEAK)
-
-Trajectory: Escalating short gamma over 5 days (-$2.1B → -$5.2B)
-
-WHO is forcing WHOM to do WHAT?
-Consider the TRAJECTORY of constraints, not just current state.
-```
+- **30-day regime windows** (not 5-day trajectories)
+- **Regime classification**:
+  - Persistent Positive: >70% days (21+/30) positive GEX, >$5B avg, ≤5 flips
+  - Persistent Negative: >70% days (21+/30) negative GEX, >$5B avg, ≤5 flips
+  - Transitional: Frequent flips, no dominant direction (REJECT)
+  - Low Conviction: Consistent but weak magnitude <$5B (REJECT)
+- **Expected selectivity**: 30-50% detection (vs 98-100% for 5-day)
+- **0DTE comparison**: 2024 vs 2020 regime persistence
 
 **Expected Contributions**:
 
-1. Temporal extension of obfuscation testing framework
-2. Evidence that LLMs reason about constraint trajectories
-3. Pattern taxonomy expansion (4 new temporal pattern types)
-4. Predictive accuracy improvement via sequential context
+1. Regime detection with meaningful selectivity (30-50%, not universal)
+2. 0DTE proliferation effect on regime stability
+3. LLM discrimination of structural vs transitional periods
+4. Temporal extension of obfuscation framework (30-day, not 5-day)
 
-**Expected Outcomes**:
+**Implementation Status** (Nov 5, 2025):
+- ✅ RegimeClassifier module (332 lines)
+- ✅ SequentialGEXFetcher updated (window_size=30 parameter)
+- ✅ Regime detection prompt v1
+- ⏸️ Phase 1 validation (Q1 2024, ~32 windows)
 
-- **Best case**: Accuracy improves 96% → 98% (sequential adds value)
-- **Neutral**: Similar accuracy (single-day sufficient, fold into discussion)
-- **Worst case**: Accuracy decreases (sequential confuses LLM, defer to Paper #3)
+**Expected Timeline**:
+- Week 1 (Nov 4-8): Core implementation ✅
+- Week 2 (Nov 11-15): Phase 1 + Phase 2 validation
+- Week 3 (Nov 18-22): Phase 3 (2020 comparison)
+- Weeks 4-5 (Dec): Analysis + paper draft
 
-**Implementation Plan**:
+**Documentation**:
+- `docs/papers/paper2/methodology/regime_windows_design.md`
+- `docs/papers/paper2/validation/test4/` (explains pivot)
+- Issues #89 (30-day methodology), #107 (validation strategy)
 
-1. **Phase 1** (Day 1): Database query extension (5-day windows)
-2. **Phase 2** (Day 2): Sequential prompt template
-3. **Phase 3** (Days 3-4): Validation runs (169 5-day windows on SPY 2024)
-4. **Phase 4** (Day 5): Comparative analysis (single vs sequential)
-
-**Dataset**: SPY 2024 (existing data, no new collection needed)
-**Estimated Effort**: 5 days implementation + 2-3 weeks analysis/writing
-
-**GitHub Issue**: #89 (Sequential GEX Analysis - Paper #2 Extension)
-
-**Dependency**: Paper #1 acceptance/publication
-
-**Additional Analysis** (If Sequential Validates):
-
-- Alpha decline investigation (Q1→Q4 2024)
-- Regime transition detection
-- Volatility prediction improvements
+**5-Day Work Value**: Valuable negative result, documented in sessions archive
 
 ---
 
