@@ -1,6 +1,10 @@
-# Statistical Validation Scripts
+# Statistical Validation Scripts - Paper #1
 
-This directory contains scripts for statistical validation of the GEX-LLM pattern detection framework, specifically testing causal relationships and economic significance.
+**Scope**: Single-day GEX pattern detection (Paper #1 only)
+**Status**: Complete - Issues #99, #100 closed
+**Paper #2**: Different statistical tests needed for 30-day regime validation
+
+This directory contains scripts for statistical validation of the GEX-LLM pattern detection framework (Paper #1), specifically testing causal relationships and economic significance.
 
 ## Overview
 
@@ -11,10 +15,13 @@ Two complementary analyses strengthen the paper's empirical claims:
 
 ## Files
 
-### Main Analysis Scripts
+### Main Analysis Scripts (Paper #1)
 
-- `granger_analysis_main.py` - Granger causality test implementation (Issue #99)
-- `leadlag_analysis_main.py` - Lead-lag analysis implementation (Issue #100)
+- `p1_granger_analysis_main.py` - Granger causality test implementation (Issue #99)
+- `p1_leadlag_analysis_main.py` - Lead-lag analysis implementation (Issue #100)
+- `p1_extract_validation_data.py` - Data extraction utility
+- `p1_granger_variations.py` - Granger test variations
+- `p1_leadlag_variations.py` - Lead-lag test variations
 
 ### Supporting Documentation
 
@@ -26,8 +33,8 @@ Two complementary analyses strengthen the paper's empirical claims:
 ### Issue #99: Granger Causality Test
 
 ```bash
-# Run Granger causality analysis
-python scripts/statistical_validation/granger_analysis_main.py
+# Run Granger causality analysis (Paper #1)
+python scripts/statistical_validation/p1_granger_analysis_main.py
 ```
 
 **Outputs**:
@@ -41,8 +48,8 @@ python scripts/statistical_validation/granger_analysis_main.py
 ### Issue #100: Lead-Lag Analysis
 
 ```bash
-# Run lead-lag analysis
-python scripts/statistical_validation/leadlag_analysis_main.py
+# Run lead-lag analysis (Paper #1)
+python scripts/statistical_validation/p1_leadlag_analysis_main.py
 ```
 
 **Outputs**:
