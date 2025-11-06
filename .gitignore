@@ -88,6 +88,9 @@ env_test/
 # ====
 
 # Claude Code agent configurations
+# IMPORTANT: Do NOT attempt to commit .claude/ files
+# This folder is for inter-agent coordination only (sync.yaml, status, notes)
+# Use -f flag only in emergency; proper way is to update committed docs instead
 .claude/
 
 # PyCharm
