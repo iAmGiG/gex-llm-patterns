@@ -78,18 +78,28 @@ def prepare_windows(
     )
     obfuscator = DataObfuscator()
 
-    # Get trading days in range
-    from datetime import datetime as dt
-    start_dt = dt.strptime(start_date, "%Y-%m-%d")
-    end_dt = dt.strptime(end_date, "%Y-%m-%d")
+    # Get ALL trading days available in cache (need historical context for 30-day windows)
+    cache_dir = Path(f".cache/gex_data/{symbol}")
 
-    # Fetch from cache
-    trading_days = cache_manager.get_trading_days_in_range(symbol, start_date, end_date)
-    logger.info(f"Found {len(trading_days)} trading days in range")
+    if not cache_dir.exists():
+        logger.error(f"Cache directory not found: {cache_dir}")
+        return []
 
-    # Potential window ends (must have at least window_size days before)
-    potential_window_ends = [d for d in trading_days if trading_days.index(d) >= window_size - 1]
-    logger.info(f"Can create {len(potential_window_ends)} potential windows")
+    # Scan for date directories with GEX data
+    available_dates = []
+    for date_dir in cache_dir.iterdir():
+        if date_dir.is_dir():
+            gex_file = date_dir / "gex_summary.json"
+            if gex_file.exists():
+                date_str = date_dir.name
+                available_dates.append(date_str)
+
+    all_trading_days = sorted(available_dates)
+    logger.info(f"Found {len(all_trading_days)} total trading days in cache")
+
+    # Filter to potential window ends (must be within validation range)
+    potential_window_ends = [d for d in all_trading_days if start_date <= d <= end_date]
+    logger.info(f"Can create {len(potential_window_ends)} potential windows in range {start_date} to {end_date}")
 
     # Sample
     if sample_every_n > 1:

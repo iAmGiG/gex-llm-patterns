@@ -59,8 +59,12 @@ class BatchRegimeValidator:
         Initialize batch validator.
 
         Args:
-            api_key: OpenAI API key (or use OPENAI_API_KEY env var)
+            api_key: OpenAI API key (or use OPENAI_API_KEY env var or config.json)
         """
+        # Load API key from config.json if not provided
+        if api_key is None:
+            api_key = self._load_api_key_from_json()
+
         self.client = OpenAI(api_key=api_key)
         self.prompt_builder = MechanicsPromptBuilder()
         self.batch_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "batch_jobs"
@@ -68,6 +72,21 @@ class BatchRegimeValidator:
 
         logger.info(f"Initialized BatchRegimeValidator")
         logger.info(f"Batch job directory: {self.batch_dir}")
+
+    def _load_api_key_from_json(self) -> str:
+        """Load OpenAI API key from config/config.json."""
+        import os
+        try:
+            config_path = PROJECT_ROOT / 'config' / 'config.json'
+            if config_path.exists():
+                with open(config_path, 'r') as f:
+                    json_config = json.load(f)
+                return json_config.get('OPEN_AI_KEY', '')
+        except Exception as e:
+            logger.warning(f"Failed to load config.json: {e}")
+
+        # Fallback to environment
+        return os.getenv("OPEN_AI_KEY") or os.getenv("OPENAI_API_KEY") or ''
 
     def prepare_batch_file(
         self,
@@ -112,15 +131,21 @@ class BatchRegimeValidator:
             ]
 
             # OpenAI Batch API format
+            # OpenAI Batch API format
+            request_body = {
+                "model": model,
+                "messages": messages
+            }
+
+            # Only add temperature for non-reasoning models (o4-mini requires default temperature=1)
+            if not model.startswith("o"):
+                request_body["temperature"] = 0.0  # Deterministic for non-reasoning models
+
             request = {
                 "custom_id": f"window-{end_date}",
                 "method": "POST",
                 "url": "/v1/chat/completions",
-                "body": {
-                    "model": model,
-                    "messages": messages,
-                    "temperature": 0.0  # Deterministic classification (matches sync validator)
-                }
+                "body": request_body
             }
 
             batch_requests.append(request)
@@ -155,8 +180,8 @@ class BatchRegimeValidator:
 
         # Upload file
         with open(batch_file, 'rb') as f:
-            response = self.client.beta.files.upload(
-                file=(batch_file.name, f),
+            response = self.client.files.create(
+                file=f,
                 purpose="batch"
             )
             batch_file_id = response.id
@@ -166,10 +191,10 @@ class BatchRegimeValidator:
         # Create batch job
         batch_description = description or f"Regime validation - {datetime.now().isoformat()}"
 
-        batch = self.client.beta.batches.create(
+        batch = self.client.batches.create(
             input_file_id=batch_file_id,
             endpoint="/v1/chat/completions",
-            timeout_hours=24,
+            completion_window="24h",
             metadata={"description": batch_description}
         )
 
@@ -217,7 +242,7 @@ class BatchRegimeValidator:
         start_time = time.time()
 
         while poll_count < max_polls:
-            batch = self.client.beta.batches.retrieve(batch_id)
+            batch = self.client.batches.retrieve(batch_id)
 
             logger.info(f"Poll {poll_count + 1}: Status={batch.status}, Request counts: {batch.request_counts}")
 
@@ -240,7 +265,7 @@ class BatchRegimeValidator:
                     "errors": batch.errors if hasattr(batch, 'errors') else "Unknown error"
                 }
 
-            elif batch.status in ["queued", "in_progress"]:
+            elif batch.status in ["validating", "queued", "in_progress", "finalizing"]:
                 poll_count += 1
                 logger.info(f"Batch still processing... Waiting {poll_interval}s before next poll")
                 time.sleep(poll_interval)
@@ -275,7 +300,7 @@ class BatchRegimeValidator:
         logger.info(f"Retrieving results for batch {batch_id}")
 
         # Get batch info
-        batch = self.client.beta.batches.retrieve(batch_id)
+        batch = self.client.batches.retrieve(batch_id)
 
         if batch.status != "completed":
             logger.error(f"Batch not completed: status={batch.status}")
@@ -290,7 +315,7 @@ class BatchRegimeValidator:
 
         logger.info(f"Downloading results to {output_file}")
 
-        file_content = self.client.beta.files.content(output_file_id)
+        file_content = self.client.files.content(output_file_id)
         with open(output_file, 'wb') as f:
             f.write(file_content.read())
 
@@ -352,6 +377,12 @@ class BatchRegimeValidator:
 
             message = choices[0].get('message', {})
             content = message.get('content', '{}')
+
+            # Strip markdown code blocks if present (LLM often wraps JSON in ```json ... ```)
+            if content.startswith('```json'):
+                content = content.replace('```json\n', '', 1).replace('\n```', '', 1).strip()
+            elif content.startswith('```'):
+                content = content.replace('```\n', '', 1).replace('\n```', '', 1).strip()
 
             # Parse JSON response from LLM
             llm_response = json.loads(content)

@@ -274,3 +274,6 @@ docs/papers/**/latex/*.pdf
 # LaTeX temporary archives
 *.tar.gz
 *.zip
+
+# Batch API test artifacts
+reports/validation/regime_windows/batch_jobs/

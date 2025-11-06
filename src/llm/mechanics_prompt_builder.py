@@ -365,3 +365,190 @@ KEY PLAYERS:"""
         else:
             return "extreme"
 
+    @staticmethod
+    def build_regime_prompt(
+        gex_sequence: List[Dict],
+        end_date: str = None
+    ) -> str:
+        """
+        Build regime detection prompt for 30-day GEX window analysis (Paper #2).
+
+        Args:
+            gex_sequence: List of dicts with 'date', 'net_gex_usd', 'positive_gex', 'negative_gex'
+            end_date: Optional end date for logging (not used in prompt - obfuscation)
+
+        Returns:
+            Complete regime detection prompt text
+        """
+        # Format GEX data table
+        gex_lines = []
+        for day in gex_sequence:
+            date_label = day['date']  # Already obfuscated (Day T-29, etc.)
+            net_gex_b = day['net_gex_usd'] / 1e9  # Convert to billions
+            sign = "+" if net_gex_b >= 0 else ""
+            gex_lines.append(f"{date_label}: {sign}{net_gex_b:.2f}B")
+
+        gex_data_table = "\n".join(gex_lines)
+
+        prompt = f"""You are a market structure analyst specializing in dealer gamma positioning regimes.
+
+TASK: Analyze this 30-day period and determine if it represents a PERSISTENT regime where dealer constraints create forced, directional flows.
+
+## 30-DAY GEX DATA
+
+{gex_data_table}
+
+## REGIME CLASSIFICATION FRAMEWORK
+
+### PERSISTENT REGIMES (Detect These)
+
+**1. PERSISTENT POSITIVE REGIME**
+- Definition: Dealers are LONG gamma, forced to sell into strength
+- Criteria:
+  * >70% of days (21+/30) have positive net GEX
+  * Average magnitude >$5B
+  * ≤5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold long gamma:
+- Price rises → Dealers MUST sell shares (rebalance)
+- Price falls → Dealers MUST buy shares (rebalance)
+- Creates dampening, mean-reverting flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+**2. PERSISTENT NEGATIVE REGIME**
+- Definition: Dealers are SHORT gamma, forced to buy into strength
+- Criteria:
+  * >70% of days (21+/30) have negative net GEX
+  * Average magnitude >$5B
+  * ≤5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold short gamma:
+- Price rises → Dealers MUST buy shares (chase)
+- Price falls → Dealers MUST sell shares (chase)
+- Creates amplifying, momentum flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+---
+
+### NON-REGIMES (Reject These)
+
+**3. TRANSITIONAL (Reject)**
+- Frequent sign flips between positive/negative GEX
+- No dominant regime direction (less than 70% same sign)
+- Market in regime change period
+- Example: 15 positive days, 15 negative days (50/50 split)
+
+**Why Reject**: No persistent constraint. Dealers face mixed conditions daily. Not a structural regime.
+
+**4. LOW CONVICTION (Reject)**
+- Consistent sign BUT weak magnitude (<$5B average)
+- Example: 25 days positive, avg $2B GEX
+- Insufficient constraint to create persistent forced flows
+
+**Why Reject**: Even if sign is consistent, magnitude too weak to force dealers into meaningful positions. Not a structural constraint.
+
+---
+
+## ANALYSIS QUESTIONS
+
+Systematically evaluate the 30-day window:
+
+**Step 1: Sign Persistence**
+1. Count days with positive net GEX
+2. Count days with negative net GEX
+3. Calculate persistence percentage: max(positive_days, negative_days) / 30 * 100
+4. Does it meet 70% threshold (21+ days)?
+
+**Step 2: Magnitude Assessment**
+1. Calculate average GEX magnitude (absolute value): sum(|net_gex|) / 30
+2. Is average magnitude ≥$5B?
+3. Check for extreme outliers that might distort average
+
+**Step 3: Stability Check**
+1. Count sign flips: How many times does GEX switch from pos→neg or neg→pos?
+2. Are there ≤5 sign flips across 30 days?
+3. Stable regime should have low flip count
+
+**Step 4: Regime Classification**
+- If Steps 1, 2, 3 all pass AND positive dominates → PERSISTENT POSITIVE
+- If Steps 1, 2, 3 all pass AND negative dominates → PERSISTENT NEGATIVE
+- If Step 1 passes but Step 2 fails → LOW CONVICTION (reject)
+- If Step 1 fails → TRANSITIONAL (reject)
+
+---
+
+## CONFIDENCE CALIBRATION (Mechanical Guidance)
+
+Use these concrete anchors to calibrate confidence:
+
+**90-100 (Very High Confidence)**
+- 25-30 days same sign (83-100% persistence)
+- Average magnitude >$10B
+- 0-2 sign flips (highly stable)
+- Example: "29 negative days, avg $15B, 1 flip"
+
+**70-89 (High Confidence)**
+- 21-24 days same sign (70-80% persistence)
+- Average magnitude $5-10B
+- 2-4 sign flips (moderately stable)
+- Example: "23 negative days, avg $7B, 3 flips"
+
+**50-69 (Borderline - Use with Caution)**
+- 18-20 days same sign (60-67% persistence)
+- Average magnitude $3-5B
+- 5-7 sign flips
+- Example: "20 negative days, avg $4B, 6 flips"
+- **Note**: Borderline cases should generally be REJECTED unless other factors strengthen confidence
+
+**0-49 (Reject - Not Persistent)**
+- <18 days same sign (<60% persistence)
+- OR average magnitude <$3B
+- OR >7 sign flips
+- These are NOT persistent regimes
+
+**Important**: Confidence is a FILTER, not a probability. Use it to distinguish clear regimes (70+) from borderline (50-69) from noise (<50).
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Provide your analysis in this exact JSON structure:
+
+```json
+{{
+    "regime_detected": true/false,
+    "regime_type": "persistent_positive|persistent_negative|transitional|low_conviction",
+    "positive_days": <count>,
+    "negative_days": <count>,
+    "avg_magnitude_billions": <value>,
+    "sign_flips": <count>,
+    "persistence_pct": <percentage>,
+    "confidence": <0-100>,
+    "reasoning": "Explain step-by-step why this is/isn't a persistent regime. Reference specific metrics (persistence %, avg magnitude, sign flips). If rejecting, state which criterion failed."
+}}
+```
+
+**regime_detected Rules**:
+- `true` ONLY if regime_type is "persistent_positive" or "persistent_negative"
+- `false` if regime_type is "transitional" or "low_conviction"
+
+---
+
+## KEY PRINCIPLES
+
+1. **Selectivity is Expected**: Most windows will NOT be persistent regimes (expect 30-50% detection rate)
+
+2. **ALL Criteria Must Pass**: Persistence + Magnitude + Stability required for detection
+
+3. **Rejection is Valid**: Saying "no persistent regime" is a correct answer for transitional/weak periods
+
+4. **Mechanical Over Qualitative**: Use concrete thresholds (70%, $5B, 5 flips) rather than subjective judgment
+
+5. **Structural Focus**: Only detect when dealers are FORCED into directional positions by constraints
+
+Analyze the 30-day GEX data above and provide your regime classification in JSON format."""
+
+        return prompt
+
