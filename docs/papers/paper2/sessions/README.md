@@ -1,132 +1,142 @@
 # Paper #2 Session Logs
 
-Chronological development history for Paper #2 Sequential GEX Analysis.
+Development history for Paper #2 regime detection methodology.
 
 ---
 
-## Session Structure
+## Current Work (30-Day Regime Detection)
 
-**Naming**: `session-##-descriptive-name.md`
-**Format**: Each session includes Date, Session #, Issues, Status
-**Purpose**: Document implementation decisions, bug fixes, and methodology evolution
+**Status**: Week 1 implementation (November 5, 2025)
 
----
+### s05: Strategic Pivot to 30-Day Regimes
 
-## Sessions
+**Date**: November 5, 2025
+**Focus**: Pivot from 5-day trajectories to 30-day regime windows
 
-### [Session 01: Implementation & Bug Fixes](session-01-implementation-and-bugfixes.md)
-**Date**: November 3-4, 2025
-**Focus**: Sequential GEX infrastructure implementation and critical debugging
+**Critical Discovery**:
+- 5-day approach: 98.4% detection (2020) vs 100% (Q1 2024)
+- Finding: Detects universal daily hedging (trivial), not distinctive regimes (interesting)
+- Decision: Pivot to 30-day regime windows (expected 30-50% detection)
 
-**Part 1 - Implementation** (Nov 3):
-- Built SequentialGEXFetcher (433 lines) for 5-day window retrieval
-- Extended MechanicsPromptBuilder with sequential methods (+150 lines)
-- Created validation script and unit tests (100% pass rate)
+**Implementation (Week 1)**:
+- ✅ RegimeClassifier module (332 lines)
+- ✅ SequentialGEXFetcher updated (window_size=30 parameter)
+- ✅ Regime detection prompt v1
+- ✅ GitHub issues #89, #107 updated
+- ⏸️ Validation script integration (in progress)
+- ⏸️ Phase 1: Q1 2024 validation (~32 windows expected)
 
-**Part 2 - Bug Fixes** (Nov 4):
-- Bug 1: Config key path missing `analysis.` prefix (used gpt-4o instead of o4-mini)
-- Bug 2: Missing sequential methods (validation crashed)
-- Bug 3: Field name mismatch (`net_gex` vs `net_gex_usd`) - ALL prompts showed $0.0B
+**Files Created**:
+- `src/validation/regime_classifier.py`
+- `docs/papers/paper2/prompts/regime_detection_v1.md`
+- `docs/papers/paper2/methodology/regime_windows_design.md`
 
-**Result**: 120 windows validated successfully with o4-mini (100% detection, 70-85% confidence)
-
----
-
-### [Session 02: Phase 1 Completion](session-02-phase1-completion.md)
-**Date**: November 4, 2025
-**Focus**: Proof-of-concept completion and methodology rigor assessment
-
-**Key Activities**:
-- Paused full 2024 validation at 120 windows (originally intended small test)
-- Analyzed 120-window proof-of-concept results
-- Designed negative controls framework (3 tests)
-- Assessed methodology rigor vs Paper #1
-
-**Outcomes**:
-- Proof-of-concept successful (100% detection with real GEX data)
-- Identified need for prompt bias testing
-- Phase 1 declared complete, ready for Phase 2
+**Related Issues**: #89 (30-day methodology), #107 (validation strategy), #111 (Test 4 led to pivot)
 
 ---
 
-### [Session 03: Prompt Evolution & Decision](session-03-prompt-evolution-and-decision.md)
-**Date**: November 4, 2025
-**Focus**: Negative controls testing and final prompt selection
+## Archived Work (5-Day Sequential Approach)
 
-**Prompt Iterations**:
-- **v1**: Too strict (0% detection on real data) - rejected everything as "too noisy"
-- **v2**: Too lenient (90% detection on random noise) - applied thresholds to endpoints only
-- **v3a**: Balanced ✅ (80% real, 20% noise) - trajectory consistency + mechanical confidence scale
-- **v3b**: Failed ❌ (50% detection on noise) - qualitative guidance insufficient
+**Status**: Abandoned November 5, 2025 - Moved to `archive_5day/`
 
-**Key Discovery**: Mechanical confidence guidance (e.g., "1 counter-trend day = 70-100 confidence") reduced false positives by **60%** compared to qualitative guidance (v3a: 20% FP vs v3b: 50% FP).
+### Why 5-Day Approach Was Abandoned
 
-**Final Decision**: Accept v3a neutral prompt for Q1 2024 validation (60 windows)
+**Test 4 Result** (November 5, 2025):
+- 2020 (weak GEX, avg $2.85B): 98.4% detection (253/257 windows)
+- Q1 2024 (strong GEX, avg $13.95B): 100% detection (61/61 windows)
+- **Delta**: Only 1.6 percentage points despite 79% lower GEX
 
-**Performance**:
-- Test 1 (Prompt Comparison): 80% neutral vs 100% leading (conservative calibration)
-- Test 2 (Random Synthetic): 20% false positives ✅ (passed <30% threshold)
-- Test 3 (Zero-GEX): 0% false positives ✅ (passed <10% threshold)
+**Interpretation**: 5-day windows detect universal daily hedging (always present, known since Black-Scholes 1973) rather than distinctive regime patterns (sometimes present, interesting research).
+
+**Strategic Decision**: Pivot to 30-day regime windows to detect persistent structural constraints with meaningful selectivity (30-50% expected detection).
+
+### Archived Sessions (5-Day Work)
+
+Located in `archive_5day/`:
+
+1. **s01**: Implementation & Bug Fixes (Nov 3-4)
+   - Built SequentialGEXFetcher (5-day version)
+   - Fixed 3 critical bugs (config, methods, field names)
+   - Result: 120 windows validated
+
+2. **s02**: Phase 1 Completion (Nov 4)
+   - Proof-of-concept successful (100% detection)
+   - Negative controls framework designed
+   - Phase 1 declared complete
+
+3. **s03**: Prompt Evolution & Decision (Nov 4)
+   - Tested 4 prompt versions (v1-v3b)
+   - v3a selected (mechanical confidence guidance)
+   - Key finding: 60% reduction in false positives vs qualitative guidance
+
+4. **s04**: Test 4 Requirement (Nov 4)
+   - Identified 100% detection concern
+   - Designed Test 4 (low-GEX negative control)
+   - Blocked Phase 2 pending Test 4
+
+**Total Work**: 4 sessions, Oct 31 - Nov 4, 2025
+
+**Value Retained**:
+- Infrastructure (SequentialGEXFetcher, prompt builder methods)
+- 2020 historical data (reusable for 30-day validation)
+- Negative controls principles (mechanical confidence guidance)
+- Methodology rigor lessons
 
 ---
 
-### [Session 04: Test 4 Requirement](session-04-test4-requirement.md)
-**Date**: November 4, 2025
-**Focus**: 100% detection concern and methodological gap identification
+## Documentation Structure
 
-**Problem Identified**:
-- Q1 2024 validation: 100% detection rate (61/61 windows)
-- User concern: "100% will be called out by reviewers"
-- Root cause: Never tested discrimination on realistic but weak GEX periods
+### Active (30-Day Regimes)
 
-**Gap Analysis**:
-- ✅ Tests 1-3 validated rejection of synthetic/zero-GEX
-- ❌ Never tested: Can LLM say "pattern too weak" on realistic data?
-- Q1 2024 reality: All 61 windows had high GEX (avg $13.95B), zero weak periods
+```
+docs/papers/paper2/
+├── methodology/
+│   ├── regime_windows_design.md (30-day framework)
+│   └── negative_controls_design.md (updated with Test 4)
+├── prompts/
+│   └── regime_detection_v1.md (30-day prompt)
+└── validation/
+    ├── negative_controls_archive.md (5-day Tests 1-4 summary)
+    └── test4/ (4 comprehensive docs on 5-day pivot discovery)
+```
 
-**Action Required**: Test 4 - Low-GEX Negative Control (Issue #111)
-- Dataset: 10-20 synthetic windows with $1-3B GEX (realistic but weak)
-- Pass criteria: <50% detection rate
-- Timeline: 2 days before Phase 2 decision
+### Archived (5-Day Approach)
 
-**Impact**: Phase 2 BLOCKED until Test 4 validates magnitude discrimination
-
----
-
-## Consolidation History
-
-**Original**: 9 files, 116KB (Nov 4, 2025 before consolidation)
-- Mix of session logs, progress updates, analysis deep-dives
-- Significant redundancy and overlap
-- No clear narrative structure
-
-**Consolidated**: 3 files, 40KB (Nov 4, 2025 after consolidation)
-- Clear chronological progression
-- Reduced duplication by 65%
-- Standardized format with session numbers
-
-**Deleted (redundant)**:
-- `2025-11-04-progress.md` - Status update only
-- `2025-11-04-negative-controls.md` - Framework overview (covered in Session 03)
-- `2025-11-04-test1-threshold-analysis.md` - Detailed analysis (summarized in Session 03)
-- `2025-11-04-prompt-bias-fix.md` - 31KB deep dive (consolidated into Session 03)
-- `PROMPT_EVOLUTION_SUMMARY.md` - Merged into Session 03
-- `2025-11-04-final-decision.md` - Merged into Session 03
+```
+docs/papers/paper2/sessions/archive_5day/
+├── s01-implementation-bugfixes.md
+├── s02-phase1-completion.md
+├── s03-prompt-evolution.md
+└── s04-test4-requirement.md
+```
 
 ---
 
 ## Quick Reference
 
-**When to read**:
-- **Understanding implementation**: Session 01
-- **Proof-of-concept results**: Session 02
-- **Methodology rigor & prompt design**: Session 03
+**Understanding the pivot**: See Test 4 docs (`../validation/test4/`)
 
-**Related Documentation**:
-- [../README.md](../README.md) - Paper #2 overview
-- [../adr/](../adr/) - Architecture Decision Records
-- [../methodology/](../methodology/) - Research methodology validation
+**30-day methodology**: See `../methodology/regime_windows_design.md`
+
+**Current implementation status**: Check `.claude/sync.yaml` or Issues #89/#107
 
 ---
 
-**Last Updated**: November 4, 2025
+## Timeline
+
+**Oct 31 - Nov 4, 2025**: 5-day sequential approach (4 sessions)
+- Implementation, debugging, proof-of-concept, negative controls
+- Result: 98-100% detection across all conditions (too universal)
+
+**Nov 5, 2025**: Strategic pivot
+- Test 4 completed, findings analyzed
+- Decision: 30-day regime windows
+- Week 1: Core components implemented
+
+**Nov 11-15, 2025** (planned): Phase 1 validation
+- Q1 2024: ~32 windows, expect 1-2 detections (60-80% LLM accuracy)
+- Go/no-go decision for Phase 2
+
+---
+
+**Last Updated**: November 5, 2025 (Post-pivot, Week 1)
