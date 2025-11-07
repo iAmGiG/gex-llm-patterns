@@ -29,10 +29,12 @@ Current paper shows correlation between GEX and volatility. This test proves **c
 **Location**: `.cache/consolidated_historical.db`
 
 **Required Tables**:
+
 - `pattern_validation_results` - Contains historical GEX analysis results
 - `historical_pattern_performance` - Contains performance metrics
 
 **Required Fields**:
+
 1. **GEX Time Series** (`net_gex_values`):
    - 242 trading days (full year 2024)
    - Daily net gamma exposure values
@@ -52,6 +54,7 @@ Current paper shows correlation between GEX and volatility. This test proves **c
 If database doesn't have complete time series:
 
 **Option A: Rebuild from Cache**
+
 ```python
 from src.cache.gex_cache_manager import GEXCacheManager
 from src.validation.outcome_calculator import OutcomeCalculator
@@ -66,6 +69,7 @@ vol_data = outcome_calc.calculate_realized_volatility('SPY', dates, window=3)
 ```
 
 **Option B: Use Baseline Strategy Results**
+
 ```python
 from src.analysis.baseline_gex_strategy import BaselineGEXStrategy
 
@@ -83,12 +87,14 @@ results = baseline.signals_generated  # Contains GEX and outcome metrics
 **File**: `scripts/statistical_validation/prepare_granger_data.py`
 
 **Tasks**:
+
 1. Extract GEX time series from database/cache
 2. Calculate realized volatility (T+1, T+3 forward)
 3. Check for missing values and interpolate if needed
 4. Ensure date alignment between GEX and volatility series
 
 **Code Structure**:
+
 ```python
 import pandas as pd
 import numpy as np
@@ -125,6 +131,7 @@ def prepare_granger_data(
 ```
 
 **Validation Checks**:
+
 - [ ] 242 days of data (full year 2024)
 - [ ] No missing values in critical ranges
 - [ ] GEX and volatility properly aligned by date
@@ -139,12 +146,14 @@ def prepare_granger_data(
 **Purpose**: Granger tests require stationary data. Non-stationary series need differencing.
 
 **Tasks**:
+
 1. Run Augmented Dickey-Fuller (ADF) test on GEX
 2. Run ADF test on realized volatility
 3. Difference series if p-value > 0.05
 4. Re-test differenced series
 
 **Code Structure**:
+
 ```python
 from statsmodels.tsa.stattools import adfuller
 
@@ -187,6 +196,7 @@ def difference_if_needed(data: pd.DataFrame) -> pd.DataFrame:
 ```
 
 **Expected Results**:
+
 - GEX likely stationary (daily regime changes)
 - Volatility may need differencing (persistent)
 
@@ -197,12 +207,14 @@ def difference_if_needed(data: pd.DataFrame) -> pd.DataFrame:
 **File**: `scripts/statistical_validation/run_granger_test.py`
 
 **Tasks**:
+
 1. Run Granger test: Does GEX predict volatility? (lags 1-5)
 2. Extract F-statistics and p-values
 3. Test subset: negative GEX regime only (< -$2B)
 4. Create results summary table
 
 **Code Structure**:
+
 ```python
 from statsmodels.tsa.stattools import grangercausalitytests
 
@@ -252,6 +264,7 @@ def run_granger_test(
 ```
 
 **Expected Results**:
+
 - Lags 1-3: p < 0.05 (significant)
 - Lags 4-5: p > 0.05 (effect weakens)
 - Negative regime: stronger effect
@@ -263,12 +276,14 @@ def run_granger_test(
 **File**: `scripts/statistical_validation/generate_granger_table.py`
 
 **Tasks**:
+
 1. Format results as LaTeX table
 2. Add statistical annotations (*, **, ***)
 3. Generate both full regime and negative regime tables
 4. Save to `docs/papers/paper1/tables/`
 
 **Code Structure**:
+
 ```python
 def generate_granger_table(
     results: pd.DataFrame,
@@ -325,6 +340,7 @@ Lag & F-Statistic & p-value & Significant \\
 **Location**: Add new subsection to Section V.D (Statistical Validation)
 
 **Text to Add**:
+
 ```markdown
 ### 5.D.3 Granger Causality Tests
 
@@ -374,6 +390,7 @@ reports/statistical_validation/
 ## 5. Dependencies
 
 ### Required Python Packages
+
 ```python
 import pandas as pd
 import numpy as np
@@ -383,6 +400,7 @@ from pathlib import Path
 ```
 
 ### Existing Codebase Components
+
 - `src.cache.gex_cache_manager.GEXCacheManager` - Historical GEX data
 - `src.validation.outcome_calculator.OutcomeCalculator` - Forward volatility
 - `src.utils.date_utils` - Date handling
@@ -392,18 +410,21 @@ from pathlib import Path
 ## 6. Validation Checklist
 
 **Data Quality**:
+
 - [ ] 242 days of continuous data (2024)
 - [ ] No gaps > 5 days (market holidays ok)
 - [ ] GEX values within expected range (-$10B to +$10B)
 - [ ] Volatility values reasonable (0.1% to 5%)
 
 **Statistical Rigor**:
+
 - [ ] Stationarity confirmed or differencing applied
 - [ ] At least 200 observations for Granger test
 - [ ] Results stable across different lag specifications
 - [ ] Negative regime has sufficient observations (N > 50)
 
 **Results Quality**:
+
 - [ ] P-values < 0.05 for lags 1-3
 - [ ] F-statistics show declining pattern with lag
 - [ ] Negative regime shows equal or stronger effect
@@ -414,6 +435,7 @@ from pathlib import Path
 ## 7. Expected Results Summary
 
 **Full Regime (All GEX Days)**:
+
 | Lag | F-Statistic | p-value | Significant |
 |-----|-------------|---------|-------------|
 | 1   | ~12-15      | < 0.001 | Yes         |
@@ -423,6 +445,7 @@ from pathlib import Path
 | 5   | ~2-3        | > 0.10  | No          |
 
 **Negative Regime (GEX < -$2B)**:
+
 - Expect stronger F-statistics at lags 1-2
 - Potentially significant through lag 4
 - Demonstrates pro-cyclical hedging amplification
@@ -432,15 +455,19 @@ from pathlib import Path
 ## 8. Troubleshooting
 
 ### Issue: Non-stationary data even after differencing
+
 **Solution**: Try log-differencing or check for structural breaks
 
 ### Issue: Weak Granger causality results
+
 **Solution**:
+
 1. Check if using correct volatility measure (realized vs implied)
 2. Try different forward windows (T+1 vs T+3)
 3. Verify GEX calculation methodology
 
 ### Issue: Insufficient data in negative regime
+
 **Solution**: Lower threshold to -$1B or use quartile-based split
 
 ---
@@ -460,9 +487,11 @@ from pathlib import Path
 ## 10. References
 
 **Granger Causality**:
+
 - Granger, C. W. J. (1969). "Investigating Causal Relations by Econometric Models"
 - Hamilton, J. D. (1994). "Time Series Analysis", Chapter 11
 
 **Implementation**:
+
 - Statsmodels documentation: `grangercausalitytests`
 - Seabold, S., & Perktold, J. (2010). "Statsmodels: Econometric and statistical modeling"

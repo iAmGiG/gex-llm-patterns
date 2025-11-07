@@ -54,11 +54,14 @@ class ValidationDataExtractor:
         # Load validation reports
         if use_unbiased:
             # Use unbiased full-year file (consistent methodology)
-            yaml_files = sorted(self.validation_dir.glob(f"{pattern}_SPY_2024_unbiased.yaml"))
-            logger.info("Using unbiased full-year validation file (recommended)")
+            yaml_files = sorted(self.validation_dir.glob(
+                f"{pattern}_SPY_2024_unbiased.yaml"))
+            logger.info(
+                "Using unbiased full-year validation file (recommended)")
         else:
             # Use quarterly reports (mixed methodologies)
-            yaml_files = sorted(self.validation_dir.glob(f"{pattern}_SPY_2024Q*.yaml"))
+            yaml_files = sorted(self.validation_dir.glob(
+                f"{pattern}_SPY_2024Q*.yaml"))
             logger.info("Using quarterly validation files")
 
         if not yaml_files:
@@ -118,16 +121,20 @@ class ValidationDataExtractor:
         # Convert to numeric and drop missing values
         df['net_gex'] = pd.to_numeric(df['net_gex'], errors='coerce')
         df['spot_price'] = pd.to_numeric(df['spot_price'], errors='coerce')
-        df['forward_return_t1'] = pd.to_numeric(df['forward_return_t1'], errors='coerce')
-        df['forward_return_t3'] = pd.to_numeric(df['forward_return_t3'], errors='coerce')
+        df['forward_return_t1'] = pd.to_numeric(
+            df['forward_return_t1'], errors='coerce')
+        df['forward_return_t3'] = pd.to_numeric(
+            df['forward_return_t3'], errors='coerce')
 
         # Calculate realized volatility (absolute returns)
         df['realized_vol_t1'] = df['forward_return_t1'].abs()
         df['realized_vol_t3'] = df['forward_return_t3'].abs()
 
         # Calculate rolling volatility
-        df['realized_vol_rolling_3d'] = df['forward_return_t1'].rolling(3).std()
-        df['realized_vol_rolling_5d'] = df['forward_return_t1'].rolling(5).std()
+        df['realized_vol_rolling_3d'] = df['forward_return_t1'].rolling(
+            3).std()
+        df['realized_vol_rolling_5d'] = df['forward_return_t1'].rolling(
+            5).std()
 
         # Classify GEX regimes
         df['gex_regime'] = pd.cut(
@@ -138,7 +145,8 @@ class ValidationDataExtractor:
 
         logger.info(f"Extracted {len(df)} trading days")
         logger.info(f"Date range: {df['date'].min()} to {df['date'].max()}")
-        logger.info(f"GEX range: ${df['net_gex'].min()/1e9:.2f}B to ${df['net_gex'].max()/1e9:.2f}B")
+        logger.info(
+            f"GEX range: ${df['net_gex'].min()/1e9:.2f}B to ${df['net_gex'].max()/1e9:.2f}B")
         logger.info(f"Detection rate: {df['detected'].sum()/len(df)*100:.1f}%")
 
         return df
@@ -165,7 +173,8 @@ class ValidationDataExtractor:
         logger.info(f"Total days: {len(df)}")
         logger.info(f"Mean net GEX: ${df['net_gex'].mean()/1e9:.2f}B")
         logger.info(f"Mean T+1 return: {df['forward_return_t1'].mean():.4f}%")
-        logger.info(f"Mean realized vol (T+1): {df['realized_vol_t1'].mean():.4f}%")
+        logger.info(
+            f"Mean realized vol (T+1): {df['realized_vol_t1'].mean():.4f}%")
 
         # Regime breakdown
         logger.info("\n=== Regime Breakdown ===")
@@ -189,7 +198,8 @@ def main():
     extractor = ValidationDataExtractor()
 
     # Extract gamma positioning data (full year - UNBIASED methodology)
-    df = extractor.extract_full_year(pattern="gamma_positioning", use_unbiased=True)
+    df = extractor.extract_full_year(
+        pattern="gamma_positioning", use_unbiased=True)
 
     if len(df) > 0:
         # Save to CSV

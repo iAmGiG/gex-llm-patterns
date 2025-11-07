@@ -6,6 +6,11 @@ Validates core mechanical patterns using obfuscation tests across full 2024 data
 Proof-of-concept: Start with single pattern to validate workflow.
 """
 
+from src.cache.unified_cache import UnifiedCacheManager
+from src.validation.outcome_calculator import OutcomeCalculator
+from src.validation.data_obfuscation import DataObfuscator
+from src.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
 import sys
 from pathlib import Path
 import logging
@@ -19,11 +24,6 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-from src.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
-from src.validation.data_obfuscation import DataObfuscator
-from src.validation.outcome_calculator import OutcomeCalculator
-from src.cache.unified_cache import UnifiedCacheManager
 
 logging.basicConfig(
     level=logging.INFO,
@@ -78,7 +78,8 @@ class PatternTaxonomyValidator:
 
         # Outcome calculator (Issue #80)
         self.calculate_outcomes = calculate_outcomes
-        self.outcome_calculator = OutcomeCalculator(self.cache) if calculate_outcomes else None
+        self.outcome_calculator = OutcomeCalculator(
+            self.cache) if calculate_outcomes else None
 
         # Validation tracking
         self.test_dates = []
@@ -113,7 +114,8 @@ class PatternTaxonomyValidator:
         Issue #84 Fix: Validates data coverage and fails fast if insufficient.
         Requires >=80% coverage for statistical validity (prevents silent incomplete testing).
         """
-        logger.info(f"Scanning cache for dates between {start_date} and {end_date}")
+        logger.info(
+            f"Scanning cache for dates between {start_date} and {end_date}")
 
         # Calculate expected trading days
         expected_dates = self._get_expected_trading_days(start_date, end_date)
@@ -132,10 +134,12 @@ class PatternTaxonomyValidator:
                 available_dates.append(date_str)
 
         # Calculate coverage
-        coverage_pct = (len(available_dates) / len(expected_dates) * 100) if expected_dates else 0
+        coverage_pct = (len(available_dates) / len(expected_dates)
+                        * 100) if expected_dates else 0
         missing_dates = sorted(set(expected_dates) - set(available_dates))
 
-        logger.info(f"Data coverage: {coverage_pct:.1f}% ({len(available_dates)}/{len(expected_dates)} trading days)")
+        logger.info(
+            f"Data coverage: {coverage_pct:.1f}% ({len(available_dates)}/{len(expected_dates)} trading days)")
 
         # Issue #84: Fail fast if coverage insufficient for statistical validity
         MIN_COVERAGE_PCT = 80.0
@@ -162,8 +166,10 @@ class PatternTaxonomyValidator:
             raise ValueError(error_msg)
 
         if missing_dates:
-            logger.warning(f"Missing {len(missing_dates)} dates (within {MIN_COVERAGE_PCT}% threshold)")
-            logger.warning(f"Missing dates: {missing_dates[:5]}{'...' if len(missing_dates) > 5 else ''}")
+            logger.warning(
+                f"Missing {len(missing_dates)} dates (within {MIN_COVERAGE_PCT}% threshold)")
+            logger.warning(
+                f"Missing dates: {missing_dates[:5]}{'...' if len(missing_dates) > 5 else ''}")
 
         return available_dates
 
@@ -180,7 +186,8 @@ class PatternTaxonomyValidator:
         for date_str in dates:
             try:
                 # Check if options data exists and is valid
-                options_data = self.cache.get_options_data(self.symbol, date_str)
+                options_data = self.cache.get_options_data(
+                    self.symbol, date_str)
                 if options_data is not None and not options_data.empty:
                     available.append(date_str)
                 else:
@@ -199,10 +206,12 @@ class PatternTaxonomyValidator:
             'continuity_pct': (len(available) / len(dates) * 100) if dates else 0
         }
 
-        logger.info(f"Data continuity: {continuity_report['continuity_pct']:.1f}% ({len(available)}/{len(dates)} dates)")
+        logger.info(
+            f"Data continuity: {continuity_report['continuity_pct']:.1f}% ({len(available)}/{len(dates)} dates)")
 
         if missing:
-            logger.warning(f"Missing data for {len(missing)} dates: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+            logger.warning(
+                f"Missing data for {len(missing)} dates: {missing[:5]}{'...' if len(missing) > 5 else ''}")
 
         return continuity_report
 
@@ -231,7 +240,8 @@ class PatternTaxonomyValidator:
         logger.info(f"PATTERN VALIDATION: {pattern_name}")
         logger.info(f"=" * 80)
         logger.info(f"Testing {len(dates)} dates with obfuscation")
-        logger.info(f"Confidence threshold: {confidence_threshold}% (from taxonomy criteria)")
+        logger.info(
+            f"Confidence threshold: {confidence_threshold}% (from taxonomy criteria)")
         logger.info(f"Symbol: {self.symbol}")
 
         # Initialize agent if needed
@@ -251,19 +261,22 @@ class PatternTaxonomyValidator:
         batch_size = 10
         total_batches = (len(dates) + batch_size - 1) // batch_size
 
-        logger.info(f"Processing {len(dates)} dates in {total_batches} batches of {batch_size}")
+        logger.info(
+            f"Processing {len(dates)} dates in {total_batches} batches of {batch_size}")
 
         for batch_idx in range(0, len(dates), batch_size):
             batch_dates = dates[batch_idx:batch_idx + batch_size]
             batch_num = (batch_idx // batch_size) + 1
 
             logger.info(f"\n{'='*80}")
-            logger.info(f"BATCH {batch_num}/{total_batches}: Processing {len(batch_dates)} dates")
+            logger.info(
+                f"BATCH {batch_num}/{total_batches}: Processing {len(batch_dates)} dates")
             logger.info(f"{'='*80}")
 
             try:
                 # Create pattern-specific experiment template
-                experiment_template = self._generate_pattern_experiment(pattern_name, "DATE_PLACEHOLDER")
+                experiment_template = self._generate_pattern_experiment(
+                    pattern_name, "DATE_PLACEHOLDER")
 
                 # Run batch experiment with obfuscation
                 batch_result = self.agent.run_batch_experiments(
@@ -274,7 +287,8 @@ class PatternTaxonomyValidator:
 
                 # Check if batch failed
                 if batch_result.get('status') == 'error':
-                    logger.error(f"Batch {batch_num} failed: {batch_result.get('error')}")
+                    logger.error(
+                        f"Batch {batch_num} failed: {batch_result.get('error')}")
                     failed_fetches.extend(batch_dates)
                     continue
 
@@ -285,11 +299,13 @@ class PatternTaxonomyValidator:
                     result = individual_results.get(date_str)
 
                     if not result:
-                        logger.warning(f"  [{batch_idx + i}/{len(dates)}] {date_str}: No result in batch")
+                        logger.warning(
+                            f"  [{batch_idx + i}/{len(dates)}] {date_str}: No result in batch")
                         failed_fetches.append(date_str)
                         continue
 
-                    logger.info(f"  [{batch_idx + i}/{len(dates)}] Processing {date_str}...")
+                    logger.info(
+                        f"  [{batch_idx + i}/{len(dates)}] Processing {date_str}...")
 
                     # Check if pattern was detected
                     # Handle both error returns and successful results
@@ -305,13 +321,15 @@ class PatternTaxonomyValidator:
                         confidence = mechanics.get('confidence', 0)
 
                         # Get obfuscated date from result (Issue #81 fix)
-                        date_obfuscated = result.get('obfuscated_date', date_str)
+                        date_obfuscated = result.get(
+                            'obfuscated_date', date_str)
 
                         # Extract GEX metrics
                         gex_raw = result.get('gex_metrics', {})
 
                         # Consolidate redundant GEX fields (net_gex = total_gamma = gex_value)
-                        net_gex_usd = gex_raw.get('net_gex') or gex_raw.get('total_gamma') or gex_raw.get('gex_value')
+                        net_gex_usd = gex_raw.get('net_gex') or gex_raw.get(
+                            'total_gamma') or gex_raw.get('gex_value')
 
                         # Calculate GEX velocity (Issue #80: day-over-day change is often the signal)
                         gex_velocity = None
@@ -346,7 +364,8 @@ class PatternTaxonomyValidator:
                             'quantitative_evidence': {
                                 'gex_metrics': {
                                     'net_gex_usd': net_gex_usd,  # Consolidated from total_gamma/net_gex/gex_value
-                                    'net_gex_change_1d_usd': gex_velocity['net_gex_change_1d_usd'] if gex_velocity else None,  # Issue #80: velocity signal
+                                    # Issue #80: velocity signal
+                                    'net_gex_change_1d_usd': gex_velocity['net_gex_change_1d_usd'] if gex_velocity else None,
                                     'net_gex_change_1d_pct': gex_velocity['net_gex_change_1d_pct'] if gex_velocity else None,
                                     'regime': gex_raw.get('regime'),
                                     'flip_level_price': gex_raw.get('flip_level') or gex_raw.get('zero_gamma_level'),
@@ -368,40 +387,51 @@ class PatternTaxonomyValidator:
                                 detection = self.outcome_calculator.add_outcome_metrics(
                                     detection, self.symbol
                                 )
-                                logger.debug(f"Added outcome metrics for {date_str}")
+                                logger.debug(
+                                    f"Added outcome metrics for {date_str}")
                             except Exception as e:
-                                logger.warning(f"Could not calculate outcomes for {date_str}: {e}")
+                                logger.warning(
+                                    f"Could not calculate outcomes for {date_str}: {e}")
 
                         detections.append(detection)
 
                         if detection['detected']:
                             high_confidence_count += 1
-                            logger.info(f"  ✅ DETECTED: {confidence}% confidence")
-                            logger.info(f"     WHO: {detection['narrative']['who']}")
-                            logger.info(f"     WHOM: {detection['narrative']['whom']}")
-                            logger.info(f"     WHAT: {detection['narrative']['what']}")
+                            logger.info(
+                                f"  ✅ DETECTED: {confidence}% confidence")
+                            logger.info(
+                                f"     WHO: {detection['narrative']['who']}")
+                            logger.info(
+                                f"     WHOM: {detection['narrative']['whom']}")
+                            logger.info(
+                                f"     WHAT: {detection['narrative']['what']}")
 
                             # Log outcome metrics if available
                             if 'outcome_metrics' in detection:
                                 outcome = detection['outcome_metrics']
-                                logger.info(f"     OUTCOME: {outcome.get('forward_1d_return_pct', 'N/A')}% T+1 return")
-                                logger.info(f"     MATERIALIZED: {outcome.get('prediction_materialized', 'N/A')}")
+                                logger.info(
+                                    f"     OUTCOME: {outcome.get('forward_1d_return_pct', 'N/A')}% T+1 return")
+                                logger.info(
+                                    f"     MATERIALIZED: {outcome.get('prediction_materialized', 'N/A')}")
                         else:
                             logger.info(f"  ⚠️  Low confidence: {confidence}%")
 
                     else:
-                        logger.warning(f"  ❌ No analysis result for {date_str}")
+                        logger.warning(
+                            f"  ❌ No analysis result for {date_str}")
                         failed_fetches.append(date_str)
 
             except Exception as e:
                 logger.error(f"Batch {batch_num} processing error: {e}")
                 failed_fetches.extend(batch_dates)
                 for date_str in batch_dates:
-                    self.failed_dates.append({'date': date_str, 'error': f"Batch error: {str(e)}"})
+                    self.failed_dates.append(
+                        {'date': date_str, 'error': f"Batch error: {str(e)}"})
 
         # Calculate metrics
         total_tested = len(detections)
-        success_rate = (high_confidence_count / total_tested * 100) if total_tested > 0 else 0
+        success_rate = (high_confidence_count / total_tested *
+                        100) if total_tested > 0 else 0
 
         # Calculate outcome metrics (will be populated by backtest)
         avg_forward_1d_return = None
@@ -409,7 +439,8 @@ class PatternTaxonomyValidator:
         net_alpha = None
 
         # Check if outcome_metrics exist in detections (from backtest)
-        detections_with_outcomes = [d for d in detections if 'outcome_metrics' in d]
+        detections_with_outcomes = [
+            d for d in detections if 'outcome_metrics' in d]
         if detections_with_outcomes:
             # Handle missing forward_1d_return_pct gracefully (happens when forward price data unavailable)
             forward_returns = [
@@ -417,7 +448,8 @@ class PatternTaxonomyValidator:
                 for d in detections_with_outcomes
                 if 'forward_1d_return_pct' in d['outcome_metrics']
             ]
-            avg_forward_1d_return = sum(forward_returns) / len(forward_returns) if forward_returns else None
+            avg_forward_1d_return = sum(
+                forward_returns) / len(forward_returns) if forward_returns else None
 
             # Handle missing prediction_materialized gracefully
             predictions_materialized = [
@@ -425,7 +457,8 @@ class PatternTaxonomyValidator:
                 for d in detections_with_outcomes
                 if 'prediction_materialized' in d['outcome_metrics'] and d['outcome_metrics']['prediction_materialized'] is not None
             ]
-            predictive_accuracy = (sum(predictions_materialized) / len(predictions_materialized) * 100) if predictions_materialized else None
+            predictive_accuracy = (sum(predictions_materialized) / len(
+                predictions_materialized) * 100) if predictions_materialized else None
 
             # Calculate net alpha (gross return - estimated 5bps transaction costs)
             if avg_forward_1d_return is not None:
@@ -480,11 +513,13 @@ class PatternTaxonomyValidator:
         logger.info(f"Dates Tested: {total_tested}/{len(dates)}")
         logger.info(f"High-Confidence Detections: {high_confidence_count}")
         logger.info(f"Success Rate: {success_rate:.1f}%")
-        logger.info(f"Obfuscation Test: {'✅ PASSED' if validation_result['obfuscation_test']['passed'] else '❌ FAILED'}")
+        logger.info(
+            f"Obfuscation Test: {'✅ PASSED' if validation_result['obfuscation_test']['passed'] else '❌ FAILED'}")
 
         if failed_fetches:
             logger.warning(f"Failed Fetches: {len(failed_fetches)} dates")
-            logger.warning(f"  Dates: {failed_fetches[:5]}{'...' if len(failed_fetches) > 5 else ''}")
+            logger.warning(
+                f"  Dates: {failed_fetches[:5]}{'...' if len(failed_fetches) > 5 else ''}")
 
         return validation_result
 
@@ -561,9 +596,12 @@ class PatternTaxonomyValidator:
 
         # Generate filename: pattern_TICKER_daterange.yaml (e.g., gamma_positioning_SPY_2024Q1.yaml)
         pattern_name = validation_result['pattern_name']
-        symbol = validation_result.get('test_metadata', {}).get('symbol', 'UNKNOWN')
-        start_date = validation_result.get('test_metadata', {}).get('start_date', '')
-        end_date = validation_result.get('test_metadata', {}).get('end_date', '')
+        symbol = validation_result.get(
+            'test_metadata', {}).get('symbol', 'UNKNOWN')
+        start_date = validation_result.get(
+            'test_metadata', {}).get('start_date', '')
+        end_date = validation_result.get(
+            'test_metadata', {}).get('end_date', '')
 
         # Extract quarter/year from date range (e.g., 2024-01-02 to 2024-03-29 -> 2024Q1)
         if start_date and end_date:
@@ -582,7 +620,8 @@ class PatternTaxonomyValidator:
 
         # Save as YAML
         with open(filepath, 'w') as f:
-            yaml.dump(validation_result_clean, f, default_flow_style=False, sort_keys=False)
+            yaml.dump(validation_result_clean, f,
+                      default_flow_style=False, sort_keys=False)
 
         logger.info(f"\n✅ Results saved to: {filepath}")
         return filepath
@@ -592,7 +631,8 @@ def main():
     """Main entry point for pattern validation."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Validate pattern taxonomy with obfuscation tests")
+    parser = argparse.ArgumentParser(
+        description="Validate pattern taxonomy with obfuscation tests")
     parser.add_argument('--pattern', type=str, default='gamma_positioning',
                         help='Pattern to validate (default: gamma_positioning)')
     parser.add_argument('--symbol', type=str, default='SPY',
@@ -632,7 +672,8 @@ def main():
     test_dates = validator.get_test_date_range(args.start_date, args.end_date)
 
     if not test_dates:
-        logger.error(f"No dates found in cache for {args.symbol} between {args.start_date} and {args.end_date}")
+        logger.error(
+            f"No dates found in cache for {args.symbol} between {args.start_date} and {args.end_date}")
         return 1
 
     # MANDATORY: Check data continuity before validation
@@ -647,7 +688,8 @@ def main():
     logger.info(f"Continuity report saved to: {continuity_path}")
 
     if continuity_report['continuity_pct'] < 90:
-        logger.warning(f"⚠️  Data continuity is {continuity_report['continuity_pct']:.1f}% - expect some failed fetches")
+        logger.warning(
+            f"⚠️  Data continuity is {continuity_report['continuity_pct']:.1f}% - expect some failed fetches")
         logger.warning("Agent will attempt to fetch missing data via API")
 
     # Run validation
@@ -660,7 +702,8 @@ def main():
 
     # Save results
     output_dir = Path(args.output_dir) if args.output_dir else None
-    output_path = validator.save_results(validation_result, output_dir=output_dir)
+    output_path = validator.save_results(
+        validation_result, output_dir=output_dir)
 
     # Print final verdict
     obfuscation_test = validation_result['obfuscation_test']
@@ -670,13 +713,16 @@ def main():
 
     if obfuscation_test['passed']:
         logger.info(f"✅ Pattern '{args.pattern}' VALIDATED as mechanical")
-        logger.info(f"   Success rate: {obfuscation_test['success_rate']:.1f}%")
+        logger.info(
+            f"   Success rate: {obfuscation_test['success_rate']:.1f}%")
         logger.info(f"   Sample size: {obfuscation_test['sample_size']}")
         return 0
     else:
         logger.warning(f"❌ Pattern '{args.pattern}' NOT VALIDATED")
-        logger.warning(f"   Success rate: {obfuscation_test['success_rate']:.1f}% (need 60%+)")
-        logger.warning(f"   Sample size: {obfuscation_test['sample_size']} (need 30+)")
+        logger.warning(
+            f"   Success rate: {obfuscation_test['success_rate']:.1f}% (need 60%+)")
+        logger.warning(
+            f"   Sample size: {obfuscation_test['sample_size']} (need 30+)")
         return 1
 
 

@@ -7,6 +7,7 @@ This directory contains comprehensive documentation for statistical validation o
 Two complementary statistical analyses strengthen the paper's empirical claims about the relationship between gamma exposure (GEX) and market volatility:
 
 ### Issue #99: Granger Causality Test
+
 **Objective**: Prove that GEX has **predictive power** for forward volatility (causality direction)
 
 **Question Answered**: Does past GEX improve volatility forecasts beyond volatility's own history?
@@ -14,6 +15,7 @@ Two complementary statistical analyses strengthen the paper's empirical claims a
 **Expected Result**: P-values < 0.05 for lags 1-3, demonstrating GEX Granger-causes volatility
 
 ### Issue #100: Lead-Lag Analysis
+
 **Objective**: Quantify the **economic magnitude** of GEX's impact on volatility (amplification factor)
 
 **Question Answered**: How much higher is volatility in negative GEX regimes?
@@ -55,6 +57,7 @@ Located in `scripts/statistical_validation/`:
 **Target Section**: V.D (Statistical Validation)
 
 **Key Steps**:
+
 1. Load GEX time series (242 days, 2024)
 2. Calculate realized forward volatility
 3. Test stationarity (ADF test)
@@ -70,6 +73,7 @@ Located in `scripts/statistical_validation/`:
 **Target Section**: V.E (Prediction Materialization)
 
 **Key Steps**:
+
 1. Load GEX and price data (242 days, 2024)
 2. Calculate forward returns and classify regimes
 3. Calculate regime statistics
@@ -102,6 +106,7 @@ Both analyses require the same underlying data:
 ### Data Validation
 
 Required checks before analysis:
+
 - [ ] 242 days of continuous data (2024)
 - [ ] No gaps > 5 trading days
 - [ ] GEX values within -$10B to +$10B range
@@ -114,6 +119,7 @@ Required checks before analysis:
 **New Subsection**: 5.D.3 Granger Causality Tests
 
 **Content**:
+
 - Table: Granger causality results (full sample)
 - Table: Granger causality results (negative regime)
 - 1-2 paragraphs interpretation
@@ -125,6 +131,7 @@ Required checks before analysis:
 **New Subsection**: 5.E.3 Volatility Amplification by GEX Regime
 
 **Content**:
+
 - Table: Volatility statistics by regime
 - Optional Figure: Scatter plot with LOWESS smoothing
 - 2-3 paragraphs interpretation
@@ -163,6 +170,7 @@ These two analyses work together to validate the GEX-LLM framework:
 ### 🚧 Next Steps (Implementation)
 
 **Issue #99**:
+
 1. Replace placeholder data with actual cache/database queries
 2. Test stationarity detection with real data
 3. Validate Granger results on full 2024 dataset
@@ -170,6 +178,7 @@ These two analyses work together to validate the GEX-LLM framework:
 5. Integrate into Section V.D
 
 **Issue #100**:
+
 1. Replace placeholder data with actual cache/database queries
 2. Validate regime threshold values
 3. Test on full 2024 dataset
@@ -196,16 +205,19 @@ pip install pandas numpy scipy statsmodels matplotlib
 ### Statistical Methods
 
 **Granger Causality**:
+
 - Granger, C. W. J. (1969). "Investigating Causal Relations by Econometric Models"
 - Hamilton, J. D. (1994). "Time Series Analysis", Chapter 11
 - Statsmodels: `grangercausalitytests` documentation
 
 **Lead-Lag Analysis**:
+
 - Hasbrouck, J. (1995). "One Security, Many Markets"
 - Cohen, J. (1988). "Statistical Power Analysis" (Effect Sizes)
 - Wooldridge, J. M. (2015). "Introductory Econometrics", Chapter 7
 
 **Dealer Gamma Hedging**:
+
 - Bollen, N. P., & Whaley, R. E. (2004). "Does Net Buying Pressure Affect Volatility?"
 - Gârleanu, N., et al. (2009). "Demand-Based Option Pricing"
 
@@ -217,6 +229,7 @@ pip install pandas numpy scipy statsmodels matplotlib
 ## Contact
 
 For questions or issues with the statistical validation framework:
+
 1. Review the detailed pipeline documentation files
 2. Check the implementation scripts in `scripts/statistical_validation/`
 3. Consult the GitHub issues for discussions and updates

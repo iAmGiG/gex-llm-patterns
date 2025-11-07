@@ -4,6 +4,7 @@ Simple Experiment Orchestrator
 Starts the system, then lets MarketMechanicsAgent take over and orchestrate tools.
 """
 
+from agents.market_mechanics_agent import MarketMechanicsAgent
 import sys
 from pathlib import Path
 import logging
@@ -12,8 +13,6 @@ import argparse
 # Add both src and root paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from agents.market_mechanics_agent import MarketMechanicsAgent
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +63,8 @@ def run_batch_validation(args):
     print(f"Time Window: {args.time_window}")
     print(f"Confidence Threshold: {args.confidence_threshold}%")
     print(f"Target Signals: {args.target_signals}")
-    print(f"Batch Mode: {args.batch_mode if hasattr(args, 'batch_mode') else True}")
+    print(
+        f"Batch Mode: {args.batch_mode if hasattr(args, 'batch_mode') else True}")
     print()
 
     high_confidence_signals = []
@@ -100,16 +100,19 @@ def run_batch_validation(args):
                 for date in args.batch_dates:
                     if date in individual_results:
                         result = individual_results[date]
-                        process_date_result(date, result, args, high_confidence_signals, all_results)
+                        process_date_result(
+                            date, result, args, high_confidence_signals, all_results)
                     else:
                         print(f"  ⚠️  No result for {date}")
 
                 # Show batch insights
                 if batch_result.get('batch_analysis'):
                     print("\n📊 BATCH INSIGHTS:")
-                    print(f"  {batch_result.get('batch_analysis', {}).get('overall_analysis', 'No patterns found')}")
+                    print(
+                        f"  {batch_result.get('batch_analysis', {}).get('overall_analysis', 'No patterns found')}")
             else:
-                print(f"❌ Batch processing failed: {batch_result.get('error')}")
+                print(
+                    f"❌ Batch processing failed: {batch_result.get('error')}")
                 # Fall back to individual processing
                 batch_mode = False
 
@@ -136,7 +139,8 @@ def run_batch_validation(args):
             try:
                 agent = MarketMechanicsAgent(args.symbol)
                 result = agent.run_experiment(experiment_desc, date)
-                process_date_result(date, result, args, high_confidence_signals, all_results)
+                process_date_result(date, result, args,
+                                    high_confidence_signals, all_results)
 
             except Exception as e:
                 print(f"  ❌ Error: {e}")
@@ -154,7 +158,8 @@ def run_batch_validation(args):
     if high_confidence_signals:
         print("\n🎯 High-Confidence Signals:")
         for sig in high_confidence_signals:
-            print(f"  • {sig['date']}: {sig['pattern']} @ {sig['confidence']}%")
+            print(
+                f"  • {sig['date']}: {sig['pattern']} @ {sig['confidence']}%")
 
     # Determine pass/fail
     validation_passed = len(high_confidence_signals) >= args.target_signals
@@ -162,10 +167,12 @@ def run_batch_validation(args):
     print()
     if validation_passed:
         print("✅ VALIDATION PASSED")
-        print(f"  Found {len(high_confidence_signals)} signals (target: {args.target_signals})")
+        print(
+            f"  Found {len(high_confidence_signals)} signals (target: {args.target_signals})")
     else:
         print("❌ VALIDATION FAILED")
-        print(f"  Found {len(high_confidence_signals)} signals (needed: {args.target_signals})")
+        print(
+            f"  Found {len(high_confidence_signals)} signals (needed: {args.target_signals})")
 
     # Add results export
     if hasattr(args, 'export_results') and args.export_results:
@@ -183,7 +190,8 @@ def run_batch_validation(args):
 
         with open(f'validation_results_{args.symbol}_{args.time_window}.json', 'w') as f:
             json.dump(output, f, indent=2)
-        print(f"\n📊 Results exported to validation_results_{args.symbol}_{args.time_window}.json")
+        print(
+            f"\n📊 Results exported to validation_results_{args.symbol}_{args.time_window}.json")
 
     print("=" * 80)
     return 0 if validation_passed else 1

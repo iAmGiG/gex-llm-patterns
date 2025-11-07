@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 
 def load_data():
     """Load time series data."""
-    csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
+    csv_path = Path(
+        'reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
     data = pd.read_csv(csv_path)
     data['date'] = pd.to_datetime(data['date'])
 
@@ -37,12 +38,16 @@ def test_correlation(data):
     logger.info("="*70)
 
     # Pearson correlation
-    corr_pearson, p_pearson = stats.pearsonr(data['net_gex'], data['realized_vol_t1'])
-    logger.info(f"Pearson correlation: r={corr_pearson:.4f}, p={p_pearson:.4f}")
+    corr_pearson, p_pearson = stats.pearsonr(
+        data['net_gex'], data['realized_vol_t1'])
+    logger.info(
+        f"Pearson correlation: r={corr_pearson:.4f}, p={p_pearson:.4f}")
 
     # Spearman correlation (non-parametric)
-    corr_spearman, p_spearman = stats.spearmanr(data['net_gex'], data['realized_vol_t1'])
-    logger.info(f"Spearman correlation: ρ={corr_spearman:.4f}, p={p_spearman:.4f}")
+    corr_spearman, p_spearman = stats.spearmanr(
+        data['net_gex'], data['realized_vol_t1'])
+    logger.info(
+        f"Spearman correlation: ρ={corr_spearman:.4f}, p={p_spearman:.4f}")
 
     # Interpretation
     if abs(corr_pearson) > 0.3:
@@ -85,11 +90,15 @@ def test_terciles(data):
     # Get volatility by tercile
     most_neg = data[data['gex_tercile'] == 'Most Negative']['realized_vol_t1']
     med_neg = data[data['gex_tercile'] == 'Medium Negative']['realized_vol_t1']
-    least_neg = data[data['gex_tercile'] == 'Least Negative']['realized_vol_t1']
+    least_neg = data[data['gex_tercile'] ==
+                     'Least Negative']['realized_vol_t1']
 
-    logger.info(f"\nMost Negative GEX: {most_neg.mean():.4f}% vol (n={len(most_neg)})")
-    logger.info(f"Medium Negative GEX: {med_neg.mean():.4f}% vol (n={len(med_neg)})")
-    logger.info(f"Least Negative GEX: {least_neg.mean():.4f}% vol (n={len(least_neg)})")
+    logger.info(
+        f"\nMost Negative GEX: {most_neg.mean():.4f}% vol (n={len(most_neg)})")
+    logger.info(
+        f"Medium Negative GEX: {med_neg.mean():.4f}% vol (n={len(med_neg)})")
+    logger.info(
+        f"Least Negative GEX: {least_neg.mean():.4f}% vol (n={len(least_neg)})")
 
     # ANOVA test
     f_stat, p_val = stats.f_oneway(most_neg, med_neg, least_neg)
@@ -150,13 +159,18 @@ def test_momentum(data):
     logger.info(momentum_stats)
 
     # Get volatility by momentum
-    accel = data_momentum[data_momentum['gex_momentum'] == 'Accelerating Negative']['realized_vol_t1']
-    stable = data_momentum[data_momentum['gex_momentum'] == 'Stable']['realized_vol_t1']
-    decel = data_momentum[data_momentum['gex_momentum'] == 'Decelerating Negative']['realized_vol_t1']
+    accel = data_momentum[data_momentum['gex_momentum']
+                          == 'Accelerating Negative']['realized_vol_t1']
+    stable = data_momentum[data_momentum['gex_momentum']
+                           == 'Stable']['realized_vol_t1']
+    decel = data_momentum[data_momentum['gex_momentum']
+                          == 'Decelerating Negative']['realized_vol_t1']
 
-    logger.info(f"\nAccelerating Negative: {accel.mean():.4f}% vol (n={len(accel)})")
+    logger.info(
+        f"\nAccelerating Negative: {accel.mean():.4f}% vol (n={len(accel)})")
     logger.info(f"Stable: {stable.mean():.4f}% vol (n={len(stable)})")
-    logger.info(f"Decelerating Negative: {decel.mean():.4f}% vol (n={len(decel)})")
+    logger.info(
+        f"Decelerating Negative: {decel.mean():.4f}% vol (n={len(decel)})")
 
     # ANOVA test
     if len(accel) > 0 and len(stable) > 0 and len(decel) > 0:
@@ -185,8 +199,10 @@ def main():
     data = load_data()
     logger.info(f"\nLoaded {len(data)} observations")
     logger.info(f"Date range: {data['date'].min()} to {data['date'].max()}")
-    logger.info(f"GEX range: ${data['net_gex'].min()/1e9:.2f}B to ${data['net_gex'].max()/1e9:.2f}B")
-    logger.info(f"Vol range: {data['realized_vol_t1'].min():.4f}% to {data['realized_vol_t1'].max():.4f}%")
+    logger.info(
+        f"GEX range: ${data['net_gex'].min()/1e9:.2f}B to ${data['net_gex'].max()/1e9:.2f}B")
+    logger.info(
+        f"Vol range: {data['realized_vol_t1'].min():.4f}% to {data['realized_vol_t1'].max():.4f}%")
 
     # Run tests
     results = {}
@@ -201,23 +217,33 @@ def main():
     logger.info("="*70)
 
     logger.info(f"\n1. CORRELATION:")
-    logger.info(f"   Pearson r = {results['correlation']['pearson_r']:.4f} (p={results['correlation']['pearson_p']:.4f})")
-    logger.info(f"   Spearman ρ = {results['correlation']['spearman_rho']:.4f} (p={results['correlation']['spearman_p']:.4f})")
+    logger.info(
+        f"   Pearson r = {results['correlation']['pearson_r']:.4f} (p={results['correlation']['pearson_p']:.4f})")
+    logger.info(
+        f"   Spearman ρ = {results['correlation']['spearman_rho']:.4f} (p={results['correlation']['spearman_p']:.4f})")
 
     logger.info(f"\n2. TERCILES:")
-    logger.info(f"   Most Negative: {results['terciles']['most_neg_mean_vol']:.4f}% vol")
-    logger.info(f"   Least Negative: {results['terciles']['least_neg_mean_vol']:.4f}% vol")
-    logger.info(f"   Difference: {results['terciles']['vol_difference']:.4f}% (Cohen's d={results['terciles']['cohens_d']:.4f})")
-    logger.info(f"   p-value: {results['terciles']['pairwise_p_most_least']:.4f}")
+    logger.info(
+        f"   Most Negative: {results['terciles']['most_neg_mean_vol']:.4f}% vol")
+    logger.info(
+        f"   Least Negative: {results['terciles']['least_neg_mean_vol']:.4f}% vol")
+    logger.info(
+        f"   Difference: {results['terciles']['vol_difference']:.4f}% (Cohen's d={results['terciles']['cohens_d']:.4f})")
+    logger.info(
+        f"   p-value: {results['terciles']['pairwise_p_most_least']:.4f}")
 
     logger.info(f"\n3. MOMENTUM:")
-    logger.info(f"   Accelerating: {results['momentum']['accel_mean_vol']:.4f}% vol")
-    logger.info(f"   Stable: {results['momentum']['stable_mean_vol']:.4f}% vol")
-    logger.info(f"   Decelerating: {results['momentum']['decel_mean_vol']:.4f}% vol")
+    logger.info(
+        f"   Accelerating: {results['momentum']['accel_mean_vol']:.4f}% vol")
+    logger.info(
+        f"   Stable: {results['momentum']['stable_mean_vol']:.4f}% vol")
+    logger.info(
+        f"   Decelerating: {results['momentum']['decel_mean_vol']:.4f}% vol")
     logger.info(f"   ANOVA p-value: {results['momentum']['anova_p']:.4f}")
 
     # Save results
-    output_path = Path('reports/statistical_validation/leadlag_within_regime_results.csv')
+    output_path = Path(
+        'reports/statistical_validation/leadlag_within_regime_results.csv')
 
     summary_df = pd.DataFrame([
         {

@@ -5,6 +5,7 @@ This directory contains the automated data collection infrastructure for the GEX
 ## Components
 
 ### Core Collection System
+
 - `automated_data_collector.py` - Main 24/7 collection service
 - `monitor_collection.py` - Real-time progress monitoring
 - `test_spx_access.py` - API access validation
@@ -13,17 +14,20 @@ This directory contains the automated data collection infrastructure for the GEX
 ## Usage
 
 ### Start Collection System
+
 ```bash
 # From project root
 python scripts/data_collection/automation/automated_data_collector.py
 ```
 
 ### Monitor Progress
+
 ```bash
 python scripts/data_collection/automation/monitor_collection.py
 ```
 
 ### Test API Access
+
 ```bash
 python scripts/data_collection/automation/test_spx_access.py
 python scripts/data_collection/automation/test_polygon_collection.py
@@ -52,5 +56,6 @@ python scripts/data_collection/automation/test_polygon_collection.py
 ## Monitoring
 
 The system creates progress files and logs in the `.cache` directory:
+
 - `automated_collection_progress.json` - Collection state
 - `automated_collection.log` - Activity logs

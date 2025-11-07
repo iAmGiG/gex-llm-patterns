@@ -4,11 +4,11 @@ Example: Flexible Algo Time Analysis
 Demonstrates the new parameterizable algo time system.
 """
 
+from src.data.market_data_system import UnifiedDataSystem
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.data.market_data_system import UnifiedDataSystem
 
 def demonstrate_flexible_algo_times():
     """Show the new flexible algo time capabilities."""
@@ -22,15 +22,18 @@ def demonstrate_flexible_algo_times():
     print("-" * 40)
 
     # Standard 3:30 PM gamma time
-    data_330 = system.get_algo_time_data("2024-06-01", "2024-06-30", "SPY", "15:30:00")
+    data_330 = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "SPY", "15:30:00")
     print(f"3:30 PM data points: {len(data_330)}")
 
     # Advanced 3:50 PM algo plays
-    data_350 = system.get_algo_time_data("2024-06-01", "2024-06-30", "SPY", "15:50:00")
+    data_350 = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "SPY", "15:50:00")
     print(f"3:50 PM data points: {len(data_350)}")
 
     # Market close
-    data_close = system.get_algo_time_data("2024-06-01", "2024-06-30", "SPY", "16:00:00")
+    data_close = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "SPY", "16:00:00")
     print(f"Market close data points: {len(data_close)}")
 
     # Example 2: QQQ 0DTE - using config names
@@ -41,7 +44,8 @@ def demonstrate_flexible_algo_times():
     gamma_time = system.get_algo_time_from_config('gamma_350pm')
     print(f"gamma_350pm resolves to: {gamma_time}")
 
-    qqq_data = system.get_algo_time_data("2024-06-01", "2024-06-30", "QQQ", gamma_time)
+    qqq_data = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "QQQ", gamma_time)
     print(f"QQQ 3:50 PM data points: {len(qqq_data)}")
 
     # Example 3: Regular ticker - Friday only
@@ -49,7 +53,8 @@ def demonstrate_flexible_algo_times():
     print("-" * 40)
 
     # AAPL will default to Friday only
-    aapl_data = system.get_algo_time_data("2024-06-01", "2024-06-30", "AAPL", "15:30:00")
+    aapl_data = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "AAPL", "15:30:00")
     print(f"AAPL Friday 3:30 PM data points: {len(aapl_data)}")
 
     # Example 4: Specific weekday targeting
@@ -57,11 +62,13 @@ def demonstrate_flexible_algo_times():
     print("-" * 40)
 
     # SPY Wednesdays only (mid-week positioning)
-    wed_data = system.get_algo_time_data("2024-06-01", "2024-06-30", "SPY", "15:30:00", weekday=2)
+    wed_data = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "SPY", "15:30:00", weekday=2)
     print(f"SPY Wednesday 3:30 PM data points: {len(wed_data)}")
 
     # SPY Fridays only (expiration behavior)
-    fri_data = system.get_algo_time_data("2024-06-01", "2024-06-30", "SPY", "15:50:00", weekday=4)
+    fri_data = system.get_algo_time_data(
+        "2024-06-01", "2024-06-30", "SPY", "15:50:00", weekday=4)
     print(f"SPY Friday 3:50 PM data points: {len(fri_data)}")
 
     # Example 5: LLM Tool Integration
@@ -86,6 +93,7 @@ def demonstrate_flexible_algo_times():
     print("✅ Weekday-specific filtering")
     print("✅ LLM tool integration")
     print("✅ Backward compatibility maintained")
+
 
 if __name__ == "__main__":
     demonstrate_flexible_algo_times()

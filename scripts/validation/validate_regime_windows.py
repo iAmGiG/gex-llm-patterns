@@ -20,6 +20,13 @@ Related:
     - Issues #89, #107
 """
 
+from src.validation.data_obfuscation import DataObfuscator
+from src.utils.config_manager import get_config
+from src.cache.unified_cache import UnifiedCacheManager
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
+from src.validation.regime_classifier import RegimeClassifier
 import argparse
 import sys
 import os
@@ -33,13 +40,6 @@ import yaml
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.validation.regime_classifier import RegimeClassifier
-from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
-from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-from src.cache.unified_cache import UnifiedCacheManager
-from src.utils.config_manager import get_config
-from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,8 @@ class RegimeWindowValidator:
         self.agent = MarketMechanicsAgent(symbol=symbol)
 
         # Use agent's cache or create new one
-        self.cache_manager = self.agent.cache if hasattr(self.agent, 'cache') else UnifiedCacheManager()
+        self.cache_manager = self.agent.cache if hasattr(
+            self.agent, 'cache') else UnifiedCacheManager()
 
         # Initialize components
         self.regime_classifier = RegimeClassifier()
@@ -85,8 +86,10 @@ class RegimeWindowValidator:
         self.prompt_builder = MechanicsPromptBuilder()
         self.obfuscator = DataObfuscator() if obfuscate else None
 
-        logger.info(f"Initialized RegimeWindowValidator: symbol={symbol}, window_size={window_size}, obfuscate={obfuscate}")
-        logger.info(f"Using MarketMechanicsAgent with LLM: {self.agent.llm.model if self.agent.llm else 'None'}")
+        logger.info(
+            f"Initialized RegimeWindowValidator: symbol={symbol}, window_size={window_size}, obfuscate={obfuscate}")
+        logger.info(
+            f"Using MarketMechanicsAgent with LLM: {self.agent.llm.model if self.agent.llm else 'None'}")
 
     def _get_trading_days_in_range(self, start_date: str, end_date: str) -> List[str]:
         """
@@ -115,7 +118,8 @@ class RegimeWindowValidator:
                 available_dates.append(date_str)
 
         # Filter to date range
-        trading_days = [d for d in sorted(available_dates) if start_date <= d <= end_date]
+        trading_days = [d for d in sorted(
+            available_dates) if start_date <= d <= end_date]
 
         return trading_days
 
@@ -136,26 +140,33 @@ class RegimeWindowValidator:
         Returns:
             Validation results dict with summary statistics and per-window results
         """
-        logger.info(f"Starting validation: {start_date} to {end_date}, sample every {sample_every_n} days")
+        logger.info(
+            f"Starting validation: {start_date} to {end_date}, sample every {sample_every_n} days")
 
         # Get ALL trading days available in cache (we need historical context for 30-day windows)
-        all_trading_days = self._get_trading_days_in_range("2020-01-01", end_date)
-        logger.info(f"Found {len(all_trading_days)} total trading days in cache")
+        all_trading_days = self._get_trading_days_in_range(
+            "2020-01-01", end_date)
+        logger.info(
+            f"Found {len(all_trading_days)} total trading days in cache")
 
         # Filter to potential window ends (must be within validation range)
-        potential_window_ends = [d for d in all_trading_days if start_date <= d <= end_date]
-        logger.info(f"{len(potential_window_ends)} dates in validation range: {potential_window_ends[:5]}..." if len(potential_window_ends) > 5 else f"{len(potential_window_ends)} dates: {potential_window_ends}")
+        potential_window_ends = [
+            d for d in all_trading_days if start_date <= d <= end_date]
+        logger.info(f"{len(potential_window_ends)} dates in validation range: {potential_window_ends[:5]}..." if len(
+            potential_window_ends) > 5 else f"{len(potential_window_ends)} dates: {potential_window_ends}")
 
         # Sample every N days
         if sample_every_n > 1:
             potential_window_ends = potential_window_ends[::sample_every_n]
-            logger.info(f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
+            logger.info(
+                f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
 
         # Validate each window
         results = []
         for i, end_date_window in enumerate(potential_window_ends):
             logger.info(f"\n{'='*60}")
-            logger.info(f"Window {i+1}/{len(potential_window_ends)}: End date {end_date_window}")
+            logger.info(
+                f"Window {i+1}/{len(potential_window_ends)}: End date {end_date_window}")
             logger.info(f"{'='*60}")
 
             window_result = self._validate_single_window(end_date_window)
@@ -196,20 +207,23 @@ class RegimeWindowValidator:
         )
 
         if result is None:
-            logger.warning(f"Could not fetch 30-day window ending {end_date} - skipping")
+            logger.warning(
+                f"Could not fetch 30-day window ending {end_date} - skipping")
             return None
 
         gex_sequence = result['gex_sequence']
 
         if len(gex_sequence) != self.window_size:
-            logger.warning(f"Window has {len(gex_sequence)} days, expected {self.window_size} - skipping")
+            logger.warning(
+                f"Window has {len(gex_sequence)} days, expected {self.window_size} - skipping")
             return None
 
         logger.info(f"Fetched {len(gex_sequence)} days of GEX data")
 
         # Deterministic classification (ground truth)
         deterministic = self.regime_classifier.classify_window(gex_sequence)
-        logger.info(f"Deterministic: {deterministic['regime_type']} (persistent={deterministic['is_persistent']})")
+        logger.info(
+            f"Deterministic: {deterministic['regime_type']} (persistent={deterministic['is_persistent']})")
 
         # Obfuscate for LLM if enabled
         if self.obfuscate:
@@ -225,9 +239,11 @@ class RegimeWindowValidator:
 
         # Get LLM classification
         llm_response = self._call_llm(prompt)
-        llm_classification = self.prompt_builder.parse_regime_response(llm_response)
+        llm_classification = self.prompt_builder.parse_regime_response(
+            llm_response)
 
-        logger.info(f"LLM: {llm_classification['regime_type']} (detected={llm_classification['regime_detected']}, confidence={llm_classification['confidence']})")
+        logger.info(
+            f"LLM: {llm_classification['regime_type']} (detected={llm_classification['regime_detected']}, confidence={llm_classification['confidence']})")
 
         # Compare classifications
         agreement = (
@@ -287,7 +303,8 @@ class RegimeWindowValidator:
                 'obfuscated_date': obf_date,
                 'net_gex': day_data.get('net_gex', 0),
                 'spot_price': day_data.get('spot_price', None),  # Optional
-                'real_date': day_data.get('date')  # Keep for validation, not shown to LLM
+                # Keep for validation, not shown to LLM
+                'real_date': day_data.get('date')
             })
 
         return obfuscated
@@ -339,8 +356,10 @@ class RegimeWindowValidator:
             }
 
         # Count detections
-        llm_detections = sum(1 for r in results if r['llm_classification']['regime_detected'])
-        deterministic_detections = sum(1 for r in results if r['deterministic_classification']['is_persistent'])
+        llm_detections = sum(
+            1 for r in results if r['llm_classification']['regime_detected'])
+        deterministic_detections = sum(
+            1 for r in results if r['deterministic_classification']['is_persistent'])
 
         # Count agreements
         agreements = sum(1 for r in results if r['agreement'])
@@ -353,17 +372,20 @@ class RegimeWindowValidator:
         regime_types_llm = {}
         for r in results:
             regime_type = r['llm_classification']['regime_type']
-            regime_types_llm[regime_type] = regime_types_llm.get(regime_type, 0) + 1
+            regime_types_llm[regime_type] = regime_types_llm.get(
+                regime_type, 0) + 1
 
         # Regime type distribution (deterministic)
         regime_types_det = {}
         for r in results:
             regime_type = r['deterministic_classification']['regime_type']
-            regime_types_det[regime_type] = regime_types_det.get(regime_type, 0) + 1
+            regime_types_det[regime_type] = regime_types_det.get(
+                regime_type, 0) + 1
 
         # Confidence distribution (LLM)
         confidences = [r['llm_classification']['confidence'] for r in results]
-        avg_confidence = sum(confidences) / len(confidences) if confidences else 0
+        avg_confidence = sum(confidences) / \
+            len(confidences) if confidences else 0
 
         return {
             'windows_tested': len(results),
@@ -483,8 +505,10 @@ Examples:
 
     # Validate obfuscation
     if args.no_obfuscate:
-        logger.warning("⚠️  OBFUSCATION DISABLED - Results not suitable for research publication!")
-        logger.warning("⚠️  LLM may cheat using temporal knowledge instead of structural analysis")
+        logger.warning(
+            "⚠️  OBFUSCATION DISABLED - Results not suitable for research publication!")
+        logger.warning(
+            "⚠️  LLM may cheat using temporal knowledge instead of structural analysis")
 
     # Initialize validator
     validator = RegimeWindowValidator(
@@ -499,7 +523,8 @@ Examples:
     logger.info(f"  Date range: {args.start_date} to {args.end_date}")
     logger.info(f"  Window size: {args.window_size} days")
     logger.info(f"  Sampling: Every {args.sample_every} day(s)")
-    logger.info(f"  Obfuscation: {'ENABLED' if not args.no_obfuscate else 'DISABLED'}")
+    logger.info(
+        f"  Obfuscation: {'ENABLED' if not args.no_obfuscate else 'DISABLED'}")
     logger.info("")
 
     results = validator.validate_date_range(
@@ -517,16 +542,21 @@ Examples:
     # Debug: Check what's in summary
     if 'windows_tested' not in summary or summary['windows_tested'] == 0:
         logger.error(f"No windows processed! Summary: {summary}")
-        logger.error(f"Total results returned: {len(results.get('windows', []))}")
+        logger.error(
+            f"Total results returned: {len(results.get('windows', []))}")
         return 1
 
     logger.info(f"Windows tested: {summary['windows_tested']}")
-    logger.info(f"LLM detection rate: {summary['detection_rate_pct']}% ({summary['regimes_detected_llm']}/{summary['windows_tested']})")
-    logger.info(f"Deterministic detection rate: {summary['regimes_detected_deterministic']}/{summary['windows_tested']}")
-    logger.info(f"LLM accuracy rate: {summary['accuracy_rate_pct']}% ({summary['agreements']}/{summary['windows_tested']} agreements)")
+    logger.info(
+        f"LLM detection rate: {summary['detection_rate_pct']}% ({summary['regimes_detected_llm']}/{summary['windows_tested']})")
+    logger.info(
+        f"Deterministic detection rate: {summary['regimes_detected_deterministic']}/{summary['windows_tested']}")
+    logger.info(
+        f"LLM accuracy rate: {summary['accuracy_rate_pct']}% ({summary['agreements']}/{summary['windows_tested']} agreements)")
     logger.info(f"Average LLM confidence: {summary['avg_confidence_llm']}")
     logger.info(f"\nLLM regime types: {summary['regime_types_llm']}")
-    logger.info(f"Deterministic regime types: {summary['regime_types_deterministic']}")
+    logger.info(
+        f"Deterministic regime types: {summary['regime_types_deterministic']}")
     logger.info(f"\nPhase 1 pass criteria: {summary['phase1_pass_criteria']}")
 
     # Determine output path

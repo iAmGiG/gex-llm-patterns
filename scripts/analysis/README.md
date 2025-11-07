@@ -5,6 +5,7 @@ Scripts for data analysis, exploration, and understanding.
 ## Scripts
 
 ### `explain_options_data.py`
+
 - **Purpose**: Analyzes and explains the structure of collected options data
 - **Usage**: `python scripts/analysis/explain_options_data.py`
 - **Output**: Detailed breakdown of options contracts, strikes, expirations, and Greeks

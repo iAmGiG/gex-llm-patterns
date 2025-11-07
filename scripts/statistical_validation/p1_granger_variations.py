@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 
 def load_data():
     """Load time series data."""
-    csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
+    csv_path = Path(
+        'reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
     data = pd.read_csv(csv_path)
     data['date'] = pd.to_datetime(data['date'])
 
@@ -43,7 +44,8 @@ def test_specification(data, gex_transform, vol_transform, maxlag, name):
     """
     logger.info(f"\n{'='*70}")
     logger.info(f"Testing: {name}")
-    logger.info(f"  GEX: {gex_transform}, Vol: {vol_transform}, MaxLag: {maxlag}")
+    logger.info(
+        f"  GEX: {gex_transform}, Vol: {vol_transform}, MaxLag: {maxlag}")
     logger.info(f"{'='*70}")
 
     df = data.copy()
@@ -74,7 +76,8 @@ def test_specification(data, gex_transform, vol_transform, maxlag, name):
 
     # Run Granger test
     try:
-        results = grangercausalitytests(df[['vol_t', 'gex_t']], maxlag=maxlag, verbose=False)
+        results = grangercausalitytests(
+            df[['vol_t', 'gex_t']], maxlag=maxlag, verbose=False)
 
         # Extract p-values
         p_values = []
@@ -116,8 +119,10 @@ def main():
     # Load data
     data = load_data()
     logger.info(f"\nLoaded {len(data)} observations")
-    logger.info(f"GEX range: ${data['gex'].min()/1e9:.2f}B to ${data['gex'].max()/1e9:.2f}B")
-    logger.info(f"Vol range: {data['realized_vol'].min():.4f} to {data['realized_vol'].max():.4f}")
+    logger.info(
+        f"GEX range: ${data['gex'].min()/1e9:.2f}B to ${data['gex'].max()/1e9:.2f}B")
+    logger.info(
+        f"Vol range: {data['realized_vol'].min():.4f} to {data['realized_vol'].max():.4f}")
 
     # Test multiple specifications
     results = []
@@ -169,7 +174,8 @@ def main():
         logger.info(f"\n{i}. {r['name']}")
         logger.info(f"   Min p-value: {r['min_p']:.4f}")
         logger.info(f"   Significant lags: {r['sig_lags']}/{r['maxlag']}")
-        logger.info(f"   Result: {'SIGNIFICANT' if r['sig_lags'] > 0 else 'NULL'}")
+        logger.info(
+            f"   Result: {'SIGNIFICANT' if r['sig_lags'] > 0 else 'NULL'}")
 
     # Overall conclusion
     total_specs = len(results)
@@ -182,12 +188,15 @@ def main():
     logger.info(f"Significant results: {sig_specs}/{total_specs}")
 
     if sig_specs == 0:
-        logger.info("\n✅ ROBUST NULL FINDING: No Granger causality across all specifications")
+        logger.info(
+            "\n✅ ROBUST NULL FINDING: No Granger causality across all specifications")
     else:
-        logger.info(f"\n⚠️  MIXED RESULTS: {sig_specs} specifications show significance")
+        logger.info(
+            f"\n⚠️  MIXED RESULTS: {sig_specs} specifications show significance")
 
     # Save results
-    output_path = Path('reports/statistical_validation/granger_robustness_results.csv')
+    output_path = Path(
+        'reports/statistical_validation/granger_robustness_results.csv')
 
     summary_df = pd.DataFrame([{
         'specification': r['name'],

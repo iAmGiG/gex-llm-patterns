@@ -71,7 +71,8 @@ class GrangerAnalysis:
         self.data = None
         self.results = {}
 
-        logger.info(f"Initialized Granger Analysis for {symbol} ({start_date} to {end_date})")
+        logger.info(
+            f"Initialized Granger Analysis for {symbol} ({start_date} to {end_date})")
 
     def step1_prepare_data(self) -> pd.DataFrame:
         """
@@ -83,7 +84,8 @@ class GrangerAnalysis:
         logger.info("Step 1: Preparing data...")
 
         # Load extracted time series from CSV
-        csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
+        csv_path = Path(
+            'reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
 
         if not csv_path.exists():
             raise FileNotFoundError(
@@ -104,9 +106,12 @@ class GrangerAnalysis:
         data = data[['date', 'gex', 'realized_vol']].dropna()
 
         logger.info(f"Loaded {len(data)} trading days")
-        logger.info(f"Date range: {data['date'].min()} to {data['date'].max()}")
-        logger.info(f"GEX range: ${data['gex'].min()/1e9:.2f}B to ${data['gex'].max()/1e9:.2f}B")
-        logger.info(f"Volatility range: {data['realized_vol'].min():.4f} to {data['realized_vol'].max():.4f}")
+        logger.info(
+            f"Date range: {data['date'].min()} to {data['date'].max()}")
+        logger.info(
+            f"GEX range: ${data['gex'].min()/1e9:.2f}B to ${data['gex'].max()/1e9:.2f}B")
+        logger.info(
+            f"Volatility range: {data['realized_vol'].min():.4f} to {data['realized_vol'].max():.4f}")
 
         self.data = data
         return data
@@ -143,8 +148,10 @@ class GrangerAnalysis:
             }
         }
 
-        logger.info(f"GEX stationary: {gex_stationary} (p={gex_result[1]:.4f})")
-        logger.info(f"Volatility stationary: {vol_stationary} (p={vol_result[1]:.4f})")
+        logger.info(
+            f"GEX stationary: {gex_stationary} (p={gex_result[1]:.4f})")
+        logger.info(
+            f"Volatility stationary: {vol_stationary} (p={vol_result[1]:.4f})")
 
         # Apply differencing if needed
         if stationarity_results['gex']['need_diff']:
@@ -175,19 +182,23 @@ class GrangerAnalysis:
         Returns:
             DataFrame with Granger test results by lag
         """
-        logger.info(f"Step 3: Running Granger test (maxlag={maxlag}, regime={regime})...")
+        logger.info(
+            f"Step 3: Running Granger test (maxlag={maxlag}, regime={regime})...")
 
         # Filter by regime if specified
         data = self.data.copy()
         if regime == 'negative':
             data = data[data['gex'] < -2e9]
-            logger.info(f"Filtered to negative GEX regime: {len(data)} observations")
+            logger.info(
+                f"Filtered to negative GEX regime: {len(data)} observations")
         elif regime == 'positive':
             data = data[data['gex'] > 2e9]
-            logger.info(f"Filtered to positive GEX regime: {len(data)} observations")
+            logger.info(
+                f"Filtered to positive GEX regime: {len(data)} observations")
 
         if len(data) < 50:
-            logger.warning(f"Insufficient data for Granger test: {len(data)} observations")
+            logger.warning(
+                f"Insufficient data for Granger test: {len(data)} observations")
             return pd.DataFrame()
 
         # Run Granger causality test
@@ -213,13 +224,15 @@ class GrangerAnalysis:
                     'significant': p_value < 0.05
                 })
 
-                logger.info(f"Lag {lag}: F={f_stat:.2f}, p={p_value:.4f} {'***' if p_value < 0.001 else ('**' if p_value < 0.01 else ('*' if p_value < 0.05 else ''))}")
+                logger.info(
+                    f"Lag {lag}: F={f_stat:.2f}, p={p_value:.4f} {'***' if p_value < 0.001 else ('**' if p_value < 0.01 else ('*' if p_value < 0.05 else ''))}")
 
             granger_results = pd.DataFrame(summary)
 
             # Store results
             regime_key = regime if regime else 'full'
-            self.results[f'granger_{regime_key}'] = granger_results.to_dict('records')
+            self.results[f'granger_{regime_key}'] = granger_results.to_dict(
+                'records')
 
             return granger_results
 
@@ -344,7 +357,8 @@ Lag & F-Statistic & p-value & Significant \\
 
         # Summary
         if not granger_full.empty:
-            sig_lags = granger_full[granger_full['significant']]['lag'].tolist()
+            sig_lags = granger_full[granger_full['significant']
+                                    ]['lag'].tolist()
             logger.info(f"\nSignificant lags (full sample): {sig_lags}")
             logger.info(f"Expected: [1, 2, 3] → Actual: {sig_lags}")
 

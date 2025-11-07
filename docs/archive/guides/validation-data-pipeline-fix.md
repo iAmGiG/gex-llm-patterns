@@ -20,6 +20,7 @@ Q3 2024 pattern validation reported physically impossible returns (42.77% max, -
 ### Symptoms
 
 **Q3 2024 Validation Results** (CORRUPT):
+
 ```yaml
 performance_metrics:
   avg_forward_1d_return_pct: 0.705%  # Plausible
@@ -37,6 +38,7 @@ sample_detection:
 ```
 
 **Q2 2024 Validation Results** (INCOMPLETE):
+
 ```yaml
 test_metadata:
   start_date: '2024-06-03'  # Should have been 2024-04-01
@@ -90,6 +92,7 @@ validate_pattern_taxonomy.py
 **File**: `scripts/validation/validate_pattern_taxonomy.py`
 
 **Problematic Code** (lines 89-106):
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """Get all trading days in range from cache."""
@@ -106,6 +109,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Why This Is a Design Flaw**:
+
 - User specifies `--start-date 2024-04-01 --end-date 2024-06-28` (60 days expected)
 - Function scans cache, finds only Jun 3-28 (17 files)
 - Returns 17 dates without attempting to fetch missing 43 days
@@ -113,6 +117,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 - Validation proceeds with incomplete dataset
 
 **Expected Behavior** (unclear - architectural decision needed):
+
 - **Option A**: Fetch missing dates from API automatically
 - **Option B**: Fail fast with error "Missing 43 days from cache, run data collection first"
 - **Option C**: Warn user but proceed with available dates
@@ -123,6 +128,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 **Observation**: `MarketMechanicsAgent` has `_fetch_gex_from_database()` method that CAN populate database on-demand.
 
 **Why It Didn't Trigger**:
+
 ```python
 # market_mechanics_agent.py (lines 980-1064)
 def _fetch_gex_from_database(self, symbol: str, date_str: str):
@@ -132,6 +138,7 @@ def _fetch_gex_from_database(self, symbol: str, date_str: str):
 ```
 
 **The Disconnect**:
+
 - Validation scripts call `OutcomeCalculator` directly
 - OutcomeCalculator only READS from database (doesn't populate)
 - Agent's on-demand population capability is bypassed
@@ -146,6 +153,7 @@ def _fetch_gex_from_database(self, symbol: str, date_str: str):
 **Action**: Rebuild database for full 2024 (Jan-Dec)
 
 **Command**:
+
 ```python
 from data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 builder = HistoricalGEXDatabaseBuilder()
@@ -158,6 +166,7 @@ stats = builder.build_gex_database(
 ```
 
 **Results**:
+
 - **Attempted**: 262 trading dates (Jan 1 - Dec 31, 2024)
 - **Successful**: 198 dates with data
 - **Failed**: 64 dates (no options data available)
@@ -171,7 +180,8 @@ stats = builder.build_gex_database(
 - **Database**: `.cache/gex_database.db` (populated)
 
 **Known Gaps** (from cache availability):
-```
+
+```bash
 Apr 1-May 31: No options cache data available
 Jun 4, Jun 6: Missing from cache
 Jun 19: Missing from cache
@@ -201,7 +211,8 @@ for row in cursor.fetchall():
 ```
 
 **Expected Output**:
-```
+
+```bash
 2024-07-08: $545.23 (GEX: -$15.2B)  # NOT 450.0!
 2024-07-09: $547.89 (GEX: -$14.8B)
 ...
@@ -212,12 +223,14 @@ for row in cursor.fetchall():
 ## Impact Assessment
 
 ### Q1 2024: ✅ CORRECT
+
 - Database rebuilt Oct 11, 2025
 - 53 trading days with correct spot prices
 - Outcome metrics: 0.606% avg return, 2.07% max (physically plausible)
 - **Status**: Ready for analysis
 
 ### Q2 2024: ⚠️ INCOMPLETE
+
 - Only 17 days tested (Jun 3-28) instead of ~60 (Apr-Jun)
 - Apr-May data missing from cache
 - Database now has Jun data but Apr-May still missing
@@ -225,6 +238,7 @@ for row in cursor.fetchall():
 - **Status**: Needs full re-run when Apr-May data collected
 
 ### Q3 2024: ❌ CORRUPTED
+
 - All spot prices showed 450.0 (obfuscated) instead of real ~$545-560
 - Forward returns calculated using wrong base
 - Reported 42.77% max return (impossible for SPY)
@@ -232,6 +246,7 @@ for row in cursor.fetchall():
 - **Status**: INVALID - Must re-run with corrected database
 
 ### Q4 2024: 📊 PARTIAL
+
 - Database has 37 dates (Oct-early Nov from cache)
 - Late Nov-Dec data collection in progress
 - **Status**: Awaiting complete dataset
@@ -288,6 +303,7 @@ Before running multi-quarter validation:
 **Current Behavior**: Only tests dates already in cache (silent incomplete testing)
 
 **Option A: Auto-Fetch** (More User-Friendly)
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """Get all trading days, fetching missing dates."""
@@ -302,16 +318,19 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Pros**:
+
 - Ensures complete testing
 - User-friendly (just works)
 - No separate data collection step
 
 **Cons**:
+
 - May trigger many API calls unexpectedly
 - Slower (user doesn't know why)
 - May hit rate limits during validation
 
 **Option B: Fail Fast** (More Explicit)
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """Get all trading days, error if any missing."""
@@ -329,15 +348,18 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Pros**:
+
 - Clear error message
 - Separates data collection from validation
 - Predictable behavior
 
 **Cons**:
+
 - Extra step for users
 - Less convenient
 
 **Option C: Warn and Continue** (Current Behavior + Warning)
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """Get cached trading days, warn if incomplete."""
@@ -355,11 +377,13 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Pros**:
+
 - Still works with partial data
 - User aware of incompleteness
 - Fast (no API calls)
 
 **Cons**:
+
 - Easy to ignore warnings
 - Results may be misleading
 
@@ -372,11 +396,13 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 1. ✅ **Database Rebuilt**: Full 2024 coverage (198 dates)
 
 2. **Verify Database Prices**:
+
    ```bash
    python scripts/database/verify_spot_prices.py --quarter Q3
    ```
 
 3. **Re-run Q3 Validation**:
+
    ```bash
    python scripts/validation/validate_pattern_taxonomy.py \
      --pattern gamma_positioning --symbol SPY \
@@ -412,13 +438,16 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ## Files Modified/Created
 
 **Modified**:
+
 - `.cache/gex_database.db` (rebuilt with 198 dates)
 
 **To Be Created**:
+
 - `scripts/database/verify_spot_prices.py` (verification utility)
 - GitHub Issue: "Validation pipeline design flaw: Only tests cached dates"
 
 **Corrupted** (Needs Re-generation):
+
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q3.yaml`
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q2.yaml` (incomplete)
 

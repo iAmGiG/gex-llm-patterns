@@ -26,7 +26,7 @@
 
 When testing if AI truly "understands" something, we face a fundamental problem:
 
-```
+```bash
 Traditional Test:
 "Given this market data, what happens next?"
 
@@ -40,7 +40,7 @@ Problem: AI might just memorize famous events
 
 Remove ALL context that AI could have memorized:
 
-```
+```bash
 What AI Sees:
 - Date: "Day T+0" (not "January 28, 2021")
 - Symbol: "INDEX_1" (not "SPY")
@@ -62,7 +62,7 @@ Financial markets provide ideal conditions for testing constraint understanding:
 
 **The Specific Constraint We Test**
 
-```
+```bash
 Market Structure:
 - Market makers provide liquidity (sell options to anyone)
 - Regulations REQUIRE them to stay "delta neutral"

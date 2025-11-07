@@ -86,8 +86,10 @@ class LeadLagAnalysis:
         self.regime_stats = None
         self.results = {}
 
-        logger.info(f"Initialized Lead-Lag Analysis for {symbol} ({start_date} to {end_date})")
-        logger.info(f"Regime thresholds: Negative < ${neg_threshold/1e9:.1f}B, Positive > ${pos_threshold/1e9:.1f}B")
+        logger.info(
+            f"Initialized Lead-Lag Analysis for {symbol} ({start_date} to {end_date})")
+        logger.info(
+            f"Regime thresholds: Negative < ${neg_threshold/1e9:.1f}B, Positive > ${pos_threshold/1e9:.1f}B")
 
     def step1_prepare_data(self) -> pd.DataFrame:
         """
@@ -101,7 +103,8 @@ class LeadLagAnalysis:
         logger.info("Step 1: Preparing data and classifying regimes...")
 
         # Load extracted time series from CSV
-        csv_path = Path('reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
+        csv_path = Path(
+            'reports/statistical_validation/gamma_positioning_timeseries_2024.csv')
 
         if not csv_path.exists():
             raise FileNotFoundError(
@@ -128,15 +131,18 @@ class LeadLagAnalysis:
         data['fwd_vol'] = data['fwd_abs_return'].rolling(3).std()
 
         # Binary indicator for negative GEX
-        data['is_negative_gex'] = (data['net_gex'] < self.neg_threshold).astype(int)
+        data['is_negative_gex'] = (
+            data['net_gex'] < self.neg_threshold).astype(int)
 
         # Drop rows with missing values
         data = data.dropna()
 
         # Log statistics
         logger.info(f"Total observations: {len(data)}")
-        logger.info(f"Date range: {data['date'].min()} to {data['date'].max()}")
-        logger.info(f"GEX range: ${data['net_gex'].min()/1e9:.2f}B to ${data['net_gex'].max()/1e9:.2f}B")
+        logger.info(
+            f"Date range: {data['date'].min()} to {data['date'].max()}")
+        logger.info(
+            f"GEX range: ${data['net_gex'].min()/1e9:.2f}B to ${data['net_gex'].max()/1e9:.2f}B")
         logger.info(f"Regime distribution:")
         for regime in ['Negative', 'Neutral', 'Positive']:
             count = (data['gex_regime'] == regime).sum()
@@ -162,15 +168,18 @@ class LeadLagAnalysis:
         }).round(6)
 
         # Flatten column names
-        regime_stats.columns = [f'{col[0]}_{col[1]}' for col in regime_stats.columns]
+        regime_stats.columns = [
+            f'{col[0]}_{col[1]}' for col in regime_stats.columns]
 
         # Log results
         logger.info("\nRegime Statistics:")
         logger.info(regime_stats.to_string())
 
         # Calculate amplification
-        neg_vol = self.data[self.data['gex_regime'] == 'Negative']['fwd_abs_return'].mean()
-        pos_vol = self.data[self.data['gex_regime'] == 'Positive']['fwd_abs_return'].mean()
+        neg_vol = self.data[self.data['gex_regime']
+                            == 'Negative']['fwd_abs_return'].mean()
+        pos_vol = self.data[self.data['gex_regime']
+                            == 'Positive']['fwd_abs_return'].mean()
 
         amplification = {
             'negative_mean_vol_pct': round(neg_vol * 100, 2),
@@ -180,9 +189,12 @@ class LeadLagAnalysis:
         }
 
         logger.info(f"\nVolatility Amplification:")
-        logger.info(f"  Negative: {amplification['negative_mean_vol_pct']:.2f}%")
-        logger.info(f"  Positive: {amplification['positive_mean_vol_pct']:.2f}%")
-        logger.info(f"  Difference: +{amplification['amplification_pct']:.2f}%")
+        logger.info(
+            f"  Negative: {amplification['negative_mean_vol_pct']:.2f}%")
+        logger.info(
+            f"  Positive: {amplification['positive_mean_vol_pct']:.2f}%")
+        logger.info(
+            f"  Difference: +{amplification['amplification_pct']:.2f}%")
         logger.info(f"  Ratio: {amplification['amplification_ratio']:.2f}x")
 
         self.regime_stats = regime_stats
@@ -200,9 +212,12 @@ class LeadLagAnalysis:
         logger.info("Step 3: Running statistical tests...")
 
         # Extract regime data
-        neg_vol = self.data[self.data['gex_regime'] == 'Negative']['fwd_abs_return']
-        neu_vol = self.data[self.data['gex_regime'] == 'Neutral']['fwd_abs_return']
-        pos_vol = self.data[self.data['gex_regime'] == 'Positive']['fwd_abs_return']
+        neg_vol = self.data[self.data['gex_regime']
+                            == 'Negative']['fwd_abs_return']
+        neu_vol = self.data[self.data['gex_regime']
+                            == 'Neutral']['fwd_abs_return']
+        pos_vol = self.data[self.data['gex_regime']
+                            == 'Positive']['fwd_abs_return']
 
         # T-tests
         neg_vs_pos = stats.ttest_ind(neg_vol, pos_vol)
@@ -241,17 +256,23 @@ class LeadLagAnalysis:
         # Log results
         logger.info("\nStatistical Test Results:")
         logger.info(f"Negative vs Positive:")
-        logger.info(f"  t-statistic: {test_results['negative_vs_positive']['t_statistic']}")
-        logger.info(f"  p-value: {test_results['negative_vs_positive']['p_value']:.6f} {'***' if test_results['negative_vs_positive']['significant'] else ''}")
-        logger.info(f"  Cohen's d: {test_results['negative_vs_positive']['cohens_d']} (effect size)")
+        logger.info(
+            f"  t-statistic: {test_results['negative_vs_positive']['t_statistic']}")
+        logger.info(
+            f"  p-value: {test_results['negative_vs_positive']['p_value']:.6f} {'***' if test_results['negative_vs_positive']['significant'] else ''}")
+        logger.info(
+            f"  Cohen's d: {test_results['negative_vs_positive']['cohens_d']} (effect size)")
 
         logger.info(f"\nNegative vs Neutral:")
-        logger.info(f"  t-statistic: {test_results['negative_vs_neutral']['t_statistic']}")
-        logger.info(f"  p-value: {test_results['negative_vs_neutral']['p_value']:.6f} {'***' if test_results['negative_vs_neutral']['significant'] else ''}")
+        logger.info(
+            f"  t-statistic: {test_results['negative_vs_neutral']['t_statistic']}")
+        logger.info(
+            f"  p-value: {test_results['negative_vs_neutral']['p_value']:.6f} {'***' if test_results['negative_vs_neutral']['significant'] else ''}")
 
         logger.info(f"\nANOVA (all regimes):")
         logger.info(f"  F-statistic: {test_results['anova']['f_statistic']}")
-        logger.info(f"  p-value: {test_results['anova']['p_value']:.6f} {'***' if test_results['anova']['significant'] else ''}")
+        logger.info(
+            f"  p-value: {test_results['anova']['p_value']:.6f} {'***' if test_results['anova']['significant'] else ''}")
 
         self.results['statistical_tests'] = test_results
 
@@ -294,14 +315,20 @@ class LeadLagAnalysis:
 
         logger.info("\nRegression Results:")
         logger.info("Binary Model (Negative GEX indicator):")
-        logger.info(f"  Vol = {regression_results['binary_model']['beta_0']:.4f} + {regression_results['binary_model']['beta_1']:.4f} * (Negative_GEX)")
-        logger.info(f"  R² = {regression_results['binary_model']['r_squared']:.4f}")
-        logger.info(f"  p-value = {regression_results['binary_model']['p_value']:.6f}")
+        logger.info(
+            f"  Vol = {regression_results['binary_model']['beta_0']:.4f} + {regression_results['binary_model']['beta_1']:.4f} * (Negative_GEX)")
+        logger.info(
+            f"  R² = {regression_results['binary_model']['r_squared']:.4f}")
+        logger.info(
+            f"  p-value = {regression_results['binary_model']['p_value']:.6f}")
 
         logger.info("\nContinuous Model (GEX level):")
-        logger.info(f"  Vol = {regression_results['continuous_model']['beta_0']:.4f} + {regression_results['continuous_model']['beta_1']:.6f} * (GEX/1B)")
-        logger.info(f"  R² = {regression_results['continuous_model']['r_squared']:.4f}")
-        logger.info(f"  {regression_results['continuous_model']['interpretation']}")
+        logger.info(
+            f"  Vol = {regression_results['continuous_model']['beta_0']:.4f} + {regression_results['continuous_model']['beta_1']:.6f} * (GEX/1B)")
+        logger.info(
+            f"  R² = {regression_results['continuous_model']['r_squared']:.4f}")
+        logger.info(
+            f"  {regression_results['continuous_model']['interpretation']}")
 
         self.results['regression'] = regression_results
 
@@ -323,7 +350,8 @@ class LeadLagAnalysis:
         test_results = self.results.get('statistical_tests', {})
         p_val = test_results.get('negative_vs_positive', {}).get('p_value', 0)
 
-        sig_marker = '***' if p_val < 0.001 else ('**' if p_val < 0.01 else ('*' if p_val < 0.05 else ''))
+        sig_marker = '***' if p_val < 0.001 else (
+            '**' if p_val < 0.01 else ('*' if p_val < 0.05 else ''))
 
         latex = r'''\begin{table}[htbp]
 \centering
@@ -400,7 +428,8 @@ Negative vs. Positive & +''' + f"{diff_pct:.2f}\\%{sig_marker}" + r''' & & \\
             self.data['net_gex'] / 1e9,
             frac=0.3
         )
-        ax.plot(smoothed[:, 0], smoothed[:, 1], 'r-', linewidth=2, label='LOWESS')
+        ax.plot(smoothed[:, 0], smoothed[:, 1],
+                'r-', linewidth=2, label='LOWESS')
 
         ax.set_xlabel('Net GEX ($B)', fontsize=12)
         ax.set_ylabel('T+1 Absolute Return (%)', fontsize=12)
@@ -473,7 +502,8 @@ Negative vs. Positive & +''' + f"{diff_pct:.2f}\\%{sig_marker}" + r''' & & \\
 
         # Summary
         amplification = self.results.get('amplification', {})
-        logger.info(f"\nKey Finding: Negative GEX → {amplification.get('amplification_ratio', 0):.2f}x higher volatility")
+        logger.info(
+            f"\nKey Finding: Negative GEX → {amplification.get('amplification_ratio', 0):.2f}x higher volatility")
         logger.info(f"Statistical Significance: p < 0.001")
 
         return self.results

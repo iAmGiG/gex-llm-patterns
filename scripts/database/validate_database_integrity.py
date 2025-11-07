@@ -5,6 +5,8 @@ Compares database GEX values against fresh calculations to identify corruption.
 Checks all tables for data quality issues.
 """
 
+from src.gex.gex_calculator import GEXCalculator
+from src.cache.unified_cache import UnifiedCacheManager
 import sqlite3
 import sys
 from pathlib import Path
@@ -14,8 +16,6 @@ import logging
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.cache.unified_cache import UnifiedCacheManager
-from src.gex.gex_calculator import GEXCalculator
 
 logging.basicConfig(
     level=logging.INFO,
@@ -83,10 +83,12 @@ def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager,
 
             # Calculate discrepancy
             if db_gex and fresh_gex:
-                ratio = abs(fresh_gex / db_gex) if db_gex != 0 else float('inf')
+                ratio = abs(
+                    fresh_gex / db_gex) if db_gex != 0 else float('inf')
                 sign_match = (db_gex > 0) == (fresh_gex > 0)
 
-                status = 'OK' if (0.9 < ratio < 1.1 and sign_match) else 'CORRUPT'
+                status = 'OK' if (
+                    0.9 < ratio < 1.1 and sign_match) else 'CORRUPT'
             else:
                 ratio = None
                 status = 'MISSING'
@@ -179,16 +181,18 @@ if __name__ == "__main__":
 
     logger.info(f"\nValidation Results:")
     logger.info(f"  Total checked: {report['total_checked']}")
-    logger.info(f"  Corrupt: {report['corrupt']} ({report['corrupt_pct']:.1f}%)")
+    logger.info(
+        f"  Corrupt: {report['corrupt']} ({report['corrupt_pct']:.1f}%)")
     logger.info(f"  OK: {report['ok']}")
 
     # Show examples
     if report['corrupt'] > 0:
         logger.info("\nExample Corruptions:")
-        corrupt_samples = report['details'][report['details']['status'] == 'CORRUPT'].head(5)
+        corrupt_samples = report['details'][report['details']
+                                            ['status'] == 'CORRUPT'].head(5)
         for _, row in corrupt_samples.iterrows():
             logger.info(f"  {row['date']}: DB={row['db_gex']:,.0f} vs Fresh={row['fresh_gex']:,.0f} "
-                       f"(ratio={row['discrepancy_ratio']:.1f}x)")
+                        f"(ratio={row['discrepancy_ratio']:.1f}x)")
 
     # Recommendation
     if report['corrupt_pct'] > 50:

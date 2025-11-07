@@ -11,6 +11,8 @@ Run this after fixing the architectural violation where obfuscated
 prices were being stored in the database.
 """
 
+from data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
+import logging
 import sys
 from pathlib import Path
 
@@ -18,8 +20,6 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
-import logging
-from data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 
 # Configure logging
 logging.basicConfig(
@@ -55,7 +55,8 @@ print()
 print('='*80)
 print('REBUILD COMPLETE')
 print('='*80)
-print(f"Days successful: {stats['total_days_successful']}/{stats['total_days_attempted']}")
+print(
+    f"Days successful: {stats['total_days_successful']}/{stats['total_days_attempted']}")
 print(f"Duration: {stats['build_duration_minutes']:.2f} minutes")
 print(f"Database: {stats['database_path']}")
 print()

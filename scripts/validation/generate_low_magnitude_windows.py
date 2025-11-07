@@ -68,7 +68,8 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime(
+        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -104,7 +105,8 @@ def scale_to_low_magnitude(gex_sequence: dict, scale_factor: float = 0.3, target
     original_magnitude = np.mean(np.abs(original_values))
 
     # Scale to achieve target magnitude
-    actual_scale = target_magnitude_b * 1e9 / original_magnitude if original_magnitude > 0 else scale_factor
+    actual_scale = target_magnitude_b * 1e9 / \
+        original_magnitude if original_magnitude > 0 else scale_factor
 
     scaled_values = [v * actual_scale for v in original_values]
 
@@ -162,12 +164,14 @@ def find_low_magnitude_windows(
 
         # Check if suitable for scaling (high persistence, low flips, but currently high magnitude)
         if persistence >= persistence_threshold and flips <= 3 and magnitude > 4:
-            print(f"Found persistent window: {end_date} ({persistence:.1f}% persistence, {magnitude:.2f}B)")
+            print(
+                f"Found persistent window: {end_date} ({persistence:.1f}% persistence, {magnitude:.2f}B)")
 
             # Scale it down
             low_mag = scale_to_low_magnitude(gex_seq, target_magnitude_b=2.4)
             low_mag_windows.append(low_mag)
-            print(f"  → Scaled to {low_mag['scaling_info']['scaled_avg_magnitude_b']:.2f}B")
+            print(
+                f"  → Scaled to {low_mag['scaling_info']['scaled_avg_magnitude_b']:.2f}B")
 
     return low_mag_windows
 
@@ -246,7 +250,8 @@ def main():
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2c_low_magnitude"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / \
+        "regime_windows" / "phase2c_low_magnitude"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "low_magnitude_windows.yaml"

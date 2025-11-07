@@ -26,7 +26,7 @@
 
 ## Directory Structure
 
-```
+```bash
 docs/
 ├── CHANGELOG.md                    # Project evolution tracking
 ├── README.md                       # This file (navigation hub)
@@ -90,6 +90,7 @@ docs/
 ### Naming Conventions
 
 **Files**: All lowercase with hyphens (`kebab-case`)
+
 - ✅ `gex-metrics-explained.md`
 - ✅ `2025-symposium.md`
 - ❌ `gex_metrics_explained.md` (no underscores)
@@ -100,24 +101,28 @@ docs/
 ### Sequencing
 
 **Guides**: Numbered for linear progression (02-09)
+
 - `02-gex-metrics-explained.md` → Foundation
 - `03-pattern-taxonomy.md` → Core concepts
 - `04-pattern-validation.md` → Methodology
 - ... logical progression
 
 **Architecture**: Numbered by dependency (01-06)
+
 - `01-project-overview.md` → Start here
 - `02-architecture-overview.md` → High-level design
 - `03-data-architecture.md` → Data layer
 - ... builds on previous
 
 **ADRs**: Numbered chronologically (001, 002, ...)
+
 - Paper-specific: `papers/paper2/adr/001-scope-boundaries.md`
 - Cross-paper: `papers/adr/001-validation-script-naming.md`
 
 ### Cross-References
 
 All docs include **Navigation** sections with:
+
 - **Prerequisites**: What to read first
 - **Related**: Similar/connected topics
 - **Next**: Where to go next
@@ -130,18 +135,21 @@ All docs include **Navigation** sections with:
 ### Papers
 
 **Paper #1** (Single-Day Framework):
+
 - **Status**: ✅ Submitted (Oct 26, 2025)
 - **Results**: 100% detection, 87-98% accuracy (181 trading days)
 - **Finding**: Detection stable despite alpha decline (Q1→Q4)
 - **Location**: [papers/paper1/](papers/paper1/)
 
 **Paper #2** (Sequential Framework):
+
 - **Status**: 🔄 Phase 1 complete, Phase 2 pending
 - **Innovation**: 5-day temporal trajectory analysis
 - **Components**: SequentialGEXFetcher, neutral prompts, negative controls
 - **Location**: [papers/paper2/](papers/paper2/)
 
 **Cross-Paper ADRs**:
+
 - Architecture decisions affecting multiple papers
 - Validation script naming conventions
 - Shared infrastructure design
@@ -150,6 +158,7 @@ All docs include **Navigation** sections with:
 ### Guides
 
 Sequential how-to documentation for users:
+
 - **Foundation**: GEX metrics, pattern taxonomy
 - **Methodology**: Validation framework, obfuscation
 - **Output**: YAML reporting, baseline strategy
@@ -160,6 +169,7 @@ Sequential how-to documentation for users:
 ### System
 
 Architecture and implementation documentation:
+
 - **Architecture**: 6 docs covering system design (01-06)
 - **Implementation**: Specific feature implementations
 - **Cost Optimization**: LLM model selection and optimization
@@ -169,6 +179,7 @@ Architecture and implementation documentation:
 ### Validation
 
 Research validation methodology:
+
 - **Statistical**: Granger causality, lead-lag analysis
 - **Negative Controls**: Paper #2 bias mitigation
 - **Pattern Validation**: Obfuscation testing
@@ -178,6 +189,7 @@ Research validation methodology:
 ### Presentations
 
 Educational materials and symposium presentations:
+
 - **2025 Symposium**: Paper #1 results (October 2025)
 - **Fundamentals**: Market mechanics education
 - **Technical Deep Dive**: System architecture walkthrough
@@ -255,12 +267,14 @@ Educational materials and symposium presentations:
 ## Navigation
 
 **Start Here**:
+
 - [System Overview](system/architecture/01-project-overview.md)
 - [GEX Metrics Explained](guides/02-gex-metrics-explained.md)
 - [Paper #1 README](papers/paper1/README.md)
 - [Paper #2 README](papers/paper2/README.md)
 
 **Key References**:
+
 - [CHANGELOG.md](CHANGELOG.md) - Project evolution
 - [papers/adr/](papers/adr/) - Cross-paper decisions
 - [validation/](validation/) - Research methodology

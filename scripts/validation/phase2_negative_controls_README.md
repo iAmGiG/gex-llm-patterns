@@ -24,6 +24,7 @@ Phase 2 validates that the LLM regime detection methodology doesn't produce fals
 **REQUIRES Phase 1 COMPLETION**
 
 Before running Phase 2, you need:
+
 1. Phase 1 Q1 2024 validation results (from `validate_regime_windows.py`)
 2. Baseline detection rate (expected 3-10%)
 3. Baseline accuracy rate (expected 70-80%)
@@ -37,19 +38,23 @@ Before running Phase 2, you need:
 **File**: `generate_shuffled_windows.py`
 
 ### Purpose
+
 Validate that LLM doesn't detect false regimes in randomized data with no temporal structure.
 
 ### Method
+
 1. Take real 30-day GEX sequences from Q1 2024
 2. Randomly shuffle the day order (destroys temporal structure)
 3. Present shuffled sequence to LLM with obfuscation
 4. Count false positive detections
 
 ### What We're Testing
+
 - Does the LLM rely on temporal patterns?
 - Does it confuse noise for regime?
 
 ### Expected Results
+
 - **Detection rate**: 0% (ideal) or <10% (acceptable threshold)
 - **Regime type**: Should be "transitional" (sign flips from shuffling)
 
@@ -62,13 +67,16 @@ python scripts/validation/generate_shuffled_windows.py
 ```
 
 ### Output
+
 - **Location**: `reports/validation/regime_windows/phase2a_shuffled/shuffled_windows.yaml`
 - **Format**: YAML with metadata, characteristics, and shuffled window data
 
 ### Success Criteria
+
 ✅ False positive rate <10%
 
 ### If Fails
+
 - Action 1: Recalibrate confidence thresholds in prompt
 - Action 2: Strengthen sign flip penalty in prompt
 - Action 3: Add "consistency check" to prompt (are flips random or structured?)
@@ -80,9 +88,11 @@ python scripts/validation/generate_shuffled_windows.py
 **File**: `generate_transitional_windows.py`
 
 ### Purpose
+
 Validate that LLM correctly rejects windows with frequent sign flips (no persistent direction).
 
 ### Method
+
 1. Find or create 30-day windows with 7-10 sign flips
 2. May be rare in Q1 2024 (persistent negative regime)
 3. Option A: Hand-pick from full 2024 dataset
@@ -90,15 +100,18 @@ Validate that LLM correctly rejects windows with frequent sign flips (no persist
 5. Present to LLM with obfuscation
 
 ### What We're Testing
+
 - Does the LLM enforce sign flip constraint (max 5 flips)?
 - Does it recognize lack of persistent direction?
 
 ### Characteristics
+
 - Sign persistence: 50-65% (15-20 days same sign)
 - Sign flips: 7-10 flips
 - Magnitude: May be adequate (>$5B) but direction unstable
 
 ### Expected Results
+
 - **Detection rate**: 0-10% (should reject as "transitional")
 - **LLM reasoning**: Should cite "too many sign flips" or "no persistent direction"
 
@@ -111,13 +124,16 @@ python scripts/validation/generate_transitional_windows.py
 ```
 
 ### Output
+
 - **Location**: `reports/validation/regime_windows/phase2b_transitional/transitional_windows.yaml`
 - **Format**: YAML with natural and/or synthetic windows
 
 ### Success Criteria
+
 ✅ False positive rate <10%
 
 ### If Fails
+
 - Action 1: Lower max sign flip threshold from 5 to 3
 - Action 2: Strengthen "stability" requirement in prompt
 
@@ -128,24 +144,29 @@ python scripts/validation/generate_transitional_windows.py
 **File**: `generate_low_magnitude_windows.py`
 
 ### Purpose
+
 Validate that LLM correctly rejects persistent-sign but weak-magnitude windows.
 
 ### Method
+
 1. Take real persistent window (e.g., 26/30 days negative, $8B avg)
 2. Scale GEX values down: multiply by 0.3 → now $2.4B avg
 3. Present scaled window to LLM with obfuscation
 4. Should reject as "low_conviction" despite sign persistence
 
 ### What We're Testing
+
 - Does the LLM enforce magnitude threshold ($5B minimum)?
 - Does it recognize weak constraint despite directional persistence?
 
 ### Characteristics
+
 - Sign persistence: 70-90% (21-27 days same sign) ✅
 - Sign flips: 0-3 (very stable) ✅
 - Magnitude: <$3B average ❌ (below $5B threshold)
 
 ### Expected Results
+
 - **Detection rate**: 0-10% (should reject as "low_conviction")
 - **LLM reasoning**: Should cite "magnitude below $5B threshold"
 
@@ -158,13 +179,16 @@ python scripts/validation/generate_low_magnitude_windows.py
 ```
 
 ### Output
+
 - **Location**: `reports/validation/regime_windows/phase2c_low_magnitude/low_magnitude_windows.yaml`
 - **Format**: YAML with original, scaled, and characteristics
 
 ### Success Criteria
+
 ✅ False positive rate <10%
 
 ### If Fails
+
 - Action 1: Increase magnitude threshold from $5B to $7B
 - Action 2: Add "minimum constraint strength" language to prompt
 
@@ -173,6 +197,7 @@ python scripts/validation/generate_low_magnitude_windows.py
 ## Running Phase 2 (Complete Workflow)
 
 ### Step 1: Confirm Phase 1 Complete
+
 ```bash
 # Check Phase 1 results
 ls -lh reports/validation/regime_windows/phase1_q1_2024.yaml
@@ -182,6 +207,7 @@ grep "detection_rate_pct" reports/validation/regime_windows/phase1_q1_2024.yaml
 ```
 
 ### Step 2: Generate All Three Negative Control Sets
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 
@@ -196,6 +222,7 @@ python scripts/validation/generate_low_magnitude_windows.py
 ```
 
 ### Step 3: Feed to LLM Validator
+
 ```bash
 # Run Phase 2a through validator
 python scripts/validation/validate_regime_windows.py \
@@ -214,6 +241,7 @@ python scripts/validation/validate_regime_windows.py \
 ```
 
 ### Step 4: Analyze Results
+
 ```bash
 # Aggregate Phase 2 results
 # Expected output: phase2_negative_controls_summary.yaml
@@ -241,6 +269,7 @@ These are the thresholds that Phase 2 tests:
 These generators produce YAML files that should be consumed by `validate_regime_windows.py`.
 
 Expected interface:
+
 ```python
 # Load negative control windows
 with open("phase2a_shuffled/shuffled_windows.yaml") as f:
@@ -260,14 +289,16 @@ for window in controls["shuffled_windows"]:
 ## Decision Tree: When Phase 2 Passes/Fails
 
 ### If All Three Tests Pass (<10% false positives)
-```
+
+```bash
 ✅ Phase 1 + Phase 2 complete
 └─> Proceed to Phase 3 (Full 2024 validation)
 └─> Methodology validated, ready for comprehensive analysis
 ```
 
 ### If Any Test Fails (>10% false positives)
-```
+
+```bash
 ⚠️  Recalibration needed
 
 Option A: Adjust thresholds
@@ -287,7 +318,7 @@ Decision: Which changes first?
 
 ## File Organization
 
-```
+```bash
 scripts/validation/
 ├── generate_shuffled_windows.py        # Phase 2a
 ├── generate_transitional_windows.py    # Phase 2b

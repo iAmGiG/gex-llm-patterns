@@ -67,7 +67,8 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime(
+        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -124,7 +125,8 @@ def create_synthetic_transitional(gex_sequence: dict, flip_count: int = 8) -> di
     synthetic = gex_values.copy()
     for i in range(5, min(25, len(synthetic)), 3):
         # Flip sign while preserving magnitude
-        synthetic[i] = -abs(synthetic[i]) if synthetic[i] > 0 else abs(synthetic[i])
+        synthetic[i] = - \
+            abs(synthetic[i]) if synthetic[i] > 0 else abs(synthetic[i])
 
     return {
         "method": "synthetic_spliced",
@@ -176,8 +178,10 @@ def find_transitional_windows(
 
         # Check if naturally transitional
         if min_flips <= flips <= max_flips and persistence < 70:
-            print(f"Found natural transitional: {end_date} ({flips} flips, {persistence:.1f}% persistence)")
-            transitional = create_synthetic_transitional(gex_seq, flip_count=flips)
+            print(
+                f"Found natural transitional: {end_date} ({flips} flips, {persistence:.1f}% persistence)")
+            transitional = create_synthetic_transitional(
+                gex_seq, flip_count=flips)
             transitional["type"] = "natural"
             transitional_windows.append(transitional)
             found_natural += 1
@@ -264,7 +268,8 @@ def main():
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2b_transitional"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / \
+        "regime_windows" / "phase2b_transitional"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "transitional_windows.yaml"

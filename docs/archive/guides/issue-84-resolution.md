@@ -28,6 +28,7 @@
 **Location**: `scripts/validation/validate_pattern_taxonomy.py` lines 89-106 (original)
 
 **Flawed Logic**:
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """Get all trading days in range from cache."""
@@ -46,6 +47,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ### Research Impact
 
 **Q1-Q4 2024 Coverage Analysis**:
+
 - **Q1**: 53/63 days (84%) ✅ Acceptable
 - **Q2**: 17/64 days (27%) ❌ **INSUFFICIENT**
 - **Q3**: 64/65 days (98%) ✅ Excellent
@@ -64,6 +66,7 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 **Design Decision**: Require ≥80% coverage for statistical validity. Fail fast with clear error message if insufficient.
 
 **Why 80% threshold?**
+
 - Captures vast majority of trading days
 - Allows for reasonable holidays/data gaps
 - Prevents systematic selection bias
@@ -74,10 +77,12 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 **File**: `scripts/validation/validate_pattern_taxonomy.py`
 
 **Added Methods**:
+
 1. `_get_expected_trading_days()` - Calculate expected trading days (business days minus US holidays)
 2. Enhanced `get_test_date_range()` - Validate coverage and fail fast if <80%
 
 **New Logic**:
+
 ```python
 def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
     """
@@ -103,7 +108,8 @@ def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
 ```
 
 **Error Message Format**:
-```
+
+```bash
 ================================================================================
 ❌ INSUFFICIENT DATA COVERAGE: 26.6%
 ================================================================================
@@ -132,29 +138,35 @@ First 10 missing dates: ['2024-04-01', '2024-04-02', ...]
 ### Test Cases
 
 **Test 1: Q1 2024 (84% coverage)**
+
 ```bash
 python scripts/validation/validate_pattern_taxonomy.py \
   --pattern gamma_positioning --symbol SPY \
   --start-date 2024-01-02 --end-date 2024-03-29
 ```
+
 **Expected**: ✅ PASS (84% > 80%)
 **Result**: Validation proceeds normally
 
 **Test 2: Q2 2024 (27% coverage)**
+
 ```bash
 python scripts/validation/validate_pattern_taxonomy.py \
   --pattern gamma_positioning --symbol SPY \
   --start-date 2024-04-01 --end-date 2024-06-28
 ```
+
 **Expected**: ❌ FAIL with clear error message
 **Result**: Raises `ValueError` with instructions to collect missing data
 
 **Test 3: Q3 2024 (98% coverage)**
+
 ```bash
 python scripts/validation/validate_pattern_taxonomy.py \
   --pattern gamma_positioning --symbol SPY \
   --start-date 2024-07-01 --end-date 2024-09-30
 ```
+
 **Expected**: ✅ PASS (98% > 80%)
 **Result**: Validation proceeds normally
 
@@ -167,6 +179,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Analysis**: Missing dates in Q1, Q3, Q4 were primarily US holidays (not systematic bias).
 
 **Coverage Details**:
+
 - Q1: Missing 9 dates (mostly holidays + few Fridays)
 - Q3: Missing 1 date (July 4th)
 - Q4: Missing 1 date (Thanksgiving)
@@ -180,6 +193,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Status**: Insufficient coverage (27%) - Cannot draw valid conclusions for Q2.
 
 **Options**:
+
 1. **Collect Q2 data** (~47 API calls, 40 minutes) and re-run
 2. **Document limitation** and proceed with Q1, Q3, Q4 results (recommended)
 
@@ -190,16 +204,19 @@ python scripts/validation/validate_pattern_taxonomy.py \
 ## Benefits of Fix
 
 ### Research Rigor
+
 ✅ **Prevents silent bias**: Forces explicit validation of sample completeness
 ✅ **Academic defensibility**: Can demonstrate methodological rigor in dissertation
 ✅ **Reproducibility**: Clear error messages guide others to collect complete data
 
 ### User Experience
+
 ✅ **Fail fast**: Immediate feedback if data incomplete
 ✅ **Actionable errors**: Clear instructions on how to fix
 ✅ **Predictable**: No surprise incomplete results
 
 ### Future-Proofing
+
 ✅ **Prevents Issue #79 repeats**: Automatic validation for all future patterns
 ✅ **Clear threshold**: 80% coverage requirement is documented
 ✅ **Holiday handling**: Built-in US holiday calendar
@@ -209,12 +226,14 @@ python scripts/validation/validate_pattern_taxonomy.py \
 ## Files Modified
 
 ### Code Changes
+
 - `scripts/validation/validate_pattern_taxonomy.py` (lines 89-168)
   - Added `_get_expected_trading_days()` helper method
   - Enhanced `get_test_date_range()` with coverage validation
   - Added fail-fast logic with 80% threshold
 
 ### Documentation
+
 - `docs/guides/issue-84-resolution.md` (this file)
 - Updated CLAUDE.md with Issue #84 resolution status
 - Updated todo.md with completion status
@@ -236,6 +255,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 ### For Future Validations
 
 **Workflow**:
+
 1. Run validation with desired date range
 2. If coverage <80%, script fails with clear message
 3. Collect missing data using provided command
@@ -244,6 +264,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 ### For Current Research
 
 **Q1-Q4 2024 Status**:
+
 - ✅ Q1, Q3, Q4: Valid results (>80% coverage)
 - ⚠️ Q2: Insufficient coverage, documented limitation
 - **Overall conclusion unchanged**: Pattern validated but not profitable

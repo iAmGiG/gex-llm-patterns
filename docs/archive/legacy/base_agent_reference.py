@@ -75,7 +75,7 @@ class BaseAgent(AssistantAgent, ABC):
         :param llm_config: Optional dictionary containing LLM settings (temperature, etc).
         """
         # 1. Merge default LLM config with any provided config
-        llm_params= DEFAULT_LLM_CONFIG.copy()
+        llm_params = DEFAULT_LLM_CONFIG.copy()
         if llm_config:
             llm_params.update(llm_config)
 
@@ -139,7 +139,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Message Building and Processing
     #############################
 
-    def _build_message_sequence(self, prompt, system_prompt= None) :
+    def _build_message_sequence(self, prompt, system_prompt=None):
         """
         Build a sequence of messages for the conversation with the LLM.
 
@@ -174,7 +174,7 @@ class BaseAgent(AssistantAgent, ABC):
         # Fall back to string representation
         return str(response)
 
-    def _parse_tool_arguments(self, tool_args: Any) :
+    def _parse_tool_arguments(self, tool_args: Any):
         """
         Parse tool arguments into a dictionary format that can be passed to a tool.
         This handles various formats that might be returned by the LLM.
@@ -456,7 +456,7 @@ class BaseAgent(AssistantAgent, ABC):
         )
         return summary
 
-    async def _process_tool_calls(self, tool_calls) :
+    async def _process_tool_calls(self, tool_calls):
         """
         Process a list of tool calls and return their results.
 
@@ -499,7 +499,7 @@ class BaseAgent(AssistantAgent, ABC):
     # Public API Methods
     #############################
 
-    def process_with_tools(self, prompt, system_prompt= None) :
+    def process_with_tools(self, prompt, system_prompt=None):
         """
         Process a prompt with the LLM, supporting tool calling.
         This method provides the core tool calling functionality that specific agents can build upon.
@@ -526,7 +526,7 @@ class BaseAgent(AssistantAgent, ABC):
             print(f"Error details: {error_details}")
             return f"Error processing with LLM: {str(e)}"
 
-    async def process_with_tools_async(self, prompt, system_prompt= None) -> str:
+    async def process_with_tools_async(self, prompt, system_prompt=None) -> str:
         """
         Async version of process_with_tools - for use when already in an event loop.
 

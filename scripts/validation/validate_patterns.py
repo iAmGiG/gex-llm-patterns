@@ -15,25 +15,25 @@ Features:
 - Generates comprehensive validation reports
 """
 
+from src.cache.unified_cache import UnifiedCacheManager
+from src.utils.date_utils import parse_date_string, is_business_day
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.analysis.pattern_library import PatternLibrary
+import logging
+from typing import Dict, List, Optional
+import json
+import yaml
+from pathlib import Path
+from datetime import datetime, timedelta
+import pandas as pd
+import sqlite3
 import sys
 import os
 # Add project root to Python path
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+project_root = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, project_root)
 
-import sqlite3
-import pandas as pd
-from datetime import datetime, timedelta
-from pathlib import Path
-import yaml
-import json
-from typing import Dict, List, Optional
-import logging
-
-from src.analysis.pattern_library import PatternLibrary
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-from src.utils.date_utils import parse_date_string, is_business_day
-from src.cache.unified_cache import UnifiedCacheManager
 
 # Try to use AutoGen tools for live data
 try:
@@ -113,12 +113,18 @@ class PatternLibraryValidator:
         """Validate pattern detection on known historical events using live data."""
         validation_events = [
             # Known historical events with expected patterns
-            {"date": "2021-01-27", "symbol": "GME", "pattern": "gamma_squeeze", "verified": True},
-            {"date": "2021-01-28", "symbol": "GME", "pattern": "short_squeeze", "verified": True},
-            {"date": "2018-02-05", "symbol": "SPY", "pattern": "liquidity_vacuum", "verified": True},
-            {"date": "2020-02-28", "symbol": "SPY", "pattern": "dealer_trap", "verified": True},
-            {"date": "2024-06-21", "symbol": "SPY", "pattern": "opex_pin", "verified": True},
-            {"date": "2024-08-05", "symbol": "NKY", "pattern": "liquidity_vacuum", "verified": True},
+            {"date": "2021-01-27", "symbol": "GME",
+                "pattern": "gamma_squeeze", "verified": True},
+            {"date": "2021-01-28", "symbol": "GME",
+                "pattern": "short_squeeze", "verified": True},
+            {"date": "2018-02-05", "symbol": "SPY",
+                "pattern": "liquidity_vacuum", "verified": True},
+            {"date": "2020-02-28", "symbol": "SPY",
+                "pattern": "dealer_trap", "verified": True},
+            {"date": "2024-06-21", "symbol": "SPY",
+                "pattern": "opex_pin", "verified": True},
+            {"date": "2024-08-05", "symbol": "NKY",
+                "pattern": "liquidity_vacuum", "verified": True},
         ]
 
         results = []
@@ -131,7 +137,8 @@ class PatternLibraryValidator:
             symbol = event['symbol']
             expected_pattern = event['pattern']
 
-            print(f"\nValidating {date} - {symbol} - Expected: {expected_pattern}")
+            print(
+                f"\nValidating {date} - {symbol} - Expected: {expected_pattern}")
 
             # Get market data for that date
             market_data = self._get_market_data_live(date, symbol)
@@ -151,7 +158,8 @@ class PatternLibraryValidator:
                 continue
 
             # Use pattern matching logic
-            detected_patterns = self._detect_patterns_from_data(market_data, date, symbol)
+            detected_patterns = self._detect_patterns_from_data(
+                market_data, date, symbol)
 
             # Check if expected pattern was detected
             pattern_found = False
@@ -160,14 +168,18 @@ class PatternLibraryValidator:
             for pattern_name, confidence in detected_patterns.items():
                 if expected_pattern.lower() in pattern_name.lower() or pattern_name.lower() in expected_pattern.lower():
                     pattern_found = True
-                    best_match = {'name': pattern_name, 'confidence': confidence}
-                    print(f"  [PASS] Pattern '{pattern_name}' detected with {confidence:.0%} confidence")
+                    best_match = {'name': pattern_name,
+                                  'confidence': confidence}
+                    print(
+                        f"  [PASS] Pattern '{pattern_name}' detected with {confidence:.0%} confidence")
                     break
 
             if not pattern_found:
-                print(f"  [FAIL] Expected pattern '{expected_pattern}' NOT detected")
+                print(
+                    f"  [FAIL] Expected pattern '{expected_pattern}' NOT detected")
                 if detected_patterns:
-                    print(f"  [INFO] Other patterns found: {list(detected_patterns.keys())}")
+                    print(
+                        f"  [INFO] Other patterns found: {list(detected_patterns.keys())}")
 
             result = {
                 'date': date,
@@ -182,11 +194,13 @@ class PatternLibraryValidator:
             self._save_validation_result(result)
 
         # Calculate validation accuracy
-        success_rate = sum(1 for r in results if r['detected']) / len(results) if results else 0
+        success_rate = sum(
+            1 for r in results if r['detected']) / len(results) if results else 0
 
         print("\n" + "=" * 80)
         print(f"VALIDATION SUMMARY")
-        print(f"Success Rate: {success_rate:.0%} ({sum(1 for r in results if r['detected'])}/{len(results)})")
+        print(
+            f"Success Rate: {success_rate:.0%} ({sum(1 for r in results if r['detected'])}/{len(results)})")
         print("=" * 80)
 
         return {
@@ -218,15 +232,18 @@ class PatternLibraryValidator:
                     options_data = fetch_options_data(symbol, date)
                     if options_data is not None and not options_data.empty:
                         market_data['options_data'] = options_data
-                        print(f"  [PASS] Options data: {len(options_data)} contracts")
+                        print(
+                            f"  [PASS] Options data: {len(options_data)} contracts")
 
                     # Get GEX data
                     gex_data = calculate_gamma_exposure(symbol, date)
                     if gex_data:
                         market_data['gex_metrics'] = gex_data
                         market_data['net_gex'] = gex_data.get('net_gex', 0)
-                        market_data['spot_price'] = gex_data.get('spot_price', 0)
-                        print(f"  [PASS] GEX data: Net GEX ${gex_data.get('net_gex', 0):,.0f}")
+                        market_data['spot_price'] = gex_data.get(
+                            'spot_price', 0)
+                        print(
+                            f"  [PASS] GEX data: Net GEX ${gex_data.get('net_gex', 0):,.0f}")
 
                     # Get market data
                     price_data = fetch_market_data(symbol, date)
@@ -240,12 +257,15 @@ class PatternLibraryValidator:
             # If we have minimal data, try the agent's method
             if not market_data.get('gex_metrics'):
                 try:
-                    agent_data = self.market_agent._fetch_gex_data(date, symbol)
+                    agent_data = self.market_agent._fetch_gex_data(
+                        date, symbol)
                     if agent_data:
                         market_data['gex_metrics'] = agent_data
                         market_data['net_gex'] = agent_data.get('net_gex', 0)
-                        market_data['spot_price'] = agent_data.get('spot_price', 0)
-                        print(f"  [PASS] Agent GEX data: ${agent_data.get('net_gex', 0):,.0f}")
+                        market_data['spot_price'] = agent_data.get(
+                            'spot_price', 0)
+                        print(
+                            f"  [PASS] Agent GEX data: ${agent_data.get('net_gex', 0):,.0f}")
                 except Exception as e:
                     logger.warning(f"Agent data fetch failed: {e}")
 
@@ -288,7 +308,8 @@ class PatternLibraryValidator:
 
             # Gamma Squeeze Detection
             if net_gex < -1e9:  # Negative GEX > $1B
-                confidence = min(0.9, abs(net_gex) / 5e9)  # Scale with magnitude
+                # Scale with magnitude
+                confidence = min(0.9, abs(net_gex) / 5e9)
                 detected['gamma_squeeze'] = confidence
 
             # Short Squeeze Detection (heuristic based on extreme moves)
@@ -322,7 +343,8 @@ class PatternLibraryValidator:
             date = datetime.strptime(date_str, '%Y-%m-%d')
             # Third Friday logic
             first_day = date.replace(day=1)
-            first_friday = first_day + timedelta(days=(4 - first_day.weekday()) % 7)
+            first_friday = first_day + \
+                timedelta(days=(4 - first_day.weekday()) % 7)
             third_friday = first_friday + timedelta(weeks=2)
 
             # Check if within OPEX week
@@ -388,12 +410,14 @@ class PatternLibraryValidator:
                 pattern = self.pattern_library.patterns[pattern_name]
 
                 # Calculate actual success rate
-                actual_success_rate = performance['successful'] / performance['total']
+                actual_success_rate = performance['successful'] / \
+                    performance['total']
                 old_rate = pattern.success_metrics.success_rate
 
                 print(f"\n{pattern_name}:")
                 print(f"  Old Success Rate: {old_rate:.0%}")
-                print(f"  Actual Success Rate: {actual_success_rate:.0%} ({performance['successful']}/{performance['total']})")
+                print(
+                    f"  Actual Success Rate: {actual_success_rate:.0%} ({performance['successful']}/{performance['total']})")
 
                 # Update the pattern
                 pattern.success_metrics.success_rate = actual_success_rate
@@ -490,11 +514,13 @@ def test_validation_system():
         print(f"   Spot Price: ${market_data.get('spot_price', 0):.2f}")
 
         # Test pattern detection
-        patterns = validator._detect_patterns_from_data(market_data, "2021-01-27", "GME")
+        patterns = validator._detect_patterns_from_data(
+            market_data, "2021-01-27", "GME")
         print(f"   Detected patterns: {list(patterns.keys())}")
 
         if 'gamma_squeeze' in patterns:
-            print(f"[PASS] Gamma squeeze detected with {patterns['gamma_squeeze']:.0%} confidence")
+            print(
+                f"[PASS] Gamma squeeze detected with {patterns['gamma_squeeze']:.0%} confidence")
         else:
             print("[FAIL] Gamma squeeze not detected")
     else:
@@ -542,7 +568,8 @@ def test_validation_system():
         }
 
         matches = validator.pattern_library.match_patterns(mock_market_data)
-        print(f"[PASS] Pattern matching working, found {len(matches)} potential matches")
+        print(
+            f"[PASS] Pattern matching working, found {len(matches)} potential matches")
     except Exception as e:
         print(f"[FAIL] Pattern library test failed: {e}")
 

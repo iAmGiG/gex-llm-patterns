@@ -29,6 +29,11 @@ Cost Savings:
 Related: Issue #112 - OpenAI Batch API for cost optimization
 """
 
+from src.validation.data_obfuscation import DataObfuscator
+from src.cache.unified_cache import UnifiedCacheManager
+from src.validation.regime_classifier import RegimeClassifier
+from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
+from src.validation.batch_regime_validator import BatchRegimeValidator
 import argparse
 import sys
 import logging
@@ -40,11 +45,6 @@ from datetime import datetime
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.validation.batch_regime_validator import BatchRegimeValidator
-from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
-from src.validation.regime_classifier import RegimeClassifier
-from src.cache.unified_cache import UnifiedCacheManager
-from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 
@@ -98,18 +98,22 @@ def prepare_windows(
     logger.info(f"Found {len(all_trading_days)} total trading days in cache")
 
     # Filter to potential window ends (must be within validation range)
-    potential_window_ends = [d for d in all_trading_days if start_date <= d <= end_date]
-    logger.info(f"Can create {len(potential_window_ends)} potential windows in range {start_date} to {end_date}")
+    potential_window_ends = [
+        d for d in all_trading_days if start_date <= d <= end_date]
+    logger.info(
+        f"Can create {len(potential_window_ends)} potential windows in range {start_date} to {end_date}")
 
     # Sample
     if sample_every_n > 1:
         potential_window_ends = potential_window_ends[::sample_every_n]
-        logger.info(f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
+        logger.info(
+            f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
 
     # Fetch GEX for each window
     windows = []
     for i, end_date_window in enumerate(potential_window_ends):
-        logger.info(f"Window {i+1}/{len(potential_window_ends)}: {end_date_window}")
+        logger.info(
+            f"Window {i+1}/{len(potential_window_ends)}: {end_date_window}")
 
         result = gex_fetcher.get_sequential_gex(
             symbol=symbol,
@@ -117,13 +121,15 @@ def prepare_windows(
         )
 
         if result is None:
-            logger.warning(f"Could not fetch window for {end_date_window} - skipping")
+            logger.warning(
+                f"Could not fetch window for {end_date_window} - skipping")
             continue
 
         gex_sequence = result['gex_sequence']
 
         if len(gex_sequence) != window_size:
-            logger.warning(f"Window has {len(gex_sequence)} days, expected {window_size} - skipping")
+            logger.warning(
+                f"Window has {len(gex_sequence)} days, expected {window_size} - skipping")
             continue
 
         # CRITICAL: Apply obfuscation to GEX sequence (required for research validity)
@@ -144,7 +150,8 @@ def prepare_windows(
 
         windows.append({
             "end_date": end_date_window,
-            "gex_sequence": gex_sequence_obfuscated,  # Full obfuscated sequence (not just values)
+            # Full obfuscated sequence (not just values)
+            "gex_sequence": gex_sequence_obfuscated,
             "start_date": gex_sequence[0]['date'] if gex_sequence else None
         })
 
@@ -173,7 +180,8 @@ def submit_batch_job(
     logger.info(f"Submitting batch job: {start_date} to {end_date}")
 
     # Prepare windows
-    windows = prepare_windows(start_date, end_date, symbol, sample_every_n=sample_every_n)
+    windows = prepare_windows(start_date, end_date,
+                              symbol, sample_every_n=sample_every_n)
 
     if not windows:
         logger.error("No valid windows prepared - cannot submit batch")
@@ -192,14 +200,17 @@ def submit_batch_job(
     logger.info(f"✅ Batch submitted successfully!")
     logger.info(f"Batch ID: {batch_id}")
     logger.info(f"Windows: {len(windows)}")
-    logger.info(f"Expected cost: ${len(windows) * 0.03 * 0.5:.2f} (50% of sync API)")
+    logger.info(
+        f"Expected cost: ${len(windows) * 0.03 * 0.5:.2f} (50% of sync API)")
     logger.info(f"Expected time: 1-2 hours")
     logger.info(f"")
     logger.info(f"To poll status:")
-    logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --poll")
+    logger.info(
+        f"  python validate_regime_windows_batch.py --batch-id {batch_id} --poll")
     logger.info(f"")
     logger.info(f"To retrieve results (after completion):")
-    logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
+    logger.info(
+        f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
 
     return batch_id
 
@@ -227,11 +238,13 @@ def poll_batch_job(batch_id: str, poll_interval: int = 60) -> Dict:
     if status['status'] == 'completed':
         logger.info(f"✅ Batch completed!")
         logger.info(f"Output file ID: {status['output_file_id']}")
-        logger.info(f"Elapsed time: {status['elapsed_seconds']/60:.1f} minutes")
+        logger.info(
+            f"Elapsed time: {status['elapsed_seconds']/60:.1f} minutes")
         logger.info(f"Request counts: {status['request_counts']}")
         logger.info(f"")
         logger.info(f"To retrieve results:")
-        logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
+        logger.info(
+            f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
     else:
         logger.error(f"❌ Batch failed or timed out: {status['status']}")
 
@@ -258,7 +271,8 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
         return []
 
     # Save as YAML
-    output_file = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / f"phase_batch_{batch_id}.yaml"
+    output_file = PROJECT_ROOT / "reports" / "validation" / \
+        "regime_windows" / f"phase_batch_{batch_id}.yaml"
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     validator.save_results_yaml(results, [], output_file, batch_id)
@@ -270,8 +284,10 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
     detected = sum(1 for r in results if r.get('regime_detected', False))
     logger.info(f"")
     logger.info(f"Summary:")
-    logger.info(f"  Detection rate: {detected}/{len(results)} ({100*detected/len(results):.1f}%)")
-    logger.info(f"  Avg confidence: {sum(r.get('confidence', 0) for r in results)/len(results):.0f}%")
+    logger.info(
+        f"  Detection rate: {detected}/{len(results)} ({100*detected/len(results):.1f}%)")
+    logger.info(
+        f"  Avg confidence: {sum(r.get('confidence', 0) for r in results)/len(results):.0f}%")
 
     return results
 
@@ -304,16 +320,24 @@ Cost savings: 50% reduction ($0.15 vs $0.30 per 1M tokens)
         """
     )
 
-    parser.add_argument("--start-date", type=str, help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--start-date", type=str,
+                        help="Start date (YYYY-MM-DD)")
     parser.add_argument("--end-date", type=str, help="End date (YYYY-MM-DD)")
-    parser.add_argument("--symbol", type=str, default="SPY", help="Ticker symbol (default: SPY)")
-    parser.add_argument("--sample-every-n", type=int, default=1, help="Sample every N days (default: 1)")
+    parser.add_argument("--symbol", type=str, default="SPY",
+                        help="Ticker symbol (default: SPY)")
+    parser.add_argument("--sample-every-n", type=int, default=1,
+                        help="Sample every N days (default: 1)")
 
-    parser.add_argument("--submit", action="store_true", help="Prepare and submit batch job")
-    parser.add_argument("--batch-id", type=str, help="Batch ID for polling/retrieval")
-    parser.add_argument("--poll", action="store_true", help="Poll batch status")
-    parser.add_argument("--poll-interval", type=int, default=60, help="Poll interval in seconds (default: 60)")
-    parser.add_argument("--retrieve", action="store_true", help="Retrieve batch results")
+    parser.add_argument("--submit", action="store_true",
+                        help="Prepare and submit batch job")
+    parser.add_argument("--batch-id", type=str,
+                        help="Batch ID for polling/retrieval")
+    parser.add_argument("--poll", action="store_true",
+                        help="Poll batch status")
+    parser.add_argument("--poll-interval", type=int, default=60,
+                        help="Poll interval in seconds (default: 60)")
+    parser.add_argument("--retrieve", action="store_true",
+                        help="Retrieve batch results")
 
     args = parser.parse_args()
 
@@ -326,7 +350,8 @@ Cost savings: 50% reduction ($0.15 vs $0.30 per 1M tokens)
     if args.submit:
         if not args.start_date or not args.end_date:
             parser.error("--submit requires --start-date and --end-date")
-        submit_batch_job(args.start_date, args.end_date, args.symbol, args.sample_every_n)
+        submit_batch_job(args.start_date, args.end_date,
+                         args.symbol, args.sample_every_n)
 
     elif args.poll:
         if not args.batch_id:

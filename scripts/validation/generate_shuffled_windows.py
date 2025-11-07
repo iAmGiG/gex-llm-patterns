@@ -26,6 +26,7 @@ import yaml
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 DATA_CACHE = PROJECT_ROOT / ".cache"
 
+
 def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict:
     """
     Fetch GEX sequence for a specific window end date.
@@ -43,7 +44,8 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
 
     # Get end date as datetime
     end_dt = datetime.strptime(end_date, "%Y-%m-%d")
-    start_dt = end_dt - timedelta(days=window_size * 1.5)  # Extra margin for weekends/holidays
+    # Extra margin for weekends/holidays
+    start_dt = end_dt - timedelta(days=window_size * 1.5)
 
     # Fetch GEX data
     query = """
@@ -54,7 +56,8 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime(
+        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -215,7 +218,8 @@ def main():
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2a_shuffled"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / \
+        "regime_windows" / "phase2a_shuffled"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "shuffled_windows.yaml"

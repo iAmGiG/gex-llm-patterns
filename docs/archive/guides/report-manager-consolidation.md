@@ -7,6 +7,7 @@
 ## Problem
 
 Three separate report manager implementations existed with overlapping functionality:
+
 - `src/utils/reports_manager.py` (363 lines) - JSON format, original implementation
 - `src/utils/yaml_reports_manager.py` (406 lines) - YAML format with obfuscation
 - `src/utils/unified_reports_manager.py` (583 lines) - Modern unified structure
@@ -16,6 +17,7 @@ Three separate report manager implementations existed with overlapping functiona
 ## Root Cause
 
 The report managers evolved organically over time:
+
 1. **Phase 1**: `reports_manager.py` - Original JSON-based implementation
 2. **Phase 2**: `yaml_reports_manager.py` - Added for token-efficient YAML format and obfuscation
 3. **Phase 3**: `unified_reports_manager.py` - Created to unify structure with `experiments/`, `validation/`, `archive/` directories
@@ -68,6 +70,7 @@ These aliases ensure **zero breaking changes** - all existing code continues to 
 ### Import Paths Updated (4 files)
 
 1. ✅ [src/tools/autogen_tools.py:69](../../src/tools/autogen_tools.py#L69)
+
    ```python
    # BEFORE:
    from src.utils.reports_manager import reports_manager
@@ -77,6 +80,7 @@ These aliases ensure **zero breaking changes** - all existing code continues to 
    ```
 
 2. ✅ [scripts/experiments/orchestrate_experiment_yaml.py:18,116](../../scripts/experiments/orchestrate_experiment_yaml.py#L18)
+
    ```python
    # BEFORE:
    from src.utils.yaml_reports_manager import yaml_reports_manager
@@ -88,6 +92,7 @@ These aliases ensure **zero breaking changes** - all existing code continues to 
    ```
 
 3. ✅ [scripts/validation/production_cache_test.py:7](../../scripts/validation/production_cache_test.py#L7)
+
    ```python
    # BEFORE:
    from utils.reports_manager import reports_manager
@@ -109,19 +114,24 @@ These aliases ensure **zero breaking changes** - all existing code continues to 
 ## Benefits
 
 ### 1. Single Source of Truth
+
 All report management logic now lives in one place, making it easier to:
+
 - Understand the codebase
 - Fix bugs (only one place to fix)
 - Add features (only one place to implement)
 
 ### 2. Zero Breaking Changes
+
 Existing code continues to work through backward compatibility:
+
 - Global aliases redirect old imports to unified manager
 - All old methods preserved via wrappers
 - No production code needs immediate changes
 
 ### 3. Cleaner Directory Structure
-```
+
+```bash
 reports/
 ├── experiments/        # LLM experiments and pattern detection
 │   ├── gamma_analysis/
@@ -133,6 +143,7 @@ reports/
 ```
 
 ### 4. All Features Preserved
+
 - ✅ JSON format support (legacy)
 - ✅ YAML format support (token-efficient)
 - ✅ Data obfuscation integration
@@ -141,7 +152,9 @@ reports/
 - ✅ Auto-archiving of old reports
 
 ### 5. Reduced Code Duplication
+
 **~400 lines of duplicate code eliminated** through consolidation, reducing:
+
 - Maintenance burden
 - Bug surface area
 - Onboarding complexity for new developers
@@ -149,15 +162,18 @@ reports/
 ## Migration Path
 
 ### For Existing Code
+
 **No changes required** - backward compatibility maintained through aliases.
 
 Legacy imports will continue to work:
+
 ```python
 from src.utils.reports_manager import reports_manager      # Still works
 from src.utils.yaml_reports_manager import yaml_reports_manager  # Still works
 ```
 
 ### For New Code
+
 Use consolidated imports from unified manager:
 
 ```python
@@ -174,6 +190,7 @@ from src.utils.unified_reports_manager import unified_reports
 ### Recommended Usage
 
 **For experiments/pattern detection**:
+
 ```python
 from src.utils.unified_reports_manager import yaml_reports
 
@@ -188,6 +205,7 @@ report_path = yaml_reports.save_experiment_results(
 ```
 
 **For validation/testing**:
+
 ```python
 from src.utils.unified_reports_manager import reports_manager
 
@@ -228,17 +246,20 @@ python scripts/experiments/orchestrate_experiment_yaml.py \
 ## Next Steps
 
 ### Immediate (Done)
+
 - ✅ Update all imports to use unified manager
 - ✅ Add backward compatibility methods
 - ✅ Add deprecation notices to old managers
 - ✅ Verify no breaking changes
 
 ### Short-term (Optional)
+
 - [ ] Monitor for any runtime issues with consolidated imports
 - [ ] Add unit tests for backward compatibility wrappers
 - [ ] Update developer documentation to reference unified manager
 
 ### Long-term (Future)
+
 - [ ] Remove old manager files in next major version (v2.0)
 - [ ] Migrate all code to use unified_reports directly (no aliases)
 - [ ] Consider further consolidation of report types

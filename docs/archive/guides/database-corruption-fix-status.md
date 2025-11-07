@@ -21,11 +21,13 @@
 ## The Bug
 
 ### Symptoms
+
 - Q3 2024: spot_price = 450.0 for ALL dates (should be ~$545-560)
 - Forward returns: 42.77% max, -29.53% min (physically impossible for SPY)
 - Q2 2024: Only 17 days tested instead of ~60 (Apr-May missing)
 
 ### Root Cause
+
 **File**: `src/data_sources/historical_gex_builder.py`, line 522
 **Problem**: Hardcoded fallback to obfuscated price
 
@@ -44,7 +46,8 @@ def get_stock_price(self, symbol, date, options_data):
 **CRITICAL PRINCIPLE VIOLATED**: Separation of Concerns
 
 **Correct Flow**:
-```
+
+```bash
 Real Market Data → Cache (pickle files)
                  ↓
               Database (real spot prices)
@@ -59,7 +62,8 @@ Real Market Data → Cache (pickle files)
 ```
 
 **WRONG (what was happening)**:
-```
+
+```bash
 ??? → Database (450.0 obfuscated) ← WRONG LAYER!
    ↓
 OutcomeCalculator (corrupt forward returns)
@@ -74,6 +78,7 @@ OutcomeCalculator (corrupt forward returns)
 **File**: `src/data_sources/historical_gex_builder.py`, lines 507-552
 
 **FIXED CODE**:
+
 ```python
 def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None):
     """
@@ -125,6 +130,7 @@ def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None):
 ### Testing
 
 **Single Date Test** (July 8, 2024):
+
 ```python
 spot_price = builder.get_stock_price('SPY', '2024-07-08', options_data)
 # Result: $555.60 (via put-call parity)
@@ -133,6 +139,7 @@ spot_price = builder.get_stock_price('SPY', '2024-07-08', options_data)
 ```
 
 **Full Rebuild** (in progress):
+
 - Shell ID: 225b8f
 - Target: SPY 2024-01-01 to 2024-12-31 (262 trading days)
 - Method: Put-call parity estimation (Method 2)
@@ -144,23 +151,27 @@ spot_price = builder.get_stock_price('SPY', '2024-07-08', options_data)
 ## Impact Assessment
 
 ### Q1 2024: ⚠️ NEEDS VERIFICATION
+
 - Database rebuilt Oct 11 with OLD code (before fix)
 - May have obfuscated prices mixed with real prices
 - **Action**: Re-run Q1 validation after clean rebuild completes
 
 ### Q2 2024: ⚠️ INCOMPLETE + POTENTIALLY CORRUPT
+
 - Only 17 days tested (Jun 3-28) instead of ~60 (Apr-Jun)
 - Apr-May data missing from cache
 - June data may have obfuscated prices
 - **Action**: Verify Jun spot prices, collect Apr-May data if possible
 
 ### Q3 2024: ❌ FULLY CORRUPTED
+
 - ALL spot prices were 450.0 (obfuscated)
 - Forward returns calculated using wrong base
 - Reported 42.77% max return (impossible for SPY)
 - **Status**: INVALID - Must re-run with corrected database
 
 ### Q4 2024: 📊 PARTIAL + POTENTIALLY CORRUPT
+
 - Database has 37 dates (Oct-early Nov)
 - Late Nov-Dec data collection in progress
 - May have obfuscated prices
@@ -171,17 +182,21 @@ spot_price = builder.get_stock_price('SPY', '2024-07-08', options_data)
 ## Architectural Lessons
 
 ### 1. Separation of Concerns
+
 **Principle**: "Storage layer must store REAL data, analysis layer applies transformations"
 **Violation**: "Database stored obfuscated prices (permanent corruption)"
 **Fix**: "Obfuscation ONLY at LLM analysis layer (data_obfuscation.py)"
 
 ### 2. Fail-Fast Principle
+
 **Before**: "Fallback to 450.0 when data missing (silent corruption)"
 **After**: "Raise ValueError when cannot get real price (fail loudly)"
 **Benefit**: "Forces data quality issues to surface immediately"
 
 ### 3. Data Lineage
+
 Must maintain clear data flow where each layer has a single responsibility:
+
 - **Storage**: Real market data only
 - **Calculation**: Use real data to compute metrics
 - **Analysis**: Detect patterns from metrics
@@ -192,16 +207,20 @@ Must maintain clear data flow where each layer has a single responsibility:
 ## Next Steps
 
 ### Immediate (In Progress)
+
 1. ✅ Code fix implemented and tested
 2. 🔄 **Clean database rebuild running** (shell 225b8f)
 3. ⏳ Wait for rebuild completion (~3 minutes expected)
 
 ### After Rebuild
+
 4. **Verify Q3 Spot Prices**:
+
    ```sql
    SELECT date, spot_price FROM daily_gex_metrics
    WHERE date BETWEEN '2024-07-08' AND '2024-07-12' AND symbol = 'SPY'
    ```
+
    Expected: ~$545-560 range, **NOT 450.0**
 
 5. **Kill Old Validation Processes**:
@@ -209,6 +228,7 @@ Must maintain clear data flow where each layer has a single responsibility:
    - Reason: All using corrupt database with 450.0 prices
 
 6. **Re-run ALL Quarter Validations**:
+
    ```bash
    # Q1 2024
    python scripts/validation/validate_pattern_taxonomy.py \
@@ -237,9 +257,11 @@ Must maintain clear data flow where each layer has a single responsibility:
    - Make go/no-go decision on strategy development
 
 ### Design Decision Needed (Issue #84)
+
 **Question**: Should validation auto-fetch missing dates?
 
 **Options**:
+
 - **A**: Auto-fetch (user-friendly but unpredictable)
 - **B**: Fail-fast with error (explicit, recommended)
 - **C**: Warn and continue (current behavior, problematic)
@@ -260,19 +282,23 @@ Must maintain clear data flow where each layer has a single responsibility:
 ## Files Modified
 
 **Code**:
+
 - ✅ `src/data_sources/historical_gex_builder.py` (get_stock_price method, lines 507-552)
 
 **Documentation**:
+
 - ✅ `docs/guides/validation-data-pipeline-fix.md` (comprehensive postmortem)
 - ✅ `reports/DATABASE_CORRUPTION_FIX_STATUS.md` (this file)
 - ✅ `.claude/cross_chat_sync.yaml` (updated with fix status)
 
 **Database**:
+
 - ❌ `.cache/gex_database.db` (CORRUPT - backed up and removed)
 - 🔄 `.cache/gex_database.db` (rebuilding with real prices)
 - ✅ `.cache/gex_database_CORRUPT_450_backup_20251011_212534.db` (backup)
 
 **Validation Reports** (DEPRECATED - need regeneration):
+
 - ❌ `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q2.yaml` (incomplete)
 - ❌ `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q3.yaml` (corrupted)
 
@@ -281,18 +307,21 @@ Must maintain clear data flow where each layer has a single responsibility:
 ## Success Criteria
 
 ### Database Rebuild
+
 - ✅ No 450.0 spot prices in any quarter
 - ✅ Q3 spot prices in $540-565 range
 - ✅ All dates have plausible prices
 - ✅ Put-call parity estimation working
 
 ### Validation Results
+
 - ✅ Q3 max returns < 5% (not 42.77%)
 - ✅ All returns physically plausible
 - ✅ Forward return distribution normal
 - ✅ No more "impossible" daily moves
 
 ### Pattern Analysis
+
 - Compare Q1-Q4 results with REAL data
 - Determine if pattern produces tradeable volatility
 - Make go/no-go decision on strategy development

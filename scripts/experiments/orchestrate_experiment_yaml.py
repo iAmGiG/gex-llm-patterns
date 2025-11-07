@@ -4,6 +4,9 @@ Enhanced Experiment Orchestrator with YAML Reporting
 Includes data obfuscation, test metadata, and structured output.
 """
 
+from src.validation.data_obfuscation import DataObfuscator
+from src.utils.unified_reports_manager import yaml_reports
+from agents.market_mechanics_agent import MarketMechanicsAgent
 import sys
 from pathlib import Path
 import logging
@@ -14,16 +17,14 @@ import yaml
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agents.market_mechanics_agent import MarketMechanicsAgent
-from src.utils.unified_reports_manager import yaml_reports
-from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 
 
 def main():
     """Enhanced orchestration with YAML reporting and obfuscation."""
-    parser = argparse.ArgumentParser(description="Enhanced Experiment Orchestrator")
+    parser = argparse.ArgumentParser(
+        description="Enhanced Experiment Orchestrator")
     parser.add_argument("--experiment", type=str, required=True,
                         help="Natural language experiment description")
     parser.add_argument("--symbol", type=str, default="SPY",
@@ -148,7 +149,8 @@ def main():
             print(f"total_gamma: ${gex.get('total_gamma', 0):,.0f}")
             print(f"spot_price: ${gex.get('spot_price', 0):.2f}")
             if gex.get('gamma_concentration'):
-                print(f"gamma_concentration: {gex['gamma_concentration']*100:.1f}%")
+                print(
+                    f"gamma_concentration: {gex['gamma_concentration']*100:.1f}%")
 
         print("\n--- Trading Signal ---")
         signal = structured_results['actionable_signal']

@@ -29,10 +29,12 @@ Current paper shows patterns materialize with 91.2% accuracy. This analysis prov
 **Location**: `.cache/consolidated_historical.db`
 
 **Required Tables**:
+
 - `pattern_validation_results` - Historical GEX and pattern data
 - `historical_pattern_performance` - Performance metrics
 
 **Required Fields**:
+
 1. **GEX Time Series** (`net_gex_values`):
    - 242 trading days (full year 2024)
    - Daily net gamma exposure values
@@ -51,6 +53,7 @@ Current paper shows patterns materialize with 91.2% accuracy. This analysis prov
 ### 2.2 Data Access Methods
 
 **Option A: Direct Database Query**
+
 ```python
 import sqlite3
 import pandas as pd
@@ -66,6 +69,7 @@ data = pd.read_sql(query, conn)
 ```
 
 **Option B: Cache Manager API**
+
 ```python
 from src.cache.gex_cache_manager import GEXCacheManager
 
@@ -74,6 +78,7 @@ gex_data = cache.get_time_series('SPY', start='2024-01-01', end='2024-12-31')
 ```
 
 **Option C: Outcome Calculator Integration**
+
 ```python
 from src.validation.outcome_calculator import OutcomeCalculator
 
@@ -90,12 +95,14 @@ forward_returns = outcome_calc.calculate_forward_returns('SPY', dates, horizons=
 **File**: `scripts/statistical_validation/prepare_leadlag_data.py`
 
 **Tasks**:
+
 1. Extract GEX and price time series
 2. Calculate forward returns (T+1, T+3)
 3. Classify days into GEX regimes
 4. Calculate absolute returns as volatility proxy
 
 **Code Structure**:
+
 ```python
 import pandas as pd
 import numpy as np
@@ -157,7 +164,8 @@ def validate_data(data: pd.DataFrame) -> dict:
 ```
 
 **Expected Data Structure**:
-```
+
+```bash
 date        | net_gex    | close  | fwd_return | fwd_abs_return | gex_regime | is_negative_gex
 ------------|------------|--------|------------|----------------|------------|----------------
 2024-01-02  | -3.2e9     | 475.23 | 0.0045     | 0.0045         | Negative   | 1
@@ -172,12 +180,14 @@ date        | net_gex    | close  | fwd_return | fwd_abs_return | gex_regime | i
 **File**: `scripts/statistical_validation/calculate_regime_stats.py`
 
 **Tasks**:
+
 1. Group data by GEX regime
 2. Calculate mean and std of forward volatility per regime
 3. Compute sample sizes per regime
 4. Calculate rolling forward volatility
 
 **Code Structure**:
+
 ```python
 def calculate_regime_statistics(data: pd.DataFrame) -> pd.DataFrame:
     """
@@ -227,7 +237,8 @@ def calculate_volatility_amplification(
 ```
 
 **Expected Output**:
-```
+
+```bash
                  fwd_abs_return_mean  fwd_abs_return_std  fwd_abs_return_count
 gex_regime
 Negative                    0.0068                0.0052                    87
@@ -244,12 +255,14 @@ Amplification: Negative = 0.68%, Positive = 0.31% → 2.19x higher
 **File**: `scripts/statistical_validation/test_regime_differences.py`
 
 **Tasks**:
+
 1. Run t-test: Negative vs Positive regime
 2. Run t-test: Negative vs Neutral regime
 3. Calculate effect sizes (Cohen's d)
 4. Optional: Run ANOVA across all three regimes
 
 **Code Structure**:
+
 ```python
 from scipy import stats
 
@@ -302,6 +315,7 @@ def test_regime_differences(data: pd.DataFrame) -> dict:
 ```
 
 **Expected Results**:
+
 - Negative vs Positive: t = 5-8, p < 0.001, Cohen's d = 0.8-1.2 (large effect)
 - Negative vs Neutral: t = 3-5, p < 0.01, Cohen's d = 0.5-0.8 (medium effect)
 - ANOVA: F = 20-30, p < 0.001
@@ -313,12 +327,14 @@ def test_regime_differences(data: pd.DataFrame) -> dict:
 **File**: `scripts/statistical_validation/regression_analysis.py`
 
 **Tasks**:
+
 1. Simple regression: Vol ~ β₀ + β₁(Negative_GEX) + ε
 2. Multiple regression: Vol ~ β₀ + β₁(GEX_Level) + β₂(VIX) + ε
 3. Calculate R² and adjusted R²
 4. Test for heteroskedasticity
 
 **Code Structure**:
+
 ```python
 import statsmodels.api as sm
 
@@ -358,6 +374,7 @@ def run_regression_analysis(data: pd.DataFrame) -> dict:
 ```
 
 **Expected Regression Output**:
+
 ```
 Binary Model:
   Vol = 0.0031 + 0.0037 * (Negative_GEX)
@@ -377,12 +394,14 @@ Continuous Model:
 **File**: `scripts/statistical_validation/create_leadlag_plots.py`
 
 **Tasks**:
+
 1. Scatter plot: GEX (x-axis) vs T+1 Return (y-axis)
 2. Add LOWESS smoothing line
 3. Color-code by regime
 4. Save to `docs/papers/paper1/figures/`
 
 **Code Structure**:
+
 ```python
 import matplotlib.pyplot as plt
 from statsmodels.nonparametric.smoothers_lowess import lowess
@@ -432,12 +451,14 @@ def create_leadlag_scatterplot(
 **File**: `scripts/statistical_validation/generate_leadlag_table.py`
 
 **Tasks**:
+
 1. Format regime statistics as LaTeX table
 2. Add statistical significance markers
 3. Include sample sizes and confidence intervals
 4. Save to `docs/papers/paper1/tables/`
 
 **Code Structure**:
+
 ```python
 def generate_leadlag_table(
     regime_stats: pd.DataFrame,
@@ -502,6 +523,7 @@ Negative vs. Positive & +''' + f"{diff:.2f}\\%{sig_marker}" + r''' & & \\
 ```
 
 **Expected LaTeX Output**:
+
 ```latex
 \begin{table}[htbp]
 \centering
@@ -531,6 +553,7 @@ Negative vs. Positive & +0.37\%*** & & \\
 **Location**: Add new subsection to Section V.E (Prediction Materialization)
 
 **Text to Add**:
+
 ```markdown
 ### 5.E.3 Volatility Amplification by GEX Regime
 
@@ -580,7 +603,7 @@ effect in negative gamma regimes.
 
 ## 4. File Structure
 
-```
+```bash
 scripts/statistical_validation/
 ├── prepare_leadlag_data.py           # Step 1: Data prep and regime classification
 ├── calculate_regime_stats.py         # Step 2: Regime statistics
@@ -607,6 +630,7 @@ reports/statistical_validation/
 ## 5. Dependencies
 
 ### Required Python Packages
+
 ```python
 import pandas as pd
 import numpy as np
@@ -619,6 +643,7 @@ from pathlib import Path
 ```
 
 ### Existing Codebase Components
+
 - `src.cache.gex_cache_manager.GEXCacheManager` - Historical GEX data
 - `src.validation.outcome_calculator.OutcomeCalculator` - Forward returns
 - `src.utils.date_utils` - Date handling
@@ -628,18 +653,21 @@ from pathlib import Path
 ## 6. Validation Checklist
 
 **Data Quality**:
+
 - [ ] 242 days of continuous data (2024)
 - [ ] Forward returns calculated correctly (shift=-1)
 - [ ] No lookahead bias in volatility calculations
 - [ ] Regime thresholds align with domain knowledge ($2B)
 
 **Statistical Rigor**:
+
 - [ ] Sufficient observations per regime (N > 30 minimum)
 - [ ] T-test assumptions met (normality or large N)
 - [ ] Effect sizes calculated (Cohen's d)
 - [ ] Multiple testing correction if needed (Bonferroni)
 
 **Results Quality**:
+
 - [ ] Negative GEX shows ~2x volatility amplification
 - [ ] P-values < 0.001 for main comparison
 - [ ] Monotonic relationship across regimes
@@ -650,6 +678,7 @@ from pathlib import Path
 ## 7. Expected Results Summary
 
 **Regime Statistics**:
+
 | GEX Regime | Mean Vol | Observations | % of Sample |
 |------------|----------|--------------|-------------|
 | Negative   | 0.68%    | 87           | 36%         |
@@ -657,12 +686,14 @@ from pathlib import Path
 | Positive   | 0.31%    | 52           | 21%         |
 
 **Statistical Tests**:
+
 | Comparison          | t-statistic | p-value  | Cohen's d | Amplification |
 |---------------------|-------------|----------|-----------|---------------|
 | Negative vs Positive| 6.5         | < 0.001  | 0.95      | 2.19x         |
 | Negative vs Neutral | 4.2         | < 0.001  | 0.62      | 1.62x         |
 
 **Regression Results**:
+
 - Binary model: R² ≈ 0.15, β₁ = +0.37% (p < 0.001)
 - Continuous model: R² ≈ 0.18, β₁ = -0.085% per $1B (p < 0.001)
 
@@ -671,19 +702,25 @@ from pathlib import Path
 ## 8. Troubleshooting
 
 ### Issue: Weak volatility differences between regimes
+
 **Solution**:
+
 1. Check if using absolute returns vs squared returns
 2. Try different threshold values (-$1.5B, -$2.5B)
 3. Verify no data quality issues (outliers, errors)
 
 ### Issue: Non-normal distributions violate t-test assumptions
+
 **Solution**:
+
 1. Use Mann-Whitney U test (non-parametric alternative)
 2. Bootstrap confidence intervals
 3. Log-transform volatility measures
 
 ### Issue: Insufficient observations in positive regime
+
 **Solution**:
+
 1. Lower positive threshold to +$1.5B
 2. Combine neutral and positive into "non-negative"
 3. Focus on negative vs non-negative comparison
@@ -693,12 +730,14 @@ from pathlib import Path
 ## 9. Extensions and Robustness Checks
 
 ### Robustness Tests
+
 1. **Alternative Thresholds**: Test -$1.5B, -$2.5B, -$3B cutoffs
 2. **Alternative Volatility Measures**: Use T+3 volatility, intraday range
 3. **Subsample Analysis**: Q1 vs Q4, high VIX vs low VIX days
 4. **Non-linear Effects**: Quartile-based analysis instead of binary regimes
 
 ### Advanced Analyses
+
 1. **Quantile Regression**: Test effect across volatility distribution
 2. **Regime-Switching Models**: Endogenous regime detection
 3. **Conditional Correlation**: GEX-volatility correlation by VIX level
@@ -709,6 +748,7 @@ from pathlib import Path
 ## 10. Connection to Issue #99
 
 **Complementary Evidence**:
+
 - **Issue #99 (Granger)**: Proves GEX **predicts** volatility (causality direction)
 - **Issue #100 (Lead-Lag)**: Proves GEX **amplifies** volatility (economic magnitude)
 
@@ -736,13 +776,16 @@ from pathlib import Path
 ## 12. References
 
 **Lead-Lag Analysis in Finance**:
+
 - Hasbrouck, J. (1995). "One Security, Many Markets"
 - Chordia, T., & Swaminathan, B. (2000). "Trading Volume and Cross-Autocorrelations"
 
 **Dealer Gamma Hedging**:
+
 - Bollen, N. P., & Whaley, R. E. (2004). "Does Net Buying Pressure Affect Volatility?"
 - Gârleanu, N., Pedersen, L. H., & Poteshman, A. M. (2009). "Demand-Based Option Pricing"
 
 **Statistical Methods**:
+
 - Cohen, J. (1988). "Statistical Power Analysis", Chapter 2 (Effect Sizes)
 - Wooldridge, J. M. (2015). "Introductory Econometrics", Chapter 7

@@ -8,6 +8,8 @@ The Sequential GEX validation requires cache parquet files, but we have
 Issue: #111 (Test 4)
 """
 
+import logging
+from src.cache.unified_cache import UnifiedCacheManager
 import sys
 import sqlite3
 from pathlib import Path
@@ -17,8 +19,6 @@ import pandas as pd
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.cache.unified_cache import UnifiedCacheManager
-import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

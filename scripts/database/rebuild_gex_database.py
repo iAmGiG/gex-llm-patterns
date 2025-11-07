@@ -19,6 +19,10 @@ Usage:
     python scripts/database/rebuild_gex_database.py --start-date 2024-01-01 --end-date 2024-12-31 --symbol SPY
 """
 
+from src.utils.date_utils import date_range_trading_days
+from src.gex.gex_calculator import GEXCalculator
+from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 import sys
 from pathlib import Path
 import logging
@@ -30,10 +34,6 @@ import sqlite3
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
-from src.cache.unified_cache import UnifiedCacheManager
-from src.gex.gex_calculator import GEXCalculator
-from src.utils.date_utils import date_range_trading_days
 
 logging.basicConfig(
     level=logging.INFO,
@@ -61,7 +61,8 @@ def backup_database(db_path: Path) -> Path:
     backup_dir = db_path.parent / 'backups'
     backup_dir.mkdir(exist_ok=True)
 
-    backup_path = backup_dir / f"{db_path.stem}_backup_{timestamp}{db_path.suffix}"
+    backup_path = backup_dir / \
+        f"{db_path.stem}_backup_{timestamp}{db_path.suffix}"
 
     logger.info(f"Backing up database...")
     logger.info(f"  Source: {db_path}")
@@ -74,7 +75,8 @@ def backup_database(db_path: Path) -> Path:
         original_size = db_path.stat().st_size
         backup_size = backup_path.stat().st_size
         if original_size == backup_size:
-            logger.info(f"✅ Backup successful ({backup_size / 1024 / 1024:.1f} MB)")
+            logger.info(
+                f"✅ Backup successful ({backup_size / 1024 / 1024:.1f} MB)")
             return backup_path
         else:
             logger.error("❌ Backup size mismatch!")
@@ -97,7 +99,8 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
     Returns:
         Validation report dict
     """
-    logger.info(f"\nValidating rebuilt database ({len(sample_dates)} samples)...")
+    logger.info(
+        f"\nValidating rebuilt database ({len(sample_dates)} samples)...")
 
     conn = sqlite3.connect(db_path)
     gex_calc = GEXCalculator()
@@ -136,7 +139,8 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
             continue
 
         try:
-            fresh_calc = gex_calc.calculate_gex_profile(options_data, spot_price)
+            fresh_calc = gex_calc.calculate_gex_profile(
+                options_data, spot_price)
             fresh_gex = fresh_calc.get('net_gex', 0)
 
             # Check match (within 1%)
@@ -176,7 +180,8 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
         'results': validation_results
     }
 
-    logger.info(f"  Validation: {matches}/{total} matches ({report['match_rate']:.1f}%)")
+    logger.info(
+        f"  Validation: {matches}/{total} matches ({report['match_rate']:.1f}%)")
 
     return report
 
@@ -200,7 +205,8 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
     # Backup existing database
     if db_path.exists():
         if not force:
-            response = input(f"\n⚠️  This will rebuild {db_path}. Continue? (yes/no): ")
+            response = input(
+                f"\n⚠️  This will rebuild {db_path}. Continue? (yes/no): ")
             if response.lower() != 'yes':
                 logger.info("Rebuild cancelled.")
                 return
@@ -224,7 +230,8 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
 
     # Get trading days in range
     trading_days = date_range_trading_days(start_date, end_date)
-    logger.info(f"\nRebuilding {len(trading_days)} trading days ({start_date} to {end_date})")
+    logger.info(
+        f"\nRebuilding {len(trading_days)} trading days ({start_date} to {end_date})")
 
     # Build database
     logger.info(f"\nStarting rebuild...")
@@ -241,17 +248,21 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
         raise
 
     # Validate rebuild
-    sample_dates = trading_days[::max(1, len(trading_days) // 20)]  # Sample ~20 dates
+    sample_dates = trading_days[::max(
+        1, len(trading_days) // 20)]  # Sample ~20 dates
     validation = validate_rebuild(db_path, cache_manager, sample_dates)
 
     if validation['match_rate'] >= 95:
-        logger.info(f"\n✅ REBUILD SUCCESSFUL - {validation['match_rate']:.1f}% validation match")
+        logger.info(
+            f"\n✅ REBUILD SUCCESSFUL - {validation['match_rate']:.1f}% validation match")
     else:
-        logger.warning(f"\n⚠️  REBUILD COMPLETED WITH WARNINGS - {validation['match_rate']:.1f}% validation match")
+        logger.warning(
+            f"\n⚠️  REBUILD COMPLETED WITH WARNINGS - {validation['match_rate']:.1f}% validation match")
 
     # Show database stats
     conn = sqlite3.connect(db_path)
-    cursor = conn.execute("SELECT COUNT(*) FROM daily_gex_metrics WHERE symbol = ?", (symbol,))
+    cursor = conn.execute(
+        "SELECT COUNT(*) FROM daily_gex_metrics WHERE symbol = ?", (symbol,))
     row_count = cursor.fetchone()[0]
     conn.close()
 

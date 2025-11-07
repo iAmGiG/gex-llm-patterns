@@ -4,6 +4,7 @@ Run Baseline Comparison for Issue #58
 Compares LLM-filtered dealer gamma hedging strategy against naive baselines.
 """
 
+from analysis.baseline_comparison import BaselineComparison
 import sys
 from pathlib import Path
 import logging
@@ -12,7 +13,6 @@ import argparse
 # Add src path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-from analysis.baseline_comparison import BaselineComparison
 
 logger = logging.getLogger(__name__)
 
@@ -104,8 +104,10 @@ def main():
                   f"({simple_gex_result.get('trades', 0)} trades, {simple_gex_result.get('win_rate', 0):.1f}% win rate)")
 
             if pattern_result['total_return'] > simple_gex_result.get('total_return', 0):
-                improvement = pattern_result['total_return'] - simple_gex_result.get('total_return', 0)
-                print(f"  ✅ LLM filtering adds {improvement:.2f}% incremental return")
+                improvement = pattern_result['total_return'] - \
+                    simple_gex_result.get('total_return', 0)
+                print(
+                    f"  ✅ LLM filtering adds {improvement:.2f}% incremental return")
             else:
                 print(f"  ⚠️  LLM filtering underperformed naive GEX strategy")
 
