@@ -11,12 +11,12 @@
 
 **If you have 5 minutes**, read in this order:
 
-1. **START HERE**: [PHASE1_QUICK_SUMMARY.md](validation/PHASE1_QUICK_SUMMARY.md) (3 min)
+1. **START HERE**: [00_PHASE1_QUICK_SUMMARY.md](validation/00_PHASE1_QUICK_SUMMARY.md) (3 min)
    - What you need to know about Phase 1 results
    - Why 67.3% detection is valid for Q1
    - Next steps
 
-2. **THEN**: [DETECTION_RATE_TL_DR.md](validation/DETECTION_RATE_TL_DR.md) (2 min)
+2. **THEN**: [03_DETECTION_RATE_TL_DR.md](validation/03_DETECTION_RATE_TL_DR.md) (2 min)
    - Why 30-50% is the target
    - What Phase 1's 67.3% means
 
@@ -27,19 +27,19 @@
 **If you have 20 minutes**, read in this order:
 
 1. **PHASE1 RESULTS** (5 min):
-   - [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md)
+   - [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md)
    - Complete statistical breakdown (67.3% detection)
    - Detected vs rejected characteristics
    - JSON parsing error analysis
 
 2. **DETECTION RATE THEORY** (10 min):
-   - [DETECTION_RATE_FRAMEWORK.md](methodology/DETECTION_RATE_FRAMEWORK.md)
+   - [00_DETECTION_RATE_FRAMEWORK.md](methodology/00_DETECTION_RATE_FRAMEWORK.md)
    - Complete interpretation of detection rate ranges (0-20% through >80%)
    - Why selectivity matters
    - 2020 vs 2024 hypothesis
 
 3. **Q1 VS FULL YEAR** (5 min):
-   - [DETECTION_RATE_Q1_VS_2024.md](validation/DETECTION_RATE_Q1_VS_2024.md)
+   - [04_DETECTION_RATE_Q1_VS_2024.md](validation/04_DETECTION_RATE_Q1_VS_2024.md)
    - Why Q1 67% > expected 30-50% for full year
    - Historical context
    - Portfolio analogy
@@ -51,7 +51,7 @@
 **If you want complete understanding**, read all of the above, then:
 
 4. **ORIGINAL GAMEPLAN** (10 min):
-   - [PHASE1_GAMEPLAN.md](validation/PHASE1_GAMEPLAN.md)
+   - [01_PHASE1_GAMEPLAN.md](validation/01_PHASE1_GAMEPLAN.md)
    - Original Phase 1 design
    - Execution steps
    - Now updated with actual results
@@ -77,8 +77,8 @@
 **Focus**: Confidence distribution, false positive rates, methodology rigor
 
 Read in order:
-1. [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "Confidence Distribution"
-2. [DETECTION_RATE_FRAMEWORK.md](methodology/DETECTION_RATE_FRAMEWORK.md) - Section: "Why Selectivity Matters"
+1. [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "Confidence Distribution"
+2. [00_DETECTION_RATE_FRAMEWORK.md](methodology/00_DETECTION_RATE_FRAMEWORK.md) - Section: "Why Selectivity Matters"
 3. [validation_phases.md](validation/validation_phases.md) - Section: "Phase 2 Negative Controls"
 
 ### For LLM/AI Researchers
@@ -86,9 +86,9 @@ Read in order:
 **Focus**: Prompt design, obfuscation, model behavior
 
 Read in order:
-1. [PHASE1_QUICK_SUMMARY.md](validation/PHASE1_QUICK_SUMMARY.md) - Section: "Testing Tools Used"
-2. [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
-3. [PHASE1_GAMEPLAN.md](validation/PHASE1_GAMEPLAN.md) - Section: "IMPORTANT MODEL NOTES"
+1. [00_PHASE1_QUICK_SUMMARY.md](validation/00_PHASE1_QUICK_SUMMARY.md) - Section: "Testing Tools Used"
+2. [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
+3. [01_PHASE1_GAMEPLAN.md](validation/01_PHASE1_GAMEPLAN.md) - Section: "IMPORTANT MODEL NOTES"
 4. See also: `docs/papers/paper2/BATCH_API_GUIDE.md` for Batch API details
 
 ### For Market Microstructure Researchers
@@ -97,7 +97,7 @@ Read in order:
 
 Read in order:
 1. [regime_windows_design.md](methodology/regime_windows_design.md) - Section: "Regime Definition"
-2. [DETECTION_RATE_Q1_VS_2024.md](validation/DETECTION_RATE_Q1_VS_2024.md) - Section: "Why Q1 Was 96% Persistent"
+2. [04_DETECTION_RATE_Q1_VS_2024.md](validation/04_DETECTION_RATE_Q1_VS_2024.md) - Section: "Why Q1 Was 96% Persistent"
 3. [validation_phases.md](validation/validation_phases.md) - Section: "Expected Outcomes"
 
 ### For Implementation/Engineering
@@ -105,8 +105,8 @@ Read in order:
 **Focus**: Batch API, error handling, reproducibility
 
 Read in order:
-1. [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
-2. [PHASE1_GAMEPLAN.md](validation/PHASE1_GAMEPLAN.md) - Section: "TROUBLESHOOTING"
+1. [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
+2. [01_PHASE1_GAMEPLAN.md](validation/01_PHASE1_GAMEPLAN.md) - Section: "TROUBLESHOOTING"
 3. See also: `docs/papers/paper2/BATCH_API_IMPLEMENTATION_SUMMARY.md`
 
 ---
@@ -118,22 +118,22 @@ Read in order:
 | Document | Purpose | Length | Audience |
 |----------|---------|--------|----------|
 | [regime_windows_design.md](methodology/regime_windows_design.md) | Design of 30-day regime classification framework | 14 KB | Researchers, reviewers |
-| [DETECTION_RATE_FRAMEWORK.md](methodology/DETECTION_RATE_FRAMEWORK.md) | Complete interpretation of detection rate ranges and why selectivity matters | 11 KB | Everyone |
+| [00_DETECTION_RATE_FRAMEWORK.md](methodology/00_DETECTION_RATE_FRAMEWORK.md) | Complete interpretation of detection rate ranges and why selectivity matters | 11 KB | Everyone |
 
 ### Phase 1 Results (execution)
 
 | Document | Purpose | Length | Audience |
 |----------|---------|--------|----------|
-| [PHASE1_QUICK_SUMMARY.md](validation/PHASE1_QUICK_SUMMARY.md) | Executive summary of Phase 1 results for Chat A | 3.9 KB | Technical teams |
-| [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) | Detailed statistical analysis of 67.3% detection rate | 14 KB | Reviewers, statisticians |
-| [PHASE1_GAMEPLAN.md](validation/PHASE1_GAMEPLAN.md) | Original execution plan + actual results | 12 KB | Everyone |
+| [00_PHASE1_QUICK_SUMMARY.md](validation/00_PHASE1_QUICK_SUMMARY.md) | Executive summary of Phase 1 results | 3.9 KB | Technical teams |
+| [01_PHASE1_GAMEPLAN.md](validation/01_PHASE1_GAMEPLAN.md) | Original execution plan + actual results | 12 KB | Everyone |
+| [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) | Detailed statistical analysis of 67.3% detection rate | 14 KB | Reviewers, statisticians |
 
 ### Detection Rate Explanation (theory)
 
 | Document | Purpose | Length | Audience |
 |----------|---------|--------|----------|
-| [DETECTION_RATE_TL_DR.md](validation/DETECTION_RATE_TL_DR.md) | One-page quick reference on detection rate target | 3 KB | Quick readers |
-| [DETECTION_RATE_Q1_VS_2024.md](validation/DETECTION_RATE_Q1_VS_2024.md) | Why Q1 67% fits with expected 30-50% full-year target | 9 KB | Careful readers |
+| [03_DETECTION_RATE_TL_DR.md](validation/03_DETECTION_RATE_TL_DR.md) | One-page quick reference on detection rate target | 3 KB | Quick readers |
+| [04_DETECTION_RATE_Q1_VS_2024.md](validation/04_DETECTION_RATE_Q1_VS_2024.md) | Why Q1 67% fits with expected 30-50% full-year target | 9 KB | Careful readers |
 
 ### Phase Roadmap (planning)
 
@@ -190,12 +190,12 @@ Read in order:
 **Key takeaway**: Phase 1 shows excellent discrimination (39-point gap), but needs Phase 2 validation of false positive rate before acceptance. Framework is well-designed and results are credible given Q1's unusual persistence.
 
 ### Implementation Engineers
-**Path**: PHASE1_QUICK_SUMMARY.md → Specialized (Implementation) → BATCH_API_GUIDE.md
+**Path**: 00_PHASE1_QUICK_SUMMARY.md → Specialized (Implementation) → BATCH_API_GUIDE.md
 
 **Key takeaway**: Batch API working well, but needs JSON escape sequence fix. 6/52 windows failed due to o4-mini response formatting. Simple 1-line fix, then rerun Phase 1.
 
 ### Conference/Symposium Presenters
-**Path**: PHASE1_QUICK_SUMMARY.md → DETECTION_RATE_TL_DR.md → PHASE1_RESULTS_ANALYSIS.md (focus on selectivity gap and confidence separation)
+**Path**: 00_PHASE1_QUICK_SUMMARY.md → 03_DETECTION_RATE_TL_DR.md → 02_PHASE1_RESULTS_ANALYSIS.md (focus on selectivity gap and confidence separation)
 
 **Key talking points**:
 - Framework detects persistent regimes with 39-point persistence gap (96% vs 57%)
@@ -209,31 +209,31 @@ Read in order:
 
 ### "Why is Phase 1 at 67% when target is 30-50%?"
 
-See: [DETECTION_RATE_Q1_VS_2024.md](validation/DETECTION_RATE_Q1_VS_2024.md)
+See: [04_DETECTION_RATE_Q1_VS_2024.md](validation/04_DETECTION_RATE_Q1_VS_2024.md)
 
 **TL;DR**: Q1 2024 was anomalously persistent (dealers forced long all quarter). Full year will average 30-50% with mixed quarters. Like weather: Jan-Mar 96% cold, full year 50-50.
 
 ### "Is the framework too loose?"
 
-See: [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "Why Detection Rate Exceeds Target"
+See: [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "Why Detection Rate Exceeds Target"
 
 **TL;DR**: No, framework correctly identified Q1's unusual persistence. Still rejected 33% of windows. Detected vs rejected show 39-point gap in persistence (96% vs 57%), proving selectivity.
 
 ### "How confident are these results?"
 
-See: [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "Confidence Distribution"
+See: [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "Confidence Distribution"
 
 **TL;DR**: Detected windows average 93% confidence (range 80-95). Rejected windows average 39.5% confidence (range 20-90). 53.5-point gap shows strong separation.
 
 ### "What about the JSON errors?"
 
-See: [PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
+See: [02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md) - Section: "JSON Parsing Errors"
 
 **TL;DR**: 6 windows failed (11.5%). Root cause: o4-mini returning literal `\n` instead of newlines. Simple fix (1 line of code). Rerun Phase 1 should achieve 100% (52/52).
 
 ### "How does this prove 0DTE effect?"
 
-See: [DETECTION_RATE_FRAMEWORK.md](methodology/DETECTION_RATE_FRAMEWORK.md) - Section: "2020 vs 2024 Hypothesis"
+See: [00_DETECTION_RATE_FRAMEWORK.md](methodology/00_DETECTION_RATE_FRAMEWORK.md) - Section: "2020 vs 2024 Hypothesis"
 
 **TL;DR**: With 30-50% selectivity, can compare 2020 (expected 25%) vs 2024 (expected 45%) showing 20-point difference. With 98% universal, can't tell them apart. Selectivity enables hypothesis testing.
 
@@ -269,14 +269,14 @@ Phase 2 negative controls after JSON parsing error fix.
 docs/papers/paper2/
 ├── PHASE1_DOCUMENTATION_INDEX.md ← START HERE (this file)
 ├── methodology/
-│   ├── regime_windows_design.md (original design)
-│   └── DETECTION_RATE_FRAMEWORK.md (detection rate theory)
+│   ├── 00_DETECTION_RATE_FRAMEWORK.md (detection rate theory)
+│   └── regime_windows_design.md (original design)
 └── validation/
-    ├── PHASE1_GAMEPLAN.md (original plan + actual results)
-    ├── PHASE1_QUICK_SUMMARY.md (executive summary)
-    ├── PHASE1_RESULTS_ANALYSIS.md (detailed statistics)
-    ├── DETECTION_RATE_TL_DR.md (quick reference)
-    ├── DETECTION_RATE_Q1_VS_2024.md (Q1 vs full year)
+    ├── 00_PHASE1_QUICK_SUMMARY.md (executive summary)
+    ├── 01_PHASE1_GAMEPLAN.md (original plan + actual results)
+    ├── 02_PHASE1_RESULTS_ANALYSIS.md (detailed statistics)
+    ├── 03_DETECTION_RATE_TL_DR.md (quick reference)
+    ├── 04_DETECTION_RATE_Q1_VS_2024.md (Q1 vs full year)
     └── validation_phases.md (Phases 1-4 roadmap)
 ```
 

@@ -96,7 +96,7 @@ response_text = response_text.replace(r'\n', '\n').replace(r'\t', '\t')
 
 ## Full Analysis
 
-For detailed statistics and interpretation, see: [PHASE1_RESULTS_ANALYSIS.md](PHASE1_RESULTS_ANALYSIS.md)
+For detailed statistics and interpretation, see: [02_PHASE1_RESULTS_ANALYSIS.md](02_PHASE1_RESULTS_ANALYSIS.md)
 
 ## Next Phase Planning
 

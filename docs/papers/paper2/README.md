@@ -13,8 +13,8 @@
 2. Choose Quick Start, Standard Review, or Deep Dive path
 
 **QUICK REFERENCE**:
-- [PHASE1_QUICK_SUMMARY.md](validation/PHASE1_QUICK_SUMMARY.md) - 5 minute overview
-- [DETECTION_RATE_TL_DR.md](validation/DETECTION_RATE_TL_DR.md) - 1 page on detection rate
+- [00_PHASE1_QUICK_SUMMARY.md](validation/00_PHASE1_QUICK_SUMMARY.md) - 5 minute overview
+- [03_DETECTION_RATE_TL_DR.md](validation/03_DETECTION_RATE_TL_DR.md) - 1 page on detection rate
 
 ---
 
@@ -34,9 +34,9 @@
 
 ## Key Documents
 
-1. **[PHASE1_RESULTS_ANALYSIS.md](validation/PHASE1_RESULTS_ANALYSIS.md)** - Detailed statistics
-2. **[DETECTION_RATE_FRAMEWORK.md](methodology/DETECTION_RATE_FRAMEWORK.md)** - Why 30-50% is the target
-3. **[DETECTION_RATE_Q1_VS_2024.md](validation/DETECTION_RATE_Q1_VS_2024.md)** - Why Q1 67% ≠ contradiction
+1. **[02_PHASE1_RESULTS_ANALYSIS.md](validation/02_PHASE1_RESULTS_ANALYSIS.md)** - Detailed statistics
+2. **[00_DETECTION_RATE_FRAMEWORK.md](methodology/00_DETECTION_RATE_FRAMEWORK.md)** - Why 30-50% is the target
+3. **[04_DETECTION_RATE_Q1_VS_2024.md](validation/04_DETECTION_RATE_Q1_VS_2024.md)** - Why Q1 67% ≠ contradiction
 4. **[regime_windows_design.md](methodology/regime_windows_design.md)** - Original methodology
 5. **[validation_phases.md](validation/validation_phases.md)** - Phases 1-4 roadmap
 
@@ -44,7 +44,7 @@
 
 ## Quick Start
 
-- **5 minutes**: Read PHASE1_QUICK_SUMMARY.md + DETECTION_RATE_TL_DR.md
+- **5 minutes**: Read 00_PHASE1_QUICK_SUMMARY.md + 03_DETECTION_RATE_TL_DR.md
 - **20 minutes**: Follow Standard Review in PHASE1_DOCUMENTATION_INDEX.md
 - **45 minutes**: Follow Deep Dive in PHASE1_DOCUMENTATION_INDEX.md
 
