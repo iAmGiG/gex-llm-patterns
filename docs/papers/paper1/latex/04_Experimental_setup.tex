@@ -5,6 +5,8 @@
 
 We analyze S\&P 500 ETF (SPY) options data covering 2024 from January 2 to December 31. Our dataset comprises 242 trading days (95.6\% of 253 expected trading days), with end-of-day snapshots including complete bid/ask spreads, open interest, implied volatility, and Greeks for all available strikes and expirations. Strike coverage typically spans $\pm$10\% from spot price, capturing the most liquid portion of the options surface where dealer hedging activity concentrates. Missing days ($\sim$11 days) are uniformly distributed across quarters due to a temporary data ingestion issue in Q2, preventing temporal bias. The 95.6\% coverage exceeds our 80\% threshold for statistical validity, providing sufficient sample size for pattern detection across varying market regimes.
 
+We focus exclusively on SPY for three reasons: (1) maximal dealer hedging observability in the world's most liquid options market, (2) data quality advantages (tightest spreads, complete strike coverage), and (3) methodological conservatism—detecting patterns in the most efficient market provides stronger evidence than detection in thinly traded underlyings where noise dominates. SPY also serves as the primary 0DTE options vehicle, making it the natural testbed for same-day expiration patterns.
+
 \subsection{Pattern Definitions}
 
 \textbf{Gamma Exposure Calculation.} Net gamma exposure (GEX) represents the aggregate gamma position held by market makers, calculated as:
