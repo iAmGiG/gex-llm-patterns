@@ -22,26 +22,16 @@ We deliberately constrain our analysis to gamma exposure rather than higher-orde
 
 \subsection{Large Language Models and Reasoning}
 
-Recent advances in LLMs have demonstrated emergent reasoning capabilities beyond simple pattern matching. \cite{brown2020language} showed that GPT-3 exhibits few-shot learning, adapting to new tasks with minimal examples. \cite{wei2022chain} introduced chain-of-thought prompting, enabling LLMs to solve complex problems through step-by-step reasoning. \cite{kojima2022large} further demonstrated that LLMs can be zero-shot reasoners, solving problems without task-specific training.
-
-The GPT-4 technical report \cite{openai2023gpt4} documents significant improvements in reasoning, including the ability to understand causal relationships and constraints. However, distinguishing true reasoning from memorization remains challenging. \cite{marcus2019rebooting} argues that current AI systems often rely on statistical correlations rather than genuine understanding, motivating our obfuscation testing approach.
+Recent advances demonstrate LLMs exhibit emergent reasoning capabilities: few-shot learning \cite{brown2020language}, chain-of-thought problem solving \cite{wei2022chain}, and zero-shot reasoning \cite{kojima2022large}. The GPT-4 technical report \cite{openai2023gpt4} documents improved causal understanding, though distinguishing genuine reasoning from memorization remains challenging \cite{marcus2019rebooting}, motivating our obfuscation testing approach.
 
 \subsection{LLMs in Financial Markets}
 
-Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting. \cite{lopez2023can} tested ChatGPT's ability to predict stock returns from news headlines, finding moderate predictive power. \cite{wu2023bloomberggpt} developed BloombergGPT, a finance-specific LLM trained on financial documents, while \cite{chen2023fingpt} created FinGPT as an open-source alternative.
-
-These approaches differ fundamentally from our work. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
+Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting \cite{lopez2023can,wu2023bloomberggpt,chen2023fingpt}. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
 
 \subsection{Validation Methodologies}
 
-Validating AI capabilities requires rigorous testing frameworks. \cite{ribeiro2020beyond} introduced behavioral testing for NLP models using "checklists" to verify specific capabilities. However, no prior work has developed validation methods specifically for structural reasoning in financial markets.
-
-Our obfuscation testing fills this gap by removing all memorizable context while preserving mechanical relationships. This approach ensures that successful pattern detection demonstrates understanding of causal constraints rather than statistical correlation. By testing across 242 trading days with multiple pattern framings, we provide robust evidence that LLMs can identify structural market mechanics.
+Validating AI capabilities requires rigorous testing frameworks. \cite{ribeiro2020beyond} introduced behavioral testing for NLP models using "checklists" to verify specific capabilities. However, no prior work has developed validation methods specifically for structural reasoning in financial markets. Our obfuscation testing fills this gap by removing memorizable context while preserving mechanical relationships.
 
 \subsection{Research Gap}
 
-While extensive literature exists on dealer hedging mechanics \cite{ni2005stock,garleanu2009demand} and LLM applications in finance \cite{lopez2023can,chen2023fingpt}, no prior work has:
-(1) tested whether LLMs can detect structural market constraints,
-(2) validated this detection through obfuscation testing, or
-(3) demonstrated that pattern detection persists independent of profitability.
-Our work addresses these gaps, providing the first systematic framework for validating LLM structural reasoning in financial markets.
+While extensive literature exists on dealer hedging \cite{ni2005stock,garleanu2009demand} and LLM finance applications \cite{lopez2023can,chen2023fingpt}, no prior work has validated LLM structural reasoning through obfuscation testing or demonstrated pattern detection independent of profitability. Our work provides the first systematic framework for validating LLM structural reasoning in financial markets.
