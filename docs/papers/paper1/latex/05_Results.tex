@@ -25,21 +25,14 @@ Stock Pinning & 67.4\% & 100\% & 90.4\% & 242 \\
 
 Figure~\ref{fig:performance_matrix} visualizes these results, showing that all patterns exceed the 60\% mechanical threshold. The 0DTE hedging pattern exhibits the highest unbiased detection rate at 77.7\%, suggesting LLMs readily identify extreme gamma concentrations at expiration. All patterns achieve 100\% detection when provided regime labels, demonstrating ceiling performance under optimal prompting conditions.
 
-\begin{figure*}[!tb]
-\centering
-\includegraphics[width=0.75\textwidth]{../figures/fig8_performance_matrix.png}
-\caption{Pattern detection performance metrics using unbiased prompts. All three patterns exceed the 60\% mechanical threshold with detection rates averaging 71.5\% and prediction accuracy averaging 90.8\% across 242 trading days.}
-\label{fig:performance_matrix}
-\end{figure*}
-
-Figure~\ref{fig:bias_comparison} directly compares biased versus unbiased detection rates, revealing a 28.5 percentage point average gap. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
-
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig4_detection_comparison.png}
-\caption{Impact of prompt bias on detection rates. Biased prompts with regime labels achieve 100\% detection across all patterns, while unbiased prompts achieve 69.4\%, 67.4\%, and 77.7\% for gamma positioning, stock pinning, and 0DTE hedging respectively, demonstrating robust detection without leading information.}
-\label{fig:bias_comparison}
+\includegraphics[width=\columnwidth]{../figures/fig8_performance_matrix.png}
+\caption{Pattern detection performance metrics using unbiased prompts. All three patterns exceed the 60\% mechanical threshold with detection rates averaging 71.5\% and prediction accuracy averaging 90.8\% across 242 trading days.}
+\label{fig:performance_matrix}
 \end{figure}
+
+Table~\ref{tab:detection} reveals a 28.5 percentage point average gap between biased (100\%) and unbiased (71.5\%) detection rates. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
 
 \subsection{Temporal Stability Analysis}
 
@@ -74,14 +67,7 @@ Full Year & 242 & 71.5\% & 91.2\% & +0.11\% & +5.6 bps \\
 
 \subsection{Obfuscation Test Validation}
 
-The transformation removes all temporal context (dates, market events) and identifying information (ticker symbols) while preserving quantitative structural data (GEX values, spot prices). LLMs receive data formatted as:
-
-\begin{verbatim}
-Day T+0: Net GEX: -$32.9B, Flip: $485.00
-Day T+1: Net GEX: -$28.4B, Flip: $487.50
-\end{verbatim}
-
-Without dates, ticker symbols, or market context, successful detection requires identifying structural relationships between gamma exposure and price dynamics. The 71.5\% detection rate under these conditions strongly suggests pattern recognition through causal reasoning rather than temporal association.
+As described in Section~\ref{sec:methodology}, obfuscation testing removes all temporal context and identifying information while preserving structural data (e.g., ``Day T+0: Net GEX: -\$32.9B''). The 71.5\% detection rate without dates, ticker symbols, or market context strongly suggests pattern recognition through causal reasoning rather than temporal association.
 
 \subsection{Statistical Validation}
 
