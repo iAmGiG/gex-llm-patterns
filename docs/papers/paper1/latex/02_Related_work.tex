@@ -2,7 +2,7 @@
 
 \subsection{Dealer Hedging and Market Microstructure}
 
-Market makers face regulatory requirements to maintain delta-neutral positions \cite{sec15c31,finra4210}, creating systematic hedging flows when gamma exposure accumulates. The theoretical foundation for these mechanics was established by \cite{grossman1988liquidity}, who demonstrated how market maker inventory risk creates predictable hedging patterns. \cite{frey1997market} formalized how dynamic hedging amplifies volatility through feedback effects, while \cite{avellaneda2010statistical} showed these patterns create statistical arbitrage opportunities.
+Market makers face regulatory requirements to maintain delta-neutral positions \cite{sec15c31,finra4210}, creating systematic hedging flows when gamma exposure accumulates. \cite{frey1997market} formalized how dynamic hedging amplifies volatility through feedback effects, demonstrating how these patterns create predictable hedging dynamics.
 
 A critical market microstructure principle underlying our methodology is the dealer counterparty framework: market makers serve as counterparties to customer option positions, such that dealer gamma equals the negative of aggregate customer gamma. \cite{anderegg2022impact} establishes this relationship theoretically, showing that all option trades must be attributable to either market takers or market makers, with positions summing to zero. Empirically, \cite{dim2025zero} validates this framework by measuring market maker inventory directly from order flow, demonstrating that market maker gamma is systematically opposite to customer demand.
 
@@ -22,15 +22,15 @@ We deliberately constrain our analysis to gamma exposure rather than higher-orde
 
 \subsection{Large Language Models and Reasoning}
 
-Recent advances demonstrate LLMs exhibit emergent reasoning capabilities: few-shot learning \cite{brown2020language}, chain-of-thought problem solving \cite{wei2022chain}, and zero-shot reasoning \cite{kojima2022large}. The GPT-4 technical report \cite{openai2023gpt4} documents improved causal understanding, though distinguishing genuine reasoning from memorization remains challenging \cite{marcus2019rebooting}, motivating our obfuscation testing approach.
+Recent advances demonstrate LLMs exhibit emergent reasoning capabilities through chain-of-thought problem solving and zero-shot reasoning. The GPT-4 technical report \cite{openai2023gpt4} documents improved causal understanding, though distinguishing genuine reasoning from memorization remains challenging, motivating our obfuscation testing approach.
 
 \subsection{LLMs in Financial Markets}
 
-Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting \cite{lopez2023can,wu2023bloomberggpt,chen2023fingpt}. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
+Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting \cite{lopez2023can,chen2023fingpt}. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
 
 \subsection{Validation Methodologies}
 
-Validating AI capabilities requires rigorous testing frameworks. \cite{ribeiro2020beyond} introduced behavioral testing for NLP models using "checklists" to verify specific capabilities. However, no prior work has developed validation methods specifically for structural reasoning in financial markets. Our obfuscation testing fills this gap by removing memorizable context while preserving mechanical relationships.
+No prior work has developed validation methods specifically for structural reasoning in financial markets. Our obfuscation testing fills this gap by removing memorizable context while preserving mechanical relationships.
 
 \subsection{Research Gap}
 
