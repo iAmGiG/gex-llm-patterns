@@ -18,7 +18,29 @@
 % For fixing specific issues:
 \usepackage{lmodern} % Latin Modern fonts (better rendering)
 \usepackage{microtype} % Better typography
-\usepackage{hyperref}
+
+% Hyperref configuration for IEEE Xplore compatibility
+\usepackage[
+    pdftex,
+    pdfversion=1.5,           % IEEE requires PDF 1.5 or lower
+    pdfa=true,                % PDF/A compliance (archival format)
+    pdfstartview=FitH,        % Fit to width when opened
+    pdfpagelayout=OneColumn,  % Single column view
+    bookmarks=true,
+    bookmarksopen=false,
+    colorlinks=false,         % No colored links (IEEE standard)
+    pdfborder={0 0 0},        % No link borders
+    unicode=true              % Support Unicode characters
+]{hyperref}
+
+% PDF metadata (update with your information)
+\hypersetup{
+    pdftitle={Testing LLM Structural Reasoning in Market Microstructure Through Unbiased Obfuscation},
+    pdfauthor={[Your Name]},
+    pdfsubject={IEEE Big Data 2025},
+    pdfkeywords={Large Language Models, Market Microstructure, Pattern Recognition, Obfuscation Testing, Gamma Exposure}
+}
+
 \usepackage{array}
 \usepackage{adjustbox}
 \usepackage{float}

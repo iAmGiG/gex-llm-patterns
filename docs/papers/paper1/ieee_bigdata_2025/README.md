@@ -176,25 +176,68 @@
 
 ---
 
-## Files NOT to Submit
+## Submission Files
+
+### Files to Submit (via CyberChair)
+
+✅ **1. Camera-Ready PDF:** `IEEE_BigData_2025_LLM_Structural_Reasoning.pdf`
+- 10 pages (meets IEEE limit)
+- Validated with PDF eXpress (Conference ID: 66926X)
+- All fonts embedded, 300 DPI graphics
+
+✅ **2. Source Files Archive:** `IEEE_BigData_2025_LLM_Structural_Reasoning_Source.tar.gz` (or .zip)
+- All LaTeX source files (.tex, references.bib)
+- All figures (PNG, 300 DPI)
+- README_BUILD.txt (build instructions)
+- **Size:** ~3-5MB (well under 320MB IEEE limit)
+
+**Creating Source Package:**
+```bash
+# Windows
+cd latex
+package_submission.bat
+
+# Linux/Mac/Git Bash
+cd latex
+bash package_submission.sh
+```
+
+✅ **3. IEEE eCF Copyright Form:** Via CyberChair submission system
+
+✅ **4. Conference Registration Receipt:** Upload after registering
+
+### Files NOT to Submit
 
 ❌ `paper1-errata.md` - Internal documentation only
-❌ `build.sh` - Build script (not part of submission)
-❌ Intermediate LaTeX files (.aux, .bbl, .blg, .log)
-
-**Submit ONLY:** `Main.pdf` (10-page camera-ready)
+❌ `build.sh` / `build.bat` / `package_submission.*` - Build scripts (not part of submission)
+❌ `Main.pdf` - LaTeX intermediate (use camera-ready version instead)
+❌ Intermediate LaTeX files (.aux, .bbl, .blg, .log, .out, .synctex.gz)
 
 ---
 
 ## Build Instructions
 
+### Windows (Batch File)
+```cmd
+cd docs\papers\paper1\ieee_bigdata_2025\latex
+build.bat
+```
+
+### Linux/macOS/Git Bash
 ```bash
 cd docs/papers/paper1/ieee_bigdata_2025/latex
-export PATH="/c/Users/gigac/AppData/Local/Programs/MiKTeX/miktex/bin/x64:$PATH"
 bash build.sh
 ```
 
-**Output:** `Main.pdf` (10 pages)
+### Manual Build (Windows with MiKTeX)
+```bash
+cd docs/papers/paper1/ieee_bigdata_2025/latex
+"C:\Users\gigac\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe" -interaction=nonstopmode Main.tex
+```
+
+**Output Files:**
+- `Main.pdf` (LaTeX intermediate, 10 pages)
+- `IEEE_BigData_2025_LLM_Structural_Reasoning.pdf` (camera-ready, 10 pages)
 
 ---
 

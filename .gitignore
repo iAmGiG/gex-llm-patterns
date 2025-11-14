@@ -275,5 +275,12 @@ docs/papers/**/latex/*.pdf
 *.tar.gz
 *.zip
 
+# IEEE Big Data 2025 figures (managed in Overleaf, local copies not needed)
+docs/papers/paper1/ieee_bigdata_2025/latex/figures/
+
+# LaTeX build scripts (environment-specific, contain local paths)
+docs/papers/**/latex/*.bat
+docs/papers/**/latex/*.sh
+
 # Batch API test artifacts
 reports/validation/regime_windows/batch_jobs/
