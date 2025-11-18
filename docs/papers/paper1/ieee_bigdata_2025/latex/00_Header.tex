@@ -1,0 +1,55 @@
+\RequirePackage{silence}
+\WarningFilter{latex}{Command \showhyphens has changed}
+
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs} % for professional tables
+\usepackage{multirow}
+\usepackage{url}
+\usepackage[utf8]{inputenc}  % UTF-8 encoding support
+\usepackage[T1]{fontenc}
+\usepackage{gensymb} % Degree symbol and others
+% For fixing specific issues:
+\usepackage{lmodern} % Latin Modern fonts (better rendering)
+\usepackage{microtype} % Better typography
+
+% Hyperref configuration for IEEE Xplore compatibility
+\usepackage[
+    pdftex,
+    pdfversion=1.5,           % IEEE requires PDF 1.5 or lower
+    pdfa=true,                % PDF/A compliance (archival format)
+    pdfstartview=FitH,        % Fit to width when opened
+    pdfpagelayout=OneColumn,  % Single column view
+    bookmarks=true,
+    bookmarksopen=false,
+    colorlinks=false,         % No colored links (IEEE standard)
+    pdfborder={0 0 0},        % No link borders
+    unicode=true              % Support Unicode characters
+]{hyperref}
+
+% PDF metadata (update with your information)
+\hypersetup{
+    pdftitle={Testing LLM Structural Reasoning in Market Microstructure Through Unbiased Obfuscation},
+    pdfauthor={[Your Name]},
+    pdfsubject={IEEE Big Data 2025},
+    pdfkeywords={Large Language Models, Market Microstructure, Pattern Recognition, Obfuscation Testing, Gamma Exposure}
+}
+
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{float}
+% \usepackage[font=footnotesize,labelfont=bf]{caption}
+% \captionsetup{compatibility=false}
+
+\setlength{\tabcolsep}{5pt} % default is 6pt
+% % Adjust header height to avoid fancyhdr warning
+% \setlength{\headheight}{14.5pt}
+% \addtolength{\topmargin}{-2.5pt}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}

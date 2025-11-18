@@ -25,18 +25,25 @@ Stock Pinning & 67.4\% & 100\% & 90.4\% & 242 \\
 
 Figure~\ref{fig:performance_matrix} visualizes these results, showing that all patterns exceed the 60\% mechanical threshold. The 0DTE hedging pattern exhibits the highest unbiased detection rate at 77.7\%, suggesting LLMs readily identify extreme gamma concentrations at expiration. All patterns achieve 100\% detection when provided regime labels, demonstrating ceiling performance under optimal prompting conditions.
 
-\begin{figure}[!htbp]
+\begin{figure*}[!tb]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig8_performance_matrix.png}
+\includegraphics[width=0.75\textwidth]{../figures/fig8_performance_matrix.png}
 \caption{Pattern detection performance metrics using unbiased prompts. All three patterns exceed the 60\% mechanical threshold with detection rates averaging 71.5\% and prediction accuracy averaging 90.8\% across 242 trading days.}
 \label{fig:performance_matrix}
-\end{figure}
+\end{figure*}
 
-Table~\ref{tab:detection} reveals a 28.5 percentage point gap between biased and unbiased detection rates, quantifying prompt sensitivity.
+Figure~\ref{fig:bias_comparison} directly compares biased versus unbiased detection rates, revealing a 28.5 percentage point average gap. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig4_detection_comparison.png}
+\caption{Impact of prompt bias on detection rates. Biased prompts with regime labels achieve 100\% detection across all patterns, while unbiased prompts achieve 69.4\%, 67.4\%, and 77.7\% for gamma positioning, stock pinning, and 0DTE hedging respectively, demonstrating robust detection without leading information.}
+\label{fig:bias_comparison}
+\end{figure}
 
 \subsection{Temporal Stability Analysis}
 
-Figure~\ref{fig:quarterly_stability} presents our key finding: detection capability remains stable while economic profitability varies significantly. Net alpha declines monotonically from +21 bps (Q1) to -1 bp (Q4), validating that LLMs identify structural patterns rather than optimizing for profitable trades.
+Figure~\ref{fig:quarterly_stability} presents our key finding: detection capability remains stable while economic profitability varies significantly. Detection rates maintain consistency across quarters (ranging from 84\% to 100\% with biased prompts), while net alpha declines monotonically from +21 bps in Q1 to -1 bp in Q4. This divergence validates that LLMs identify structural patterns rather than optimizing for profitable trades.
 
 \begin{figure}[!htbp]
 \centering
@@ -45,7 +52,7 @@ Figure~\ref{fig:quarterly_stability} presents our key finding: detection capabil
 \label{fig:quarterly_stability}
 \end{figure}
 
-Table~\ref{tab:quarterly} shows stable detection rates across quarters, with no significant temporal trend (Cochran-Armitage test, p = 0.42).
+Table~\ref{tab:quarterly} provides the detailed quarterly breakdown, revealing stable performance despite varying market conditions. Detection rates remain within a narrow band across all quarters, with no statistically significant temporal trend (Cochran-Armitage test, p = 0.42).
 
 \begin{table}[htbp]
 \centering
@@ -67,7 +74,14 @@ Full Year & 242 & 71.5\% & 91.2\% & +0.11\% & +5.6 bps \\
 
 \subsection{Obfuscation Test Validation}
 
-Obfuscation testing removes all temporal context while preserving structural data (e.g., ``Day T+0: Net GEX: -\$32.9B''). The 71.5\% detection rate without dates, ticker symbols, or market context strongly suggests causal reasoning rather than temporal association.
+The transformation removes all temporal context (dates, market events) and identifying information (ticker symbols) while preserving quantitative structural data (GEX values, spot prices). LLMs receive data formatted as:
+
+\begin{verbatim}
+Day T+0: Net GEX: -$32.9B, Flip: $485.00
+Day T+1: Net GEX: -$28.4B, Flip: $487.50
+\end{verbatim}
+
+Without dates, ticker symbols, or market context, successful detection requires identifying structural relationships between gamma exposure and price dynamics. The 71.5\% detection rate under these conditions strongly suggests pattern recognition through causal reasoning rather than temporal association.
 
 \subsection{Statistical Validation}
 
@@ -146,7 +160,9 @@ Lag & F-Statistic & p-value & Significant \\
 \end{tabular}
 \end{table}
 
-Results indicate significant Granger causality at lag 2 (p = 0.042), confirming gamma exposure contains predictive information for T+2 forward volatility. Robustness checks across six specifications validate this finding (strongest: p = 0.021). Within the negative GEX regime, volatility does not correlate linearly with GEX magnitude (Pearson r = -0.01, p = 0.85), confirming a threshold effect where negative gamma presence drives volatility, not its specific level.
+Results indicate significant Granger causality at lag 2 (p = 0.042), confirming that gamma exposure contains predictive information for T+2 forward volatility. Robustness checks across six specifications validate this finding, with the strongest effect when both series are differenced (p = 0.021). The 2-day lag aligns with dealer hedging dynamics: constraints identified at day T manifest in observable volatility amplification by T+2 as rebalancing flows accumulate.
+
+Critically, within the negative GEX regime, volatility does not correlate linearly with GEX magnitude (Pearson r = -0.01, p = 0.85), confirming a threshold effect: the presence of negative gamma drives volatility, not its specific level. This validates the LLM's mechanism-based detection—identifying the structural constraint itself rather than optimizing for volatility magnitude.
 
 \subsubsection{Market Regime Characterization}
 
@@ -169,6 +185,6 @@ Positive (> +\$2B) & 0 & 0.0\% \\
 \end{tabular}
 \end{table}
 
-This persistent negative gamma regime, driven by 0DTE options growth \cite{cboe2023,jpmorgan2023}, represents a structural shift from historical regime-switching dynamics \cite{ni2005stock,garleanu2009demand}. The uniform environment provides a rigorous test: the LLM must identify underlying constraints without exploiting regime variation.
+This persistent negative gamma regime, driven by explosive growth in zero-days-to-expiration (0DTE) options \cite{cboe2023,jpmorgan2023}, represents a structural shift from historical market dynamics where positive and negative gamma regimes alternated \cite{ni2005stock,garleanu2009demand}. The single-regime environment provides a particularly rigorous test of LLM structural reasoning: unlike traditional pattern recognition that exploits regime variation, our model must identify the underlying constraint mechanism within a uniform environment.
 
 The 69.4\% detection rate across 242 structurally identical days, combined with significant Granger causality (Table~\ref{tab:granger}), validates that LLMs recognize forced hedging constraints through mechanism-based reasoning rather than memorizing regime-switching patterns. The divergence between stable detection capability and declining economic profitability (Figure~\ref{fig:quarterly_stability}) further confirms identification of structural mechanics independent of trading value.
