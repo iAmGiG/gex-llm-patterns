@@ -6,6 +6,9 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 
 - **`analysis_config.yaml`** - Core pattern detection, GEX thresholds, and statistical analysis parameters
 - **`continuous_testing_config.yaml`** - Baseline comparison testing and strategy validation parameters
+- **`llm_prompts.yaml`** - LLM prompt templates for pattern detection (Issue #90) and agent workflows
+- **`obfuscation_patterns.yaml`** - Data obfuscation templates for anti-cheating validation
+- **`pattern_library_config.yaml`** - Pattern library definitions and mechanics
 - **`technical_indicators_config.yaml`** - Technical indicator calculations and adaptive consensus parameters
 - **`trading_config.yaml`** - Trading system and risk management parameters
 
@@ -29,6 +32,26 @@ from src.utils.config_manager import get_config
 config = get_config()
 lookback_days = config.get('tokenization.gex_tokenizer.lookback_days')
 ```
+
+### Agent Prompt Templates (November 2025)
+
+The `MarketMechanicsAgent` now loads prompts from `llm_prompts.yaml` automatically:
+
+```python
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+
+# Agent loads prompts from config_defaults/llm_prompts.yaml
+agent = MarketMechanicsAgent(symbol="SPY")
+
+# Prompts are automatically applied in:
+# - agent.run_batch_experiments() -> uses agent_prompts.batch_analysis
+# - agent._plan_experiment_tools() -> uses agent_prompts.experiment_planning
+# - agent._analyze_experiment_results() -> uses agent_prompts.experiment_analysis
+```
+
+**Fallback Behavior**: If `llm_prompts.yaml` is missing or `agent_prompts` section is empty, the agent falls back to inline hardcoded prompts automatically with a warning log.
+
+**Editing Prompts**: To customize agent behavior, edit `config_defaults/llm_prompts.yaml` under the `agent_prompts` section. Changes take effect on next agent initialization (no code restart required).
 
 ### In Class Constructors
 

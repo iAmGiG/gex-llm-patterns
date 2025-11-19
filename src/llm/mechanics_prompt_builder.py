@@ -520,15 +520,17 @@ Provide your analysis in this exact JSON structure:
 {{
     "regime_detected": true/false,
     "regime_type": "persistent_positive|persistent_negative|transitional|low_conviction",
-    "positive_days": <count>,
-    "negative_days": <count>,
-    "avg_magnitude_billions": <value>,
-    "sign_flips": <count>,
-    "persistence_pct": <percentage>,
-    "confidence": <0-100>,
+    "positive_days": <count as integer>,
+    "negative_days": <count as integer>,
+    "avg_magnitude_billions": <value as number>,
+    "sign_flips": <count as integer>,
+    "persistence_pct": <percentage as number>,
+    "confidence": <integer 0-100>,
     "reasoning": "Explain step-by-step why this is/isn't a persistent regime. Reference specific metrics (persistence %, avg magnitude, sign flips). If rejecting, state which criterion failed."
 }}
 ```
+
+**IMPORTANT**: All numeric fields (confidence, positive_days, negative_days, sign_flips, avg_magnitude_billions, persistence_pct) MUST be numbers (integers or decimals), NOT words like "thirty-five" or "fifty".
 
 **regime_detected Rules**:
 - `true` ONLY if regime_type is "persistent_positive" or "persistent_negative"

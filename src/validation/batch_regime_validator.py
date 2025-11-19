@@ -24,6 +24,7 @@ Related:
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime
@@ -383,6 +384,13 @@ class BatchRegimeValidator:
                 content = content.replace('```json\n', '', 1).replace('\n```', '', 1).strip()
             elif content.startswith('```'):
                 content = content.replace('```\n', '', 1).replace('\n```', '', 1).strip()
+
+            # FIX: Handle o4-mini JSON formatting quirks (Issue #137)
+            # o4-mini sometimes uses invalid escape sequences like \$ in reasoning text
+            content = content.replace(r'\$', '$')
+
+            # o4-mini occasionally writes confidence as word instead of number (rare)
+            content = re.sub(r'"confidence":\s*thirty-five,', '"confidence": 35,', content, flags=re.IGNORECASE)
 
             # Parse JSON response from LLM
             llm_response = json.loads(content)

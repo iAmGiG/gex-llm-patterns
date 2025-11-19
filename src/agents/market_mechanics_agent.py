@@ -58,6 +58,7 @@ class MarketMechanicsAgent:
         self.gex_thresholds = self.config.get('gex_thresholds', {})
         self.strike_pattern_config = self.config.get(
             'strike_level_patterns', {})
+        self.prompt_templates = self._load_prompt_templates()
         self.cache = UnifiedCacheManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
@@ -129,6 +130,24 @@ class MarketMechanicsAgent:
                     'significant_flow_threshold': 5e5
                 }
             }
+
+    def _load_prompt_templates(self) -> Dict:
+        """Load LLM prompt templates from llm_prompts.yaml (agent_prompts section)."""
+        try:
+            base_dir = Path(__file__).parent.parent.parent
+            templates_path = base_dir / "config_defaults" / "llm_prompts.yaml"
+
+            with open(templates_path, 'r') as f:
+                config = yaml.safe_load(f)
+                templates = config.get('agent_prompts', {})
+                if templates:
+                    logger.info("Loaded agent prompt templates from llm_prompts.yaml")
+                else:
+                    logger.warning("No agent_prompts section found in llm_prompts.yaml")
+                return templates
+        except Exception as e:
+            logger.warning(f"Failed to load prompt templates: {e}. Using inline defaults.")
+            return {}
 
     def _build_mechanics_dict_from_library(self) -> Dict:
         """
@@ -478,7 +497,61 @@ class MarketMechanicsAgent:
             }
 
     def _build_batch_prompt(self, batch_data: Dict, symbol: str, template: str = None) -> str:
-        """Build prompt for batch LLM analysis."""
+        """Build prompt for batch LLM analysis using templates from config."""
+        templates = self.prompt_templates.get('batch_analysis', {})
+
+        # Fallback to inline if templates not loaded
+        if not templates:
+            return self._build_batch_prompt_inline(batch_data, symbol)
+
+        # Build header
+        prompt = templates.get('header', '').format(
+            batch_size=len(batch_data),
+            symbol=symbol
+        )
+
+        # Build data sections
+        divider = templates.get('day_section_divider', '='*60)
+        for date, data in batch_data.items():
+            obfusc_date = data.get('obfuscated_date', date)
+            prompt += f"\n{divider}\n{obfusc_date}:\n"
+
+            if 'error' in data:
+                error_msg = templates.get('error_message', '  ERROR: {error}')
+                prompt += error_msg.format(error=data['error']) + "\n"
+            else:
+                gex = data.get('gex_metrics', {})
+                # Use template fields with fallback
+                data_fields = templates.get('data_fields', [
+                    "  Total GEX: ${total_gamma:,.0f}",
+                    "  Spot Price: ${spot_price:.2f}",
+                    "  Flip Point: ${flip_point:.2f}",
+                    "  Regime: {regime}"
+                ])
+
+                for field_template in data_fields:
+                    try:
+                        prompt += field_template.format(
+                            total_gamma=gex.get('total_gamma', 0),
+                            spot_price=gex.get('spot_price', 0),
+                            flip_point=gex.get('flip_point', 0),
+                            regime=gex.get('regime', 'Unknown')
+                        ) + "\n"
+                    except KeyError:
+                        # Skip malformed template fields
+                        continue
+
+                if data.get('patterns'):
+                    patterns_line = templates.get('patterns_line', '  Patterns Detected: {patterns}')
+                    patterns_str = ', '.join([p.get('pattern', '') for p in data['patterns'][:3]])
+                    prompt += patterns_line.format(patterns=patterns_str) + "\n"
+
+        # Add footer
+        prompt += "\n" + templates.get('footer', '')
+        return prompt
+
+    def _build_batch_prompt_inline(self, batch_data: Dict, symbol: str) -> str:
+        """Inline fallback for batch prompt (legacy compatibility)."""
         prompt = f"""Analyze the following {len(batch_data)} trading days for {symbol}.
 Look for patterns across all dates and provide comparative analysis.
 
@@ -543,7 +616,10 @@ Confidence must be a number 0-100.
                     start = response_str.find('{')
                     end = response_str.rfind('}') + 1
                     if start >= 0 and end > start:
-                        return json.loads(response_str[start:end])
+                        json_str = response_str[start:end]
+                        # FIX: Handle o4-mini JSON quirks (Issue #137)
+                        json_str = json_str.replace(r'\$', '$')
+                        return json.loads(json_str)
                     else:
                         # Fallback
                         return {'overall_analysis': response_str, 'individual_days': {}}
@@ -599,9 +675,66 @@ Confidence must be a number 0-100.
     def _plan_experiment_tools(self, experiment_description: str, date: str) -> Dict:
         """
         Use LLM to analyze experiment description and decide what tools/data are needed.
-        Returns a tool execution plan.
+        Returns a tool execution plan using templates from config.
         """
-        planning_prompt = f"""
+        templates = self.prompt_templates.get('experiment_planning', {})
+
+        # Fallback to inline if templates not loaded
+        if not templates:
+            planning_prompt = self._build_planning_prompt_inline(experiment_description, date)
+        else:
+            # Build from templates
+            planning_prompt = templates.get('header', '').format(
+                experiment_description=experiment_description,
+                date=date
+            )
+            planning_prompt += "\n" + templates.get('tools_section', '')
+            planning_prompt += "\n" + templates.get('decision_framework', '')
+            planning_prompt += "\n" + templates.get('response_format', '')
+
+        try:
+            response = self.llm.generate(planning_prompt)
+            # Parse JSON response
+            import json
+            if isinstance(response, dict) and 'content' in response:
+                plan_text = response['content']
+            else:
+                plan_text = str(response)
+
+            # Extract JSON from response
+            start = plan_text.find('{')
+            end = plan_text.rfind('}') + 1
+            if start >= 0 and end > start:
+                plan_json = plan_text[start:end]
+                # FIX: Handle o4-mini JSON quirks (Issue #137)
+                plan_json = plan_json.replace(r'\$', '$')
+                tool_plan = json.loads(plan_json)
+            else:
+                # Fallback if JSON parsing fails
+                tool_plan = {
+                    "experiment_type": "comprehensive",
+                    "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
+                    "data_requirements": ["options_chain"],
+                    "analysis_focus": "general market analysis",
+                    "reasoning": "fallback comprehensive analysis"
+                }
+
+            return tool_plan
+
+        except Exception as e:
+            logger.warning(f"Tool planning failed, using fallback: {e}")
+            # Fallback comprehensive plan
+            return {
+                "experiment_type": "comprehensive",
+                "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
+                "data_requirements": ["options_chain"],
+                "analysis_focus": "general market analysis",
+                "reasoning": "fallback due to planning error"
+            }
+
+    def _build_planning_prompt_inline(self, experiment_description: str, date: str) -> str:
+        """Inline fallback for planning prompt (legacy compatibility)."""
+        return f"""
 You are an autonomous market analysis agent. Analyze this experiment request and decide what tools and data are needed.
 
 EXPERIMENT REQUEST: {experiment_description}
@@ -630,44 +763,6 @@ Respond with a JSON plan:
     "reasoning": "Why these tools are needed"
 }}
 """
-
-        try:
-            response = self.llm.generate(planning_prompt)
-            # Parse JSON response
-            import json
-            if isinstance(response, dict) and 'content' in response:
-                plan_text = response['content']
-            else:
-                plan_text = str(response)
-
-            # Extract JSON from response
-            start = plan_text.find('{')
-            end = plan_text.rfind('}') + 1
-            if start >= 0 and end > start:
-                plan_json = plan_text[start:end]
-                tool_plan = json.loads(plan_json)
-            else:
-                # Fallback if JSON parsing fails
-                tool_plan = {
-                    "experiment_type": "comprehensive",
-                    "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
-                    "data_requirements": ["options_chain"],
-                    "analysis_focus": "general market analysis",
-                    "reasoning": "fallback comprehensive analysis"
-                }
-
-            return tool_plan
-
-        except Exception as e:
-            logger.warning(f"Tool planning failed, using fallback: {e}")
-            # Fallback comprehensive plan
-            return {
-                "experiment_type": "comprehensive",
-                "required_tools": ["fetch_options_data", "calculate_gamma_exposure"],
-                "data_requirements": ["options_chain"],
-                "analysis_focus": "general market analysis",
-                "reasoning": "fallback due to planning error"
-            }
 
     def _execute_tool_plan(self, tool_plan: Dict, date: str) -> Dict:
         """
@@ -761,7 +856,108 @@ Respond with a JSON plan:
     def _analyze_experiment_results(self, experiment_description: str, experiment_data: Dict, tool_plan: Dict) -> Dict:
         """
         Use LLM to analyze the collected data and generate insights specific to the experiment.
+        Uses templates from config.
         """
+        templates = self.prompt_templates.get('experiment_analysis', {})
+
+        # Fallback to inline if templates not loaded
+        if not templates:
+            analysis_prompt = self._build_analysis_prompt_inline(experiment_description, experiment_data, tool_plan)
+        else:
+            # Build from templates
+            analysis_prompt = templates.get('header', '').format(
+                experiment_description=experiment_description,
+                tool_plan_reasoning=tool_plan.get('reasoning', 'Unknown'),
+                analysis_focus=tool_plan.get('analysis_focus', 'General analysis')
+            )
+
+            # Add GEX metrics section if available
+            if experiment_data.get("gex_metrics"):
+                gex = experiment_data["gex_metrics"]
+                gex_section = templates.get('gex_metrics_section', '')
+                try:
+                    analysis_prompt += "\n" + gex_section.format(
+                        total_gamma=gex.get('total_gamma', 0),
+                        net_gex=gex.get('net_gex', 0),
+                        spot_price=gex.get('spot_price', 0),
+                        gamma_flip_point=gex.get('gamma_flip_point', 0)
+                    )
+                except KeyError:
+                    # Skip if template has missing keys
+                    pass
+
+            # Add patterns section if available
+            if experiment_data.get("patterns"):
+                patterns = experiment_data["patterns"]
+                patterns_section = templates.get('patterns_section', '')
+                key_patterns = [p.get('pattern_type', 'Unknown') for p in patterns[:3]]
+                analysis_prompt += "\n" + patterns_section.format(
+                    pattern_count=len(patterns),
+                    key_patterns=key_patterns
+                )
+
+            # Add requirements and response format
+            analysis_prompt += "\n" + templates.get('analysis_requirements', '').format(
+                experiment_description=experiment_description
+            )
+            analysis_prompt += "\n" + templates.get('response_format', '').format(
+                experiment_type=tool_plan.get('experiment_type', 'general')
+            )
+
+        try:
+            response = self.llm.generate(analysis_prompt)
+
+            # Parse JSON response
+            import json
+            if isinstance(response, dict) and 'content' in response:
+                analysis_text = response['content']
+            else:
+                analysis_text = str(response)
+
+            # Extract JSON from response
+            start = analysis_text.find('{')
+            end = analysis_text.rfind('}') + 1
+            if start >= 0 and end > start:
+                analysis_json = analysis_text[start:end]
+                # FIX: Handle o4-mini JSON quirks (Issue #137)
+                analysis_json = analysis_json.replace(r'\$', '$')
+                result = json.loads(analysis_json)
+            else:
+                # Fallback structured result
+                result = {
+                    "experiment_type": tool_plan.get('experiment_type', 'general'),
+                    "mechanics_interpretation": {
+                        "who": "Market Makers",
+                        "whom": "Retail Traders",
+                        "what": "Price Discovery",
+                        "confidence": 70
+                    },
+                    "key_findings": ["Analysis completed"],
+                    "actionable_signal": {
+                        "action": "wait",
+                        "confidence": 50,
+                        "rationale": "Insufficient data for clear signal"
+                    },
+                    "experiment_specific_insights": f"Completed analysis for: {experiment_description}"
+                }
+
+            # Merge with experiment data
+            result.update(experiment_data)
+            return result
+
+        except Exception as e:
+            logger.error(f"LLM analysis failed: {e}")
+            # Return experiment data with basic structure
+            result = experiment_data.copy()
+            result.update({
+                "experiment_type": tool_plan.get('experiment_type', 'general'),
+                "status": "completed_with_errors",
+                "error": str(e)
+            })
+            return result
+
+    def _build_analysis_prompt_inline(self, experiment_description: str, experiment_data: Dict, tool_plan: Dict) -> str:
+        """Inline fallback for analysis prompt (legacy compatibility)."""
         analysis_prompt = f"""
 You are analyzing market data for this experiment: {experiment_description}
 
@@ -816,56 +1012,7 @@ Respond with JSON:
     "experiment_specific_insights": "Analysis specific to the experiment request"
 }}
 """
-
-        try:
-            response = self.llm.generate(analysis_prompt)
-
-            # Parse JSON response
-            import json
-            if isinstance(response, dict) and 'content' in response:
-                analysis_text = response['content']
-            else:
-                analysis_text = str(response)
-
-            # Extract JSON from response
-            start = analysis_text.find('{')
-            end = analysis_text.rfind('}') + 1
-            if start >= 0 and end > start:
-                analysis_json = analysis_text[start:end]
-                result = json.loads(analysis_json)
-            else:
-                # Fallback structured result
-                result = {
-                    "experiment_type": tool_plan.get('experiment_type', 'general'),
-                    "mechanics_interpretation": {
-                        "who": "Market Makers",
-                        "whom": "Retail Traders",
-                        "what": "Price Discovery",
-                        "confidence": 70
-                    },
-                    "key_findings": ["Analysis completed"],
-                    "actionable_signal": {
-                        "action": "wait",
-                        "confidence": 50,
-                        "rationale": "Insufficient data for clear signal"
-                    },
-                    "experiment_specific_insights": f"Completed analysis for: {experiment_description}"
-                }
-
-            # Merge with experiment data
-            result.update(experiment_data)
-            return result
-
-        except Exception as e:
-            logger.error(f"LLM analysis failed: {e}")
-            # Return experiment data with basic structure
-            result = experiment_data.copy()
-            result.update({
-                "experiment_type": tool_plan.get('experiment_type', 'general'),
-                "status": "completed_with_errors",
-                "error": str(e)
-            })
-            return result
+        return analysis_prompt
 
     def daily_analysis(self, date) -> Dict:
         # Store current date for logging

@@ -239,3 +239,135 @@ usage_examples:
 
     # Check if regime labels should be included
     include_regime = prompt_config.get('include_regime_label', False)
+
+# Agent Workflow Prompts
+# Extracted from src/agents/market_mechanics_agent.py (November 2025)
+# These prompts are for agent internal workflows, not pattern detection
+agent_prompts:
+
+  # Batch Analysis Prompt - for multi-day comparative analysis
+  batch_analysis:
+    header: |
+      Analyze the following {batch_size} trading days for {symbol}.
+      Look for patterns across all dates and provide comparative analysis.
+
+      DATA FOR EACH DAY:
+
+    day_section_divider: "============================================================"
+
+    error_message: "  ERROR: {error}"
+
+    data_fields:
+      - "  Total GEX: ${total_gamma:,.0f}"
+      - "  Spot Price: ${spot_price:.2f}"
+      - "  Flip Point: ${flip_point:.2f}"
+      - "  Regime: {regime}"
+
+    patterns_line: "  Patterns Detected: {patterns}"
+
+    footer: |
+      ============================================================
+      QUESTIONS TO ANSWER:
+      1. What patterns do you see across these dates?
+      2. Are there consistent mechanics (WHO forcing WHOM to do WHAT)?
+      3. What is the highest confidence signal across all dates?
+      4. Do you see any temporal patterns (e.g., weekly effects)?
+
+      IMPORTANT: Return your analysis in JSON format with this structure:
+      {{
+        "overall_analysis": "Your overall analysis here",
+        "individual_days": {{
+          "DATE_KEY": {{
+            "who": "Identify the forcing party",
+            "whom": "Who is being forced",
+            "what": "Specific forced action",
+            "mechanics": "Brief causal chain",
+            "confidence": 0-100 (numeric)
+          }}
+        }}
+      }}
+
+      Use the obfuscated date keys (e.g., "Day T+0") as the DATE_KEY.
+      Confidence must be a number 0-100.
+
+  # Experiment Planning Prompt - for autonomous tool selection
+  experiment_planning:
+    header: |
+      You are an autonomous market analysis agent. Analyze this experiment request and decide what tools and data are needed.
+
+      EXPERIMENT REQUEST: {experiment_description}
+      DATE: {date}
+
+    tools_section: |
+      AVAILABLE TOOLS:
+      1. fetch_options_data(symbol, date) - Get options chain data
+      2. calculate_gamma_exposure(options_data) - Calculate GEX metrics
+      3. fetch_market_data(symbol, date) - Get underlying price/volume data
+      4. enhanced_pattern_detector - Detect strike-level patterns
+      5. daily_analysis - Full comprehensive analysis
+
+    decision_framework: |
+      DECISION FRAMEWORK:
+      - For gamma/GEX analysis: Need options data + GEX calculation
+      - For pattern detection: Need options data + pattern analysis
+      - For volatility analysis: Need market data + options data
+      - For timing studies: Need intraday data consideration
+      - For strike analysis: Need detailed strike-level data
+
+    response_format: |
+      Respond with a JSON plan:
+      {{
+          "experiment_type": "gamma_pinning|volatility_analysis|pattern_detection|comprehensive",
+          "required_tools": ["tool1", "tool2", ...],
+          "data_requirements": ["options_chain", "market_data", "strike_details"],
+          "analysis_focus": "What to focus the analysis on",
+          "reasoning": "Why these tools are needed"
+      }}
+
+  # Experiment Analysis Prompt - for interpreting experiment results
+  experiment_analysis:
+    header: |
+      You are analyzing market data for this experiment: {experiment_description}
+
+      TOOL PLAN EXECUTED: {tool_plan_reasoning}
+      EXPERIMENT FOCUS: {analysis_focus}
+
+      DATA COLLECTED:
+
+    gex_metrics_section: |
+      GEX METRICS:
+      - Total Gamma: ${total_gamma:,.0f}
+      - Net GEX: ${net_gex:,.0f}
+      - Spot Price: ${spot_price:.2f}
+      - Gamma Flip Point: ${gamma_flip_point:.2f}
+
+    patterns_section: |
+      PATTERNS DETECTED: {pattern_count} patterns found
+      Key Patterns: {key_patterns}
+
+    analysis_requirements: |
+      ANALYSIS REQUIREMENTS:
+      1. Interpret findings specifically for: {experiment_description}
+      2. Provide WHO/WHOM/WHAT market mechanics
+      3. Generate confidence score (0-100%)
+      4. Suggest actionable trading signal if applicable
+      5. Explain reasoning in context of the experiment
+
+    response_format: |
+      Respond with JSON:
+      {{
+          "experiment_type": "{experiment_type}",
+          "mechanics_interpretation": {{
+              "who": "Primary market actor",
+              "whom": "Who they're acting against",
+              "what": "What action is being forced",
+              "confidence": 85
+          }},
+          "key_findings": ["finding1", "finding2"],
+          "actionable_signal": {{
+              "action": "buy|sell|wait",
+              "confidence": 80,
+              "rationale": "Why this signal makes sense"
+          }},
+          "experiment_specific_insights": "Analysis specific to the experiment request"
+      }}
