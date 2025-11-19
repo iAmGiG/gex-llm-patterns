@@ -8,11 +8,13 @@
 
 ## Navigation Guide
 
-**START HERE**: 
+**START HERE**:
+
 1. **[PHASE1_DOCUMENTATION_INDEX.md](PHASE1_DOCUMENTATION_INDEX.md)** - Master reader's guide
 2. Choose Quick Start, Standard Review, or Deep Dive path
 
 **QUICK REFERENCE**:
+
 - [00_PHASE1_QUICK_SUMMARY.md](validation/00_PHASE1_QUICK_SUMMARY.md) - 5 minute overview
 - [03_DETECTION_RATE_TL_DR.md](validation/03_DETECTION_RATE_TL_DR.md) - 1 page on detection rate
 
