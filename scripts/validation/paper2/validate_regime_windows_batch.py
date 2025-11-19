@@ -4,10 +4,39 @@ Batch API wrapper for validate_regime_windows.py
 
 Provides CLI interface for OpenAI Batch API mode for regime validation.
 
-Usage (submit batch):
+UPGRADED (November 19, 2025): Now supports phase transformations for negative controls:
+  - Phase 1 (default): Normal regime validation with real GEX data
+  - Phase 2a (--phase shuffle): Shuffle GEX day order (destroys temporal structure)
+  - Phase 2b (--phase transitional): Filter for high sign-flip windows (7-10 flips)
+  - Phase 2c (--phase low-magnitude): Scale GEX values down by 75% (<$3B avg)
+
+All phases use REAL market data from historical database (no synthetic data).
+
+Usage (Phase 1 - normal validation):
     python validate_regime_windows_batch.py \\
       --start-date 2024-01-02 \\
       --end-date 2024-03-29 \\
+      --submit
+
+Usage (Phase 2a - shuffled negative control):
+    python validate_regime_windows_batch.py \\
+      --start-date 2024-01-02 \\
+      --end-date 2024-03-29 \\
+      --phase shuffle \\
+      --submit
+
+Usage (Phase 2b - transitional negative control):
+    python validate_regime_windows_batch.py \\
+      --start-date 2024-01-02 \\
+      --end-date 2024-03-29 \\
+      --phase transitional \\
+      --submit
+
+Usage (Phase 2c - low-magnitude negative control):
+    python validate_regime_windows_batch.py \\
+      --start-date 2024-01-02 \\
+      --end-date 2024-03-29 \\
+      --phase low-magnitude \\
       --submit
 
 Usage (poll batch):
@@ -21,10 +50,11 @@ Usage (retrieve results):
       --retrieve
 
 Cost Savings:
-    - Phase 1 (32 windows): $2.50 → $1.25 (save $1.25)
-    - Phase 3 (223 windows): $18 → $9 (save $9)
-    - Phase 4 (223 windows): $18 → $9 (save $9)
-    - Total: ~$19 savings across all phases
+    - Phase 1 (52 windows): $1.62 → $0.81 (save $0.81)
+    - Phase 2 (30 windows): $0.96 → $0.48 (save $0.48)
+    - Phase 3 (223 windows): $3.50 → $1.75 (save $1.75)
+    - Phase 4 (223 windows): $3.50 → $1.75 (save $1.75)
+    - Total: ~$4.79 savings across all phases
 
 Related: Issue #112 - OpenAI Batch API for cost optimization
 """
@@ -37,6 +67,7 @@ from src.validation.batch_regime_validator import BatchRegimeValidator
 import argparse
 import sys
 import logging
+import random
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
@@ -54,10 +85,11 @@ def prepare_windows(
     end_date: str,
     symbol: str = "SPY",
     window_size: int = 30,
-    sample_every_n: int = 1
+    sample_every_n: int = 1,
+    phase: str = None
 ) -> List[Dict]:
     """
-    Prepare regime windows for batch submission.
+    Prepare regime windows for batch submission with optional transformations.
 
     Args:
         start_date: Start date (YYYY-MM-DD)
@@ -65,11 +97,19 @@ def prepare_windows(
         symbol: Ticker symbol (default SPY)
         window_size: Regime window size (default 30)
         sample_every_n: Sample every N days (default 1 = all days)
+        phase: Transformation phase (None, 'shuffle', 'transitional', 'low-magnitude')
 
     Returns:
-        List of window dicts with 'end_date' and 'gex_values'
+        List of window dicts with 'end_date' and 'gex_sequence'
+
+    Phase Transformations:
+        - None: Normal validation (Phase 1, 3, 4)
+        - 'shuffle': Randomize GEX day order (Phase 2a - destroys temporal structure)
+        - 'transitional': Filter for 7-10 sign flip windows (Phase 2b - tests stability criterion)
+        - 'low-magnitude': Scale GEX down 75% (Phase 2c - tests magnitude threshold)
     """
-    logger.info(f"Preparing windows: {start_date} to {end_date}")
+    phase_label = phase if phase else "normal"
+    logger.info(f"Preparing windows: {start_date} to {end_date} (phase: {phase_label})")
 
     cache_manager = UnifiedCacheManager()
     gex_fetcher = SequentialGEXFetcher(
@@ -148,11 +188,41 @@ def prepare_windows(
             }
             gex_sequence_obfuscated.append(obfuscated_day)
 
+        # Apply phase transformations (Phase 2 negative controls)
+        if phase == 'shuffle':
+            # Phase 2a: Randomize day order (destroys temporal structure)
+            # Keep dates labeled correctly (T-29 to T+0) but shuffle GEX values
+            gex_values = [day['net_gex_usd'] for day in gex_sequence_obfuscated]
+            random.shuffle(gex_values)
+            for j, day in enumerate(gex_sequence_obfuscated):
+                day['net_gex_usd'] = gex_values[j]
+
+        elif phase == 'transitional':
+            # Phase 2b: Filter for windows with 7-10 sign flips
+            # Count sign flips in current window
+            sign_flips = sum(1 for k in range(1, len(gex_sequence_obfuscated))
+                           if (gex_sequence_obfuscated[k]['net_gex_usd'] > 0) !=
+                              (gex_sequence_obfuscated[k-1]['net_gex_usd'] > 0))
+
+            # Skip windows that don't meet transitional criteria (7-10 flips)
+            if sign_flips < 7 or sign_flips > 10:
+                logger.debug(f"Window {end_date_window}: {sign_flips} flips, skipping (need 7-10)")
+                continue
+
+        elif phase == 'low-magnitude':
+            # Phase 2c: Scale GEX down by 75% (makes avg ~$3B from ~$12B)
+            scale_factor = 0.25
+            for day in gex_sequence_obfuscated:
+                day['net_gex_usd'] *= scale_factor
+                day['positive_gex'] *= scale_factor
+                day['negative_gex'] *= scale_factor
+
         windows.append({
             "end_date": end_date_window,
-            # Full obfuscated sequence (not just values)
+            # Full obfuscated sequence (possibly transformed)
             "gex_sequence": gex_sequence_obfuscated,
-            "start_date": gex_sequence[0]['date'] if gex_sequence else None
+            "start_date": gex_sequence[0]['date'] if gex_sequence else None,
+            "phase": phase if phase else "normal"
         })
 
     logger.info(f"Prepared {len(windows)} valid windows for batch")
@@ -163,38 +233,52 @@ def submit_batch_job(
     start_date: str,
     end_date: str,
     symbol: str = "SPY",
-    sample_every_n: int = 1
+    sample_every_n: int = 1,
+    phase: str = None
 ) -> str:
     """
-    Prepare and submit batch job.
+    Prepare and submit batch job with optional phase transformation.
 
     Args:
         start_date: Start date (YYYY-MM-DD)
         end_date: End date (YYYY-MM-DD)
         symbol: Ticker symbol (default SPY)
         sample_every_n: Sample every N days (default 1)
+        phase: Transformation phase (None, 'shuffle', 'transitional', 'low-magnitude')
 
     Returns:
         Batch job ID
-    """
-    logger.info(f"Submitting batch job: {start_date} to {end_date}")
 
-    # Prepare windows
-    windows = prepare_windows(start_date, end_date,
-                              symbol, sample_every_n=sample_every_n)
+    Phase Transformations:
+        - None: Normal regime validation (Phase 1, 3, 4)
+        - 'shuffle': Randomize GEX day order (Phase 2a)
+        - 'transitional': Filter for 7-10 sign flip windows (Phase 2b)
+        - 'low-magnitude': Scale GEX down 75% (Phase 2c)
+    """
+    phase_label = phase if phase else "normal"
+    logger.info(f"📊 Submitting batch job: {start_date} to {end_date}")
+    logger.info(f"📊 Phase: {phase_label}")
+
+    # Prepare windows with phase transformation
+    windows = prepare_windows(start_date, end_date, symbol,
+                              sample_every_n=sample_every_n, phase=phase)
 
     if not windows:
-        logger.error("No valid windows prepared - cannot submit batch")
+        logger.error("❌ No valid windows prepared - cannot submit batch")
         return None
 
-    logger.info(f"Submitting {len(windows)} windows")
+    logger.info(f"✅ Prepared {len(windows)} windows for submission")
 
     # Create validator and prepare batch file
     validator = BatchRegimeValidator()
     batch_file = validator.prepare_batch_file(windows)
 
-    # Submit batch
-    description = f"Regime validation {start_date} to {end_date} ({len(windows)} windows)"
+    # Submit batch with phase-specific description
+    if phase:
+        description = f"Phase 2 ({phase}): {start_date} to {end_date} ({len(windows)} windows)"
+    else:
+        description = f"Regime validation {start_date} to {end_date} ({len(windows)} windows)"
+
     batch_id = validator.submit_batch(batch_file, description=description)
 
     logger.info(f"✅ Batch submitted successfully!")
@@ -327,6 +411,8 @@ Cost savings: 50% reduction ($0.15 vs $0.30 per 1M tokens)
                         help="Ticker symbol (default: SPY)")
     parser.add_argument("--sample-every-n", type=int, default=1,
                         help="Sample every N days (default: 1)")
+    parser.add_argument("--phase", type=str, choices=['shuffle', 'transitional', 'low-magnitude'],
+                        help="Phase 2 transformation: shuffle (2a), transitional (2b), low-magnitude (2c)")
 
     parser.add_argument("--submit", action="store_true",
                         help="Prepare and submit batch job")
@@ -351,7 +437,7 @@ Cost savings: 50% reduction ($0.15 vs $0.30 per 1M tokens)
         if not args.start_date or not args.end_date:
             parser.error("--submit requires --start-date and --end-date")
         submit_batch_job(args.start_date, args.end_date,
-                         args.symbol, args.sample_every_n)
+                         args.symbol, args.sample_every_n, args.phase)
 
     elif args.poll:
         if not args.batch_id:
