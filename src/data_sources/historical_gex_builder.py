@@ -462,12 +462,14 @@ class HistoricalGEXDatabaseBuilder:
                 
                 # Batch insert each type
                 if gex_ops:
+                    # Issue #138: Updated INSERT to include dual GEX columns
                     cursor.executemany('''
                         INSERT OR REPLACE INTO daily_gex_metrics
                         (symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
                          gamma_flip_point, flip_ratio, gex_regime, data_quality_score,
-                         options_count, validation_status, created_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                         options_count, validation_status, gex_oi, gex_volume,
+                         activity_ratio, economic_regime, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', gex_ops)
                 
                 if strike_ops:
@@ -655,6 +657,8 @@ class HistoricalGEXDatabaseBuilder:
         Calculate complete GEX profile for a trading day with validation.
 
         CRITICAL: Must use calculate_dealer_gamma_exposure() to match validation pipeline.
+
+        Issue #138: Now also calculates dual GEX metrics (GEX_OI and GEX_Volume).
         """
         try:
             # Calculate dealer GEX using the SAME method as validation pipeline
@@ -677,6 +681,42 @@ class HistoricalGEXDatabaseBuilder:
             puts = gex_df[gex_df['type'] == 'put']
             total_call_gex = calls['dealer_gex'].sum() if len(calls) > 0 else 0
             total_put_gex = puts['dealer_gex'].sum() if len(puts) > 0 else 0
+
+            # Issue #138: Calculate dual GEX metrics (structural vs economic)
+            dual_gex = None
+            economic_regime = None
+            if 'volume' in options_data.columns:
+                try:
+                    dual_result = self.gex_calc.calculate_dual_gex(
+                        options_data,
+                        underlying_price=spot_price,
+                        open_interest_multiplier=100
+                    )
+                    dual_gex = {
+                        'gex_oi': float(dual_result['gex_oi']),
+                        'gex_volume': float(dual_result['gex_volume']),
+                        'activity_ratio': float(dual_result['activity_ratio'])
+                    }
+
+                    # Classify economic regime using RegimeClassifier
+                    from src.validation.regime_classifier import RegimeClassifier
+                    classifier = RegimeClassifier()
+                    regime_result = classifier.classify_economic_regime(
+                        dual_result['gex_oi'],
+                        dual_result['gex_volume']
+                    )
+                    economic_regime = regime_result['regime']
+
+                    self.logger.info(
+                        f"Dual GEX calculated for {symbol} {date}: "
+                        f"OI=${dual_gex['gex_oi']/1e9:.2f}B, "
+                        f"Vol=${dual_gex['gex_volume']/1e9:.2f}B, "
+                        f"Regime={economic_regime}"
+                    )
+                except Exception as e:
+                    self.logger.warning(f"Could not calculate dual GEX for {symbol} {date}: {e}")
+                    dual_gex = None
+                    economic_regime = None
 
             # Calculate strike-level GEX for database storage
             gex_by_strike = {}
@@ -730,7 +770,12 @@ class HistoricalGEXDatabaseBuilder:
                 'gex_regime': gex_regime,
                 'strikes_detail': gex_by_strike,
                 'data_quality_score': quality_score,
-                'options_count': options_count
+                'options_count': options_count,
+                # Issue #138: Add dual GEX metrics (nullable for backward compatibility)
+                'gex_oi': dual_gex['gex_oi'] if dual_gex else None,
+                'gex_volume': dual_gex['gex_volume'] if dual_gex else None,
+                'activity_ratio': dual_gex['activity_ratio'] if dual_gex else None,
+                'economic_regime': economic_regime
             }
 
             # Validate results
@@ -804,11 +849,14 @@ class HistoricalGEXDatabaseBuilder:
             self.logger.error(f"Error detecting patterns: {e}")
             return []
     
-    def store_daily_analysis_batch(self, gex_profile: Dict, patterns: List[Dict], 
+    def store_daily_analysis_batch(self, gex_profile: Dict, patterns: List[Dict],
                                    fed_context: Optional[Dict]):
-        """Store daily analysis using batch operations."""
+        """Store daily analysis using batch operations.
+
+        Issue #138: Now stores dual GEX metrics (gex_oi, gex_volume, activity_ratio, economic_regime).
+        """
         try:
-            # Add main GEX metrics to batch
+            # Add main GEX metrics to batch (including Issue #138 dual metrics)
             gex_data = (
                 safe_convert_for_sqlite(gex_profile['symbol']),
                 safe_convert_for_sqlite(gex_profile['date']),
@@ -822,6 +870,11 @@ class HistoricalGEXDatabaseBuilder:
                 safe_convert_for_sqlite(gex_profile['data_quality_score']),
                 safe_convert_for_sqlite(gex_profile['options_count']),
                 safe_convert_for_sqlite(gex_profile.get('validation_status', 'valid')),
+                # Issue #138: Add dual GEX metrics (nullable)
+                safe_convert_for_sqlite(gex_profile.get('gex_oi')),
+                safe_convert_for_sqlite(gex_profile.get('gex_volume')),
+                safe_convert_for_sqlite(gex_profile.get('activity_ratio')),
+                safe_convert_for_sqlite(gex_profile.get('economic_regime')),
                 now_iso()
             )
             self.add_to_batch('gex', gex_data)
