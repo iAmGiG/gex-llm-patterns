@@ -256,6 +256,191 @@ class RegimeClassifier:
         # Otherwise transitional (frequent flips, no persistent direction)
         return "transitional"
 
+    def classify_window_dual(
+        self,
+        gex_sequence: List[Dict],
+        gex_calc=None
+    ) -> Dict[str, any]:
+        """
+        Classify 30-day window with both structural and economic regimes (Issue #138).
+
+        Combines:
+        1. Structural persistence (from classify_window) - structural constraint
+        2. Economic activity (from classify_economic_regime) - hedging intensity
+
+        Purpose: Explain detection vs profitability divergence
+        Example:
+        - Q1 2024: persistent_negative + elevated_risk → HIGH profitability (+21bp)
+        - Q4 2024: persistent_negative + high_fragility → LOW profitability (-1bp)
+
+        Args:
+            gex_sequence: List of 30 daily GEX observations
+                Each dict must have:
+                - 'net_gex' or 'gex_oi': Structural GEX (required)
+                - 'gex_volume': Economic GEX (optional, for dual analysis)
+            gex_calc: Optional GEXCalculator instance for dual GEX calculation
+
+        Returns:
+            dict with:
+                - structural_regime: str (persistent_positive/negative, transitional, low_conviction)
+                - economic_regime: dict (from classify_economic_regime, if dual data available)
+                - profitability_expectation: str (based on economic regime)
+                - is_persistent: bool (structural constraint present)
+                - should_detect: bool (LLM should detect structural constraint)
+                - metrics: RegimeMetrics (structural)
+                - has_dual_metrics: bool (whether economic regime is available)
+        """
+        if len(gex_sequence) != 30:
+            raise ValueError(
+                f"Expected 30-day window, got {len(gex_sequence)} days"
+            )
+
+        # Step 1: Classify structural persistence (existing logic)
+        structural_classification = self.classify_window(gex_sequence)
+
+        # Step 2: Check if dual GEX metrics are available
+        has_dual_metrics = all(
+            'gex_volume' in day for day in gex_sequence
+        )
+
+        if has_dual_metrics:
+            # Calculate average dual GEX metrics over 30 days
+            avg_gex_oi = np.mean([
+                day.get('gex_oi', day.get('net_gex', 0))
+                for day in gex_sequence
+            ])
+            avg_gex_volume = np.mean([
+                day.get('gex_volume', 0)
+                for day in gex_sequence
+            ])
+
+            # Classify economic regime
+            economic_regime = self.classify_economic_regime(
+                avg_gex_oi,
+                avg_gex_volume
+            )
+
+            profitability_expectation = economic_regime['expected_profitability']
+
+            logger.info(
+                f"Dual classification complete: "
+                f"Structural={structural_classification['regime_type']}, "
+                f"Economic={economic_regime['regime']}, "
+                f"Expected Profit={profitability_expectation}"
+            )
+        else:
+            # No dual metrics available
+            economic_regime = None
+            profitability_expectation = 'unknown'
+
+            logger.warning(
+                "Dual GEX metrics not available - economic regime not classified"
+            )
+
+        return {
+            'structural_regime': structural_classification['regime_type'],
+            'economic_regime': economic_regime,
+            'profitability_expectation': profitability_expectation,
+            'is_persistent': structural_classification['is_persistent'],
+            'should_detect': structural_classification['should_detect'],
+            'metrics': structural_classification['metrics'],
+            'has_dual_metrics': has_dual_metrics,
+            'window_size': 30
+        }
+
+    def classify_economic_regime(
+        self,
+        gex_oi: float,
+        gex_volume: float,
+        volume_threshold: float = 3e9
+    ) -> Dict[str, any]:
+        """
+        Classify economic regime using dual GEX metrics (Issue #138).
+
+        4-Regime Framework (from @TailThatWagsDog):
+        1. HIGH_FRAGILITY: GEX_OI negative, GEX_Volume near zero
+           - Dealers have exposure but aren't actively hedging
+           - Low profitability despite detection
+        2. ELEVATED_RISK: GEX_OI negative, GEX_Volume negative
+           - Dealers have exposure AND actively hedging
+           - High profitability
+        3. STABLE_POSITIVE: Both positive
+           - Dealers stabilizing market
+           - Low volatility environment
+        4. TRANSITIONAL: Mixed signals
+           - Regime shift in progress
+           - Uncertain profitability
+
+        Args:
+            gex_oi: Structural positioning (open interest weighted)
+            gex_volume: Economic activity (volume weighted)
+            volume_threshold: Minimum GEX_Volume for "active" hedging (default $3B)
+
+        Returns:
+            dict with:
+                - regime: str (high_fragility, elevated_risk, stable_positive, transitional)
+                - constraint_present: bool (structural constraint exists)
+                - economic_activity: str (low, high, stabilizing, unstable)
+                - expected_profitability: str (low, high, low_volatility, uncertain)
+                - gex_oi: float (structural)
+                - gex_volume: float (activity)
+                - activity_ratio: float (hedging intensity)
+        """
+        # Calculate activity ratio
+        activity_ratio = abs(
+            gex_volume / gex_oi) if gex_oi != 0 else 0.0
+
+        # Classify regime
+        if gex_oi < 0 and abs(gex_volume) < volume_threshold:
+            # HIGH_FRAGILITY: Constraint exists but no active hedging
+            regime = 'high_fragility'
+            constraint_present = True
+            economic_activity = 'low'
+            expected_profitability = 'low'
+            description = "Dealers have short gamma exposure but minimal hedging activity"
+
+        elif gex_oi < 0 and gex_volume < 0:
+            # ELEVATED_RISK: Constraint exists AND active hedging
+            regime = 'elevated_risk'
+            constraint_present = True
+            economic_activity = 'high'
+            expected_profitability = 'high'
+            description = "Dealers actively hedging short gamma exposure"
+
+        elif gex_oi > 0 and gex_volume > 0:
+            # STABLE_POSITIVE: Dealers stabilizing market
+            regime = 'stable_positive'
+            constraint_present = False
+            economic_activity = 'stabilizing'
+            expected_profitability = 'low_volatility'
+            description = "Dealers long gamma, suppressing volatility"
+
+        else:
+            # TRANSITIONAL: Mixed signals
+            regime = 'transitional'
+            constraint_present = 'mixed'
+            economic_activity = 'unstable'
+            expected_profitability = 'uncertain'
+            description = "Mixed signals - regime shift in progress"
+
+        logger.info(
+            f"Economic regime: {regime.upper()} "
+            f"(GEX_OI=${gex_oi/1e9:.2f}B, GEX_Volume=${gex_volume/1e9:.2f}B, "
+            f"Activity={activity_ratio:.2f})"
+        )
+
+        return {
+            'regime': regime,
+            'constraint_present': constraint_present,
+            'economic_activity': economic_activity,
+            'expected_profitability': expected_profitability,
+            'description': description,
+            'gex_oi': gex_oi,
+            'gex_volume': gex_volume,
+            'activity_ratio': activity_ratio,
+            'volume_threshold': volume_threshold
+        }
+
     def get_classification_summary(
         self,
         classification: Dict

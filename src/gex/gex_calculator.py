@@ -306,6 +306,107 @@ class GEXCalculator:
             'total_contracts': len(gex_data)
         }
 
+    def calculate_dual_gex(self,
+                           options_data: pd.DataFrame,
+                           underlying_price: float,
+                           open_interest_multiplier: int = 100) -> Dict[str, Any]:
+        """
+        Calculate dual GEX metrics: GEX_OI (structural) and GEX_Volume (activity).
+
+        Issue #138: Dual GEX Framework
+        - GEX_OI: Weighted by open_interest (what dealers HAVE)
+        - GEX_Volume: Weighted by daily volume (what dealers are DOING)
+
+        Purpose: Explain why detection rate stays constant but profitability varies.
+        Example: Q1 2024 (+21bp alpha) vs Q4 2024 (-1bp alpha) despite 100% detection.
+
+        Args:
+            options_data: DataFrame with options data (must include 'volume' field)
+            underlying_price: Current price of underlying
+            open_interest_multiplier: Contract size multiplier (default 100)
+
+        Returns:
+            Dict with:
+                - gex_oi: Structural positioning (open interest weighted)
+                - gex_volume: Economic activity (volume weighted)
+                - activity_ratio: |GEX_Volume / GEX_OI| (hedging intensity)
+                - net_gex: Backward compatible aggregate (same as gex_oi)
+                - gex_data_oi: DataFrame with per-contract GEX_OI
+                - gex_data_volume: DataFrame with per-contract GEX_Volume (if volume available)
+        """
+        if options_data.empty:
+            logger.warning("Empty options data provided to dual GEX calculator")
+            return {
+                'gex_oi': 0.0,
+                'gex_volume': 0.0,
+                'net_gex': 0.0,
+                'activity_ratio': 0.0,
+                'gex_data_oi': pd.DataFrame(),
+                'gex_data_volume': pd.DataFrame(),
+                'has_volume_data': False
+            }
+
+        # Calculate GEX_OI (structural positioning - existing method)
+        gex_data_oi = self.calculate_dealer_gamma_exposure(
+            options_data, underlying_price, open_interest_multiplier
+        )
+
+        # Calculate GEX_OI aggregate
+        gex_oi = self.calculate_net_gex(gex_data_oi)
+
+        # Check if volume data is available
+        has_volume = 'volume' in options_data.columns
+
+        if has_volume:
+            # Calculate GEX_Volume (economic activity)
+            gex_data_volume = gex_data_oi.copy()
+
+            # Replace open_interest with volume in GEX calculation
+            # GEX_Volume = -1 * volume * gamma * S^2 * 0.01 * multiplier
+            gex_data_volume['dealer_gex'] = (
+                -1 * gex_data_volume['volume'] *
+                gex_data_volume['bs_gamma'] *
+                (underlying_price ** 2) *
+                self.percentage_move_multiplier *
+                open_interest_multiplier
+            )
+
+            # Re-apply contract type weighting
+            gex_data_volume['weighted_gex'] = gex_data_volume['dealer_gex'] * np.where(
+                gex_data_volume['type'] == 'call', 1, -1
+            )
+
+            # Calculate GEX_Volume aggregate
+            gex_volume = gex_data_volume['weighted_gex'].sum()
+
+            # Calculate activity ratio (hedging intensity)
+            activity_ratio = abs(
+                gex_volume / gex_oi) if gex_oi != 0 else 0.0
+
+            logger.info(
+                f"Dual GEX calculated: GEX_OI=${gex_oi/1e9:.2f}B, "
+                f"GEX_Volume=${gex_volume/1e9:.2f}B, "
+                f"Activity Ratio={activity_ratio:.2f}"
+            )
+        else:
+            logger.warning(
+                "Volume data not available - GEX_Volume set to 0.0")
+            gex_data_volume = pd.DataFrame()
+            gex_volume = 0.0
+            activity_ratio = 0.0
+
+        return {
+            'gex_oi': gex_oi,
+            'gex_volume': gex_volume,
+            'net_gex': gex_oi,  # Backward compatible
+            'activity_ratio': activity_ratio,
+            'gex_data_oi': gex_data_oi,
+            'gex_data_volume': gex_data_volume,
+            'has_volume_data': has_volume,
+            'underlying_price': underlying_price,
+            'calculation_timestamp': get_datetime_now()
+        }
+
     def analyze_gex_regime(self, net_gex: float, underlying_price: float) -> Dict[str, Any]:
         """
         Determine market regime based on GEX levels.
