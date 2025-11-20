@@ -67,6 +67,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 **⚠️ STRATEGIC PIVOT (November 5, 2025)**
 
 **Original Plan**: 5-day trajectory analysis (accumulation/relief/reversal)
+
 - Result: 98-100% detection across all conditions (2020 weak GEX vs 2024 strong GEX)
 - Finding: Detects universal daily hedging (trivial), not distinctive patterns (interesting)
 - Decision: Pivot to 30-day regime windows for meaningful selectivity (30-50% expected detection)
@@ -104,6 +105,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 4. Temporal extension of obfuscation framework (30-day, not 5-day)
 
 **Validation Status** (Nov 19, 2025):
+
 - ✅ Phase 1 (Q1 2024 Baseline): 71.2% detection (37/52 windows) - Borderline high
 - ✅ Phase 2 (Negative Controls): All tests PASSED
   - Phase 2a (Shuffle): 61.1% Q1 2024 vs 12.1% 2020 (5x FP difference proves selectivity)
@@ -113,6 +115,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 - 🔮 Phase 4 (2020 Comparison): Planned (0DTE hypothesis test)
 
 **Implementation Complete** (Nov 6-19, 2025):
+
 - ✅ RegimeClassifier module (332 lines)
 - ✅ SequentialGEXFetcher updated (window_size=30 parameter)
 - ✅ Regime detection prompt v1
@@ -120,6 +123,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 - ✅ Phase 2 negative control generators (shuffle, transitional, low-magnitude)
 
 **Documentation**:
+
 - `docs/papers/paper2/` - Complete Paper #2 documentation
 - `docs/papers/paper2/methodology.md` - Regime criteria and framework
 - `docs/papers/paper2/validation_strategy.md` - 4-phase validation roadmap

@@ -46,6 +46,7 @@
 **TO**: 30-day regime persistence (30-50% target - selective)
 
 **Why?**
+
 - 5-day windows detected universal daily hedging (known since 1973)
 - 30-day windows detect persistent structural regimes (meaningful contribution)
 - User insight: "Nobody trades 5-day patterns, market regimes are 30 days"
@@ -65,17 +66,20 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 ### Why 30-50% Detection is Success
 
 **NOT 98-100%** (universal patterns - trivial contribution):
+
 - Detects daily hedging flows present in all regimes
 - No discrimination between market conditions
 - Unpublishable (not a new finding)
 
 **YES 30-50%** (selective detection - meaningful contribution):
+
 - Distinguishes persistent regimes from transitional periods
 - Can test 0DTE hypothesis (compare 2020 vs 2024)
 - Can identify regime boundaries for sector rotation (Paper #3)
 - Publishable (new methodology with discrimination power)
 
 **Q1 2024 Result**: 71.2% detection (borderline high but acceptable)
+
 - Q1 was anomalously persistent (sustained positive gamma)
 - Framework IS selective (39-point persistence gap)
 - Expected regression to 30-50% in full year
@@ -91,6 +95,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Cost**: $0.81 (Batch API)
 
 **Selectivity Metrics** (Detected vs Rejected):
+
 - **Persistence gap**: 39 percentage points (96% vs 57%)
 - **Confidence gap**: 53.5 points (93.0 vs 39.5)
 - **Magnitude gap**: $6.84B ($11.66B vs $4.82B)
@@ -108,6 +113,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Purpose**: Validate framework has <10% false positive rate before expensive Phase 3
 
 **Three Tests**:
+
 1. **Shuffle** (Phase 2a): Randomize GEX day order → expect 0% detection
 2. **Transitional** (Phase 2b): Filter for 7-10 flip windows → expect 0-10% detection
 3. **Low-Magnitude** (Phase 2c): Scale GEX down 75% → expect 0-10% detection
@@ -118,6 +124,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Pass Criteria**: <10% false positive rate across all 3 tests
 
 **Documentation**:
+
 - `CURRENT_PHASE.md` - Execution plan (this is our current focus)
 - `PHASE2_IMPLEMENTATION_SUMMARY.md` - Technical workflow
 - `4_phase2_execution/` _(to be created during consolidation)_
@@ -156,6 +163,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Problem**: How do we know LLMs detect structural mechanics vs memorized patterns?
 
 **Solution**: Strip all temporal/contextual information
+
 - Real dates → "Day T-29" through "Day T+0"
 - Real tickers → Generic labels
 - No event context (earnings, Fed meetings, etc.)
@@ -165,6 +173,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 ### Mechanical Criteria Guidance
 
 **Finding** (Issue #110): Mechanical guidance > qualitative guidance
+
 - **Mechanical v3a**: 20% false positive rate (cite specific thresholds)
 - **Qualitative v3b**: 50% false positive rate (describe patterns)
 - **Winner**: Mechanical (provides clear decision boundaries)
@@ -174,6 +183,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 ### Batch API Cost Optimization
 
 **Achievement** (Issue #112): 50% cost reduction
+
 - **Sync API**: $0.032/window
 - **Batch API**: $0.016/window
 - **Total Savings**: $19.25 across Paper #2 validation
@@ -191,6 +201,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Answer**: GEX_OI (structural positioning) vs GEX_VOL (economic activity)
 
 **Four Regimes**:
+
 - **HIGH_FRAGILITY**: GEX_OI negative + GEX_VOL near zero → Low profitability
 - **ELEVATED_RISK**: GEX_OI negative + GEX_VOL negative → High profitability
 - **STABLE_POSITIVE**: Both positive → Low volatility
@@ -205,18 +216,22 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 ### Other Extensions (Backlog)
 
 **Multi-Pattern Interference** (Issue #131)
+
 - Can LLMs detect multiple regimes simultaneously?
 - Requires Phase 3 baseline
 
 **Alternative Obfuscation** (Issue #133)
+
 - Robustness testing (reverse chronological, percentage changes, z-scores)
 - Requires Phase 3 baseline
 
 **Multi-Ticker** (Issue #87)
+
 - Generalization to QQQ, IWM, XLE
 - Dissertation Paper #4
 
 **Multi-Year** (Issue #105)
+
 - 2020-2024 comparison (overlaps with Phase 4)
 - 0DTE hypothesis test
 
@@ -269,6 +284,7 @@ cat reports/validation/regime_windows/phase2a*.yaml
 ## Key Insights
 
 ### From Phase 1 Results
+
 1. Q1 2024 was anomalously persistent (71.2% vs 30-50% target)
 2. Framework IS selective (39-point persistence gap, 53.5-point confidence gap)
 3. LLM correctly cites metrics (persistence %, magnitude, flips)
@@ -276,12 +292,14 @@ cat reports/validation/regime_windows/phase2a*.yaml
 5. Expected regression to target in full year
 
 ### From 5-Day Pivot (Issue #111)
+
 1. 5-day windows achieved 98-100% detection (too universal)
 2. Detected universal daily hedging, not persistent regimes
 3. User insight: "Nobody trades 5-day patterns"
 4. 30-day windows expected to be selective (30-50%)
 
 ### From Prompt Calibration (Issue #110)
+
 1. Mechanical guidance reduces false positives 60%
 2. Mechanical v3a: 20% FP vs Qualitative v3b: 50% FP
 3. Clear thresholds prevent LLM hallucination
@@ -292,7 +310,7 @@ cat reports/validation/regime_windows/phase2a*.yaml
 
 ### Current Structure (Pre-Consolidation)
 
-```
+```bash
 docs/papers/paper2/
 ├── README.md (this file)
 ├── ROADMAP.md (issue mapping)
@@ -310,7 +328,7 @@ docs/papers/paper2/
 
 ### Planned Structure (Post-Consolidation)
 
-```
+```bash
 docs/papers/paper2/
 ├── README.md (master index - this file)
 ├── ROADMAP.md (issue mapping + status)

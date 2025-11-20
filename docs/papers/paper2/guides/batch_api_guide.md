@@ -295,7 +295,7 @@ windows:
 
 ### Synchronous (Current)
 
-```
+```yaml
 Submit request 1
 Wait for response 1 (2 min)
 Submit request 2
@@ -307,7 +307,7 @@ Cost: $18
 
 ### Batch (New)
 
-```
+```yaml
 Prepare JSONL file with all 223 requests (2 min)
 Upload file (1 min)
 Submit batch job (1 min)
@@ -323,7 +323,7 @@ Cost: $9
 
 ### Upload Error
 
-```
+```yaml
 Error: Could not upload file
 → Check OpenAI API key
 → Check file size (<512 MB)
@@ -332,7 +332,7 @@ Error: Could not upload file
 
 ### Submission Error
 
-```
+```yaml
 Error: Could not create batch job
 → Check API key has beta access
 → Check batch file format (valid JSONL)
@@ -341,7 +341,7 @@ Error: Could not create batch job
 
 ### Polling Timeout
 
-```
+```yaml
 Error: Batch did not complete within 24 hours
 → Very rare (typical: 1-2 hours)
 → Check batch status manually: openai.beta.batches.retrieve(batch_id)
@@ -350,7 +350,7 @@ Error: Batch did not complete within 24 hours
 
 ### Parse Error
 
-```
+```yaml
 Warning: Failed to parse JSON for window-xyz
 → LLM returned invalid JSON
 → Manually resubmit that window or skip
@@ -359,7 +359,7 @@ Warning: Failed to parse JSON for window-xyz
 
 ### Partial Failure
 
-```
+```yaml
 Results show: Processed: 32, Succeeded: 30, Failed: 2
 → 2 requests failed (rare)
 → Resubmit failed windows individually using sync API

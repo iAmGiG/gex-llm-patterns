@@ -28,9 +28,11 @@
 ## Phase 2a: Shuffled Windows
 
 ### Purpose
+
 Validate framework doesn't detect false regimes in randomized data (temporal structure destroyed).
 
 ### Method
+
 1. Take real 30-day GEX sequences
 2. Randomly shuffle day order (destroys temporal coherence)
 3. Present shuffled sequence to LLM with obfuscation
@@ -46,12 +48,14 @@ Validate framework doesn't detect false regimes in randomized data (temporal str
 **Status**: ⚠️ **High FP, but explained by statistical extremity**
 
 **Why High FP Rate**:
+
 - Detected windows averaged **99.2% persistence** before shuffle
 - Mathematical expectation: `2 × 0.992 × 0.008 × 29 = 0.46 flips`
 - With 0.46 expected flips after shuffle, windows still pass ≤5 flip criterion
 - Framework correctly identifies statistical outliers (windows that remain persistent even shuffled)
 
 **Evidence**:
+
 - Detected windows: 99.2% persistence, 0.4 avg flips, $13.77B magnitude
 - Rejected windows: 63.8% persistence, 13.3 avg flips, $6.84B magnitude
 - **Framework working correctly** - detects windows that were ALREADY extreme
@@ -64,12 +68,14 @@ Validate framework doesn't detect false regimes in randomized data (temporal str
 **Status**: ✅ **PASS** (<15% acceptable FP threshold)
 
 **Why Lower FP Rate**:
+
 - 2020 had normal persistence distribution (not extreme like Q1 2024)
 - 86% of 2020 windows had 0 flips (balanced, not one-sided)
 - Shuffle introduces sign changes that violate persistence criterion
 - **Framework demonstrates selectivity** in normal market conditions
 
 **Comparison**:
+
 | Metric | Q1 2024 | 2020 | Difference |
 |--------|---------|------|------------|
 | Shuffle FP | 61.1% | 12.1% | **5x difference** |
@@ -77,7 +83,9 @@ Validate framework doesn't detect false regimes in randomized data (temporal str
 | Interpretation | Extreme outlier | Normal market | **Proves selectivity** |
 
 ### Decision
+
 ✅ **PASS** - Framework validated across two market regimes
+
 - Q1 2024: High FP due to statistical extremity (not framework failure)
 - 2020: Normal FP rate confirms selectivity
 - 5x difference between extreme and normal proves framework discriminates correctly
@@ -87,15 +95,18 @@ Validate framework doesn't detect false regimes in randomized data (temporal str
 ## Phase 2b: Transitional Windows
 
 ### Purpose
+
 Validate framework correctly rejects windows with frequent sign flips (violates ≤5 flip criterion).
 
 ### Method
+
 1. Take low-flip windows (0-2 flips) as base
 2. Artificially invert 7-10 days' signs to create high volatility
 3. Present modified sequence to LLM
 4. Expected: Framework rejects due to excessive sign flips
 
 **Why Artificial Transformation**:
+
 - No real windows with ≥7 flips exist in entire 2020-2024 dataset
 - Maximum observed flips: 4
 - Needed to create test cases for stability criterion
@@ -110,6 +121,7 @@ Validate framework correctly rejects windows with frequent sign flips (violates 
 **Status**: ✅ **PASS** (perfect rejection)
 
 **LLM Reasoning** (Sample):
+
 - "Sign flips (8) exceed the 5-flip threshold for regime stability"
 - "Frequent direction changes indicate transitional period, not persistent regime"
 - "Despite adequate magnitude ($8.2B), instability prevents regime classification"
@@ -122,7 +134,9 @@ Validate framework correctly rejects windows with frequent sign flips (violates 
 **Status**: ✅ **PASS** (perfect rejection)
 
 ### Decision
+
 ✅ **PASS** - Framework correctly applies stability criterion (≤5 flips)
+
 - 100% rejection rate across both datasets
 - LLM reasoning shows correct criterion application
 - No false positives from high-volatility sequences
@@ -132,9 +146,11 @@ Validate framework correctly rejects windows with frequent sign flips (violates 
 ## Phase 2c: Low-Magnitude Windows
 
 ### Purpose
+
 Validate framework correctly rejects persistent-sign but weak-magnitude windows (violates ≥$5B criterion).
 
 ### Method
+
 1. Take persistent windows with adequate magnitude
 2. Scale GEX values down 75% (e.g., $12B → $3B)
 3. Present scaled sequence to LLM
@@ -150,6 +166,7 @@ Validate framework correctly rejects persistent-sign but weak-magnitude windows 
 **Status**: ✅ **PASS** (perfect rejection)
 
 **LLM Reasoning** (Sample):
+
 - "Average magnitude ($2.8B) below the $5B threshold for significant dealer constraints"
 - "While persistence is adequate (76.7%), insufficient gamma exposure"
 - "Classified as low_conviction - no meaningful regime"
@@ -162,7 +179,9 @@ Validate framework correctly rejects persistent-sign but weak-magnitude windows 
 **Status**: ✅ **PASS** (perfect rejection)
 
 ### Decision
+
 ✅ **PASS** - Framework correctly applies magnitude criterion (≥$5B)
+
 - 100% rejection rate across both datasets
 - LLM reasoning shows correct criterion application
 - No false positives from weak-magnitude sequences
@@ -172,24 +191,30 @@ Validate framework correctly rejects persistent-sign but weak-magnitude windows 
 ## Critical Discovery: Q1 2024 Statistical Extremity
 
 ### Finding
+
 Q1 2024 was not a representative market period for validation purposes.
 
 **Evidence**:
+
 - **Persistence**: 99.2% average in detected windows (27-30 of 30 days same sign)
 - **Sign Flips**: 0.4 average (most windows had 0 flips)
 - **Magnitude**: $13.77B average (2.75x threshold)
 - **Comparison**: 2020 averaged 85% persistence, 2-3 flips, $8-10B magnitude
 
 ### Implication for Phase 1
+
 Phase 1 detection rate (71.2%) was NOT framework over-detection:
+
 - Q1 2024 genuinely had extreme persistent regimes
 - Framework correctly detected statistical outliers
 - High detection reflects market reality, not calibration issues
 
 ### User Insight
+>
 > "I rather be complete than guessing on partials"
 
 **Response**: Expanded Phase 2 to 2020 full year (223 windows each test)
+
 - Cost: $10.02 for comprehensive validation
 - Result: Proved framework selectivity in normal conditions
 - Validated Q1 2024 was anomaly, not representative
@@ -203,6 +228,7 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 **Challenge**: No real windows with ≥7 flips exist in dataset (max = 4 flips)
 
 **Solution**: Transformation approach
+
 ```python
 # 1. Filter for low-flip windows (0-2 flips) as base
 # 2. Randomly select 7-10 days and invert signs
@@ -250,11 +276,13 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 ### Selectivity Proof
 
 **5x FP Difference**:
+
 - Q1 2024 shuffle: 61.1% (extreme persistence)
 - 2020 shuffle: 12.1% (normal persistence)
 - **Ratio**: 5.05x difference
 
 **Interpretation**: Framework correctly discriminates between:
+
 - Statistical outliers (extreme one-sided windows pass even shuffled)
 - Normal regimes (shuffle destroys temporal structure, rejected)
 
@@ -265,20 +293,24 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 **Note**: Chat B renamed batch result files with descriptive names for clarity (November 19, 2025)
 
 ### Q1 2024 Results (2024-01-02 to 2024-03-29)
+
 - `reports/validation/paper2_regime_windows/phase2a_shuffle_2024Q1.yaml` (54 windows)
 - `reports/validation/paper2_regime_windows/phase2b_transitional_2024Q1.yaml` (32 windows)
 - `reports/validation/paper2_regime_windows/phase2c_low_magnitude_2024Q1.yaml` (32 windows)
 
 ### 2020 Results (2020-02-13 to 2020-12-31)
+
 - `reports/validation/paper2_regime_windows/phase2a_shuffle_2020.yaml` (223 windows)
 - `reports/validation/paper2_regime_windows/phase2b_transitional_2020.yaml` (223 windows)
 - `reports/validation/paper2_regime_windows/phase2c_low_magnitude_2020.yaml` (223 windows)
 
 ### Analysis Scripts
+
 - `/tmp/analyze_phase2a.py` (detailed shuffle analysis)
 - `/tmp/check_2024_coverage.py` (data coverage verification)
 
 ### Documentation
+
 - `batch_api/phase2_technical_notes.md` (implementation details)
 
 ---
@@ -300,6 +332,7 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 **Processing Time**: ~2 hours async
 
 **Why Expect Regression**:
+
 - Q1 2024 was extreme outlier (99.2% persistence, 71.2% detection)
 - Q2-Q4 likely more balanced (mix of regimes and transitions)
 - Full year should average to 30-50% target range
@@ -308,6 +341,7 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 ### Confidence Level
 
 **HIGH** - All negative control tests passed:
+
 - Framework correctly rejects shuffled data (normal markets)
 - Framework correctly rejects high-volatility windows (100% rejection)
 - Framework correctly rejects low-magnitude windows (100% rejection)
@@ -347,6 +381,7 @@ Phase 1 detection rate (71.2%) was NOT framework over-detection:
 **Phase 2 validates framework robustness with comprehensive negative controls across two market regimes (Q1 2024 extreme, 2020 normal).**
 
 **Framework correctly**:
+
 - ✅ Rejects randomized data in normal markets (12.1% FP)
 - ✅ Identifies statistical outliers (61.1% FP on extreme persistence)
 - ✅ Applies stability criterion (0% FP on high-flip windows)

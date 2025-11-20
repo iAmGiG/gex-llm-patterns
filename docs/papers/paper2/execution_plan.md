@@ -30,11 +30,13 @@
 **Phase 1 Result**: 71.2% detection (37/52 windows) - Higher than 30-50% target
 
 **Phase 2 Validated**:
+
 - ✅ Framework DOES reject non-regimes (0% FP on transitional/low-magnitude)
 - ✅ Framework IS selective (5x FP difference between extreme and normal markets)
 - ✅ Q1 2024 high detection explained (statistical extremity, not over-detection)
 
 **Key Findings**:
+
 1. Q1 2024 shuffle: 61.1% FP - explained by 99.2% avg persistence (extreme outlier)
 2. 2020 shuffle: 12.1% FP - normal market conditions, acceptable FP rate
 3. Transitional/Low-Magnitude: 0% FP - criteria working perfectly
@@ -91,17 +93,20 @@ python scripts/validation/paper2/validate_regime_windows_batch.py \
 ### Expected Phase 3 Outcomes
 
 **IF Phase 3 shows 30-50% detection**:
+
 1. ✅ Framework working as designed (selective regime identification)
 2. ✅ Q1 was anomalous period, full year more balanced
 3. ✅ Proceed to Phase 4 (2020 comparison, 0DTE hypothesis)
 4. ✅ Begin Phase 1.5 (Issue #138 - Dual GEX extension)
 
 **IF Phase 3 shows >60% detection**:
+
 1. ⚠️ 2024 may be anomalous year overall (0DTE proliferation effect)
 2. ✅ Still proceed to Phase 4 to test 0DTE hypothesis
 3. 🔍 Strengthens motivation for 2020 comparison
 
 **IF Phase 3 shows <20% detection**:
+
 1. ⚠️ Q1 was extreme outlier, rest of year very mixed
 2. ✅ Framework still selective (passed Phase 2)
 3. 🔍 Investigate quarterly characteristics (Q2 vs Q3 vs Q4)
@@ -131,6 +136,7 @@ python scripts/validation/paper2/validate_regime_windows_batch.py \
 ## Extensions (After Phase 3/4)
 
 **Phase 1.5: Dual GEX (Issue #138)** - Explains profitability variance
+
 - **Question**: Why does profitability vary when detection stays constant?
 - **Answer**: GEX_OI (structural) vs GEX_VOL (economic activity) split
 - **Four Regimes**: HIGH_FRAGILITY, ELEVATED_RISK, STABLE_POSITIVE, TRANSITIONAL

@@ -11,6 +11,7 @@
 **Pivot Decision**: Moving from 5-day trajectory analysis (98-100% detection) to 30-day regime windows (30-50% expected detection).
 
 **Rationale**:
+
 - 5-day windows detect daily hedging flows (always present, not research-worthy)
 - 30-day windows detect persistent regimes (sometimes present, meaningful structure)
 
@@ -26,6 +27,7 @@
 #### Definition: Persistent Regime
 
 A **persistent regime** is a 30-day window where dealer gamma constraints remain stable:
+
 - **Persistent Positive**: >70% of days (21+/30) have positive net GEX
 - **Persistent Negative**: >70% of days (21+/30) have negative net GEX
 
@@ -110,7 +112,7 @@ def classify_regime(positive_days, negative_days, avg_magnitude):
 
 ### Regime Detection Prompt (v1 Draft)
 
-```
+```yaml
 You are a market structure analyst specializing in dealer gamma positioning regimes.
 
 TASK: Analyze this 30-day period and determine if it represents a PERSISTENT regime.
@@ -395,6 +397,7 @@ def validate_regime_windows(self, dates, ...):
 **Potential 30-day windows**: 32 windows (each day can be end of window)
 
 **Expected regime classification**:
+
 - Persistent negative: 1-2 windows (Q1 had strong negative GEX)
 - Transitional: 20-25 windows (regime stability varies)
 - Low conviction: 5-10 windows (weaker periods)
@@ -407,6 +410,7 @@ def validate_regime_windows(self, dates, ...):
 **Potential 30-day windows**: ~223 windows
 
 **Expected regime classification**:
+
 - Persistent regimes: 4-8 windows
 - Transitional: 150-180 windows
 - Low conviction: 30-50 windows
@@ -417,6 +421,7 @@ def validate_regime_windows(self, dates, ...):
 
 **Dataset**: 252 trading days (pre-0DTE era)
 **Expected regime classification**:
+
 - Persistent regimes: 2-4 windows (weaker constraints)
 - Transitional: 180-200 windows
 - Low conviction: 40-60 windows
@@ -442,6 +447,7 @@ def validate_regime_windows(self, dates, ...):
 > "LLM-based regime analysis identifies persistent dealer gamma constraints (30-day stability >70%) with 30-50% selectivity, distinguishing structural regimes from transitional periods. 0DTE option proliferation (2020→2024) increased regime persistence by XX% (p<0.05)."
 
 **Sets up Paper #3**:
+
 - Regime boundaries identified (30-day windows)
 - Cross-asset sector rotation analysis
 - Regime transition signals
@@ -451,27 +457,32 @@ def validate_regime_windows(self, dates, ...):
 ## Timeline
 
 **Week 1 (Nov 4-8)**: Implementation
+
 - Modify SequentialGEXFetcher for 30-day windows
 - Create RegimeClassifier module
 - Design regime detection prompt
 - Update validation script
 
 **Week 2 (Nov 11-15)**: Phase 1 + Phase 2
+
 - Q1 2024 quick validation
 - Full 2024 validation
 - Initial results analysis
 
 **Week 3 (Nov 18-22)**: Phase 3
+
 - 2020 validation
 - 0DTE proliferation analysis
 - Statistical comparison (2020 vs 2024)
 
 **Week 4 (Nov 25-29)**: Negative Controls
+
 - Shuffled regime windows
 - Synthetic transitions
 - Low-magnitude persistent windows
 
 **Week 5 (Dec 2-6)**: Paper Writing
+
 - Methodology section
 - Results section
 - Discussion (0DTE effect)
@@ -481,16 +492,19 @@ def validate_regime_windows(self, dates, ...):
 ## Files to Create/Modify
 
 ### New Files
+
 - `src/validation/regime_classifier.py` - Regime classification logic
 - `docs/papers/paper2/methodology/regime_windows_design.md` - This document
 - `docs/papers/paper2/prompts/regime_detection_v1.md` - LLM prompt
 
 ### Modified Files
+
 - `src/data_sources/sequential_gex_fetcher.py` - Support 30-day windows
 - `scripts/validation/validate_sequential_patterns.py` - Regime validation
 - `src/llm/mechanics_prompt_builder.py` - Add regime prompt builder
 
 ### Configuration
+
 - `config_defaults/analysis_config.yaml` - Add regime thresholds
 
 ---
@@ -526,6 +540,7 @@ def validate_regime_windows(self, dates, ...):
 **Priority**: HIGH - Core methodology for Paper #2
 
 Date: November 5, 2025
+
 # Detection Rate Framework: Why 30-50%?
 
 **Date**: November 6, 2025
@@ -539,6 +554,7 @@ Date: November 5, 2025
 The **30-50% detection rate target** is fundamentally about **selectivity**.
 
 A 30-50% detection rate proves the framework distinguishes between two different market states:
+
 - **Persistent Regimes** (30-50% of periods) → Detected
 - **Transitional/Mixed Periods** (50-70% of periods) → Rejected
 
@@ -549,6 +565,7 @@ This selectivity is what makes the research meaningful. Without it, you're detec
 ## The Problem: Why 5-Day Was Rejected
 
 ### 5-Day Methodology Results
+
 - **2020**: 98.4% detection (253/257 windows)
 - **2024**: 100% detection (61/61 windows)
 - **Difference**: Only 1.6 percentage points
@@ -556,7 +573,9 @@ This selectivity is what makes the research meaningful. Without it, you're detec
 Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly identical.
 
 ### Why This Failed as Research
+
 **Interpretation**: Detecting daily hedging flows that occur **every single day**
+
 - ✅ Real (yes, dealers rehedge daily)
 - ❌ Not research-worthy (known since 1973)
 - ❌ Not selective (universal, not distinctive)
@@ -573,6 +592,7 @@ Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly ide
 **Status**: Framework only detects extreme/obvious regimes
 
 **Characteristics**:
+
 - Rejecting most potentially valid regimes
 - Example: Only detecting 100% positive days (30/30 same sign)
 - Probably set thresholds too high
@@ -580,6 +600,7 @@ Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly ide
 **Research Value**: Low (missing most interesting cases)
 
 **Action**: Loosen thresholds
+
 - Option A: Reduce persistence threshold 70% → 60% (18/30 days)
 - Option B: Reduce magnitude threshold $5B → $3B
 - Option C: Increase sign flip allowance 5 → 7
@@ -591,6 +612,7 @@ Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly ide
 **Status**: Finding persistent regimes, but may miss valid cases
 
 **Characteristics**:
+
 - Clear selectivity (70-80% of windows rejected)
 - But may be overly conservative
 - Threshold effects could be artificial
@@ -598,6 +620,7 @@ Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly ide
 **Research Value**: Potentially good, but needs validation
 
 **Action**:
+
 1. Monitor with Phase 2 negative controls
 2. If negative controls pass, this is acceptable
 3. If Phase 2 shows FP >10%, loosen slightly
@@ -609,13 +632,15 @@ Despite 79% lower GEX magnitude in 2020 vs 2024, detection rates were nearly ide
 **Status**: Sweet spot for selectivity without being too loose
 
 **Characteristics**:
+
 - Finds persistent regimes that actually exist
 - Skips transitional/weak periods
 - ~50-70% selectivity (rejects more than detects)
 - NOT universal like 5-day approach
 
 **Example Distribution (2024 Full Year)**:
-```
+
+```bash
 Total 30-day windows: ~223
 Expected detected: 67-112 (30-50%)
 Expected rejected: 111-156 (50-70%)
@@ -626,11 +651,13 @@ Pattern interpretation:
 ```
 
 **Research Value**: EXCELLENT
+
 - Proves selectivity between market states
 - Can support 0DTE proliferation hypothesis
 - Meaningful distinction for academic contribution
 
 **Phase 1 Actual (Q1 2024 only)**:
+
 - Detection: 67.3% (35/52)
 - This is Q1-specific (unusually persistent gamma)
 - Full 2024 expected to be lower (~30-50%)
@@ -644,15 +671,18 @@ Pattern interpretation:
 **Status**: Approaching universal detection problem
 
 **Characteristics**:
+
 - Finding most regimes
 - Losing some selectivity but not yet critical
 - Risk of catching marginal/pseudo-regimes
 
 **Research Vulnerability**:
+
 - Reviewers may question: "Why is this different from 5-day at 98%?"
 - Gap shrinking between detected/rejected
 
 **Action**:
+
 1. Run Phase 2 negative controls
 2. If FP rate <10%, acceptable but tighten going forward
 3. If FP rate >10%, need to recalibrate
@@ -668,16 +698,19 @@ Pattern interpretation:
 **Status**: Approaching 5-day problem (universal detection)
 
 **Characteristics**:
+
 - Detecting too many windows
 - Losing meaningful selectivity
 - Likely catching pseudo-regimes
 
 **Research Problem**:
+
 - Back to the original 5-day problem
 - Can't claim framework is "selective"
 - Phase 2 negative controls likely to fail
 
 **Action**: MUST recalibrate
+
 - Tighten all three thresholds:
   - Persistence: 70% → 80% (24/30 days)
   - Magnitude: $5B → $10B
@@ -692,15 +725,18 @@ Pattern interpretation:
 **Status**: Rejected as research contribution
 
 **Characteristics**:
+
 - Essentially back at 5-day level (98% detection)
 - Universal detection, not selective
 - No differentiation between market states
 
 **Research Claim Integrity**: ❌ Compromised
+
 - Can't claim "LLMs identify persistent regimes"
 - Can only claim "LLMs detect something in most windows"
 
 **Action**: STOP validation
+
 - Don't proceed to Phase 3 (would be publishing weak result)
 - Reconsider methodology entirely
 - Options:
@@ -715,7 +751,8 @@ Pattern interpretation:
 ### Conceptual Framework
 
 **Universal Detection (98%, like 5-day)**:
-```
+
+```bash
 Window 1: 99% positive days → DETECTED
 Window 2: 98% positive days → DETECTED
 Window 3: 97% positive days → DETECTED
@@ -729,7 +766,8 @@ Problem: All detected, no discrimination
 ```
 
 **Selective Detection (30-50%, like 30-day)**:
-```
+
+```bash
 Window 1: 100% positive days → DETECTED (state A: persistent regime)
 Window 2: 95% positive days → DETECTED (state A)
 Window 3: 85% positive days → DETECTED (state A)
@@ -747,16 +785,19 @@ Success: Clear distinction between states A and B
 ### Your Phase 1 Results Show This
 
 **Detected Windows** (n=35):
+
 - Persistence: 70-100% (avg 96%)
 - Magnitude: $8.43B - $15.16B (avg $13.15B)
 - Sign flips: 0-3 (avg 0.6)
 
 **Rejected Windows** (n=17):
+
 - Persistence: 56.7-63.3% (avg 57%)
 - Magnitude: $3.91B - $7.82B (avg $5.52B)
 - Sign flips: 3-4 (avg 3.8)
 
 **Gap Analysis**:
+
 - Persistence gap: 96% vs 57% = **39 percentage points** ← Excellent selectivity
 - Magnitude gap: $13.15B vs $5.52B = **$7.63B difference** ← Excellent discrimination
 - This proves the framework distinguishes real regimes from non-regimes
@@ -766,13 +807,14 @@ Success: Clear distinction between states A and B
 ## The 2024 vs 2020 Hypothesis: Why 30-50% Enables Research
 
 ### Your Core Question
+
 *"Did 0DTE proliferation (2020→2024) increase regime persistence?"*
 
 This question **requires selective detection** to answer meaningfully.
 
 ### Scenario A: 5-Day Approach (REJECTED)
 
-```
+```bash
 2020 Detection: 98.4%
 2024 Detection: 100%
 Difference: 1.6 percentage points
@@ -785,7 +827,7 @@ Conclusion: ❌ Can't prove 0DTE effect
 
 ### Scenario B: 30-Day Approach (VALID)
 
-```
+```bash
 2020 Detection: ~25% (fewer persistent regimes, weaker constraints)
 2024 Detection: ~50% (more persistent regimes, stronger constraints)
 Difference: 25 percentage points
@@ -805,7 +847,7 @@ The 30-50% range allows you to **see the effect** you're trying to prove.
 
 ### Decision Tree
 
-```
+```bash
 Detection Rate Results from Phase 1?
 │
 ├─ <30% Detection
@@ -838,7 +880,7 @@ Detection Rate Results from Phase 1?
 
 ### Actual Phase 1 Results
 
-```
+```bash
 Actual Q1 2024: 67.3% Detection (35/52 windows)
 │
 ├─ Context: Q1 2024 was anomalously persistent
@@ -868,11 +910,13 @@ Actual Q1 2024: 67.3% Detection (35/52 windows)
 ### For Reviewer Confidence
 
 **Weak Result**:
+
 - Detects 98% of windows
 - Reviewer: "Why is this different from standard moving average?"
 - Verdict: "Not novel, too universal"
 
 **Strong Result**:
+
 - Detects 30-50% of windows
 - Clear gap between detected (96% persistence, $13B) and rejected (57%, $5B)
 - Reviewer: "This shows real selectivity and discrimination"
@@ -881,12 +925,14 @@ Actual Q1 2024: 67.3% Detection (35/52 windows)
 ### For Future Work (Paper #3)
 
 **Based on 30-50% detection**:
+
 - Regime boundaries identified (30-day windows)
 - Can now study what happens at regime boundaries
 - Can analyze sector rotation at transitions
 - Can study volatility regime changes
 
 **Based on 98% detection**:
+
 - No boundaries to study
 - No transitions to analyze
 - Dead-end for further research

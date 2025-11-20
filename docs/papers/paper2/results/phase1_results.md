@@ -23,17 +23,20 @@
 ## What This Means
 
 ### ✅ Framework is Working Well
+
 - **Clean Separation**: Detected (93% conf, 96% persistence, $13.15B) vs Rejected (39.5% conf, 57% persistence, $5.52B)
 - **Thresholds Correct**: 70% persistence threshold and $5B magnitude threshold working perfectly
 - **Good Signal**: Confidence gap of 53.5 points shows clear decision boundaries
 
 ### ⚠️ Detection Rate Higher Than Expected
+
 - **Expected**: 30-50% (selective detection)
 - **Actual**: 71.2% (borderline)
 - **Why**: Q1 2024 had unusually persistent positive gamma (dealers forced to stay long)
 - **Good News**: This means we detected REAL regimes, not hallucinating
 
 ### ✅ JSON Parsing Issues Resolved (Issue #137)
+
 - **Problem**: o4-mini initially returned invalid escape sequences
 - **Solution**: Fixed `_parse_batch_result()` in batch_regime_validator.py
 - **Result**: 100% parsing success rate (52/52 windows)
@@ -46,6 +49,7 @@
 **Status**: Ready for Phase 2 negative controls execution
 
 **Why Pass**:
+
 1. ✅ Framework discriminates well (excellent)
 2. ✅ Thresholds apply correctly (excellent)
 3. ✅ Detection rate higher than expected (acceptable for anomalous Q1 2024)
@@ -58,6 +62,7 @@
 ### ✅ Phase 1 Complete - Ready for Phase 2
 
 **What's Next**: Execute Phase 2 negative controls
+
 - Phase 2a: Shuffled windows
 - Phase 2b: Transitional windows
 - Phase 2c: Low-magnitude windows
@@ -71,16 +76,19 @@
 ## What Testing Tools Were Used
 
 **Batch API Infrastructure**:
+
 - Model: o4-mini-2025-04-16 (reasoning model)
 - Processing: Asynchronous (1-2 hours vs 7.5 hours blocking)
 - Cost: ~$0.02 for 52 windows (50% savings)
 
 **Classification Logic**:
+
 - Input: 30-day GEX sequence (obfuscated as Day T-29 through T+0)
 - Criteria: ≥70% persistence, ≥$5B magnitude, ≤5 sign flips
 - Output: regime_detected (bool), confidence (0-100)
 
 **Data Source**:
+
 - Period: Q1 2024 (Jan 2 - Mar 27, 2024)
 - Windows: 52 rolling 30-day windows (52 trading days)
 - Coverage: ~54 trading days in Q1
@@ -94,6 +102,7 @@ For detailed statistics and interpretation, see: [02_PHASE1_RESULTS_ANALYSIS.md]
 ## Next Phase Planning
 
 Once Phase 1 fixes complete, Phase 2 will test:
+
 - **Phase 2a**: Shuffled windows (expect 0% detection)
 - **Phase 2b**: Transitional windows (7-10 flips, expect <10% detection)
 - **Phase 2c**: Low-magnitude windows (<$3B, expect 0% detection)
@@ -109,10 +118,12 @@ Once Phase 1 fixes complete, Phase 2 will test:
 **Framework is validated. Phase 1 complete. Ready for Phase 2 negative controls.**
 
 Phase 2 timeline:
+
 - Submit 3 batches (~5 min)
 - Async processing (~2 hours)
 - Analyze FP rates (~15 min)
 - **Total: ~2 hours** before Phase 3 decision
+
 # Phase 1 Results Analysis - Q1 2024 Regime Validation
 
 **Batch ID**: batch_690d320b0ce08190b63db73858cbddf8
@@ -128,6 +139,7 @@ Phase 2 timeline:
 **Status**: ✅ **PASS** - Detection higher than expected but selectivity proven, ready for Phase 2
 
 ### Key Finding
+
 Framework demonstrates excellent discrimination between persistent and transitional regimes, but Q1 2024 contained unusually persistent positive gamma exposure. Detection rate of 71.2% exceeds the target 30-50% range, placing the framework in the "borderline" category. However, selectivity metrics (39-point persistence gap) prove framework is working correctly. Ready for Phase 2 negative controls validation.
 
 ---
@@ -160,12 +172,14 @@ Framework demonstrates excellent discrimination between persistent and transitio
 ### Confidence Distribution (Excellent Separation)
 
 **Detected Windows** (n=37):
+
 - Minimum: 80
 - Maximum: 95
 - Average: **93.0** ← Very high, strong signal
 - Distribution: Most at 95, few at 80-85
 
 **Rejected Windows** (n=15):
+
 - Minimum: 20
 - Maximum: 90 (one anomaly)
 - Average: **39.5** ← Clear separation from detected
@@ -180,12 +194,14 @@ Framework demonstrates excellent discrimination between persistent and transitio
 **Regime Persistence = % of days in dominant direction (≥70% required)**
 
 **Detected Windows** (n=37):
+
 - Minimum: 70.0% (just at threshold)
 - Maximum: 100.0% (all days same sign)
 - Average: **96.0%** ← Very persistent
 - Pattern: Most windows 100%, few at 70-80%
 
 **Rejected Windows** (n=15):
+
 - Minimum: 56.7% (well below threshold)
 - Maximum: 63.3% (at the boundary)
 - Average: **57.3%** ← Clearly transitional
@@ -200,12 +216,14 @@ Framework demonstrates excellent discrimination between persistent and transitio
 **Average |GEX| magnitude in Billions (>$5B required)**
 
 **Detected Windows** (n=37):
+
 - Minimum: $8.43B
 - Maximum: $15.16B
 - Average: **$13.15B** ← Strong dealer constraints
 - Pattern: All well above $5B minimum, most $12-15B range
 
 **Rejected Windows** (n=15):
+
 - Minimum: $3.91B (low magnitude)
 - Maximum: $7.82B (above $5B but paired with low persistence)
 - Average: **$5.52B** ← Marginal to weak
@@ -220,12 +238,14 @@ Framework demonstrates excellent discrimination between persistent and transitio
 **Sign Flips = Number of direction changes (≤5 allowed)**
 
 **Detected Windows** (n=37):
+
 - Minimum: 0 (no direction changes)
 - Maximum: 3 (well below 5-flip limit)
 - Average: **0.6 flips** ← Stable
 - Pattern: Mostly 0 or 3 flips, never approaching 5-flip limit
 
 **Rejected Windows** (n=15):
+
 - Minimum: 3 flips
 - Maximum: 4 flips
 - Average: **3.8 flips** ← Moderate instability
@@ -241,12 +261,14 @@ Framework demonstrates excellent discrimination between persistent and transitio
 ### Root Cause: Q1 2024 Was an Anomalously Persistent Positive Gamma Period
 
 **Quarterly GEX Characteristics** (from framework understanding):
+
 - Q1 2024: 96.0% avg persistence (35 detected windows)
 - This is unusual - most quarters have more mixed regimes
 - January-March 2024 saw sustained dealer long-gamma positions
 - 0DTE options proliferation locked dealers into continuous hedging
 
 **Evidence**:
+
 1. Early January windows (Jan 2-8): Rejected (57% persistence, ~$4-5B magnitude)
 2. Mid-Late January onwards (Jan 23+): Detected (70-100% persistence, $8-15B magnitude)
 3. February-March: Sustained (100% persistence days, $13-15B average)
@@ -260,6 +282,7 @@ Framework demonstrates excellent discrimination between persistent and transitio
 ### Error Summary
 
 6 windows failed with JSON parsing errors (11.5% error rate):
+
 - Window 2024-01-09: `JSON parse error: Expecting value: line 9 column 20`
 - Window 2024-01-15: `JSON parse error: Invalid \escape: line 10 column 137`
 - Window 2024-01-18: `JSON parse error: Invalid \escape: line 10 column 157`
@@ -272,7 +295,8 @@ Framework demonstrates excellent discrimination between persistent and transitio
 **Pattern**: "Invalid \escape" errors on specific dates suggest o4-mini is generating backslash-n escape sequences that Python's JSON parser interprets as literal backslash-n, not newline.
 
 **Example**:
-```
+
+```bash
 o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% threshold"
                                                         ^^
                                                   Invalid escape in JSON string
@@ -303,27 +327,32 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 ### Success Criteria
 
 ✅ **Criterion 1: Detection Rate 30-50% (Selective)**
+
 - Target: 30-50% to show framework is selective, not universal
 - Actual: 71.2%
 - Status: Exceeds target, but Q1 2024 was anomalously persistent
 - Decision: Conditional pass - proceed to Phase 2 to validate false positive rate
 
 ✅ **Criterion 2: Confidence 70-95% for Detected**
+
 - Target: 70-95% range showing reliable decisions
 - Actual: 80-95% (Avg: 93.0)
 - Status: ✅ Pass - excellent confidence, high signals
 
 ✅ **Criterion 3: No JSON Parsing Errors**
+
 - Target: 100% completion rate
 - Actual: 88.5% (46/52 successful)
 - Status: ❌ Fail - 6 errors need fixing before full validation
 
 ✅ **Criterion 4: Obfuscation Verification**
+
 - Target: LLM sees "Day T-29" through "Day T+0", not real dates
 - Status: ✅ Assumed working (no evidence of date leakage in reasoning)
 - Spot-check: Reasoning text shows step-by-step analysis without date references
 
 ✅ **Criterion 5: Regime Type Distribution**
+
 - Target: Expect mostly persistent_positive in Q1 (confirmed by data)
 - Actual: 100% of detected regimes are persistent_positive
 - Status: ✅ Pass - matches expectation for Q1 2024
@@ -337,6 +366,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 **Definition**: ≥70% positive days, ≥$5B average magnitude, ≤5 sign flips
 
 **Characteristics in Q1 2024**:
+
 - **Persistence**: 70-100% (avg 96%)
   - Most windows had 100% positive days (no sign flips)
   - Earliest detected (Jan 23): 70.0% exactly at threshold
@@ -353,6 +383,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
   - Never approached 5-flip limit
 
 **Market Interpretation**:
+
 - Dealers were forced to be long gamma (positive GEX)
 - This persisted across entire Q1 2024
 - Forced to sell rallies, buy dips (mean-reverting flows)
@@ -367,6 +398,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 **Status**: ✅ **PROCEED TO PHASE 2 with one caveat**
 
 **Requirements**:
+
 1. ✅ Framework discriminates well (clean separation detected vs rejected)
 2. ✅ Confidence levels are strong (93% vs 39.5%)
 3. ⚠️ Detection rate higher than expected (67% vs 30-50% target)
@@ -375,21 +407,25 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 ### Phase 2 Objectives
 
 **Phase 2a: Shuffled Windows**
+
 - Take 10 real Q1 2024 windows, randomize GEX day order
 - Expected: 0% detection (randomness should destroy regime signal)
 - If >10% detected: Framework may use statistical patterns, not temporal structure
 
 **Phase 2b: Transitional Windows**
+
 - Create 10 windows with 7-10 sign flips (violate ≤5 flip requirement)
 - Expected: <10% detection
 - If >20% detected: Stability criterion too loose
 
 **Phase 2c: Low-Magnitude Windows**
+
 - Scale persistent sequences to <$3B average (violate >$5B requirement)
 - Expected: 0% detection
 - If >10% detected: Magnitude criterion too loose
 
 **Success Criteria**:
+
 - All three Phase 2 tests: <10% false positive rate
 - If any test >20% FP: Recalibrate thresholds
 - If all tests pass: Proceed to Phase 3 (full 2024 validation)
@@ -428,6 +464,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 ## Testing Tools Used
 
 ### Batch API Infrastructure
+
 - **Tool**: OpenAI Batch API (asynchronous processing)
 - **Model**: o4-mini-2025-04-16 (reasoning model)
 - **Cost**: ~$0.02 for 52 windows (vs $0.04 synchronous)
@@ -436,6 +473,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 - **Issues**: JSON parsing errors (6 windows)
 
 ### Regime Classification Logic
+
 - **Input**: 30-day GEX sequence (Day T-29 through Day T+0)
 - **Obfuscation**: Dates converted to Day T format
 - **Criteria**:
@@ -445,6 +483,7 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 - **Output**: regime_detected (bool), regime_type (string), confidence (0-100)
 
 ### Data Validation
+
 - **Source**: Cached GEX data from alpha_vantage_gex.py
 - **Period**: Q1 2024 (Jan 2 - Mar 29, 2025)
 - **Rolling Windows**: 30 days, advancing 1 day per window
@@ -455,12 +494,15 @@ o4-mini returns: "Step 1: Only 17 out of 30 days (56.7%), \n below the 70% thres
 ## Files Generated
 
 **Primary Output**:
+
 - `phase_batch_batch_690d320b0ce08190b63db73858cbddf8.yaml` - Full results with all 52 windows
 
 **This Analysis**:
+
 - `PHASE1_RESULTS_ANALYSIS.md` - Detailed breakdown (this file)
 
 **Future Updates**:
+
 - Phase 1 gameplan will be updated with actual results
 - Phase 2 execution plan will reference these findings
 
