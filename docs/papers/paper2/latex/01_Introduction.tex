@@ -1,29 +1,61 @@
 \section{Introduction}
 
-% TODO: Introduction to be written after Phase 1 results
-% Expected structure based on scope_boundaries.md:
+Large language models (LLMs) have demonstrated remarkable capabilities in natural language understanding and reasoning tasks, yet their ability to detect structural constraints in financial markets remains underexplored. While our companion paper (Paper \#1) established that LLMs can identify single-day dealer gamma constraints through obfuscation testing~\cite{regan2025obfuscation}, these snapshots capture only instantaneous market structure. Real dealer positioning evolves over multi-day horizons, creating \textit{persistent regimes} characterized by sustained structural constraints lasting weeks or months.
 
-% 1. Motivation (WHY temporal analysis matters)
-%    - Paper #1 established single-day pattern detection (71.5% detection, 91.2% accuracy)
-%    - BUT: Single snapshots miss temporal dynamics
-%    - Dealer constraints evolve over multi-day trajectories
-%    - Question: Can LLMs detect WHEN constraints accumulate, release, persist?
+This temporal extension matters for three reasons. First, single-day detection validates constraint recognition at a point in time but cannot distinguish persistent regimes from transitional periods. Second, the proliferation of zero-days-to-expiration (0DTE) options since 2021~\cite{cboe2024zero,dim2025zero} fundamentally altered dealer gamma dynamics, potentially creating more persistent positioning. Third, regime boundaries offer actionable insights for risk management and sector rotation strategies, whereas daily snapshots provide limited forward guidance.
 
-% 2. Research Question
-%    - Do 5-day sequential windows improve pattern detection vs single-day baseline?
-%    - Can LLMs identify 4 distinct temporal patterns: Accumulation, Relief, Reversal, Persistent?
-%    - Does temporal context add predictive value or introduce noise?
+We address this gap by extending obfuscation-based validation from single-day patterns to \textbf{30-day regime windows}. Unlike prior work detecting daily hedging flows (present in all markets since Black-Scholes 1973), we test whether LLMs can identify \textit{persistent structural regimes}—sustained periods where dealer positioning exhibits consistent directional bias. This selectivity is critical: detecting universal patterns proves only pattern matching, while discriminating regimes from transitional periods validates structural reasoning.
 
-% 3. Key Contributions
-%    - Sequential pattern detection framework (4 pattern types)
-%    - Empirical threshold methodology (P75/P25 from 2024 data)
-%    - Phase 1/Phase 2 validation strategy (2024 baseline → multi-year)
-%    - Evidence: [TBD - based on results]
+\subsection{Research Questions}
 
-% 4. Paper Structure
-%    - Section 2: Related work on temporal pattern detection
-%    - Section 3: Methodology (sequential pattern rules, outcome verification)
-%    - Section 4: Experimental setup (2024 SPY data, 248 5-day windows)
-%    - Section 5: Results (detection rates, hit rates, GO/NO-GO decision)
-%    - Section 6: Discussion (implications for temporal reasoning)
-%    - Section 7: Conclusion
+We investigate three primary questions:
+
+\begin{enumerate}
+\item \textbf{Regime Detection}: Can LLMs identify persistent dealer gamma regimes from 30-day GEX sequences without temporal context?
+\item \textbf{Framework Selectivity}: Does the methodology discriminate persistent regimes from transitional periods (30-50\% detection target, not universal 98-100\%)?
+\item \textbf{Market Structure Evolution}: Did 0DTE proliferation (2020 $<$5\% volume $\rightarrow$ 2024 43\% volume) increase regime persistence?
+\end{enumerate}
+
+\subsection{Methodology}
+
+We define a \textbf{persistent regime} through three structural criteria: (1) $\geq$70\% of days share the dominant GEX sign (persistence), (2) $\geq$\$5B average magnitude (economic significance), and (3) $\leq$5 sign flips across 30 days (stability). Windows failing these criteria are classified as transitional or low-conviction periods.
+
+Following Paper \#1's obfuscation protocol, we strip all temporal context from 30-day GEX sequences, presenting them to the LLM as "Day T-29" through "Day T+0" with generic asset labels. This prevents memorization of specific market events while preserving structural patterns that manifest through dealer hedging constraints.
+
+\subsection{Validation Strategy}
+
+We employ a four-phase validation protocol:
+
+\textbf{Phase 1} (Q1 2024 Baseline): Establish baseline detection rate on 52 real windows. Success criteria: 30-50\% detection (demonstrates selectivity, not universal pattern matching).
+
+\textbf{Phase 2} (Negative Controls): Validate framework discrimination through three synthetic tests: (a) shuffled windows (destroys temporal structure), (b) transitional windows (7-10 sign flips, high volatility), (c) low-magnitude windows (scaled $<$\$5B). Expected: $<$10\% false positive rate.
+
+\textbf{Phase 3} (Full 2024): Test generalization across all 252 trading days (223 windows). Determines if Q1 results extend to full year or reflect quarterly anomaly.
+
+\textbf{Phase 4} (2020 Comparison): Test pre-0DTE era (2020, 0DTE $<$5\% volume) vs post-0DTE era (2024, 0DTE 43\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
+
+\subsection{Key Contributions}
+
+This work advances LLM-based financial analysis through four contributions:
+
+\begin{enumerate}
+\item \textbf{Temporal Extension}: First application of obfuscation testing to multi-day regimes (30-day windows vs single-day snapshots)
+\item \textbf{Selectivity Validation}: Demonstrates framework discriminates persistent regimes (81.2\% in 2024) from fragmented markets (12.1\% in 2020), achieving 5.7x separation
+\item \textbf{Market Structure Evidence}: Quantifies regime persistence shift between 2020 and 2024, providing empirical evidence temporally coinciding with 0DTE proliferation
+\item \textbf{Negative Controls}: Comprehensive validation through 809 synthetic windows establishing $<$10\% false positive rate on transitional/low-magnitude scenarios
+\end{enumerate}
+
+\subsection{Main Findings}
+
+Four-phase validation (1,307 windows, \$13.60 cost) reveals:
+
+\begin{itemize}
+\item \textbf{Framework is selective}: 2024 detection 81.2\% (extreme regime persistence) vs 2020 detection 12.1\% (normal fragmented market), demonstrating 69.1 percentage point discrimination (p $<$ 0.0001, $\phi$ = 0.672)
+\item \textbf{2024 exhibits structural anomaly}: 96.0\% same-sign dominance, \$13.95B average magnitude, 1.0 average flips—compared to 2020's 83.3\% persistence, \$2.85B magnitude, 2.1 flips
+\item \textbf{Negative controls passed}: 0\% false positives on transitional/low-magnitude tests, confirming framework enforces regime criteria
+\item \textbf{0DTE temporal coincidence}: Regime shift temporally aligns with 0DTE proliferation (2020 $<$5\% $\rightarrow$ 2024 43\%), though additional year testing (2021-2023, 2025) needed to isolate causal timing
+\end{itemize}
+
+\subsection{Paper Organization}
+
+Section~2 reviews related work on gamma exposure dynamics, regime detection, and LLM temporal reasoning. Section~3 presents the 30-day regime detection framework and obfuscation protocol. Section~4 describes experimental setup including datasets, LLM configuration, and validation phases. Section~5 reports results from all four validation phases. Section~6 discusses implications for LLM structural reasoning, market microstructure evolution, and methodology robustness. Section~7 concludes and outlines future research directions.

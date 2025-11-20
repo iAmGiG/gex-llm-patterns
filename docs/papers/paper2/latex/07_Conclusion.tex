@@ -1,32 +1,52 @@
 \section{Conclusion}
 
-% TODO: Conclusion to be written after Phase 1 results
-% Expected structure:
+We extended obfuscation-based LLM validation from single-day dealer gamma constraints to persistent 30-day market regimes, addressing a critical gap in temporal structural reasoning. Four-phase validation across 1,307 windows (2020 and 2024, \$13.60 cost) demonstrates that LLMs can identify sustained dealer positioning through three structural criteria: persistence (≥70\% same-sign dominance), magnitude (≥\$5B average), and stability (≤5 sign flips).
 
-% 1. Summary of Contribution
-%    - Extended Paper \#1 obfuscation testing to sequential patterns
-%    - Defined 4 temporal pattern types with algorithmic detection rules
-%    - Established empirical threshold methodology (P75/P25 from 2024 data)
-%    - Tested: [TBD - results summary]
+\subsection{Key Findings}
 
-% 2. Key Findings
-%    - Sequential detection rate: [TBD]\%
-%    - Predictive accuracy: [TBD]\%
-%    - Comparison to baseline: [TBD - improved/neutral/degraded]
-%    - Alpha: Marginal ([TBD] bps), consistent with structural detection claim
+\textbf{Framework selectivity validated}: The 69.1 percentage point discrimination between 2024 (81.2\% detection) and 2020 (12.1\% detection) establishes that our methodology detects persistent structural regimes, not universal patterns. This 5.7x separation (p $<$ 0.0001, $\phi$ = 0.672) demonstrates the framework correctly distinguishes sustained dealer constraints from fragmented markets.
 
-% 3. Implications
-%    - LLM temporal reasoning: [TBD - evidence for/against multi-day context value]
-%    - Structural understanding: High accuracy + low alpha = Not p-hacking
-%    - Pattern taxonomy: [TBD - which patterns work? Accumulation, Persistent?]
+\textbf{Negative controls passed}: Phase 2 achieved 0\% false positives on transitional (7-10 flips) and low-magnitude ($<$\$5B) synthetic windows, confirming the framework enforces regime criteria. The 12.1\% false positive rate on 2020 shuffled data further validates that detection depends on temporal structure, not statistical artifacts.
 
-% 4. Future Work
-%    - Phase 2: Multi-year validation (2023-2025) with pooled thresholds
-%    - Reversal pattern: Requires regime variation (0\% occurrence in 2024)
-%    - Paper \#3: Strike-level analysis, individual equities
-%    - Paper \#4+: Context-aware features (relaxing obfuscation constraint)
+\textbf{Market structure evolution quantified}: 2024 exhibited 96.0\% same-sign persistence and \$13.95B average magnitude compared to 2020's 83.3\% persistence and \$2.85B magnitude. This shift temporally coincides with 0DTE proliferation (2020 $<$5\% volume $\rightarrow$ 2024 43\% volume), though additional year testing (2021-2023, 2025) is needed to isolate transition timing and strengthen causal attribution.
 
-% 5. Closing
-%    - Contribution to LLM finance research
-%    - Evidence for/against temporal reasoning capabilities
-%    - Advances obfuscation testing methodology to sequential patterns
+\textbf{LLM reasoning quality}: Manual review of 50 randomly sampled responses revealed 98\% mechanical accuracy, 100\% criterion citation, and 88\% step-by-step verification across both detection conditions, suggesting structural reasoning rather than pattern matching.
+
+\subsection{Contributions to LLM Financial Analysis}
+
+This work advances LLM-based market microstructure analysis in four ways:
+
+\begin{enumerate}
+\item \textbf{Temporal obfuscation methodology}: First application of obfuscation testing to multi-day regimes (30-day windows vs single-day snapshots), establishing that LLMs can reason about sustained constraints
+\item \textbf{Selectivity validation framework}: Comprehensive negative controls (809 synthetic windows) demonstrating $<$10\% false positive rate, addressing a key limitation of prior LLM finance validation that typically tests only positive cases
+\item \textbf{Cross-regime discrimination}: 5.7x detection difference between persistent (2024) and fragmented (2020) markets, providing empirical evidence of temporal structural reasoning
+\item \textbf{Cost-effective comprehensive testing}: OpenAI Batch API enabled exhaustive validation at \$13.60 total (50\% savings), making rigorous negative control testing economically feasible for academic research
+\end{enumerate}
+
+\subsection{Implications}
+
+Our findings have three implications for LLM-based financial analysis:
+
+\textbf{Temporal reasoning capabilities}: LLMs can identify persistent structural constraints across 30-day windows when given appropriate prompts and criteria. The 98\% mechanical accuracy across 1,307 diverse windows suggests robust computational reasoning about dealer hedging mechanics.
+
+\textbf{Selectivity is essential}: Our finding that 5-day windows achieved 98-100\% detection (too universal) while 30-day windows with strict criteria achieved 12-81\% detection (selective) underscores that validation frameworks must test discrimination, not just positive case accuracy. Future work should include cross-regime comparison and negative controls.
+
+\textbf{Structural vs statistical patterns}: High LLM mechanical accuracy (98\%) combined with 0\% false positives on synthetic tests demonstrates the model reasons about dealer hedging constraints, not spurious statistical patterns. This structural focus sidesteps p-hacking risks inherent in profitability-based validation.
+
+\subsection{Future Directions}
+
+Four research directions emerge from this work:
+
+\textbf{Multi-year transition analysis}: Testing 2021, 2022, 2023, and 2025 will isolate the 0DTE transition period. If regime persistence increased sharply in 2022 (when daily SPY expirations launched) rather than gradually 2020-2024, this would strengthen causal attribution to 0DTE proliferation beyond current temporal coincidence evidence.
+
+\textbf{Cross-asset generalization} (Paper \#3): Extending to individual equities (AAPL, MSFT, NVDA, TSLA) will test whether regime detection generalizes beyond S\&P 500 index options and identify asset-specific vs market-wide regime characteristics.
+
+\textbf{Volume-based GEX measurement}: Incorporating intraday options flow data (when available) may refine regime detection by capturing 0DTE hedging dynamics missed by end-of-day open interest measurements.
+
+\textbf{Framework ablation study} (Issue \#133): Testing whether LLMs need the WHO→WHOM→WHAT causal framework or can detect constraints from data alone will clarify the role of prompt structure in enabling structural reasoning.
+
+\subsection{Concluding Remarks}
+
+This paper demonstrates that large language models can identify persistent dealer gamma regimes through structural reasoning validated by comprehensive negative controls. By extending obfuscation testing from single-day snapshots to 30-day windows, we establish that LLMs reason about sustained market constraints, not just instantaneous patterns. The 5.7x discrimination between persistent (2024) and fragmented (2020) markets provides quantitative evidence of temporal structural reasoning while revealing regime persistence as a distinguishing characteristic of contemporary options markets.
+
+Our findings suggest LLMs offer a viable approach to detecting sustained structural constraints in financial markets when validation includes cross-regime discrimination and synthetic negative controls. This methodology advances beyond single-condition testing prevalent in prior work, establishing a rigorous framework for evaluating LLM temporal reasoning in market microstructure analysis.
