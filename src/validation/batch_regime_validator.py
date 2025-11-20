@@ -68,7 +68,7 @@ class BatchRegimeValidator:
 
         self.client = OpenAI(api_key=api_key)
         self.prompt_builder = MechanicsPromptBuilder()
-        self.batch_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "batch_jobs"
+        self.batch_dir = PROJECT_ROOT / "reports" / "validation" / "paper2_regime_windows" / "batch_jobs"
         self.batch_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info(f"Initialized BatchRegimeValidator")
