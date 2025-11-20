@@ -271,6 +271,16 @@ class GEXCacheManager:
                 with open(summary_path, 'r') as f:
                     data = json.load(f)
 
+                # Add compatibility aliases for legacy file cache data
+                # File cache (2020) has 'net_gex' but prompt builder expects 'net_gex_usd'
+                # Database (2024) already adds this alias in the query mapping above
+                if 'net_gex' in data and 'net_gex_usd' not in data:
+                    data['net_gex_usd'] = data['net_gex']
+
+                # Add underlying_price alias if missing (for consistency with database)
+                if 'spot_price' in data and 'underlying_price' not in data:
+                    data['underlying_price'] = data['spot_price']
+
                 # Add cache metadata
                 data['_cache_info'] = {
                     'cache_hit': True,
