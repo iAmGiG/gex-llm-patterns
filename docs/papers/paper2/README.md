@@ -15,9 +15,8 @@
 1. **[README.md](README.md)** (this file, 10 min) - What is Paper #2? Why 30-day regimes?
 2. **[methodology.md](methodology.md)** (15 min) - How do we define persistent regimes?
 3. **[validation_strategy.md](validation_strategy.md)** (10 min) - How do we validate the framework?
-4. **[results/phase1_results.md](results/phase1_results.md)** (10 min) - What did Phase 1 find?
-5. **[results/phase2_results.md](results/phase2_results.md)** (15 min) - Phase 2 negative controls ✅
-6. **[execution_plan.md](execution_plan.md)** (10 min) - What's happening now (Phase 3/4)?
+4. **[validation_complete_summary.md](validation_complete_summary.md)** (20 min) - All 4 phases complete ✅
+5. **[results/](results/)** - Detailed results by phase (phase1-4_results.md)
 
 ### For Implementation
 
