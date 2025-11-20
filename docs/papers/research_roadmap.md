@@ -1,7 +1,9 @@
 # Research Roadmap: LLM-Based Market Microstructure Analysis
 
-**Last Updated**: November 5, 2025
-**Status**: Paper #1 submitted (Oct 26), Paper #2 pivoted to 30-day regimes (Nov 5)
+**Last Updated**: November 19, 2025
+**Status**: Paper #1 submitted (Oct 26), Paper #2 Phase 2 complete, Phase 3 ready (Nov 19)
+
+**Related Issues**: [#118 (Dissertation Structure)](https://github.com/iAmGiG/gex-llm-patterns/issues/118), [#135 (Paper #3 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/135), [#136 (Paper #4 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/136)
 
 ---
 
@@ -58,7 +60,9 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 ## Paper #2: Regime Detection via Sequential GEX (Journal)
 
-### Status: 🔄 In Progress - Q1 2026 (Pivoted Nov 5, 2025)
+### Status: 🔄 In Progress - Q1 2026 (Phase 2 Complete Nov 19, 2025)
+
+**GitHub Issues**: [#89 (30-Day Regime Detection)](https://github.com/iAmGiG/gex-llm-patterns/issues/89), [#107 (Validation Strategy)](https://github.com/iAmGiG/gex-llm-patterns/issues/107)
 
 **⚠️ STRATEGIC PIVOT (November 5, 2025)**
 
@@ -99,30 +103,38 @@ This document outlines the multi-paper research trajectory for validating LLM un
 3. LLM discrimination of structural vs transitional periods
 4. Temporal extension of obfuscation framework (30-day, not 5-day)
 
-**Implementation Status** (Nov 5, 2025):
+**Validation Status** (Nov 19, 2025):
+- ✅ Phase 1 (Q1 2024 Baseline): 71.2% detection (37/52 windows) - Borderline high
+- ✅ Phase 2 (Negative Controls): All tests PASSED
+  - Phase 2a (Shuffle): 61.1% Q1 2024 vs 12.1% 2020 (5x FP difference proves selectivity)
+  - Phase 2b (Transitional): 0% FP (perfect rejection)
+  - Phase 2c (Low-Magnitude): 0% FP (perfect rejection)
+- 📅 Phase 3 (Full 2024): Ready to execute (223 windows, 30-50% expected)
+- 🔮 Phase 4 (2020 Comparison): Planned (0DTE hypothesis test)
+
+**Implementation Complete** (Nov 6-19, 2025):
 - ✅ RegimeClassifier module (332 lines)
 - ✅ SequentialGEXFetcher updated (window_size=30 parameter)
 - ✅ Regime detection prompt v1
-- ⏸️ Phase 1 validation (Q1 2024, ~32 windows)
-
-**Expected Timeline**:
-- Week 1 (Nov 4-8): Core implementation ✅
-- Week 2 (Nov 11-15): Phase 1 + Phase 2 validation
-- Week 3 (Nov 18-22): Phase 3 (2020 comparison)
-- Weeks 4-5 (Dec): Analysis + paper draft
+- ✅ OpenAI Batch API integration (50% cost reduction)
+- ✅ Phase 2 negative control generators (shuffle, transitional, low-magnitude)
 
 **Documentation**:
-- `docs/papers/paper2/methodology/regime_windows_design.md`
-- `docs/papers/paper2/validation/test4/` (explains pivot)
-- Issues #89 (30-day methodology), #107 (validation strategy)
+- `docs/papers/paper2/` - Complete Paper #2 documentation
+- `docs/papers/paper2/methodology.md` - Regime criteria and framework
+- `docs/papers/paper2/validation_strategy.md` - 4-phase validation roadmap
+- `docs/papers/paper2/results/phase1_results.md` - Phase 1 detailed results
+- `docs/papers/paper2/execution_plan.md` - Current work and next steps
 
-**5-Day Work Value**: Valuable negative result, documented in sessions archive
+**5-Day Work Value**: Valuable negative result (98-100% detection too universal), documented in archived sessions
 
 ---
 
 ## Paper #3: Cross-Asset Generalization (Journal)
 
 ### Status: 📋 Planned - Q2 2026
+
+**GitHub Issue**: [#135 (Per-Strike GEX & Intraday Dynamics)](https://github.com/iAmGiG/gex-llm-patterns/issues/135)
 
 **Title**: TBD - "Cross-Asset Validation of LLM Market Microstructure Understanding"
 
@@ -177,6 +189,8 @@ This document outlines the multi-paper research trajectory for validating LLM un
 ---
 
 ## Paper #4+ Candidates (Long-Term)
+
+**GitHub Issue**: [#136 (Causal Constraint Networks - Graph-Theoretic Framework)](https://github.com/iAmGiG/gex-llm-patterns/issues/136)
 
 ### 1. Pattern Discovery (18-24 months)
 
@@ -270,24 +284,36 @@ These ideas were proposed earlier but have been superseded by the current roadma
 
 ---
 
-## Open GitHub Issues Mapping
+## GitHub Issues Mapping
+
+### Cross-Cutting
+
+- **[#118](https://github.com/iAmGiG/gex-llm-patterns/issues/118)** (OPEN): Dissertation Structure & Paper Sequencing
+
+### Paper #1 Related
+
+- **[#88](https://github.com/iAmGiG/gex-llm-patterns/issues/88)** (OPEN): Paper #1 status tracking (submitted Oct 26)
+- **#90** (CLOSED): Prompt bias resolved
+- **#91-93** (CLOSED): Core figures complete
+- **#95** (CLOSED): Presentation diagrams
+- **#96-97** (CLOSED): DataObfuscator optimization, performance benchmarks
 
 ### Paper #2 Related
 
-- **#89** (OPEN): Sequential GEX Analysis - Paper #2 primary methodology
+- **[#89](https://github.com/iAmGiG/gex-llm-patterns/issues/89)** (OPEN): 30-Day Regime Detection Framework (primary methodology)
+- **[#107](https://github.com/iAmGiG/gex-llm-patterns/issues/107)** (OPEN): 4-Phase Validation Strategy
+- **#112** (CLOSED): OpenAI Batch API implementation (50% cost reduction)
+- **#137** (CLOSED): JSON parsing fixes (88.5% → 100% completion)
+- **#139** (CLOSED): Documentation consolidation (48 → 10 files)
 
 ### Paper #3 Related
 
-- **#6** (OPEN): Cross-asset validation - relates to Paper #3
+- **[#135](https://github.com/iAmGiG/gex-llm-patterns/issues/135)** (OPEN): Per-Strike GEX Analysis & Intraday Dynamics
+- **#87** (OPEN): Cross-asset validation (5-7 individual equities)
 
-### Paper #1 Complete
+### Paper #4+ Related
 
-- **#88** (OPEN): Paper #1 status tracking (submitted Oct 26)
-- **#90** (CLOSED): Prompt bias resolved
-- **#91-93** (CLOSED): Core figures complete
-- **#94** (OPEN): Suggested advanced figures (future work)
-- **#95** (CLOSED): Presentation diagrams
-- **#96-97** (CLOSED): DataObfuscator optimization, performance benchmarks
+- **[#136](https://github.com/iAmGiG/gex-llm-patterns/issues/136)** (OPEN): Causal Constraint Networks (Graph-Theoretic Framework)
 
 ### Infrastructure (Not Paper-Specific)
 
@@ -295,7 +321,6 @@ These ideas were proposed earlier but have been superseded by the current roadma
 - **#16** (OPEN): Performance improvements
 - **#45** (OPEN): Error handling enhancements
 - **#13** (OPEN): Pattern consolidation (defer)
-- **#74, #75** (OPEN): Additional pattern validation (defer)
 
 ---
 

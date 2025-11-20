@@ -229,6 +229,12 @@ class SequentialGEXFetcher:
             # Return last N dates (inclusive of end_date)
             if len(available_dates) >= n_days:
                 return available_dates[-n_days:]
+            elif len(available_dates) == 0:
+                # No data in database - fall back to file cache
+                logger.info(
+                    f"No data in database for {symbol} {end_date}, falling back to file cache"
+                )
+                return self._get_trading_days_from_files(symbol, end_date, n_days)
             else:
                 logger.warning(
                     f"Insufficient trading days for {symbol} ending {end_date}: "
