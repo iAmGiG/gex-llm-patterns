@@ -1,115 +1,132 @@
 \section{Methodology}
 
-% Based on sequential_pattern_detection_rules.md and outcome_verification_thresholds.md
+\subsection{30-Day Regime Detection Framework}
 
-\subsection{Sequential Pattern Detection Framework}
+Building on the single-day obfuscation methodology from Paper \#1~\cite{regan2025obfuscation}, we extend the framework to detect \textit{persistent market regimes} rather than daily hedging patterns. A regime is defined as a 30-day window exhibiting sustained dealer gamma positioning that creates predictable market dynamics.
 
-% TODO: Formal definitions of 4 pattern types
-% - Gamma Accumulation (30\% magnitude increase over 5 days)
-% - Gamma Relief (30\% magnitude decrease over 5 days)
-% - Gamma Reversal (sign flip with zero crossing)
-% - Persistent Gamma (CV < 15\%, stable magnitude)
+\subsubsection{Regime Classification Criteria}
 
-% Each pattern includes:
-% - Primary detection rule (quantitative threshold)
-% - Secondary validation rules (quality checks)
-% - Exclusion criteria (prevent false positives)
-% - Confidence scoring (0-100)
+We classify 30-day windows into four categories based on three structural metrics:
 
-\subsection{Pattern Significance Thresholds}
+\textbf{Persistence}: Fraction of days sharing the dominant GEX sign
+\begin{equation}
+P = \frac{\text{days with dominant sign}}{30} \geq 0.70
+\end{equation}
 
-% Minimum magnitude requirements to prevent noise classification:
-% - \$5B minimum mean GEX magnitude (general threshold)
-% - \$8B minimum for accumulation end magnitude
-% - \$8B minimum for relief start magnitude
-% - 40 minimum confidence score
+\textbf{Magnitude}: Average absolute gamma exposure
+\begin{equation}
+M = \frac{1}{30}\sum_{i=1}^{30} |\text{GEX}_i| \geq \$5\text{B}
+\end{equation}
 
-% Rationale:
-% - 2024 SPY GEX typically \$10B-\$60B (median ~\$35B)
-% - \$5B = ~15\% of typical magnitude (conservative)
-% - Prevents spurious pattern detection on trivial variations
+\textbf{Stability}: Maximum number of sign flips across 30 days
+\begin{equation}
+S = \text{count}(\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)) \leq 5
+\end{equation}
 
-\subsection{Outcome Verification Thresholds}
+\textbf{Regime Types}:
+\begin{itemize}
+\item \textbf{Persistent Positive}: $P \geq 0.70$, $M \geq \$5$B, $S \leq 5$, dominant sign positive
+\item \textbf{Persistent Negative}: $P \geq 0.70$, $M \geq \$5$B, $S \leq 5$, dominant sign negative
+\item \textbf{Transitional}: Fails persistence criterion ($P < 0.70$) or stability criterion ($S > 5$)
+\item \textbf{Low Conviction}: Meets persistence/stability but $M < \$5$B
+\end{itemize}
 
-% Empirically-driven from 2024 SPY data (242 days, 100\% negative GEX regime):
+These thresholds were selected based on empirical analysis of 2024 SPY options data: median daily GEX magnitude was \$13.95B, and 70\% persistence represents a clear structural bias rather than random variation.
 
-% T+1 Volatility Distribution:
-% - Mean: 0.62\%
-% - P25 (low vol): 0.22\%
-% - P50 (median): 0.48\%
-% - P75 (high vol): 0.86\%
-% - P90 (extreme vol): 1.32\%
+\subsection{GEX Calculation Methodology}
 
-% Pattern-specific predictions (conservative thresholds):
-% - Accumulation: forward\_1d\_realized\_vol > 0.86\% (P75)
-% - Relief: forward\_1d\_realized\_vol < 0.22\% (P25)
-% - Reversal: forward\_1d\_realized\_vol > 1.32\% (P90)
-% - Persistent: forward\_1d\_realized\_vol < 0.48\% (P50)
+Following standard market microstructure practice~\cite{anderegg2022impact,spotgamma2021}, we calculate dealer gamma exposure from end-of-day open interest:
+
+\begin{equation}
+\text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
+\end{equation}
+
+where $\Gamma_i$ is the Black-Scholes gamma at strike $i$, $\text{OI}_i$ is open interest, the factor of 100 converts contracts to shares, and $S^2$ scales gamma to dollar exposure. Call gamma enters positively, while put gamma enters negatively.
+
+\subsubsection{Methodology Limitations}
+
+This \textit{open interest-based} approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX (GEX\_VOL) may better capture 0DTE hedging dynamics, our regime detection framework is robust to measurement method because:
+
+\begin{enumerate}
+\item \textbf{Temporal aggregation}: 30-day windows smooth out daily measurement noise
+\item \textbf{Negative controls validated}: Framework rejects randomized and transitional data (Phase 2)
+\item \textbf{0DTE comparison}: Phase 4 tests whether OI-based regimes differ pre/post-0DTE era (2020 vs 2024)
+\end{enumerate}
+
+Critically, dealers must maintain delta neutrality regardless of whether gamma is measured from open interest or order flow—the underlying hedging mechanism remains constant~\cite{dim2025zero,ni2005stock}. Our LLM detection approach validates structural signals through forward return materialization rather than relying solely on GEX formula precision.
+
+\subsection{Obfuscation Testing}
+
+To prevent temporal memorization, we apply the same obfuscation protocol from Paper \#1:
+
+\begin{itemize}
+\item Calendar dates → Relative labels ("Day T-29" through "Day T+0")
+\item Ticker symbols → Generic identifier ("INDEX\_1")
+\item No event labels, news references, or regime indicators
+\item Present only: GEX magnitudes, spot prices, days to expiration
+\end{itemize}
+
+The LLM receives 30 consecutive GEX values with no contextual information, forcing purely structural reasoning about dealer constraints.
+
+\subsection{Four-Phase Validation Strategy}
+
+To ensure methodological rigor and avoid false positives, we implemented a four-phase validation protocol:
+
+\subsubsection{Phase 1: Q1 2024 Baseline (52 windows)}
+
+Establish baseline detection rate on Q1 2024 data (January 2 - March 27, 2024). Success criteria: 30-50\% detection rate demonstrating framework selectivity.
+
+\subsubsection{Phase 2: Negative Controls (809 windows)}
+
+Validate framework discrimination using three synthetic tests:
+
+\textbf{Phase 2a - Shuffle Test} (404 windows): Randomize day order within real 30-day sequences to destroy temporal structure while preserving statistical properties. Expected: <20\% false positive rate.
+
+\textbf{Phase 2b - Transitional Test} (202 windows): Filter for high-volatility periods with 7-10 sign flips. Expected: <10\% false positive rate (should reject as non-regimes).
+
+\textbf{Phase 2c - Low-Magnitude Test} (203 windows): Scale persistent sequences by 75\% to fall below \$5B threshold. Expected: <10\% false positive rate (should reject as low conviction).
+
+\subsubsection{Phase 3: Full 2024 Validation (223 windows)}
+
+If Phase 1-2 pass, validate across full 2024 year (all 252 trading days). This tests whether Q1 results generalize across different market conditions.
+
+\subsubsection{Phase 4: 2020 Comparison (223 windows)}
+
+Test pre-0DTE era (2020) to validate the hypothesis that 0DTE proliferation increased regime persistence. Expected: Lower detection rate in 2020 vs 2024.
+
+\subsection{LLM Detection Pipeline}
+
+For each 30-day window:
+
+\begin{enumerate}
+\item \textbf{Prepare obfuscated prompt}: 30-day GEX sequence with relative date labels
+\item \textbf{LLM structural reasoning}: Model analyzes persistence, magnitude, stability
+\item \textbf{Classification}: Regime type (persistent\_positive, persistent\_negative, transitional, low\_conviction)
+\item \textbf{Confidence scoring}: 0-100 scale based on criteria satisfaction
+\item \textbf{Mechanical verification}: Compare LLM metrics vs actual window statistics
+\end{enumerate}
+
+We use OpenAI's o4-mini reasoning model with temperature=1.0 to generate explicit step-by-step analysis of regime characteristics. The model was selected for its chain-of-thought reasoning capabilities, which enable transparent identification of structural constraints~\cite{openai2024reasoning}.
 
 \subsection{Statistical Framework}
 
-% Binomial test for pattern success:
-% - Null hypothesis: Hit rate = baseline percentile (random)
-% - Alternative: Hit rate > baseline + 10pp (pattern has signal)
-% - Significance threshold: p < 0.05
+We assess framework performance through:
 
-% GO/NO-GO criteria:
-% - GO (Full Paper \#2): ≥2 patterns with hit rate > baseline + 10pp AND ≥1 pattern with p < 0.05
-% - NO-GO (Fold into Paper \#1): All patterns ≈ baseline, no statistical significance
+\textbf{Detection Rate}: Fraction of windows classified as persistent regimes
+\begin{equation}
+\text{DR} = \frac{\text{persistent regimes detected}}{\text{total windows}}
+\end{equation}
 
-\subsection{Multi-Year Threshold Strategy}
+\textbf{Selectivity Metrics}: Discrimination between real and synthetic data
+\begin{itemize}
+\item Persistence gap: $P_{\text{detected}} - P_{\text{rejected}}$
+\item Magnitude gap: $M_{\text{detected}} - M_{\text{rejected}}$
+\item Confidence gap: $C_{\text{detected}} - C_{\text{rejected}}$
+\end{itemize}
 
-% Phase 1 (2024 baseline): Use 2024-specific thresholds
-% Phase 2 (OPTIONAL): Use pooled thresholds from 2023-2025 combined data
-% - More stable estimates (~714 days vs ~242)
-% - Single bar for clean comparison
-% - Expected ~5-10\% increase in thresholds (more conservative)
+\textbf{0DTE Effect}: Change in detection rate between 2020 and 2024
+\begin{equation}
+\Delta_{\text{0DTE}} = \text{DR}_{2024} - \text{DR}_{2020}
+\end{equation}
 
-\subsection{Prompt Bias Mitigation and Negative Controls}
-
-% Neutral Framework Implementation
-% To ensure our 100\% detection rate reflects genuine market constraints rather than prompt bias,
-% we implemented a neutral prompt framework with three key modifications:
-%
-% 1. System prompt: "assess WHETHER" constraints exist (vs. "identify WHO is forcing WHOM")
-% 2. Explicit YES/NO branching: Permission to detect no pattern
-% 3. Null hypothesis support: Confidence = 0 is valid, trajectory types include "incoherent" and "none"
-%
-% Implementation: src/llm/mechanics\_prompt\_builder.py:456-559 (build\_sequential\_prompt\_neutral)
-
-% Negative Control Validation (N=30 total tests)
-% Through systematic negative control testing, we developed a calibrated prompt framework
-% that achieved 80\% sensitivity on historical patterns while maintaining 80\% specificity
-% against random noise and 100\% rejection of negligible gamma constraints~\cite{kummerfeld2024dance,ribeiro2020checklist}.
-% This conservative calibration prioritizes avoiding false positives, accepting moderate
-% reduction in sensitivity as a methodologically appropriate trade-off for exploratory
-% research~\cite{nixon2023calibration,guo2017calibration}.
-%
-% We conducted three negative control experiments:
-%
-% \textbf{Test 1: Prompt Comparison} (N=10 real Q1 2024 GEX windows)
-% - Leading prompt detection: 100\% (10/10)
-% - Neutral prompt detection: 80\% (8/10)
-% - Detection difference: 20 percentage points
-% - Interpretation: Two borderline cases (15\% and 6\% magnitude changes) correctly
-%   rejected as within normal market variation
-%
-% \textbf{Test 2: Random Synthetic GEX} (N=10 noise windows)
-% - GEX values: Random uniform(-\$20B, +\$20B)
-% - Detection rate: 20\% (2/10 false positives)
-% - Result: PASS (<30\% threshold)
-% - Validates: Framework distinguishes signal from noise
-%
-% \textbf{Test 3: Zero-GEX} (N=10 negligible constraint windows)
-% - GEX values: Near-zero (<\$0.1B)
-% - Detection rate: 0\% (0/10 false positives)
-% - Result: PASS (<10\% threshold)
-% - Validates: Framework correctly detects absence of constraints
-%
-% \textbf{Key Finding: Mechanical Guidance Reduces False Positives by 60\%}
-% Counterintuitively, we found that mechanical confidence guidance (e.g., ``1 counter-trend
-% day = 70-100 confidence'') reduced false positives by 60\% compared to qualitative
-% guidance (v3a: 20\% FP vs v3b: 50\% FP), suggesting LLMs benefit from concrete
-% calibration anchors when performing temporal pattern recognition~\cite{zhang2024prompt,white2023pattern}.
-% This empirical finding contributes to the broader literature on prompt engineering for
-% structured reasoning tasks.
+A large positive $\Delta_{\text{0DTE}}$ (e.g., >50 percentage points) indicates that 0DTE options fundamentally altered market structure, creating more persistent dealer gamma regimes.

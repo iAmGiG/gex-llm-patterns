@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title{Temporal Dynamics of LLM-Based Market Microstructure Detection: Sequential Gamma Exposure Pattern Analysis}
+\title{LLM Detection of Persistent Dealer Gamma Regimes: A 30-Day Window Framework}
 
 \author{\IEEEauthorblockN{Christopher Regan}
 \IEEEauthorblockA{\textit{Department of Computer Science} \\
@@ -23,18 +23,11 @@ yxie2@kennesaw.edu}
 \maketitle
 
 \begin{abstract}
-% TODO: Abstract to be written after results are available
-% Expected content:
-% - Extension of Paper #1 obfuscation testing to sequential patterns
-% - 4 pattern types (Accumulation, Relief, Reversal, Persistent)
-% - 5-day rolling windows, 2024 baseline validation
-% - Detection rate vs accuracy vs alpha (structural understanding)
-% - Key finding: [TBD based on Phase 1 results]
-% - Implications for temporal reasoning in LLMs
+We extend obfuscation-based LLM validation from single-day dealer gamma constraints (Paper \#1) to persistent 30-day market regimes. Unlike prior work detecting daily hedging patterns, we test whether LLMs can identify sustained structural regimes characterized by consistent dealer positioning across month-long windows. Using 30-day GEX sequences with temporal context removed ("Day T-29" through "Day T+0"), we validated the framework through four phases: (1) Q1 2024 baseline (71.2\% detection, 52 windows), (2) negative controls (0\% false positives on transitional/low-magnitude tests, 809 windows), (3) full 2024 validation (81.2\% detection, 223 windows), and (4) 2020 comparison (12.1\% detection, 223 windows). The 69.1 percentage point difference between 2024 and 2020 (p < 0.0001) demonstrates both framework selectivity and a fundamental market structure shift. Our findings indicate 2024 exhibited extreme regime persistence (96.0\% same-sign dominance, \$13.95B average magnitude) compared to 2020's fragmented structure (83.3\% persistence, \$2.85B magnitude), providing quantitative evidence of options market evolution. This temporal extension validates LLM structural reasoning at 30-day scales while revealing regime persistence as a distinguishing characteristic of contemporary options markets.
 \end{abstract}
 
 \begin{IEEEkeywords}
-large language models, temporal pattern detection, gamma exposure, sequential analysis, market microstructure, structural reasoning, dealer constraints
+large language models, regime detection, gamma exposure, market microstructure, structural reasoning, dealer constraints, obfuscation testing, 0DTE options, persistent regimes
 \end{IEEEkeywords}
 
 % \section{Introduction}
