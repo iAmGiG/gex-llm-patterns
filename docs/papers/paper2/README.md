@@ -2,44 +2,39 @@
 
 **Research Question**: Can LLMs identify persistent market regimes from 30-day GEX sequences without temporal context?
 
-**Status**: Phase 1 COMPLETE (71.2% detection), Phase 2 Ready to Execute
+**Status**: Phase 2 COMPLETE ✅ (Framework Validated), Phase 3 Ready to Execute
 **Last Updated**: November 19, 2025
 **Branch**: `paper2-sequential-gex`
 
 ---
 
-## START HERE: Navigation Guide
+## START HERE: Reading Guide
 
-### New to Paper #2? Read These First
+### For New Readers (Sequential)
 
-1. **[CURRENT_PHASE.md](CURRENT_PHASE.md)** (5 min) - What we're doing NOW and WHY
-   - One-page summary of current work
-   - Phase 2 execution plan
-   - Decision criteria
+1. **[README.md](README.md)** (this file, 10 min) - What is Paper #2? Why 30-day regimes?
+2. **[methodology.md](methodology.md)** (15 min) - How do we define persistent regimes?
+3. **[validation_strategy.md](validation_strategy.md)** (10 min) - How do we validate the framework?
+4. **[results/phase1_results.md](results/phase1_results.md)** (10 min) - What did Phase 1 find?
+5. **[results/phase2_results.md](results/phase2_results.md)** (15 min) - Phase 2 negative controls ✅
+6. **[execution_plan.md](execution_plan.md)** (10 min) - What's happening now (Phase 3/4)?
 
-2. **[ROADMAP.md](ROADMAP.md)** (15 min) - All GitHub issues mapped to status
-   - 14 Paper #2 issues with dependencies
-   - Phase 1 results summary
-   - Future work backlog
+### For Implementation
 
-3. **This README** (below) - Paper #2 overview and methodology
+**[guides/batch_api_guide.md](guides/batch_api_guide.md)** (15 min) - How to run Batch API validation
 
-### Want Details? Follow Sequential Reading Path
+### For Statistical Details
 
-**Recommended Order**:
-1. `1_methodology/` - Research question and regime criteria (4 docs)
-2. `2_validation_strategy/` - 4-phase validation roadmap (6 docs)
-3. `3_phase1_results/` - Phase 1 execution and results (4 docs)
-4. `4_phase2_execution/` - Current work (Phase 2 workflow, 4 docs)
-5. `5_extensions/` - Future work (dual GEX, multi-pattern, etc.)
+**[guides/statistical_methods.md](guides/statistical_methods.md)** (30 min) - Granger causality, descriptive stats
 
-_(Note: Folders 1-5 to be created during consolidation)_
+### For GitHub Context
 
-### Need Technical Details?
+**[roadmap.md](roadmap.md)** (15 min) - Issue tracking and dependencies
 
-- **Batch API**: `batch_api/` - OpenAI Batch API implementation (3 docs)
-- **Prompts**: `prompts/` - LLM regime detection prompt
-- **Scripts**: `scripts/validation/paper2/` - Validation scripts with READMEs
+### Other Resources
+
+- **prompts/** - LLM regime detection prompt templates
+- **latex/** - LaTeX project for paper writing
 
 ---
 
@@ -310,9 +305,7 @@ docs/papers/paper2/
 ├── methodology/ (5 files)
 ├── validation/ (12 files)
 ├── prompts/ (1 file)
-├── adr/ (7 files)
-├── sessions/ (6 files - historical)
-└── archive/ (old 5-day content)
+└── adr/ (7 files)
 ```
 
 ### Planned Structure (Post-Consolidation)

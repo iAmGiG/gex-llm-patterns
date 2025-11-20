@@ -53,7 +53,7 @@ def run_pattern_validation(pattern: str, start_date: str, end_date: str,
                 f"⚠️  {pattern} validation returned non-zero exit code")
 
         # Find the generated YAML file
-        pattern_dir = Path("reports/validation/pattern_taxonomy")
+        pattern_dir = Path("reports/validation/paper1_pattern_taxonomy")
         yaml_files = sorted(pattern_dir.glob(f"{pattern}_validation_*.yaml"))
 
         if yaml_files:
@@ -140,7 +140,7 @@ def main():
     # Check for existing results if skip-completed is set
     completed_patterns = set()
     if args.skip_completed:
-        pattern_dir = Path("reports/validation/pattern_taxonomy")
+        pattern_dir = Path("reports/validation/paper1_pattern_taxonomy")
         for pattern in args.patterns:
             yaml_files = pattern_dir.glob(f"{pattern}_validation_*.yaml")
             for yaml_file in yaml_files:
@@ -248,7 +248,7 @@ def main():
     quarter = (start_month - 1) // 3 + 1
     date_label = f"{year}Q{quarter}"
 
-    summary_file = Path("reports/validation/pattern_taxonomy") / \
+    summary_file = Path("reports/validation/paper1_pattern_taxonomy") / \
         f"all_patterns_summary_{symbol}_{date_label}.yaml"
     summary_file.parent.mkdir(parents=True, exist_ok=True)
 

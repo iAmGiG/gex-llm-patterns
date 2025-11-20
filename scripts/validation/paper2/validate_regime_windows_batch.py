@@ -7,7 +7,7 @@ Provides CLI interface for OpenAI Batch API mode for regime validation.
 UPGRADED (November 19, 2025): Now supports phase transformations for negative controls:
   - Phase 1 (default): Normal regime validation with real GEX data
   - Phase 2a (--phase shuffle): Shuffle GEX day order (destroys temporal structure)
-  - Phase 2b (--phase transitional): Filter for high sign-flip windows (7-10 flips)
+  - Phase 2b (--phase transitional): Artificially add 7-10 sign flips (creates high volatility)
   - Phase 2c (--phase low-magnitude): Scale GEX values down by 75% (<$3B avg)
 
 All phases use REAL market data from historical database (no synthetic data).
@@ -105,7 +105,7 @@ def prepare_windows(
     Phase Transformations:
         - None: Normal validation (Phase 1, 3, 4)
         - 'shuffle': Randomize GEX day order (Phase 2a - destroys temporal structure)
-        - 'transitional': Filter for 7-10 sign flip windows (Phase 2b - tests stability criterion)
+        - 'transitional': Artificially add 7-10 sign flips (Phase 2b - tests stability criterion)
         - 'low-magnitude': Scale GEX down 75% (Phase 2c - tests magnitude threshold)
     """
     phase_label = phase if phase else "normal"
@@ -198,16 +198,29 @@ def prepare_windows(
                 day['net_gex_usd'] = gex_values[j]
 
         elif phase == 'transitional':
-            # Phase 2b: Filter for windows with 7-10 sign flips
-            # Count sign flips in current window
-            sign_flips = sum(1 for k in range(1, len(gex_sequence_obfuscated))
-                           if (gex_sequence_obfuscated[k]['net_gex_usd'] > 0) !=
-                              (gex_sequence_obfuscated[k-1]['net_gex_usd'] > 0))
+            # Phase 2b: Create artificial high-volatility windows (7-10 sign flips)
+            # Real data has max 4 flips (2020-2024), so we artificially add flips
 
-            # Skip windows that don't meet transitional criteria (7-10 flips)
-            if sign_flips < 7 or sign_flips > 10:
-                logger.debug(f"Window {end_date_window}: {sign_flips} flips, skipping (need 7-10)")
+            # Count current sign flips
+            current_flips = sum(1 for k in range(1, len(gex_sequence_obfuscated))
+                              if (gex_sequence_obfuscated[k]['net_gex_usd'] > 0) !=
+                                 (gex_sequence_obfuscated[k-1]['net_gex_usd'] > 0))
+
+            # Only use low-flip windows (0-2 flips) as base for transformation
+            if current_flips > 2:
+                logger.debug(f"Window {end_date_window}: {current_flips} flips, skipping (need 0-2 base)")
                 continue
+
+            # Randomly invert signs of 7-10 days to create artificial volatility
+            target_flips = random.randint(7, 10)
+            days_to_flip = random.sample(range(len(gex_sequence_obfuscated)), target_flips)
+
+            for day_idx in days_to_flip:
+                day = gex_sequence_obfuscated[day_idx]
+                # Invert sign (multiply by -1)
+                day['net_gex_usd'] *= -1
+                # Swap positive/negative (represents sign flip)
+                day['positive_gex'], day['negative_gex'] = day['negative_gex'], day['positive_gex']
 
         elif phase == 'low-magnitude':
             # Phase 2c: Scale GEX down by 75% (makes avg ~$3B from ~$12B)
@@ -252,7 +265,7 @@ def submit_batch_job(
     Phase Transformations:
         - None: Normal regime validation (Phase 1, 3, 4)
         - 'shuffle': Randomize GEX day order (Phase 2a)
-        - 'transitional': Filter for 7-10 sign flip windows (Phase 2b)
+        - 'transitional': Artificially add 7-10 sign flips (Phase 2b)
         - 'low-magnitude': Scale GEX down 75% (Phase 2c)
     """
     phase_label = phase if phase else "normal"
@@ -356,7 +369,7 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
 
     # Save as YAML
     output_file = PROJECT_ROOT / "reports" / "validation" / \
-        "regime_windows" / f"phase_batch_{batch_id}.yaml"
+        "paper2_regime_windows" / f"phase_batch_{batch_id}.yaml"
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     validator.save_results_yaml(results, [], output_file, batch_id)

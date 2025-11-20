@@ -482,7 +482,7 @@ Examples:
         '--output',
         type=str,
         default=None,
-        help='Output YAML file path (default: auto-generate in reports/validation/regime_windows/)'
+        help='Output YAML file path (default: auto-generate in reports/validation/paper2_regime_windows/)'
     )
 
     parser.add_argument(
@@ -562,7 +562,7 @@ Examples:
     # Determine output path
     if args.output is None:
         # Auto-generate filename based on test type and range
-        output_dir = project_root / "reports" / "validation" / "regime_windows"
+        output_dir = project_root / "reports" / "validation" / "paper2_regime_windows"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Determine period label from dates

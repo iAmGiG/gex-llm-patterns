@@ -124,9 +124,13 @@ ipython_config.py
 sample_data/
 
 # Generated reports (validation outputs, experiment results)
-reports/validation/**/*.yaml
+# Note: Keep final validation results for papers (research reproducibility)
+# Ignore intermediate/test results
 reports/experiments/*.yaml
 reports/testing/
+reports/validation/**/test_*.yaml
+reports/validation/**/debug_*.yaml
+reports/validation/**/*_test.yaml
 !reports/validation/**/README.md
 !reports/**/README.md
 
@@ -283,4 +287,4 @@ docs/papers/**/latex/*.bat
 docs/papers/**/latex/*.sh
 
 # Batch API test artifacts
-reports/validation/regime_windows/batch_jobs/
+reports/validation/paper2_regime_windows/batch_jobs/
