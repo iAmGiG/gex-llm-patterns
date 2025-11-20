@@ -1,6 +1,6 @@
 # Paper #2 Roadmap: GitHub Issues & Documentation Map
 
-**Last Updated**: November 19, 2025
+**Last Updated**: November 20, 2025
 
 **Purpose**: Single source of truth mapping all Paper #2 GitHub issues to their current status, dependencies, and related documentation.
 
@@ -10,13 +10,14 @@
 
 | Category | Count | Status |
 |----------|-------|--------|
-| **In Progress** | 2 | Phase 3 ready to execute |
-| **Completed** | 8 | Phase 1 + Phase 2 validated |
-| **Future Work** | 4 | Backlog (after Phase 3/4) |
+| **Completed** | 10 | All 4 phases validated ✅ |
+| **Extensions** | 3 | Ready to execute |
+| **Future Work** | 1 | Backlog |
 | **Total Issues** | 14 | All Paper #2 work |
 
-**Current Phase**: Phase 3 (Full 2024 Validation) - Ready to Execute
-**Blocker**: None - Phase 2 PASSED, framework validated
+**Current Phase**: ✅ **VALIDATION COMPLETE** - All 4 Phases Done (Nov 19-20)
+**Status**: Ready for Paper Writing + Extensions
+**Result**: Framework validated, market structure evolution confirmed
 
 ---
 
@@ -54,16 +55,16 @@
 
 ### #107: Validation Strategy (4-Phase Framework)
 
-**Status**: ✅ Phase 1 COMPLETE, ✅ Phase 2 COMPLETE, 📅 Phase 3 Ready
+**Status**: ✅ **ALL 4 PHASES COMPLETE** (Nov 19-20, 2025)
 
 **Phase Breakdown**:
 
 | Phase | Purpose | Windows | Status | Detection Result |
 |-------|---------|---------|--------|------------------|
 | **Phase 1** | Q1 2024 baseline | 52 | ✅ **COMPLETE** | 71.2% (borderline) |
-| **Phase 2** | Negative controls | 809 | ✅ **COMPLETE** | All tests PASS |
-| **Phase 3** | Full 2024 validation | 223 | 📅 **READY** | 30-50% expected |
-| **Phase 4** | 2020 comparison | 223 | 🔮 **PLANNED** | 0DTE hypothesis |
+| **Phase 2** | Negative controls | 809 | ✅ **COMPLETE** | 0-12% FP (PASS) |
+| **Phase 3** | Full 2024 validation | 223 | ✅ **COMPLETE** | 81.2% (extreme) |
+| **Phase 4** | 2020 comparison | 223 | ✅ **COMPLETE** | 12.1% (normal) |
 
 **Phase 1 Results** (November 19, 2025):
 
@@ -82,22 +83,29 @@
 | **Transitional** | 0% (32 windows) | 0% (223 windows) | ✅ PASS (perfect rejection) |
 | **Low-Magnitude** | 0% (32 windows) | 0% (223 windows) | ✅ PASS (perfect rejection) |
 
-**Total Cost**: $12.12 (809 windows across 6 batches)
-**Decision**: ✅ **Proceed to Phase 3** (framework validated)
+**Total Cost**: $13.60 ($0.81 Phase 1 + $12.12 Phase 2 + $0.60 Phase 3 + $0.07 Phase 4)
+
+**Phase 3 & 4 Results** (November 20, 2025):
+
+- **Phase 3**: 81.2% detection (2024 full year) - Higher than expected
+- **Phase 4**: 12.1% detection (2020 pre-0DTE baseline) - Normal baseline
+- **Difference**: +69.1 percentage points (5.7x increase)
+- **Statistical**: p < 0.001, φ = 0.672 (large effect)
+- **Conclusion**: ✅ **Framework validated + market structure shift confirmed**
+
+**Key Finding**: 5.7x detection discrimination proves framework IS selective (not universal like 5-day approach). 2024 exhibited extreme regime persistence temporally coinciding with 0DTE proliferation (43% volume share vs 2020's <5%).
 
 **Related Docs**:
 
-- `validation/validation_phases.md` - Complete 4-phase roadmap
-- `3_phase1_results/02_results.md` - Phase 1 detailed analysis
-- `4_phase2_execution/` - Phase 2 execution docs (to be created)
-- `PHASE2_IMPLEMENTATION_SUMMARY.md` - Technical workflow
+- `results/phase1_results.md` - Phase 1 detailed analysis
+- `results/phase2_results.md` - Negative controls (all tests PASS)
+- `results/phase3_results.md` - Full 2024 validation + database integration
+- `results/phase4_results.md` - 0DTE hypothesis confirmation
+- `validation_complete_summary.md` - All 4 phases comprehensive summary
 
-**Dependencies**:
+**Dependencies**: None - ALL COMPLETE
 
-- Blocks: Phase 4
-- Depends on: #112 (Batch API - COMPLETE), Phase 1 (COMPLETE), Phase 2 (COMPLETE)
-
-**Next Step**: Execute Phase 3 batch job (~$1.75, ~2 hours)
+**Status**: ✅ **READY FOR PAPER WRITING**
 
 ---
 
