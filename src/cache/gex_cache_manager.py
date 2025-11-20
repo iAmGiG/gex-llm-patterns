@@ -201,6 +201,9 @@ class GEXCacheManager:
         """
         Retrieve daily GEX summary from cache.
 
+        Strategy (Nov 20, 2025 update): Query database first, fall back to file cache.
+        Rationale: Database is single source of truth with complete historical data.
+
         Args:
             symbol: Stock symbol
             trading_date: Trading date in YYYY-MM-DD format
@@ -208,6 +211,58 @@ class GEXCacheManager:
         Returns:
             GEX summary dict or None if not cached
         """
+        # Try database first (primary source as of Nov 20, 2025)
+        db_path = self.base_cache_dir / "gex_database.db"
+
+        if db_path.exists():
+            try:
+                with sqlite3.connect(db_path) as conn:
+                    cursor = conn.execute(
+                        """
+                        SELECT spot_price, total_gex, net_call_gex, net_put_gex,
+                               gamma_flip_point, flip_ratio, gex_regime,
+                               data_quality_score, options_count
+                        FROM daily_gex_metrics
+                        WHERE symbol = ? AND date = ?
+                        """,
+                        (symbol.upper(), trading_date)
+                    )
+                    row = cursor.fetchone()
+
+                    if row:
+                        # Map database fields to GEX summary format
+                        data = {
+                            'underlying_price': row[0],
+                            'spot_price': row[0],  # Alias for compatibility
+                            'total_gex': row[1],
+                            'net_call_gex': row[2],
+                            'net_put_gex': row[3],
+                            'net_gex': row[1],  # total_gex is net_gex
+                            'net_gex_usd': row[1],  # Alias for prompt builder compatibility
+                            'flip_point': row[4],
+                            'gamma_flip_point': row[4],  # Alias for compatibility
+                            'flip_ratio': row[5],
+                            'gex_regime': row[6],
+                            'calculation_metadata': {
+                                'data_quality_score': row[7],
+                                'options_contracts_processed': row[8]
+                            },
+                            '_cache_info': {
+                                'cache_hit': True,
+                                'source': 'database',
+                                'retrieved_at': now_iso()
+                            }
+                        }
+
+                        logger.debug(
+                            f"Database hit for GEX summary: {symbol} {trading_date}")
+                        return data
+
+            except Exception as e:
+                logger.warning(
+                    f"Database query failed for {symbol} {trading_date}: {e}, falling back to file cache")
+
+        # Fall back to file cache (legacy support)
         try:
             summary_path = self.gex_cache_dir / symbol.upper() / trading_date / \
                 "gex_summary.json"
@@ -219,12 +274,13 @@ class GEXCacheManager:
                 # Add cache metadata
                 data['_cache_info'] = {
                     'cache_hit': True,
+                    'source': 'file_cache',
                     'retrieved_at': now_iso(),
                     'file_path': str(summary_path)
                 }
 
                 logger.debug(
-                    f"Cache hit for GEX summary: {symbol} {trading_date}")
+                    f"File cache hit for GEX summary: {symbol} {trading_date}")
                 return data
             else:
                 logger.debug(

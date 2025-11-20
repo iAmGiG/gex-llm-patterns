@@ -22,6 +22,7 @@ Historical Context:
 import logging
 from typing import Dict, List, Optional
 from pathlib import Path
+import sqlite3
 from src.cache.unified_cache import UnifiedCacheManager
 from src.cache.gex_cache_manager import GEXCacheManager
 
@@ -188,8 +189,8 @@ class SequentialGEXFetcher:
         """
         Get N trading days before end_date (inclusive).
 
-        Strategy: Scan cache directory for actual trading days.
-        Rationale: Cache reflects actual GEX availability (already filtered for holidays).
+        Strategy: Query database for actual trading days (Nov 20, 2025 update).
+        Rationale: Database is single source of truth with complete historical data.
 
         Args:
             symbol: Trading symbol
@@ -198,11 +199,57 @@ class SequentialGEXFetcher:
 
         Returns:
             List of date strings: ['2024-01-08', '2024-01-09', ..., '2024-01-12']
-            Empty list if cache directory not found or insufficient data
+            Empty list if database not found or insufficient data
 
         Example:
             dates = fetcher._get_trading_days_before('SPY', '2024-01-12', 5)
             # Returns: ['2024-01-08', '2024-01-09', '2024-01-10', '2024-01-11', '2024-01-12']
+        """
+        # Use database as primary source (Nov 20, 2025 update)
+        db_path = Path('.cache/gex_database.db')
+
+        if not db_path.exists():
+            logger.error(f"Database not found: {db_path}")
+            # Fallback to file cache (legacy behavior)
+            return self._get_trading_days_from_files(symbol, end_date, n_days)
+
+        try:
+            with sqlite3.connect(db_path) as conn:
+                cursor = conn.execute(
+                    """
+                    SELECT DISTINCT date
+                    FROM daily_gex_metrics
+                    WHERE symbol = ? AND date <= ?
+                    ORDER BY date ASC
+                    """,
+                    (symbol.upper(), end_date)
+                )
+                available_dates = [row[0] for row in cursor.fetchall()]
+
+            # Return last N dates (inclusive of end_date)
+            if len(available_dates) >= n_days:
+                return available_dates[-n_days:]
+            else:
+                logger.warning(
+                    f"Insufficient trading days for {symbol} ending {end_date}: "
+                    f"Expected {n_days}, found {len(available_dates)}"
+                )
+                return available_dates
+
+        except Exception as e:
+            logger.error(f"Database query failed: {e}, falling back to file cache")
+            return self._get_trading_days_from_files(symbol, end_date, n_days)
+
+    def _get_trading_days_from_files(
+        self,
+        symbol: str,
+        end_date: str,
+        n_days: int
+    ) -> List[str]:
+        """
+        Fallback method: Get trading days from file cache.
+
+        Used when database is unavailable or query fails.
         """
         cache_dir = self.gex_cache.gex_cache_dir / symbol.upper()
 
@@ -270,7 +317,7 @@ class SequentialGEXFetcher:
 
         # Extract time series (convert to billions for readability)
         gex_values = [day.get('net_gex', 0) / 1e9 for day in gex_sequence]
-        flip_values = [day.get('flip_point', 0) for day in gex_sequence]
+        flip_values = [day.get('flip_point') or 0 for day in gex_sequence]  # Handle None from database
         price_values = [day.get('spot_price', 0) for day in gex_sequence]
 
         # Calculate changes
