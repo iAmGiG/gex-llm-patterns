@@ -5,6 +5,12 @@ validation_metadata:
   timestamp: '2025-11-19T22:54:31.175110'
   cost_savings_pct: 50
   note: Results from OpenAI Batch API (50% cost reduction)
+  model_used: o4-mini
+  model_type: reasoning
+  model_family: openai
+  config_verified: true
+  comparable_to_paper1: true
+  temperature: null
 summary_statistics:
   detection_rate_pct: 0.0
   regimes_detected: 0
