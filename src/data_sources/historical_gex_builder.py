@@ -98,8 +98,8 @@ class HistoricalGEXDatabaseBuilder:
             self.has_stock_data = False
             logging.warning(f"Stock data client not available: {e}")
         
-        # Database setup
-        self.db_path = Path(database_path) if database_path else self.cache.base_dir / "gex_database.db"
+        # Database setup (Issue #140: Use unified consolidated_historical.db)
+        self.db_path = Path(database_path) if database_path else self.cache.base_dir / "consolidated_historical.db"
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Lock file for concurrency control
@@ -341,6 +341,10 @@ class HistoricalGEXDatabaseBuilder:
                     data_quality_score INTEGER,
                     options_count INTEGER,
                     validation_status TEXT DEFAULT 'valid',
+                    gex_oi REAL,
+                    gex_volume REAL,
+                    activity_ratio REAL,
+                    economic_regime TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(symbol, date)
                 )
@@ -984,12 +988,15 @@ class HistoricalGEXDatabaseBuilder:
                 
                 # Check for resume point
                 resume_date = self.get_resume_point(symbol)
-                if resume_date:
-                    self.logger.info(f"Resuming from {resume_date}")
+                if resume_date and start_date <= resume_date <= end_date:
+                    # Only use resume date if it falls within requested range
+                    self.logger.info(f"Resuming from {resume_date} (within range)")
                     # Adjust start date to day after last processed
                     resume_dt = parse_date_string(resume_date) + datetime.timedelta(days=1)
                     effective_start = max(resume_dt.strftime('%Y-%m-%d'), start_date)
                 else:
+                    if resume_date:
+                        self.logger.info(f"Ignoring resume point {resume_date} (outside range {start_date} to {end_date})")
                     effective_start = start_date
                 
                 # Get trading dates
