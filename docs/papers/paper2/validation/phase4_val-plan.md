@@ -3,7 +3,7 @@
 **Created**: November 20, 2025
 **Status**: Ready to Execute (Phases 1-3 Complete)
 **Timeline**: 1 week per phase (4A, 4B)
-**Total Cost**: ~$74 ($37 per phase)
+**Estimated Cost**: ~$1.50 total (Batch API, 50% discount)
 
 ---
 
@@ -14,8 +14,8 @@ With 6 years of historical GEX data collected (2020-2025, 1,475 trading days), P
 **Goal**: Quantify when 0DTE proliferation drove regime persistence increase
 
 **Phases**:
-- **Phase 4A**: Single GEX validation (traditional GEX_OI methodology)
-- **Phase 4B**: Dual GEX validation (GEX_OI vs GEX_Volume divergence) - OPTIONAL
+- **Phase 4A**: Single GEX validation (traditional GEX_OI methodology) - ~$0.73
+- **Phase 4B**: Dual GEX validation (GEX_OI vs GEX_Volume divergence) - OPTIONAL, ~$0.73
 
 ---
 
@@ -29,19 +29,17 @@ Validate regime detection across all 6 years using **traditional single GEX meth
 
 **Windows to Validate**:
 
-| Year | Trading Days | Windows | Batch Cost | Expected Detection |
-|------|-------------|---------|------------|-------------------|
-| 2020 | 252 | ~223 | $9 | 12.1% (baseline) |
-| 2021 | 250 | ~221 | $9 | 15-25% (early 0DTE) |
-| 2022 | 251 | ~222 | $9 | 30-50% (SPX 0DTE launch) |
-| 2023 | 250 | ~221 | $9 | 60-75% (volume expansion) |
-| 2024 | 251 | ~222 | $9 | 81.2% (baseline) |
-| 2025 | 221 | ~192 | $8 | 75-85% (sustained) |
-| **TOTAL** | **1,475** | **~1,301** | **$53** | **Temporal trend** |
+| Year | Trading Days | Windows | Expected Detection |
+|------|-------------|---------|-------------------|
+| 2020 | 252 | ~223 | 12.1% (baseline) |
+| 2021 | 250 | ~221 | 15-25% (early 0DTE) |
+| 2022 | 251 | ~222 | 30-50% (SPX 0DTE launch) |
+| 2023 | 250 | ~221 | 60-75% (volume expansion) |
+| 2024 | 251 | ~222 | 81.2% (baseline) |
+| 2025 | 221 | ~192 | 75-85% (sustained) |
+| **TOTAL** | **1,475** | **~1,301** | **Temporal trend** |
 
 **Note**: Windows = Trading days - 29 (30-day lookback required)
-
-**Actual Cost**: ~$37 using Batch API (50% discount vs sync)
 
 ---
 
@@ -242,7 +240,6 @@ summary:
 ```yaml
 phase4a_single_gex_summary:
   total_windows: 1301
-  total_cost: $37
   model: o4-mini
 
   by_year:
@@ -445,27 +442,6 @@ python scripts/validation/aggregate_phase4a_results.py \
 
 ---
 
-### Cost Breakdown
-
-**OpenAI Batch API Pricing**:
-- Input tokens: $0.15 per 1M tokens (50% discount)
-- Output tokens: $0.60 per 1M tokens (50% discount)
-
-**Per Window**:
-- Input: ~5,000 tokens (30-day GEX sequence + prompt)
-- Output: ~100 tokens (JSON response)
-- Cost: ~$0.028 per window
-
-**Total**:
-- 4 years × ~221 windows/year = ~884 windows
-- 884 windows × $0.028 = **~$25**
-- Plus 2020/2024 baseline: **$13.60** (already spent)
-- **Grand Total**: **~$39** for all 6 years
-
-**Note**: Original estimate was $53 (sync API), Batch API reduces to $37
-
----
-
 ## Phase 4B: Dual GEX Validation (OPTIONAL)
 
 ### Objective
@@ -487,9 +463,7 @@ Beyond Phase 4A's single GEX criteria:
 
 ### Scope
 
-**Same windows as Phase 4A**: ~884 windows (2021-2023, 2025)
-
-**Additional Cost**: ~$37 (separate batch submission with dual criteria)
+**Same windows as Phase 4A**: ~856 windows (2021-2023, 2025)
 
 **Timeline**: +1 week (after Phase 4A completion)
 
@@ -526,11 +500,10 @@ windows:
 
 ### Phase 4A (Required)
 
-- [ ] All 4 new years validated (2021, 2022, 2023, 2025) - ~884 windows
+- [ ] All 4 new years validated (2021, 2022, 2023, 2025) - ~856 windows
 - [ ] Results match expected temporal trend (2020 low → 2024 high)
 - [ ] Detection rates show statistical significance across years (p < 0.05)
 - [ ] Transition period identified (e.g., 2022 Q2/Q3)
-- [ ] Cost within budget (~$37)
 
 ### Phase 4B (Optional)
 
