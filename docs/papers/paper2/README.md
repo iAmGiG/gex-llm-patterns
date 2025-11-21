@@ -30,10 +30,32 @@
 
 **[roadmap.md](roadmap.md)** (15 min) - Issue tracking and dependencies
 
+### Current Work (Issue #140 - Multi-Year Expansion)
+
+**[infrastructure/phase2_inf-status.md](infrastructure/phase2_inf-status.md)** (3 min) - **CURRENT STATUS** + next steps
+**[planning/phase2-5_roadmap.md](planning/phase2-5_roadmap.md)** (10 min) - Full 6-year expansion plan
+**[infrastructure/phase2_inf-plan.md](infrastructure/phase2_inf-plan.md)** (15 min) - Detailed collection plan
+
 ### Other Resources
 
-- **prompts/** - LLM regime detection prompt templates
-- **latex/** - LaTeX project for paper writing
+**Naming Convention**: `phase#_function-description.md` or `issue###_function-description.md`
+- **function codes**: inf (infrastructure), val (validation), ext (extension), res (results)
+
+- **extensions/** - Completed side studies (issue###_ext-*.md)
+  - [issue138_ext-impl.md](extensions/issue138_ext-impl.md) - Dual GEX implementation
+  - [issue138_ext-integration.md](extensions/issue138_ext-integration.md) - Dual GEX database integration
+  - [issue133_ext-ablation.md](extensions/issue133_ext-ablation.md) - Framework necessity testing
+- **infrastructure/** - Multi-year build (phase#_inf-*.md)
+  - [phase2_inf-status.md](infrastructure/phase2_inf-status.md) - Current status
+  - [phase2_inf-plan.md](infrastructure/phase2_inf-plan.md) - Collection plan
+- **planning/** - Roadmaps and reviews
+  - [phase2-5_roadmap.md](planning/phase2-5_roadmap.md) - 6-year expansion roadmap
+  - [phase1_inf-review.md](planning/phase1_inf-review.md) - Phase 1 code review
+- **validation/** - Limitations and test details
+  - [phase2a_val-limitation.md](validation/phase2a_val-limitation.md) - Shuffle test limitation
+- **results/** - Validation results (phase#_results.md)
+- **prompts/** - LLM regime detection templates
+- **latex/** - Paper source (7 sections complete)
 
 ---
 
