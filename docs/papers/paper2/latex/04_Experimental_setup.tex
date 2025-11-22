@@ -130,7 +130,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \item Windows: 52 (January 2 - March 27, 2024)
 \item Purpose: Establish baseline detection rate
 \item Success criteria: 30-50\% detection (demonstrates selectivity)
-\item Batch ID: batch\_690d320b0ce08190b63db73858cbddf8
 \end{itemize}
 
 \subsubsection{Phase 2: Negative Controls}
@@ -140,7 +139,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \item Windows: 404 (202 Q1 2024 + 202 2020, randomized day order)
 \item Purpose: Test temporal structure dependence
 \item Success criteria: <20\% false positive rate
-\item Batch IDs: batch\_691e88349db081909d2d9e583167f801 (Q1), batch\_691e93e5fa148190875e7f3516fa4fbf (2020)
 \end{itemize}
 
 \textbf{Phase 2b - Transitional Test}:
@@ -148,7 +146,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \item Windows: 101 Q1 2024 + 101 2020 (7-10 sign flips)
 \item Purpose: Test stability criterion enforcement
 \item Success criteria: <10\% false positive rate
-\item Batch IDs: batch\_691e8aef15248190af275059cce82324 (Q1), batch\_691e93f3b8648190a1bb18ace32326ea (2020)
 \end{itemize}
 
 \textbf{Phase 2c - Low-Magnitude Test}:
@@ -156,7 +153,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \item Windows: 101 Q1 2024 + 102 2020 (scaled to <\$5B)
 \item Purpose: Test magnitude threshold enforcement
 \item Success criteria: <10\% false positive rate
-\item Batch IDs: batch\_691e897f249c8190b3d2dabda19a0dad (Q1), batch\_691e93f7e1888190a23d3b3495e60dc3 (2020)
 \end{itemize}
 
 \subsubsection{Phase 3: Full 2024 Validation}
@@ -164,8 +160,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \begin{itemize}
 \item Windows: 223 (all 252 trading days in 2024)
 \item Purpose: Test generalization beyond Q1
-\item Batch ID: batch\_691ea7f7b79481909f4667eaff640f26
-\item Processing: 23.1 minutes, \$0.60 cost
 \end{itemize}
 
 \subsubsection{Phase 4: 2020 Comparison}
@@ -173,8 +167,6 @@ dealer gamma regimes from 30-day GEX sequences.
 \begin{itemize}
 \item Windows: 223 (all 252 trading days in 2020)
 \item Purpose: Test 0DTE hypothesis (2024 vs 2020 regime persistence)
-\item Batch ID: batch\_691f37d94ef0819099136e88a69bef82
-\item Processing: 6.6 minutes, \$0.07 cost
 \end{itemize}
 
 \subsection{Quality Control}
@@ -216,4 +208,4 @@ Invalid responses logged and excluded from analysis (Phase 3: 0\% invalid, Phase
 
 \subsection{Reproducibility}
 
-All code, data preprocessing scripts, and validation results are available in the public GitHub repository: \url{https://github.com/iAmGiG/gex-llm-patterns}. Specific validation runs can be reproduced using batch IDs and exact prompt templates provided in the repository.
+All code, data preprocessing scripts, and validation results are available in the public GitHub repository: \url{https://github.com/iAmGiG/gex-llm-patterns}. Validation runs can be reproduced using the exact prompt templates and experimental configurations provided in the repository.
