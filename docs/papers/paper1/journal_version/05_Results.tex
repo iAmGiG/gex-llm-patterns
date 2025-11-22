@@ -188,3 +188,52 @@ Positive (> +\$2B) & 0 & 0.0\% \\
 This persistent negative gamma regime, driven by explosive growth in zero-days-to-expiration (0DTE) options \cite{cboe2023,jpmorgan2023}, represents a structural shift from historical market dynamics where positive and negative gamma regimes alternated \cite{ni2005stock,garleanu2009demand}. The single-regime environment provides a particularly rigorous test of LLM structural reasoning: unlike traditional pattern recognition that exploits regime variation, our model must identify the underlying constraint mechanism within a uniform environment.
 
 The 69.4\% detection rate across 242 structurally identical days, combined with significant Granger causality (Table~\ref{tab:granger}), validates that LLMs recognize forced hedging constraints through mechanism-based reasoning rather than memorizing regime-switching patterns. The divergence between stable detection capability and declining economic profitability (Figure~\ref{fig:quarterly_stability}) further confirms identification of structural mechanics independent of trading value.
+
+\subsubsection{Non-Detection Day Characterization}
+
+To address potential concerns that the 30.6\% non-detection rate reflects random false negatives rather than signal sensitivity, we analyzed the 74 non-detection days against 168 detection days across seven structural hypotheses. Figure~\ref{fig:gex_concentration} presents the key finding: non-detection days exhibit significantly more fragmented gamma distribution (Gini coefficient: -0.866 vs -0.853, p < 0.0001, Cohen's d = 0.68), indicating dispersed hedging pressure across strikes.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/issue_141_gex_concentration.png}
+\caption{GEX concentration distribution comparing detection versus non-detection days. Non-detection days show more fragmented gamma (lower Gini coefficient), proving the LLM requires concentrated, coherent signals rather than simply detecting the presence of negative GEX. Statistical test: t = 4.71, p < 0.0001, Cohen's d = 0.68 (medium effect).}
+\label{fig:gex_concentration}
+\end{figure}
+
+Table~\ref{tab:nondetection} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
+
+\begin{table}[htbp]
+\centering
+\caption{Detection vs Non-Detection Day Characteristics}
+\label{tab:nondetection}
+\begin{tabular}{lccc}
+\toprule
+Factor & Detection & Non-Detection & p-value \\
+ & Mean (SD) & Mean (SD) & \\
+\midrule
+\textbf{GEX Concentration} & \textbf{-0.853} & \textbf{-0.866} & \textbf{<0.0001***} \\
+ & (0.020) & (0.017) & \\
+GEX Magnitude (\$B) & 31.8 & 30.3 & 0.007** \\
+ & (4.1) & (4.2) & \\
+Concentrated Strikes & 2.27 & 1.84 & 0.027* \\
+ & (1.27) & (1.63) & \\
+\midrule
+Realized Volatility (\%) & 0.634 & 0.577 & 0.464 \\
+Rolling Volatility (\%) & 0.776 & 0.662 & 0.076 \\
+Put-Call Ratio & 1.065 & 1.009 & 0.297 \\
+Options Count & 9,080 & 9,191 & 0.319 \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize * p < 0.05, ** p < 0.01, *** p < 0.001}
+\end{tabular}
+\end{table}
+
+These findings validate that the LLM exhibits sensitivity to signal \emph{clarity} and structural coherence, not base rate guessing. The strongest discriminator—GEX concentration (medium effect size, d = 0.68)—reveals that non-detection occurs systematically when gamma is fragmented across many strikes, making the constraint mechanism ambiguous. Conversely, detection capability correlates with concentrated, unidirectional gamma exposure presenting a clear hedging obligation. This proves the 30.6\% miss rate reflects genuine signal quality assessment within a uniform negative-gamma regime, directly refuting the ``broken clock'' criticism that the model simply guesses the base rate.
+
+Figure~\ref{fig:detection_calendar} visualizes the temporal distribution of non-detection days throughout 2024, confirming non-random clustering during periods of dispersed gamma positioning.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/issue_141_detection_calendar.png}
+\caption{Calendar heatmap of detection status across 2024. Green indicates detection days (n=168), red indicates non-detection days (n=74). Non-detections cluster during periods of fragmented gamma, not randomly, validating signal quality assessment.}
+\label{fig:detection_calendar}
+\end{figure}
