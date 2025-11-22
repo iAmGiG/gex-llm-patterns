@@ -147,6 +147,6 @@ When expanding for journal submission, add:
 
 ---
 
-**Archive Date:** 2025-11-13
-**Archived By:** Claude Code
-**Purpose:** Preserve master version for journal submission and dissertation
+**Moved from Archive:** 2025-11-22
+**Location:** `docs/papers/paper1/journal_version/` (active)
+**Purpose:** Master version for journal submission and dissertation expansion
