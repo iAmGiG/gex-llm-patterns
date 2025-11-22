@@ -1,6 +1,6 @@
 \section{Conclusion}
 
-We extended obfuscation-based LLM validation from single-day dealer gamma constraints to persistent 30-day market regimes, addressing a critical gap in temporal structural reasoning. Four-phase validation across 1,307 windows (2020 and 2024, \$13.60 cost) demonstrates that LLMs can identify sustained dealer positioning through three structural criteria: persistence (≥70\% same-sign dominance), magnitude (≥\$5B average), and stability (≤5 sign flips).
+We extended obfuscation-based LLM validation from single-day dealer gamma constraints to persistent 30-day market regimes, addressing a critical gap in temporal structural reasoning. Four-phase validation across 1,307 windows (2020 and 2024, \$13.60 cost) demonstrates that LLMs can identify sustained dealer positioning through three structural criteria: persistence ($\geq$70\% same-sign dominance), magnitude ($\geq$\$5B average), and stability ($\leq$5 sign flips).
 
 \subsection{Key Findings}
 
@@ -37,9 +37,9 @@ Our findings have three implications for LLM-based financial analysis:
 
 Four research directions emerge from this work:
 
-\textbf{Multi-year transition analysis}: Testing 2021, 2022, 2023, and 2025 will isolate the 0DTE transition period. If regime persistence increased sharply in 2022 (when daily SPY expirations launched) rather than gradually 2020-2024, this would strengthen causal attribution to 0DTE proliferation beyond current temporal coincidence evidence.
+\textbf{Multi-year transition analysis}: Comprehensive testing across 2020-2025 will isolate the 0DTE transition period and identify precise timing of regime persistence increases. If regime persistence increased sharply in 2022 (when daily SPY expirations launched) rather than gradually 2020-2024, this would strengthen causal attribution to 0DTE proliferation beyond current temporal coincidence evidence. Longer-term historical analysis (15+ years) could reveal correlations between options market growth, GEX activity evolution, and macroeconomic factors such as credit expansion and monetary policy regimes.
 
-\textbf{Cross-asset generalization} (Paper \#3): Extending to individual equities (AAPL, MSFT, NVDA, TSLA) will test whether regime detection generalizes beyond S\&P 500 index options and identify asset-specific vs market-wide regime characteristics.
+\textbf{Cross-asset generalization}: Extending to individual equities (AAPL, MSFT, NVDA, TSLA) will test whether regime detection generalizes beyond S\&P 500 index options and identify asset-specific vs market-wide regime characteristics.
 
 \textbf{Volume-based GEX measurement}: Incorporating intraday options flow data (when available) may refine regime detection by capturing 0DTE hedging dynamics missed by end-of-day open interest measurements.
 

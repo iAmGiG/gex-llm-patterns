@@ -1,6 +1,6 @@
 \section{Introduction}
 
-Large language models (LLMs) have demonstrated remarkable capabilities in natural language understanding and reasoning tasks, yet their ability to detect structural constraints in financial markets remains underexplored. While our companion paper (Paper \#1) established that LLMs can identify single-day dealer gamma constraints through obfuscation testing~\cite{regan2025obfuscation}, these snapshots capture only instantaneous market structure. Real dealer positioning evolves over multi-day horizons, creating \textit{persistent regimes} characterized by sustained structural constraints lasting weeks or months.
+Large language models (LLMs) have demonstrated remarkable capabilities in natural language understanding and reasoning tasks, yet their ability to detect structural constraints in financial markets remains underexplored. While our companion paper established that LLMs can identify single-day dealer gamma constraints through obfuscation testing~\cite{regan2025obfuscation}, these snapshots capture only instantaneous market structure. Real dealer positioning evolves over multi-day horizons, creating \textit{persistent regimes} characterized by sustained structural constraints lasting weeks or months.
 
 This temporal extension matters for three reasons. First, single-day detection validates constraint recognition at a point in time but cannot distinguish persistent regimes from transitional periods. Second, the proliferation of zero-days-to-expiration (0DTE) options since 2021~\cite{cboe2024zero,dim2025zero} fundamentally altered dealer gamma dynamics, potentially creating more persistent positioning. Third, regime boundaries offer actionable insights for risk management and sector rotation strategies, whereas daily snapshots provide limited forward guidance.
 
@@ -20,7 +20,7 @@ We investigate three primary questions:
 
 We define a \textbf{persistent regime} through three structural criteria: (1) $\geq$70\% of days share the dominant GEX sign (persistence), (2) $\geq$\$5B average magnitude (economic significance), and (3) $\leq$5 sign flips across 30 days (stability). Windows failing these criteria are classified as transitional or low-conviction periods.
 
-Following Paper \#1's obfuscation protocol, we strip all temporal context from 30-day GEX sequences, presenting them to the LLM as "Day T-29" through "Day T+0" with generic asset labels. This prevents memorization of specific market events while preserving structural patterns that manifest through dealer hedging constraints.
+Following our previous obfuscation protocol~\cite{regan2025obfuscation}, we strip all temporal context from 30-day GEX sequences, presenting them to the LLM as "Day T-29" through "Day T+0" with generic asset labels. This prevents memorization of specific market events while preserving structural patterns that manifest through dealer hedging constraints.
 
 \subsection{Validation Strategy}
 

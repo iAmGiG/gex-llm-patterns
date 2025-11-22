@@ -4,29 +4,29 @@
 
 Gamma exposure (GEX) measures the second-order price sensitivity of options portfolios, determining how rapidly dealers must adjust delta hedges as underlying prices move~\cite{black1973pricing}. When dealers are short gamma (negative GEX), they must sell on declines and buy on rallies to maintain delta neutrality, amplifying price movements~\cite{ni2005stock}. Conversely, positive gamma positioning dampens volatility through stabilizing hedging flows.
 
-Recent empirical work documents the market impact of dealer gamma hedging. \citet{baltussen2021hedging} demonstrate that end-of-day rebalancing flows create predictable intraday return patterns. \citet{gao2018market} show that options market maker inventory positions significantly affect underlying asset prices. Industry practitioners have operationalized these dynamics through real-time GEX monitoring~\cite{spotgamma2021,fishman2023gamma}, though academic validation of these frameworks remains limited.
+Recent empirical work documents the market impact of dealer gamma hedging. Baltussen et al.~\cite{baltussen2021hedging} demonstrate that end-of-day rebalancing flows create predictable intraday return patterns. Gao et al.~\cite{gao2018market} show that options market maker inventory positions significantly affect underlying asset prices. Industry practitioners have operationalized these dynamics through real-time GEX monitoring~\cite{spotgamma2021,fishman2023gamma}, though academic validation of these frameworks remains limited.
 
 \subsection{Zero-Days-to-Expiration (0DTE) Options}
 
-The introduction of daily options expirations in 2022 fundamentally altered options market structure~\cite{cboe2024zero}. By 2024, 0DTE options accounted for 43\% of SPY options volume (up from $<$5\% in 2020), concentrating gamma exposure at very short maturities. \citet{dim2025zero} document that 0DTE proliferation increased intraday volatility and created more pronounced hedging-driven price dynamics.
+The introduction of daily options expirations in 2022 fundamentally altered options market structure~\cite{cboe2024zero}. By 2024, 0DTE options accounted for 43\% of SPY options volume (up from $<$5\% in 2020), concentrating gamma exposure at very short maturities. Dim et al.~\cite{dim2025zero} document that 0DTE proliferation increased intraday volatility and created more pronounced hedging-driven price dynamics.
 
 This shift potentially impacts regime persistence. Traditional monthly expiration cycles allowed dealers to gradually adjust positioning, while daily 0DTE rollovers may create more sustained directional gamma exposure. Our work empirically tests whether regime persistence indeed increased during this structural transition.
 
 \subsection{Regime Detection in Financial Markets}
 
-Regime detection in financial time series has a rich history. \citet{hamilton1989new} introduced Markov-switching models for identifying volatility regimes. \citet{ang2002regime} apply regime-switching to asset pricing. More recently, \citet{nystrup2020regime} survey machine learning approaches to regime detection, documenting improved performance over traditional econometric methods.
+Regime detection in financial time series has a rich history. Hamilton~\cite{hamilton1989new} introduced Markov-switching models for identifying volatility regimes. Ang and Bekaert~\cite{ang2002regime} apply regime-switching to asset pricing. More recently, Nystrup et al.~\cite{nystrup2020regime} survey machine learning approaches to regime detection, documenting improved performance over traditional econometric methods.
 
 However, these approaches rely on statistical properties (volatility, returns) rather than structural market mechanics. Our contribution differs by detecting regimes through \textit{dealer positioning constraints}—a microstructure-based signal with explicit causal interpretation—rather than purely statistical patterns.
 
 \subsection{LLM Applications in Finance}
 
-Large language models have shown promise in financial analysis tasks. \citet{lopez2023can} demonstrate that GPT-4 can extract financial information from text with accuracy comparable to human analysts. \citet{kim2024financial} show LLMs can reason about market mechanisms when given appropriate context.
+Large language models have shown promise in financial analysis tasks. Lopez-Lira and Tang~\cite{lopez2023can} demonstrate that GPT-4 can extract financial information from text with accuracy comparable to human analysts. Kim et al.~\cite{kim2024financial} show LLMs can reason about market mechanisms when given appropriate context.
 
 Yet LLM financial reasoning faces two critical challenges. First, \textit{temporal memorization}: LLMs may recall specific market events from training data rather than reasoning from structure. Second, \textit{spurious pattern detection}: LLMs may identify statistically significant but mechanically meaningless patterns. Our obfuscation testing methodology addresses both concerns by stripping temporal context and requiring structural reasoning.
 
 \subsection{Obfuscation Testing for LLM Validation}
 
-Our companion paper (Paper \#1) introduced obfuscation testing for validating LLM structural reasoning~\cite{regan2025obfuscation}. By replacing calendar dates with relative labels ("Day T+0") and removing event context, we force LLMs to reason from market mechanics rather than memorized associations. Paper \#1 demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy.
+Our companion paper~\cite{regan2025obfuscation} introduced obfuscation testing for validating LLM structural reasoning. By replacing calendar dates with relative labels ("Day T+0") and removing event context, we force LLMs to reason from market mechanics rather than memorized associations. This prior work demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy.
 
 This paper extends obfuscation testing to \textbf{temporal domains} (30-day regimes vs single-day snapshots). The key methodological challenge is ensuring selectivity: detecting universal patterns (present in all markets) proves only pattern matching, while discriminating persistent regimes from transitional periods validates structural reasoning. Our four-phase validation strategy specifically addresses this challenge through negative controls and pre/post-0DTE comparison.
 
