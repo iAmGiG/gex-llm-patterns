@@ -9,30 +9,34 @@
 ```
 scripts/validation/
 ├── paper1/          ✅ Paper #1: Pattern Taxonomy Validation (Submitted Oct 2025)
-│   ├── validate_pattern_taxonomy.py   - Single pattern obfuscation testing
-│   ├── validate_all_patterns.py       - Multi-pattern batch validation
-│   ├── validate_patterns.py           - Legacy validation (deprecated)
-│   └── README.md                      - Paper #1 script documentation
+│   ├── validate_pattern_taxonomy.py                     - Single pattern obfuscation testing
+│   ├── validate_all_patterns.py                         - Multi-pattern batch validation
+│   ├── validate_patterns.py                             - Legacy validation (deprecated)
+│   ├── verify_narrative_necessity_pilot.py              - WHO→WHOM→WHAT necessity pilot (Issue #133)
+│   ├── verify_narrative_necessity_phase2_batch.py       - Full narrative removal (52 dates, Batch API)
+│   ├── verify_narrative_necessity_phase3_batch.py       - Balanced sample validation (Issue #133)
+│   └── README.md                                        - Paper #1 script documentation
 │
-├── paper2/          🔄 Paper #2: Regime Detection (Phase 1 Complete)
-│   ├── validate_regime_windows_batch.py        - Batch API regime validation (RECOMMENDED)
-│   ├── validate_regime_windows.py              - Synchronous regime validation (legacy)
-│   ├── generate_shuffled_windows.py            - Phase 2: Shuffled negative controls
-│   ├── generate_transitional_windows.py        - Phase 2: Transitional negative controls
-│   ├── generate_low_magnitude_windows.py       - Phase 2: Low-magnitude negative controls
-│   └── README.md                               - Paper #2 script documentation
+├── paper2/          🔄 Paper #2: Regime Detection (Multi-Year Expansion, Issue #140)
+│   ├── validate_regime_windows_batch.py                 - Batch API regime validation (RECOMMENDED)
+│   ├── validate_regime_windows.py                       - Synchronous regime validation (legacy)
+│   ├── verify_dual_gex_framework.py                     - Dual GEX framework verification (Issue #138)
+│   ├── generate_shuffled_windows.py                     - Phase 2a: Shuffled negative controls
+│   ├── generate_transitional_windows.py                 - Phase 2b: Transitional negative controls
+│   ├── generate_low_magnitude_windows.py                - Phase 2c: Low-magnitude negative controls
+│   └── README.md                                        - Paper #2 script documentation
 │
 ├── shared/          🔧 Cross-Paper Utilities
-│   ├── export_db_to_cache.py          - Database to cache export
-│   ├── production_cache_test.py       - Cache integrity testing
-│   └── README.md                      - Shared utilities documentation
+│   ├── export_db_to_cache.py                     - Database to cache export
+│   ├── production_cache_test.py                  - Cache integrity testing
+│   └── README.md                                 - Shared utilities documentation
 │
 └── deprecated/      ⚠️ Historical Scripts (Sept 2025, Not Maintained)
-    ├── validate_sequential_patterns.py - 5-day sequential validation (pivoted to 30-day)
-    ├── test_10am_reversal.py          - Time-based pattern tests
-    ├── test_afternoon_drift.py        - 3:30 PM pinning tests
-    ├── test_*.py                      - Various exploratory pattern tests (10 files)
-    └── README.md                      - Deprecated scripts context
+    ├── validate_sequential_patterns.py           - 5-day sequential validation (pivoted to 30-day)
+    ├── test_10am_reversal.py                     - Time-based pattern tests
+    ├── test_afternoon_drift.py                   - 3:30 PM pinning tests
+    ├── test_*.py                                 - Various exploratory pattern tests (10 files)
+    └── README.md                                 - Deprecated scripts context
 ```
 
 ---
@@ -252,4 +256,20 @@ python scripts/validation/shared/export_db_to_cache.py \
 
 ---
 
-**Last Updated**: November 19, 2025
+---
+
+## Script Organization Notes
+
+**November 22, 2025**: Reorganized scripts by paper affiliation to minimize merge conflicts across worktrees:
+
+- **Paper #1 scripts** moved to `paper1/` subfolder (pattern validation + narrative removal tests)
+- **Paper #2 scripts** moved to `paper2/` subfolder (regime detection + dual GEX tests)
+- **Root-level scripts** removed (all now in paper-specific folders)
+
+**Active Worktrees**:
+- Issue #140 (Paper #2 multi-year): `/mnt/bst/yxie2/cregan1/gex-llm-patterns-issue140`
+- Issue #141-146 (Paper #1 extensions): `/mnt/bst/yxie2/cregan1/gex-llm-patterns-issue141`
+
+---
+
+**Last Updated**: November 22, 2025
