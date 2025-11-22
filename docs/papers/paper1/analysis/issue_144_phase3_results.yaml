@@ -1,0 +1,95 @@
+chi_square_test:
+  chi2: 0.4241966600890542
+  p_value: 0.9986424798457619
+  dof: 6
+  significant: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args:
+    - b1
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - '|'
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    AA==
+mechanism_specificity:
+- pattern: gamma_positioning
+  expected_criterion: C1
+  residual: !!python/object/apply:numpy.core.multiarray.scalar
+  - &id001 !!python/object/apply:numpy.dtype
+    args:
+    - f8
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - <
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    vpTwncLjwj8=
+  status: ~ NEUTRAL (no clear association)
+- pattern: stock_pinning
+  expected_criterion: C3
+  residual: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id001
+  - !!binary |
+    m+3GtFqi1D8=
+  status: ~ NEUTRAL (no clear association)
+- pattern: 0dte_hedging
+  expected_criterion: C4
+  residual: !!python/object/apply:numpy.core.multiarray.scalar
+  - *id001
+  - !!binary |
+    vsqTOKK3uj8=
+  status: ~ NEUTRAL (no clear association)
+contingency_matrix:
+- - 72.0
+  - 167.0
+  - 65.0
+  - 38.0
+- - 66.0
+  - 162.0
+  - 65.0
+  - 33.0
+- - 78.0
+  - 187.0
+  - 70.0
+  - 41.0
+expected_frequencies:
+- - 70.75862068965517
+  - 169.0344827586207
+  - 65.51724137931035
+  - 36.689655172413794
+- - 67.44827586206897
+  - 161.1264367816092
+  - 62.452107279693486
+  - 34.97318007662835
+- - 77.79310344827586
+  - 185.83908045977012
+  - 72.03065134099617
+  - 40.337164750957854
+residuals:
+- - 0.1475756903829843
+  - -0.15648271018885793
+  - -0.06390214842634623
+  - 0.21632852229109828
+- - -0.17634610275970428
+  - 0.06881940891042942
+  - 0.32240932134637895
+  - -0.33365616953379845
+- - 0.02345755286683567
+  - 0.08515959693263572
+  - -0.23926363216548363
+  - 0.10436452752382316
