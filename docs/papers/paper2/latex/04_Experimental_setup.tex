@@ -187,25 +187,6 @@ All LLM outputs validated for:
 
 Invalid responses logged and excluded from analysis (Phase 3: 0\% invalid, Phase 4: 0\% invalid).
 
-\subsection{Computational Environment}
-
-\textbf{Hardware}: Kennesaw State University CCSE computing cluster
-
-\textbf{Software Stack}:
-\begin{itemize}
-\item Python 3.10.12
-\item OpenAI Python SDK 1.57.4
-\item pandas 2.2.2, numpy 1.26.4
-\item scipy 1.13.1 (Black-Scholes gamma calculation)
-\end{itemize}
-
-\textbf{Data Storage}:
-\begin{itemize}
-\item SQLite database (2024 GEX: 252 days, 100\% complete)
-\item File cache (2020 GEX: 252 days, JSON format)
-\item Validation results: YAML files (human-readable, version controlled)
-\end{itemize}
-
 \subsection{Reproducibility}
 
 All code, data preprocessing scripts, and validation results are available in the public GitHub repository: \url{https://github.com/iAmGiG/gex-llm-patterns}. Validation runs can be reproduced using the exact prompt templates and experimental configurations provided in the repository.
