@@ -197,6 +197,57 @@ class GEXCacheManager:
             logger.error(
                 f"Failed to update index for {symbol} {trading_date}: {e}")
 
+    def get_raw_options_from_db(self, symbol: str, trading_date: str) -> Optional[pd.DataFrame]:
+        """
+        Retrieve raw options chain from database (Issue #147).
+
+        Args:
+            symbol: Stock symbol (SPY)
+            trading_date: Trading date (YYYY-MM-DD)
+
+        Returns:
+            DataFrame with raw options or None if not found
+
+        Schema matches Alpha Vantage format for backward compatibility.
+        """
+        db_path = self.base_cache_dir / "consolidated_historical.db"
+
+        if not db_path.exists():
+            logger.debug(f"Database not found: {db_path}")
+            return None
+
+        try:
+            import sqlite3
+            with sqlite3.connect(str(db_path)) as conn:
+                query = '''
+                    SELECT
+                        strike,
+                        option_type as type,
+                        expiration,
+                        bid, ask, last,
+                        volume, open_interest,
+                        implied_volatility,
+                        delta, gamma, theta, vega, rho,
+                        contract_symbol,
+                        underlying_price
+                    FROM raw_options_chain
+                    WHERE symbol = ? AND date = ?
+                    ORDER BY strike, option_type
+                '''
+
+                df = pd.read_sql_query(query, conn, params=(symbol.upper(), trading_date))
+
+                if df.empty:
+                    logger.debug(f"No raw options in DB for {symbol} {trading_date}")
+                    return None
+
+                logger.info(f"Retrieved {len(df)} raw options from DB for {symbol} {trading_date}")
+                return df
+
+        except Exception as e:
+            logger.error(f"Error retrieving raw options from DB: {e}")
+            return None
+
     def get_gex_summary(self, symbol: str, trading_date: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve daily GEX summary from cache.
