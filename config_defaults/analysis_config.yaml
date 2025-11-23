@@ -318,3 +318,46 @@ strike_level_patterns:
       min_gamma_concentration: 0.15      # 15% gamma concentration
       require_gamma_walls: true          # Gamma resistance/support required
       base_confidence: 0.75               # Base confidence level
+
+# ==============================================================================
+# Paper #2 Regime Classification
+# Extracted from src/validation/regime_classifier.py (November 2025, Issue #149)
+# ==============================================================================
+
+regime_classification:
+  # Classification thresholds for 30-day regime windows
+  # Used by: RegimeClassifier, validate_regime_windows_batch.py
+  # Validated with: 1,418 windows across 2020-2025 (o4-mini model)
+
+  # Persistence threshold: Minimum fraction of days with same sign
+  # Example: 0.70 means 21+ out of 30 days must be same sign (positive or negative)
+  persistence_threshold: 0.70  # 70% of days (21/30) same sign
+
+  # Magnitude threshold: Minimum average GEX magnitude for persistent regime
+  # Example: 5000000000 means average absolute GEX must be ≥$5B across 30 days
+  magnitude_threshold: 5000000000  # $5B average GEX
+
+  # Stability threshold: Maximum sign flips allowed for persistent regime
+  # Example: 5 means ≤5 transitions between positive/negative GEX across 30 days
+  max_sign_flips: 5  # Max flips for persistent regime
+
+  # Low conviction threshold: Below this magnitude, regime is too weak even if persistent
+  # Example: 3000000000 means avg <$3B is rejected as "low conviction"
+  low_conviction_threshold: 3000000000  # $3B weak magnitude cutoff
+
+  # Window parameters
+  window_size: 30  # Days in regime window (fixed for Paper #2)
+
+  # Rationale (for documentation and sensitivity analysis)
+  rationale:
+    persistence: "70% ensures dominant regime (21/30 days). Lower thresholds (60%) would include transitional periods."
+    magnitude: "$5B threshold derived from Paper #1 detection rates. Below this, dealer constraints are insufficient to force directional flows."
+    sign_flips: "≤5 flips allows minor volatility while maintaining regime stability. >5 flips indicates transitional period."
+    low_conviction: "$3B floor prevents weak regimes from being classified as persistent, even with high sign persistence."
+
+  # Expected detection rates (empirical from 2020-2025 validation)
+  expected_detection_rates:
+    pre_0dte_era: 0.12   # 2020: 12.1% (low magnitude, mixed regimes)
+    post_0dte_stable: 1.0  # 2021-2023, 2025: 100% (high magnitude, persistent negative)
+    volatile_period: 0.81  # 2024: 81.2% (sign flip failures during Feb-Mar volatility)
+    overall_mean: 0.30_to_0.50  # Expected selectivity (not universal 98-100%)
