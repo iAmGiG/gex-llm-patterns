@@ -954,12 +954,22 @@ class HistoricalGEXDatabaseBuilder:
         records = []
         for _, row in options_df.iterrows():
             try:
+                # Handle expiration date conversion (may be Timestamp or string)
+                expiration = row['expiration']
+                if hasattr(expiration, 'strftime'):
+                    expiration_str = expiration.strftime('%Y-%m-%d')
+                else:
+                    expiration_str = str(expiration)
+
+                # Handle contract_symbol (may be missing or use contractID)
+                contract_sym = row.get('contract_symbol') or row.get('contractID')
+
                 record = (
                     symbol,
                     date,
                     safe_convert_for_sqlite(row['strike']),
                     'call' if row.get('type', 'call').lower() == 'call' else 'put',
-                    row['expiration'],
+                    expiration_str,
                     safe_convert_for_sqlite(row.get('bid')),
                     safe_convert_for_sqlite(row.get('ask')),
                     safe_convert_for_sqlite(row.get('last')),
@@ -971,7 +981,7 @@ class HistoricalGEXDatabaseBuilder:
                     safe_convert_for_sqlite(row.get('theta')),
                     safe_convert_for_sqlite(row.get('vega')),
                     safe_convert_for_sqlite(row.get('rho')),
-                    row.get('contract_symbol'),
+                    contract_sym,
                     safe_convert_for_sqlite(underlying_price)
                 )
                 records.append(record)
