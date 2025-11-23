@@ -1,0 +1,66 @@
+detection:
+  overall:
+    n: 519
+    c1_rate: 41.61849710982659
+    c4_rate: 21.57996146435453
+  gamma_positioning:
+    n: 168
+    c1_rate: 42.857142857142854
+    c4_rate: 22.61904761904762
+  stock_pinning:
+    n: 163
+    c1_rate: 40.49079754601227
+    c4_rate: 20.245398773006134
+  0dte_hedging:
+    n: 188
+    c1_rate: 41.48936170212766
+    c4_rate: 21.808510638297875
+baseline:
+  overall:
+    n: 100
+    c1_rate: 45.0
+    c4_rate: 32.0
+  0dte_hedging:
+    n: 23
+    c1_rate: 43.47826086956522
+    c4_rate: 43.47826086956522
+  gamma_positioning:
+    n: 34
+    c1_rate: 32.35294117647059
+    c4_rate: 17.647058823529413
+  stock_pinning:
+    n: 43
+    c1_rate: 55.81395348837209
+    c4_rate: 37.2093023255814
+lift:
+  overall:
+    c1_lift: 0.9248554913294799
+    c4_lift: 0.674373795761079
+  gamma_positioning:
+    c1_lift: 1.3246753246753247
+    c4_lift: 1.2817460317460316
+  stock_pinning:
+    c1_lift: 0.7254601226993864
+    c4_lift: 0.5440950920245398
+  0dte_hedging:
+    c1_lift: 0.9542553191489361
+    c4_lift: 0.5015957446808511
+chi_square:
+  c1:
+    chi2: 0.26670794258140174
+    p_value: 0.605548710489589
+    significant: false
+    table:
+    - - 216
+      - 303
+    - - 45
+      - 55
+  c4:
+    chi2: 4.532648450334655
+    p_value: 0.03325411563876241
+    significant: true
+    table:
+    - - 112
+      - 407
+    - - 32
+      - 68
