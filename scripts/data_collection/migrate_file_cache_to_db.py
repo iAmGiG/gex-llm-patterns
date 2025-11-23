@@ -102,16 +102,20 @@ def migrate_file_cache_to_database(
                     error_count += 1
                     continue
 
-                # Get underlying price from GEX summary (if available)
-                gex_summary = cache.gex_cache.get_gex_summary(symbol, trading_date)
+                # Get underlying price from database (primary source)
+                cursor_price = conn.cursor()
+                cursor_price.execute(
+                    'SELECT spot_price FROM daily_gex_metrics WHERE symbol = ? AND date = ?',
+                    (symbol, trading_date)
+                )
+                price_row = cursor_price.fetchone()
 
-                if gex_summary and 'spot_price' in gex_summary:
-                    underlying_price = gex_summary['spot_price']
-                elif gex_summary and 'underlying_price' in gex_summary:
-                    underlying_price = gex_summary['underlying_price']
+                if price_row and price_row[0] is not None:
+                    underlying_price = price_row[0]
                 elif 'underlying_price' in options_df.columns and not options_df['underlying_price'].isna().all():
-                    # Try to get from options_df if available
+                    # Fallback: Try to get from options_df if available
                     underlying_price = options_df['underlying_price'].iloc[0]
+                    logger.info(f"Using underlying_price from options_df for {trading_date}: ${underlying_price:.2f}")
                 else:
                     logger.warning(f"No underlying price found for {trading_date}, skipping")
                     error_count += 1
