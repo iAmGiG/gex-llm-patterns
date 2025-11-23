@@ -311,19 +311,22 @@ class RegimeClassifier:
 
 ## 3. Database and Cache Architecture Review
 
-### 3.1 Current Architecture ✅
+### 3.1 Current Architecture ✅ (Updated Issue #147, Nov 22, 2025)
 
-**Dual-Layer Storage System**:
+**Database-First Architecture** (as of Nov 22, 2025):
 
-1. **File Cache** (`.cache/gex_data/SPY/YYYY-MM-DD/gex_summary.json`)
-   - Purpose: Fast I/O, git-friendly (JSON)
+1. **SQLite Database** (`.cache/consolidated_historical.db`) - **Primary Source**
+   - Table: `daily_gex_metrics` (GEX summaries, 1,475 rows)
+   - Table: `strike_gex_details` (per-strike GEX, 573,649 rows)
+   - Table: `raw_options_chain` (**NEW** - Issue #147, 11,820,580 rows)
+   - Purpose: Single source of truth, queryable, persistent
+   - Size: 3.25 GB (up from 55 MB pre-Issue #147)
+
+2. **File Cache** (`.cache/gex_data/SPY/YYYY-MM-DD/`) - **DEPRECATED**
+   - Purpose: Legacy backward compatibility only
+   - Status: Deprecated as of Issue #147
    - Managed by: `GEXCacheManager`, `UnifiedCacheManager`
-   - Schema: Flexible (JSON allows any fields)
-
-2. **SQLite Database** (`.cache/consolidated_historical.db`)
-   - Table: `daily_gex_metrics`
-   - Purpose: Queryable, indexed, referential integrity
-   - Schema: Fixed (19 columns)
+   - Schema: Flexible (JSON/pickle)
 
 **Schema** (`daily_gex_metrics`):
 
@@ -361,7 +364,36 @@ CREATE TABLE daily_gex_metrics (
 - `idx_daily_gex_symbol_date` - Primary lookup
 - `idx_daily_gex_date` - Temporal queries
 
-**Cache Manager Index** (`gex_cache_index.sqlite`):
+**Schema** (`raw_options_chain`) - **NEW Issue #147**:
+
+```sql
+CREATE TABLE raw_options_chain (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    symbol TEXT NOT NULL,
+    date DATE NOT NULL,
+    strike REAL NOT NULL,
+    option_type TEXT NOT NULL CHECK(option_type IN ('call', 'put')),
+    expiration DATE NOT NULL,
+    bid REAL, ask REAL, last REAL,
+    volume INTEGER, open_interest INTEGER,
+    implied_volatility REAL,
+    delta REAL, gamma REAL, theta REAL, vega REAL, rho REAL,
+    contract_symbol TEXT,
+    underlying_price REAL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(symbol, date, strike, option_type, expiration)
+);
+```
+
+**Indexes**:
+
+- `idx_raw_options_symbol_date` - Primary lookup (fast 30-day window retrieval)
+- `idx_raw_options_expiration` - Expiration-based queries
+- `idx_raw_options_strike` - Strike-based queries
+
+**Data Volume**: 11,820,580 rows (1,294 trading days × ~9,000 options/day avg)
+
+**Cache Manager Index** (`gex_cache_index.sqlite`) - **DEPRECATED**:
 
 ```sql
 CREATE TABLE gex_cache_index (
@@ -382,12 +414,14 @@ CREATE TABLE gex_cache_index (
 );
 ```
 
-**Assessment**: ✅ **Architecture is sound**
+**Assessment**: ✅ **Architecture significantly improved (Issue #147)**
 
-- Clear separation of concerns
-- Fast file access + queryable database
-- Indexes optimized for common queries
-- Schema accommodates new fields (recent: OHLCV columns for Issue #144)
+- **Single source of truth**: Database now stores raw options (not just GEX summaries)
+- **No file cache dependency**: Validation scripts work database-only
+- **Persistent storage**: Raw options survive file cache clearing
+- **Queryable history**: Can reconstruct any date's GEX from raw options
+- **Indexes optimized**: Fast 30-day window retrieval for Paper #2
+- **Schema accommodates growth**: Recent additions: OHLCV (Issue #144), raw_options_chain (Issue #147)
 
 ---
 
