@@ -373,6 +373,10 @@ KEY PLAYERS:"""
         """
         Build regime detection prompt for 30-day GEX window analysis (Paper #2).
 
+        NOTE: Prompt structure is documented in config_defaults/llm_prompts.yaml under
+        paper2_prompts.regime_classification. Current implementation uses hardcoded prompt
+        for simplicity. Config-based loading can be implemented when A/B testing is needed.
+
         Args:
             gex_sequence: List of dicts with 'date', 'net_gex_usd', 'positive_gex', 'negative_gex'
             end_date: Optional end date for logging (not used in prompt - obfuscation)
@@ -390,6 +394,8 @@ KEY PLAYERS:"""
 
         gex_data_table = "\n".join(gex_lines)
 
+        # Build prompt (hardcoded for stability, documented in config)
+        # See config_defaults/llm_prompts.yaml for externalized structure
         prompt = f"""You are a market structure analyst specializing in dealer gamma positioning regimes.
 
 TASK: Analyze this 30-day period and determine if it represents a PERSISTENT regime where dealer constraints create forced, directional flows.
