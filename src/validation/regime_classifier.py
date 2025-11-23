@@ -12,13 +12,14 @@ Expected Detection Rate: 30-50% (selective, not universal)
 
 Related:
     - docs/papers/paper2/methodology/regime_windows_design.md
-    - Issues #89, #107
+    - Issues #89, #107, #149
 """
 
 import numpy as np
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import logging
+from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -59,36 +60,59 @@ class RegimeClassifier:
             print(f"Rejected: {result.metrics.regime_type}")
     """
 
-    # Classification thresholds
+    # Classification thresholds (class-level defaults, overridden by config)
+    # Kept for backward compatibility with code that references these directly
     PERSISTENCE_THRESHOLD = 0.70  # 70% of days (21/30) same sign
     MAGNITUDE_THRESHOLD = 5e9     # $5B average GEX
     MAX_SIGN_FLIPS = 5            # Max flips for persistent regime
-    # $3B (below this is too weak even if persistent)
-    LOW_CONVICTION_MAG = 3e9
+    LOW_CONVICTION_MAG = 3e9      # $3B (below this is too weak even if persistent)
 
     def __init__(
         self,
-        persistence_threshold: float = 0.70,
-        magnitude_threshold: float = 5e9,
-        max_sign_flips: int = 5
+        persistence_threshold: Optional[float] = None,
+        magnitude_threshold: Optional[float] = None,
+        max_sign_flips: Optional[int] = None
     ):
         """
         Initialize regime classifier with custom thresholds.
 
+        Thresholds are loaded from config_defaults/analysis_config.yaml by default.
+        Explicit parameters override config values (for testing/experimentation).
+
         Args:
-            persistence_threshold: Minimum fraction of days with same sign (default 0.70)
-            magnitude_threshold: Minimum average GEX magnitude for persistence (default $5B)
-            max_sign_flips: Maximum sign flips allowed for persistent regime (default 5)
+            persistence_threshold: Minimum fraction of days with same sign (default from config: 0.70)
+            magnitude_threshold: Minimum average GEX magnitude for persistence (default from config: $5B)
+            max_sign_flips: Maximum sign flips allowed for persistent regime (default from config: 5)
         """
-        self.persistence_threshold = persistence_threshold
-        self.magnitude_threshold = magnitude_threshold
-        self.max_sign_flips = max_sign_flips
+        # Load config
+        config = get_config()
+
+        # Use explicit parameters if provided, otherwise use config, fallback to class constants
+        self.persistence_threshold = persistence_threshold or config.get(
+            'regime_classification.persistence_threshold',
+            self.PERSISTENCE_THRESHOLD
+        )
+        self.magnitude_threshold = magnitude_threshold or config.get(
+            'regime_classification.magnitude_threshold',
+            self.MAGNITUDE_THRESHOLD
+        )
+        self.max_sign_flips = max_sign_flips or config.get(
+            'regime_classification.max_sign_flips',
+            self.MAX_SIGN_FLIPS
+        )
+
+        # Load low conviction threshold from config (not exposed as parameter)
+        self.low_conviction_mag = config.get(
+            'regime_classification.low_conviction_threshold',
+            self.LOW_CONVICTION_MAG
+        )
 
         logger.info(
             f"RegimeClassifier initialized: "
-            f"persistence={persistence_threshold:.0%}, "
-            f"magnitude=${magnitude_threshold/1e9:.0f}B, "
-            f"max_flips={max_sign_flips}"
+            f"persistence={self.persistence_threshold:.0%}, "
+            f"magnitude=${self.magnitude_threshold/1e9:.0f}B, "
+            f"max_flips={self.max_sign_flips} "
+            f"(source: {'config' if persistence_threshold is None else 'explicit'})"
         )
 
     def classify_window(
