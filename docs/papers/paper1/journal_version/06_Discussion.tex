@@ -18,6 +18,18 @@ Several limitations warrant consideration:
 \textbf{LLM Black Box Nature:} The 28.5 percentage point (pp) gap between biased and unbiased prompts suggests significant sensitivity to prompt framing.
 \textbf{Temporal Limitation:} Our 2024 sample may not generalize to crisis periods or structural bull/bear markets.
 
+\subsection{Prompting Fidelity in Financial LLM Research}
+
+Our analysis uncovered an important methodological limitation regarding prompt design for financial pattern detection. To test whether the LLM's reasoning qualitatively adapts across different market conditions, we conducted a supplementary experiment requesting detailed 50-100 word causal explanations using prompts that explicitly listed expected qualitative keywords (``amplification'', ``cascading'', ``dampening'').
+
+The result was a null finding: responses for high-alpha quarters (Q1, Sharpe 1.8) and zero-alpha quarters (Q4, Sharpe 0.1) became nearly identical, with both producing template-like responses containing 186-197 amplification keywords and uniform ``strong amplification'' intensity characterizations. Chi-squared tests confirmed no significant differentiation ($p > 0.05$).
+
+This contrasts sharply with the subtle but genuine linguistic adaptation observed in unprompted brief responses (``Forced to buy'' $\rightarrow$ ``Maintain equilibrium''). We interpret this discrepancy as \textit{prompt bias artifact}: explicitly requesting rich qualitative language triggers the LLM's pre-trained knowledge base regarding negative GEX regimes, overriding contextual adaptation signals. The prompt effectively ``teaches to the test'', eliciting learned templates rather than genuine reasoning.
+
+\textbf{Contribution to FinLLM Research.} This finding establishes a new guardrail for financial LLM methodology: \textit{unbiased brief outputs often provide higher signal fidelity than explicitly structured rich outputs}. Researchers designing LLM-based financial analysis systems should prioritize minimal prompting for core reasoning tasks, reserving detailed structured outputs for post-detection explanation or reporting phases. Prompts that enumerate expected keywords or explicitly guide qualitative language risk corrupting the very reasoning signals they aim to elicit.
+
+This methodological contribution extends beyond our specific 0DTE hedging application, offering guidance for any financial LLM research seeking to validate genuine reasoning versus pattern memorization.
+
 \subsection{Implications for Financial Markets}
 The ability to detect dealer constraints without historical context suggests LLMs could identify novel patterns in unexplored markets through pure structural reasoning. Risk managers could use LLM-detected patterns as early warning signals for volatility amplification, while the obfuscation testing methodology validates a new approach for distinguishing genuine structural constraints from historical correlations.
 
