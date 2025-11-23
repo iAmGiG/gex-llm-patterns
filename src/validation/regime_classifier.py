@@ -272,7 +272,7 @@ class RegimeClassifier:
 
         # Check for low conviction (persistent sign but weak magnitude)
         if (pos_days >= min_days or neg_days >= min_days):
-            if avg_mag >= self.LOW_CONVICTION_MAG:
+            if avg_mag >= self.low_conviction_mag:
                 return "low_conviction"
             else:
                 return "transitional"  # Too weak even for low conviction
