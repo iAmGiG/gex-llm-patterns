@@ -925,7 +925,82 @@ class HistoricalGEXDatabaseBuilder:
             
         except Exception as e:
             self.logger.error(f"Error storing daily analysis: {e}")
-    
+
+    def store_raw_options_chain(self, conn: sqlite3.Connection, symbol: str,
+                                date: str, options_df: pd.DataFrame,
+                                underlying_price: float) -> int:
+        """
+        Store raw options chain data to database (Issue #147).
+
+        Args:
+            conn: Database connection
+            symbol: Stock symbol (SPY)
+            date: Trading date (YYYY-MM-DD)
+            options_df: Raw options DataFrame from Alpha Vantage
+            underlying_price: Spot price of underlying asset
+
+        Returns:
+            Number of rows inserted
+
+        Note:
+            Uses INSERT OR IGNORE to handle duplicates gracefully.
+            All options for a given date share the same underlying_price.
+        """
+        if options_df is None or options_df.empty:
+            self.logger.warning(f"Empty options data for {symbol} {date}")
+            return 0
+
+        # Prepare records for batch insert
+        records = []
+        for _, row in options_df.iterrows():
+            try:
+                record = (
+                    symbol,
+                    date,
+                    safe_convert_for_sqlite(row['strike']),
+                    'call' if row.get('type', 'call').lower() == 'call' else 'put',
+                    row['expiration'],
+                    safe_convert_for_sqlite(row.get('bid')),
+                    safe_convert_for_sqlite(row.get('ask')),
+                    safe_convert_for_sqlite(row.get('last')),
+                    safe_convert_for_sqlite(row.get('volume')),
+                    safe_convert_for_sqlite(row.get('open_interest')),
+                    safe_convert_for_sqlite(row.get('implied_volatility')),
+                    safe_convert_for_sqlite(row.get('delta')),
+                    safe_convert_for_sqlite(row.get('gamma')),
+                    safe_convert_for_sqlite(row.get('theta')),
+                    safe_convert_for_sqlite(row.get('vega')),
+                    safe_convert_for_sqlite(row.get('rho')),
+                    row.get('contract_symbol'),
+                    safe_convert_for_sqlite(underlying_price)
+                )
+                records.append(record)
+            except Exception as e:
+                self.logger.warning(f"Error preparing option record: {e}, row: {row}")
+                continue
+
+        if not records:
+            self.logger.warning(f"No valid records prepared for {symbol} {date}")
+            return 0
+
+        try:
+            cursor = conn.cursor()
+            cursor.executemany('''
+                INSERT OR IGNORE INTO raw_options_chain
+                (symbol, date, strike, option_type, expiration, bid, ask, last,
+                 volume, open_interest, implied_volatility, delta, gamma, theta,
+                 vega, rho, contract_symbol, underlying_price)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', records)
+
+            rows_inserted = cursor.rowcount
+            self.logger.info(f"Stored {rows_inserted} raw options for {symbol} {date}")
+            return rows_inserted
+
+        except Exception as e:
+            self.logger.error(f"Error inserting raw options: {e}")
+            raise  # Re-raise to trigger transaction rollback
+
     def build_gex_database(self, symbols: List[str], start_date, end_date,
                           min_quality_score: int = 60) :
         """
@@ -1042,7 +1117,24 @@ class HistoricalGEXDatabaseBuilder:
                                 f"Quality score {gex_profile['data_quality_score']} below threshold")
                             symbol_summary['days_failed'] += 1
                             continue
-                        
+
+                        # Store raw options chain to database (Issue #147)
+                        try:
+                            conn = self.get_connection()
+                            rows_inserted = self.store_raw_options_chain(
+                                conn=conn,
+                                symbol=symbol,
+                                date=trade_date,
+                                options_df=options_data,
+                                underlying_price=spot_price
+                            )
+                            conn.commit()
+                            self.logger.debug(f"Stored {rows_inserted} raw options for {symbol} {trade_date}")
+                        except Exception as e:
+                            self.logger.error(f"Error storing raw options for {symbol} {trade_date}: {e}")
+                            # Don't fail the whole process - raw options storage is supplementary
+                            # Continue with GEX calculation and pattern detection
+
                         # Get Fed context
                         fed_context = self.get_fed_context(trade_date)
                         
