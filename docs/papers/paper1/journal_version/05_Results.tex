@@ -214,24 +214,24 @@ Table~\ref{tab:nondetection} summarizes the statistical comparison across all te
 \centering
 \caption{Detection vs Non-Detection Day Characteristics}
 \label{tab:nondetection}
-\begin{tabular}{lccc}
+\small
+\begin{tabular}{lrrr}
 \toprule
-Factor & Detection & Non-Detection & p-value \\
- & Mean (SD) & Mean (SD) & \\
+Factor & Detect & Non-Detect & p \\
 \midrule
-\textbf{GEX Concentration} & \textbf{-0.853} & \textbf{-0.866} & \textbf{<0.0001***} \\
- & (0.020) & (0.017) & \\
-GEX Magnitude (\$B) & 31.8 & 30.3 & 0.007** \\
- & (4.1) & (4.2) & \\
-Concentrated Strikes & 2.27 & 1.84 & 0.027* \\
- & (1.27) & (1.63) & \\
+\textbf{GEX Conc.} & \textbf{-0.853} & \textbf{-0.866} & \textbf{<.0001***} \\
+ & \textit{(0.020)} & \textit{(0.017)} & \\
+GEX Mag. (\$B) & 31.8 & 30.3 & .007** \\
+ & \textit{(4.1)} & \textit{(4.2)} & \\
+Conc. Strikes & 2.27 & 1.84 & .027* \\
+ & \textit{(1.27)} & \textit{(1.63)} & \\
 \midrule
-Realized Volatility (\%) & 0.634 & 0.577 & 0.464 \\
-Rolling Volatility (\%) & 0.776 & 0.662 & 0.076 \\
-Put-Call Ratio & 1.065 & 1.009 & 0.297 \\
-Options Count & 9,080 & 9,191 & 0.319 \\
+Real. Vol. (\%) & 0.634 & 0.577 & .464 \\
+Roll. Vol. (\%) & 0.776 & 0.662 & .076 \\
+Put-Call Ratio & 1.065 & 1.009 & .297 \\
+Opts. Count & 9,080 & 9,191 & .319 \\
 \bottomrule
-\multicolumn{4}{l}{\footnotesize * p < 0.05, ** p < 0.01, *** p < 0.001}
+\multicolumn{4}{l}{\footnotesize * p < .05, ** p < .01, *** p < .001}
 \end{tabular}
 \end{table}
 
@@ -239,12 +239,12 @@ These findings validate that the LLM exhibits sensitivity to signal \emph{clarit
 
 Figure~\ref{fig:detection_calendar} visualizes the temporal distribution of non-detection days throughout 2024, confirming non-random clustering during periods of dispersed gamma positioning.
 
-\begin{figure}[!htbp]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\columnwidth]{../figures/issue_141_detection_calendar.png}
+\includegraphics[width=0.9\textwidth]{../figures/issue_141_detection_calendar.png}
 \caption{Calendar heatmap of detection status across 2024. Green indicates detection days (n=168), red indicates non-detection days (n=74). Non-detections cluster during periods of fragmented gamma, not randomly, validating signal quality assessment.}
 \label{fig:detection_calendar}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Materialization Specificity (P-Hacking Defense)}
 
@@ -254,13 +254,15 @@ To address potential concerns that pattern detection reflects p-hacking (detecti
 \centering
 \caption{Materialization Rates: Detection vs Baseline}
 \label{tab:materialization}
-\begin{tabular}{lccccc}
+\small
+\begin{tabular}{lcccc}
 \toprule
-Criterion & Detection & Baseline & Lift & $\chi^2$ & p \\
+Criterion & Detect & Base & Lift & p \\
 \midrule
-Volatility Amplification (C1) & 41.6\% & 45.0\% & 0.92$\times$ & 0.27 & 0.61 \\
-Range Expansion (C4) & 21.6\% & 32.0\% & 0.67$\times$ & 4.53 & 0.03$^*$ \\
+Vol. Amp. (C1) & 41.6\% & 45.0\% & 0.92$\times$ & .61 \\
+Range Exp. (C4) & 21.6\% & 32.0\% & 0.67$\times$ & .03$^*$ \\
 \bottomrule
+\multicolumn{5}{l}{\footnotesize * p < .05; $\chi^2$ = 4.53}
 \end{tabular}
 \end{table}
 
