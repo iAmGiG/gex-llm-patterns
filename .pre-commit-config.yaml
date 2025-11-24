@@ -1,0 +1,51 @@
+# Pre-commit hooks for automatic code quality
+# Install: pip install pre-commit && pre-commit install
+# Bypass: git commit --no-verify (if needed)
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Markdown linting with auto-fix
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.12.1
+    hooks:
+      - id: markdownlint-cli2
+        args: ['--fix']
+        files: \.md$
+
+  # Python code formatting (black)
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3.10
+        files: \.py$
+
+  # Python import sorting
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ['--profile', 'black']
+        files: \.py$
+
+  # Trailing whitespace and end-of-file fixes
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.md$  # Markdown sometimes needs trailing spaces
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=5000']
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+  # Python docstring formatting
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+        args: ['--in-place', '--wrap-summaries=120', '--wrap-descriptions=120']
+        files: \.py$
