@@ -35,8 +35,7 @@ def count_sign_flips(gex_values: list) -> int:
     """Count number of sign changes in a sequence."""
     flips = 0
     for i in range(len(gex_values) - 1):
-        if (gex_values[i] > 0 and gex_values[i + 1] < 0) or \
-           (gex_values[i] < 0 and gex_values[i + 1] > 0):
+        if (gex_values[i] > 0 and gex_values[i + 1] < 0) or (gex_values[i] < 0 and gex_values[i + 1] > 0):
             flips += 1
     return flips
 
@@ -68,8 +67,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime(
-        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -105,8 +103,7 @@ def scale_to_low_magnitude(gex_sequence: dict, scale_factor: float = 0.3, target
     original_magnitude = np.mean(np.abs(original_values))
 
     # Scale to achieve target magnitude
-    actual_scale = target_magnitude_b * 1e9 / \
-        original_magnitude if original_magnitude > 0 else scale_factor
+    actual_scale = target_magnitude_b * 1e9 / original_magnitude if original_magnitude > 0 else scale_factor
 
     scaled_values = [v * actual_scale for v in original_values]
 
@@ -120,15 +117,15 @@ def scale_to_low_magnitude(gex_sequence: dict, scale_factor: float = 0.3, target
             "original_avg_magnitude_b": original_magnitude / 1e9,
             "scaled_avg_magnitude_b": np.mean(np.abs(scaled_values)) / 1e9,
             "scale_factor": actual_scale,
-            "target_magnitude_b": target_magnitude_b
+            "target_magnitude_b": target_magnitude_b,
         },
         "characteristics": {
             "persistence_pct": calculate_persistence(scaled_values),
             "sign_flips": count_sign_flips(scaled_values),
-            "magnitude_status": "WEAK (<$3B threshold)"
+            "magnitude_status": "WEAK (<$3B threshold)",
         },
         "window_size": len(scaled_values),
-        "note": "Sign persistence preserved but magnitude scaled to <$3B (below $5B regime threshold)"
+        "note": "Sign persistence preserved but magnitude scaled to <$3B (below $5B regime threshold)",
     }
 
 
@@ -137,7 +134,7 @@ def find_low_magnitude_windows(
     q1_2024_dates: list,
     persistence_threshold: float = 70,
     sampling_interval: int = 5,
-    num_windows: int = 10
+    num_windows: int = 10,
 ) -> list:
     """
     Find and scale windows to low magnitude.
@@ -147,7 +144,7 @@ def find_low_magnitude_windows(
     low_mag_windows = []
 
     # Sample every 5-10 days
-    sampled_dates = q1_2024_dates[::sampling_interval][:num_windows * 2]
+    sampled_dates = q1_2024_dates[::sampling_interval][: num_windows * 2]
 
     for end_date in sampled_dates:
         if len(low_mag_windows) >= num_windows:
@@ -164,14 +161,12 @@ def find_low_magnitude_windows(
 
         # Check if suitable for scaling (high persistence, low flips, but currently high magnitude)
         if persistence >= persistence_threshold and flips <= 3 and magnitude > 4:
-            print(
-                f"Found persistent window: {end_date} ({persistence:.1f}% persistence, {magnitude:.2f}B)")
+            print(f"Found persistent window: {end_date} ({persistence:.1f}% persistence, {magnitude:.2f}B)")
 
             # Scale it down
             low_mag = scale_to_low_magnitude(gex_seq, target_magnitude_b=2.4)
             low_mag_windows.append(low_mag)
-            print(
-                f"  → Scaled to {low_mag['scaling_info']['scaled_avg_magnitude_b']:.2f}B")
+            print(f"  → Scaled to {low_mag['scaling_info']['scaled_avg_magnitude_b']:.2f}B")
 
     return low_mag_windows
 
@@ -214,11 +209,7 @@ def main():
 
     # Find and scale windows
     low_mag_windows = find_low_magnitude_windows(
-        str(db_path),
-        q1_dates,
-        persistence_threshold=70,
-        sampling_interval=5,
-        num_windows=10
+        str(db_path), q1_dates, persistence_threshold=70, sampling_interval=5, num_windows=10
     )
 
     print(f"\nGenerated {len(low_mag_windows)} low-magnitude windows")
@@ -236,22 +227,21 @@ def main():
         "expected_results": {
             "detection_rate_pct": "0-10% (false positive threshold)",
             "expected_regime_type": "low_conviction (persistent sign but weak magnitude)",
-            "pass_criteria": "<10% false positive rate"
+            "pass_criteria": "<10% false positive rate",
         },
         "scaling_strategy": {
             "approach": "Take high-persistence windows, scale GEX values down",
             "source_persistence": "70-90% days same sign",
             "source_flips": "0-3 sign flips",
             "scaled_magnitude": "<$3B average",
-            "rationale": "Tests if LLM enforces magnitude threshold despite sign persistence"
+            "rationale": "Tests if LLM enforces magnitude threshold despite sign persistence",
         },
         "low_magnitude_windows": low_mag_windows,
-        "next_steps": "Run through validate_regime_windows.py with LLM classification"
+        "next_steps": "Run through validate_regime_windows.py with LLM classification",
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / \
-        "regime_windows" / "phase2c_low_magnitude"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2c_low_magnitude"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "low_magnitude_windows.yaml"

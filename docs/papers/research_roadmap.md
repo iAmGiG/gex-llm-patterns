@@ -115,6 +115,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 - ✅ Phase 4 (2020 Comparison): **12.1% detection** (27/223 windows) - Normal baseline
 
 **KEY FINDING**: 69.1pp difference (2024: 81.2%, 2020: 12.1%) confirms:
+
 1. ✅ Framework IS selective (5.7x discrimination)
 2. ✅ 2024 was genuinely extreme (not overdetection)
 3. ✅ 0DTE hypothesis CONFIRMED (p < 0.001, φ = 0.672)

@@ -54,12 +54,14 @@ eod_features = {
 ```
 
 **Implementation:**
+
 - Function: `extract_eod_features(date: str) -> Dict`
 - Query consolidated database for each trading day in 2024
 - Calculate derived metrics (Gini, concentration, ratios)
 - Store in DataFrame with date index
 
 **Expected Dataset:**
+
 - Rows: N=242 (all detection-eligible days from 2024)
 - Columns: 13 EOD features + date
 - Format: pandas DataFrame for sklearn compatibility
@@ -101,12 +103,14 @@ next_day_continuous = {
 ```
 
 **Implementation:**
+
 - Function: `calculate_next_day_targets(date: str) -> Dict`
 - Fetch T+1 OHLCV data for each EOD date
 - Calculate binary flags and continuous metrics
 - Handle edge cases (end of quarter, holidays)
 
 **Expected Dataset:**
+
 - Rows: N=242 (matching EOD features)
 - Columns: 6 binary targets + 3 continuous targets
 - Format: pandas DataFrame aligned with features by date
@@ -269,6 +273,7 @@ correlation = np.corrcoef(
 ```
 
 **Interpretation:**
+
 - Correlation > 0.5: Strong overnight persistence (validates EOD snapshot)
 - Correlation 0.3-0.5: Moderate persistence (acceptable)
 - Correlation < 0.3: Weak persistence (raises concerns about temporal scope)
@@ -388,9 +393,11 @@ correlation = np.corrcoef(
 ## Deliverables
 
 ### 1. Analysis Script
+
 **File**: `scripts/validation/paper1/eod_latent_information_analysis.py`
 
 **Functions:**
+
 - `extract_eod_features(db_path, year=2024) -> DataFrame`
 - `calculate_next_day_targets(eod_dates, db_path) -> DataFrame`
 - `train_logistic_regression(X, y) -> (model, metrics)`
@@ -399,6 +406,7 @@ correlation = np.corrcoef(
 - `generate_visualizations(results) -> None`
 
 **Usage:**
+
 ```bash
 # Run full analysis
 python scripts/validation/paper1/eod_latent_information_analysis.py \
@@ -408,14 +416,17 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 ```
 
 ### 2. Data Files
+
 - `docs/papers/paper1/analysis/eod_features_2024.csv` - EOD predictor features
 - `docs/papers/paper1/analysis/next_day_outcomes_2024.csv` - T+1 targets
 - `docs/papers/paper1/analysis/llm_detections_2024.csv` - LLM predictions for comparison
 
 ### 3. Results Documentation
+
 **File**: `docs/papers/paper1/analysis/issue_145_eod_predictive_analysis.md`
 
 **Structure:**
+
 1. Executive Summary
 2. Methodology
 3. Feature Extraction Details
@@ -427,24 +438,30 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 9. Appendix (Full statistical tables)
 
 ### 4. Visualizations
+
 **Directory**: `docs/papers/paper1/figures/`
 
 **Files:**
+
 - `issue_145_roc_curves.png` - Statistical vs LLM vs Random baseline
 - `issue_145_feature_importance.png` - Top 10 EOD predictors
 - `issue_145_overnight_persistence.png` - EOD GEX correlation with T+1 gaps
 - `issue_145_auc_comparison.png` - Model performance comparison
 
 ### 5. LaTeX Tables
+
 **Directory**: `docs/papers/paper1/tables/`
 
 **Files:**
+
 - `table_eod_logistic_regression.tex` - Coefficients, p-values, AUC
 - `table_feature_importance.tex` - Ranked predictive features
 - `table_model_comparison.tex` - Statistical vs LLM performance
 
 ### 6. Paper #1 Updates
+
 **Files Modified:**
+
 - `docs/papers/paper1/journal_version/04_Experimental_setup.tex` - Temporal scope subsection
 - `docs/papers/paper1/journal_version/05_Results.tex` - EOD predictive power paragraph
 - `docs/papers/paper1/journal_version/06_Discussion.tex` - Temporal limitation clarification
@@ -454,17 +471,20 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 ## Success Criteria
 
 ### Minimum Viable Defense
+
 - ✅ Logistic regression AUC > 0.60 (EOD data has predictive power)
 - ✅ At least 3 features with p < 0.05 (significant predictors)
 - ✅ Paper methodology clearly states "EOD → T+1/T+2" scope
 
 ### Strong Defense
+
 - ✅ Logistic regression AUC > 0.70 (strong predictive power)
 - ✅ LLM AUC ≥ Statistical AUC (LLM adds value or matches)
 - ✅ Overnight correlation > 0.40 (moderate constraint persistence)
 - ✅ Top 5 features clearly interpretable (gamma concentration, positioning, etc.)
 
 ### Optimal Defense
+
 - ✅ Logistic regression AUC > 0.75 (very strong predictive power)
 - ✅ LLM AUC > Statistical AUC + 0.05 (LLM outperforms by 5+ points)
 - ✅ Overnight correlation > 0.50 (strong constraint persistence)
@@ -479,12 +499,14 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 **Symptom**: Logistic regression fails to predict T+1 outcomes from EOD features
 
 **Mitigation Options:**
+
 1. **T+2 Analysis**: Test if predictive power emerges at T+2 (dealer hedging delay)
 2. **Regime-Specific Models**: Separate models for high/low GEX environments
 3. **Non-Linear Models**: Try Random Forest or Gradient Boosting (may capture interactions)
 4. **Feature Engineering**: Add lagged features (T-1, T-2 GEX for momentum)
 
 **Fallback Defense**:
+
 - Reframe as "proof-of-concept with methodological limitations"
 - Emphasize qualitative structural reasoning validation (Issue #146)
 - Acknowledge intraday data required for full validation (Issue #116 future work)
@@ -494,12 +516,14 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 **Symptom**: LLM AUC < Statistical AUC (model worse than simple logistic regression)
 
 **Mitigation Options:**
+
 1. **Investigate Non-Detections**: Analyze 74 non-detection days for signal quality
 2. **Confidence Calibration**: Check if LLM confidence poorly calibrated (rescale)
 3. **Pattern-Specific Analysis**: Gamma positioning may outperform, others underperform
 4. **Prompt Optimization**: Test if current prompts suboptimal for statistical prediction
 
 **Defense Strategy**:
+
 - Frame LLM as "interpretable reasoning" not "optimal statistical predictor"
 - Statistical model provides validation that signals exist (LLM just interprets them)
 - LLM value is explainability + structural reasoning, not maximizing AUC
@@ -509,11 +533,13 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 **Symptom**: EOD GEX poorly correlates with next-day opening dynamics
 
 **Mitigation Options:**
+
 1. **Alternative Metrics**: Use full-day T+1 volatility (not just opening gap)
 2. **Regime Averaging**: Analyze persistence within negative gamma regime only
 3. **Event Filtering**: Remove earnings days, FOMC, major news (exogenous shocks)
 
 **Defense Strategy**:
+
 - Overnight persistence is supportive evidence, not core requirement
 - Primary validation is T+1 full-day materialization (already in Paper #1)
 - EOD→Close T+1 is valid prediction window regardless of overnight correlation
@@ -529,12 +555,14 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 - **Week 3 (Days 12-16)**: Documentation + visualization + Paper #1 updates
 
 **Critical Path**:
+
 1. Extract EOD features (Day 1) → Required for all downstream analysis
 2. Logistic regression baseline (Day 5) → Determines if defense viable
 3. LLM comparison (Day 8) → Core finding for paper
 4. Paper updates (Days 14-16) → Integration into journal version
 
 **Parallelization Opportunities**:
+
 - Visualization (Days 10-11) can start after Day 8 results
 - LaTeX table generation (Day 13) can run concurrently with documentation (Day 12)
 - Paper updates (Days 14-16) can be drafted while analysis finalizes
@@ -544,16 +572,19 @@ python scripts/validation/paper1/eod_latent_information_analysis.py \
 ## Dependencies
 
 **Data Dependencies:**
+
 - ✅ `consolidated_historical.db` with `daily_gex_metrics` table (available)
 - ✅ 2024 OHLCV data for T+1 outcome calculation (available)
 - ✅ Gamma positioning validation YAMLs for LLM detections (available)
 
 **Code Dependencies:**
+
 - ✅ `src/gex/gex_calculator.py` - GEX calculation utilities (exists)
 - ✅ `src/validation/outcome_calculator.py` - Materialization logic (exists)
 - ⏳ `scripts/validation/paper1/eod_latent_information_analysis.py` - Need to create
 
 **External Libraries:**
+
 - `scikit-learn` - Logistic regression, cross-validation, metrics
 - `shap` - Feature importance analysis
 - `matplotlib/seaborn` - Visualization

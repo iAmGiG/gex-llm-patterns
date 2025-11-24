@@ -42,6 +42,7 @@
 | **Neutral (Unbiased)** | 71.5% | 91.2% | -28.5 pp, -1.0 pp |
 
 **Interpretation**:
+
 - 28.5 percentage point detection drop proves LLM works harder without hints
 - 1.0 percentage point accuracy drop shows detected patterns still valid
 - Obfuscation test PASSED (>60% threshold with unbiased prompts)
@@ -85,6 +86,7 @@
 ### Sample Size and Power Analysis
 
 **Detection Rate Test** (71.5% vs 50% random):
+
 ```
 H0: Detection rate = 50% (random)
 H1: Detection rate > 50% (pattern exists)
@@ -99,6 +101,7 @@ Verdict: PASS ✅
 ```
 
 **Accuracy Test** (91.2% vs 75% baseline):
+
 ```
 H0: Accuracy ≤ 75%
 H1: Accuracy > 75%
@@ -114,12 +117,14 @@ Verdict: PASS ✅
 ### Coverage Analysis
 
 **2024 Trading Calendar**:
+
 - Total calendar days: 365
 - Weekends: 104
 - Market holidays: 9 (MLK, Presidents Day, Good Friday, Memorial Day, Juneteenth, July 4, Labor Day, Thanksgiving, Christmas)
 - Expected trading days: 252
 
 **Actual Coverage**:
+
 - Days tested: 242
 - Days missing: 10 (data availability issues, mostly Friday expirations)
 - **Coverage**: 96.0% of expected trading days
@@ -134,6 +139,7 @@ Verdict: PASS ✅
 ### Return Statistics (Full Year 2024)
 
 **Gamma Positioning Pattern**:
+
 ```
 Avg forward 1-day return: +0.106%
 Transaction cost (5 bps): -0.050%
@@ -155,6 +161,7 @@ Win rate: 52.3%
 | Q4 2024 | -1 bps | 16.4 | -$22.1B | Unprofitable (higher vol paradox) |
 
 **Key Finding**: Alpha declines Q1→Q4 despite detection/accuracy stability. Suggests:
+
 1. Market efficiency improved (GEX-based strategies proliferated?)
 2. 0DTE dynamics changed (volume shifted across strikes?)
 3. Transaction costs increased (spreads widened in Q4?)
@@ -176,6 +183,7 @@ Win rate: 52.3%
 ### Full Year Results
 
 **Gamma Positioning Pattern** (168 detections):
+
 ```
 Predictions materialized: 155 / 168 = 92.3%
 Predictions failed: 13 / 168 = 7.7%
@@ -187,6 +195,7 @@ Breakdown:
 ```
 
 **Example Materialized Prediction** (2024-01-02):
+
 ```
 Detection: "Dealers short gamma, will amplify volatility"
 GEX: -$32.49B (negative regime)
@@ -200,6 +209,7 @@ Criteria met: 2/3 → MATERIALIZED ✅
 ```
 
 **Example Failed Prediction** (2024-06-14):
+
 ```
 Detection: "Dealers short gamma, will amplify volatility"
 GEX: -$8.12B (negative but weak)
@@ -239,16 +249,19 @@ Criteria met: 0/3 → FAILED ❌
 ### Why Null Result Occurred
 
 **Reason 1 - Persistent Single Regime**:
+
 - All 242 days had negative GEX (< -$2B)
 - No regime switching (always same sign)
 - Granger tests work best with regime variation
 
 **Reason 2 - Contemporaneous Relationship**:
+
 - Dealer hedging occurs same-day (not lagged)
 - GEX → volatility relationship is instantaneous
 - Granger test only captures lagged relationships
 
 **Reason 3 - Non-linear Dynamics**:
+
 - Granger assumes linear VAR model
 - Dealer hedging may have threshold effects (non-linear)
 - Relationship strength varies with GEX magnitude
@@ -272,17 +285,20 @@ Criteria met: 0/3 → FAILED ❌
 ### Data Collection
 
 **Options Data**: Polygon.io API
+
 - Full options chains (all strikes, all expiries)
 - End-of-day snapshots (after 4:00 PM ET)
 - Fields: strike, OI, IV, bid/ask, greeks
 - Coverage: 94% of 2024 trading days
 
 **Spot Prices**: Multiple sources with validation
+
 - Primary: Polygon.io historical data
 - Validation: SQLite historical database
 - Fallback: Deep ITM call inference (rarely used)
 
 **Historical Database**: SQLite (rebuilt October 11, 2025)
+
 - Pre-computed GEX metrics for 2024
 - Enables fast validation (no recalculation)
 - 100% validation match with fresh calculations
@@ -290,6 +306,7 @@ Criteria met: 0/3 → FAILED ❌
 ### Calculation Methods
 
 **GEX Calculation**: Black-Scholes formula
+
 ```
 Gamma per option = ∂²V/∂S² (second partial derivative)
 Aggregate GEX = Σ(Gamma_i × OI_i × multiplier)
@@ -297,6 +314,7 @@ Sign convention: Dealer perspective (negative = short gamma)
 ```
 
 **Outcome Verification**: Rule-based thresholds
+
 ```
 Forward returns = (Price_T+1 - Price_T) / Price_T
 Realized volatility = StdDev(daily returns, 3-day window)
@@ -304,6 +322,7 @@ Prediction materialized = Boolean(threshold checks)
 ```
 
 **Obfuscation**: Data sanitization
+
 ```
 Dates → "Day T+0", "Day T+1", ..., "Day T+30"
 Tickers → "INDEX_1", "STOCK_G", etc.
@@ -314,6 +333,7 @@ Preserve → GEX, strikes, OI, greeks only
 ### Reproducibility
 
 **Exact Command**:
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 
@@ -340,16 +360,19 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Description**: Dealer gamma hedging constraint forces buying/selling based on GEX sign
 
 **Mechanism**:
+
 - WHO: Options market makers (dealers)
 - WHOM: Forced by retail/institutional option flows
 - WHAT: Buy/sell underlying to maintain delta neutrality
 
 **Detection Criteria**:
+
 - GEX magnitude > $5B (threshold for observability)
 - Consistent sign across multiple expiries
 - Open interest concentration at specific strikes
 
 **Results**:
+
 - Detection: 69.4% (unbiased), 100% (biased)
 - Accuracy: 92.5%
 - Net alpha: +5.6 bps
@@ -361,16 +384,19 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Description**: Price gravitates toward high open interest strikes due to dealer hedging
 
 **Mechanism**:
+
 - Same as Gamma Positioning but framed as price attraction
 - Emphasizes strike-level concentration
 - Focuses on max pain dynamics
 
 **Detection Criteria**:
+
 - High OI at specific strike (>100k contracts)
 - Price within 1% of max pain strike
 - GEX sign indicates hedging direction
 
 **Results**:
+
 - Detection: 67.4% (unbiased), 100% (biased)
 - Accuracy: 90.4%
 - Net alpha: +5.1 bps
@@ -382,16 +408,19 @@ python scripts/validation/validate_pattern_taxonomy.py \
 **Description**: Intraday dealer hedging flows from same-day expiration options
 
 **Mechanism**:
+
 - Same constraint but emphasizes 0DTE options specifically
 - Highlights time decay acceleration
 - Focuses on expiration day dynamics
 
 **Detection Criteria**:
+
 - 0DTE options present (expires today)
 - GEX weighted toward 0DTE strikes
 - Intraday volatility patterns expected
 
 **Results**:
+
 - Detection: 77.7% (unbiased), 100% (biased)
 - Accuracy: 90.8%
 - Net alpha: +6.3 bps

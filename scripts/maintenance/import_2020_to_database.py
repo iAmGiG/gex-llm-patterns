@@ -40,7 +40,7 @@ import logging
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -51,14 +51,11 @@ def import_2020_to_database(dry_run: bool = False):
     Args:
         dry_run: If True, print actions without executing
     """
-    cache_dir = PROJECT_ROOT / '.cache' / 'gex_data' / 'SPY'
-    db_path = PROJECT_ROOT / '.cache' / 'gex_database.db'
+    cache_dir = PROJECT_ROOT / ".cache" / "gex_data" / "SPY"
+    db_path = PROJECT_ROOT / ".cache" / "gex_database.db"
 
     # Get all 2020 dates
-    all_2020_dates = sorted([
-        d.name for d in cache_dir.iterdir()
-        if d.is_dir() and d.name.startswith('2020')
-    ])
+    all_2020_dates = sorted([d.name for d in cache_dir.iterdir() if d.is_dir() and d.name.startswith("2020")])
 
     logger.info(f"╔{'═' * 58}╗")
     logger.info(f"║{' 2020 File Cache → Database Import ':^58}║")
@@ -83,7 +80,7 @@ def import_2020_to_database(dry_run: bool = False):
 
     with sqlite3.connect(db_path) as conn:
         for i, date in enumerate(all_2020_dates):
-            gex_file = cache_dir / date / 'gex_summary.json'
+            gex_file = cache_dir / date / "gex_summary.json"
 
             if not gex_file.exists():
                 skipped += 1
@@ -96,12 +93,12 @@ def import_2020_to_database(dry_run: bool = False):
                     data = json.load(f)
 
                 # Extract fields
-                symbol = data.get('symbol', 'SPY')
-                spot_price = data.get('spot_price', 0)
-                total_gex = data.get('total_gex', 0)
-                net_gex = data.get('net_gex', total_gex)
-                call_gex = data.get('call_gex', 0)
-                put_gex = data.get('put_gex', 0)
+                symbol = data.get("symbol", "SPY")
+                spot_price = data.get("spot_price", 0)
+                total_gex = data.get("total_gex", 0)
+                net_gex = data.get("net_gex", total_gex)
+                call_gex = data.get("call_gex", 0)
+                put_gex = data.get("put_gex", 0)
 
                 # Database expects net_call_gex and net_put_gex
                 net_call_gex = call_gex
@@ -109,16 +106,29 @@ def import_2020_to_database(dry_run: bool = False):
 
                 # Insert into database
                 if not dry_run:
-                    conn.execute("""
+                    conn.execute(
+                        """
                         INSERT OR REPLACE INTO daily_gex_metrics
                         (symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
                          gamma_flip_point, flip_ratio, gex_regime, data_quality_score,
                          options_count, validation_status)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
-                        symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
-                        None, None, None, 100, 0, 'imported_from_cache'
-                    ))
+                    """,
+                        (
+                            symbol,
+                            date,
+                            spot_price,
+                            total_gex,
+                            net_call_gex,
+                            net_put_gex,
+                            None,
+                            None,
+                            None,
+                            100,
+                            0,
+                            "imported_from_cache",
+                        ),
+                    )
 
                 imported += 1
 
@@ -152,17 +162,19 @@ def import_2020_to_database(dry_run: bool = False):
     if not dry_run and imported > 0:
         logger.info(f"\n✅ Imported {imported} days to database")
         logger.info(f"\nVerify with:")
-        logger.info(f"  sqlite3 .cache/gex_database.db \"SELECT COUNT(*) FROM daily_gex_metrics WHERE date LIKE '2020%';\"")
+        logger.info(
+            f"  sqlite3 .cache/gex_database.db \"SELECT COUNT(*) FROM daily_gex_metrics WHERE date LIKE '2020%';\""
+        )
     elif dry_run:
         logger.info(f"\n✅ Dry run complete - would import {imported} days")
         logger.info(f"\nRun without --dry-run to execute import")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='Import 2020 file cache to database')
-    parser.add_argument('--dry-run', action='store_true', help='Show actions without executing')
+    parser = argparse.ArgumentParser(description="Import 2020 file cache to database")
+    parser.add_argument("--dry-run", action="store_true", help="Show actions without executing")
     args = parser.parse_args()
 
     import_2020_to_database(dry_run=args.dry_run)

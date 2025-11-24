@@ -14,6 +14,7 @@ With 6 years of historical GEX data collected (2020-2025, 1,475 trading days), P
 **Goal**: Quantify when 0DTE proliferation drove regime persistence increase
 
 **Phases**:
+
 - **Phase 4A**: Single GEX validation (traditional GEX_OI methodology) - ~$0.73
 - **Phase 4B**: Dual GEX validation (GEX_OI vs GEX_Volume divergence) - OPTIONAL, ~$0.73
 
@@ -50,6 +51,7 @@ Validate regime detection across all 6 years using **traditional single GEX meth
 **File**: `src/validation/batch_regime_validator.py`
 
 **Key Methods**:
+
 ```python
 BatchRegimeValidator():
     prepare_batch_file(windows)       # Generate JSONL
@@ -60,6 +62,7 @@ BatchRegimeValidator():
 ```
 
 **Features**:
+
 - OpenAI Batch API integration (50% cost savings)
 - Async processing (1-2 hours, non-blocking)
 - Automatic retry logic for failed requests
@@ -70,6 +73,7 @@ BatchRegimeValidator():
 **File**: `scripts/validation/validate_regime_windows_batch.py`
 
 **Usage**:
+
 ```bash
 # Submit batch for year
 python scripts/validation/validate_regime_windows_batch.py \
@@ -96,6 +100,7 @@ python scripts/validation/validate_regime_windows_batch.py \
 **File**: `docs/papers/paper2/prompts/regime_detection_v1.md`
 
 **Criteria** (same as Phases 1-4 baseline):
+
 - **Persistence**: ≥70% days same sign
 - **Magnitude**: ≥$5B average absolute GEX
 - **Stability**: ≤5 sign flips over 30 days
@@ -112,6 +117,7 @@ python scripts/validation/validate_regime_windows_batch.py \
 
 **Table**: `daily_gex_metrics`
 **Key Fields**:
+
 ```sql
 SELECT
     symbol,
@@ -131,6 +137,7 @@ ORDER BY date
 #### Window Generation
 
 **Logic**:
+
 ```python
 # For each year, generate 30-day windows
 for end_date in trading_days[29:]:  # Skip first 29 days
@@ -145,6 +152,7 @@ for end_date in trading_days[29:]:  # Skip first 29 days
 ```
 
 **Window Example** (2021-01-30):
+
 ```yaml
 window_id: window-2021-01-30
 start_date: 2021-01-02  # Day T-29
@@ -159,6 +167,7 @@ gex_sequence:
 #### Prompt Construction
 
 **Template**:
+
 ```
 You are a market mechanics analyst...
 
@@ -193,6 +202,7 @@ Return JSON:
 **Location**: `reports/validation/paper2_regime_windows/phase4a_{year}_single_gex.yaml`
 
 **Structure**:
+
 ```yaml
 metadata:
   year: 2021
@@ -237,6 +247,7 @@ summary:
 **File**: `reports/validation/paper2_regime_windows/phase4a_summary.yaml`
 
 **Structure**:
+
 ```yaml
 phase4a_single_gex_summary:
   total_windows: 1301
@@ -300,6 +311,7 @@ phase4a_single_gex_summary:
 **Definition**: % of windows where `regime_detected = true`
 
 **Target Ranges** (hypothesized):
+
 - 2020: 10-15% (pre-0DTE baseline)
 - 2021: 15-25% (early 0DTE growth)
 - 2022: 30-50% (SPX 0DTE launch May 2022)
@@ -314,6 +326,7 @@ phase4a_single_gex_summary:
 **Definition**: Mean confidence score for detected regimes
 
 **Interpretation**:
+
 - <60: Low confidence (borderline cases)
 - 60-80: Moderate confidence
 - >80: High confidence (clear regimes)
@@ -345,11 +358,13 @@ phase4a_single_gex_summary:
 #### 6. Regime Type Distribution
 
 **Categories**:
+
 - **Persistent Negative**: 70%+ days negative
 - **Persistent Positive**: 70%+ days positive
 - **Transitional**: Neither (should be rejected)
 
 **Expected**:
+
 - 2020-2022: Mix of negative/positive
 - 2023-2025: Dominated by persistent negative (0DTE vol expansion)
 
@@ -455,6 +470,7 @@ Beyond Phase 4A's single GEX criteria:
 **Activity Ratio** = |GEX_Volume| / |GEX_OI|
 
 **Regime Quality**:
+
 1. **High Conviction**: Activity ratio > 0.70 (OI and Volume agree)
 2. **Low Conviction**: Activity ratio < 0.70 (OI dominates, Volume weak)
 3. **Divergence Signal**: OI negative, Volume positive (mixed)
@@ -470,6 +486,7 @@ Beyond Phase 4A's single GEX criteria:
 ### Expected Output
 
 **Additional Fields**:
+
 ```yaml
 windows:
   - window_id: window-2021-01-30
@@ -485,11 +502,13 @@ windows:
 ### Decision Point
 
 **Run Phase 4B if**:
+
 - Time permits (Dec 2025 deadline comfortable)
 - Budget available (~$37)
 - Phase 4A shows interesting patterns worth deeper exploration
 
 **Defer Phase 4B if**:
+
 - Time constrained (Paper #2 deadline approaching)
 - Budget tight (prioritize Phase 4A + analysis)
 - Phase 4A sufficient for paper narrative
@@ -517,11 +536,13 @@ windows:
 ## Files Generated
 
 ### Scripts
+
 - `scripts/validation/generate_regime_windows.py` (window generation)
 - `scripts/validation/validate_regime_windows_batch.py` (existing, CLI wrapper)
 - `scripts/validation/aggregate_phase4a_results.py` (aggregation)
 
 ### Results
+
 - `reports/validation/paper2_regime_windows/phase4a_2021_single_gex.yaml`
 - `reports/validation/paper2_regime_windows/phase4a_2022_single_gex.yaml`
 - `reports/validation/paper2_regime_windows/phase4a_2023_single_gex.yaml`
@@ -530,6 +551,7 @@ windows:
 - `reports/validation/paper2_regime_windows/phase4b_summary.yaml` (if run)
 
 ### Documentation
+
 - `docs/papers/paper2/validation/phase4_val-plan.md` (this file)
 - `docs/papers/paper2/validation/phase4_val-results.md` (after completion)
 

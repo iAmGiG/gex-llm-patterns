@@ -183,6 +183,7 @@ def _score_llm_response(self, llm_analysis: Dict, expected_mechanics: Dict, expe
 ### Training Data Leakage Detection
 
 Compare normal vs obfuscated validation:
+
 - **Large Difference**: Indicates training data leakage
 - **Similar Results**: Indicates genuine analytical capability
 - **Obfuscated = 0%**: LLM relies entirely on memorized knowledge
@@ -318,18 +319,21 @@ def _analyze_event_period(self, event: MechanicsEvent) -> Dict[str, Any]:
 ## Best Practices
 
 ### Academic/Research Phase (Default)
+
 - Use obfuscated validation (default behavior) for rigor
 - Ensures genuine analytical capability testing
 - Prevents training data contamination criticism
 - Suitable for publication and peer review
 
 ### Development Phase (When Needed)
+
 - Use development validation (`obfuscate_data=False`) sparingly
 - Only for system debugging and rapid iteration
 - Not recommended for research or performance claims
 - Always compare with academic validation
 
 ### Production Phase
+
 - Primarily use academic validation for system confidence
 - Monitor performance with obfuscated data over time
 - Optional: Track development vs academic performance gap
@@ -358,6 +362,7 @@ def _analyze_event_period(self, event: MechanicsEvent) -> Dict[str, Any]:
 ### Data Availability
 
 The framework handles missing historical data gracefully:
+
 - **Primary**: Fetch from cache/API
 - **Fallback**: Use sample data for testing
 - **Result**: Validation framework functionality maintained regardless
@@ -365,16 +370,19 @@ The framework handles missing historical data gracefully:
 ## Research Applications
 
 ### Academic Validation
+
 - Use obfuscated validation for publication
 - Prevents criticism of training data contamination
 - Demonstrates genuine analytical capability
 
 ### LLM Benchmarking
+
 - Compare different models systematically
 - Quantify improvements in market mechanics understanding
 - Track progress over time
 
 ### Market Intelligence Research
+
 - Validate WHO/WHOM/WHAT framework effectiveness
 - Study different types of market mechanics
 - Build confidence in trading applications

@@ -56,8 +56,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime(
-        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -70,13 +69,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     dates = [row[0] for row in rows]
     gex_values = [row[1] for row in rows]
 
-    return {
-        "dates": dates,
-        "gex_values": gex_values,
-        "end_date": end_date,
-        "window_size": len(dates),
-        "raw_data": rows
-    }
+    return {"dates": dates, "gex_values": gex_values, "end_date": end_date, "window_size": len(dates), "raw_data": rows}
 
 
 def shuffle_gex_sequence(gex_sequence: dict) -> dict:
@@ -107,15 +100,12 @@ def shuffle_gex_sequence(gex_sequence: dict) -> dict:
         "shuffled_gex_values": shuffled_gex,
         "obfuscated_dates": shuffled_dates,
         "window_size": len(shuffled_gex),
-        "note": "Day order randomized to destroy temporal structure"
+        "note": "Day order randomized to destroy temporal structure",
     }
 
 
 def generate_phase2a_windows(
-    db_path: str,
-    q1_2024_end_dates: list,
-    sampling_interval: int = 5,
-    num_windows: int = 10
+    db_path: str, q1_2024_end_dates: list, sampling_interval: int = 5, num_windows: int = 10
 ) -> list:
     """
     Generate Phase 2a shuffled windows.
@@ -189,12 +179,7 @@ def main():
     print(f"Date range: {q1_dates[0]} to {q1_dates[-1]}")
 
     # Generate shuffled windows (every 5 days for efficiency)
-    shuffled_windows = generate_phase2a_windows(
-        str(db_path),
-        q1_dates,
-        sampling_interval=5,
-        num_windows=10
-    )
+    shuffled_windows = generate_phase2a_windows(str(db_path), q1_dates, sampling_interval=5, num_windows=10)
 
     print(f"\nGenerated {len(shuffled_windows)} shuffled windows")
 
@@ -211,15 +196,14 @@ def main():
         "expected_results": {
             "detection_rate_pct": "0-10% (false positive threshold)",
             "expected_regime_type": "transitional (sign flips from shuffling)",
-            "pass_criteria": "<10% false positive rate"
+            "pass_criteria": "<10% false positive rate",
         },
         "shuffled_windows": shuffled_windows,
-        "next_steps": "Run through validate_regime_windows.py with LLM classification"
+        "next_steps": "Run through validate_regime_windows.py with LLM classification",
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / \
-        "regime_windows" / "phase2a_shuffled"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2a_shuffled"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "shuffled_windows.yaml"

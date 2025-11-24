@@ -10,6 +10,7 @@ from src.utils.config_manager import get_config
 import logging
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -21,13 +22,17 @@ class OptionsChainAnalyzer:
 
         # Load configuration
         config = get_config()
-        self.signal_strength_threshold = config.get('options_analysis.options_chain_analyzer.signal_strength_threshold', 0.6)
-        self.volume_oi_ratio_quantile = config.get('options_analysis.options_chain_analyzer.volume_oi_ratio_quantile', 0.8)
-        self.otm_put_threshold = config.get('options_analysis.options_chain_analyzer.otm_put_threshold', 0.95)
-        self.min_unusual_strikes = config.get('options_analysis.options_chain_analyzer.min_unusual_strikes', 3)
-        self.tight_spread_pct = config.get('options_analysis.options_chain_analyzer.tight_spread_pct', 5.0)
-        self.min_otm_put_activity = config.get('options_analysis.options_chain_analyzer.min_otm_put_activity', 3)
-        self.summer_months = config.get('options_analysis.options_chain_analyzer.summer_months', [6, 7, 8])
+        self.signal_strength_threshold = config.get(
+            "options_analysis.options_chain_analyzer.signal_strength_threshold", 0.6
+        )
+        self.volume_oi_ratio_quantile = config.get(
+            "options_analysis.options_chain_analyzer.volume_oi_ratio_quantile", 0.8
+        )
+        self.otm_put_threshold = config.get("options_analysis.options_chain_analyzer.otm_put_threshold", 0.95)
+        self.min_unusual_strikes = config.get("options_analysis.options_chain_analyzer.min_unusual_strikes", 3)
+        self.tight_spread_pct = config.get("options_analysis.options_chain_analyzer.tight_spread_pct", 5.0)
+        self.min_otm_put_activity = config.get("options_analysis.options_chain_analyzer.min_otm_put_activity", 3)
+        self.summer_months = config.get("options_analysis.options_chain_analyzer.summer_months", [6, 7, 8])
 
     def detect_short_put_arbitrage_signals(self, options_df):
         """
@@ -49,12 +54,7 @@ class OptionsChainAnalyzer:
             if calls.empty or puts.empty:
                 return {"pattern_detected": False, "reason": "Missing call or put data"}
 
-            results = {
-                "pattern_detected": False,
-                "signals": {},
-                "metrics": {},
-                "timestamp": now_iso()
-            }
+            results = {"pattern_detected": False, "signals": {}, "metrics": {}, "timestamp": now_iso()}
 
             # Signal 1: Unusual Put Volume vs OI
             put_vol_oi_signals = self._detect_unusual_put_volume(puts)
@@ -73,8 +73,7 @@ class OptionsChainAnalyzer:
             results["signals"]["seasonal_context"] = seasonal_context
 
             # Combine signals for pattern detection
-            signal_strength = self._calculate_pattern_strength(
-                results["signals"])
+            signal_strength = self._calculate_pattern_strength(results["signals"])
             results["pattern_detected"] = signal_strength > self.signal_strength_threshold
             results["signal_strength"] = signal_strength
 
@@ -94,27 +93,24 @@ class OptionsChainAnalyzer:
 
         # Calculate volume/OI ratios
         puts_with_ratios = puts.copy()
-        puts_with_ratios["vol_oi_ratio"] = puts_with_ratios["vol_oi_ratio"].fillna(
-            0)
+        puts_with_ratios["vol_oi_ratio"] = puts_with_ratios["vol_oi_ratio"].fillna(0)
 
         # Find strikes with unusually high volume vs OI
         high_vol_threshold = puts_with_ratios["vol_oi_ratio"].quantile(self.volume_oi_ratio_quantile)
         unusual_puts = puts_with_ratios[
-            (puts_with_ratios["vol_oi_ratio"] > high_vol_threshold) &
-            (puts_with_ratios["volume"] > 0)
+            (puts_with_ratios["vol_oi_ratio"] > high_vol_threshold) & (puts_with_ratios["volume"] > 0)
         ]
 
         # Look for OTM puts specifically
         current_price = self._estimate_underlying_price(puts)
-        otm_unusual_puts = unusual_puts[unusual_puts["strike"]
-                                        < current_price * self.otm_put_threshold]
+        otm_unusual_puts = unusual_puts[unusual_puts["strike"] < current_price * self.otm_put_threshold]
 
         return {
             "detected": len(otm_unusual_puts) >= self.min_unusual_strikes,
             "unusual_strikes": otm_unusual_puts["strike"].tolist(),
             "volume_ratios": otm_unusual_puts["vol_oi_ratio"].tolist(),
             "total_volume": otm_unusual_puts["volume"].sum(),
-            "strikes_count": len(otm_unusual_puts)
+            "strikes_count": len(otm_unusual_puts),
         }
 
     def _detect_call_urgency(self, calls):
@@ -129,22 +125,19 @@ class OptionsChainAnalyzer:
             return {"detected": False, "reason": "No call volume"}
 
         # Calculate metrics that indicate urgency
-        calls_with_activity["spread_pct"] = calls_with_activity["bid_ask_spread_pct"].fillna(
-            0)
-        calls_with_activity["volume_score"] = calls_with_activity["volume"] / \
-            (calls_with_activity["volume"].max() + 1)
+        calls_with_activity["spread_pct"] = calls_with_activity["bid_ask_spread_pct"].fillna(0)
+        calls_with_activity["volume_score"] = calls_with_activity["volume"] / (calls_with_activity["volume"].max() + 1)
 
         # High volume, tight spreads = urgency
         urgent_calls = calls_with_activity[
-            (calls_with_activity["volume_score"] > 0.3) &
-            (calls_with_activity["spread_pct"] < self.tight_spread_pct)
+            (calls_with_activity["volume_score"] > 0.3) & (calls_with_activity["spread_pct"] < self.tight_spread_pct)
         ]
 
         return {
             "detected": len(urgent_calls) > 0,
             "urgent_strikes": urgent_calls["strike"].tolist(),
             "total_urgent_volume": urgent_calls["volume"].sum(),
-            "avg_spread_pct": urgent_calls["spread_pct"].mean() if not urgent_calls.empty else 0
+            "avg_spread_pct": urgent_calls["spread_pct"].mean() if not urgent_calls.empty else 0,
         }
 
     def _detect_put_spread_pattern(self, puts, calls):
@@ -156,41 +149,38 @@ class OptionsChainAnalyzer:
 
         # Focus on OTM puts with volume
         otm_puts_with_volume = puts[
-            (puts["strike"] < current_price * self.otm_put_threshold) &
-            (puts["volume"] > 0)
+            (puts["strike"] < current_price * self.otm_put_threshold) & (puts["volume"] > 0)
         ].copy()
 
         if len(otm_puts_with_volume) < self.min_otm_put_activity:
             return {"detected": False, "reason": "Insufficient OTM put activity"}
 
         # Check for coordinated activity across strikes
-        strike_range = otm_puts_with_volume["strike"].max(
-        ) - otm_puts_with_volume["strike"].min()
-        volume_concentration = otm_puts_with_volume["volume"].std(
-        ) / (otm_puts_with_volume["volume"].mean() + 1)
+        strike_range = otm_puts_with_volume["strike"].max() - otm_puts_with_volume["strike"].min()
+        volume_concentration = otm_puts_with_volume["volume"].std() / (otm_puts_with_volume["volume"].mean() + 1)
 
         # Pattern: Spread across multiple strikes rather than concentrated
-        spread_pattern = strike_range > current_price * \
-            0.05 and volume_concentration < 2.0
+        spread_pattern = strike_range > current_price * 0.05 and volume_concentration < 2.0
 
         return {
             "detected": spread_pattern,
             "strike_range": strike_range,
             "strikes_with_volume": len(otm_puts_with_volume),
             "volume_distribution": volume_concentration,
-            "otm_put_strikes": otm_puts_with_volume["strike"].tolist()
+            "otm_put_strikes": otm_puts_with_volume["strike"].tolist(),
         }
 
     def _check_seasonal_context(self):
         """Check if current period matches summer month pattern."""
         from src.utils.date_utils import get_datetime_now
+
         current_month = get_datetime_now().month
         is_summer = current_month in self.summer_months
 
         return {
             "is_summer_period": is_summer,
             "current_month": current_month,
-            "seasonal_boost": 1.2 if is_summer else 1.0
+            "seasonal_boost": 1.2 if is_summer else 1.0,
         }
 
     def _calculate_pattern_strength(self, signals) -> float:
@@ -199,15 +189,14 @@ class OptionsChainAnalyzer:
             "put_volume_anomalies": 0.3,
             "call_urgency": 0.2,
             "put_spread_activity": 0.3,
-            "seasonal_context": 0.2
+            "seasonal_context": 0.2,
         }
 
         total_strength = 0.0
 
         # Put volume anomalies
         if signals.get("put_volume_anomalies", {}).get("detected", False):
-            strikes_count = signals["put_volume_anomalies"].get(
-                "strikes_count", 0)
+            strikes_count = signals["put_volume_anomalies"].get("strikes_count", 0)
             # Scale by number of strikes
             strength = min(strikes_count / 5.0, 1.0)
             total_strength += weights["put_volume_anomalies"] * strength
@@ -221,8 +210,7 @@ class OptionsChainAnalyzer:
             total_strength += weights["put_spread_activity"]
 
         # Seasonal context
-        seasonal_boost = signals.get(
-            "seasonal_context", {}).get("seasonal_boost", 1.0)
+        seasonal_boost = signals.get("seasonal_context", {}).get("seasonal_boost", 1.0)
         if seasonal_boost > 1.0:
             total_strength += weights["seasonal_context"]
 
@@ -251,7 +239,7 @@ class OptionsChainAnalyzer:
                 "total_volume": calls["volume"].sum(),
                 "total_oi": calls["open_interest"].sum(),
                 "avg_iv": calls["implied_volatility"].mean(),
-                "strike_range": calls["strike"].max() - calls["strike"].min()
+                "strike_range": calls["strike"].max() - calls["strike"].min(),
             }
 
         if not puts.empty:
@@ -259,14 +247,14 @@ class OptionsChainAnalyzer:
                 "total_volume": puts["volume"].sum(),
                 "total_oi": puts["open_interest"].sum(),
                 "avg_iv": puts["implied_volatility"].mean(),
-                "strike_range": puts["strike"].max() - puts["strike"].min()
+                "strike_range": puts["strike"].max() - puts["strike"].min(),
             }
 
         if not calls.empty and not puts.empty:
             metrics["put_call_ratios"] = {
                 "volume_ratio": puts["volume"].sum() / (calls["volume"].sum() + 1),
                 "oi_ratio": puts["open_interest"].sum() / (calls["open_interest"].sum() + 1),
-                "iv_skew": puts["implied_volatility"].mean() - calls["implied_volatility"].mean()
+                "iv_skew": puts["implied_volatility"].mean() - calls["implied_volatility"].mean(),
             }
 
         return metrics
@@ -287,8 +275,7 @@ def test_with_alpha_vantage_demo():
 
         # Test the new fetch_historical_options method
         print("Fetching IBM options data...")
-        options_df = client.fetch_historical_options(
-            "IBM")  # Uses demo API key
+        options_df = client.fetch_historical_options("IBM")  # Uses demo API key
 
         if options_df.empty:
             print("No options data returned - check API key or connection")
@@ -297,18 +284,15 @@ def test_with_alpha_vantage_demo():
         print(f"✅ Processed {len(options_df)} option contracts")
         print(f"📊 Columns: {list(options_df.columns)}")
 
-        if 'expiration' in options_df.columns:
-            print(
-                f"📅 Expiration range: {options_df['expiration'].min()} to {options_df['expiration'].max()}")
+        if "expiration" in options_df.columns:
+            print(f"📅 Expiration range: {options_df['expiration'].min()} to {options_df['expiration'].max()}")
 
-        if 'strike' in options_df.columns:
-            print(
-                f"💰 Strike range: ${options_df['strike'].min():.2f} to ${options_df['strike'].max():.2f}")
+        if "strike" in options_df.columns:
+            print(f"💰 Strike range: ${options_df['strike'].min():.2f} to ${options_df['strike'].max():.2f}")
 
         # Test with specific date (historical)
         print("\nTesting historical date (2017-11-15)...")
-        historical_df = client.fetch_historical_options(
-            "IBM", date="2017-11-15")
+        historical_df = client.fetch_historical_options("IBM", date="2017-11-15")
 
         if not historical_df.empty:
             print(f"✅ Historical data: {len(historical_df)} contracts")
@@ -322,7 +306,7 @@ def test_with_alpha_vantage_demo():
         print(f"   Signal Strength: {results.get('signal_strength', 0):.2f}")
 
         for signal_name, signal_data in results.get("signals", {}).items():
-            detected = signal_data.get('detected', False)
+            detected = signal_data.get("detected", False)
             print(f"   {signal_name}: {'✅' if detected else '❌'}")
 
         return results
@@ -330,6 +314,7 @@ def test_with_alpha_vantage_demo():
     except Exception as e:
         print(f"❌ Error in test: {e}")
         import traceback
+
         traceback.print_exc()
         return None
 

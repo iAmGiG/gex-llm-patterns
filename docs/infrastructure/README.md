@@ -30,6 +30,7 @@ System architecture, design decisions, implementation guides, and maintenance do
 #### Part 1: System Foundation (01-03)
 
 **[01-project-overview.md](01-project-overview.md)** - Research Hypothesis and Vision
+
 - What problem we're solving with LLMs
 - Core research question: Can LLMs detect institutional patterns?
 - System architecture diagram
@@ -37,6 +38,7 @@ System architecture, design decisions, implementation guides, and maintenance do
 - Development status and methodology
 
 **[02-architecture-overview.md](02-architecture-overview.md)** - High-Level Design
+
 - Component interactions and data flow
 - MarketMechanicsAgent, Pattern Library, GEX Calculator
 - Data obfuscation and validation framework
@@ -44,6 +46,7 @@ System architecture, design decisions, implementation guides, and maintenance do
 - Design principles (modularity, caching-first, research integrity)
 
 **[03-data-and-database.md](03-data-and-database.md)** - Data and Database Architecture
+
 - **Part 1: Data Architecture** - 2-tier system (Database → Cache → AutoGen Tools → API)
 - **Part 2: Database Architecture** - SQLite schema, tables, indexes
 - Performance characteristics and optimization
@@ -52,12 +55,14 @@ System architecture, design decisions, implementation guides, and maintenance do
 #### Part 2: Performance and Integration (04-05)
 
 **[04-cache-and-performance.md](04-cache-and-performance.md)** - Cache System and Optimization
+
 - **Part 1: Cache Architecture** - UnifiedCacheManager, GEXCacheManager, IntradayCacheManager
 - **Part 2: Token Configuration** - Zero-token operations vs LLM reasoning
 - Lazy directory creation and concurrent processing
 - Cost optimization strategies
 
 **[05-llm-integration.md](05-llm-integration.md)** - LLM Selection and Integration
+
 - **Part 1: Model Selection Research** - O3-mini vs GPT-4o (Issue #62)
 - **Part 2: Academic Rigor Analysis** - O4-mini for Paper #2 (80% confidence)
 - **Part 3: Paper-Specific Decisions** - Paper #1 (o3-mini, 90%) vs Paper #2 (o4-mini, 80%)
@@ -66,18 +71,21 @@ System architecture, design decisions, implementation guides, and maintenance do
 #### Part 3: Implementation and Validation (06-08)
 
 **[06-implementation-guide.md](06-implementation-guide.md)** - Patterns and Intraday Support
+
 - **Part 1: Actionable Trading Patterns** - Gamma squeeze, pin risk, dealer hedging
 - **Part 2: Intraday Implementation** - 10-minute intervals, gamma pinning validation
 - Database schema (intraday tables), cache system, validation framework
 - Key algo times (9:30, 10:00, 14:30, 15:30, 15:40, 15:50)
 
 **[07-experiments-and-validation.md](07-experiments-and-validation.md)** - Continuous Experiment Framework
+
 - Resumable experiment system with checkpoint/resume
 - GEX strategy framework (V0-V4)
 - Performance-optimized architecture (3-tier fallback)
 - Advanced metrics capture (strike-level, GEX regime tracking)
 
 **[08-maintenance-and-audits.md](08-maintenance-and-audits.md)** - Maintenance and Audits
+
 - **Part 1: Configuration Grooming Audit** - Hardcoded values, prompt extraction
 - **Part 2: Documentation Cleanup** - Consolidation strategy
 - **Part 3-4: Recommendations and History** - Completed actions and future work
@@ -88,26 +96,31 @@ System architecture, design decisions, implementation guides, and maintenance do
 ## Content Index by Topic
 
 ### System Architecture
+
 - High-level design: [02-architecture-overview.md](02-architecture-overview.md)
 - Data flow: [03-data-and-database.md](03-data-and-database.md)
 - Cache system: [04-cache-and-performance.md](04-cache-and-performance.md)
 
 ### Database and Storage
+
 - Database schema: [03-data-and-database.md](03-data-and-database.md)
 - Cache architecture: [04-cache-and-performance.md](04-cache-and-performance.md)
 - Intraday storage: [06-implementation-guide.md](06-implementation-guide.md)
 
 ### LLM Integration
+
 - Model selection: [05-llm-integration.md](05-llm-integration.md)
 - Token optimization: [04-cache-and-performance.md](04-cache-and-performance.md)
 - Paper-specific decisions: [05-llm-integration.md](05-llm-integration.md)
 
 ### Implementation Guides
+
 - Trading patterns: [06-implementation-guide.md](06-implementation-guide.md)
 - Intraday support: [06-implementation-guide.md](06-implementation-guide.md)
 - Experiment framework: [07-experiments-and-validation.md](07-experiments-and-validation.md)
 
 ### Maintenance
+
 - Configuration audit: [08-maintenance-and-audits.md](08-maintenance-and-audits.md)
 - Best practices: [08-maintenance-and-audits.md](08-maintenance-and-audits.md)
 - Known issues: [08-maintenance-and-audits.md](08-maintenance-and-audits.md)
@@ -117,10 +130,13 @@ System architecture, design decisions, implementation guides, and maintenance do
 ## Key Features of This Documentation
 
 ### 1. Sequential Numbering
+
 Files are numbered 01-08 to provide a clear learning progression. Read in order for optimal understanding.
 
 ### 2. Consolidated Content
+
 Related concepts are merged into single files to reduce fragmentation while maintaining high detail:
+
 - 03-data-and-database.md = data-architecture + database-architecture
 - 04-cache-and-performance.md = cache-architecture + token-configuration
 - 05-llm-integration.md = llm-model-selection + model-selection-research
@@ -128,12 +144,15 @@ Related concepts are merged into single files to reduce fragmentation while main
 - 08-maintenance-and-audits.md = grooming_audit + cleanup_plan
 
 ### 3. Navigation Links
+
 Every file includes:
+
 - **Prerequisites**: What to read first
 - **Next**: Where to go next
 - **Related**: Similar/connected topics
 
 ### 4. Part-Based Organization
+
 Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within long documents.
 
 ---
@@ -141,6 +160,7 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 ## Related Documentation
 
 ### Development Guides
+
 [docs/development/](../development/) - Developer workflows (worktree management, testing)
 
 ### Paper-Specific Infrastructure
@@ -149,9 +169,11 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 - [docs/papers/paper2/infrastructure/](../papers/paper2/infrastructure/) - Paper #2 (sequential framework)
 
 ### User Guides
+
 [docs/guides/](../guides/) - End-user guides (GEX metrics, pattern taxonomy)
 
 ### Validation Methodology
+
 [docs/validation/](../validation/) - Research validation methods
 
 ---
@@ -203,6 +225,7 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 ### Audit Documentation
 
 For infrastructure audits:
+
 1. Add summary to [08-maintenance-and-audits.md](08-maintenance-and-audits.md) Part 4 (Audit History)
 2. Include date, scope, findings, and actions taken
 3. Link to related GitHub issues

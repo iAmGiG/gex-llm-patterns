@@ -43,6 +43,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 **Strategy**: Execute year-by-year for cost monitoring and error recovery
 
 ### Phase 2A: 2021 Collection ⏸️ READY
+
 - **Days**: 249 trading days
 - **Date Range**: 2021-01-01 to 2021-12-31
 - **Status**: 0/249 days (0% existing) - Full collection needed
@@ -52,6 +53,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 - **Next**: Phase 2B after verification
 
 ### Phase 2B: 2022 Collection ⏸️ PENDING
+
 - **Days**: 250 trading days
 - **Date Range**: 2022-01-01 to 2022-12-31
 - **Status**: 0/250 days (0% existing) - Full collection needed
@@ -61,6 +63,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 - **Next**: Phase 2C after verification
 
 ### Phase 2C: 2023 Collection ⏸️ PENDING
+
 - **Days**: 250 trading days
 - **Date Range**: 2023-01-01 to 2023-12-31
 - **Status**: 0/250 days (0% existing) - Full collection needed (KEY TRANSITION YEAR)
@@ -71,6 +74,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 - **Note**: 2023 is critical for identifying 0DTE proliferation timing
 
 ### Phase 2D: 2024 Completion ⏸️ PENDING
+
 - **Days**: ~164 trading days (fill gaps)
 - **Date Range**: 2024-01-01 to 2024-12-31
 - **Status**: 86/250 days (34% existing) - Need Q3-Q4 + some Q2
@@ -80,6 +84,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 - **Next**: Phase 2E after verification
 
 ### Phase 2E: 2025 Collection (YTD) ⏸️ PENDING
+
 - **Days**: ~230 trading days
 - **Date Range**: 2025-01-01 to 2025-11-20
 - **Status**: 0/230 days (0% existing) - Full YTD collection needed
@@ -89,6 +94,7 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 - **Next**: Phase 2F after verification
 
 ### Phase 2F: 2020 Dual GEX Recalculation ⏸️ PENDING
+
 - **Days**: 252 trading days
 - **Date Range**: 2020-01-01 to 2020-12-31
 - **Status**: 252/252 days (100% existing) - Recalculate dual GEX only
@@ -103,12 +109,14 @@ Collect historical GEX data for 5 years (2021-2025) to expand Paper #2 from 2-ye
 ## Total Effort Estimate
 
 ### With Premium API (1000 calls/min)
+
 - **New Data Collection**: ~1,143 days ÷ 1000/min = **1.9 hours**
 - **2020 Recalculation**: 252 days ÷ 1000/min = **0.4 hours**
 - **Total Time**: **~2.3 hours**
 - **Can complete**: Same day
 
 ### With Standard API (75 calls/min)
+
 - **New Data Collection**: ~1,143 days ÷ 75/min = **25.4 hours**
 - **2020 Recalculation**: 252 days ÷ 75/min = **5.6 hours**
 - **Total Time**: **~31 hours**
@@ -185,6 +193,7 @@ conn.close()
 ### Batch All Years (NOT RECOMMENDED)
 
 The `--all` flag exists but is **NOT recommended** for this project due to:
+
 - Need to monitor API costs between years
 - Better error recovery with year-by-year
 - Can verify data quality incrementally
@@ -206,6 +215,7 @@ The `--all` flag exists but is **NOT recommended** for this project due to:
 ### Data Quality Requirements (Per Year)
 
 Each sub-phase must achieve:
+
 - ✅ Coverage: ≥95% of expected trading days
 - ✅ Dual GEX: 100% of collected days have gex_oi, gex_volume populated
 - ✅ Quality Score: Average ≥90 (ideally 100)
@@ -220,21 +230,25 @@ Each sub-phase must achieve:
 ## Risks and Mitigations
 
 ### Risk 1: API Rate Limiting
+
 - **Impact**: Collection takes longer than estimated
 - **Mitigation**: Script has built-in rate limiting (70 calls/min conservative)
 - **Fallback**: Can pause/resume using year-by-year approach
 
 ### Risk 2: Data Gaps (Weekends/Holidays)
+
 - **Impact**: Fewer trading days than expected
 - **Mitigation**: Using pandas business day calendar with US federal holidays
 - **Expected**: Minor variance (±2-3 days per year)
 
 ### Risk 3: API Failures
+
 - **Impact**: Collection stops mid-year
 - **Mitigation**: Script skips already-collected dates, can resume
 - **Recovery**: Rerun same year with `--year YYYY` flag
 
 ### Risk 4: Database Corruption
+
 - **Impact**: Lose work if database corrupted during collection
 - **Mitigation**: Automatic backup created before rebuild operations
 - **Recovery**: Restore from `.cache/backups/consolidated_historical_backup_*.db`
@@ -272,6 +286,7 @@ conn.close()
 ```
 
 **Expected Output**:
+
 ```
 2020: 252 days, 100.0% dual GEX, 100 quality
 2021: 249 days, 100.0% dual GEX, 100 quality
@@ -288,21 +303,25 @@ conn.close()
 Once Phase 2 completes:
 
 **Phase 3**: Database Verification (30 minutes)
+
 - Verify 6-year continuity
 - Check for data gaps
 - Validate dual GEX ranges
 
 **Phase 4A**: Single GEX Validation (~$37 cost)
+
 - Generate ~892 regime windows (4 new years × 223 windows/year)
 - Run batch validation with o4-mini
 - Compare detection rates across years
 
 **Phase 4B**: Dual GEX Validation (~$37 cost)
+
 - Same 892 windows
 - Test GEX_OI vs GEX_Volume discrimination
 - Identify high vs low conviction regimes
 
 **Phase 5**: Analysis & Paper Writing (1-2 weeks)
+
 - Temporal trend analysis
 - 0DTE transition timing
 - Election cycle comparison

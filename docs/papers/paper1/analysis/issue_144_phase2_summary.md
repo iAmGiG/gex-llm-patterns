@@ -67,6 +67,7 @@ Phase 2 compared materialization rates between **detection days** (n=519) and **
 ### Criterion 1: Volatility Amplification
 
 **Contingency Table**:
+
 ```
                 Materialized    Not Materialized
 Detection          216                303
@@ -80,6 +81,7 @@ Baseline            45                 55
 ### Criterion 4: Range Expansion
 
 **Contingency Table**:
+
 ```
                 Materialized    Not Materialized
 Detection          112                407
@@ -97,10 +99,12 @@ Baseline            32                 68
 ### Finding 1: LLM Exhibits Pattern Selectivity, Not Universal Prediction
 
 **P-Hacking Would Predict**:
+
 - Detection days >> Baseline (lift > 2x)
 - Detection days always materialize (rate → 100%)
 
 **Observed Reality**:
+
 - Detection days ≈ Baseline for C1 (lift = 0.92x, p=0.61)
 - Detection days < Baseline for C4 (lift = 0.67x, p=0.03)
 - Detection rates: 21-42% (moderate-to-low, NOT universal)
@@ -122,6 +126,7 @@ Baseline            32                 68
 **Key Evidence**: For C4 (Range Expansion), detection days have **significantly LOWER** materialization than baseline (p=0.033).
 
 **Why This Matters**:
+
 - If p-hacking, LLM would detect patterns that **always** predict range expansion
 - Observed: LLM detects patterns with **lower** range expansion than random days
 - Proves: LLM is identifying **specific mechanisms** (pinning, dampening) that **suppress** volatility, not amplify it
@@ -135,10 +140,12 @@ Baseline            32                 68
 **Choice**: Used non-detection days (days where LLM said "no pattern present") as baseline.
 
 **Rationale**:
+
 1. **Market-conditional baseline**: Non-detection days represent same market (2024) but different structural conditions
 2. **Conservative test**: If detection days had LOWER materialization, it would disprove p-hacking more strongly than equal rates
 
 **Alternative Baseline (Not Used)**:
+
 - Random sample of all 242 days (including both detection and non-detection)
 - Would dilute signal by mixing detection days into baseline
 
@@ -155,14 +162,17 @@ Baseline            32                 68
 ### Our Defense (Proven by Phase 2)
 
 **Evidence 1: No Universal Prediction**
+
 - Detection days do NOT show universally higher materialization (C1: lift=0.92x, p=0.61)
 - Refutes claim that LLM always predicts "volatility will be high"
 
 **Evidence 2: Inverse Relationship for Range Expansion**
+
 - Detection days have **significantly LOWER** range expansion than baseline (C4: lift=0.67x, p=0.033)
 - Proves LLM detects **dampening mechanisms** (pinning, hedging), not universal volatility
 
 **Evidence 3: Pattern-Specific Differential Behavior**
+
 - Gamma positioning: positive lift (specific volatility)
 - Stock pinning: negative lift (avoids general volatility)
 - 0DTE hedging: mixed behavior (selective on outcomes)
@@ -206,12 +216,14 @@ Baseline            32                 68
 ## Next Steps (Phase 3 - If Needed)
 
 ### Option A: Add More Criteria
+
 - Calculate gamma_flip_point from strike-level data (enable C3)
 - Refine C2 operationalization (magnitude-based threshold)
 - **Time**: +2 hours
 - **Value**: More comprehensive coverage, but diminishing returns
 
 ### Option B: Write Defense (Recommended)
+
 - Proceed to journal paper revision with Phase 1+2 findings
 - Focus on inverse relationship for C4 (strongest evidence)
 - **Time**: 1-2 hours for LaTeX writing

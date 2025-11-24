@@ -39,7 +39,7 @@ from src.tools.autogen_tools import (
     fetch_options_data,
     fetch_market_data,
     calculate_gamma_exposure,
-    process_historical_gex_range
+    process_historical_gex_range,
 )
 from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.utils.date_utils import today_str, parse_date_string
@@ -51,6 +51,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MechanicsEvent:
     """Structure for documented market mechanics events."""
+
     event_id: str
     symbol: str
     start_date: str
@@ -66,6 +67,7 @@ class MechanicsEvent:
 @dataclass
 class ValidationResult:
     """Results from LLM validation against known events."""
+
     event_id: str
     llm_response: Dict[str, Any]
     expected_mechanics: Dict[str, str]
@@ -98,8 +100,7 @@ class MechanicsValidationDataset:
         # Load or create the curated events dataset
         self.events = self._load_curated_events()
 
-        logger.info(
-            f"Initialized validation dataset with {len(self.events)} events")
+        logger.info(f"Initialized validation dataset with {len(self.events)} events")
 
     def _load_curated_events(self) -> List[MechanicsEvent]:
         """Load the curated list of known market mechanics events."""
@@ -116,12 +117,11 @@ class MechanicsValidationDataset:
                     "who": "Retail options buyers",
                     "forces": "Market makers",
                     "what": "Massive delta hedging buying amplifying price moves",
-                    "outcome": "Forced covering creates positive feedback loop"
+                    "outcome": "Forced covering creates positive feedback loop",
                 },
                 expected_llm_response="Retail call buying forces MM hedging creating squeeze dynamics",
-                confidence_threshold=0.8
+                confidence_threshold=0.8,
             ),
-
             # Tesla Stock Split Rally - August 2020
             MechanicsEvent(
                 event_id="tsla_gamma_2020",
@@ -133,12 +133,11 @@ class MechanicsValidationDataset:
                     "who": "Options flow (retail + institutional)",
                     "forces": "Dealers",
                     "what": "Accelerating gamma hedging amplifies split announcement rally",
-                    "outcome": "Positive gamma regime creates momentum amplification"
+                    "outcome": "Positive gamma regime creates momentum amplification",
                 },
                 expected_llm_response="Options-driven gamma hedging amplifies Tesla rally dynamics",
-                confidence_threshold=0.75
+                confidence_threshold=0.75,
             ),
-
             # AMC Meme Stock Squeeze - May 2021
             MechanicsEvent(
                 event_id="amc_squeeze_2021",
@@ -150,12 +149,11 @@ class MechanicsValidationDataset:
                     "who": "Retail coordinated buying",
                     "forces": "Market makers and short sellers",
                     "what": "Forced hedging and covering creates price acceleration",
-                    "outcome": "Similar mechanics to GME but smaller scale"
+                    "outcome": "Similar mechanics to GME but smaller scale",
                 },
                 expected_llm_response="Retail gamma squeeze forcing MM hedging similar to GME pattern",
-                confidence_threshold=0.75
+                confidence_threshold=0.75,
             ),
-
             # COVID Market Crash - March 2020
             MechanicsEvent(
                 event_id="covid_crash_2020",
@@ -167,12 +165,11 @@ class MechanicsValidationDataset:
                     "who": "Put hedging flows",
                     "forces": "Dealers",
                     "what": "Forced selling into declining market amplifies crash",
-                    "outcome": "Negative gamma regime creates selling feedback loops"
+                    "outcome": "Negative gamma regime creates selling feedback loops",
                 },
                 expected_llm_response="Put hedging forces dealer selling creating negative feedback loop",
-                confidence_threshold=0.8
+                confidence_threshold=0.8,
             ),
-
             # Triple Witching OPEX - March 2021
             MechanicsEvent(
                 event_id="opex_pin_mar2021",
@@ -184,12 +181,11 @@ class MechanicsValidationDataset:
                     "who": "Market makers",
                     "forces": "Underlying price",
                     "what": "Active management to maximize option value decay at key strikes",
-                    "outcome": "Price gravitates toward max pain levels"
+                    "outcome": "Price gravitates toward max pain levels",
                 },
                 expected_llm_response="MMs actively pinning SPY to max pain for option expiration",
-                confidence_threshold=0.7
+                confidence_threshold=0.7,
             ),
-
             # VIX Spike Event - February 2018
             MechanicsEvent(
                 event_id="vix_spike_2018",
@@ -201,17 +197,19 @@ class MechanicsValidationDataset:
                     "who": "Volatility product unwinding",
                     "forces": "Market makers and volatility traders",
                     "what": "Forced selling as volatility products implode",
-                    "outcome": "Rapid deleveraging amplifies market decline"
+                    "outcome": "Rapid deleveraging amplifies market decline",
                 },
                 expected_llm_response="Volatility product unwinding forces systematic selling pressure",
-                confidence_threshold=0.75
-            )
+                confidence_threshold=0.75,
+            ),
         ]
 
         logger.info(f"Loaded {len(events)} curated market mechanics events")
         return events
 
-    def validate_event(self, event: MechanicsEvent, use_cached_data: bool = True, obfuscate_data: bool = True) -> ValidationResult:
+    def validate_event(
+        self, event: MechanicsEvent, use_cached_data: bool = True, obfuscate_data: bool = True
+    ) -> ValidationResult:
         """
         Validate LLM interpretation against a known market mechanics event.
 
@@ -228,8 +226,7 @@ class MechanicsValidationDataset:
             Set obfuscate_data=False only for development/debugging purposes.
         """
         try:
-            logger.info(
-                f"Validating event: {event.event_id} (obfuscated={obfuscate_data})")
+            logger.info(f"Validating event: {event.event_id} (obfuscated={obfuscate_data})")
 
             # Ensure we have data for this event
             self._ensure_event_data(event, use_cached_data)
@@ -237,8 +234,7 @@ class MechanicsValidationDataset:
             # Apply data obfuscation if requested
             if obfuscate_data:
                 event_for_analysis = self._apply_obfuscation(event)
-                logger.info(
-                    f"Data obfuscated: {event.symbol} → {event_for_analysis.symbol}")
+                logger.info(f"Data obfuscated: {event.symbol} → {event_for_analysis.symbol}")
             else:
                 event_for_analysis = event
 
@@ -257,15 +253,13 @@ class MechanicsValidationDataset:
                 expected_mechanics=event.documented_mechanics,
                 accuracy_score=accuracy_score,
                 matches_expected=matches_expected,
-                analysis_notes=self._generate_analysis_notes(
-                    llm_analysis, event)
+                analysis_notes=self._generate_analysis_notes(llm_analysis, event),
             )
 
             # Save results for review
             self._save_validation_result(result)
 
-            logger.info(
-                f"Event {event.event_id} validation: {accuracy_score:.1%} accuracy")
+            logger.info(f"Event {event.event_id} validation: {accuracy_score:.1%} accuracy")
             return result
 
         except Exception as e:
@@ -276,7 +270,7 @@ class MechanicsValidationDataset:
                 expected_mechanics=event.documented_mechanics,
                 accuracy_score=0.0,
                 matches_expected=False,
-                analysis_notes=f"Validation failed: {e}"
+                analysis_notes=f"Validation failed: {e}",
             )
 
     def _ensure_event_data(self, event: MechanicsEvent, use_cached: bool = True):
@@ -284,43 +278,36 @@ class MechanicsValidationDataset:
         try:
             # Fetch options data for the event period
             options_result = fetch_options_data(
-                symbol=event.symbol,
-                trading_date=event.start_date,
-                use_cache=use_cached
+                symbol=event.symbol, trading_date=event.start_date, use_cache=use_cached
             )
 
-            if options_result['status'] != 'success':
+            if options_result["status"] != "success":
                 logger.warning(f"Limited options data for {event.event_id}")
 
             # Fetch market data for context
             market_result = fetch_market_data(
-                symbol=event.symbol,
-                start_date=event.start_date,
-                end_date=event.end_date,
-                use_cache=use_cached
+                symbol=event.symbol, start_date=event.start_date, end_date=event.end_date, use_cache=use_cached
             )
 
-            if market_result['status'] != 'success':
+            if market_result["status"] != "success":
                 logger.warning(f"Limited market data for {event.event_id}")
 
             # Process historical GEX for the event period if we have data
-            if options_result['status'] == 'success':
+            if options_result["status"] == "success":
                 gex_result = process_historical_gex_range(
                     symbol=event.symbol,
                     start_date=event.start_date,
                     end_date=event.end_date,
-                    max_workers=2  # Conservative for validation
+                    max_workers=2,  # Conservative for validation
                 )
 
-                if gex_result['status'] == 'success':
+                if gex_result["status"] == "success":
                     logger.info(f"GEX data processed for {event.event_id}")
                 else:
-                    logger.warning(
-                        f"GEX processing issues for {event.event_id}")
+                    logger.warning(f"GEX processing issues for {event.event_id}")
 
         except Exception as e:
-            logger.warning(
-                f"Data preparation for {event.event_id} had issues: {e}")
+            logger.warning(f"Data preparation for {event.event_id} had issues: {e}")
 
     def _apply_obfuscation(self, event: MechanicsEvent) -> MechanicsEvent:
         """
@@ -336,15 +323,12 @@ class MechanicsValidationDataset:
             obfuscator = DataObfuscator()
 
             # Create date range for the event
-            event_dates = pd.date_range(
-                start=event.start_date,
-                end=event.end_date,
-                freq='D'
-            ).strftime('%Y-%m-%d').tolist()
+            event_dates = (
+                pd.date_range(start=event.start_date, end=event.end_date, freq="D").strftime("%Y-%m-%d").tolist()
+            )
 
             # Obfuscate dates and ticker
-            date_mapping = obfuscator.obfuscate_dates(
-                event_dates, event.start_date)
+            date_mapping = obfuscator.obfuscate_dates(event_dates, event.start_date)
             ticker_mapping = obfuscator.obfuscate_tickers([event.symbol])
 
             # Create obfuscated event
@@ -356,23 +340,22 @@ class MechanicsValidationDataset:
                 event_type=event.event_type,
                 documented_mechanics=event.documented_mechanics,  # Keep original for scoring
                 expected_llm_response=event.expected_llm_response,
-                confidence_threshold=event.confidence_threshold
+                confidence_threshold=event.confidence_threshold,
             )
 
             # Store obfuscation mappings for potential reversal
             obfuscated_event.data_availability = {
-                'obfuscation_applied': True,
-                'date_mapping': date_mapping,
-                'ticker_mapping': ticker_mapping,
-                'original_symbol': event.symbol,
-                'original_dates': f"{event.start_date} to {event.end_date}"
+                "obfuscation_applied": True,
+                "date_mapping": date_mapping,
+                "ticker_mapping": ticker_mapping,
+                "original_symbol": event.symbol,
+                "original_dates": f"{event.start_date} to {event.end_date}",
             }
 
             return obfuscated_event
 
         except Exception as e:
-            logger.error(
-                f"Error applying obfuscation to {event.event_id}: {e}")
+            logger.error(f"Error applying obfuscation to {event.event_id}: {e}")
             return event  # Return original if obfuscation fails
 
     def _analyze_event_period(self, event: MechanicsEvent) -> Dict[str, Any]:
@@ -387,18 +370,19 @@ class MechanicsValidationDataset:
             # Get LLM analysis
             analysis_result = self.agent.daily_analysis(analysis_date)
 
-            if analysis_result and 'mechanics_interpretation' in analysis_result:
+            if analysis_result and "mechanics_interpretation" in analysis_result:
                 return analysis_result
             else:
-                logger.warning(
-                    f"No mechanics interpretation for {event.event_id}")
+                logger.warning(f"No mechanics interpretation for {event.event_id}")
                 return {"error": "No LLM interpretation generated"}
 
         except Exception as e:
             logger.error(f"Error analyzing {event.event_id}: {e}")
             return {"error": str(e)}
 
-    def _score_llm_response(self, llm_analysis: Dict, expected_mechanics: Dict, expected_response: str) -> tuple[float, bool]:
+    def _score_llm_response(
+        self, llm_analysis: Dict, expected_mechanics: Dict, expected_response: str
+    ) -> tuple[float, bool]:
         """
         Score LLM response against expected market mechanics.
 
@@ -410,25 +394,25 @@ class MechanicsValidationDataset:
             max_points = 4.0  # who, forces, what, confidence
 
             # Extract LLM mechanics interpretation
-            mechanics = llm_analysis.get('mechanics_interpretation', {})
+            mechanics = llm_analysis.get("mechanics_interpretation", {})
 
             # Check WHO identification (25% weight)
-            if 'who' in mechanics and 'who' in expected_mechanics:
-                if self._check_semantic_match(mechanics['who'], expected_mechanics['who']):
+            if "who" in mechanics and "who" in expected_mechanics:
+                if self._check_semantic_match(mechanics["who"], expected_mechanics["who"]):
                     score += 1.0
 
             # Check FORCES identification (25% weight)
-            if 'whom' in mechanics and 'forces' in expected_mechanics:
-                if self._check_semantic_match(mechanics['whom'], expected_mechanics['forces']):
+            if "whom" in mechanics and "forces" in expected_mechanics:
+                if self._check_semantic_match(mechanics["whom"], expected_mechanics["forces"]):
                     score += 1.0
 
             # Check WHAT identification (25% weight)
-            if 'what' in mechanics and 'what' in expected_mechanics:
-                if self._check_semantic_match(mechanics['what'], expected_mechanics['what']):
+            if "what" in mechanics and "what" in expected_mechanics:
+                if self._check_semantic_match(mechanics["what"], expected_mechanics["what"]):
                     score += 1.0
 
             # Check confidence level (25% weight)
-            confidence = llm_analysis.get('confidence', 0)
+            confidence = llm_analysis.get("confidence", 0)
             if confidence >= 70:  # Reasonable confidence threshold
                 score += 1.0
 
@@ -449,8 +433,16 @@ class MechanicsValidationDataset:
 
         # Key terms that should appear
         key_terms = {
-            'retail', 'market makers', 'dealers', 'hedge', 'covering',
-            'squeeze', 'buying', 'selling', 'forced', 'amplify'
+            "retail",
+            "market makers",
+            "dealers",
+            "hedge",
+            "covering",
+            "squeeze",
+            "buying",
+            "selling",
+            "forced",
+            "amplify",
         }
 
         # Check if key concepts are present
@@ -468,7 +460,7 @@ class MechanicsValidationDataset:
 
     def _generate_analysis_notes(self, llm_analysis: Dict, event: MechanicsEvent) -> str:
         """Generate analysis notes comparing LLM output to expected mechanics."""
-        mechanics = llm_analysis.get('mechanics_interpretation', {})
+        mechanics = llm_analysis.get("mechanics_interpretation", {})
 
         notes = [
             f"Event: {event.event_id} ({event.event_type})",
@@ -476,7 +468,7 @@ class MechanicsValidationDataset:
             f"LLM WHO: {mechanics.get('who', 'Not identified')}",
             f"LLM WHOM: {mechanics.get('whom', 'Not identified')}",
             f"LLM WHAT: {mechanics.get('what', 'Not identified')}",
-            f"Confidence: {llm_analysis.get('confidence', 0)}%"
+            f"Confidence: {llm_analysis.get('confidence', 0)}%",
         ]
 
         return " | ".join(notes)
@@ -488,29 +480,26 @@ class MechanicsValidationDataset:
 
             # Create experiment-specific filename
             timestamp = format_for_filename()
-            obfuscated_suffix = "_obfuscated" if result.event_id.endswith(
-                "_obfuscated") else "_normal"
+            obfuscated_suffix = "_obfuscated" if result.event_id.endswith("_obfuscated") else "_normal"
 
             # JSONL for streaming results (good for ongoing experiments)
-            results_file = self.data_dir / \
-                f"validation_results_{timestamp}.jsonl"
+            results_file = self.data_dir / f"validation_results_{timestamp}.jsonl"
 
             # JSON for individual experiment results (good for analysis)
-            individual_file = self.data_dir / \
-                f"{result.event_id}_{timestamp}.json"
+            individual_file = self.data_dir / f"{result.event_id}_{timestamp}.json"
 
             # Convert to dict and add metadata
             result_dict = asdict(result)
-            result_dict['timestamp'] = datetime.now().isoformat()
-            result_dict['experiment_type'] = 'obfuscated' if '_obfuscated' in result.event_id else 'normal'
-            result_dict['validation_framework_version'] = '1.0'
+            result_dict["timestamp"] = datetime.now().isoformat()
+            result_dict["experiment_type"] = "obfuscated" if "_obfuscated" in result.event_id else "normal"
+            result_dict["validation_framework_version"] = "1.0"
 
             # Save to JSONL (append for streaming)
-            with open(results_file, 'a') as f:
-                f.write(json.dumps(result_dict) + '\n')
+            with open(results_file, "a") as f:
+                f.write(json.dumps(result_dict) + "\n")
 
             # Save individual result (JSON for easy analysis)
-            with open(individual_file, 'w') as f:
+            with open(individual_file, "w") as f:
                 json.dump(result_dict, f, indent=2)
 
             logger.info(f"Validation result saved: {individual_file.name}")
@@ -539,8 +528,7 @@ class MechanicsValidationDataset:
         total_events = len(self.events)
 
         for i, event in enumerate(self.events, 1):
-            logger.info(
-                f"Processing event {i}/{total_events}: {event.event_id}")
+            logger.info(f"Processing event {i}/{total_events}: {event.event_id}")
 
             try:
                 result = self.validate_event(event, use_cached_data, obfuscate_data)
@@ -556,32 +544,33 @@ class MechanicsValidationDataset:
             matches = [r.matches_expected for r in results]
 
             summary = {
-                'total_events': len(results),
-                'avg_accuracy': sum(accuracy_scores) / len(accuracy_scores),
-                'events_matching': sum(matches),
-                'match_rate': sum(matches) / len(matches),
-                'results': results
+                "total_events": len(results),
+                "avg_accuracy": sum(accuracy_scores) / len(accuracy_scores),
+                "events_matching": sum(matches),
+                "match_rate": sum(matches) / len(matches),
+                "results": results,
             }
 
             logger.info(
-                f"Validation complete: {summary['match_rate']:.1%} match rate, {summary['avg_accuracy']:.1%} avg accuracy")
+                f"Validation complete: {summary['match_rate']:.1%} match rate, {summary['avg_accuracy']:.1%} avg accuracy"
+            )
 
             # Save summary with experiment identification
             from src.utils.date_utils import format_for_filename
-            timestamp = format_for_filename()
-            summary_file = self.data_dir / \
-                f"validation_summary_{timestamp}.json"
 
-            with open(summary_file, 'w') as f:
+            timestamp = format_for_filename()
+            summary_file = self.data_dir / f"validation_summary_{timestamp}.json"
+
+            with open(summary_file, "w") as f:
                 # Convert results to dicts for JSON serialization
                 summary_copy = summary.copy()
-                summary_copy['results'] = [asdict(r) for r in results]
-                summary_copy['timestamp'] = datetime.now().isoformat()
-                summary_copy['experiment_metadata'] = {
-                    'framework_version': '1.0',
-                    'total_events_tested': len(results),
-                    'events_tested': [r.event_id for r in results],
-                    'experiment_id': timestamp
+                summary_copy["results"] = [asdict(r) for r in results]
+                summary_copy["timestamp"] = datetime.now().isoformat()
+                summary_copy["experiment_metadata"] = {
+                    "framework_version": "1.0",
+                    "total_events_tested": len(results),
+                    "events_tested": [r.event_id for r in results],
+                    "experiment_id": timestamp,
                 }
                 json.dump(summary_copy, f, indent=2)
 
@@ -591,7 +580,7 @@ class MechanicsValidationDataset:
 
         else:
             logger.error("No validation results generated")
-            return {'error': 'No results generated'}
+            return {"error": "No results generated"}
 
     def get_event_by_id(self, event_id: str) -> Optional[MechanicsEvent]:
         """Get a specific event by ID."""
@@ -604,11 +593,11 @@ class MechanicsValidationDataset:
         """List all available events with basic info."""
         return [
             {
-                'event_id': event.event_id,
-                'symbol': event.symbol,
-                'date_range': f"{event.start_date} to {event.end_date}",
-                'type': event.event_type,
-                'expected': event.expected_llm_response
+                "event_id": event.event_id,
+                "symbol": event.symbol,
+                "date_range": f"{event.start_date} to {event.end_date}",
+                "type": event.event_type,
+                "expected": event.expected_llm_response,
             }
             for event in self.events
         ]

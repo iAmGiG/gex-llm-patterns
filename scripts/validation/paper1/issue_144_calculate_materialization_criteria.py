@@ -34,13 +34,13 @@ def load_detection_days_from_yaml():
     Returns:
         DataFrame with columns: date, pattern_type, detected
     """
-    yaml_dir = project_root / 'reports' / 'validation' / 'paper1_pattern_taxonomy'
+    yaml_dir = project_root / "reports" / "validation" / "paper1_pattern_taxonomy"
 
     # 3 patterns for Issue #144 (using full-year unbiased data)
     patterns = {
-        'gamma_positioning': yaml_dir / 'gamma_positioning_SPY_2024_unbiased.yaml',
-        'stock_pinning': yaml_dir / 'stock_pinning_SPY_2024_unbiased.yaml',
-        '0dte_hedging': yaml_dir / '0dte_hedging_SPY_2024_unbiased.yaml'
+        "gamma_positioning": yaml_dir / "gamma_positioning_SPY_2024_unbiased.yaml",
+        "stock_pinning": yaml_dir / "stock_pinning_SPY_2024_unbiased.yaml",
+        "0dte_hedging": yaml_dir / "0dte_hedging_SPY_2024_unbiased.yaml",
     }
 
     all_detections = []
@@ -50,21 +50,17 @@ def load_detection_days_from_yaml():
             print(f"  ⚠️ Warning: {yaml_path} not found, skipping...")
             continue
 
-        with open(yaml_path, 'r') as f:
+        with open(yaml_path, "r") as f:
             data = yaml.safe_load(f)
 
         # Extract detections list
-        detections_list = data.get('detections', [])
+        detections_list = data.get("detections", [])
 
         for entry in detections_list:
-            date = entry.get('date')
-            detected = entry.get('detected', False)
+            date = entry.get("date")
+            detected = entry.get("detected", False)
 
-            all_detections.append({
-                'date': date,
-                'pattern_type': pattern_name,
-                'detected': detected
-            })
+            all_detections.append({"date": date, "pattern_type": pattern_name, "detected": detected})
 
         print(f"  Loaded {len(detections_list)} days for {pattern_name}")
 
@@ -74,14 +70,14 @@ def load_detection_days_from_yaml():
     print(f"  Detected: {df['detected'].sum()}")
     print(f"  Not detected: {(~df['detected']).sum()}")
     print(f"  By pattern:")
-    for pattern in df['pattern_type'].unique():
-        pattern_df = df[df['pattern_type'] == pattern]
+    for pattern in df["pattern_type"].unique():
+        pattern_df = df[df["pattern_type"] == pattern]
         print(f"    {pattern}: {pattern_df['detected'].sum()}/{len(pattern_df)} detected")
 
     return df
 
 
-def extract_database_metrics(db_path, start_date='2024-01-02', end_date='2024-12-31'):
+def extract_database_metrics(db_path, start_date="2024-01-02", end_date="2024-12-31"):
     """
     Extract daily metrics from consolidated database.
 
@@ -131,17 +127,17 @@ def calculate_volatility_amplification(df):
     print("\nCalculating Criterion 1: Volatility Amplification...")
 
     # Calculate realized volatility (intraday range as % of close)
-    df['realized_vol_t1'] = ((df['high'] - df['low']) / df['close']) * 100
+    df["realized_vol_t1"] = ((df["high"] - df["low"]) / df["close"]) * 100
 
     # Calculate forecast (5-day rolling average of realized vol, shifted forward)
-    df['forecast_vol'] = df['realized_vol_t1'].rolling(window=5, min_periods=1).mean().shift(1)
+    df["forecast_vol"] = df["realized_vol_t1"].rolling(window=5, min_periods=1).mean().shift(1)
 
     # Criterion: realized > forecast
-    df['criterion_1_volatility_amplification'] = df['realized_vol_t1'] > df['forecast_vol']
+    df["criterion_1_volatility_amplification"] = df["realized_vol_t1"] > df["forecast_vol"]
 
     # Count materialized
-    materialized = df['criterion_1_volatility_amplification'].sum()
-    total = df['criterion_1_volatility_amplification'].notna().sum()
+    materialized = df["criterion_1_volatility_amplification"].sum()
+    total = df["criterion_1_volatility_amplification"].notna().sum()
 
     print(f"  Materialized: {materialized}/{total} days ({materialized/total*100:.1f}%)")
 
@@ -163,26 +159,30 @@ def calculate_directional_followthrough(df):
     print("\nCalculating Criterion 2: Directional Follow-through...")
 
     # Calculate price change (close_t+1 - close_t)
-    df['price_change'] = df['close'].diff()
+    df["price_change"] = df["close"].diff()
 
     # For negative GEX: materialized if |price_change| > 0 (trend continues)
     # For positive GEX: materialized if price reverses (sign flip)
 
     # Initialize as boolean column (not float with NaN)
-    df['criterion_2_directional_followthrough'] = False
+    df["criterion_2_directional_followthrough"] = False
 
     # Negative GEX: any directional move counts
-    negative_gex_mask = df['total_gex'] < 0
-    df.loc[negative_gex_mask, 'criterion_2_directional_followthrough'] = (abs(df.loc[negative_gex_mask, 'price_change']) > 0).astype(bool)
+    negative_gex_mask = df["total_gex"] < 0
+    df.loc[negative_gex_mask, "criterion_2_directional_followthrough"] = (
+        abs(df.loc[negative_gex_mask, "price_change"]) > 0
+    ).astype(bool)
 
     # Positive GEX: price stabilization (small move)
-    positive_gex_mask = df['total_gex'] > 0
+    positive_gex_mask = df["total_gex"] > 0
     # Use median absolute price change as threshold
-    median_abs_change = abs(df['price_change']).median()
-    df.loc[positive_gex_mask, 'criterion_2_directional_followthrough'] = (abs(df.loc[positive_gex_mask, 'price_change']) < median_abs_change).astype(bool)
+    median_abs_change = abs(df["price_change"]).median()
+    df.loc[positive_gex_mask, "criterion_2_directional_followthrough"] = (
+        abs(df.loc[positive_gex_mask, "price_change"]) < median_abs_change
+    ).astype(bool)
 
-    materialized = df['criterion_2_directional_followthrough'].sum()
-    total = df['criterion_2_directional_followthrough'].notna().sum()
+    materialized = df["criterion_2_directional_followthrough"].sum()
+    total = df["criterion_2_directional_followthrough"].notna().sum()
 
     print(f"  Materialized: {materialized}/{total} days ({materialized/total*100:.1f}%)")
 
@@ -199,17 +199,17 @@ def calculate_strike_convergence(df):
     print("\nCalculating Criterion 3: Strike Convergence...")
 
     # Distance at t
-    df['distance_t'] = abs(df['spot_price'] - df['gamma_flip_point'])
+    df["distance_t"] = abs(df["spot_price"] - df["gamma_flip_point"])
 
     # Distance at t+1 (spot_price(t+1) vs flip_point(t))
-    df['spot_price_t1'] = df['spot_price'].shift(-1)
-    df['distance_t1'] = abs(df['spot_price_t1'] - df['gamma_flip_point'])
+    df["spot_price_t1"] = df["spot_price"].shift(-1)
+    df["distance_t1"] = abs(df["spot_price_t1"] - df["gamma_flip_point"])
 
     # Criterion: distance decreased
-    df['criterion_3_strike_convergence'] = df['distance_t1'] < df['distance_t']
+    df["criterion_3_strike_convergence"] = df["distance_t1"] < df["distance_t"]
 
-    materialized = df['criterion_3_strike_convergence'].sum()
-    total = df['criterion_3_strike_convergence'].notna().sum()
+    materialized = df["criterion_3_strike_convergence"].sum()
+    total = df["criterion_3_strike_convergence"].notna().sum()
 
     print(f"  Materialized: {materialized}/{total} days ({materialized/total*100:.1f}%)")
 
@@ -226,16 +226,16 @@ def calculate_range_expansion(df):
     print("\nCalculating Criterion 4: Range Expansion...")
 
     # Calculate intraday range
-    df['intraday_range'] = df['high'] - df['low']
+    df["intraday_range"] = df["high"] - df["low"]
 
     # Calculate 5-day rolling average of range (shifted forward)
-    df['avg_5day_range'] = df['intraday_range'].rolling(window=5, min_periods=1).mean().shift(1)
+    df["avg_5day_range"] = df["intraday_range"].rolling(window=5, min_periods=1).mean().shift(1)
 
     # Criterion: range > 1.3 * avg
-    df['criterion_4_range_expansion'] = df['intraday_range'] > (1.3 * df['avg_5day_range'])
+    df["criterion_4_range_expansion"] = df["intraday_range"] > (1.3 * df["avg_5day_range"])
 
-    materialized = df['criterion_4_range_expansion'].sum()
-    total = df['criterion_4_range_expansion'].notna().sum()
+    materialized = df["criterion_4_range_expansion"].sum()
+    total = df["criterion_4_range_expansion"].notna().sum()
 
     print(f"  Materialized: {materialized}/{total} days ({materialized/total*100:.1f}%)")
 
@@ -251,16 +251,24 @@ def merge_with_patterns(metrics_df, validation_df):
     """
     # Merge on date
     merged = validation_df.merge(
-        metrics_df[['date',
-                    'criterion_1_volatility_amplification',
-                    'criterion_2_directional_followthrough',
-                    'criterion_3_strike_convergence',
-                    'criterion_4_range_expansion',
-                    'realized_vol_t1', 'forecast_vol',
-                    'price_change', 'distance_t', 'distance_t1',
-                    'intraday_range', 'avg_5day_range']],
-        on='date',
-        how='left'
+        metrics_df[
+            [
+                "date",
+                "criterion_1_volatility_amplification",
+                "criterion_2_directional_followthrough",
+                "criterion_3_strike_convergence",
+                "criterion_4_range_expansion",
+                "realized_vol_t1",
+                "forecast_vol",
+                "price_change",
+                "distance_t",
+                "distance_t1",
+                "intraday_range",
+                "avg_5day_range",
+            ]
+        ],
+        on="date",
+        how="left",
     )
 
     print(f"\nMerged dataset: {len(merged)} days")
@@ -281,35 +289,37 @@ def calculate_pattern_specific_rates(df):
     print("=" * 80)
 
     # Group by pattern type and detected status
-    pattern_groups = df[df['detected'] == True].groupby('pattern_type')
+    pattern_groups = df[df["detected"] == True].groupby("pattern_type")
 
     results = []
 
     for pattern, group in pattern_groups:
         n_days = len(group)
 
-        c1 = group['criterion_1_volatility_amplification'].sum()
-        c2 = group['criterion_2_directional_followthrough'].sum()
-        c3 = group['criterion_3_strike_convergence'].sum()
-        c4 = group['criterion_4_range_expansion'].sum()
+        c1 = group["criterion_1_volatility_amplification"].sum()
+        c2 = group["criterion_2_directional_followthrough"].sum()
+        c3 = group["criterion_3_strike_convergence"].sum()
+        c4 = group["criterion_4_range_expansion"].sum()
 
         c1_pct = c1 / n_days * 100 if n_days > 0 else 0
         c2_pct = c2 / n_days * 100 if n_days > 0 else 0
         c3_pct = c3 / n_days * 100 if n_days > 0 else 0
         c4_pct = c4 / n_days * 100 if n_days > 0 else 0
 
-        results.append({
-            'pattern': pattern,
-            'n_days': n_days,
-            'c1_volatility_amp': c1,
-            'c1_pct': c1_pct,
-            'c2_directional': c2,
-            'c2_pct': c2_pct,
-            'c3_convergence': c3,
-            'c3_pct': c3_pct,
-            'c4_range_exp': c4,
-            'c4_pct': c4_pct
-        })
+        results.append(
+            {
+                "pattern": pattern,
+                "n_days": n_days,
+                "c1_volatility_amp": c1,
+                "c1_pct": c1_pct,
+                "c2_directional": c2,
+                "c2_pct": c2_pct,
+                "c3_convergence": c3,
+                "c3_pct": c3_pct,
+                "c4_range_exp": c4,
+                "c4_pct": c4_pct,
+            }
+        )
 
         print(f"\n{pattern} (n={n_days}):")
         print(f"  C1 Volatility Amplification: {c1}/{n_days} ({c1_pct:.1f}%)")
@@ -330,8 +340,8 @@ def main():
     print()
 
     # Paths
-    db_path = project_root / '.cache' / 'consolidated_historical.db'
-    output_dir = project_root / 'docs' / 'papers' / 'paper1' / 'analysis'
+    db_path = project_root / ".cache" / "consolidated_historical.db"
+    output_dir = project_root / "docs" / "papers" / "paper1" / "analysis"
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -366,12 +376,12 @@ def main():
     print("=" * 80)
 
     # Save full dataset
-    full_path = output_dir / 'issue_144_materialization_criteria.csv'
+    full_path = output_dir / "issue_144_materialization_criteria.csv"
     merged_df.to_csv(full_path, index=False)
     print(f"  Saved: {full_path}")
 
     # Save pattern summary
-    summary_path = output_dir / 'issue_144_pattern_summary.csv'
+    summary_path = output_dir / "issue_144_pattern_summary.csv"
     pattern_summary.to_csv(summary_path, index=False)
     print(f"  Saved: {summary_path}")
 
@@ -390,5 +400,5 @@ def main():
     return merged_df, pattern_summary
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     merged_df, pattern_summary = main()

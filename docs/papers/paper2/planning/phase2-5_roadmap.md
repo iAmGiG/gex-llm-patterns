@@ -14,6 +14,7 @@
 **Goal**: Identify when 0DTE proliferation drove regime persistence increase
 
 **Key Questions**:
+
 1. When did transition occur? 2021? 2022 (SPX 0DTE launch)? Gradual?
 2. Is shift sustained into 2025, or reverting?
 3. Does dual GEX (OI vs Volume) provide additional insights?
@@ -24,6 +25,7 @@
 ## Phase Status
 
 ### ✅ Phase 0: 2020 vs 2024 Baseline (COMPLETE)
+
 - Detection: 2024 (81.2%) vs 2020 (12.1%) = 69.1pp difference
 - Cost: $13.60 (Batch API)
 - Limitation: Phase 2a shuffle test (61% FP on Q1 2024)
@@ -36,16 +38,19 @@
 **Completed**: November 20, 2025
 
 **Tasks**:
+
 - [x] 1A: Modify HistoricalGEXDatabaseBuilder to use consolidated_historical.db
 - [x] 1B: Add dual GEX support (calculate_dual_gex integration) - **SCHEMA BUG FIXED**
 - [x] 1C: Test with 2020 data (backward compatibility) - **RESUME LOGIC FIXED**
 
 **Success Criteria**: ✅ ALL MET
+
 - Builder writes to consolidated_historical.db
 - Dual GEX columns populated (gex_oi, gex_volume, activity_ratio, economic_regime)
 - 2020 data rebuilds successfully with dual GEX
 
 **Files Modified**:
+
 - src/data_sources/historical_gex_builder.py:344-347 (schema fix)
 - src/data_sources/historical_gex_builder.py:991-1000 (resume logic fix)
 
@@ -75,6 +80,7 @@
 **Cost**: $0 (Premium Alpha Vantage API)
 
 **Success Criteria**: ✅ ALL MET
+
 - All 6 years collected (1,475 trading days)
 - Dual GEX populated for 1,473 days (99.9%)
 - Columbus/Veterans Day gaps filled (8 dates)
@@ -90,6 +96,7 @@
 **Completed**: November 20, 2025
 
 **Checks**: ✅ ALL PASSED
+
 - [x] Coverage: All expected trading days present (2020-2025) - 1,475 days
 - [x] Gaps: Columbus/Veterans Day gaps identified and filled (8 dates)
 - [x] Dual GEX: gex_oi, gex_volume, activity_ratio, economic_regime populated (99.9%)
@@ -97,10 +104,12 @@
 - [x] Continuity: 2024 matches existing Phase 3 data perfectly
 
 **Verification Scripts**:
+
 - /tmp/check_missing_dates.py (gap detection)
 - SQL queries for coverage verification
 
 **Success Criteria**: ✅ ALL MET
+
 - 100% coverage for 2020-2025 NYSE trading days
 - Dual GEX populated for 1,473/1,475 days (99.9%)
 - Quality score: 100/100 for all years
@@ -126,6 +135,7 @@
 | **TOTAL** | ~879 | $43 |
 
 **Method**:
+
 - Same regime detection prompt used in Phases 1-4
 - Batch API (50% cost savings)
 - o4-mini model (consistency with baseline)
@@ -141,6 +151,7 @@
 **Timeline**: 1-2 hours submission, 2-4 hours Batch API processing
 
 **Success Criteria**:
+
 - All 4 years validated with o4-mini
 - Results comparable to 2020/2024 baseline
 - Clear temporal trend visible
@@ -154,6 +165,7 @@
 **Scope**: Novel dual GEX analysis (GEX_OI vs GEX_Volume divergence)
 
 **Additional Criteria**:
+
 - **High-conviction regime**: OI and Volume agree (activity_ratio > 0.70)
 - **Low-conviction regime**: OI dominates, Volume weak (activity_ratio < 0.70)
 - **Mixed signal**: OI positive, Volume negative (transitional warning)
@@ -164,6 +176,7 @@
 **Research Question**: Does dual GEX provide leading indicators of regime transitions?
 
 **Success Criteria**:
+
 - All 4 years validated with dual GEX criteria
 - Activity ratio calculated for all windows
 - Divergence patterns identified
@@ -181,6 +194,7 @@
 **Deliverable**: Regime persistence evolution chart (2020→2025)
 
 **Analysis**:
+
 - Detection rate by year (6 data points)
 - Average GEX magnitude by year
 - Persistence % (same-sign dominance) by year
@@ -195,11 +209,13 @@
 **Deliverable**: Identification of regime shift period
 
 **Analysis**:
+
 - Quarter-by-quarter detection rates (2020 Q1 → 2025 Q4)
 - Correlation with 0DTE volume data (external dataset)
 - Statistical test: Before vs After 0DTE launch (May 2022)
 
 **Hypothesis Tests**:
+
 - H1: 2022 Q2/Q3 shows sharp increase (0DTE launch effect)
 - H2: 2020-2021 low, 2023-2025 high (binary shift)
 - H3: Gradual linear trend 2020→2025 (continuous growth)
@@ -213,6 +229,7 @@
 **Deliverable**: Regime quality insights
 
 **Analysis**:
+
 - High-conviction vs low-conviction regime frequency by year
 - Divergence events (OI ≠ Volume) and subsequent regime changes
 - Activity ratio as leading indicator
@@ -226,6 +243,7 @@
 **Deliverable**: Election year comparison (2020 vs 2024)
 
 **Analysis**:
+
 - GEX behavior Q3-Q4 2020 vs Q3-Q4 2024
 - Volatility regimes during election periods
 - Persistence differences (if any)
@@ -239,6 +257,7 @@
 **Owner**: Chat B (with Chat A data)
 
 **Sections to Update**:
+
 1. **Introduction**: Change "2-year comparison" → "6-year evolution"
 2. **Methodology**: Add multi-year data collection details
 3. **Results**: Replace 2020 vs 2024 → Full 6-year temporal analysis
@@ -248,6 +267,7 @@
 **Target Length**: 10-12 pages IEEE format
 
 **Figures Needed** (Chat A will generate):
+
 - Figure 1: Temporal trend (detection rate 2020→2025)
 - Figure 2: GEX magnitude evolution
 - Figure 3: 0DTE volume overlay (external data)
@@ -269,15 +289,19 @@
 ## Risk Mitigation
 
 **Risk 1**: Data collection hits API rate limits
+
 - **Mitigation**: Spread over 5-7 days, use caching aggressively
 
 **Risk 2**: Dual GEX analysis shows no signal
+
 - **Mitigation**: Phase 4B is optional, single GEX sufficient for paper
 
 **Risk 3**: No clear transition point (gradual trend)
+
 - **Mitigation**: Report as gradual evolution, still strengthens causal claim
 
 **Risk 4**: 2025 data shows regime reversal (detection drops)
+
 - **Mitigation**: Document as regime instability, still interesting finding
 
 ---
@@ -285,18 +309,21 @@
 ## Coordination
 
 **Chat A Responsibilities**:
+
 - All infrastructure (Phases 1-3)
 - All validation (Phases 4A-4B)
 - All analysis (Phases 5A-5D)
 - Figure generation for Paper #2
 
 **Chat B Responsibilities**:
+
 - Documentation updates (this roadmap)
 - GitHub issue tracking
 - Paper #2 LaTeX writing (Phase 5E)
 - Literature review updates if needed
 
 **Communication**:
+
 - Update sync.yaml after each phase completion
 - Flag any blockers immediately
 - Share interim findings in Issue #140 comments
@@ -306,18 +333,22 @@
 ## Timeline
 
 **Week 1 (Nov 20-26)**:
+
 - Phase 1: Infrastructure upgrades
 - Phase 2 start: 2021 data collection
 
 **Week 2 (Nov 27-Dec 3)**:
+
 - Phase 2: Complete 2022, 2023, 2025 collection
 - Phase 3: Database verification
 
 **Week 3 (Dec 4-10)**:
+
 - Phase 4A: Single GEX validation (~879 windows)
 - Phase 5A-B start: Initial analysis
 
 **Week 4 (Dec 11-18)**:
+
 - Phase 5A-E: Complete analysis and writing
 - Paper #2 draft ready
 

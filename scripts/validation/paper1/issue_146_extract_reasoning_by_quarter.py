@@ -25,13 +25,15 @@ sys.path.insert(0, str(project_root))
 
 def load_validation_data(pattern_name):
     """Load validation YAML for a pattern."""
-    yaml_path = project_root / 'reports' / 'validation' / 'paper1_pattern_taxonomy' / f'{pattern_name}_SPY_2024_unbiased.yaml'
+    yaml_path = (
+        project_root / "reports" / "validation" / "paper1_pattern_taxonomy" / f"{pattern_name}_SPY_2024_unbiased.yaml"
+    )
 
     if not yaml_path.exists():
         print(f"Warning: {yaml_path} not found")
         return None
 
-    with open(yaml_path, 'r') as f:
+    with open(yaml_path, "r") as f:
         data = yaml.safe_load(f)
 
     return data
@@ -39,17 +41,17 @@ def load_validation_data(pattern_name):
 
 def categorize_by_quarter(date_str):
     """Categorize date into Q1, Q2, Q3, or Q4 2024."""
-    date = datetime.strptime(date_str, '%Y-%m-%d')
+    date = datetime.strptime(date_str, "%Y-%m-%d")
     month = date.month
 
     if month <= 3:
-        return 'Q1'
+        return "Q1"
     elif month <= 6:
-        return 'Q2'
+        return "Q2"
     elif month <= 9:
-        return 'Q3'
+        return "Q3"
     else:
-        return 'Q4'
+        return "Q4"
 
 
 def extract_reasoning_by_quarter(patterns):
@@ -59,13 +61,9 @@ def extract_reasoning_by_quarter(patterns):
     Returns:
         dict: {quarter: [reasoning_texts]}
     """
-    reasoning_by_quarter = defaultdict(lambda: {
-        'detections': [],
-        'who_texts': [],
-        'whom_texts': [],
-        'what_texts': [],
-        'confidences': []
-    })
+    reasoning_by_quarter = defaultdict(
+        lambda: {"detections": [], "who_texts": [], "whom_texts": [], "what_texts": [], "confidences": []}
+    )
 
     for pattern_name in patterns:
         print(f"\nProcessing {pattern_name}...")
@@ -74,14 +72,14 @@ def extract_reasoning_by_quarter(patterns):
         if data is None:
             continue
 
-        detections = data.get('detections', [])
+        detections = data.get("detections", [])
         print(f"  Found {len(detections)} total days")
 
         detected_count = 0
 
         for detection in detections:
-            date = detection['date']
-            detected = detection.get('detected', False)
+            date = detection["date"]
+            detected = detection.get("detected", False)
 
             if not detected:
                 continue
@@ -89,31 +87,33 @@ def extract_reasoning_by_quarter(patterns):
             detected_count += 1
             quarter = categorize_by_quarter(date)
 
-            narrative = detection.get('narrative', {})
-            who = narrative.get('who', '')
-            whom = narrative.get('whom', '')
-            what = narrative.get('what', '')
-            confidence = narrative.get('confidence', 0)
+            narrative = detection.get("narrative", {})
+            who = narrative.get("who", "")
+            whom = narrative.get("whom", "")
+            what = narrative.get("what", "")
+            confidence = narrative.get("confidence", 0)
 
             # Store detection info
-            reasoning_by_quarter[quarter]['detections'].append({
-                'date': date,
-                'pattern': pattern_name,
-                'who': who,
-                'whom': whom,
-                'what': what,
-                'confidence': confidence
-            })
+            reasoning_by_quarter[quarter]["detections"].append(
+                {
+                    "date": date,
+                    "pattern": pattern_name,
+                    "who": who,
+                    "whom": whom,
+                    "what": what,
+                    "confidence": confidence,
+                }
+            )
 
             # Store text components
             if who:
-                reasoning_by_quarter[quarter]['who_texts'].append(who)
+                reasoning_by_quarter[quarter]["who_texts"].append(who)
             if whom:
-                reasoning_by_quarter[quarter]['whom_texts'].append(whom)
+                reasoning_by_quarter[quarter]["whom_texts"].append(whom)
             if what:
-                reasoning_by_quarter[quarter]['what_texts'].append(what)
+                reasoning_by_quarter[quarter]["what_texts"].append(what)
             if confidence > 0:
-                reasoning_by_quarter[quarter]['confidences'].append(confidence)
+                reasoning_by_quarter[quarter]["confidences"].append(confidence)
 
         print(f"  Detected: {detected_count} days")
 
@@ -128,36 +128,37 @@ def analyze_keyword_frequencies(reasoning_by_quarter):
     - Q1 (high alpha): "amplification", "cascading", "reinforcing"
     - Q4 (zero alpha): "fragmentation", "dampening", "absorbed"
     """
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("KEYWORD FREQUENCY ANALYSIS")
-    print("="*80)
+    print("=" * 80)
 
     # Define keywords of interest
     amplification_keywords = [
-        'amplif', 'cascade', 'cascading', 'reinforc', 'feedback',
-        'accelerat', 'momentum', 'amplify'
+        "amplif",
+        "cascade",
+        "cascading",
+        "reinforc",
+        "feedback",
+        "accelerat",
+        "momentum",
+        "amplify",
     ]
 
-    dampening_keywords = [
-        'fragment', 'dampen', 'absorb', 'dispers', 'scatter',
-        'neutral', 'balanced', 'offset'
-    ]
+    dampening_keywords = ["fragment", "dampen", "absorb", "dispers", "scatter", "neutral", "balanced", "offset"]
 
-    hedging_keywords = [
-        'hedge', 'hedging', 'adjust', 'rebalanc', 'delta'
-    ]
+    hedging_keywords = ["hedge", "hedging", "adjust", "rebalanc", "delta"]
 
     results = {}
 
-    for quarter in ['Q1', 'Q2', 'Q3', 'Q4']:
+    for quarter in ["Q1", "Q2", "Q3", "Q4"]:
         if quarter not in reasoning_by_quarter:
             continue
 
-        what_texts = reasoning_by_quarter[quarter]['what_texts']
-        total_detections = len(reasoning_by_quarter[quarter]['detections'])
+        what_texts = reasoning_by_quarter[quarter]["what_texts"]
+        total_detections = len(reasoning_by_quarter[quarter]["detections"])
 
         # Combine all WHAT texts
-        combined_text = ' '.join(what_texts).lower()
+        combined_text = " ".join(what_texts).lower()
 
         # Count keywords
         amp_count = sum(1 for kw in amplification_keywords if kw in combined_text)
@@ -165,11 +166,15 @@ def analyze_keyword_frequencies(reasoning_by_quarter):
         hedge_count = sum(1 for kw in hedging_keywords if kw in combined_text)
 
         results[quarter] = {
-            'total_detections': total_detections,
-            'amplification_keywords': amp_count,
-            'dampening_keywords': damp_count,
-            'hedging_keywords': hedge_count,
-            'avg_confidence': sum(reasoning_by_quarter[quarter]['confidences']) / len(reasoning_by_quarter[quarter]['confidences']) if reasoning_by_quarter[quarter]['confidences'] else 0
+            "total_detections": total_detections,
+            "amplification_keywords": amp_count,
+            "dampening_keywords": damp_count,
+            "hedging_keywords": hedge_count,
+            "avg_confidence": (
+                sum(reasoning_by_quarter[quarter]["confidences"]) / len(reasoning_by_quarter[quarter]["confidences"])
+                if reasoning_by_quarter[quarter]["confidences"]
+                else 0
+            ),
         }
 
         print(f"\n{quarter} 2024:")
@@ -184,17 +189,17 @@ def analyze_keyword_frequencies(reasoning_by_quarter):
 
 def extract_sample_responses(reasoning_by_quarter, n_samples=10):
     """Extract sample WHAT responses from Q1 and Q4 for qualitative review."""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("SAMPLE REASONING TEXTS")
-    print("="*80)
+    print("=" * 80)
 
     samples = {}
 
-    for quarter in ['Q1', 'Q4']:
+    for quarter in ["Q1", "Q4"]:
         if quarter not in reasoning_by_quarter:
             continue
 
-        detections = reasoning_by_quarter[quarter]['detections']
+        detections = reasoning_by_quarter[quarter]["detections"]
 
         print(f"\n{quarter} 2024 Sample Responses (n={min(n_samples, len(detections))}):")
         print("-" * 80)
@@ -203,10 +208,10 @@ def extract_sample_responses(reasoning_by_quarter, n_samples=10):
 
         for i, detection in enumerate(detections[:n_samples]):
             sample = {
-                'date': detection['date'],
-                'pattern': detection['pattern'],
-                'what': detection['what'],
-                'confidence': detection['confidence']
+                "date": detection["date"],
+                "pattern": detection["pattern"],
+                "what": detection["what"],
+                "confidence": detection["confidence"],
             }
             samples[quarter].append(sample)
 
@@ -219,36 +224,30 @@ def extract_sample_responses(reasoning_by_quarter, n_samples=10):
 
 def save_results(reasoning_by_quarter, keyword_results, samples):
     """Save extraction results to CSV and YAML."""
-    output_dir = project_root / 'docs' / 'papers' / 'paper1' / 'analysis'
+    output_dir = project_root / "docs" / "papers" / "paper1" / "analysis"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save all detections to CSV
     all_detections = []
     for quarter, data in reasoning_by_quarter.items():
-        for detection in data['detections']:
-            all_detections.append({
-                'quarter': quarter,
-                **detection
-            })
+        for detection in data["detections"]:
+            all_detections.append({"quarter": quarter, **detection})
 
     df = pd.DataFrame(all_detections)
-    csv_path = output_dir / 'issue_146_reasoning_by_quarter.csv'
+    csv_path = output_dir / "issue_146_reasoning_by_quarter.csv"
     df.to_csv(csv_path, index=False)
     print(f"\n✅ Saved: {csv_path}")
 
     # Save keyword analysis to YAML
     summary = {
-        'analysis_date': datetime.now().isoformat(),
-        'total_detections_by_quarter': {
-            q: len(data['detections'])
-            for q, data in reasoning_by_quarter.items()
-        },
-        'keyword_frequency_analysis': keyword_results,
-        'sample_responses': samples
+        "analysis_date": datetime.now().isoformat(),
+        "total_detections_by_quarter": {q: len(data["detections"]) for q, data in reasoning_by_quarter.items()},
+        "keyword_frequency_analysis": keyword_results,
+        "sample_responses": samples,
     }
 
-    yaml_path = output_dir / 'issue_146_keyword_analysis.yaml'
-    with open(yaml_path, 'w') as f:
+    yaml_path = output_dir / "issue_146_keyword_analysis.yaml"
+    with open(yaml_path, "w") as f:
         yaml.dump(summary, f, default_flow_style=False, sort_keys=False)
     print(f"✅ Saved: {yaml_path}")
 
@@ -257,17 +256,13 @@ def save_results(reasoning_by_quarter, keyword_results, samples):
 
 def main():
     """Main workflow for Issue #146 reasoning extraction."""
-    print("="*80)
+    print("=" * 80)
     print("Issue #146: Extract Reasoning by Quarter")
     print("Paper #1 MC Review Defense - Alpha Divergence Analysis")
-    print("="*80)
+    print("=" * 80)
 
     # Patterns to analyze
-    patterns = [
-        'gamma_positioning',
-        'stock_pinning',
-        '0dte_hedging'
-    ]
+    patterns = ["gamma_positioning", "stock_pinning", "0dte_hedging"]
 
     # Extract reasoning by quarter
     print("\nStep 1: Extracting reasoning texts from validation YAMLs...")
@@ -285,9 +280,9 @@ def main():
     print("\nStep 4: Saving results...")
     csv_path, yaml_path = save_results(reasoning_by_quarter, keyword_results, samples)
 
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("EXTRACTION COMPLETE")
-    print("="*80)
+    print("=" * 80)
     print("\nNext steps:")
     print("  1. Review keyword frequency differences between Q1 and Q4")
     print("  2. Examine sample responses for qualitative differences")
@@ -297,5 +292,5 @@ def main():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

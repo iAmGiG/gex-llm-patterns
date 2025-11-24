@@ -36,24 +36,19 @@ def calculate_flip_point(strikes_df, spot_price):
         dict with flip_point, distance_from_spot, flip_type
     """
     # Sort by strike and reset index
-    strikes_df = strikes_df.sort_values('strike').reset_index(drop=True).copy()
+    strikes_df = strikes_df.sort_values("strike").reset_index(drop=True).copy()
 
     # Find sign changes
-    strikes_df['sign'] = np.sign(strikes_df['net_gex'])
-    strikes_df['sign_change'] = strikes_df['sign'].diff() != 0
+    strikes_df["sign"] = np.sign(strikes_df["net_gex"])
+    strikes_df["sign_change"] = strikes_df["sign"].diff() != 0
 
     # Get sign change locations (now using integer positions)
-    sign_change_mask = strikes_df['sign_change']
+    sign_change_mask = strikes_df["sign_change"]
     sign_change_positions = strikes_df.index[sign_change_mask].tolist()
 
     if len(sign_change_positions) == 0:
         # No sign change - all same sign
-        return {
-            'flip_point': None,
-            'distance_from_spot': None,
-            'flip_type': 'no_flip',
-            'net_gex_at_flip': None
-        }
+        return {"flip_point": None, "distance_from_spot": None, "flip_type": "no_flip", "net_gex_at_flip": None}
 
     # Get first sign change (primary flip point)
     curr_pos = sign_change_positions[0]
@@ -63,15 +58,15 @@ def calculate_flip_point(strikes_df, spot_price):
 
     if prev_pos < 0:
         # Sign change at first strike
-        flip_strike = strikes_df.loc[curr_pos, 'strike']
-        flip_gex = strikes_df.loc[curr_pos, 'net_gex']
-        flip_type = 'first_strike'
+        flip_strike = strikes_df.loc[curr_pos, "strike"]
+        flip_gex = strikes_df.loc[curr_pos, "net_gex"]
+        flip_type = "first_strike"
     else:
         # Interpolate between two strikes
-        strike1 = strikes_df.loc[prev_pos, 'strike']
-        strike2 = strikes_df.loc[curr_pos, 'strike']
-        gex1 = strikes_df.loc[prev_pos, 'net_gex']
-        gex2 = strikes_df.loc[curr_pos, 'net_gex']
+        strike1 = strikes_df.loc[prev_pos, "strike"]
+        strike2 = strikes_df.loc[curr_pos, "strike"]
+        gex1 = strikes_df.loc[prev_pos, "net_gex"]
+        gex2 = strikes_df.loc[curr_pos, "net_gex"]
 
         # Linear interpolation to find zero crossing
         if gex2 - gex1 != 0:
@@ -83,24 +78,24 @@ def calculate_flip_point(strikes_df, spot_price):
 
         # Determine flip type
         if gex1 > 0 and gex2 < 0:
-            flip_type = 'positive_to_negative'
+            flip_type = "positive_to_negative"
         elif gex1 < 0 and gex2 > 0:
-            flip_type = 'negative_to_positive'
+            flip_type = "negative_to_positive"
         else:
-            flip_type = 'unknown'
+            flip_type = "unknown"
 
     # Calculate distance from spot
     distance = abs(flip_strike - spot_price)
 
     return {
-        'flip_point': flip_strike,
-        'distance_from_spot': distance,
-        'flip_type': flip_type,
-        'net_gex_at_flip': flip_gex
+        "flip_point": flip_strike,
+        "distance_from_spot": distance,
+        "flip_type": flip_type,
+        "net_gex_at_flip": flip_gex,
     }
 
 
-def calculate_all_flip_points(db_path, start_date='2024-01-02', end_date='2024-12-31'):
+def calculate_all_flip_points(db_path, start_date="2024-01-02", end_date="2024-12-31"):
     """
     Calculate flip points for all dates from strike-level data.
 
@@ -144,8 +139,8 @@ def calculate_all_flip_points(db_path, start_date='2024-01-02', end_date='2024-1
 
     flip_points = []
 
-    for date, group in strikes_df.groupby('date'):
-        spot = spot_df[spot_df['date'] == date]['spot_price'].values
+    for date, group in strikes_df.groupby("date"):
+        spot = spot_df[spot_df["date"] == date]["spot_price"].values
 
         if len(spot) == 0:
             print(f"  ⚠️ No spot price for {date}, skipping")
@@ -155,13 +150,15 @@ def calculate_all_flip_points(db_path, start_date='2024-01-02', end_date='2024-1
 
         result = calculate_flip_point(group, spot_price)
 
-        flip_points.append({
-            'date': date,
-            'spot_price': spot_price,
-            'flip_point': result['flip_point'],
-            'distance_from_spot': result['distance_from_spot'],
-            'flip_type': result['flip_type']
-        })
+        flip_points.append(
+            {
+                "date": date,
+                "spot_price": spot_price,
+                "flip_point": result["flip_point"],
+                "distance_from_spot": result["distance_from_spot"],
+                "flip_type": result["flip_type"],
+            }
+        )
 
     flip_df = pd.DataFrame(flip_points)
 
@@ -170,7 +167,7 @@ def calculate_all_flip_points(db_path, start_date='2024-01-02', end_date='2024-1
     print(f"  Days with flip: {flip_df['flip_point'].notna().sum()}")
     print(f"  Days without flip: {flip_df['flip_point'].isna().sum()}")
 
-    if flip_df['flip_point'].notna().sum() > 0:
+    if flip_df["flip_point"].notna().sum() > 0:
         print(f"\n  Flip point statistics:")
         print(f"    Mean distance from spot: ${flip_df['distance_from_spot'].mean():.2f}")
         print(f"    Median distance: ${flip_df['distance_from_spot'].median():.2f}")
@@ -190,8 +187,8 @@ def main():
     print()
 
     # Paths
-    db_path = project_root / '.cache' / 'consolidated_historical.db'
-    output_dir = project_root / 'docs' / 'papers' / 'paper1' / 'analysis'
+    db_path = project_root / ".cache" / "consolidated_historical.db"
+    output_dir = project_root / "docs" / "papers" / "paper1" / "analysis"
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -202,7 +199,7 @@ def main():
 
     # Save results
     print("Step 2: Saving results...")
-    output_path = output_dir / 'issue_144_flip_points.csv'
+    output_path = output_dir / "issue_144_flip_points.csv"
     flip_df.to_csv(output_path, index=False)
     print(f"  Saved: {output_path}")
     print()
@@ -220,5 +217,5 @@ def main():
     return flip_df
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     flip_df = main()

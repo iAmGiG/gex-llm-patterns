@@ -28,47 +28,43 @@ class ConfigManager:
             config_dir: Path to configuration directory (default: project_root/config_defaults)
             environment: Environment name for config overrides (default: from ENV var)
         """
-        self.config_dir = Path(
-            config_dir) if config_dir else self._get_default_config_dir()
-        self.environment = environment or os.getenv('ENVIRONMENT', 'default')
+        self.config_dir = Path(config_dir) if config_dir else self._get_default_config_dir()
+        self.environment = environment or os.getenv("ENVIRONMENT", "default")
         self._config_cache = {}
 
         # Load all configuration files
         self._load_all_configs()
 
-        logger.info(
-            f"ConfigManager initialized: {self.config_dir}, env: {self.environment}")
+        logger.info(f"ConfigManager initialized: {self.config_dir}, env: {self.environment}")
 
     def _get_default_config_dir(self) -> Path:
         """Get default configuration directory relative to project root."""
         # Find project root (where config_defaults should be)
         current = Path(__file__)
         while current.parent != current:
-            if (current / 'config_defaults').exists():
-                return current / 'config_defaults'
+            if (current / "config_defaults").exists():
+                return current / "config_defaults"
             current = current.parent
 
         # Fallback to relative path
-        return Path(__file__).parent.parent.parent / 'config_defaults'
+        return Path(__file__).parent.parent.parent / "config_defaults"
 
     def _load_all_configs(self):
         """Load all YAML configuration files from the config directory."""
         if not self.config_dir.exists():
-            logger.warning(
-                f"Configuration directory not found: {self.config_dir}")
+            logger.warning(f"Configuration directory not found: {self.config_dir}")
             return
 
-        for config_file in self.config_dir.glob('*.yaml'):
+        for config_file in self.config_dir.glob("*.yaml"):
             try:
-                with open(config_file, 'r', encoding='utf-8') as f:
+                with open(config_file, "r", encoding="utf-8") as f:
                     config_data = yaml.safe_load(f)
 
                 # Use filename (without extension) as config section name
-                section_name = config_file.stem.replace('_config', '')
+                section_name = config_file.stem.replace("_config", "")
                 self._config_cache[section_name] = config_data
 
-                logger.debug(
-                    f"Loaded config section '{section_name}' from {config_file}")
+                logger.debug(f"Loaded config section '{section_name}' from {config_file}")
 
             except Exception as e:
                 logger.error(f"Failed to load config file {config_file}: {e}")
@@ -95,7 +91,7 @@ class ConfigManager:
             return self._parse_env_value(env_value)
 
         # Navigate through nested dictionary
-        parts = key_path.split('.')
+        parts = key_path.split(".")
         current = self._config_cache
 
         try:
@@ -103,19 +99,18 @@ class ConfigManager:
                 current = current[part]
             return current
         except (KeyError, TypeError):
-            logger.debug(
-                f"Configuration key not found: {key_path}, using default: {default}")
+            logger.debug(f"Configuration key not found: {key_path}, using default: {default}")
             return default
 
     def _key_path_to_env_var(self, key_path: str) -> str:
         """Convert dot notation key path to environment variable name."""
-        return key_path.upper().replace('.', '_')
+        return key_path.upper().replace(".", "_")
 
     def _parse_env_value(self, value: str) -> Union[str, int, float, bool, list]:
         """Parse environment variable value to appropriate Python type."""
         # Try boolean
-        if value.lower() in ('true', 'false'):
-            return value.lower() == 'true'
+        if value.lower() in ("true", "false"):
+            return value.lower() == "true"
 
         # Try integer
         try:
@@ -130,9 +125,9 @@ class ConfigManager:
             pass
 
         # Try list (comma-separated)
-        if ',' in value:
+        if "," in value:
             try:
-                return [self._parse_env_value(item.strip()) for item in value.split(',')]
+                return [self._parse_env_value(item.strip()) for item in value.split(",")]
             except:
                 pass
 
@@ -176,12 +171,11 @@ class ConfigManager:
             keys.extend(self._flatten_keys(section_data, prefix=section))
         else:
             for section_name, section_data in self._config_cache.items():
-                keys.extend(self._flatten_keys(
-                    section_data, prefix=section_name))
+                keys.extend(self._flatten_keys(section_data, prefix=section_name))
 
         return sorted(keys)
 
-    def _flatten_keys(self, data: Dict[str, Any], prefix: str = '') -> list:
+    def _flatten_keys(self, data: Dict[str, Any], prefix: str = "") -> list:
         """Recursively flatten nested dictionary keys to dot notation."""
         keys = []
 

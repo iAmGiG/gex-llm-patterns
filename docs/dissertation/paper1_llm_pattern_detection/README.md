@@ -29,6 +29,7 @@ This paper validates a novel methodology for testing whether LLMs can detect str
 **Problem**: LLMs may memorize financial patterns from training data rather than reasoning about market mechanics.
 
 **Solution**: Strip all identifying information before presenting data to LLM:
+
 - Real dates → "Day T+0", "Day T+1", "Day T+2"
 - Real tickers → "INDEX_1", "STOCK_G"
 - Remove all news, events, earnings dates
@@ -77,6 +78,7 @@ This paper validates a novel methodology for testing whether LLMs can detect str
 | Q4 2024 | 100% | 98.4% | -1 bps | Weak negative GEX |
 
 **Critical Insight**: Detection and accuracy remain high (96-100%) even as economic profitability declines to zero. This proves:
+
 - ✅ Methodology detects **structure**, not **profits**
 - ✅ No cherry-picking of profitable periods
 - ✅ Pattern detection persists across varying market conditions
@@ -94,6 +96,7 @@ Structured approach to causal attribution in market mechanics:
 3. **WHAT**: Identify the forced action (dealers sell underlying when negative GEX)
 
 **Example Detection** (from 2024-01-02):
+
 ```
 WHO: Options dealers at major market makers
 WHOM: Retail/institutional option buyers create imbalance
@@ -107,14 +110,17 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Three-Level Validation Criteria
 
 **Level 1 - Pattern Presence**: Does LLM detect constraint consistently?
+
 - Threshold: >60% detection rate
 - Result: 71.5% average (PASS)
 
 **Level 2 - Prediction Accuracy**: Do predictions materialize?
+
 - Threshold: >75% materialization rate
 - Result: 91.2% (PASS)
 
 **Level 3 - Causal Attribution**: Does LLM explain WHO→WHOM→WHAT?
+
 - Method: Manual review of LLM reasoning
 - Result: 100% of detections include causal chain (PASS)
 
@@ -125,16 +131,19 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Sample Size and Power
 
 **Detection Rate Test** (69.4% vs 50% random):
+
 - Required sample: n = 30 (80% power)
 - Actual sample: n = 242
 - **Statistical power**: >99%
 
 **Accuracy Test** (92.5% vs 80% baseline):
+
 - Required sample: n = 50
 - Actual sample: n = 242
 - **Statistical power**: >99%
 
 **Coverage Analysis**:
+
 - Expected trading days: 258 (after holidays)
 - Actually tested: 242 days
 - **Coverage**: 94% (9 holidays + 10 data gaps)
@@ -144,11 +153,13 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 **Test**: Does GEX Granger-cause forward volatility?
 
 **Finding**: NULL RESULT (p = 0.973 at lag 1)
+
 - GEX does NOT predict volatility in lagged regression
 - All 242 days had negative GEX (no regime variation)
 - Relationship appears **contemporaneous** (same-day) not lagged
 
 **Interpretation**:
+
 - ❌ Does NOT invalidate LLM detection (91.2% predictions still materialize)
 - ✅ Confirms 2024 was persistent single regime (structural shift from 0DTE)
 - ⚠️ Granger test requires regime variation; 2024 had none
@@ -162,16 +173,19 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Contributions to Literature
 
 **1. Novel Validation Framework**
+
 - First application of obfuscation testing to LLM market analysis
 - Addresses memorization concern in financial LLMs
 - Provides replicable methodology for validating LLM reasoning
 
 **2. Multi-Pattern Generalization**
+
 - Tests 3 different narrative framings of same constraint
 - Proves detection is structural (not pattern-specific)
 - Demonstrates robustness across prompt variations
 
 **3. Detection-Profitability Separation**
+
 - Shows pattern detection persists when alpha disappears
 - Proves methodology detects mechanics, not anomalies
 - Strengthens academic rigor (no cherry-picking)
@@ -179,6 +193,7 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Addresses Research Gap
 
 **Prior work on LLMs in finance**:
+
 - Sentiment analysis (Xing et al. 2018)
 - Event detection (Chen et al. 2020)
 - Price prediction (Lopez-Lira & Tang 2023)
@@ -202,21 +217,25 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Requested Revisions (10-day deadline)
 
 **Issue #120 (CRITICAL)**: Reduce manuscript from 12 to 10 pages
+
 - Current: ~12 pages
 - Target: ≤10 pages (IEEE DSAA limit)
 - Strategy: Condense Related Work, reduce figures, tighten Results section
 
 **Issue #121 (DEFER)**: Multi-year validation (2022-2024)
+
 - Reviewer 1: "Would be more convincing if covers more years"
 - Effort: 6-9 days (database rebuild + validation)
 - Decision: DEFER to future work, justify in Limitations section
 
 **Issue #122 (DO)**: Strengthen single-asset (SPY-only) justification
+
 - Reviewer 2: "Single-asset focus" limitation
 - Strategy: Reframe as methodological strength (most efficient market)
 - Effort: 1-2 hours
 
 **Issue #123 (DO)**: Address reasoning explainability
+
 - Reviewer 2: "Reasoning depth not fully explainable"
 - Strategy: Acknowledge black-box nature, list validation mitigations
 - Effort: 2-3 hours
@@ -259,16 +278,19 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Three-Paper Dissertation Arc
 
 **Paper #1 (This Paper)**: Validation Methodology
+
 - Question: Can LLMs detect market constraints?
 - Method: Obfuscation testing
 - Finding: Yes, 71.5% detection with 91.2% accuracy
 
 **Paper #2 (In Progress)**: Regime Detection
+
 - Question: Can LLMs identify persistent market regimes (30-day windows)?
 - Method: Sequential GEX analysis with regime classification
 - Status: Phase 1 validation underway (76% detection on 46 windows)
 
 **Paper #3 (Planned)**: Sector Rotation at Regime Boundaries
+
 - Question: Do sector rotations occur when regimes shift?
 - Method: Cross-sectional analysis at detected regime transitions
 - Timeline: Post-Paper #2 validation
@@ -276,16 +298,19 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ### Why This Sequence Matters
 
 **Paper #1 establishes foundation**:
+
 - Proves obfuscation testing methodology works
 - Validates LLM structural reasoning capability
 - Provides framework for Papers #2 and #3
 
 **Paper #2 extends to regimes**:
+
 - Applies same methodology to longer windows
 - Tests selectivity (30-50% expected vs 98-100% trivial)
 - Sets up regime boundary analysis
 
 **Paper #3 applies to trading**:
+
 - Uses detected regime shifts for sector rotation timing
 - Validates economic value of LLM regime detection
 - Completes research → application → validation cycle
@@ -295,16 +320,19 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ## Future Extensions
 
 ### Short-term (1-2 months)
+
 1. Complete Paper #1 revisions (Issues #120, #122, #123)
 2. Submit revised manuscript (IEEE DSAA)
 3. Complete Paper #2 Phase 1 validation
 
 ### Medium-term (3-6 months)
+
 1. Test 2022-2023 data (different volatility regime)
 2. Complete Paper #2 full validation (Phases 2-4)
 3. Begin Paper #3 sector rotation analysis
 
 ### Long-term (6-12 months)
+
 1. Test other assets (QQQ, IWM, individual stocks)
 2. Extend to credit markets (corporate bonds, CDS)
 3. Apply to cryptocurrency gamma (if data available)
@@ -328,11 +356,11 @@ Outcome: -0.86% move next day (MATERIALIZED ✅)
 ## Contact
 
 **Author**: Christopher Regan
-**Email**: cregan1@kennesaw.edu
-**Advisor**: Ying Xie (yxie2@kennesaw.edu)
+**Email**: <cregan1@kennesaw.edu>
+**Advisor**: Ying Xie (<yxie2@kennesaw.edu>)
 **Institution**: Kennesaw State University, Department of Computer Science
 
-**GitHub**: https://github.com/iAmGiG/gex-llm-patterns
+**GitHub**: <https://github.com/iAmGiG/gex-llm-patterns>
 **Branch**: paper1-reviewer-revisions (current work)
 
 ---

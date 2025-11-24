@@ -38,10 +38,12 @@ python scripts/statistical_validation/p1_granger_analysis_main.py
 ```
 
 **Outputs**:
+
 - LaTeX tables: `docs/papers/paper1/tables/table_granger_*.tex`
 - JSON results: `reports/statistical_validation/granger_results_*.json`
 
 **Expected Results**:
+
 - P-values < 0.05 for lags 1-3 (GEX predicts volatility)
 - Effect weakens at lags 4-5 (consistent with short-term hedging)
 
@@ -53,12 +55,14 @@ python scripts/statistical_validation/p1_leadlag_analysis_main.py
 ```
 
 **Outputs**:
+
 - LaTeX table: `docs/papers/paper1/tables/table_leadlag.tex`
 - CSV statistics: `reports/statistical_validation/regime_statistics_*.csv`
 - JSON results: `reports/statistical_validation/leadlag_results_*.json`
 - Figure (optional): `docs/papers/paper1/figures/fig9_leadlag_analysis.png`
 
 **Expected Results**:
+
 - Negative GEX → ~2x higher volatility vs positive GEX
 - P-value < 0.001 (highly significant)
 - Cohen's d ≈ 0.8-1.2 (large effect size)
@@ -66,6 +70,7 @@ python scripts/statistical_validation/p1_leadlag_analysis_main.py
 ## Current Status
 
 ### ✅ Completed
+
 - [x] Pipeline documentation for both analyses
 - [x] Implementation stubs with full structure
 - [x] Data access patterns defined
@@ -74,6 +79,7 @@ python scripts/statistical_validation/p1_leadlag_analysis_main.py
 ### 🚧 TODO (Implementation)
 
 **Issue #99 - Granger Causality**:
+
 - [ ] Implement actual data loading from cache/database
 - [ ] Connect to `GEXCacheManager` for historical GEX data
 - [ ] Connect to `OutcomeCalculator` for forward volatility
@@ -81,6 +87,7 @@ python scripts/statistical_validation/p1_leadlag_analysis_main.py
 - [ ] Test on full 2024 dataset (242 days)
 
 **Issue #100 - Lead-Lag Analysis**:
+
 - [ ] Implement actual data loading from cache/database
 - [ ] Calculate real forward returns from price data
 - [ ] Validate regime threshold values (-$2B, +$2B)
@@ -149,6 +156,7 @@ from src.utils.date_utils import today_str
 ```
 
 Install missing packages:
+
 ```bash
 pip install statsmodels scipy matplotlib
 ```
@@ -162,6 +170,7 @@ pip install statsmodels scipy matplotlib
 **New Subsection**: 5.D.3 Granger Causality Tests
 
 **Content**:
+
 - Table: `\ref{tab:granger}` - Full sample results
 - Table: `\ref{tab:granger_neg}` - Negative regime results
 - 1 paragraph interpretation
@@ -177,6 +186,7 @@ pip install statsmodels scipy matplotlib
 **New Subsection**: 5.E.3 Volatility Amplification by GEX Regime
 
 **Content**:
+
 - Table: `\ref{tab:leadlag}` - Regime comparison
 - Optional Figure: `\ref{fig:leadlag}` - Scatter plot with LOWESS
 - 2-3 paragraphs interpretation
@@ -191,18 +201,21 @@ pip install statsmodels scipy matplotlib
 Before finalizing results:
 
 **Data Quality**:
+
 - [ ] 242 days of data for full year 2024
 - [ ] No gaps > 5 trading days (holidays OK)
 - [ ] GEX values within expected range (-$10B to +$10B)
 - [ ] Volatility values reasonable (0.1% to 5%)
 
 **Statistical Rigor**:
+
 - [ ] Stationarity confirmed or differencing applied (Issue #99)
 - [ ] At least 200 observations for Granger test (Issue #99)
 - [ ] Sufficient observations per regime (N > 30) (Issue #100)
 - [ ] Effect sizes calculated (Cohen's d) (Issue #100)
 
 **Results Quality**:
+
 - [ ] Granger p-values < 0.05 for lags 1-3
 - [ ] Lead-lag shows ~2x volatility amplification
 - [ ] Results align with theoretical expectations
@@ -213,17 +226,21 @@ Before finalizing results:
 ### Common Issues
 
 **Issue**: `ModuleNotFoundError: No module named 'statsmodels'`
+
 ```bash
 pip install statsmodels scipy
 ```
 
 **Issue**: Insufficient data in negative GEX regime
+
 - Solution: Lower threshold to -$1.5B or use quartile-based split
 
 **Issue**: Non-stationary data even after differencing (Issue #99)
+
 - Solution: Try log-differencing or check for structural breaks
 
 **Issue**: Weak volatility differences between regimes (Issue #100)
+
 - Solution: Verify using absolute returns vs squared returns, check threshold values
 
 ## Next Steps
@@ -237,19 +254,23 @@ pip install statsmodels scipy
 ## References
 
 **Granger Causality**:
+
 - Granger, C. W. J. (1969). "Investigating Causal Relations by Econometric Models"
 - Hamilton, J. D. (1994). "Time Series Analysis", Chapter 11
 
 **Lead-Lag Analysis**:
+
 - Hasbrouck, J. (1995). "One Security, Many Markets"
 - Chordia, T., & Swaminathan, B. (2000). "Trading Volume and Cross-Autocorrelations"
 
 **Dealer Gamma Hedging**:
+
 - Bollen, N. P., & Whaley, R. E. (2004). "Does Net Buying Pressure Affect Volatility?"
 - Gârleanu, N., Pedersen, L. H., & Poteshman, A. M. (2009). "Demand-Based Option Pricing"
 
 ## Contact
 
 For questions or issues with these analyses, see:
+
 - GitHub Issues: #99 (Granger), #100 (Lead-Lag)
 - Documentation: `docs/statistical_validation/`

@@ -55,11 +55,7 @@ class SequentialGEXFetcher:
             metrics = result['trajectory_metrics']  # Trend, velocity, drift
     """
 
-    def __init__(
-        self,
-        cache_manager: UnifiedCacheManager,
-        window_size: int = 30
-    ):
+    def __init__(self, cache_manager: UnifiedCacheManager, window_size: int = 30):
         """
         Initialize Sequential GEX Fetcher.
 
@@ -74,16 +70,9 @@ class SequentialGEXFetcher:
         self.gex_cache = cache_manager.gex_cache
         self.window_size = window_size
 
-        logger.info(
-            f"SequentialGEXFetcher initialized with window_size={window_size} days"
-        )
+        logger.info(f"SequentialGEXFetcher initialized with window_size={window_size} days")
 
-    def get_sequential_gex(
-        self,
-        symbol: str,
-        end_date: str,
-        lookback_days: Optional[int] = None
-    ) -> Optional[Dict]:
+    def get_sequential_gex(self, symbol: str, end_date: str, lookback_days: Optional[int] = None) -> Optional[Dict]:
         """
         Fetch GEX data for N-day window ending at end_date.
 
@@ -160,8 +149,8 @@ class SequentialGEXFetcher:
 
             # Add metadata for sequential analysis
             days_back = lookback_days - i - 1
-            gex_summary['date'] = date
-            gex_summary['obfuscated_date'] = f'T-{days_back}' if days_back > 0 else 'T+0'
+            gex_summary["date"] = date
+            gex_summary["obfuscated_date"] = f"T-{days_back}" if days_back > 0 else "T+0"
 
             gex_sequence.append(gex_summary)
 
@@ -169,23 +158,18 @@ class SequentialGEXFetcher:
         trajectory_metrics = self.calculate_trajectory_metrics(gex_sequence)
 
         return {
-            'gex_sequence': gex_sequence,
-            'trajectory_metrics': trajectory_metrics,
-            'metadata': {
-                'symbol': symbol,
-                'end_date': end_date,
-                'lookback_days': lookback_days,
-                'window_size': self.window_size,
-                'sequence_complete': True
-            }
+            "gex_sequence": gex_sequence,
+            "trajectory_metrics": trajectory_metrics,
+            "metadata": {
+                "symbol": symbol,
+                "end_date": end_date,
+                "lookback_days": lookback_days,
+                "window_size": self.window_size,
+                "sequence_complete": True,
+            },
         }
 
-    def _get_trading_days_before(
-        self,
-        symbol: str,
-        end_date: str,
-        n_days: int
-    ) -> List[str]:
+    def _get_trading_days_before(self, symbol: str, end_date: str, n_days: int) -> List[str]:
         """
         Get N trading days before end_date (inclusive).
 
@@ -206,7 +190,7 @@ class SequentialGEXFetcher:
             # Returns: ['2024-01-08', '2024-01-09', '2024-01-10', '2024-01-11', '2024-01-12']
         """
         # Use database as primary source (Nov 20, 2025 update)
-        db_path = Path('.cache/gex_database.db')
+        db_path = Path(".cache/gex_database.db")
 
         if not db_path.exists():
             logger.error(f"Database not found: {db_path}")
@@ -222,7 +206,7 @@ class SequentialGEXFetcher:
                     WHERE symbol = ? AND date <= ?
                     ORDER BY date ASC
                     """,
-                    (symbol.upper(), end_date)
+                    (symbol.upper(), end_date),
                 )
                 available_dates = [row[0] for row in cursor.fetchall()]
 
@@ -231,9 +215,7 @@ class SequentialGEXFetcher:
                 return available_dates[-n_days:]
             elif len(available_dates) == 0:
                 # No data in database - fall back to file cache
-                logger.info(
-                    f"No data in database for {symbol} {end_date}, falling back to file cache"
-                )
+                logger.info(f"No data in database for {symbol} {end_date}, falling back to file cache")
                 return self._get_trading_days_from_files(symbol, end_date, n_days)
             else:
                 logger.warning(
@@ -246,12 +228,7 @@ class SequentialGEXFetcher:
             logger.error(f"Database query failed: {e}, falling back to file cache")
             return self._get_trading_days_from_files(symbol, end_date, n_days)
 
-    def _get_trading_days_from_files(
-        self,
-        symbol: str,
-        end_date: str,
-        n_days: int
-    ) -> List[str]:
+    def _get_trading_days_from_files(self, symbol: str, end_date: str, n_days: int) -> List[str]:
         """
         Fallback method: Get trading days from file cache.
 
@@ -311,20 +288,19 @@ class SequentialGEXFetcher:
             print(f"Classification: {metrics['trajectory_classification']}")
         """
         if not gex_sequence or len(gex_sequence) < 2:
-            logger.warning(
-                "Cannot calculate trajectory metrics: insufficient data")
+            logger.warning("Cannot calculate trajectory metrics: insufficient data")
             return {
-                'gex_trend': 'UNKNOWN',
-                'gex_velocity': 0.0,
-                'flip_drift': 0.0,
-                'price_drift': 0.0,
-                'trajectory_classification': 'unknown'
+                "gex_trend": "UNKNOWN",
+                "gex_velocity": 0.0,
+                "flip_drift": 0.0,
+                "price_drift": 0.0,
+                "trajectory_classification": "unknown",
             }
 
         # Extract time series (convert to billions for readability)
-        gex_values = [day.get('net_gex', 0) / 1e9 for day in gex_sequence]
-        flip_values = [day.get('flip_point') or 0 for day in gex_sequence]  # Handle None from database
-        price_values = [day.get('spot_price', 0) for day in gex_sequence]
+        gex_values = [day.get("net_gex", 0) / 1e9 for day in gex_sequence]
+        flip_values = [day.get("flip_point") or 0 for day in gex_sequence]  # Handle None from database
+        price_values = [day.get("spot_price", 0) for day in gex_sequence]
 
         # Calculate changes
         gex_change = gex_values[-1] - gex_values[0]
@@ -336,21 +312,21 @@ class SequentialGEXFetcher:
         # Classify trend direction
         STABLE_THRESHOLD = 0.1  # $100M per day (noise threshold)
         if abs(gex_velocity) < STABLE_THRESHOLD:
-            gex_trend = 'STABLE'
+            gex_trend = "STABLE"
         elif gex_velocity > 0:
-            gex_trend = 'INCREASING'
+            gex_trend = "INCREASING"
         else:
-            gex_trend = 'DECREASING'
+            gex_trend = "DECREASING"
 
         # Classify trajectory type
         trajectory_type = self._classify_trajectory(gex_values)
 
         return {
-            'gex_trend': gex_trend,
-            'gex_velocity': gex_velocity,
-            'flip_drift': flip_drift,
-            'price_drift': price_drift,
-            'trajectory_classification': trajectory_type
+            "gex_trend": gex_trend,
+            "gex_velocity": gex_velocity,
+            "flip_drift": flip_drift,
+            "price_drift": price_drift,
+            "trajectory_classification": trajectory_type,
         }
 
     def _classify_trajectory(self, gex_values: List[float]) -> str:
@@ -376,14 +352,14 @@ class SequentialGEXFetcher:
             Persistent:   [-5.0, -4.9, -5.1, -5.2, -5.0] → stable
         """
         if not gex_values or len(gex_values) < 2:
-            return 'unknown'
+            return "unknown"
 
         start_gex = gex_values[0]
         end_gex = gex_values[-1]
 
         # Check for sign reversal
         if (start_gex < 0 and end_gex > 0) or (start_gex > 0 and end_gex < 0):
-            return 'reversal'
+            return "reversal"
 
         # Calculate magnitude change
         start_abs = abs(start_gex)
@@ -391,25 +367,22 @@ class SequentialGEXFetcher:
 
         # Avoid division by zero
         if start_abs < 0.01:  # Less than $10M (negligible GEX)
-            return 'persistent'
+            return "persistent"
 
         pct_change = (end_abs - start_abs) / start_abs
 
         # Classify by magnitude change
         ACCUMULATION_THRESHOLD = 0.20  # 20% increase
-        RELIEF_THRESHOLD = -0.20       # 20% decrease
+        RELIEF_THRESHOLD = -0.20  # 20% decrease
 
         if pct_change > ACCUMULATION_THRESHOLD:
-            return 'accumulation'
+            return "accumulation"
         elif pct_change < RELIEF_THRESHOLD:
-            return 'relief'
+            return "relief"
         else:
-            return 'persistent'
+            return "persistent"
 
-    def validate_sequence_data_quality(
-        self,
-        gex_sequence: List[Dict]
-    ) -> Dict[str, bool]:
+    def validate_sequence_data_quality(self, gex_sequence: List[Dict]) -> Dict[str, bool]:
         """
         Validate data quality of GEX sequence.
 
@@ -431,10 +404,10 @@ class SequentialGEXFetcher:
         """
         errors = []
 
-        required_fields = ['net_gex', 'flip_point', 'spot_price']
+        required_fields = ["net_gex", "flip_point", "spot_price"]
 
         for i, day in enumerate(gex_sequence):
-            day_label = day.get('obfuscated_date', f'Day {i}')
+            day_label = day.get("obfuscated_date", f"Day {i}")
 
             # Check required fields
             for field in required_fields:
@@ -445,36 +418,24 @@ class SequentialGEXFetcher:
                 value = day[field]
 
                 # Check for NaN/inf
-                if value is None or (isinstance(value, float) and (value != value or abs(value) == float('inf'))):
-                    errors.append(
-                        f"{day_label}: Invalid {field} value: {value}")
+                if value is None or (isinstance(value, float) and (value != value or abs(value) == float("inf"))):
+                    errors.append(f"{day_label}: Invalid {field} value: {value}")
                     continue
 
             # Check reasonable ranges (sanity checks)
-            if 'net_gex' in day:
-                net_gex = day['net_gex']
+            if "net_gex" in day:
+                net_gex = day["net_gex"]
                 if abs(net_gex) > 1e12:  # > $1 trillion (unrealistic)
-                    errors.append(
-                        f"{day_label}: Unrealistic net_gex: {net_gex}")
+                    errors.append(f"{day_label}: Unrealistic net_gex: {net_gex}")
 
-            if 'spot_price' in day:
-                spot = day['spot_price']
+            if "spot_price" in day:
+                spot = day["spot_price"]
                 if spot < 0 or spot > 10000:  # SPY range check
-                    errors.append(
-                        f"{day_label}: Unrealistic spot_price: {spot}")
+                    errors.append(f"{day_label}: Unrealistic spot_price: {spot}")
 
-        return {
-            'valid': len(errors) == 0,
-            'errors': errors
-        }
+        return {"valid": len(errors) == 0, "errors": errors}
 
-    def get_sequential_statistics(
-        self,
-        symbol: str,
-        start_date: str,
-        end_date: str,
-        lookback_days: int = 5
-    ) -> Dict:
+    def get_sequential_statistics(self, symbol: str, start_date: str, end_date: str, lookback_days: int = 5) -> Dict:
         """
         Get statistics about sequential windows in date range.
 
@@ -502,17 +463,10 @@ class SequentialGEXFetcher:
         cache_dir = self.gex_cache.gex_cache_dir / symbol.upper()
 
         if not cache_dir.exists():
-            return {
-                'error': f'Cache directory not found: {cache_dir}',
-                'total_dates': 0,
-                'valid_windows': 0
-            }
+            return {"error": f"Cache directory not found: {cache_dir}", "total_dates": 0, "valid_windows": 0}
 
         # Get all dates in range
-        all_dates = sorted([
-            d.name for d in cache_dir.iterdir()
-            if d.is_dir() and start_date <= d.name <= end_date
-        ])
+        all_dates = sorted([d.name for d in cache_dir.iterdir() if d.is_dir() and start_date <= d.name <= end_date])
 
         valid_windows = 0
         incomplete_windows = 0
@@ -523,19 +477,18 @@ class SequentialGEXFetcher:
 
             if result is None:
                 incomplete_windows += 1
-            elif not self.validate_sequence_data_quality(result['gex_sequence'])['valid']:
+            elif not self.validate_sequence_data_quality(result["gex_sequence"])["valid"]:
                 missing_data_windows += 1
             else:
                 valid_windows += 1
 
         total_dates = len(all_dates)
-        coverage_pct = (valid_windows / total_dates *
-                        100) if total_dates > 0 else 0
+        coverage_pct = (valid_windows / total_dates * 100) if total_dates > 0 else 0
 
         return {
-            'total_dates': total_dates,
-            'valid_windows': valid_windows,
-            'incomplete_windows': incomplete_windows,
-            'missing_data_windows': missing_data_windows,
-            'coverage_pct': coverage_pct
+            "total_dates": total_dates,
+            "valid_windows": valid_windows,
+            "incomplete_windows": incomplete_windows,
+            "missing_data_windows": missing_data_windows,
+            "coverage_pct": coverage_pct,
         }

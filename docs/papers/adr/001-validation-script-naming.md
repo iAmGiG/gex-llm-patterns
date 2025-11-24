@@ -10,6 +10,7 @@
 **Format**: `validate_p{paper_number}_{description}.py`
 
 **Examples**:
+
 - `validate_p1_pattern_taxonomy.py` - Paper #1 validation
 - `validate_p2_negative_controls.py` - Paper #2 validation
 - `validate_p2_sequential_patterns.py` - Paper #2 validation
@@ -41,6 +42,7 @@
 **Solution**: Prefix with paper number following academic convention
 
 **Benefits**:
+
 1. Clear separation of Paper #1 (single-day) vs Paper #2 (sequential) work
 2. Easy to identify which framework is being validated
 3. Follows academic standard of citing papers by number
@@ -53,12 +55,14 @@
 **Backward Compatibility**: Keep existing filenames as symlinks for now
 
 **Migration Path**:
+
 1. Create new p{N}_ prefixed scripts
 2. Update CLAUDE.md and documentation
 3. Update GitHub issues to reference new names
 4. Deprecate old names after Paper #1 submission
 
 **Directory Structure**:
+
 ```
 scripts/validation/
 ├── validate_p1_pattern_taxonomy.py       # Paper #1
@@ -79,6 +83,7 @@ scripts/validation/
 ---
 
 **Next Actions**:
+
 1. ✅ Created `validate_p2_negative_controls.py`
 2. ⏸ Optionally rename existing scripts (or create symlinks)
 3. ⏸ Update CLAUDE.md with new naming convention

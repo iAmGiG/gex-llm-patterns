@@ -22,18 +22,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 def migrate_file_cache_to_database(
-    symbol: str = 'SPY',
-    cache_dir: Path = None,
-    db_path: Path = None,
-    dry_run: bool = False
+    symbol: str = "SPY", cache_dir: Path = None, db_path: Path = None, dry_run: bool = False
 ):
     """
     Migrate all file cache data to database.
@@ -46,9 +40,9 @@ def migrate_file_cache_to_database(
     """
     # Setup paths
     if cache_dir is None:
-        cache_dir = Path('.cache/gex_data')
+        cache_dir = Path(".cache/gex_data")
     if db_path is None:
-        db_path = Path('.cache/consolidated_historical.db')
+        db_path = Path(".cache/consolidated_historical.db")
 
     # Initialize managers
     cache = UnifiedCacheManager()
@@ -82,8 +76,7 @@ def migrate_file_cache_to_database(
             # Check if already migrated
             cursor = conn.cursor()
             cursor.execute(
-                'SELECT COUNT(*) FROM raw_options_chain WHERE symbol = ? AND date = ?',
-                (symbol, trading_date)
+                "SELECT COUNT(*) FROM raw_options_chain WHERE symbol = ? AND date = ?", (symbol, trading_date)
             )
             existing_count = cursor.fetchone()[0]
 
@@ -105,16 +98,15 @@ def migrate_file_cache_to_database(
                 # Get underlying price from database (primary source)
                 cursor_price = conn.cursor()
                 cursor_price.execute(
-                    'SELECT spot_price FROM daily_gex_metrics WHERE symbol = ? AND date = ?',
-                    (symbol, trading_date)
+                    "SELECT spot_price FROM daily_gex_metrics WHERE symbol = ? AND date = ?", (symbol, trading_date)
                 )
                 price_row = cursor_price.fetchone()
 
                 if price_row and price_row[0] is not None:
                     underlying_price = price_row[0]
-                elif 'underlying_price' in options_df.columns and not options_df['underlying_price'].isna().all():
+                elif "underlying_price" in options_df.columns and not options_df["underlying_price"].isna().all():
                     # Fallback: Try to get from options_df if available
-                    underlying_price = options_df['underlying_price'].iloc[0]
+                    underlying_price = options_df["underlying_price"].iloc[0]
                     logger.info(f"Using underlying_price from options_df for {trading_date}: ${underlying_price:.2f}")
                 else:
                     logger.warning(f"No underlying price found for {trading_date}, skipping")
@@ -128,13 +120,15 @@ def migrate_file_cache_to_database(
                         symbol=symbol,
                         date=trading_date,
                         options_df=options_df,
-                        underlying_price=underlying_price
+                        underlying_price=underlying_price,
                     )
                     conn.commit()
                     total_options += rows_inserted
                     logger.info(f"Migrated {rows_inserted} options for {trading_date}")
                 else:
-                    logger.info(f"[DRY RUN] Would migrate {len(options_df)} options for {trading_date} (spot: ${underlying_price:.2f})")
+                    logger.info(
+                        f"[DRY RUN] Would migrate {len(options_df)} options for {trading_date} (spot: ${underlying_price:.2f})"
+                    )
 
                 success_count += 1
 
@@ -146,16 +140,16 @@ def migrate_file_cache_to_database(
                 continue
 
     # Report summary
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("MIGRATION SUMMARY")
-    print("="*60)
+    print("=" * 60)
     print(f"Total days found:      {len(date_dirs)}")
     print(f"Successfully migrated: {success_count}")
     print(f"Already in database:   {skip_count}")
     print(f"Errors:                {error_count}")
     if not dry_run:
         print(f"Total options stored:  {total_options:,}")
-    print("="*60)
+    print("=" * 60)
 
     if dry_run:
         print("\nDRY RUN COMPLETE - No data was written to database")
@@ -163,24 +157,20 @@ def migrate_file_cache_to_database(
     else:
         print(f"\nMigration complete! Database size:")
         import os
+
         db_size_mb = os.path.getsize(db_path) / (1024 * 1024)
         print(f"  {db_path}: {db_size_mb:.1f} MB")
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Migrate file cache to database (Issue #147)')
-    parser.add_argument('--symbol', default='SPY', help='Symbol to migrate')
-    parser.add_argument('--cache-dir', type=Path, help='Cache directory')
-    parser.add_argument('--db-path', type=Path, help='Database path')
-    parser.add_argument('--dry-run', action='store_true',
-                        help='Report only, no database writes')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Migrate file cache to database (Issue #147)")
+    parser.add_argument("--symbol", default="SPY", help="Symbol to migrate")
+    parser.add_argument("--cache-dir", type=Path, help="Cache directory")
+    parser.add_argument("--db-path", type=Path, help="Database path")
+    parser.add_argument("--dry-run", action="store_true", help="Report only, no database writes")
 
     args = parser.parse_args()
 
     migrate_file_cache_to_database(
-        symbol=args.symbol,
-        cache_dir=args.cache_dir,
-        db_path=args.db_path,
-        dry_run=args.dry_run
+        symbol=args.symbol, cache_dir=args.cache_dir, db_path=args.db_path, dry_run=args.dry_run
     )

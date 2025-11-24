@@ -19,6 +19,7 @@
 | **Windows Tested** | 223 | ✅ Full year coverage |
 
 **Key Finding**: Detection rate of 81.2% significantly exceeds the 30-50% target range. This could indicate either:
+
 1. **Framework Issue**: Not selective enough (overfitting)
 2. **Market Reality**: 2024 was genuinely extreme year
 
@@ -49,12 +50,14 @@
 ### Detection Breakdown
 
 **Persistent Negative Regime** (181/223 windows):
+
 - Average persistence: ~85-90% (estimated from criteria)
 - Average magnitude: >$5B (meets threshold)
 - Average sign flips: ≤5 (meets stability criterion)
 - Confidence: 75% average
 
 **Transitional Regime** (42/223 windows):
+
 - Average persistence: <70% (fails dominance criterion)
 - Likely mixed positive/negative days
 - High volatility (frequent sign changes)
@@ -91,6 +94,7 @@
 **User Insight**: "I saw a VolSignals on X.com say in his research that 2024 was a 'wild regime shift'"
 
 **Decision**: Execute Phase 4 (2020 pre-0DTE era) as negative control
+
 - If 2020 shows similar 80%+ detection → Framework issue
 - If 2020 shows <30% detection → Framework correct, 2024 genuinely extreme
 - **Expected**: 2020 should show much lower detection (pre-0DTE market)
@@ -104,6 +108,7 @@
 **Definition**: ≥70% negative days, ≥$5B average magnitude, ≤5 sign flips
 
 **Market Interpretation**:
+
 - Dealers forced to be short gamma (negative GEX)
 - Must buy rallies, sell dips (momentum-reinforcing flows)
 - Created by 0DTE options proliferation (constant gamma rebalancing)
@@ -112,6 +117,7 @@
 **Prevalence**: 181/223 days (81.2%) exhibited this constraint
 
 **Contrast with Q1 2024**:
+
 - Q1 2024: 71.2% detection (persistent_positive regime)
 - Full 2024: 81.2% detection (persistent_negative regime)
 - **Implication**: Market flipped from positive → negative gamma dominance
@@ -127,11 +133,13 @@
 **Root Cause**: SequentialGEXFetcher was scanning file cache (only 73 days) instead of database (252 days)
 
 **Fix**: Modified data access to prioritize database
+
 - **Layer 1** (get_trading_days): Query database for date list → 252 days found
 - **Layer 2** (get_gex_summary): Load GEX data from database → all dates available
 - **Fallback**: File cache used only if database empty
 
 **Validation**:
+
 - Database has 252 trading days for 2024 ✅
 - Generated all 223 windows successfully ✅
 - File organization fixed (JSONL files moved to proper directory) ✅
@@ -147,11 +155,13 @@
 ### Batch API Performance
 
 **Model**: o4-mini-2025-04-16
+
 - **Success Rate**: 100% (223/223 windows parsed)
 - **Processing Time**: 23 minutes (vs ~2 hours estimated)
 - **Cost**: $0.60 (50% savings vs sync API $1.20)
 
 **Why Faster Than Expected**:
+
 - o4-mini reasoning efficiency improvements
 - Batch API optimizations
 - Simpler regime classification vs multi-pattern detection
@@ -159,10 +169,12 @@
 ### File Organization
 
 **Batch Files Location**:
+
 - `reports/validation/paper2_regime_windows/batch_jobs/`
 - Fixed: Previously at project root, now in proper directory
 
 **Result Files**:
+
 - `phase3_baseline_2024_full_year.yaml` (primary results)
 - `batch_691ea7f7b79481909f4667eaff640f26_metadata.json` (batch metadata)
 
@@ -178,6 +190,7 @@
 | Cost | $0.81 | $0.60 | Batch API efficiency |
 
 **Key Observation**: Detection rate INCREASED in full year (not decreased as expected)
+
 - Expected: Regression to 30-50% due to Q2-Q4 mixed regimes
 - Actual: Increase to 81.2% suggests entire 2024 was persistent
 
@@ -190,10 +203,12 @@
 ### Rationale
 
 **Cannot conclude framework validity without 2020 comparison**:
+
 - If 2020 also shows 80%+ detection → Framework not selective
 - If 2020 shows <30% detection → Framework correct, 2024 genuinely extreme
 
 **0DTE Hypothesis Test**:
+
 - **H0**: GEX regimes are universal across time periods
 - **H1**: 0DTE proliferation (post-2020) creates persistent regimes
 - **Test**: Compare 2020 (pre-0DTE) vs 2024 (post-0DTE) detection rates
@@ -208,6 +223,7 @@
 **Data Source**: File cache (252 days available)
 
 **Success Criteria**:
+
 - 2020 detection <30%: Framework validated, 2024 genuinely extreme ✅
 - 2020 detection >60%: Framework issue, recalibration needed ❌
 
@@ -216,14 +232,17 @@
 ## Files Generated
 
 **Primary Results**:
+
 - `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`
 
 **Batch Metadata**:
+
 - `reports/validation/paper2_regime_windows/batch_jobs/batch_691ea7f7b79481909f4667eaff640f26_metadata.json`
 - `reports/validation/paper2_regime_windows/batch_jobs/input_phase3_full_2024_baseline.jsonl`
 - `reports/validation/paper2_regime_windows/batch_jobs/results_batch_691ea7f7b79481909f4667eaff640f26.jsonl`
 
 **Documentation Updates**:
+
 - `.claude/sync.yaml` - Updated with Phase 3 completion
 - GitHub Issues #89, #107 - Updated with Phase 3 status
 
@@ -269,10 +288,12 @@
 **Phase 3 revealed unexpectedly high regime persistence in 2024 (81.2% vs 30-50% target).**
 
 **Cannot validate framework without 2020 comparison**:
+
 - High detection could mean framework broken OR 2024 genuinely extreme
 - Phase 4 (2020 baseline) will distinguish between these scenarios
 
 **0DTE Hypothesis Test**:
+
 - User insight: "2024 was a wild regime shift" (VolSignals research)
 - Expected: 2020 shows much lower detection (<30%)
 - If confirmed: Validates both framework AND 0DTE proliferation thesis

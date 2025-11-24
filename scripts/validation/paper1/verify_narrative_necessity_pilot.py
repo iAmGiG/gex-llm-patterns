@@ -30,17 +30,19 @@ sys.path.insert(0, str(project_root))
 
 def load_test_dates():
     """Load 3 strong detection dates from Paper #1 validation."""
-    validation_file = project_root / 'reports/validation/paper1_pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml'
+    validation_file = (
+        project_root / "reports/validation/paper1_pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml"
+    )
 
-    with open(validation_file, 'r') as f:
+    with open(validation_file, "r") as f:
         data = yaml.safe_load(f)
 
     # Find strong detections (confidence ≥ 80%) from Q1, Q3, Q4
-    strong_detections = [d for d in data['detections'] if d['detected'] and d['narrative']['confidence'] >= 80]
+    strong_detections = [d for d in data["detections"] if d["detected"] and d["narrative"]["confidence"] >= 80]
 
-    q1 = [d for d in strong_detections if d['date'].startswith('2024-01')][0]
-    q3 = [d for d in strong_detections if d['date'].startswith('2024-07')][0]
-    q4 = [d for d in strong_detections if d['date'].startswith('2024-10')][0]
+    q1 = [d for d in strong_detections if d["date"].startswith("2024-01")][0]
+    q3 = [d for d in strong_detections if d["date"].startswith("2024-07")][0]
+    q4 = [d for d in strong_detections if d["date"].startswith("2024-10")][0]
 
     return [q1, q3, q4]
 
@@ -95,21 +97,21 @@ def parse_control_response(response_text):
         # Try JSON parsing first
         data = json.loads(response_text)
         return {
-            'detected': data.get('confidence', 0) >= 60,
-            'confidence': data.get('confidence', 0),
-            'reasoning': f"{data.get('who', '')} → {data.get('whom', '')} → {data.get('what', '')}",
-            'parse_success': True
+            "detected": data.get("confidence", 0) >= 60,
+            "confidence": data.get("confidence", 0),
+            "reasoning": f"{data.get('who', '')} → {data.get('whom', '')} → {data.get('what', '')}",
+            "parse_success": True,
         }
     except json.JSONDecodeError:
         # Fallback: Check if key terms present
-        has_who = 'market maker' in response_text.lower() or 'dealer' in response_text.lower()
-        has_constraint = 'force' in response_text.lower() or 'hedge' in response_text.lower()
+        has_who = "market maker" in response_text.lower() or "dealer" in response_text.lower()
+        has_constraint = "force" in response_text.lower() or "hedge" in response_text.lower()
 
         return {
-            'detected': has_who and has_constraint,
-            'confidence': 50 if (has_who and has_constraint) else 0,
-            'reasoning': response_text[:200],
-            'parse_success': False
+            "detected": has_who and has_constraint,
+            "confidence": 50 if (has_who and has_constraint) else 0,
+            "reasoning": response_text[:200],
+            "parse_success": False,
         }
 
 
@@ -118,21 +120,21 @@ def parse_treatment_response(response_text):
     # Check if response mentions key concepts
     text_lower = response_text.lower()
 
-    mentions_dealers = 'market maker' in text_lower or 'dealer' in text_lower
-    mentions_hedging = 'hedge' in text_lower or 'hedging' in text_lower
-    mentions_constraint = 'force' in text_lower or 'must' in text_lower or 'required' in text_lower
-    mentions_gamma = 'gamma' in text_lower
+    mentions_dealers = "market maker" in text_lower or "dealer" in text_lower
+    mentions_hedging = "hedge" in text_lower or "hedging" in text_lower
+    mentions_constraint = "force" in text_lower or "must" in text_lower or "required" in text_lower
+    mentions_gamma = "gamma" in text_lower
 
     # Detect if response shows constraint reasoning
     detected = mentions_dealers and mentions_hedging and (mentions_constraint or mentions_gamma)
 
     return {
-        'detected': detected,
-        'mentions_dealers': mentions_dealers,
-        'mentions_hedging': mentions_hedging,
-        'mentions_constraint': mentions_constraint,
-        'mentions_gamma': mentions_gamma,
-        'reasoning': response_text[:200]
+        "detected": detected,
+        "mentions_dealers": mentions_dealers,
+        "mentions_hedging": mentions_hedging,
+        "mentions_constraint": mentions_constraint,
+        "mentions_gamma": mentions_gamma,
+        "reasoning": response_text[:200],
     }
 
 
@@ -161,7 +163,7 @@ def run_pilot_test(dry_run=True):
         print("=" * 80)
 
         for date_data in test_dates:
-            gex_metrics = date_data['quantitative_evidence']['gex_metrics']
+            gex_metrics = date_data["quantitative_evidence"]["gex_metrics"]
 
             print(f"\n{'='*80}")
             print(f"Date: {date_data['date']}")
@@ -193,12 +195,12 @@ def run_pilot_test(dry_run=True):
     import json
 
     # Load API key from config
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
 
     # Try both key names (OPEN_AI_KEY is the actual name in config)
-    api_key = config.get('OPEN_AI_KEY') or config.get('OPENAI_API_KEY')
+    api_key = config.get("OPEN_AI_KEY") or config.get("OPENAI_API_KEY")
     if not api_key:
         print("ERROR: OPEN_AI_KEY not found in config/config.json")
         return
@@ -207,48 +209,52 @@ def run_pilot_test(dry_run=True):
     results = []
 
     for date_data in test_dates:
-        date = date_data['date']
-        gex_metrics = date_data['quantitative_evidence']['gex_metrics']
+        date = date_data["date"]
+        gex_metrics = date_data["quantitative_evidence"]["gex_metrics"]
 
         print(f"\nTesting {date}...")
 
         # Control test (with framework)
         control_prompt = build_control_prompt(gex_metrics)
         control_response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": control_prompt}],
-            temperature=0.0
+            model="gpt-4", messages=[{"role": "user", "content": control_prompt}], temperature=0.0
         )
         control_result = parse_control_response(control_response.choices[0].message.content)
 
         # Treatment test (no framework)
         treatment_prompt = build_treatment_prompt(gex_metrics)
         treatment_response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": treatment_prompt}],
-            temperature=0.0
+            model="gpt-4", messages=[{"role": "user", "content": treatment_prompt}], temperature=0.0
         )
         treatment_result = parse_treatment_response(treatment_response.choices[0].message.content)
 
-        results.append({
-            'date': date,
-            'paper1_confidence': date_data['narrative']['confidence'],
-            'control': control_result,
-            'treatment': treatment_result
-        })
+        results.append(
+            {
+                "date": date,
+                "paper1_confidence": date_data["narrative"]["confidence"],
+                "control": control_result,
+                "treatment": treatment_result,
+            }
+        )
 
-        print(f"  Control: {'✅ Detected' if control_result['detected'] else '❌ Not Detected'} ({control_result['confidence']}%)")
+        print(
+            f"  Control: {'✅ Detected' if control_result['detected'] else '❌ Not Detected'} ({control_result['confidence']}%)"
+        )
         print(f"  Treatment: {'✅ Detected' if treatment_result['detected'] else '❌ Not Detected'}")
 
     # Calculate summary statistics
-    control_detection_rate = sum(r['control']['detected'] for r in results) / len(results) * 100
-    treatment_detection_rate = sum(r['treatment']['detected'] for r in results) / len(results) * 100
+    control_detection_rate = sum(r["control"]["detected"] for r in results) / len(results) * 100
+    treatment_detection_rate = sum(r["treatment"]["detected"] for r in results) / len(results) * 100
 
     print("\n" + "=" * 80)
     print("PHASE 1 RESULTS")
     print("=" * 80)
-    print(f"Control (with framework):    {control_detection_rate:.0f}% detection ({sum(r['control']['detected'] for r in results)}/3)")
-    print(f"Treatment (no framework):    {treatment_detection_rate:.0f}% detection ({sum(r['treatment']['detected'] for r in results)}/3)")
+    print(
+        f"Control (with framework):    {control_detection_rate:.0f}% detection ({sum(r['control']['detected'] for r in results)}/3)"
+    )
+    print(
+        f"Treatment (no framework):    {treatment_detection_rate:.0f}% detection ({sum(r['treatment']['detected'] for r in results)}/3)"
+    )
     print(f"Difference:                  {control_detection_rate - treatment_detection_rate:.0f}pp")
 
     # Interpretation
@@ -270,21 +276,25 @@ def run_pilot_test(dry_run=True):
         print("   Recommendation: Run Phase 2 full validation + analyze reasoning quality")
 
     # Save results
-    output_file = project_root / 'reports/validation/paper2_extensions/issue133_phase1_results.yaml'
+    output_file = project_root / "reports/validation/paper2_extensions/issue133_phase1_results.yaml"
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(output_file, 'w') as f:
-        yaml.dump({
-            'test_metadata': {
-                'issue': 'Issue #133 - Narrative Removal Test',
-                'phase': 'Phase 1 Pilot',
-                'test_date': datetime.now().isoformat(),
-                'test_dates': [r['date'] for r in results],
-                'control_detection_rate': control_detection_rate,
-                'treatment_detection_rate': treatment_detection_rate
+    with open(output_file, "w") as f:
+        yaml.dump(
+            {
+                "test_metadata": {
+                    "issue": "Issue #133 - Narrative Removal Test",
+                    "phase": "Phase 1 Pilot",
+                    "test_date": datetime.now().isoformat(),
+                    "test_dates": [r["date"] for r in results],
+                    "control_detection_rate": control_detection_rate,
+                    "treatment_detection_rate": treatment_detection_rate,
+                },
+                "results": results,
             },
-            'results': results
-        }, f, default_flow_style=False)
+            f,
+            default_flow_style=False,
+        )
 
     print(f"\nResults saved to: {output_file}")
 
@@ -293,7 +303,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Phase 1 Pilot: Narrative Removal Test")
-    parser.add_argument('--run', action='store_true', help='Actually run LLM test (costs $0.06)')
+    parser.add_argument("--run", action="store_true", help="Actually run LLM test (costs $0.06)")
 
     args = parser.parse_args()
 

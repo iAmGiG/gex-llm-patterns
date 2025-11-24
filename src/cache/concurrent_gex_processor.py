@@ -41,27 +41,23 @@ class ConcurrentGEXProcessor:
         # Use provided cache manager or create new one
         if unified_cache_manager:
             self.cache_manager = unified_cache_manager
-            self.gex_cache = unified_cache_manager.gex_cache if hasattr(
-                unified_cache_manager, 'gex_cache') else GEXCacheManager()
+            self.gex_cache = (
+                unified_cache_manager.gex_cache if hasattr(unified_cache_manager, "gex_cache") else GEXCacheManager()
+            )
         else:
             self.cache_manager = UnifiedCacheManager()
             self.gex_cache = GEXCacheManager()
 
-        logger.info(
-            f"Concurrent GEX Processor initialized with {max_workers} workers")
+        logger.info(f"Concurrent GEX Processor initialized with {max_workers} workers")
 
-    def process_symbol_date_range(self,
-                                  symbol,
-                                  start_date,
-                                  end_date,
-                                  force_recalculate: bool = False):
+    def process_symbol_date_range(self, symbol, start_date, end_date, force_recalculate: bool = False):
         """
         Process GEX for entire date range concurrently.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
             start_date: Start date (YYYY-MM-DD)
-            end_date: End date (YYYY-MM-DD) 
+            end_date: End date (YYYY-MM-DD)
             force_recalculate: Force recalculation even if cached
 
         Returns:
@@ -71,16 +67,12 @@ class ConcurrentGEXProcessor:
             # Get trading dates (approximate - would need market calendar for exact dates)
             trading_dates = self._get_trading_dates(start_date, end_date)
 
-            logger.info(
-                f"Processing GEX for {symbol}: {len(trading_dates)} trading dates")
+            logger.info(f"Processing GEX for {symbol}: {len(trading_dates)} trading dates")
 
             # Submit all calculations concurrently
             futures = {}
             for date in trading_dates:
-                future = self.executor.submit(
-                    self._process_single_date,
-                    symbol, date, force_recalculate
-                )
+                future = self.executor.submit(self._process_single_date, symbol, date, force_recalculate)
                 futures[future] = date
 
             # Collect results with progress tracking
@@ -98,48 +90,37 @@ class ConcurrentGEXProcessor:
                     results[date] = result
 
                     if processed_count % 10 == 0:  # Progress logging
-                        logger.info(
-                            f"Progress: {processed_count}/{len(trading_dates)} dates processed")
+                        logger.info(f"Progress: {processed_count}/{len(trading_dates)} dates processed")
 
                 except Exception as e:
                     errors[date] = str(e)
-                    logger.error(
-                        f"GEX calculation failed for {symbol} {date}: {e}")
+                    logger.error(f"GEX calculation failed for {symbol} {date}: {e}")
 
             # Summary statistics
             successful = len(results)
             failed = len(errors)
-            cache_hits = sum(1 for r in results.values()
-                             if r and r.get('cache_hit', False))
+            cache_hits = sum(1 for r in results.values() if r and r.get("cache_hit", False))
 
             summary = {
-                'symbol': symbol,
-                'date_range': f"{start_date} to {end_date}",
-                'total_dates': len(trading_dates),
-                'successful': successful,
-                'failed': failed,
-                'cache_hits': cache_hits,
-                'new_calculations': successful - cache_hits,
-                'errors': errors,
-                'processing_time': now_iso()
+                "symbol": symbol,
+                "date_range": f"{start_date} to {end_date}",
+                "total_dates": len(trading_dates),
+                "successful": successful,
+                "failed": failed,
+                "cache_hits": cache_hits,
+                "new_calculations": successful - cache_hits,
+                "errors": errors,
+                "processing_time": now_iso(),
             }
 
-            logger.info(
-                f"Completed {symbol} range processing: {successful}/{len(trading_dates)} successful")
+            logger.info(f"Completed {symbol} range processing: {successful}/{len(trading_dates)} successful")
             return summary
 
         except Exception as e:
             logger.error(f"Failed to process date range for {symbol}: {e}")
-            return {
-                'symbol': symbol,
-                'error': str(e),
-                'processing_time': now_iso()
-            }
+            return {"symbol": symbol, "error": str(e), "processing_time": now_iso()}
 
-    def process_multi_symbol(self,
-                             symbols: List[str],
-                             trading_date,
-                             force_recalculate: bool = False):
+    def process_multi_symbol(self, symbols: List[str], trading_date, force_recalculate: bool = False):
         """
         Process multiple symbols for same date concurrently.
 
@@ -152,16 +133,12 @@ class ConcurrentGEXProcessor:
             Dict with processing results by symbol
         """
         try:
-            logger.info(
-                f"Processing {len(symbols)} symbols for {trading_date}")
+            logger.info(f"Processing {len(symbols)} symbols for {trading_date}")
 
             # Submit all symbols concurrently
             futures = {}
             for symbol in symbols:
-                future = self.executor.submit(
-                    self._process_single_date,
-                    symbol, trading_date, force_recalculate
-                )
+                future = self.executor.submit(self._process_single_date, symbol, trading_date, force_recalculate)
                 futures[future] = symbol
 
             # Collect results
@@ -177,36 +154,27 @@ class ConcurrentGEXProcessor:
 
                 except Exception as e:
                     errors[symbol] = str(e)
-                    logger.error(
-                        f"GEX calculation failed for {symbol} {trading_date}: {e}")
+                    logger.error(f"GEX calculation failed for {symbol} {trading_date}: {e}")
 
             # Summary
             summary = {
-                'trading_date': trading_date,
-                'total_symbols': len(symbols),
-                'successful': len(results),
-                'failed': len(errors),
-                'results': results,
-                'errors': errors,
-                'processing_time': now_iso()
+                "trading_date": trading_date,
+                "total_symbols": len(symbols),
+                "successful": len(results),
+                "failed": len(errors),
+                "results": results,
+                "errors": errors,
+                "processing_time": now_iso(),
             }
 
-            logger.info(
-                f"Multi-symbol processing complete: {len(results)}/{len(symbols)} successful")
+            logger.info(f"Multi-symbol processing complete: {len(results)}/{len(symbols)} successful")
             return summary
 
         except Exception as e:
-            logger.error(
-                f"Failed multi-symbol processing for {trading_date}: {e}")
-            return {
-                'trading_date': trading_date,
-                'error': str(e),
-                'processing_time': now_iso()
-            }
+            logger.error(f"Failed multi-symbol processing for {trading_date}: {e}")
+            return {"trading_date": trading_date, "error": str(e), "processing_time": now_iso()}
 
-    def batch_process_requests(self,
-                               requests: List[Tuple[str, str]],
-                               force_recalculate: bool = False):
+    def batch_process_requests(self, requests: List[Tuple[str, str]], force_recalculate: bool = False):
         """
         Efficient batch processing of multiple (symbol, date) requests.
 
@@ -223,10 +191,7 @@ class ConcurrentGEXProcessor:
             # Submit all requests concurrently
             futures = {}
             for symbol, trading_date in requests:
-                future = self.executor.submit(
-                    self._process_single_date,
-                    symbol, trading_date, force_recalculate
-                )
+                future = self.executor.submit(self._process_single_date, symbol, trading_date, force_recalculate)
                 futures[future] = (symbol, trading_date)
 
             # Collect results
@@ -244,39 +209,32 @@ class ConcurrentGEXProcessor:
                     results[key] = result
 
                     if processed % 25 == 0:  # Progress logging
-                        logger.info(
-                            f"Batch progress: {processed}/{len(requests)} requests processed")
+                        logger.info(f"Batch progress: {processed}/{len(requests)} requests processed")
 
                 except Exception as e:
                     errors[key] = str(e)
-                    logger.error(
-                        f"Batch request failed for {symbol} {trading_date}: {e}")
+                    logger.error(f"Batch request failed for {symbol} {trading_date}: {e}")
 
             # Summary statistics
-            cache_hits = sum(1 for r in results.values()
-                             if r and r.get('cache_hit', False))
+            cache_hits = sum(1 for r in results.values() if r and r.get("cache_hit", False))
 
             summary = {
-                'total_requests': len(requests),
-                'successful': len(results),
-                'failed': len(errors),
-                'cache_hits': cache_hits,
-                'new_calculations': len(results) - cache_hits,
-                'results': results,
-                'errors': errors,
-                'processing_time': now_iso()
+                "total_requests": len(requests),
+                "successful": len(results),
+                "failed": len(errors),
+                "cache_hits": cache_hits,
+                "new_calculations": len(results) - cache_hits,
+                "results": results,
+                "errors": errors,
+                "processing_time": now_iso(),
             }
 
-            logger.info(
-                f"Batch processing complete: {len(results)}/{len(requests)} successful")
+            logger.info(f"Batch processing complete: {len(results)}/{len(requests)} successful")
             return summary
 
         except Exception as e:
             logger.error(f"Batch processing failed: {e}")
-            return {
-                'error': str(e),
-                'processing_time': now_iso()
-            }
+            return {"error": str(e), "processing_time": now_iso()}
 
     def _process_single_date(self, symbol, trading_date, force_recalculate: bool = False):
         """
@@ -286,47 +244,25 @@ class ConcurrentGEXProcessor:
         try:
             # Check cache first (unless forcing recalculation)
             if not force_recalculate:
-                cached_gex = self.gex_cache.get_gex_summary(
-                    symbol, trading_date)
+                cached_gex = self.gex_cache.get_gex_summary(symbol, trading_date)
                 if cached_gex:
-                    return {
-                        'status': 'success',
-                        'cache_hit': True,
-                        'data': cached_gex
-                    }
+                    return {"status": "success", "cache_hit": True, "data": cached_gex}
 
             # Get options data
-            options_data = self.cache_manager.get_options_data(
-                symbol, trading_date)
+            options_data = self.cache_manager.get_options_data(symbol, trading_date)
 
             if options_data is None or options_data.empty:
-                logger.warning(
-                    f"No options data available for {symbol} {trading_date}")
-                return {
-                    'status': 'no_data',
-                    'cache_hit': False,
-                    'message': 'No options data available'
-                }
+                logger.warning(f"No options data available for {symbol} {trading_date}")
+                return {"status": "no_data", "cache_hit": False, "message": "No options data available"}
 
             # Calculate GEX using existing GEX calculation engine
-            gex_results = self._calculate_gex_with_cache(
-                symbol, trading_date, options_data)
+            gex_results = self._calculate_gex_with_cache(symbol, trading_date, options_data)
 
-            return {
-                'status': 'success',
-                'cache_hit': False,
-                'data': gex_results,
-                'calculated': True
-            }
+            return {"status": "success", "cache_hit": False, "data": gex_results, "calculated": True}
 
         except Exception as e:
-            logger.error(
-                f"Single date processing failed for {symbol} {trading_date}: {e}")
-            return {
-                'status': 'error',
-                'cache_hit': False,
-                'error': str(e)
-            }
+            logger.error(f"Single date processing failed for {symbol} {trading_date}: {e}")
+            return {"status": "error", "cache_hit": False, "error": str(e)}
 
     def _calculate_gex_with_cache(self, symbol, trading_date, options_data: pd.DataFrame):
         """
@@ -344,41 +280,39 @@ class ConcurrentGEXProcessor:
                 symbol=symbol,
                 trading_date=trading_date,
                 spot_price=None,  # Auto-detect from data
-                options_data=options_data  # Pass the live cached data
+                options_data=options_data,  # Pass the live cached data
             )
 
-            if gex_results and 'status' in gex_results and gex_results['status'] == 'success':
+            if gex_results and "status" in gex_results and gex_results["status"] == "success":
                 # Extract components for caching
-                gex_summary = gex_results.get('metrics', {})
+                gex_summary = gex_results.get("metrics", {})
 
                 # Add metadata
-                gex_summary.update({
-                    'symbol': symbol,
-                    'trading_date': trading_date,
-                    'calculation_timestamp': now_iso(),
-                    'calculation_metadata': {
-                        'options_contracts_processed': len(options_data),
-                        'calculation_method': 'sample_data_gex_interface',
-                        'calculation_duration_ms': gex_results.get('calculation_time_ms', 0)
+                gex_summary.update(
+                    {
+                        "symbol": symbol,
+                        "trading_date": trading_date,
+                        "calculation_timestamp": now_iso(),
+                        "calculation_metadata": {
+                            "options_contracts_processed": len(options_data),
+                            "calculation_method": "sample_data_gex_interface",
+                            "calculation_duration_ms": gex_results.get("calculation_time_ms", 0),
+                        },
                     }
-                })
-
-                # Store in GEX cache
-                success = self.gex_cache.store_gex_calculation(
-                    symbol, trading_date, gex_summary
                 )
 
+                # Store in GEX cache
+                success = self.gex_cache.store_gex_calculation(symbol, trading_date, gex_summary)
+
                 if success:
-                    logger.debug(
-                        f"Cached GEX calculation for {symbol} {trading_date}")
+                    logger.debug(f"Cached GEX calculation for {symbol} {trading_date}")
 
                 return gex_summary
             else:
                 raise Exception(f"GEX calculation failed: {gex_results}")
 
         except Exception as e:
-            logger.error(
-                f"GEX calculation with cache failed for {symbol} {trading_date}: {e}")
+            logger.error(f"GEX calculation with cache failed for {symbol} {trading_date}: {e}")
             raise
 
     def _get_trading_dates(self, start_date, end_date):
@@ -387,8 +321,8 @@ class ConcurrentGEXProcessor:
         Simplified approximation - excludes weekends but not holidays.
         """
         try:
-            start = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-            end = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+            start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+            end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
             dates = []
             current = start
@@ -396,7 +330,7 @@ class ConcurrentGEXProcessor:
             while current <= end:
                 # Skip weekends (Saturday=5, Sunday=6)
                 if current.weekday() < 5:
-                    dates.append(current.strftime('%Y-%m-%d'))
+                    dates.append(current.strftime("%Y-%m-%d"))
                 current += datetime.timedelta(days=1)
 
             return dates
@@ -408,10 +342,10 @@ class ConcurrentGEXProcessor:
     def get_processing_stats(self):
         """Get processor performance statistics."""
         return {
-            'max_workers': self.max_workers,
-            'executor_class': type(self.executor).__name__,
-            'cache_manager_type': type(self.cache_manager).__name__,
-            'active_threads': self.executor._threads if hasattr(self.executor, '_threads') else 'unknown'
+            "max_workers": self.max_workers,
+            "executor_class": type(self.executor).__name__,
+            "cache_manager_type": type(self.cache_manager).__name__,
+            "active_threads": self.executor._threads if hasattr(self.executor, "_threads") else "unknown",
         }
 
     def shutdown(self, wait: bool = True):

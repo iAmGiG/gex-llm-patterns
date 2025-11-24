@@ -13,6 +13,7 @@
 ## Answer
 
 **YES** - LLMs detect dealer gamma hedging constraints with:
+
 - **71.5%** detection rate (>60% threshold)
 - **91.2%** predictive accuracy (predictions materialize)
 - **242 days** tested (94% coverage of 2024)
@@ -24,6 +25,7 @@
 **Obfuscation Testing Methodology**
 
 Strip all information that could enable memorization:
+
 - Dates → "Day T+0", "Day T+1"
 - Tickers → "INDEX_1", "STOCK_G"
 - Events → Removed entirely
@@ -70,17 +72,20 @@ Strip all information that could enable memorization:
 ## Methodological Contributions
 
 ### 1. Obfuscation Testing Framework
+
 - Systematic removal of memorization pathways
 - Validation criteria: Detection >60%, Accuracy >75%, Attribution present
 - Reusable for any LLM market analysis task
 
 ### 2. WHO → WHOM → WHAT Attribution
+
 - **WHO**: Identify market participants
 - **WHOM**: Identify forced/influenced parties
 - **WHAT**: Identify forced action
 - Forces LLM to explain mechanism, not just label pattern
 
 ### 3. Multi-Level Validation
+
 - **Level 1**: Pattern presence (detection rate)
 - **Level 2**: Prediction accuracy (materialization rate)
 - **Level 3**: Causal attribution (WHO→WHOM→WHAT)
@@ -118,16 +123,19 @@ Strip all information that could enable memorization:
 ## Significance
 
 ### For Finance Research
+
 - Validates dealer gamma hedging constraint is detectable in GEX data
 - Provides automated alternative to manual pattern identification
 - Addresses LLM memorization concern in financial applications
 
 ### For AI/ML Research
+
 - First rigorous obfuscation testing for LLM market analysis
 - Demonstrates structural vs statistical reasoning validation
 - Contributes to interpretability via output validation (WHO→WHOM→WHAT)
 
 ### For Trading Practice
+
 - Pattern is real (91.2% predictions materialize)
 - But profitability is marginal (+5.6 bps, below 10 bps threshold)
 - Needs enhancements (volatility filters, regime selection) for viability
@@ -156,14 +164,17 @@ Strip all information that could enable memorization:
 ## Dissertation Context
 
 **Paper #1** (This Paper): Methodology validation (5-day windows)
+
 - Proves obfuscation testing works
 - Validates LLM structural reasoning
 
 **Paper #2** (In Progress): Regime detection (30-day windows)
+
 - Extends to persistent regimes
 - Tests selectivity (30-50% expected)
 
 **Paper #3** (Planned): Sector rotation at regime boundaries
+
 - Applies regime detection to trading
 - Validates economic value
 
@@ -174,12 +185,14 @@ Strip all information that could enable memorization:
 **Overall**: Positive, minor revisions requested
 
 **Strengths Noted**:
+
 - Well written and organized
 - Clear methodology and framework
 - Rigorous validation
 - Excellent results and discussion
 
 **Revisions Requested**:
+
 - Reduce 12 → 10 pages (CRITICAL)
 - Justify single-year data (DEFER to future work)
 - Strengthen SPY-only justification (DO)

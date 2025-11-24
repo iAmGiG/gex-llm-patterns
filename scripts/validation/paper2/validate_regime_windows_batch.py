@@ -86,7 +86,7 @@ def prepare_windows(
     symbol: str = "SPY",
     window_size: int = 30,
     sample_every_n: int = 1,
-    phase: str = None
+    phase: str = None,
 ) -> List[Dict]:
     """
     Prepare regime windows for batch submission with optional transformations.
@@ -112,10 +112,7 @@ def prepare_windows(
     logger.info(f"Preparing windows: {start_date} to {end_date} (phase: {phase_label})")
 
     cache_manager = UnifiedCacheManager()
-    gex_fetcher = SequentialGEXFetcher(
-        cache_manager=cache_manager,
-        window_size=window_size
-    )
+    gex_fetcher = SequentialGEXFetcher(cache_manager=cache_manager, window_size=window_size)
     obfuscator = DataObfuscator()
 
     # Get ALL trading days available in cache (need historical context for 30-day windows)
@@ -138,38 +135,29 @@ def prepare_windows(
     logger.info(f"Found {len(all_trading_days)} total trading days in cache")
 
     # Filter to potential window ends (must be within validation range)
-    potential_window_ends = [
-        d for d in all_trading_days if start_date <= d <= end_date]
-    logger.info(
-        f"Can create {len(potential_window_ends)} potential windows in range {start_date} to {end_date}")
+    potential_window_ends = [d for d in all_trading_days if start_date <= d <= end_date]
+    logger.info(f"Can create {len(potential_window_ends)} potential windows in range {start_date} to {end_date}")
 
     # Sample
     if sample_every_n > 1:
         potential_window_ends = potential_window_ends[::sample_every_n]
-        logger.info(
-            f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
+        logger.info(f"Sampled to {len(potential_window_ends)} windows (every {sample_every_n} days)")
 
     # Fetch GEX for each window
     windows = []
     for i, end_date_window in enumerate(potential_window_ends):
-        logger.info(
-            f"Window {i+1}/{len(potential_window_ends)}: {end_date_window}")
+        logger.info(f"Window {i+1}/{len(potential_window_ends)}: {end_date_window}")
 
-        result = gex_fetcher.get_sequential_gex(
-            symbol=symbol,
-            end_date=end_date_window
-        )
+        result = gex_fetcher.get_sequential_gex(symbol=symbol, end_date=end_date_window)
 
         if result is None:
-            logger.warning(
-                f"Could not fetch window for {end_date_window} - skipping")
+            logger.warning(f"Could not fetch window for {end_date_window} - skipping")
             continue
 
-        gex_sequence = result['gex_sequence']
+        gex_sequence = result["gex_sequence"]
 
         if len(gex_sequence) != window_size:
-            logger.warning(
-                f"Window has {len(gex_sequence)} days, expected {window_size} - skipping")
+            logger.warning(f"Window has {len(gex_sequence)} days, expected {window_size} - skipping")
             continue
 
         # CRITICAL: Apply obfuscation to GEX sequence (required for research validity)
@@ -181,30 +169,33 @@ def prepare_windows(
             day_label = f"Day T{day_offset:+d}" if day_offset != 0 else "Day T+0"
 
             obfuscated_day = {
-                'date': day_label,  # e.g., "Day T-29", "Day T+0"
-                'net_gex_usd': day.get('net_gex', 0),
-                'positive_gex': day.get('positive_gex', 0),
-                'negative_gex': day.get('negative_gex', 0)
+                "date": day_label,  # e.g., "Day T-29", "Day T+0"
+                "net_gex_usd": day.get("net_gex", 0),
+                "positive_gex": day.get("positive_gex", 0),
+                "negative_gex": day.get("negative_gex", 0),
             }
             gex_sequence_obfuscated.append(obfuscated_day)
 
         # Apply phase transformations (Phase 2 negative controls)
-        if phase == 'shuffle':
+        if phase == "shuffle":
             # Phase 2a: Randomize day order (destroys temporal structure)
             # Keep dates labeled correctly (T-29 to T+0) but shuffle GEX values
-            gex_values = [day['net_gex_usd'] for day in gex_sequence_obfuscated]
+            gex_values = [day["net_gex_usd"] for day in gex_sequence_obfuscated]
             random.shuffle(gex_values)
             for j, day in enumerate(gex_sequence_obfuscated):
-                day['net_gex_usd'] = gex_values[j]
+                day["net_gex_usd"] = gex_values[j]
 
-        elif phase == 'transitional':
+        elif phase == "transitional":
             # Phase 2b: Create artificial high-volatility windows (7-10 sign flips)
             # Real data has max 4 flips (2020-2024), so we artificially add flips
 
             # Count current sign flips
-            current_flips = sum(1 for k in range(1, len(gex_sequence_obfuscated))
-                              if (gex_sequence_obfuscated[k]['net_gex_usd'] > 0) !=
-                                 (gex_sequence_obfuscated[k-1]['net_gex_usd'] > 0))
+            current_flips = sum(
+                1
+                for k in range(1, len(gex_sequence_obfuscated))
+                if (gex_sequence_obfuscated[k]["net_gex_usd"] > 0)
+                != (gex_sequence_obfuscated[k - 1]["net_gex_usd"] > 0)
+            )
 
             # Only use low-flip windows (0-2 flips) as base for transformation
             if current_flips > 2:
@@ -218,36 +209,34 @@ def prepare_windows(
             for day_idx in days_to_flip:
                 day = gex_sequence_obfuscated[day_idx]
                 # Invert sign (multiply by -1)
-                day['net_gex_usd'] *= -1
+                day["net_gex_usd"] *= -1
                 # Swap positive/negative (represents sign flip)
-                day['positive_gex'], day['negative_gex'] = day['negative_gex'], day['positive_gex']
+                day["positive_gex"], day["negative_gex"] = day["negative_gex"], day["positive_gex"]
 
-        elif phase == 'low-magnitude':
+        elif phase == "low-magnitude":
             # Phase 2c: Scale GEX down by 75% (makes avg ~$3B from ~$12B)
             scale_factor = 0.25
             for day in gex_sequence_obfuscated:
-                day['net_gex_usd'] *= scale_factor
-                day['positive_gex'] *= scale_factor
-                day['negative_gex'] *= scale_factor
+                day["net_gex_usd"] *= scale_factor
+                day["positive_gex"] *= scale_factor
+                day["negative_gex"] *= scale_factor
 
-        windows.append({
-            "end_date": end_date_window,
-            # Full obfuscated sequence (possibly transformed)
-            "gex_sequence": gex_sequence_obfuscated,
-            "start_date": gex_sequence[0]['date'] if gex_sequence else None,
-            "phase": phase if phase else "normal"
-        })
+        windows.append(
+            {
+                "end_date": end_date_window,
+                # Full obfuscated sequence (possibly transformed)
+                "gex_sequence": gex_sequence_obfuscated,
+                "start_date": gex_sequence[0]["date"] if gex_sequence else None,
+                "phase": phase if phase else "normal",
+            }
+        )
 
     logger.info(f"Prepared {len(windows)} valid windows for batch")
     return windows
 
 
 def submit_batch_job(
-    start_date: str,
-    end_date: str,
-    symbol: str = "SPY",
-    sample_every_n: int = 1,
-    phase: str = None
+    start_date: str, end_date: str, symbol: str = "SPY", sample_every_n: int = 1, phase: str = None
 ) -> str:
     """
     Prepare and submit batch job with optional phase transformation.
@@ -273,8 +262,7 @@ def submit_batch_job(
     logger.info(f"📊 Phase: {phase_label}")
 
     # Prepare windows with phase transformation
-    windows = prepare_windows(start_date, end_date, symbol,
-                              sample_every_n=sample_every_n, phase=phase)
+    windows = prepare_windows(start_date, end_date, symbol, sample_every_n=sample_every_n, phase=phase)
 
     if not windows:
         logger.error("❌ No valid windows prepared - cannot submit batch")
@@ -297,17 +285,14 @@ def submit_batch_job(
     logger.info(f"✅ Batch submitted successfully!")
     logger.info(f"Batch ID: {batch_id}")
     logger.info(f"Windows: {len(windows)}")
-    logger.info(
-        f"Expected cost: ${len(windows) * 0.03 * 0.5:.2f} (50% of sync API)")
+    logger.info(f"Expected cost: ${len(windows) * 0.03 * 0.5:.2f} (50% of sync API)")
     logger.info(f"Expected time: 1-2 hours")
     logger.info(f"")
     logger.info(f"To poll status:")
-    logger.info(
-        f"  python validate_regime_windows_batch.py --batch-id {batch_id} --poll")
+    logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --poll")
     logger.info(f"")
     logger.info(f"To retrieve results (after completion):")
-    logger.info(
-        f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
+    logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
 
     return batch_id
 
@@ -332,16 +317,14 @@ def poll_batch_job(batch_id: str, poll_interval: int = 60) -> Dict:
     validator = BatchRegimeValidator()
     status = validator.poll_batch(batch_id, poll_interval=poll_interval)
 
-    if status['status'] == 'completed':
+    if status["status"] == "completed":
         logger.info(f"✅ Batch completed!")
         logger.info(f"Output file ID: {status['output_file_id']}")
-        logger.info(
-            f"Elapsed time: {status['elapsed_seconds']/60:.1f} minutes")
+        logger.info(f"Elapsed time: {status['elapsed_seconds']/60:.1f} minutes")
         logger.info(f"Request counts: {status['request_counts']}")
         logger.info(f"")
         logger.info(f"To retrieve results:")
-        logger.info(
-            f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
+        logger.info(f"  python validate_regime_windows_batch.py --batch-id {batch_id} --retrieve")
     else:
         logger.error(f"❌ Batch failed or timed out: {status['status']}")
 
@@ -368,8 +351,7 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
         return []
 
     # Save as YAML
-    output_file = PROJECT_ROOT / "reports" / "validation" / \
-        "paper2_regime_windows" / f"phase_batch_{batch_id}.yaml"
+    output_file = PROJECT_ROOT / "reports" / "validation" / "paper2_regime_windows" / f"phase_batch_{batch_id}.yaml"
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     validator.save_results_yaml(results, [], output_file, batch_id)
@@ -378,13 +360,11 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
     logger.info(f"Saved to: {output_file}")
 
     # Print summary
-    detected = sum(1 for r in results if r.get('regime_detected', False))
+    detected = sum(1 for r in results if r.get("regime_detected", False))
     logger.info(f"")
     logger.info(f"Summary:")
-    logger.info(
-        f"  Detection rate: {detected}/{len(results)} ({100*detected/len(results):.1f}%)")
-    logger.info(
-        f"  Avg confidence: {sum(r.get('confidence', 0) for r in results)/len(results):.0f}%")
+    logger.info(f"  Detection rate: {detected}/{len(results)} ({100*detected/len(results):.1f}%)")
+    logger.info(f"  Avg confidence: {sum(r.get('confidence', 0) for r in results)/len(results):.0f}%")
 
     return results
 
@@ -414,43 +394,35 @@ Examples:
     --retrieve
 
 Cost savings: 50% reduction ($0.15 vs $0.30 per 1M tokens)
-        """
+        """,
     )
 
-    parser.add_argument("--start-date", type=str,
-                        help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--start-date", type=str, help="Start date (YYYY-MM-DD)")
     parser.add_argument("--end-date", type=str, help="End date (YYYY-MM-DD)")
-    parser.add_argument("--symbol", type=str, default="SPY",
-                        help="Ticker symbol (default: SPY)")
-    parser.add_argument("--sample-every-n", type=int, default=1,
-                        help="Sample every N days (default: 1)")
-    parser.add_argument("--phase", type=str, choices=['shuffle', 'transitional', 'low-magnitude'],
-                        help="Phase 2 transformation: shuffle (2a), transitional (2b), low-magnitude (2c)")
+    parser.add_argument("--symbol", type=str, default="SPY", help="Ticker symbol (default: SPY)")
+    parser.add_argument("--sample-every-n", type=int, default=1, help="Sample every N days (default: 1)")
+    parser.add_argument(
+        "--phase",
+        type=str,
+        choices=["shuffle", "transitional", "low-magnitude"],
+        help="Phase 2 transformation: shuffle (2a), transitional (2b), low-magnitude (2c)",
+    )
 
-    parser.add_argument("--submit", action="store_true",
-                        help="Prepare and submit batch job")
-    parser.add_argument("--batch-id", type=str,
-                        help="Batch ID for polling/retrieval")
-    parser.add_argument("--poll", action="store_true",
-                        help="Poll batch status")
-    parser.add_argument("--poll-interval", type=int, default=60,
-                        help="Poll interval in seconds (default: 60)")
-    parser.add_argument("--retrieve", action="store_true",
-                        help="Retrieve batch results")
+    parser.add_argument("--submit", action="store_true", help="Prepare and submit batch job")
+    parser.add_argument("--batch-id", type=str, help="Batch ID for polling/retrieval")
+    parser.add_argument("--poll", action="store_true", help="Poll batch status")
+    parser.add_argument("--poll-interval", type=int, default=60, help="Poll interval in seconds (default: 60)")
+    parser.add_argument("--retrieve", action="store_true", help="Retrieve batch results")
 
     args = parser.parse_args()
 
     # Setup logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     if args.submit:
         if not args.start_date or not args.end_date:
             parser.error("--submit requires --start-date and --end-date")
-        submit_batch_job(args.start_date, args.end_date,
-                         args.symbol, args.sample_every_n, args.phase)
+        submit_batch_job(args.start_date, args.end_date, args.symbol, args.sample_every_n, args.phase)
 
     elif args.poll:
         if not args.batch_id:

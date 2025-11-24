@@ -21,24 +21,22 @@ def sanitize_dates_only(text) -> str:
         return ""
 
     # Replace specific date patterns with generic markers
-    text = re.sub(
-        r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}', '[DATE]', text)
-    text = re.sub(r'\b\d{4}-\d{2}-\d{2}\b', '[DATE]', text)
-    text = re.sub(r'\b\d{1,2}/\d{1,2}/\d{2,4}\b', '[DATE]', text)
-    text = re.sub(r'\b(Q[1-4])\s+\d{4}\b', r'\1 [YEAR]', text)
-    text = re.sub(r'\b20\d{2}\b', '[YEAR]', text)  # Years 2000-2099
-    text = re.sub(r'\b19\d{2}\b', '[YEAR]', text)  # Years 1900-1999
+    text = re.sub(r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}", "[DATE]", text)
+    text = re.sub(r"\b\d{4}-\d{2}-\d{2}\b", "[DATE]", text)
+    text = re.sub(r"\b\d{1,2}/\d{1,2}/\d{2,4}\b", "[DATE]", text)
+    text = re.sub(r"\b(Q[1-4])\s+\d{4}\b", r"\1 [YEAR]", text)
+    text = re.sub(r"\b20\d{2}\b", "[YEAR]", text)  # Years 2000-2099
+    text = re.sub(r"\b19\d{2}\b", "[YEAR]", text)  # Years 1900-1999
 
     # Replace relative time references
-    text = re.sub(r'\b(yesterday|today|tomorrow)\b',
-                  '[RECENT]', text, flags=re.IGNORECASE)
-    text = re.sub(r'\b(last|this|next)\s+(week|month|quarter|year)\b',
-                  '[PERIOD]', text, flags=re.IGNORECASE)
-    text = re.sub(r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b',
-                  '[WEEKDAY]', text, flags=re.IGNORECASE)
+    text = re.sub(r"\b(yesterday|today|tomorrow)\b", "[RECENT]", text, flags=re.IGNORECASE)
+    text = re.sub(r"\b(last|this|next)\s+(week|month|quarter|year)\b", "[PERIOD]", text, flags=re.IGNORECASE)
+    text = re.sub(
+        r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b", "[WEEKDAY]", text, flags=re.IGNORECASE
+    )
 
     # Clean up any double spaces created
-    text = ' '.join(text.split())
+    text = " ".join(text.split())
 
     return text
 
@@ -59,28 +57,28 @@ def prepare_news_for_v4(news_df, requested_ticker=None):
 
     for _, article in news_df.iterrows():
         # Determine if this is direct news about the requested ticker
-        is_primary = (requested_ticker and
-                      article.get('news_category') == 'direct' and
-                      (article.get('ticker') == requested_ticker or
-                          article.get('target_ticker') == requested_ticker))
+        is_primary = (
+            requested_ticker
+            and article.get("news_category") == "direct"
+            and (article.get("ticker") == requested_ticker or article.get("target_ticker") == requested_ticker)
+        )
 
         # Get the appropriate ticker to display
-        article_ticker = article.get(
-            'ticker', article.get('news_source_ticker', 'UNKNOWN'))
+        article_ticker = article.get("ticker", article.get("news_source_ticker", "UNKNOWN"))
 
         # Obfuscate ONLY the primary ticker in direct news
         # Keep sector (XLK, QQQ) and market (SPY) tickers visible
-        display_ticker = 'TICKER_001' if is_primary else article_ticker
+        display_ticker = "TICKER_001" if is_primary else article_ticker
 
         news_item = {
-            'title': article['title'],  # Keep titles as-is
+            "title": article["title"],  # Keep titles as-is
             # Sanitize dates
-            'summary': sanitize_dates_only(article.get('summary', '')),
-            'ticker': display_ticker,
-            'source': article.get('url_pattern_source', 'Unknown'),
-            'relevance': float(article.get('relevance_score', 0.5)),
+            "summary": sanitize_dates_only(article.get("summary", "")),
+            "ticker": display_ticker,
+            "source": article.get("url_pattern_source", "Unknown"),
+            "relevance": float(article.get("relevance_score", 0.5)),
             # Already set by hierarchical tool
-            'category': article.get('news_category', 'unknown')
+            "category": article.get("news_category", "unknown"),
         }
 
         processed_news.append(news_item)
@@ -100,21 +98,20 @@ def format_news_for_llm_prompt(processed_news) -> str:
         Formatted string for LLM consumption
     """
     # Group by category (already marked by hierarchical tool)
-    direct_news= [n for n in processed_news if n.get('category') == 'direct']
-    sector_news= [n for n in processed_news if n.get('category') == 'sector']
-    market_news= [n for n in processed_news if n.get('category') == 'market']
+    direct_news = [n for n in processed_news if n.get("category") == "direct"]
+    sector_news = [n for n in processed_news if n.get("category") == "sector"]
+    market_news = [n for n in processed_news if n.get("category") == "market"]
 
-    output_parts= []
+    output_parts = []
 
     # Direct news - with obfuscated ticker (TICKER_001)
     if direct_news:
         output_parts.append("PRIMARY COMPANY NEWS:")
         for item in direct_news[:8]:  # Limit to prevent token overflow
             output_parts.append(f"[{item['ticker']}] {item['title']}")
-            if item['summary']:
+            if item["summary"]:
                 output_parts.append(f"  Summary: {item['summary'][:200]}")
-            output_parts.append(
-                f"  Source: {item['source']} | Relevance: {item['relevance']:.2f}")
+            output_parts.append(f"  Source: {item['source']} | Relevance: {item['relevance']:.2f}")
             output_parts.append("")
 
     # Sector news - real tickers visible (XLK, QQQ, etc.)
@@ -122,7 +119,7 @@ def format_news_for_llm_prompt(processed_news) -> str:
         output_parts.append("SECTOR CONTEXT:")
         for item in sector_news[:4]:
             output_parts.append(f"[{item['ticker']}] {item['title']}")
-            if item['summary']:
+            if item["summary"]:
                 output_parts.append(f"  Summary: {item['summary'][:150]}")
             output_parts.append(f"  Source: {item['source']}")
             output_parts.append("")
@@ -132,13 +129,14 @@ def format_news_for_llm_prompt(processed_news) -> str:
         output_parts.append("MARKET SENTIMENT:")
         for item in market_news[:3]:
             output_parts.append(f"[{item['ticker']}] {item['title']}")
-            if item['summary']:
+            if item["summary"]:
                 output_parts.append(f"  Summary: {item['summary'][:100]}")
             output_parts.append(f"  Source: {item['source']}")
             output_parts.append("")
 
     # Add footer explaining the structure
     output_parts.append(
-        "Note: Analyze sentiment based on the above news to recommend BUY, SELL, or HOLD for TICKER_001")
+        "Note: Analyze sentiment based on the above news to recommend BUY, SELL, or HOLD for TICKER_001"
+    )
 
     return "\n".join(output_parts)

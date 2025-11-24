@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class BacktestCheckpoint:
     """Checkpoint data structure for experiment state."""
+
     experiment_id: str
     strategy_version: str
     symbol: str
@@ -77,23 +78,20 @@ class CheckpointManager:
 
         try:
             # Save checkpoint as JSON
-            with open(checkpoint_path, 'w') as f:
+            with open(checkpoint_path, "w") as f:
                 json.dump(asdict(checkpoint), f, indent=2, default=str)
 
             logger.info(f"Saved checkpoint: {checkpoint_filename}")
-            logger.info(
-                f"  Progress: {checkpoint.trading_days_completed}/{checkpoint.total_trading_days} trading days")
+            logger.info(f"  Progress: {checkpoint.trading_days_completed}/{checkpoint.total_trading_days} trading days")
             logger.info(f"  Signals: {checkpoint.signals_generated}")
 
             # Clean up old checkpoints
-            self._cleanup_old_checkpoints(
-                checkpoint.experiment_id, checkpoint.strategy_version)
+            self._cleanup_old_checkpoints(checkpoint.experiment_id, checkpoint.strategy_version)
 
             return str(checkpoint_path)
 
         except Exception as e:
-            logger.error(
-                f"Failed to save checkpoint {checkpoint_filename}: {e}")
+            logger.error(f"Failed to save checkpoint {checkpoint_filename}: {e}")
             raise
 
     def load_checkpoint(self, experiment_id: str, strategy_version: str) -> Optional[BacktestCheckpoint]:
@@ -112,24 +110,21 @@ class CheckpointManager:
         checkpoint_files = list(self.checkpoint_dir.glob(pattern))
 
         if not checkpoint_files:
-            logger.info(
-                f"No checkpoints found for {experiment_id}_{strategy_version}")
+            logger.info(f"No checkpoints found for {experiment_id}_{strategy_version}")
             return None
 
         # Get the latest checkpoint (by filename date)
-        latest_checkpoint = max(
-            checkpoint_files, key=lambda p: p.stem.split('_')[-1])
+        latest_checkpoint = max(checkpoint_files, key=lambda p: p.stem.split("_")[-1])
 
         try:
-            with open(latest_checkpoint, 'r') as f:
+            with open(latest_checkpoint, "r") as f:
                 checkpoint_data = json.load(f)
 
             checkpoint = BacktestCheckpoint(**checkpoint_data)
 
             logger.info(f"Loaded checkpoint: {latest_checkpoint.name}")
             logger.info(f"  Last completed: {checkpoint.last_completed_date}")
-            logger.info(
-                f"  Progress: {checkpoint.trading_days_completed}/{checkpoint.total_trading_days}")
+            logger.info(f"  Progress: {checkpoint.trading_days_completed}/{checkpoint.total_trading_days}")
 
             return checkpoint
 
@@ -173,47 +168,47 @@ class CheckpointManager:
         experiments = {}
         for checkpoint_file in checkpoint_files:
             try:
-                with open(checkpoint_file, 'r') as f:
+                with open(checkpoint_file, "r") as f:
                     checkpoint_data = json.load(f)
 
-                exp_id = checkpoint_data['experiment_id']
-                strategy = checkpoint_data['strategy_version']
+                exp_id = checkpoint_data["experiment_id"]
+                strategy = checkpoint_data["strategy_version"]
                 key = f"{exp_id}_{strategy}"
 
                 if key not in experiments:
                     experiments[key] = checkpoint_data
                 else:
                     # Keep the latest checkpoint
-                    current_date = experiments[key]['last_completed_date']
-                    new_date = checkpoint_data['last_completed_date']
+                    current_date = experiments[key]["last_completed_date"]
+                    new_date = checkpoint_data["last_completed_date"]
                     if new_date > current_date:
                         experiments[key] = checkpoint_data
 
             except Exception as e:
-                logger.warning(
-                    f"Failed to read checkpoint {checkpoint_file}: {e}")
+                logger.warning(f"Failed to read checkpoint {checkpoint_file}: {e}")
                 continue
 
         # Format status information
         status_list = []
         for exp_data in experiments.values():
-            progress_pct = (
-                exp_data['trading_days_completed'] / exp_data['total_trading_days']) * 100
+            progress_pct = (exp_data["trading_days_completed"] / exp_data["total_trading_days"]) * 100
             status = "Complete" if progress_pct >= 100 else "In Progress"
 
-            status_list.append({
-                'experiment_id': exp_data['experiment_id'],
-                'strategy_version': exp_data['strategy_version'],
-                'symbol': exp_data['symbol'],
-                'date_range': f"{exp_data['start_date']} to {exp_data['end_date']}",
-                'last_completed': exp_data['last_completed_date'],
-                'progress_pct': round(progress_pct, 1),
-                'status': status,
-                'signals_generated': exp_data['signals_generated'],
-                'checkpoint_date': exp_data['checkpoint_date']
-            })
+            status_list.append(
+                {
+                    "experiment_id": exp_data["experiment_id"],
+                    "strategy_version": exp_data["strategy_version"],
+                    "symbol": exp_data["symbol"],
+                    "date_range": f"{exp_data['start_date']} to {exp_data['end_date']}",
+                    "last_completed": exp_data["last_completed_date"],
+                    "progress_pct": round(progress_pct, 1),
+                    "status": status,
+                    "signals_generated": exp_data["signals_generated"],
+                    "checkpoint_date": exp_data["checkpoint_date"],
+                }
+            )
 
-        return sorted(status_list, key=lambda x: x['checkpoint_date'], reverse=True)
+        return sorted(status_list, key=lambda x: x["checkpoint_date"], reverse=True)
 
     def resume_from_checkpoint(self, experiment_id: str, strategy_version: str) -> Optional[Dict]:
         """
@@ -231,33 +226,25 @@ class CheckpointManager:
             return None
 
         # Calculate resume parameters
-        progress_pct = (checkpoint.trading_days_completed /
-                        checkpoint.total_trading_days) * 100
+        progress_pct = (checkpoint.trading_days_completed / checkpoint.total_trading_days) * 100
 
         if progress_pct >= 100:
-            logger.info(
-                f"Experiment {experiment_id}_{strategy_version} already complete")
-            return {
-                'status': 'complete',
-                'checkpoint': checkpoint,
-                'resume_needed': False
-            }
+            logger.info(f"Experiment {experiment_id}_{strategy_version} already complete")
+            return {"status": "complete", "checkpoint": checkpoint, "resume_needed": False}
 
         # Calculate next start date
-        last_date = datetime.strptime(
-            checkpoint.last_completed_date, '%Y-%m-%d')
+        last_date = datetime.strptime(checkpoint.last_completed_date, "%Y-%m-%d")
         next_date = last_date + timedelta(days=1)
 
-        logger.info(
-            f"Experiment {experiment_id}_{strategy_version} can resume from {next_date.strftime('%Y-%m-%d')}")
+        logger.info(f"Experiment {experiment_id}_{strategy_version} can resume from {next_date.strftime('%Y-%m-%d')}")
 
         return {
-            'status': 'resumable',
-            'checkpoint': checkpoint,
-            'resume_needed': True,
-            'resume_from_date': next_date.strftime('%Y-%m-%d'),
-            'remaining_days': checkpoint.total_trading_days - checkpoint.trading_days_completed,
-            'progress_pct': progress_pct
+            "status": "resumable",
+            "checkpoint": checkpoint,
+            "resume_needed": True,
+            "resume_from_date": next_date.strftime("%Y-%m-%d"),
+            "remaining_days": checkpoint.total_trading_days - checkpoint.trading_days_completed,
+            "progress_pct": progress_pct,
         }
 
     def _cleanup_old_checkpoints(self, experiment_id: str, strategy_version: str):
@@ -269,21 +256,19 @@ class CheckpointManager:
             return
 
         # Sort by date in filename and keep the latest
-        checkpoint_files.sort(
-            key=lambda p: p.stem.split('_')[-1], reverse=True)
-        files_to_remove = checkpoint_files[self.max_checkpoints_per_experiment:]
+        checkpoint_files.sort(key=lambda p: p.stem.split("_")[-1], reverse=True)
+        files_to_remove = checkpoint_files[self.max_checkpoints_per_experiment :]
 
         for old_file in files_to_remove:
             try:
                 old_file.unlink()
                 logger.debug(f"Removed old checkpoint: {old_file.name}")
             except Exception as e:
-                logger.warning(
-                    f"Failed to remove old checkpoint {old_file}: {e}")
+                logger.warning(f"Failed to remove old checkpoint {old_file}: {e}")
 
-    def create_experiment_checkpoint(self, experiment_id: str, strategy_version: str,
-                                     symbol: str, start_date: str, end_date: str,
-                                     config: Dict) -> BacktestCheckpoint:
+    def create_experiment_checkpoint(
+        self, experiment_id: str, strategy_version: str, symbol: str, start_date: str, end_date: str, config: Dict
+    ) -> BacktestCheckpoint:
         """
         Create initial checkpoint for new experiment.
 
@@ -299,12 +284,12 @@ class CheckpointManager:
             New BacktestCheckpoint
         """
         # Calculate total trading days (rough estimate)
-        start = datetime.strptime(start_date, '%Y-%m-%d')
-        end = datetime.strptime(end_date, '%Y-%m-%d')
+        start = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
         total_days = (end - start).days
 
         # Rough estimate: 5 trading days per week
-        estimated_trading_days = int(total_days * (5/7))
+        estimated_trading_days = int(total_days * (5 / 7))
 
         checkpoint = BacktestCheckpoint(
             experiment_id=experiment_id,
@@ -320,7 +305,7 @@ class CheckpointManager:
             current_performance={},
             experiment_config=config,
             batch_data_prepared=False,
-            batch_preparation_complete=False
+            batch_preparation_complete=False,
         )
 
         return checkpoint
@@ -332,17 +317,15 @@ class CheckpointManager:
 
         # Save special batch preparation checkpoint
         batch_checkpoint_filename = (
-            f"{checkpoint.experiment_id}_{checkpoint.strategy_version}_"
-            f"batch_prep_complete.json"
+            f"{checkpoint.experiment_id}_{checkpoint.strategy_version}_" f"batch_prep_complete.json"
         )
         batch_checkpoint_path = self.checkpoint_dir / batch_checkpoint_filename
 
         try:
-            with open(batch_checkpoint_path, 'w') as f:
+            with open(batch_checkpoint_path, "w") as f:
                 json.dump(asdict(checkpoint), f, indent=2, default=str)
 
-            logger.info(
-                f"Saved batch preparation checkpoint: {batch_checkpoint_filename}")
+            logger.info(f"Saved batch preparation checkpoint: {batch_checkpoint_filename}")
 
         except Exception as e:
             logger.error(f"Failed to save batch preparation checkpoint: {e}")

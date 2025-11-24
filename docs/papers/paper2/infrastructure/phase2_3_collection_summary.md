@@ -17,16 +17,20 @@ Successfully collected **6 years** of historical GEX data (2020-2025) with dual 
 ## Phase 2: Data Collection (2020-2025)
 
 ### Timeline
+
 - **Started**: November 20, 2025 (compacted session continuation)
 - **Completed**: November 20, 2025
 - **Duration**: ~45 minutes total
 
 ### Collection Strategy
+
 **Initial Approach**: Parallel collection (6 processes)
+
 - **Blocker**: SQLite single-writer constraint (database locking)
 - **Resolution**: Sequential collection using `conda run -n AutoGen`
 
 **Final Approach**: Sequential year-by-year collection
+
 ```bash
 for year in 2021 2022 2023 2024 2025 2020; do
   conda run -n AutoGen python /tmp/collect_year.py $year
@@ -34,6 +38,7 @@ done
 ```
 
 ### Data Sources
+
 - **API**: Alpha Vantage Premium (HISTORICAL_OPTIONS endpoint)
 - **Key**: `ALPHA_VANTAGE_PREMO_KEY` (S4RCSETZHHCYH9F0)
 - **Rate Limit**: 1000 calls/min (premium tier)
@@ -58,23 +63,28 @@ done
 ## Phase 2 Gap Fix: Columbus/Veterans Day Collection
 
 ### Issue Identified
+
 USFederalHolidayCalendar excluded Columbus Day and Veterans Day, which NYSE trades.
 
 **Missing Dates** (8 total):
+
 - 2021: Oct 11 (Columbus), Nov 11 (Veterans)
 - 2022: Oct 10 (Columbus), Nov 11 (Veterans)
 - 2023: Oct 9 (Columbus), Nov 10 (Veterans observed)
 - 2024: Oct 14 (Columbus), Nov 11 (Veterans)
 
 ### Resolution
+
 Created targeted collection script: `/tmp/collect_missing_dates.py`
 
 **Results**:
+
 - ✅ **8/8 dates successfully collected**
 - ✅ All dual GEX metrics calculated
 - ✅ Quality score 100/100 for all dates
 
 **Sample Data**:
+
 ```
 2021-10-11: GEX=-$27.58B, OI=$4.46B, Vol=$2.99B, Regime=stable_positive
 2021-11-11: GEX=-$36.67B, OI=-$1.70B, Vol=$9.03B, Regime=transitional
@@ -123,10 +133,12 @@ Created targeted collection script: `/tmp/collect_missing_dates.py`
 ### Known Gaps
 
 **2020 Dual GEX Missing** (2 days):
+
 - Likely API data unavailable (specific dates TBD)
 - Impact: Minimal (99.2% coverage for 2020)
 
 **2025 Incomplete** (by design):
+
 - Database ends at 2025-11-20 (today's date)
 - Expected behavior for year-to-date collection
 
@@ -182,24 +194,29 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ## Challenges Resolved
 
 ### 1. SQLite Database Locking
+
 **Problem**: Parallel writes caused "Database is locked" errors
 
 **Solution**: Sequential collection with chained commands (`&&` operator)
 
 ### 2. NumPy Environment Issues
+
 **Problem**: Background processes failed with "No module named 'numpy._core.numeric'"
 
 **Solution**: Use `conda run -n AutoGen python` instead of direct `python3`
 
 ### 3. USFederalHolidayCalendar Gaps
+
 **Problem**: Columbus Day and Veterans Day excluded (NYSE trades these days)
 
 **Solution**: Targeted collection of missing 8 dates
 
 ### 4. API Data Gaps
+
 **Problem**: Some dates returned "No options data available"
 
 **Resolution**: Documented as expected (holidays, API limitations)
+
 - 2022-01-17 (MLK Day observed - Monday)
 - 2020 gaps (2 dates - API data unavailable)
 
@@ -208,11 +225,13 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ## Cost Analysis
 
 **API Usage**:
+
 - Premium Alpha Vantage API: $0 (included in subscription)
 - Total API calls: ~527 (2021-2023, 2025 YTD)
 - Rate limit usage: Well within 1000 calls/min
 
 **OpenAI Costs** (Phase 4, not yet incurred):
+
 - Estimated: ~$74 for Phases 4A + 4B validation
 - Breakdown: ~892 windows × 2 validations × $0.041/window
 
@@ -221,18 +240,21 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ## Next Steps
 
 ### Phase 4A: Single GEX Validation
+
 - Windows: ~892 across 6 years (2020-2025)
 - Model: o4-mini (OpenAI Batch API)
 - Cost: ~$37
 - Timeline: 1 week (batch processing)
 
 ### Phase 4B: Dual GEX Validation
+
 - Windows: Same ~892 windows
 - Model: o4-mini (OpenAI Batch API)
 - Cost: ~$37
 - Timeline: 1 week (batch processing)
 
 ### Phase 5: Analysis & Paper Writing
+
 - Temporal trend analysis (6 years)
 - 0DTE transition timing identification
 - Paper #2 draft updates
@@ -243,16 +265,19 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ## Files Generated
 
 ### Data
+
 - `.cache/consolidated_historical.db` - Main database (1,475 days)
 - `.cache/options_cache/*.pickle` - Options data cache
 
 ### Documentation
+
 - `docs/papers/paper2/planning/issue140_multiyear_roadmap.md`
 - `docs/papers/paper2/planning/phase1_code_review.md`
 - `docs/papers/paper2/infrastructure/database_coverage_audit.md`
 - `docs/papers/paper2/infrastructure/phase2_3_collection_summary.md` (this file)
 
 ### Scripts
+
 - `/tmp/collect_year.py` - Main collection script
 - `/tmp/collect_missing_dates.py` - Gap filling
 - `/tmp/check_missing_dates.py` - Verification
@@ -264,12 +289,14 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 **Phases 2-3 Status**: ✅ **COMPLETE**
 
 Successfully collected and verified 6 years of historical GEX data with dual metrics:
+
 - 1,475 trading days (99.9% dual GEX coverage)
 - All Columbus/Veterans Day gaps filled
 - Database integrity verified
 - Ready for Phase 4 validation
 
 **Impact on Paper #2**:
+
 - Expanded from 2-year (2020, 2024) to 6-year study (2020-2025)
 - Enables temporal trend analysis for 0DTE transition timing
 - Dual GEX framework (Issue #138) integrated throughout dataset

@@ -9,9 +9,11 @@
 ## Scripts
 
 ### `validate_pattern_taxonomy.py`
+
 **Purpose**: Single-pattern validation using obfuscation testing methodology
 
 **Usage**:
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 
@@ -25,6 +27,7 @@ python scripts/validation/paper1/validate_pattern_taxonomy.py \
 ```
 
 **Key Features**:
+
 - Obfuscation testing (strips dates/tickers to prevent LLM memorization)
 - Outcome calculation (forward returns, realized volatility)
 - Pattern detection with WHO→WHOM→WHAT framework
@@ -35,9 +38,11 @@ python scripts/validation/paper1/validate_pattern_taxonomy.py \
 ---
 
 ### `validate_all_patterns.py`
+
 **Purpose**: Batch validation across multiple patterns
 
 **Usage**:
+
 ```bash
 python scripts/validation/paper1/validate_all_patterns.py \
   --patterns stock_pinning 0dte_hedging gamma_positioning \
@@ -47,6 +52,7 @@ python scripts/validation/paper1/validate_all_patterns.py \
 ```
 
 **Key Features**:
+
 - Validates multiple patterns in sequence
 - Skips already-completed pattern-quarter combinations
 - Tracks progress across multi-pattern runs
@@ -57,6 +63,7 @@ python scripts/validation/paper1/validate_all_patterns.py \
 ---
 
 ### `validate_patterns.py`
+
 **Purpose**: Legacy validation script (pre-Issue #79 refactor)
 
 **Status**: ⚠️ DEPRECATED - Use `validate_pattern_taxonomy.py` instead
@@ -91,12 +98,14 @@ python scripts/validation/paper1/validate_all_patterns.py \
 ## Dependencies
 
 **Python Modules**:
+
 - `src.validation.pattern_taxonomy` - Pattern definitions and validation framework
 - `src.validation.outcome_calculator` - Forward returns and prediction verification
 - `src.validation.data_obfuscation` - Date/ticker obfuscation for anti-cheating
 - `src.agents.market_mechanics_agent` - Core LLM agent for pattern detection
 
 **Data Sources**:
+
 - Alpha Vantage API (options chains)
 - Polygon.io API (stock prices)
 - Historical GEX database (`.cache/consolidated_historical.db`)

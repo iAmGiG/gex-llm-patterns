@@ -34,8 +34,7 @@ def count_sign_flips(gex_values: list) -> int:
     """Count number of sign changes in a sequence."""
     flips = 0
     for i in range(len(gex_values) - 1):
-        if (gex_values[i] > 0 and gex_values[i + 1] < 0) or \
-           (gex_values[i] < 0 and gex_values[i + 1] > 0):
+        if (gex_values[i] > 0 and gex_values[i + 1] < 0) or (gex_values[i] < 0 and gex_values[i + 1] > 0):
             flips += 1
     return flips
 
@@ -67,8 +66,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
     ORDER BY date ASC
     """
 
-    cursor.execute(query, (start_dt.strftime(
-        "%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
+    cursor.execute(query, (start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")))
     rows = cursor.fetchall()
     conn.close()
 
@@ -113,8 +111,8 @@ def create_synthetic_transitional(gex_sequence: dict, flip_count: int = 8) -> di
             "characteristics": {
                 "persistence_pct": calculate_persistence(gex_values),
                 "sign_flips": count_sign_flips(gex_values),
-                "avg_magnitude_b": np.mean(np.abs(gex_values)) / 1e9
-            }
+                "avg_magnitude_b": np.mean(np.abs(gex_values)) / 1e9,
+            },
         }
 
     # Splice positive and negative periods
@@ -125,8 +123,7 @@ def create_synthetic_transitional(gex_sequence: dict, flip_count: int = 8) -> di
     synthetic = gex_values.copy()
     for i in range(5, min(25, len(synthetic)), 3):
         # Flip sign while preserving magnitude
-        synthetic[i] = - \
-            abs(synthetic[i]) if synthetic[i] > 0 else abs(synthetic[i])
+        synthetic[i] = -abs(synthetic[i]) if synthetic[i] > 0 else abs(synthetic[i])
 
     return {
         "method": "synthetic_spliced",
@@ -138,8 +135,8 @@ def create_synthetic_transitional(gex_sequence: dict, flip_count: int = 8) -> di
             "persistence_pct": calculate_persistence(synthetic),
             "sign_flips": count_sign_flips(synthetic),
             "avg_magnitude_b": np.mean(np.abs(synthetic)) / 1e9,
-            "note": "Spliced to create frequent sign changes while preserving magnitude"
-        }
+            "note": "Spliced to create frequent sign changes while preserving magnitude",
+        },
     }
 
 
@@ -149,7 +146,7 @@ def find_transitional_windows(
     min_flips: int = 7,
     max_flips: int = 10,
     sampling_interval: int = 5,
-    num_windows: int = 10
+    num_windows: int = 10,
 ) -> list:
     """
     Find or generate Phase 2b transitional windows.
@@ -162,7 +159,7 @@ def find_transitional_windows(
     created_synthetic = 0
 
     # Sample every 5-10 days
-    sampled_dates = q1_2024_dates[::sampling_interval][:num_windows * 2]
+    sampled_dates = q1_2024_dates[::sampling_interval][: num_windows * 2]
 
     for end_date in sampled_dates:
         if len(transitional_windows) >= num_windows:
@@ -178,10 +175,8 @@ def find_transitional_windows(
 
         # Check if naturally transitional
         if min_flips <= flips <= max_flips and persistence < 70:
-            print(
-                f"Found natural transitional: {end_date} ({flips} flips, {persistence:.1f}% persistence)")
-            transitional = create_synthetic_transitional(
-                gex_seq, flip_count=flips)
+            print(f"Found natural transitional: {end_date} ({flips} flips, {persistence:.1f}% persistence)")
+            transitional = create_synthetic_transitional(gex_seq, flip_count=flips)
             transitional["type"] = "natural"
             transitional_windows.append(transitional)
             found_natural += 1
@@ -234,12 +229,7 @@ def main():
 
     # Find/create transitional windows
     transitional_windows, natural_count, synthetic_count = find_transitional_windows(
-        str(db_path),
-        q1_dates,
-        min_flips=7,
-        max_flips=10,
-        sampling_interval=5,
-        num_windows=10
+        str(db_path), q1_dates, min_flips=7, max_flips=10, sampling_interval=5, num_windows=10
     )
 
     print(f"\nGenerated {len(transitional_windows)} transitional windows")
@@ -261,15 +251,14 @@ def main():
         "expected_results": {
             "detection_rate_pct": "0-10% (false positive threshold)",
             "expected_regime_type": "transitional (reject due to sign flips)",
-            "pass_criteria": "<10% false positive rate"
+            "pass_criteria": "<10% false positive rate",
         },
         "transitional_windows": transitional_windows,
-        "next_steps": "Run through validate_regime_windows.py with LLM classification"
+        "next_steps": "Run through validate_regime_windows.py with LLM classification",
     }
 
     # Save to YAML
-    output_dir = PROJECT_ROOT / "reports" / "validation" / \
-        "regime_windows" / "phase2b_transitional"
+    output_dir = PROJECT_ROOT / "reports" / "validation" / "regime_windows" / "phase2b_transitional"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "transitional_windows.yaml"

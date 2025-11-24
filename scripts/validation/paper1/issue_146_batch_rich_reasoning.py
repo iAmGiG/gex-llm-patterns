@@ -35,7 +35,7 @@ sys.path.insert(0, str(project_root))
 from openai import OpenAI
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -50,19 +50,19 @@ class RichReasoningBatchValidator:
     def __init__(self):
         """Initialize validator with config and directories."""
         # Load OpenAI API key from config
-        config_path = project_root / 'config' / 'config.json'
-        with open(config_path, 'r') as f:
+        config_path = project_root / "config" / "config.json"
+        with open(config_path, "r") as f:
             config = json.load(f)
 
-        self.client = OpenAI(api_key=config['OPEN_AI_KEY'])
+        self.client = OpenAI(api_key=config["OPEN_AI_KEY"])
 
         # Set up directories
-        self.analysis_dir = project_root / 'docs' / 'papers' / 'paper1' / 'analysis'
-        self.batch_dir = self.analysis_dir / 'batch_jobs'
+        self.analysis_dir = project_root / "docs" / "papers" / "paper1" / "analysis"
+        self.batch_dir = self.analysis_dir / "batch_jobs"
         self.batch_dir.mkdir(parents=True, exist_ok=True)
 
         # Load prompt template configuration
-        with open(project_root / 'config_defaults' / 'llm_prompts.yaml', 'r') as f:
+        with open(project_root / "config_defaults" / "llm_prompts.yaml", "r") as f:
             self.prompt_config = yaml.safe_load(f)
 
         logger.info(f"Initialized RichReasoningBatchValidator")
@@ -70,12 +70,11 @@ class RichReasoningBatchValidator:
 
     def load_phase1_detections(self) -> pd.DataFrame:
         """Load Phase 1 extraction results (519 detections)."""
-        csv_path = self.analysis_dir / 'issue_146_reasoning_by_quarter.csv'
+        csv_path = self.analysis_dir / "issue_146_reasoning_by_quarter.csv"
 
         if not csv_path.exists():
             raise FileNotFoundError(
-                f"Phase 1 extraction file not found: {csv_path}\n"
-                "Run issue_146_extract_reasoning_by_quarter.py first"
+                f"Phase 1 extraction file not found: {csv_path}\n" "Run issue_146_extract_reasoning_by_quarter.py first"
             )
 
         df = pd.read_csv(csv_path)
@@ -87,11 +86,7 @@ class RichReasoningBatchValidator:
 
         return df
 
-    def sample_days_for_batch(
-        self,
-        detections_df: pd.DataFrame,
-        n_per_quarter: int = 25
-    ) -> Dict[str, List[Dict]]:
+    def sample_days_for_batch(self, detections_df: pd.DataFrame, n_per_quarter: int = 25) -> Dict[str, List[Dict]]:
         """
         Sample days from Q1 and Q4 for batch processing.
 
@@ -104,20 +99,22 @@ class RichReasoningBatchValidator:
         """
         samples = {}
 
-        for quarter in ['Q1', 'Q4']:
-            quarter_df = detections_df[detections_df['quarter'] == quarter]
+        for quarter in ["Q1", "Q4"]:
+            quarter_df = detections_df[detections_df["quarter"] == quarter]
 
             # Deduplicate by date (some dates detected multiple patterns)
             # Keep first occurrence for each date
-            quarter_df_unique = quarter_df.drop_duplicates(subset=['date'], keep='first')
+            quarter_df_unique = quarter_df.drop_duplicates(subset=["date"], keep="first")
 
             # Random sample (with seed for reproducibility)
             sample_size = min(n_per_quarter, len(quarter_df_unique))
             sampled = quarter_df_unique.sample(n=sample_size, random_state=42)
 
-            samples[quarter] = sampled.to_dict('records')
+            samples[quarter] = sampled.to_dict("records")
 
-            logger.info(f"{quarter}: Sampled {sample_size} unique days from {len(quarter_df)} total detections ({len(quarter_df_unique)} unique dates)")
+            logger.info(
+                f"{quarter}: Sampled {sample_size} unique days from {len(quarter_df)} total detections ({len(quarter_df_unique)} unique dates)"
+            )
 
         return samples
 
@@ -133,7 +130,7 @@ class RichReasoningBatchValidator:
         """
         import sqlite3
 
-        db_path = project_root / '.cache' / 'consolidated_historical.db'
+        db_path = project_root / ".cache" / "consolidated_historical.db"
 
         if not db_path.exists():
             logger.warning(f"Database not found: {db_path}")
@@ -159,20 +156,16 @@ class RichReasoningBatchValidator:
                 return None
 
             return {
-                'net_gex_usd': row[0],  # Using total_gex (in USD already)
-                'spot_price': row[1],
-                'flip_point': row[2]
+                "net_gex_usd": row[0],  # Using total_gex (in USD already)
+                "spot_price": row[1],
+                "flip_point": row[2],
             }
 
         except Exception as e:
             logger.error(f"Error loading GEX data for {date_str}: {e}")
             return None
 
-    def build_rich_reasoning_prompt(
-        self,
-        date_str: str,
-        gex_data: Dict
-    ) -> str:
+    def build_rich_reasoning_prompt(self, date_str: str, gex_data: Dict) -> str:
         """
         Build rich reasoning prompt for a single day.
 
@@ -187,12 +180,12 @@ class RichReasoningBatchValidator:
             Complete prompt text
         """
         # Get question template
-        question_template = self.prompt_config['question_templates']['detailed_causal_explanation']
+        question_template = self.prompt_config["question_templates"]["detailed_causal_explanation"]
 
         # Format GEX data
-        net_gex_b = gex_data['net_gex_usd'] / 1e9
-        spot_price = gex_data['spot_price']
-        flip_point = gex_data['flip_point']
+        net_gex_b = gex_data["net_gex_usd"] / 1e9
+        spot_price = gex_data["spot_price"]
+        flip_point = gex_data["flip_point"]
 
         # Handle None values for flip_point
         if flip_point is None or flip_point == 0:
@@ -240,11 +233,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
 
         return prompt
 
-    def prepare_batch_file(
-        self,
-        samples: Dict[str, List[Dict]],
-        model: str = "gpt-4o-mini"
-    ) -> Path:
+    def prepare_batch_file(self, samples: Dict[str, List[Dict]], model: str = "gpt-4o-mini") -> Path:
         """
         Generate JSONL batch file for OpenAI Batch API.
 
@@ -265,7 +254,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
 
         for quarter, sample_list in samples.items():
             for sample in sample_list:
-                date_str = sample['date']
+                date_str = sample["date"]
 
                 # Load GEX data for this date
                 gex_data = self.load_gex_data_for_date(date_str)
@@ -284,20 +273,18 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
                     "url": "/v1/chat/completions",
                     "body": {
                         "model": model,
-                        "messages": [
-                            {"role": "user", "content": prompt_text}
-                        ],
-                        "temperature": 0.0  # Deterministic for consistency
-                    }
+                        "messages": [{"role": "user", "content": prompt_text}],
+                        "temperature": 0.0,  # Deterministic for consistency
+                    },
                 }
 
                 batch_requests.append(request)
                 request_id += 1
 
         # Write JSONL file
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             for request in batch_requests:
-                f.write(json.dumps(request) + '\n')
+                f.write(json.dumps(request) + "\n")
 
         logger.info(f"✅ Generated {len(batch_requests)} batch requests")
         logger.info(f"   File: {output_file}")
@@ -317,20 +304,15 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         logger.info(f"Uploading batch file: {batch_file}")
 
         # Upload file
-        with open(batch_file, 'rb') as f:
-            file_response = self.client.files.create(
-                file=f,
-                purpose='batch'
-            )
+        with open(batch_file, "rb") as f:
+            file_response = self.client.files.create(file=f, purpose="batch")
 
         file_id = file_response.id
         logger.info(f"✅ File uploaded: {file_id}")
 
         # Submit batch job
         batch_response = self.client.batches.create(
-            input_file_id=file_id,
-            endpoint="/v1/chat/completions",
-            completion_window="24h"
+            input_file_id=file_id, endpoint="/v1/chat/completions", completion_window="24h"
         )
 
         batch_id = batch_response.id
@@ -340,16 +322,16 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
 
         # Save batch metadata
         metadata = {
-            'batch_id': batch_id,
-            'file_id': file_id,
-            'batch_file': str(batch_file),
-            'submitted_at': datetime.now().isoformat(),
-            'status': batch_response.status,
-            'model': 'gpt-4o-mini'
+            "batch_id": batch_id,
+            "file_id": file_id,
+            "batch_file": str(batch_file),
+            "submitted_at": datetime.now().isoformat(),
+            "status": batch_response.status,
+            "model": "gpt-4o-mini",
         }
 
         metadata_file = self.batch_dir / f"batch_metadata_{batch_id}.yaml"
-        with open(metadata_file, 'w') as f:
+        with open(metadata_file, "w") as f:
             yaml.dump(metadata, f, default_flow_style=False)
 
         logger.info(f"✅ Metadata saved: {metadata_file}")
@@ -389,7 +371,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         # Get batch status
         batch = self.client.batches.retrieve(batch_id)
 
-        if batch.status != 'completed':
+        if batch.status != "completed":
             raise ValueError(f"Batch not completed yet. Status: {batch.status}")
 
         # Download output file
@@ -403,7 +385,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
 
         # Save raw results
         results_file = self.batch_dir / f"batch_results_{batch_id}.jsonl"
-        with open(results_file, 'wb') as f:
+        with open(results_file, "wb") as f:
             f.write(file_content.content)
 
         logger.info(f"✅ Results saved: {results_file}")
@@ -412,7 +394,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         parsed_results = self._parse_batch_results(results_file)
 
         # Save parsed results
-        parsed_file = self.analysis_dir / f'issue_146_phase2_batch_results_{batch_id}.csv'
+        parsed_file = self.analysis_dir / f"issue_146_phase2_batch_results_{batch_id}.csv"
         parsed_df = pd.DataFrame(parsed_results)
         parsed_df.to_csv(parsed_file, index=False)
 
@@ -425,27 +407,27 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         """Parse batch results JSONL file into structured data."""
         results = []
 
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             for line in f:
                 if not line.strip():
                     continue
 
                 response = json.loads(line)
-                custom_id = response['custom_id']
+                custom_id = response["custom_id"]
 
                 # Extract quarter and date from custom_id (format: "Q1-2024-01-02")
-                quarter, date_str = custom_id.split('-', 1)
+                quarter, date_str = custom_id.split("-", 1)
 
                 # Extract LLM response
                 try:
-                    message_content = response['response']['body']['choices'][0]['message']['content']
+                    message_content = response["response"]["body"]["choices"][0]["message"]["content"]
 
                     # Strip markdown code fences if present (```json ... ```)
-                    if message_content.strip().startswith('```'):
+                    if message_content.strip().startswith("```"):
                         # Find the JSON content between code fences
-                        lines = message_content.strip().split('\n')
+                        lines = message_content.strip().split("\n")
                         # Remove first line (```json) and last line (```)
-                        json_content = '\n'.join(lines[1:-1])
+                        json_content = "\n".join(lines[1:-1])
                     else:
                         json_content = message_content
 
@@ -453,16 +435,16 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
                     llm_json = json.loads(json_content)
 
                     result = {
-                        'quarter': quarter,
-                        'date': date_str,
-                        'pattern_detected': llm_json.get('pattern_detected', False),
-                        'who': llm_json.get('who', ''),
-                        'whom': llm_json.get('whom', ''),
-                        'what_mechanism': llm_json.get('what_mechanism', ''),
-                        'intensity_language': llm_json.get('intensity_language', ''),
-                        'context_factors': llm_json.get('context_factors', ''),
-                        'confidence': llm_json.get('confidence', 0),
-                        'caveats': json.dumps(llm_json.get('caveats', []))
+                        "quarter": quarter,
+                        "date": date_str,
+                        "pattern_detected": llm_json.get("pattern_detected", False),
+                        "who": llm_json.get("who", ""),
+                        "whom": llm_json.get("whom", ""),
+                        "what_mechanism": llm_json.get("what_mechanism", ""),
+                        "intensity_language": llm_json.get("intensity_language", ""),
+                        "context_factors": llm_json.get("context_factors", ""),
+                        "confidence": llm_json.get("confidence", 0),
+                        "caveats": json.dumps(llm_json.get("caveats", [])),
                     }
 
                     results.append(result)
@@ -478,31 +460,18 @@ def main():
     """Main workflow for Issue #146 Phase 2."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Issue #146 Phase 2: Rich Reasoning Extraction via Batch API"
-    )
+    parser = argparse.ArgumentParser(description="Issue #146 Phase 2: Rich Reasoning Extraction via Batch API")
     parser.add_argument(
-        '--action',
-        choices=['prepare', 'submit', 'poll', 'retrieve'],
-        required=True,
-        help='Action to perform'
+        "--action", choices=["prepare", "submit", "poll", "retrieve"], required=True, help="Action to perform"
     )
-    parser.add_argument(
-        '--batch-id',
-        help='Batch ID (for poll/retrieve actions)'
-    )
-    parser.add_argument(
-        '--n-samples',
-        type=int,
-        default=25,
-        help='Number of samples per quarter (default: 25)'
-    )
+    parser.add_argument("--batch-id", help="Batch ID (for poll/retrieve actions)")
+    parser.add_argument("--n-samples", type=int, default=25, help="Number of samples per quarter (default: 25)")
 
     args = parser.parse_args()
 
     validator = RichReasoningBatchValidator()
 
-    if args.action == 'prepare':
+    if args.action == "prepare":
         # Step 1: Load Phase 1 detections
         detections_df = validator.load_phase1_detections()
 
@@ -515,7 +484,7 @@ def main():
         print(f"\n✅ Batch file prepared: {batch_file}")
         print(f"\nNext step: python {__file__} --action submit")
 
-    elif args.action == 'submit':
+    elif args.action == "submit":
         # Find most recent batch file
         batch_files = sorted(validator.batch_dir.glob("issue_146_rich_reasoning_*.jsonl"))
         if not batch_files:
@@ -530,7 +499,7 @@ def main():
         print(f"\n✅ Batch submitted: {batch_id}")
         print(f"\nNext step: python {__file__} --action poll --batch-id {batch_id}")
 
-    elif args.action == 'poll':
+    elif args.action == "poll":
         if not args.batch_id:
             print("❌ --batch-id required for poll action")
             return
@@ -538,11 +507,11 @@ def main():
         status = validator.poll_batch_status(args.batch_id)
         print(f"\nStatus: {status}")
 
-        if status == 'completed':
+        if status == "completed":
             print(f"\n✅ Batch complete! Ready to retrieve results.")
             print(f"\nNext step: python {__file__} --action retrieve --batch-id {args.batch_id}")
 
-    elif args.action == 'retrieve':
+    elif args.action == "retrieve":
         if not args.batch_id:
             print("❌ --batch-id required for retrieve action")
             return
@@ -553,5 +522,5 @@ def main():
         print(f"\nNext step: Analyze keyword frequencies and TF-IDF")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

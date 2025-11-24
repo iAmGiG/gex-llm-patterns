@@ -1,4 +1,5 @@
 # Revised Abstract and Introduction (Journal Version)
+
 ## With Hayekian Flavor and New MC Defense Findings
 
 ---
@@ -32,6 +33,7 @@ Our methodology advances LLM validation in financial domains through four contri
 ## KEY CHANGES MADE:
 
 ### Abstract:
+
 1. **Hayek flavor added:**
    - "emergent coordination patterns arising from countless decentralized dealer decisions responding to local gamma exposure constraints"
    - "dispersed dealer knowledge"
@@ -49,6 +51,7 @@ Our methodology advances LLM validation in financial domains through four contri
    - Restructured sentences while keeping core message
 
 ### Introduction:
+
 1. **Hayek citation smuggled in (paragraph 2):**
    - "These market-wide patterns emerge not from centralized coordination but from countless dealers independently responding to local constraints—what Hayek termed emergent order arising from dispersed knowledge~\cite{hayek1945}."
 
@@ -71,6 +74,7 @@ Our methodology advances LLM validation in financial domains through four contri
 ## NEXT STEPS:
 
 Should I also:
+
 1. Add the Hayek citation to `references.bib`?
 2. Draft similar Hayekian additions for the Discussion section (paralleling Paper 2's approach)?
 3. Review the rest of the introduction for additional places to add this flavor?

@@ -17,6 +17,7 @@
 ### 1. Framework IS Selective ✅
 
 **Evidence**:
+
 - **Phase 2**: 0% false positives on artificial high-flip and low-magnitude data
 - **Phase 4**: 12.1% detection on 2020 normal market (acceptable baseline)
 - **Phase 3**: 81.2% detection on 2024 extreme market (captures anomaly)
@@ -29,6 +30,7 @@
 ### 2. 2024 WAS Genuinely Extreme ✅
 
 **Evidence**:
+
 - **2020 (pre-0DTE)**: 12.1% persistent regimes (27/223 windows)
 - **2024 (post-0DTE)**: 81.2% persistent regimes (181/223 windows)
 - **Statistical significance**: p < 0.001 (Chi-square test)
@@ -45,6 +47,7 @@
 **Research Question**: Did market structure fundamentally change between 2020 and 2024?
 
 **Hypothesis Test**:
+
 - H0: No difference between 2020 and 2024 detection rates
 - H1: 2024 shows significantly different regime persistence
 
@@ -67,6 +70,7 @@
 **Cost**: $0.81
 
 **Finding**: Detection higher than 30-50% target, but selectivity metrics proved framework working correctly:
+
 - Persistence gap: 39 percentage points (96% vs 57%)
 - Confidence gap: 53.5 points (93.0 vs 39.5)
 - Magnitude gap: $6.84B
@@ -81,6 +85,7 @@
 **Cost**: $12.12
 
 **Three Tests**:
+
 1. **Shuffle** (Phase 2a): 12.1% FP on 2020 (normal market baseline)
 2. **Transitional** (Phase 2b): 0% FP (perfect rejection of 7-10 flip windows)
 3. **Low-Magnitude** (Phase 2c): 0% FP (perfect rejection of <$3B windows)
@@ -105,6 +110,7 @@
 **Initial Concern**: Too high - either framework issue OR 2024 genuinely extreme
 
 **Architecture Milestone**: Database-first data access implemented
+
 - SequentialGEXFetcher now queries database (252 days) instead of file cache (73 days)
 - Generated all 223 windows successfully
 - User guidance: "I'm viewing the cache like a redis solution and db as the storage"
@@ -123,16 +129,19 @@
 **Finding**: **69.1 percentage point difference** between 2024 (81.2%) and 2020 (12.1%)
 
 **Statistical Analysis**:
+
 - Chi-square test: χ² = 201.4 (df=1)
 - p-value: < 0.001
 - Effect size: φ = 0.672 (large effect)
 
 **Three Conclusions**:
+
 1. ✅ **Framework validated** - Discriminates 5.7x between normal and extreme markets
 2. ✅ **2024 confirmed extreme** - Not framework overdetection
 3. ✅ **0DTE hypothesis supported** - Proliferation creates persistent regimes
 
 **Technical Implementation**:
+
 - File cache fallback architecture (database empty for 2020)
 - Compatibility aliases added (net_gex → net_gex_usd)
 - Seamless backward compatibility with legacy cache format
@@ -175,6 +184,7 @@
 ### Statistical Validation
 
 **Chi-Square Test** (2020 vs 2024):
+
 ```
 H0: No difference in detection rates
 H1: 2024 detection > 2020 detection
@@ -213,6 +223,7 @@ p < 0.001 (REJECT H0)
 **Result**: Excellent separation across all metrics ✅
 
 **Evidence**:
+
 - Persistence gap: 39 percentage points (Phase 1)
 - Confidence gap: 53.5 points (Phase 1)
 - Magnitude gap: $6.84B (Phase 1)
@@ -232,6 +243,7 @@ p < 0.001 (REJECT H0)
 ### Background
 
 **0DTE Options**: Same-day expiration options
+
 - **Pre-2021**: Rare (<5% of SPY options volume)
 - **2021-2024**: Proliferation (50%+ of SPY options volume by 2024)
 - **Mechanism**: Forces dealers into constant gamma rebalancing (exponential time decay)
@@ -243,6 +255,7 @@ p < 0.001 (REJECT H0)
 ### Test Design
 
 **Compare pre-0DTE (2020) vs post-0DTE (2024) detection rates:**
+
 - If no difference: 0DTE has no structural effect
 - If large difference: 0DTE fundamentally changes dealer constraints
 
@@ -273,11 +286,13 @@ p < 0.001 (REJECT H0)
 **User Guidance**: "I'm viewing the cache like a redis solution and db as the storage"
 
 **Implementation**:
+
 - **Database**: Primary source (permanent storage, indexed queries)
 - **File Cache**: Fallback only (temporary, Redis-like)
 - **Compatibility**: Seamless handling of mixed sources (2024 in DB, 2020 in cache)
 
 **Two-Layer Architecture**:
+
 ```
 Layer 1: Get trading days list
   1. Try database query (primary)
@@ -300,6 +315,7 @@ Layer 2: Get GEX data for each day
 **Problem**: 2020 cache uses legacy field names (net_gex vs net_gex_usd)
 
 **Solution**: Compatibility aliases in GEXCacheManager
+
 ```python
 if 'net_gex' in data and 'net_gex_usd' not in data:
     data['net_gex_usd'] = data['net_gex']
@@ -316,10 +332,12 @@ if 'spot_price' in data and 'underlying_price' not in data:
 **Achievement**: 50% cost reduction, 4-6x time reduction
 
 **Implementation**:
+
 - Phase 1-3: o4-mini reasoning model (higher quality)
 - Phase 4: gpt-4o-mini standard model (speed-optimized)
 
 **Performance**:
+
 - Phase 3: 23 minutes for 223 windows (vs ~2 hours sync API)
 - Phase 4: 6.6 minutes for 223 windows (vs ~1.5 hours sync API)
 - Total savings: $13.60 (50% vs sync API)
@@ -349,6 +367,7 @@ if 'spot_price' in data and 'underlying_price' not in data:
 **Status**: Created, ready if needed for revisions
 
 **Usage**:
+
 ```bash
 # 2023 full year
 python scripts/data_collection/collect_year_gex.py --year 2023
@@ -364,20 +383,24 @@ python scripts/data_collection/collect_year_gex.py --year 2025 --ytd
 ## Files Generated
 
 ### Phase 3 Results
+
 - `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`
 - `batch_jobs/batch_691ea7f7b79481909f4667eaff640f26_metadata.json`
 
 ### Phase 4 Results
+
 - `reports/validation/paper2_regime_windows/phase4_baseline_2020.yaml`
 - `batch_jobs/batch_691f37d94ef0819099136e88a69bef82_metadata.json`
 
 ### Documentation
+
 - `docs/papers/paper2/results/phase3_results.md` (comprehensive analysis)
 - `docs/papers/paper2/results/phase4_results.md` (0DTE hypothesis confirmation)
 - `docs/papers/paper2/validation_complete_summary.md` (this file)
 - `docs/papers/paper2/README.md` (updated with all phases complete)
 
 ### Coordination
+
 - `.claude/sync.yaml` (updated with Phase 3/4 completion)
 - GitHub Issue #89 (updated with validation completion)
 - GitHub Issue #107 (updated with final results)
@@ -409,6 +432,7 @@ python scripts/data_collection/collect_year_gex.py --year 2025 --ytd
 **Title**: "Detecting Persistent Gamma Exposure Regimes with Large Language Models: Evidence from 0DTE Options Proliferation"
 
 **Sections**:
+
 1. **Introduction**: LLMs for market microstructure, 0DTE background
 2. **Methodology**: 30-day regime criteria, obfuscation testing, Batch API framework
 3. **Validation**: 4-phase testing (1,307 windows, $13.60 cost)
@@ -423,6 +447,7 @@ python scripts/data_collection/collect_year_gex.py --year 2025 --ytd
 ### Data Evidence
 
 **Validation Windows**: 1,307 total
+
 - Phase 1: 52 (Q1 2024 baseline)
 - Phase 2: 809 (negative controls)
 - Phase 3: 223 (full 2024)
@@ -437,16 +462,19 @@ python scripts/data_collection/collect_year_gex.py --year 2025 --ytd
 ### Extensions (Optional for Revisions)
 
 **2023 Transition Year**:
+
 - Expected: 30-50% detection (intermediate)
 - Cost: $0.07
 - Value: Confirms gradual transition (not step change)
 
 **2025 Current Year**:
+
 - Expected: 70-80% detection (sustained extreme)
 - Cost: $0.05
 - Value: Confirms structural shift persists
 
 **Phase 1.5 Dual GEX** (Issue #138):
+
 - Separate GEX_OI (structural) from GEX_VOL (activity)
 - Explains profitability variance in Paper #1
 - Timeline: After Paper #2 submission

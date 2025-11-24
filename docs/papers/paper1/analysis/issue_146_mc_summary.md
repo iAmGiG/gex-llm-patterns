@@ -19,11 +19,13 @@
 **Short Answer**: **Subtle but genuine differentiation exists in unprompted responses (Phase 1), but rich prompted responses show templates (Phase 2).**
 
 **Phase 1 (Unprompted Brief Responses)**: ✓ **Modest Reasoning Adaptation**
+
 - Q1: "Forced to buy as spot price rises" (directional, active)
 - Q4: "Maintain equilibrium at Flip Point" (neutral, stabilizing)
 - Confidence increases 79.5→80.7 despite alpha decline
 
 **Phase 2 (Prompted Rich Responses)**: ✗ **Template Application**
+
 - Both Q1 and Q4: "Strong amplification", 197 vs 186 keywords (identical)
 - Prompt bias triggered learned templates
 
@@ -38,11 +40,13 @@
 **Method**: Extracted WHO/WHOM/WHAT reasoning from 2024 validation logs
 
 **Q1 2024 (High Alpha, Sharpe 1.8)**:
+
 - **60% use**: "Forced to buy as spot price rises"
 - **Language**: Directional, active voice, specific action
 - **Mechanism**: Amplification (implied)
 
 **Q4 2024 (Zero Alpha, Sharpe 0.1)**:
+
 - **50% use**: "Maintain equilibrium at Flip Point"
 - **Language**: Non-directional, neutral framing, stabilizing
 - **Mechanism**: Dampening (implied)
@@ -55,6 +59,7 @@
 | Mechanism | Amplification | Equilibrium |
 
 **Confidence Scores**:
+
 - Q1: 79.5
 - Q4: 80.7 (increases despite alpha decline)
 
@@ -75,11 +80,13 @@
 **Nearly identical** despite 1.7 Sharpe point difference.
 
 **Keyword Frequencies**:
+
 - Q1: 197 amplification keywords, 2 dampening
 - Q4: 186 amplification keywords, 1 dampening
 - **No significant difference** (χ² test p > 0.05)
 
 **Intensity Language**:
+
 - Q1: 100% "Strong amplification" (25/25)
 - Q4: 100% "Strong amplification" (25/25)
 
@@ -115,11 +122,13 @@
 ### Supporting Evidence
 
 **Phase 1 Strengths**:
+
 - 60% Q1 use directional forcing, 50% Q4 use equilibrium maintenance
 - Confidence increases despite alpha decline (refutes profit-chasing)
 - Unprompted responses (no bias)
 
 **Phase 2 Explanation**:
+
 - Rich prompts triggered templates (197 vs 186 keywords, identical)
 - Evidence of prompt bias, not lack of reasoning
 - Methodological artifact (explicit keywords corrupted signal)
@@ -193,10 +202,12 @@
 ## Files for MC Review
 
 **Analysis**:
+
 - `docs/papers/paper1/analysis/issue_146_complete_analysis.md` (15 pages, comprehensive)
 - `docs/papers/paper1/analysis/issue_146_mc_summary.md` (this document, 4 pages)
 
 **Data**:
+
 - `issue_146_reasoning_by_quarter.csv` (519 detections, Phase 1)
 - `issue_146_phase2_batch_results_*.csv` (50 rich responses, Phase 2)
 - `issue_146_keyword_analysis.yaml` (keyword frequencies)

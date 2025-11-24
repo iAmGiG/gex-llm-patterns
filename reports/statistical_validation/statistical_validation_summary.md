@@ -35,14 +35,17 @@ Two statistical tests were performed to validate the relationship between gamma 
 ## Issue #99: Granger Causality Test Results
 
 ### Research Question
+
 Does past GEX improve forecasts of realized volatility beyond volatility's own history?
 
 ### Methodology
+
 - **Test**: Granger causality test (lags 1-5)
 - **Sample**: 224 observations (after differencing)
 - **Variables**: GEX (first-differenced), Realized volatility (stationary)
 
 ### Stationarity Tests
+
 - **GEX**: Non-stationary (p=0.7454) → First-differenced
 - **Volatility**: Stationary (p=0.0010) → Used as-is
 
@@ -61,10 +64,12 @@ Does past GEX improve forecasts of realized volatility beyond volatility's own h
 ### Interpretation
 
 **What this DOES NOT mean**:
+
 - ❌ GEX and volatility are unrelated
 - ❌ LLM pattern detection is invalid
 
 **What this DOES mean**:
+
 - ✅ GEX does not predict volatility in a **linear Granger sense**
 - ✅ The relationship may be:
   - **Contemporaneous** (same-day effect, not lagged)
@@ -73,6 +78,7 @@ Does past GEX improve forecasts of realized volatility beyond volatility's own h
   - **High-frequency** (intraday dynamics not captured by daily data)
 
 **Why LLM detection still valid**:
+
 - LLM detects **structural constraints** (dealers must hedge)
 - LLM predictions materialize 91.2% of the time
 - Lack of Granger causality suggests constraints manifest contemporaneously or via non-linear dynamics
@@ -82,9 +88,11 @@ Does past GEX improve forecasts of realized volatility beyond volatility's own h
 ## Issue #100: Lead-Lag Analysis Results
 
 ### Research Question
+
 How much higher is forward volatility in Negative GEX regimes compared to Positive/Neutral?
 
 ### Methodology
+
 - **Test**: Regime comparison (Negative vs Neutral vs Positive)
 - **Sample**: 242 trading days (2024)
 - **Variables**: GEX regime, T+1 absolute return, rolling volatility
@@ -94,6 +102,7 @@ How much higher is forward volatility in Negative GEX regimes compared to Positi
 Since all 242 days are Negative GEX, traditional regime comparison cannot be performed.
 
 **Statistics for Negative GEX Regime**:
+
 - **Mean T+1 volatility**: 0.627% (62.7 bps)
 - **Std dev**: 0.546%
 - **Observations**: 190 days (after rolling calculations)
@@ -103,17 +112,20 @@ Since all 242 days are Negative GEX, traditional regime comparison cannot be per
 Within the Negative GEX regime, correlation between GEX magnitude and volatility:
 
 **Correlation (GEX vs T+1 Volatility)**:
+
 - Needs to be calculated from raw data
 - Hypothesis: More negative GEX → higher volatility
 
 ### Interpretation
 
 **Why single regime occurred**:
+
 1. **0DTE Explosion**: 0DTE options now dominate SPY volume (~50%+)
 2. **Structural Short Gamma**: Market makers structurally short gamma
 3. **New Normal**: Positive GEX may be rare or non-existent post-2022
 
 **Implications for Paper #1**:
+
 - Cannot use "regime comparison" framing
 - Can report: "100% of 2024 days in Negative GEX regime"
 - Strengthens obfuscation methodology (LLM detects this structural regime)
@@ -125,10 +137,12 @@ Within the Negative GEX regime, correlation between GEX magnitude and volatility
 ### Section V.D: Statistical Validation
 
 **Do NOT include**:
+
 - ❌ Granger causality table (null result, confusing for readers)
 - ❌ Lead-lag regime comparison (impossible with single regime)
 
 **DO include**:
+
 - ✅ **Descriptive statistics**: "All 242 trading days exhibited negative GEX (< -$2B), with mean -$19.87B"
 - ✅ **Structural finding**: "The 0DTE options explosion has created a persistent negative gamma regime"
 - ✅ **Context for LLM detection**: "LLM correctly identified this structural constraint across all test days"
@@ -146,12 +160,14 @@ Within the Negative GEX regime, correlation between GEX magnitude and volatility
 If sequential analysis (5-day lookback) is pursued:
 
 **Hypothesis**: GEX *trajectories* predict volatility better than levels
+
 - Test: Does GEX acceleration (Δ²GEX) predict forward volatility?
 - Rationale: Dealers react to changing hedging needs, not static positions
 
 ### For Paper #3 (Cross-Asset)
 
 Test on individual equities to find assets with positive/neutral GEX regimes:
+
 - **Hypothesis**: Large-cap stocks may have positive GEX (retail buying calls)
 - **Test**: AAPL, MSFT, NVDA, TSLA options
 - **Goal**: Enable regime comparison analysis
@@ -161,11 +177,13 @@ Test on individual equities to find assets with positive/neutral GEX regimes:
 ## Data Files
 
 **Generated Files**:
+
 - `reports/statistical_validation/gamma_positioning_timeseries_2024.csv` (26 KB)
 - `docs/papers/paper1/tables/table_granger_all.tex` (LaTeX table - null results)
 - `docs/papers/paper1/tables/table_granger_negative.tex` (LaTeX table - null results)
 
 **Raw Data Source**:
+
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q*.yaml` (Q1-Q4 validation reports)
 
 ---
@@ -175,6 +193,7 @@ Test on individual equities to find assets with positive/neutral GEX regimes:
 ### 1. Market Structure Has Changed
 
 2024 is not representative of historical options markets:
+
 - **Pre-2022**: Positive/negative/neutral GEX regimes existed
 - **Post-2022**: 0DTE explosion → persistent negative gamma
 
@@ -183,6 +202,7 @@ Test on individual equities to find assets with positive/neutral GEX regimes:
 ### 2. Statistical Tests Require Variability
 
 Granger and lead-lag analyses assume regime variation:
+
 - **Granger**: Assumes lagged relationships
 - **Lead-lag**: Assumes regime switching
 
@@ -191,6 +211,7 @@ Granger and lead-lag analyses assume regime variation:
 ### 3. LLM Detection Is Structural
 
 LLM detected constraints across 100% of negative GEX days:
+
 - Proves detection is **structural** (not regime-dependent)
 - Validates obfuscation methodology (no temporal context needed)
 - Strengthens Paper #1 contribution (robust to market regime)

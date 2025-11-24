@@ -17,12 +17,11 @@ sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 
 # Set up logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
-def test_premium_api(symbol='SPY', date='2024-01-02', data_source='production'):
+def test_premium_api(symbol="SPY", date="2024-01-02", data_source="production"):
     """Test the Alpha Vantage Premium API configuration."""
 
     logger.info("Testing Alpha Vantage Premium API configuration...")
@@ -33,12 +32,9 @@ def test_premium_api(symbol='SPY', date='2024-01-02', data_source='production'):
 
     logger.info(f"Testing GEX calculation for {symbol} on {date}")
 
-    result = gex_interface.calculate_gex_for_symbol(
-        symbol=symbol,
-        date=date
-    )
+    result = gex_interface.calculate_gex_for_symbol(symbol=symbol, date=date)
 
-    if result['status'] == 'success':
+    if result["status"] == "success":
         logger.info(f"✅ Success! GEX: ${result.get('net_gex', 0):,.0f}")
         logger.info(f"Data source: {result.get('data_source')}")
         logger.info(f"Spot price: ${result.get('spot_price', 0):.2f}")
@@ -49,45 +45,29 @@ def test_premium_api(symbol='SPY', date='2024-01-02', data_source='production'):
     stats = gex_interface.get_stats()
     logger.info(f"Interface stats: {stats}")
 
-    return result['status'] == 'success'
+    return result["status"] == "success"
 
 
 def main():
     """Main function with command-line argument parsing."""
-    parser = argparse.ArgumentParser(
-        description='Test Alpha Vantage Premium API and populate historical cache'
+    parser = argparse.ArgumentParser(description="Test Alpha Vantage Premium API and populate historical cache")
+    parser.add_argument("--symbol", default="SPY", help="Symbol to test (default: SPY)")
+    parser.add_argument("--date", default="2024-01-02", help="Date to test in YYYY-MM-DD format (default: 2024-01-02)")
+    parser.add_argument(
+        "--data-source",
+        default="production",
+        choices=["production", "cache", "sample"],
+        help="Data source to use (default: production)",
+    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
+    parser.add_argument(
+        "--intraday", action="store_true", help="Create intraday snapshots from daily data (experimental)"
     )
     parser.add_argument(
-        '--symbol',
-        default='SPY',
-        help='Symbol to test (default: SPY)'
-    )
-    parser.add_argument(
-        '--date',
-        default='2024-01-02',
-        help='Date to test in YYYY-MM-DD format (default: 2024-01-02)'
-    )
-    parser.add_argument(
-        '--data-source',
-        default='production',
-        choices=['production', 'cache', 'sample'],
-        help='Data source to use (default: production)'
-    )
-    parser.add_argument(
-        '--verbose', '-v',
-        action='store_true',
-        help='Enable verbose logging'
-    )
-    parser.add_argument(
-        '--intraday',
-        action='store_true',
-        help='Create intraday snapshots from daily data (experimental)'
-    )
-    parser.add_argument(
-        '--times',
-        nargs='+',
-        default=['15:30:00', '16:00:00'],
-        help='Intraday times to create snapshots (default: 15:30:00 16:00:00)'
+        "--times",
+        nargs="+",
+        default=["15:30:00", "16:00:00"],
+        help="Intraday times to create snapshots (default: 15:30:00 16:00:00)",
     )
 
     args = parser.parse_args()
@@ -98,11 +78,7 @@ def main():
 
     logger.info(f"Testing with symbol={args.symbol}, date={args.date}, data_source={args.data_source}")
 
-    success = test_premium_api(
-        symbol=args.symbol,
-        date=args.date,
-        data_source=args.data_source
-    )
+    success = test_premium_api(symbol=args.symbol, date=args.date, data_source=args.data_source)
 
     if success:
         print("✅ Alpha Vantage Premium API is configured and working!")
@@ -126,17 +102,17 @@ def create_intraday_snapshots(symbol: str, date: str, times: list):
 
         # Get daily data
         result = fetch_market_data(symbol=symbol, end_date=date, use_cache=True)
-        if result['status'] != 'success':
+        if result["status"] != "success":
             logger.error(f"Failed to get market data: {result.get('message', 'Unknown error')}")
             return
 
-        market_data = result['data']
+        market_data = result["data"]
         if market_data.empty:
             logger.error("No market data found")
             return
 
         # Get closing price
-        close_price = float(market_data['close'].iloc[-1])
+        close_price = float(market_data["close"].iloc[-1])
 
         for time_str in times:
             timestamp = f"{date} {time_str}"

@@ -11,16 +11,20 @@
 ## Actions Completed
 
 ### Closed Issues (2)
+
 1. **#6** - Historical Pattern Discovery: Superseded by LLM-based approach (Issue #89)
 2. **#45** - Unified Data Storage: Current `.cache/` system sufficient
 
 ### Updated Issues (3)
+
 3. **#8** - Walk-Forward Backtesting: Clarified as post-PhD work
 4. **#9** - Results Analysis: Marked Paper #1 complete
 5. **#29** - GEX Calculator: Documented implementation status
 
 ### Organized on Project Board (16 issues)
+
 All remaining issues added to "gex-llm-patterns" project board with complete metadata:
+
 - Status (ToDo/Blocked/Backlog)
 - Priority (Critical/P1/P2/P3/Research)
 - Size (XS/S/M/L/XL)
@@ -32,20 +36,24 @@ All remaining issues added to "gex-llm-patterns" project board with complete met
 ## Current Issue Breakdown
 
 ### Critical Priority (Paper #2 Critical Path)
+
 - **#89**: Sequential GEX Analysis ← **START NOW** (blocks Paper #2)
 - **#108**: Sequential Validation (blocked by #89)
 - **#107**: Paper #2 Strategy (blocked by #108)
 
 ### P1 Priority (Data Infrastructure)
+
 - **#103**: Collect 2023 SPY data (ready to run)
 - **#106**: Collect 2025 SPY data (ready to run)
 - **#104**: Multi-year DB structure (blocked by #103, #106)
 - **#105**: Paper #1 multi-year validation (blocked by #104)
 
 ### P2 Priority (Cross-Asset Expansion)
+
 - **#87**: Individual equities (Paper #3 foundation)
 
 ### P3/Research Priority (Backlog)
+
 - **#13**: Short Put Arbitrage (needs new data source)
 - **#16**: Options Chain QC (valid enhancement)
 - **#74**: OI-to-Volume patterns (valid research idea)
@@ -82,6 +90,7 @@ Independent:
 ## Recommended Execution Order
 
 ### This Week (Critical Path)
+
 1. **Issue #89**: Sequential GEX Analysis (3-5 days)
    - Critical blocker for Paper #2
    - Uses existing 2024 data
@@ -96,10 +105,12 @@ Independent:
    - Policy shift regime test
 
 ### Next 2-3 Weeks
+
 4. **Issue #108**: Sequential validation (after #89)
 5. **Issue #104**: Multi-year DB organization (after #103, #106)
 
 ### Later (After Paper #2 Progress)
+
 6. **Issue #107**: Write Paper #2
 7. **Issue #105**: Paper #1 multi-year (during review period)
 8. **Issue #87**: Individual equities (Paper #3)
@@ -109,16 +120,19 @@ Independent:
 ## Project Status
 
 ### Data Coverage
+
 - ✅ **2024 SPY**: 252/252 days (100%, Issue #102 complete)
 - ⏳ **2023 SPY**: 0/252 days (pending Issue #103)
 - ⏳ **2025 SPY**: 0/210 days (pending Issue #106)
 
 ### Paper Status
+
 - ✅ **Paper #1**: Submitted to IEEE LLM-Finance 2025 workshop
 - ⏳ **Paper #2**: Waiting on Issue #89 (critical blocker)
 - 🔜 **Paper #3**: Planned after Paper #2 progress
 
 ### System Health
+
 - ✅ All validation tools operational
 - ✅ Database backup/backfill tools ready
 - ✅ Multi-pattern validation complete for 2024
@@ -153,11 +167,13 @@ gh issue comment [number] --body "update"
 ## Next Session Focus
 
 **Primary**: Issue #89 (Sequential GEX Analysis)
+
 - THE critical blocker for Paper #2
 - Well-scoped and ready to implement
 - 3-5 day timeline
 
 **Secondary** (Parallel): Issues #103, #106 (Data Collection)
+
 - Can run in background while working on #89
 - Use existing tools from Issue #102
 - Low risk, high value for multi-year validation

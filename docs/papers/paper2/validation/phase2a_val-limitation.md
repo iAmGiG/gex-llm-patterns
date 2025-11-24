@@ -30,6 +30,7 @@ sign_flips <= 5
 **Problem**: When a 30-day window has very high GEX magnitude and strong sign bias, shuffling preserves these statistical properties even though temporal structure is destroyed.
 
 **Example (Q1 2024 window)**:
+
 - Original: 28 negative days, $32B avg, 4 flips → DETECTED
 - Shuffled: 28 negative days, $32B avg, 17 flips → STILL DETECTED (61% of shuffled windows)
   - Sign distribution preserved: 28/30 negative
@@ -37,6 +38,7 @@ sign_flips <= 5
   - Only flips change (but threshold is ≤5, many shuffled windows still pass)
 
 **Why 2020 passes**:
+
 - Lower magnitude ($2.85B avg) → more windows fall below $5B threshold
 - Weaker sign bias → fewer windows have 21+/30 same-sign days
 - Result: 12.1% detection (acceptable <10% target, close)
@@ -46,11 +48,13 @@ sign_flips <= 5
 ## Interpretation
 
 **Not a fatal flaw**:
+
 1. Other negative controls passed (Phase 2b transitional, Phase 2c low magnitude)
 2. 2020 shuffle passed (12.1%)
 3. Core methodology still valid (69.1pp discrimination 2020 vs 2024)
 
 **Limitation to document**:
+
 - Methodology more sensitive to statistical properties than ideal
 - Very high-magnitude regimes (2024 0DTE era) harder to filter via shuffle test
 - Temporal structure not fully tested by shuffle alone
@@ -60,12 +64,14 @@ sign_flips <= 5
 ## Alternative Negative Control (Future Work)
 
 **Consecutive Runs Test** (better temporal structure validation):
+
 - Count consecutive runs of same-sign GEX
 - True persistent regime: Long runs (10-15 consecutive days)
 - Shuffled data: Short runs (2-3 consecutive days)
 - This would better test temporal ordering vs statistical distribution
 
 **Example**:
+
 ```python
 original: [-, -, -, -, -, -, -, -, -, -, +, +, +, -, -, -]  # 10-day negative run
 shuffled: [-, +, -, -, +, -, +, -, -, +, -, -, +, -, +, -]  # max 2-day runs

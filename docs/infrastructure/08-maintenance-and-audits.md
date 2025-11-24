@@ -215,18 +215,22 @@ if 'net_gex_usd' not in data:
 **Answer**:
 
 Paper #1 (Agent System):
+
 ```
 User Request → Agent → Pattern Library → LLM (multi-turn) → Agent Tools → Result
 ```
+
 - Multi-step reasoning (detect → explain → validate)
 - Tool orchestration (fetch data, calculate GEX, detect patterns)
 - Pattern library integration (8+ pattern types)
 - Conversation state management
 
 Paper #2 (Direct Batch API):
+
 ```
 GEX Sequence → Prompt Template → LLM (single-shot) → JSON Result
 ```
+
 - Single classification task ("Is this persistent?")
 - All data pre-loaded in prompt
 - No tool calls needed
@@ -235,12 +239,14 @@ GEX Sequence → Prompt Template → LLM (single-shot) → JSON Result
 **Architectural Decision**: CORRECT ✅
 
 **Rationale**:
+
 1. **No over-engineering** - Agents add complexity only when needed
 2. **Cost efficiency** - Batch API = 50% cheaper ($0.015 vs $0.030 per window)
 3. **Deterministic** - Same prompt every time (no agent state variations)
 4. **Scalable** - Async processing (agent would block terminal for hours)
 
 **The prompt IS the agent** - Paper #2's 108-line prompt template contains:
+
 - Task definition
 - Classification framework
 - Mechanism explanations
@@ -259,6 +265,7 @@ This is equivalent to a "single-turn agent" - no conversation state needed.
 #### Issue #146 Files Consolidation (Paper #1)
 
 **Before** (3 separate files):
+
 ```
 docs/papers/paper1/analysis/
 ├── issue_146_complete_analysis.md     (17.6 KB)
@@ -267,6 +274,7 @@ docs/papers/paper1/analysis/
 ```
 
 **After** (1 consolidated file):
+
 ```
 docs/papers/paper1/analysis/
 └── issue_146_alpha_divergence_complete.md  (~37 KB)
@@ -282,6 +290,7 @@ docs/papers/paper1/analysis/
 #### Batch Metadata Cleanup
 
 **Removed**:
+
 - `batch_metadata_batch_69225e32e6e8819085a97e2e31ecb789.yaml` (temporary tracking)
 
 **Reason**: Temporary tracking file for Issue #146 Phase 2, not needed after analysis complete
@@ -289,12 +298,14 @@ docs/papers/paper1/analysis/
 #### Development and Infrastructure Index Creation
 
 **New files created**:
+
 - `docs/development/README.md` - Index development guides (worktree, testing, etc.)
 - `docs/infrastructure/README.md` - Index infrastructure audits and architecture docs
 
 ### Naming Convention Compliance
 
 **Existing Patterns Verified**:
+
 - Infrastructure: `descriptive_name_YYYYMMDD.md` ✅
 - Paper analysis: `issue_NNN_description.md` ✅
 - Guides: `topic_name.md` ✅
@@ -348,34 +359,40 @@ docs/papers/paper1/analysis/
 ### November 22, 2025 - Infrastructure Grooming Audit
 
 **Completed Actions**:
+
 - Externalized 240 lines of hardcoded config (196 prompt + 44 thresholds)
 - Fixed field name aliasing bug
 - Documented worktree cache strategy
 - Created developer guides for cache management
 
 **Files Modified**:
+
 - `config_defaults/llm_prompts.yaml` (+196 lines)
 - `config_defaults/analysis_config.yaml` (+44 lines)
 - `src/validation/regime_classifier.py` (config integration)
 - `src/llm/mechanics_prompt_builder.py` (prompt documentation)
 
 **Documentation Created**:
+
 - `docs/infrastructure/grooming_audit_nov22_2025.md` (audit findings)
 - `docs/development/worktree_cache_management.md` (developer guide)
 
 ### November 24, 2025 - Documentation Consolidation
 
 **Completed Actions**:
+
 - Consolidated Paper #1 Issue #146 files (3 → 1)
 - Removed temporary batch metadata files
 - Created infrastructure index files
 - Merged infrastructure documentation (13 files → 9 sequential files)
 
 **Files Consolidated**:
+
 - Paper #1 archive: 5 files → 1 comprehensive archive
 - Infrastructure docs: system/ + reference/ + infrastructure/ → 9 sequential files
 
 **Documentation Created**:
+
 - `docs/infrastructure/README.md` (infrastructure index)
 - `docs/development/README.md` (development index)
 - `docs/infrastructure/01-09-*.md` (9 sequential consolidated files)

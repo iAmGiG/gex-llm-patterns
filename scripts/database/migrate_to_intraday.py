@@ -9,12 +9,12 @@ import logging
 import sqlite3
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class IntradayMigration:
@@ -31,6 +31,7 @@ class IntradayMigration:
         try:
             if self.db_path.exists():
                 import shutil
+
                 shutil.copy2(self.db_path, self.backup_path)
                 logger.info(f"Created backup: {self.backup_path}")
                 return True
@@ -49,21 +50,23 @@ class IntradayMigration:
 
         try:
             with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT name FROM sqlite_master
                     WHERE type='table' AND name NOT LIKE 'sqlite_%'
-                """)
+                """
+                )
 
                 existing_tables = [row[0] for row in cursor.fetchall()]
 
                 logger.info(f"Existing tables: {existing_tables}")
 
                 return {
-                    'daily_gex_metrics': 'daily_gex_metrics' in existing_tables,
-                    'strike_gex_details': 'strike_gex_details' in existing_tables,
-                    'intraday_gex_metrics': 'intraday_gex_metrics' in existing_tables,
-                    'intraday_strike_details': 'intraday_strike_details' in existing_tables,
-                    'algo_time_markers': 'algo_time_markers' in existing_tables
+                    "daily_gex_metrics": "daily_gex_metrics" in existing_tables,
+                    "strike_gex_details": "strike_gex_details" in existing_tables,
+                    "intraday_gex_metrics": "intraday_gex_metrics" in existing_tables,
+                    "intraday_strike_details": "intraday_strike_details" in existing_tables,
+                    "algo_time_markers": "algo_time_markers" in existing_tables,
                 }
         except Exception as e:
             logger.error(f"Failed to check schema: {e}")
@@ -77,7 +80,7 @@ class IntradayMigration:
                 logger.error(f"Schema file not found: {self.schema_path}")
                 return False
 
-            with open(self.schema_path, 'r') as f:
+            with open(self.schema_path, "r") as f:
                 schema_sql = f.read()
 
             # Ensure database directory exists
@@ -106,36 +109,39 @@ class IntradayMigration:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 # Check that new tables exist
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT name FROM sqlite_master
                     WHERE type='table' AND name IN (
                         'intraday_gex_metrics',
                         'intraday_strike_details',
                         'algo_time_markers'
                     )
-                """)
+                """
+                )
 
                 new_tables = [row[0] for row in cursor.fetchall()]
-                expected_tables = ['intraday_gex_metrics',
-                                   'intraday_strike_details', 'algo_time_markers']
+                expected_tables = ["intraday_gex_metrics", "intraday_strike_details", "algo_time_markers"]
 
                 missing_tables = set(expected_tables) - set(new_tables)
                 if missing_tables:
-                    logger.error(
-                        f"Missing tables after migration: {missing_tables}")
+                    logger.error(f"Missing tables after migration: {missing_tables}")
                     return False
 
                 # Check that indexes exist
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT name FROM sqlite_master
                     WHERE type='index' AND name LIKE 'idx_intraday%'
-                """)
+                """
+                )
 
                 indexes = [row[0] for row in cursor.fetchall()]
                 logger.info(f"Created indexes: {indexes}")
 
                 # Check that views exist
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT name FROM sqlite_master
                     WHERE type='view' AND name IN (
                         'friday_gamma_analysis',
@@ -143,7 +149,8 @@ class IntradayMigration:
                         'max_gamma_strikes',
                         'friday_330_validation'
                     )
-                """)
+                """
+                )
 
                 views = [row[0] for row in cursor.fetchall()]
                 logger.info(f"Created views: {views}")
@@ -160,13 +167,13 @@ class IntradayMigration:
         schema_status = self.check_existing_schema()
 
         return {
-            'database_path': str(self.db_path),
-            'database_exists': self.db_path.exists(),
-            'backup_path': str(self.backup_path),
-            'schema_file': str(self.schema_path),
-            'existing_tables': schema_status,
-            'migration_needed': not schema_status.get('intraday_gex_metrics', False),
-            'database_size': self.db_path.stat().st_size if self.db_path.exists() else 0
+            "database_path": str(self.db_path),
+            "database_exists": self.db_path.exists(),
+            "backup_path": str(self.backup_path),
+            "schema_file": str(self.schema_path),
+            "existing_tables": schema_status,
+            "migration_needed": not schema_status.get("intraday_gex_metrics", False),
+            "database_size": self.db_path.stat().st_size if self.db_path.exists() else 0,
         }
 
     def run_migration(self, force: bool = False) -> bool:
@@ -178,7 +185,7 @@ class IntradayMigration:
         logger.info(f"Database info: {info}")
 
         # Check if migration needed
-        if not force and not info['migration_needed']:
+        if not force and not info["migration_needed"]:
             logger.info("Migration not needed - intraday tables already exist")
             return True
 
@@ -205,14 +212,10 @@ def main():
     """Run migration from command line."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Migrate database for intraday support")
-    parser.add_argument("--db-path", default=".cache/consolidated_historical.db",
-                        help="Database path")
-    parser.add_argument("--force", action="store_true",
-                        help="Force migration even if tables exist")
-    parser.add_argument("--info", action="store_true",
-                        help="Show migration info without running")
+    parser = argparse.ArgumentParser(description="Migrate database for intraday support")
+    parser.add_argument("--db-path", default=".cache/consolidated_historical.db", help="Database path")
+    parser.add_argument("--force", action="store_true", help="Force migration even if tables exist")
+    parser.add_argument("--info", action="store_true", help="Show migration info without running")
 
     args = parser.parse_args()
 

@@ -29,6 +29,7 @@ if 'net_gex' in data and 'net_gex_usd' not in data:
 **Problem Flow**:
 
 1. File cache exported from database has this structure:
+
    ```json
    {
      "total_gex": -17867256434.204144,
@@ -43,6 +44,7 @@ if 'net_gex' in data and 'net_gex_usd' not in data:
 3. No `net_gex_usd` alias created
 
 4. Prompt builder (`src/llm/mechanics_prompt_builder.py:387`) expects:
+
    ```python
    net_gex_b = day['net_gex_usd'] / 1e9
    ```
@@ -52,6 +54,7 @@ if 'net_gex' in data and 'net_gex_usd' not in data:
 ## Evidence
 
 **File Cache Data** (`.cache/gex_data/SPY/2021-01-06/gex_summary.json`):
+
 ```json
 {
   "total_gex": -17867256434.204144,
@@ -60,6 +63,7 @@ if 'net_gex' in data and 'net_gex_usd' not in data:
 ```
 
 **Batch Input** (`batch_regime_20251122_164817.jsonl`):
+
 ```
 Day T-29: +0.00B
 Day T-28: +0.00B
@@ -68,6 +72,7 @@ Day T-28: +0.00B
 ```
 
 **Validation Output**:
+
 ```
 Window 2021-01-06:
   avg_magnitude_billions: 0.0
@@ -79,6 +84,7 @@ Window 2021-01-06:
 ## Why 2025 Worked
 
 Batch `69223088f1688190be0e398337285cb1` (2025) achieved 100% detection because:
+
 - 2025 data exists in database `gex_database.db`
 - Database query path (lines 217-259) correctly maps `total_gex → net_gex_usd`
 - File cache fallback never triggered
@@ -86,6 +92,7 @@ Batch `69223088f1688190be0e398337285cb1` (2025) achieved 100% detection because:
 ## Impact
 
 **Affected Batches** (2021-2023 with file cache fallback):
+
 - `batch_69222fa2df488190a68fa4c2b75a5776` (2021: 0.0% detection)
 - `batch_69222ffaa6408190a14701dccc39b425` (2022: 0.0% detection)
 - `batch_69223048df5481908bba882d0a2f1ac5` (2023: 0.0% detection)
@@ -114,13 +121,16 @@ if 'net_gex_usd' not in data:
 ## Database Field Mapping
 
 **Database** (`daily_gex_metrics` table):
+
 - `total_gex` = Net gamma exposure (sum of calls + puts)
 
 **File Cache** (should have):
+
 - `total_gex` OR `net_gex` = Same value as database `total_gex`
 - `net_gex_usd` = Alias for prompt builder compatibility
 
 **Code Expectation**:
+
 - Prompt builder: `net_gex_usd` (line 387)
 - Database query: Maps `total_gex → net_gex_usd` (line 241)
 - File cache: Currently missing this mapping for `total_gex`
@@ -129,10 +139,12 @@ if 'net_gex_usd' not in data:
 
 1. Apply fix to `gex_cache_manager.py`
 2. Test with 2021-01-06 window:
+
    ```python
    fetcher.get_sequential_gex('SPY', '2021-01-06')
    # Should return net_gex_usd = -17867256434.204144
    ```
+
 3. Resubmit 2021-2023 batches
 4. Verify detection rates are non-zero with proper GEX magnitudes
 

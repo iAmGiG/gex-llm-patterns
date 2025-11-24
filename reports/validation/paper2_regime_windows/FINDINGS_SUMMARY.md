@@ -31,6 +31,7 @@ LLM-based regime detection identified a **structural market shift in 2020→2021
 ## The Transition: 2020 → 2021
 
 ### 2020 (Pre-Transition)
+
 - **12.1% detection** (27/223 windows)
 - **Why low?**: Magnitude failures
   - Detected windows: $5.4B avg (barely above $5B threshold)
@@ -40,6 +41,7 @@ LLM-based regime detection identified a **structural market shift in 2020→2021
 - **Regime**: Mostly positive GEX with low magnitudes
 
 ### 2021 (Post-Transition)
+
 - **100% detection** (250/250 windows)
 - **Why high?**: All 3 criteria passed
   - Avg magnitude: $21-30B (4-6x higher than 2020!)
@@ -48,6 +50,7 @@ LLM-based regime detection identified a **structural market shift in 2020→2021
 - **Regime**: Persistent negative GEX with high magnitudes
 
 ### The Shift
+
 - **GEX magnitude**: $17B → $27B (+58% increase)
 - **Sign structure**: 99.2% negative → 100% negative
 - **Regime stability**: Mixed → Perfectly persistent
@@ -57,6 +60,7 @@ LLM-based regime detection identified a **structural market shift in 2020→2021
 ## Why 2024 is Different (81.2% vs 100%)
 
 **2024 had volatility** (Feb-Mar period):
+
 - 42 non-detected windows (all transitional)
 - **6-10 sign flips** (threshold ≤5)
 - Good magnitude ($31-32B)
@@ -70,6 +74,7 @@ This shows the criteria are working correctly - detecting stable vs volatile per
 ## The Narrative: Three Eras
 
 ### Era 1: Pre-0DTE (2020 and earlier)
+
 - **Characteristics**:
   - Low gamma magnitudes ($4-17B)
   - Mixed positive/negative days
@@ -78,6 +83,7 @@ This shows the criteria are working correctly - detecting stable vs volatile per
 - **Market**: Traditional options market
 
 ### Era 2: 0DTE Emergence (2021-2023)
+
 - **Characteristics**:
   - Massive GEX increase ($20-30B)
   - 100% negative days (persistent short gamma)
@@ -86,6 +92,7 @@ This shows the criteria are working correctly - detecting stable vs volatile per
 - **Market**: 0DTE options force dealers into persistent negative gamma
 
 ### Era 3: Mature 0DTE (2024-2025)
+
 - **Characteristics**:
   - Continued high magnitudes ($30-32B)
   - 100% negative days maintained
@@ -98,6 +105,7 @@ This shows the criteria are working correctly - detecting stable vs volatile per
 ## What This Means
 
 ### The 0DTE Hypothesis
+
 The data **strongly supports** the 0DTE hypothesis:
 
 1. **Timing**: Shift occurred 2020→2021 (0DTE options introduced May 2022 SPX, but SPY had similar products earlier)
@@ -106,6 +114,7 @@ The data **strongly supports** the 0DTE hypothesis:
 4. **Stability**: New equilibrium with occasional volatility
 
 ### Alternative Explanations (Less Likely)
+
 - **COVID markets**: Would affect 2020, but shift persisted 2021-2025
 - **Fed policy**: Could explain 2020-2021, not 2022-2025 persistence
 - **Retail trading boom**: Would increase volume, not change sign structure
@@ -117,12 +126,14 @@ The data **strongly supports** the 0DTE hypothesis:
 ## Should We Go Back Further? (2016-2019)
 
 ### Arguments FOR
+
 1. **Options boom context**: 2016-2019 retail options growth
 2. **Baseline comparison**: Establish "normal" pre-COVID era
 3. **Trend identification**: Did GEX gradually increase or sudden shift?
 4. **Publication strength**: Longer timeseries = stronger claims
 
 ### Arguments AGAINST
+
 1. **Data collection**: ~1,000 trading days × 30-day windows = ~750 windows
 2. **Cost**: ~$11 (similar to current phase)
 3. **Diminishing returns**: Likely similar to 2020 (12% detection)
@@ -131,6 +142,7 @@ The data **strongly supports** the 0DTE hypothesis:
 ### Current Dataset Strength
 
 **What we have** (2020-2025):
+
 - ✅ Pre-transition baseline (2020: 12%)
 - ✅ Transition timing (2020→2021)
 - ✅ Post-transition stability (2021-2023: 100%)
@@ -139,6 +151,7 @@ The data **strongly supports** the 0DTE hypothesis:
 - ✅ COVID control (2020 vs 2021-2025)
 
 **What 2016-2019 would add**:
+
 - Pre-COVID baseline (likely similar to 2020: 10-15% detection)
 - Gradual vs sudden shift evidence
 - Longer timeseries for reviewers
@@ -146,12 +159,14 @@ The data **strongly supports** the 0DTE hypothesis:
 ### Recommendation
 
 **For Paper #2**: Current data is **sufficient**
+
 - 6 years (2020-2025) with clear transition
 - 2020 provides pre-transition baseline
 - Post-transition stability demonstrated (2021-2023)
 - Current state validated (2025)
 
 **For Future Work**: 2016-2019 would be **valuable but not critical**
+
 - Could be Phase 4B (separate paper or extension)
 - Lower priority than Paper #1 revisions
 - More relevant for historical market structure studies
@@ -161,11 +176,13 @@ The data **strongly supports** the 0DTE hypothesis:
 ## Cost-Benefit Analysis
 
 ### Extending to 2016-2019
+
 - **Benefit**: Stronger historical context (+10% publication value)
 - **Cost**: ~$11 + 1 week data collection + 1 week analysis
 - **Risk**: Likely redundant with 2020 baseline (10-15% detection)
 
 ### Current Dataset (2020-2025)
+
 - **Benefit**: Complete narrative with transition point ✅
 - **Cost**: Already paid ($11.26)
 - **Status**: Ready for Paper #2 writing
@@ -177,6 +194,7 @@ The data **strongly supports** the 0DTE hypothesis:
 **Current recommendation**: Proceed with 2020-2025 dataset for Paper #2.
 
 The 6-year span provides:
+
 1. Clear pre/post-transition comparison (2020 vs 2021)
 2. Stability validation (2021-2023 consistency)
 3. Volatility handling (2024 anomaly detection)

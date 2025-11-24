@@ -58,6 +58,7 @@ Or use LaTeX Workshop in VS Code (recommended).
 **Phase**: Pre-results (LaTeX structure complete, awaiting validation data)
 
 **TODO Sections** (marked in .tex files):
+
 - Abstract (write after Phase 1 results)
 - Introduction (complete after results)
 - Results (populate with actual data from Issue #108)
@@ -65,6 +66,7 @@ Or use LaTeX Workshop in VS Code (recommended).
 - Conclusion (summarize contribution)
 
 **Blocked By**:
+
 - Issue #108: Implement Sequential GEX Validation (Day 1-5 implementation)
 - Phase 1 fast test (50-day sample or full 248 windows)
 - GO/NO-GO decision (determines scope of final paper)
@@ -84,6 +86,7 @@ Or use LaTeX Workshop in VS Code (recommended).
 ### Pattern Taxonomy
 
 4 sequential pattern types:
+
 1. **Gamma Accumulation** - 30% magnitude increase (predicts high vol, P75 > 0.86%)
 2. **Gamma Relief** - 30% magnitude decrease (predicts low vol, P25 < 0.22%)
 3. **Gamma Reversal** - Sign flip (predicts spike, P90 > 1.32%) - **0% occurrence in 2024**
@@ -92,12 +95,14 @@ Or use LaTeX Workshop in VS Code (recommended).
 ### Empirical Thresholds (2024 SPY Data)
 
 **T+1 Volatility Distribution**:
+
 - P25: 0.22% (low vol)
 - P50: 0.48% (median)
 - P75: 0.86% (high vol)
 - P90: 1.32% (extreme vol)
 
 **Pattern Significance**:
+
 - $5B minimum mean GEX magnitude
 - $8B minimum for accumulation end / relief start
 - 40 minimum confidence score
@@ -109,9 +114,11 @@ Or use LaTeX Workshop in VS Code (recommended).
 ### Verified Academic Citations
 
 **Industry Practitioner Perspective**:
+
 - Fishman (2023) - Goldman Sachs gamma derivatives research
 
 **Peer-Reviewed Papers**:
+
 - Baltussen et al. (2021) - Hedging demand and intraday momentum (JFE)
 - Gao et al. (2018) - Market intraday momentum (JFE)
 
@@ -132,12 +139,14 @@ Or use LaTeX Workshop in VS Code (recommended).
 ## Phase 1 vs Phase 2 Strategy
 
 ### Phase 1 (2024 Baseline - Issue #108)
+
 - **Data**: 248 5-day windows (2024 SPY only)
 - **Thresholds**: 2024-specific (P75=0.86%, P25=0.22%, etc.)
 - **Goal**: GO/NO-GO decision (does sequential improve vs single-day?)
 - **Patterns Tested**: Accumulation, Relief, Persistent (Reversal 0% occurrence)
 
 ### Phase 2 (Multi-Year Extension - Issue #107, OPTIONAL)
+
 - **Data**: 702 5-day windows (2023-2025 combined)
 - **Thresholds**: Pooled (~5-10% higher, more conservative)
 - **Goal**: Demonstrate robustness across regimes
@@ -150,11 +159,13 @@ Or use LaTeX Workshop in VS Code (recommended).
 ## Related Documentation
 
 **Paper #2 Foundations**:
+
 - `docs/papers/paper2/outcome_verification_thresholds.md` - Empirical thresholds
 - `docs/papers/paper2/sequential_pattern_detection_rules.md` - Algorithmic definitions
 - `docs/papers/paper2/scope_boundaries.md` - In/out of scope decisions
 
 **GitHub Issues**:
+
 - Issue #107: Paper #2 Sequential GEX Validation Strategy
 - Issue #108: Implement Sequential GEX Validation (Phase 1)
 

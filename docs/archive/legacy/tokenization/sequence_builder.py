@@ -24,9 +24,7 @@ class SequenceBuilder:
     Build token sequences for LLM analysis from market data.
     """
 
-    def __init__(self,
-                 max_sequence_length=None,
-                 context_window_days=None):
+    def __init__(self, max_sequence_length=None, context_window_days=None):
         """
         Initialize sequence builder.
 
@@ -38,21 +36,19 @@ class SequenceBuilder:
 
         # Use config values as defaults, allow override via parameters
         self.max_sequence_length = max_sequence_length or config.get(
-            'tokenization.sequence_builder.max_sequence_length', 512)
+            "tokenization.sequence_builder.max_sequence_length", 512
+        )
         self.context_window_days = context_window_days or config.get(
-            'tokenization.sequence_builder.context_window_days', 20)
-        self.pattern_length = config.get(
-            'tokenization.sequence_builder.pattern_length', 5)
-        self.target_horizon = config.get(
-            'tokenization.sequence_builder.target_horizon', 1)
-        self.stride = config.get('tokenization.sequence_builder.stride', 1)
-        self.timeframes = config.get(
-            'tokenization.sequence_builder.timeframes', [5, 10, 20])
-        self.model_token_limits = config.get('tokenization.sequence_builder.model_token_limits', {
-            'gpt-4o-mini': 4096,
-            'gpt-4o': 8192,
-            'gpt-3.5-turbo': 4096
-        })
+            "tokenization.sequence_builder.context_window_days", 20
+        )
+        self.pattern_length = config.get("tokenization.sequence_builder.pattern_length", 5)
+        self.target_horizon = config.get("tokenization.sequence_builder.target_horizon", 1)
+        self.stride = config.get("tokenization.sequence_builder.stride", 1)
+        self.timeframes = config.get("tokenization.sequence_builder.timeframes", [5, 10, 20])
+        self.model_token_limits = config.get(
+            "tokenization.sequence_builder.model_token_limits",
+            {"gpt-4o-mini": 4096, "gpt-4o": 8192, "gpt-3.5-turbo": 4096},
+        )
 
         # Initialize tokenizers
         self.gex_tokenizer = GEXTokenizer()
@@ -60,11 +56,7 @@ class SequenceBuilder:
         self.event_tokenizer = EventTokenizer()
         self.vocabulary = TokenVocabulary()
 
-    def build_sequence(self,
-                       data,
-                       target_date: datetime.datetime,
-                       lookback_days=None,
-                       include_target=True):
+    def build_sequence(self, data, target_date: datetime.datetime, lookback_days=None, include_target=True):
         """
         Build a complete sequence for a target date.
 
@@ -90,70 +82,50 @@ class SequenceBuilder:
         window_data = data[start_date:end_date]
 
         if len(window_data) == 0:
-            logger.warning(
-                f"No data available for {target_date} with {lookback_days} day lookback")
+            logger.warning(f"No data available for {target_date} with {lookback_days} day lookback")
             return self._empty_sequence()
 
         # Build token components
-        tokens = {
-            'gex': [],
-            'price': [],
-            'events': [],
-            'context': []
-        }
+        tokens = {"gex": [], "price": [], "events": [], "context": []}
 
         # Tokenize GEX if available
-        if 'gex' in window_data.columns:
-            gex_tokens = self.gex_tokenizer.tokenize_series(
-                window_data['gex'],
-                rolling_window=True
-            )
-            tokens['gex'] = gex_tokens
+        if "gex" in window_data.columns:
+            gex_tokens = self.gex_tokenizer.tokenize_series(window_data["gex"], rolling_window=True)
+            tokens["gex"] = gex_tokens
 
         # Tokenize prices if available
-        if 'price' in window_data.columns:
-            price_tokens = self.price_tokenizer.tokenize_price_series(
-                window_data['price']
-            )
-            tokens['price'] = price_tokens
+        if "price" in window_data.columns:
+            price_tokens = self.price_tokenizer.tokenize_price_series(window_data["price"])
+            tokens["price"] = price_tokens
 
         # Detect and tokenize events
-        tokens['events'] = [''] * len(window_data)  # Initialize events list
-        if 'gex' in window_data.columns:
-            gex_events = self.event_tokenizer.detect_gex_events(
-                window_data['gex'])
+        tokens["events"] = [""] * len(window_data)  # Initialize events list
+        if "gex" in window_data.columns:
+            gex_events = self.event_tokenizer.detect_gex_events(window_data["gex"])
             for event in gex_events:
-                if event['date'] in window_data.index:
-                    idx = window_data.index.get_loc(event['date'])
-                    tokens['events'][idx] = event['event']
+                if event["date"] in window_data.index:
+                    idx = window_data.index.get_loc(event["date"])
+                    tokens["events"][idx] = event["event"]
 
         # Add context tokens for target date
         context = self.event_tokenizer.generate_context_tokens(target_date)
-        tokens['context'] = context
+        tokens["context"] = context
 
         # Combine into final sequence
         sequence = self._combine_tokens(tokens, window_data.index)
 
         # Add metadata
         metadata = {
-            'target_date': target_date.isoformat(),
-            'lookback_days': lookback_days,
-            'actual_days': len(window_data),
-            'token_counts': {k: len(v) for k, v in tokens.items()},
-            'sequence_length': len(sequence)
+            "target_date": target_date.isoformat(),
+            "lookback_days": lookback_days,
+            "actual_days": len(window_data),
+            "token_counts": {k: len(v) for k, v in tokens.items()},
+            "sequence_length": len(sequence),
         }
 
-        return {
-            'sequence': sequence,
-            'tokens': tokens,
-            'metadata': metadata
-        }
+        return {"sequence": sequence, "tokens": tokens, "metadata": metadata}
 
-    def build_pattern_sequences(self,
-                                data,
-                                pattern_length=None,
-                                target_horizon=None,
-                                stride=None):
+    def build_pattern_sequences(self, data, pattern_length=None, target_horizon=None, stride=None):
         """
         Build sequences for pattern mining.
 
@@ -199,24 +171,21 @@ class SequenceBuilder:
 
             # Create pattern sequence
             pattern_seq = {
-                'input': input_tokens,
-                'target': target_tokens,
-                'pattern': input_tokens + [SpecialToken.ARROW.value] + target_tokens,
-                'metadata': {
-                    'input_dates': input_data.index.tolist(),
-                    'target_dates': target_data.index.tolist(),
-                    'pattern_id': f"pattern_{i}"
-                }
+                "input": input_tokens,
+                "target": target_tokens,
+                "pattern": input_tokens + [SpecialToken.ARROW.value] + target_tokens,
+                "metadata": {
+                    "input_dates": input_data.index.tolist(),
+                    "target_dates": target_data.index.tolist(),
+                    "pattern_id": f"pattern_{i}",
+                },
             }
 
             sequences.append(pattern_seq)
 
         return sequences
 
-    def build_multi_timeframe_sequence(self,
-                                       data,
-                                       target_date: datetime.datetime,
-                                       timeframes=None):
+    def build_multi_timeframe_sequence(self, data, target_date: datetime.datetime, timeframes=None):
         """
         Build sequences with multiple timeframes.
 
@@ -231,33 +200,28 @@ class SequenceBuilder:
         # Use instance config values as defaults
         timeframes = timeframes or self.timeframes
         multi_sequence = {
-            'timeframes': {},
-            'combined': [],
-            'metadata': {
-                'target_date': target_date.isoformat(),
-                'timeframes': timeframes
-            }
+            "timeframes": {},
+            "combined": [],
+            "metadata": {"target_date": target_date.isoformat(), "timeframes": timeframes},
         }
 
         # Build sequence for each timeframe
         for tf in timeframes:
             seq = self.build_sequence(data, target_date, lookback_days=tf)
-            multi_sequence['timeframes'][f"tf_{tf}"] = seq
+            multi_sequence["timeframes"][f"tf_{tf}"] = seq
 
             # Add timeframe marker
-            tf_tokens = [f"[TF_{tf}]"] + seq['sequence'] + [f"[/TF_{tf}]"]
-            multi_sequence['combined'].extend(tf_tokens)
+            tf_tokens = [f"[TF_{tf}]"] + seq["sequence"] + [f"[/TF_{tf}]"]
+            multi_sequence["combined"].extend(tf_tokens)
 
         # Truncate if too long
-        if len(multi_sequence['combined']) > self.max_sequence_length:
-            multi_sequence['combined'] = multi_sequence['combined'][:self.max_sequence_length]
-            multi_sequence['metadata']['truncated'] = True
+        if len(multi_sequence["combined"]) > self.max_sequence_length:
+            multi_sequence["combined"] = multi_sequence["combined"][: self.max_sequence_length]
+            multi_sequence["metadata"]["truncated"] = True
 
         return multi_sequence
 
-    def _combine_tokens(self,
-                        tokens,
-                        dates: pd.DatetimeIndex):
+    def _combine_tokens(self, tokens, dates: pd.DatetimeIndex):
         """
         Combine different token types into a single sequence.
 
@@ -278,23 +242,23 @@ class SequenceBuilder:
             daily_tokens.append(f"[DAY_{i}]")
 
             # Add GEX token
-            if 'gex' in tokens and i < len(tokens['gex']):
-                daily_tokens.append(tokens['gex'][i])
+            if "gex" in tokens and i < len(tokens["gex"]):
+                daily_tokens.append(tokens["gex"][i])
 
             # Add price token
-            if 'price' in tokens and i < len(tokens['price']):
-                daily_tokens.append(tokens['price'][i])
+            if "price" in tokens and i < len(tokens["price"]):
+                daily_tokens.append(tokens["price"][i])
 
             # Add event tokens
-            if 'events' in tokens and i < len(tokens['events']) and tokens['events'][i]:
-                daily_tokens.append(tokens['events'][i])
+            if "events" in tokens and i < len(tokens["events"]) and tokens["events"][i]:
+                daily_tokens.append(tokens["events"][i])
 
             sequence.extend(daily_tokens)
 
         # Add context tokens at the end
-        if 'context' in tokens and tokens['context']:
+        if "context" in tokens and tokens["context"]:
             sequence.append(SpecialToken.SEP.value)
-            sequence.extend(tokens['context'])
+            sequence.extend(tokens["context"])
 
         sequence.append(SpecialToken.END.value)
 
@@ -305,14 +269,12 @@ class SequenceBuilder:
         tokens = []
 
         # Simple tokenization for pattern mining
-        if 'gex' in data.columns:
-            gex_tokens = self.gex_tokenizer.tokenize_series(
-                data['gex'], rolling_window=False)
+        if "gex" in data.columns:
+            gex_tokens = self.gex_tokenizer.tokenize_series(data["gex"], rolling_window=False)
             tokens.extend(gex_tokens)
 
-        if 'price' in data.columns:
-            price_tokens = self.price_tokenizer.tokenize_price_series(
-                data['price'])
+        if "price" in data.columns:
+            price_tokens = self.price_tokenizer.tokenize_price_series(data["price"])
             tokens.extend(price_tokens)
 
         return tokens
@@ -320,14 +282,12 @@ class SequenceBuilder:
     def _empty_sequence(self):
         """Return empty sequence structure."""
         return {
-            'sequence': [SpecialToken.START.value, SpecialToken.UNK.value, SpecialToken.END.value],
-            'tokens': {},
-            'metadata': {'error': 'No data available'}
+            "sequence": [SpecialToken.START.value, SpecialToken.UNK.value, SpecialToken.END.value],
+            "tokens": {},
+            "metadata": {"error": "No data available"},
         }
 
-    def encode_for_llm(self,
-                       sequence,
-                       model='gpt-4o-mini'):
+    def encode_for_llm(self, sequence, model="gpt-4o-mini"):
         """
         Encode sequence for specific LLM model.
 
@@ -343,17 +303,17 @@ class SequenceBuilder:
 
         # Truncate if needed
         if len(sequence) > max_tokens:
-            sequence = sequence[:max_tokens-1] + [SpecialToken.END.value]
+            sequence = sequence[: max_tokens - 1] + [SpecialToken.END.value]
 
         # Convert to string representation
-        text_sequence = ' '.join(sequence)
+        text_sequence = " ".join(sequence)
 
         return {
-            'text': text_sequence,
-            'tokens': sequence,
-            'token_count': len(sequence),
-            'model': model,
-            'truncated': len(sequence) >= max_tokens
+            "text": text_sequence,
+            "tokens": sequence,
+            "token_count": len(sequence),
+            "model": model,
+            "truncated": len(sequence) >= max_tokens,
         }
 
     def validate_sequences(self, sequences):
@@ -366,65 +326,52 @@ class SequenceBuilder:
         Returns:
             Validation report
         """
-        validation = {
-            'total_sequences': len(sequences),
-            'valid_sequences': 0,
-            'issues': [],
-            'statistics': {}
-        }
+        validation = {"total_sequences": len(sequences), "valid_sequences": 0, "issues": [], "statistics": {}}
 
         lengths = []
         token_types = set()
 
         for i, seq in enumerate(sequences):
             # Check structure
-            if 'sequence' not in seq:
-                validation['issues'].append(
-                    f"Sequence {i}: Missing 'sequence' key")
+            if "sequence" not in seq:
+                validation["issues"].append(f"Sequence {i}: Missing 'sequence' key")
                 continue
 
-            sequence = seq['sequence']
+            sequence = seq["sequence"]
             lengths.append(len(sequence))
 
             # Check for required tokens
             if SpecialToken.START.value not in sequence:
-                validation['issues'].append(
-                    f"Sequence {i}: Missing START token")
+                validation["issues"].append(f"Sequence {i}: Missing START token")
             if SpecialToken.END.value not in sequence:
-                validation['issues'].append(f"Sequence {i}: Missing END token")
+                validation["issues"].append(f"Sequence {i}: Missing END token")
 
             # Collect token types
             for token in sequence:
-                token_types.add(token.split('_')[0] if '_' in token else token)
+                token_types.add(token.split("_")[0] if "_" in token else token)
 
             # Check length
             if len(sequence) > self.max_sequence_length:
-                validation['issues'].append(
-                    f"Sequence {i}: Too long ({len(sequence)} > {self.max_sequence_length})"
-                )
+                validation["issues"].append(f"Sequence {i}: Too long ({len(sequence)} > {self.max_sequence_length})")
             else:
-                validation['valid_sequences'] += 1
+                validation["valid_sequences"] += 1
 
         # Calculate statistics
         if lengths:
-            validation['statistics'] = {
-                'mean_length': np.mean(lengths),
-                'std_length': np.std(lengths),
-                'min_length': min(lengths),
-                'max_length': max(lengths),
-                'unique_token_types': len(token_types),
-                'token_types': list(token_types)
+            validation["statistics"] = {
+                "mean_length": np.mean(lengths),
+                "std_length": np.std(lengths),
+                "min_length": min(lengths),
+                "max_length": max(lengths),
+                "unique_token_types": len(token_types),
+                "token_types": list(token_types),
             }
 
-        validation['validity_rate'] = validation['valid_sequences'] / \
-            len(sequences) if sequences else 0
+        validation["validity_rate"] = validation["valid_sequences"] / len(sequences) if sequences else 0
 
         return validation
 
-    def save_sequences(self,
-                       sequences,
-                       filepath,
-                       format='jsonl'):
+    def save_sequences(self, sequences, filepath, format="jsonl"):
         """
         Save sequences to file.
 
@@ -433,21 +380,23 @@ class SequenceBuilder:
             filepath: Output file path
             format: Output format ('json', 'jsonl', 'csv')
         """
-        if format == 'jsonl':
-            with open(filepath, 'w') as f:
+        if format == "jsonl":
+            with open(filepath, "w") as f:
                 for seq in sequences:
-                    f.write(json.dumps(seq) + '\n')
-        elif format == 'json':
-            with open(filepath, 'w') as f:
+                    f.write(json.dumps(seq) + "\n")
+        elif format == "json":
+            with open(filepath, "w") as f:
                 json.dump(sequences, f, indent=2, default=str)
-        elif format == 'csv':
+        elif format == "csv":
             # Convert to DataFrame for CSV
             df_data = []
             for seq in sequences:
-                df_data.append({
-                    'sequence': ' '.join(seq.get('sequence', [])),
-                    'metadata': json.dumps(seq.get('metadata', {}), default=str)
-                })
+                df_data.append(
+                    {
+                        "sequence": " ".join(seq.get("sequence", [])),
+                        "metadata": json.dumps(seq.get("metadata", {}), default=str),
+                    }
+                )
             pd.DataFrame(df_data).to_csv(filepath, index=False)
         else:
             raise ValueError(f"Unsupported format: {format}")

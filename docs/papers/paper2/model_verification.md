@@ -29,6 +29,7 @@ def prepare_batch_file(
 ```
 
 **Files Validated**:
+
 - Phase 1 (Q1 2024): Used o4-mini ✅
 - Phase 2a (Shuffled negatives): Used o4-mini ✅
 - Phase 2c (Low magnitude negatives): Used o4-mini ✅
@@ -46,6 +47,7 @@ def prepare_batch_file(
 **Model Used**: `"model": "gpt-4"` (❌ hardcoded wrong model)
 
 **Files Invalidated**:
+
 - Phase 1 (n=3): gpt-4 ❌
 - Phase 2 (n=52): gpt-4 ❌
 - Phase 3 (n=52 balanced): gpt-4 ❌
@@ -61,6 +63,7 @@ def prepare_batch_file(
 **Problem**: Validation results don't document which model was used
 
 **Example** (from `phase2a_shuffle_2024Q1.yaml`):
+
 ```yaml
 validation_metadata:
   batch_mode: true
@@ -76,6 +79,7 @@ validation_metadata:
 ### Required Fields (Going Forward)
 
 **Add to ALL validation output YAML**:
+
 ```yaml
 validation_metadata:
   batch_mode: true
@@ -94,6 +98,7 @@ validation_metadata:
 ```
 
 **Purpose**:
+
 1. Future researchers know which model was used
 2. Easy to spot invalid comparisons
 3. Forces conscious model selection
@@ -110,6 +115,7 @@ validation_metadata:
 **Changes Required**:
 
 1. Load model from config (don't just default):
+
 ```python
 def prepare_batch_file(
     windows: List[Dict],
@@ -132,6 +138,7 @@ def prepare_batch_file(
 ```
 
 2. Add model metadata to output:
+
 ```python
 def save_results_yaml(results, windows, output_file, batch_id, model_used):
     """Save validation results with model metadata."""
@@ -164,11 +171,13 @@ def save_results_yaml(results, windows, output_file, batch_id, model_used):
 ### Step 2: Retroactively Add Model Metadata to Existing Files
 
 **Files to Update**:
+
 - `reports/validation/paper2_regime_windows/phase2a_shuffle_2024Q1.yaml`
 - `reports/validation/paper2_regime_windows/phase2c_low_magnitude_2024Q1.yaml`
 - Any other Phase 1-4 result files
 
 **Action**: Add model metadata block to each file:
+
 ```yaml
 validation_metadata:
   # ... existing fields ...
@@ -181,6 +190,7 @@ validation_metadata:
 ```
 
 **Script to Automate** (create if needed):
+
 ```python
 #!/usr/bin/env python3
 """Add model metadata to existing Paper #2 validation files."""
@@ -217,6 +227,7 @@ for file in files:
 **Action**: Verify Paper #1 files have model metadata, add if missing
 
 **Files**:
+
 - `reports/validation/paper1_pattern_taxonomy/*.yaml`
 
 ---
@@ -226,6 +237,7 @@ for file in files:
 **File**: `docs/VALIDATION_TESTING_REQUIREMENTS.md` (create)
 
 **Content**:
+
 ```markdown
 # Validation Testing Requirements
 
@@ -299,9 +311,11 @@ def validate_test_config(model_used):
 ## Files Modified
 
 **This Session**:
+
 - `docs/papers/paper2/MODEL_AUDIT_PAPER2.md` (this file)
 
 **Pending**:
+
 - `src/validation/batch_regime_validator.py`
 - `reports/validation/paper2_regime_windows/*.yaml` (retroactive metadata)
 - `docs/VALIDATION_TESTING_REQUIREMENTS.md` (create)

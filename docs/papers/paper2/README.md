@@ -39,6 +39,7 @@
 ### Other Resources
 
 **Naming Convention**: `phase#_function-description.md` or `issue###_function-description.md`
+
 - **function codes**: inf (infrastructure), val (validation), ext (extension), res (results)
 
 - **extensions/** - Completed side studies (issue###_ext-*.md)
@@ -172,6 +173,7 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 **Processing**: 6.6 minutes
 
 **KEY FINDING**: Framework IS selective - 2024 was genuinely extreme
+
 - ✅ **Framework validated** (discriminates 5.7x between normal and extreme markets)
 - ✅ **2024 confirmed extreme** (not framework overdetection)
 - ✅ **0DTE hypothesis supported** (p < 0.001, φ = 0.672)
@@ -418,6 +420,7 @@ docs/papers/paper2/
 **Test Design**: Compare pre-0DTE (2020) vs post-0DTE (2024) detection rates
 
 **Result**: ✅ **CONFIRMED**
+
 - 2020 (pre-0DTE): 12.1% persistent regimes
 - 2024 (post-0DTE): 81.2% persistent regimes
 - Difference: 69.1 percentage points (p < 0.001)
@@ -432,12 +435,14 @@ docs/papers/paper2/
 **Immediate**: ✅ **PAPER WRITING** - All validation complete
 **Timeline**: Draft Paper #2 (10-12 pages IEEE format)
 **Content**:
+
 - Methodology: 30-day regime detection + obfuscation
 - Validation: 4-phase framework (1,307 windows)
 - Results: 12.1% (2020) vs 81.2% (2024)
 - Discussion: 0DTE proliferation thesis
 
 **Optional Extensions** (for revisions if requested):
+
 - 2023 transition year (0DTE growth period)
 - 2025 current year (sustained extreme confirmation)
 - Phase 1.5 Dual GEX (profitability variance explanation)

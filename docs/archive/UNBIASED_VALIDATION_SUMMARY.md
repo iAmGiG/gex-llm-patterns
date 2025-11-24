@@ -35,6 +35,7 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 **File**: `gamma_positioning_SPY_2024_unbiased.yaml`
 
 **Performance Metrics**:
+
 - **Detection Rate**: 69.4% (168/242 days)
 - **Predictive Accuracy**: 92.5% (156/168 detections materialized)
 - **Average 1-Day Return**: +0.106% (10.6 bps)
@@ -51,6 +52,7 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 **File**: `stock_pinning_SPY_2024_unbiased.yaml`
 
 **Performance Metrics**:
+
 - **Detection Rate**: 67.4% (163/242 days)
 - **Predictive Accuracy**: 90.4% (147/163 detections materialized)
 - **Average 1-Day Return**: +0.106% (10.6 bps)
@@ -67,6 +69,7 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 **File**: `0dte_hedging_SPY_2024_unbiased.yaml`
 
 **Performance Metrics**:
+
 - **Detection Rate**: 77.7% (188/242 days)
 - **Predictive Accuracy**: 90.8% (171/188 detections materialized)
 - **Average 1-Day Return**: +0.106% (10.6 bps)
@@ -84,6 +87,7 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 **Prompt Type**: **Standard (biased)** - includes regime labels
 
 **Performance Metrics**:
+
 - **Detection Rate**: 100.0% (61/61 days) ‚Üê Regime labels provide strong hint
 - **Predictive Accuracy**: 91.7% (56/61 detections materialized)
 - **Average 1-Day Return**: +0.066% (6.6 bps)
@@ -102,6 +106,7 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 | Net Alpha | +5.6 bps | +1.6 bps | -4.0 bps |
 
 **Interpretation**:
+
 1. **Regime labels inflate detection by ~30%** (100% vs 69.4%)
 2. **Accuracy remains stable** (92.5% vs 91.7%, only -0.8% difference)
 3. **Unbiased results are stronger evidence** - proves structural detection without label leakage
@@ -122,11 +127,13 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 ### Statistical Validity
 
 **Sample Sizes**:
+
 - Full 2024: 242 trading days per pattern (726 total pattern-day combinations)
 - Total detections: 519/726 (71.5%)
 - Materialized predictions: 473/519 (91.2%)
 
 **Confidence Intervals** (95%, binomial proportion):
+
 - gamma_positioning: [63.4%, 75.4%] - well above 60% threshold
 - stock_pinning: [61.4%, 73.4%] - well above 60% threshold
 - 0dte_hedging: [72.0%, 83.4%] - well above 60% threshold
@@ -138,15 +145,19 @@ Using **unbiased prompts** with full obfuscation (dates ‚Üí "Day T+0", tickers ‚
 ## Key Findings for Paper #1
 
 ### Finding 1: Structural Detection Without Label Leakage
+
 71.5% average detection rate proves LLM can identify dealer constraints from quantitative GEX structure alone, without temporal context or regime classification hints.
 
 ### Finding 2: High Predictive Accuracy Demonstrates Genuine Patterns
+
 91.2% of detected patterns materialized in forward returns. Accuracy remains stable across biased (91.7%) and unbiased (92.5%) prompts, proving patterns are real market phenomena (not LLM hallucinations).
 
 ### Finding 3: Prompt Bias Has Large Effect on Detection, Minimal Effect on Accuracy
+
 Regime labels inflate detection by 30.6% (100% vs 69.4%) but accuracy degradation is only -0.8% (91.7% vs 92.5%). This demonstrates the critical importance of unbiased testing for rigorous validation.
 
 ### Finding 4: Multi-Pattern Generalization
+
 Methodology works across 3 different dealer constraint types with consistent detection (67-78%) and accuracy (90-92%) ranges. Proves framework generalizes, not cherry-picked for one specific pattern.
 
 ---
@@ -166,14 +177,17 @@ Methodology works across 3 different dealer constraint types with consistent det
 ## Files Generated
 
 ### Full 2024 Unbiased Validation
+
 - `gamma_positioning_SPY_2024_unbiased.yaml` (263 KB) - 242 days, 69.4% detection
 - `stock_pinning_SPY_2024_unbiased.yaml` (263 KB) - 242 days, 67.4% detection
 - `0dte_hedging_SPY_2024_unbiased.yaml` (266 KB) - 242 days, 77.7% detection
 
 ### Q2 2024 Biased Validation (Comparison)
+
 - `gamma_positioning_SPY_2024Q2.yaml` (68 KB) - 61 days, 100.0% detection
 
 ### Supporting Documentation
+
 - `full_year_2024_validation.md` - Complete validation methodology
 - `biased_vs_unbiased_comparison.md` - Prompt bias analysis
 - `methodology_clarifications.md` - Technical Q&A
@@ -183,12 +197,14 @@ Methodology works across 3 different dealer constraint types with consistent det
 ## Next Steps for Paper Writing
 
 **Section 4 (Experimental Setup)**: Use these validation results to populate:
+
 - Data coverage: 242/252 trading days (96% coverage)
 - Pattern definitions with rule-based thresholds
 - Prompt template configurations (biased vs unbiased)
 - Validation metrics: detection rate, accuracy, net alpha
 
 **Section 5 (Results)**: Lead with Table 1:
+
 ```
 Table 1: Primary Results - Unbiased Prompt Detection
 
@@ -201,6 +217,7 @@ Table 1: Primary Results - Unbiased Prompt Detection
 ```
 
 **Section 6 (Discussion)**: Address:
+
 - Why 71.5% proves structural understanding
 - Why high accuracy (91.2%) matters
 - Prompt bias implications (30% detection gap)

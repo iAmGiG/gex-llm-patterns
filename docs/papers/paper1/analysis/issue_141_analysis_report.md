@@ -23,6 +23,7 @@
 ## Methodology
 
 ### Data Sources
+
 - **Validation Results**: 242 trading days from 2024 with detection status
 - **Database**: `consolidated_historical.db` with strike-level and daily aggregates
 - **Sample Size**: 168 detection days, 74 non-detection days
@@ -41,6 +42,7 @@
 | H7C | Concentrated Strikes | Number of strikes with >5% gamma |
 
 ### Statistical Methods
+
 - **Test**: Independent samples t-test (two-tailed)
 - **Effect Size**: Cohen's d
 - **Significance**: α = 0.05
@@ -69,6 +71,7 @@
 ### Finding 1: GEX Concentration is the Strongest Discriminator ⭐
 
 **Statistical Evidence:**
+
 - Detection days: Gini = -0.853 ± 0.020 (less negative = more concentrated)
 - Non-detection days: Gini = -0.866 ± 0.017 (more negative = more fragmented)
 - t-statistic: 4.71, **p < 0.0001** (highly significant)
@@ -76,12 +79,14 @@
 
 **Interpretation:**
 The Gini coefficient measures how concentrated gamma is across strikes:
+
 - **Higher (less negative)**: Gamma concentrated in few strikes → **clear, unambiguous signal**
 - **Lower (more negative)**: Gamma fragmented across many strikes → **ambiguous, diffuse signal**
 
 Non-detection days have **1.5% more fragmented gamma** distribution, indicating the LLM requires concentrated positioning to confidently identify the constraint mechanism.
 
 **Why This Matters:**
+
 - Proves LLM is not guessing "Negative GEX" based on base rate (100% of days were negative)
 - Shows LLM assesses **signal clarity** within the uniform regime
 - Fragmented gamma means dealers' hedging pressure is dispersed, making the constraint less visible
@@ -91,6 +96,7 @@ Non-detection days have **1.5% more fragmented gamma** distribution, indicating 
 ### Finding 2: GEX Magnitude (Modest Effect)
 
 **Statistical Evidence:**
+
 - Detection days: |GEX| = $31.8B ± $4.1B
 - Non-detection days: |GEX| = $30.3B ± $4.2B (~5% lower)
 - p = 0.007 (significant), Cohen's d = 0.38 (small effect)
@@ -103,6 +109,7 @@ Non-detection days have slightly weaker signals (5% lower magnitude), but this i
 ### Finding 3: Concentrated Strikes (Supporting Evidence)
 
 **Statistical Evidence:**
+
 - Detection days: 2.27 ± 1.27 strikes with >5% of total gamma
 - Non-detection days: 1.84 ± 1.63 strikes
 - p = 0.027 (significant), Cohen's d = 0.30 (small effect)
@@ -137,6 +144,7 @@ Market volatility context does not strongly affect detection capability. The LLM
 3. **Structural Reasoning**: Detection depends on identifying **coherent constraint mechanisms**, not just presence/absence of negative GEX
 
 **Analogy**:
+
 - A "broken clock" would miss randomly across all days (no correlation with gamma structure)
 - Our LLM misses systematically when gamma is dispersed (strong correlation, p < 0.0001)
 - This proves **sensitivity to signal quality**, not base rate guessing
@@ -187,14 +195,17 @@ regime.
 ## Visualizations (To Be Generated)
 
 ### Figure 1: Calendar Heatmap of Non-Detection Days
+
 **Purpose**: Show non-detections are not uniformly distributed
 **Status**: Pending (requires matplotlib/seaborn)
 
 ### Figure 2: GEX Concentration Distribution
+
 **Purpose**: Histogram comparison showing separation between groups
 **Status**: Pending
 
 ### Figure 3: Multi-Factor Scatter Plots
+
 **Purpose**: 4-panel visualization of key relationships
 **Status**: Pending
 
@@ -203,12 +214,14 @@ regime.
 ## Deliverables
 
 ### Completed ✅
+
 1. ✅ Statistical analysis script: `scripts/validation/paper1/issue_141_non_detection_analysis.py`
 2. ✅ Hypothesis test results: `docs/papers/paper1/analysis/issue_141_hypothesis_tests.csv`
 3. ✅ Enhanced dataset: `docs/papers/paper1/analysis/issue_141_enhanced_dataset.csv` (with all metrics)
 4. ✅ Analysis report: `docs/papers/paper1/analysis/issue_141_analysis_report.md` (this file)
 
 ### Pending 🔄
+
 5. 🔄 3 visualizations (calendar, distribution, scatter plots)
 6. 🔄 GitHub Issue #141 comment with findings
 7. 🔄 Journal paper revision (Results section update)
@@ -218,11 +231,13 @@ regime.
 ## Success Criteria
 
 ### Minimum (MC Satisfied) ✅ **ACHIEVED**
+
 - ✅ Identified 3 factors with p < 0.05
 - ✅ Showed non-detected days are statistically distinct
 - ✅ Proved sensitivity to signal characteristics
 
 ### Strong Defense (Journal Quality) ✅ **EXCEEDED**
+
 - ✅ Identified 1 factor with p < 0.01 (GEX concentration: p < 0.0001)
 - ✅ Large/medium effect size (Cohen's d = 0.68 for concentration)
 - ✅ Interpretable narrative: **fragmentation → non-detection**
@@ -241,6 +256,7 @@ Non-detection days systematically exhibit fragmented gamma exposure, demonstrati
 ---
 
 **Files Generated**:
+
 - `issue_141_hypothesis_tests.csv` - Full statistical results
 - `issue_141_enhanced_dataset.csv` - Dataset with derived metrics
 - `issue_141_analysis_report.md` - This report

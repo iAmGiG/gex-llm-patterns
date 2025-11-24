@@ -35,6 +35,7 @@ result = gex_calc.calculate_dual_gex(options_data, underlying_price)
 ```
 
 **Features**:
+
 - Backward compatible (net_gex = gex_oi)
 - Gracefully handles missing volume data
 - Same calculation, different weighting (OI vs Volume)
@@ -106,11 +107,13 @@ result = classifier.classify_window_dual(gex_sequence_30d)
 **All Tests Passed** ✅:
 
 ### Test 1: Dual GEX Calculation ✅
+
 - GEX_OI and GEX_Volume calculated correctly
 - Backward compatibility verified (net_gex == gex_oi)
 - Volume data correctly detected
 
 ### Test 2: Economic Regime Classification ✅
+
 All 4 regimes classified correctly:
 
 | Test Case | GEX_OI | GEX_Volume | Classified | Profit | Status |
@@ -121,6 +124,7 @@ All 4 regimes classified correctly:
 | TRANSITIONAL | -$5B | +$3B | transitional | uncertain | ✅ |
 
 ### Test 3: Dual Window Classification ✅
+
 Successfully explains Q1 vs Q4 profitability divergence:
 
 | Quarter | Structural | Economic | Expected | Actual |
@@ -129,11 +133,13 @@ Successfully explains Q1 vs Q4 profitability divergence:
 | Q4 2024 | persistent_negative | high_fragility | LOW | -1 bp ✅ |
 
 **Interpretation**:
+
 - Detection constant (structural constraint persists)
 - Profitability varies (economic activity changes)
 - Validates LLM detection is mechanical, not profit-seeking
 
 ### Test 4: Backward Compatibility ✅
+
 - Existing classify_window() still works
 - Dual API gracefully handles missing volume data
 
@@ -146,6 +152,7 @@ Successfully explains Q1 vs Q4 profitability divergence:
 ### Required Data
 
 To run statistical analysis, need raw options data with volume for 2024:
+
 - **Current**: Database stores aggregate GEX (no volume)
 - **Needed**: Raw options data with volume field
 - **Source**: Alpha Vantage API (requires re-fetching 242 days)
@@ -158,18 +165,21 @@ Once volume data available:
 #### 1. Correlation Tests
 
 **Hypothesis 1**: GEX_OI correlates with detection rate
+
 ```python
 # Expected: r > 0.7 (structural constraint → detection)
 correlation(gex_oi_avg_30d, detection_rate)
 ```
 
 **Hypothesis 2**: GEX_Volume correlates with profitability
+
 ```python
 # Expected: r > 0.7 (economic activity → profit)
 correlation(gex_volume_avg_30d, net_alpha_bps)
 ```
 
 **Hypothesis 3**: Aggregate GEX correlation is weaker
+
 ```python
 # Expected: r = 0.3-0.5 (mixed signal)
 correlation(net_gex_avg_30d, net_alpha_bps)
@@ -196,6 +206,7 @@ Compare Q1 vs Q4 2024 dual metrics:
 | Q4 2024 | 100% | -1 bp | ? | ? | ? |
 
 **Expected**:
+
 - Q1: GEX_Volume ~ -$8B → elevated_risk → high profit
 - Q4: GEX_Volume ~ -$0.5B → high_fragility → low profit
 
@@ -227,22 +238,26 @@ activity_ratio = abs(gex_volume / gex_oi)
 ### Tables/Figures to Generate
 
 **Table 1**: Dual GEX Metrics by Quarter
+
 ```
 | Quarter | GEX_OI Avg | GEX_Volume Avg | Activity Ratio | Economic Regime | Net Alpha |
 ```
 
 **Table 2**: Correlation Analysis
+
 ```
 | Metric | Detection Rate | Profitability | Interpretation |
 ```
 
 **Figure 1**: Scatter Plot
+
 - X-axis: GEX_Volume (economic activity)
 - Y-axis: Net Alpha (profitability)
 - Color: Economic regime
 - Expected: Strong positive correlation (r > 0.7)
 
 **Figure 2**: Time Series
+
 - Dual line plot: GEX_OI vs GEX_Volume over 2024
 - Annotate Q1 (both high) vs Q4 (OI high, Volume low)
 
@@ -274,16 +289,19 @@ activity_ratio = abs(gex_volume / gex_oi)
 ### For Statistical Analysis (when data available)
 
 **Option A: Re-fetch 2024 Options Data**
+
 - Cost: ~$0.50 API costs (242 days)
 - Time: 1-2 days (API rate limits)
 - Benefit: Complete dual GEX metrics for 2024
 
 **Option B: Prospective Collection (2025)**
+
 - Modify data collection to store volume
 - Start collecting dual metrics going forward
 - Use 2025 data for statistical validation
 
 **Option C: Hybrid Approach**
+
 - Use partial 2024 data (Q1 + Q4 only)
 - Cost: ~$0.15 API costs (117 days)
 - Still validates Q1 vs Q4 divergence
@@ -291,6 +309,7 @@ activity_ratio = abs(gex_volume / gex_oi)
 ### For Paper #2
 
 **Without Statistical Analysis** (write now):
+
 - Implementation complete ✅
 - Framework validated ✅
 - Hypothesis clearly stated ✅
@@ -298,6 +317,7 @@ activity_ratio = abs(gex_volume / gex_oi)
 - Document as "framework ready for empirical validation"
 
 **With Statistical Analysis** (after data collection):
+
 - Add correlation tables
 - Add scatter plots
 - Add regime-conditioned profitability
@@ -309,18 +329,20 @@ activity_ratio = abs(gex_volume / gex_oi)
 
 **Status**: Implementation complete, awaiting statistical analysis
 
-**Comment**: https://github.com/iAmGiG/gex-llm-patterns/issues/138#issuecomment-3559135156
+**Comment**: <https://github.com/iAmGiG/gex-llm-patterns/issues/138#issuecomment-3559135156>
 
 ---
 
 ## References
 
 **Practitioner Sources**:
+
 - @TailThatWagsDog (X.com): GEX/Volume framework
-- Source: https://x.com/TailThatWagsDog/status/1990060206357647598
+- Source: <https://x.com/TailThatWagsDog/status/1990060206357647598>
 - Note: Verify empirically before citing in paper
 
 **Academic Literature**:
+
 - Krishnan, H. P., & Bennington, A. (2021). *Market Tremors*. Palgrave Macmillan.
 - Gao, X., et al. (2024). "Gamma positioning and market quality." *Journal of Financial Markets*.
 - Frey, R., & Stremme, A. (1997). "Market volatility and feedback effects from dynamic hedging." *Mathematical Finance*, 7(4), 351-374.

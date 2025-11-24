@@ -26,6 +26,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Test**: Calculate 4 outcome criteria for 519 detection days across 3 patterns
 
 **Criteria**:
+
 - C1: Volatility Amplification (realized vol > forecast)
 - C2: Directional Follow-through (price direction matches GEX)
 - C3: Strike Convergence (distance to flip point decreases)
@@ -42,6 +43,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Test**: 3×4 contingency matrix (3 patterns × 4 outcomes)
 
 **Expected Hypothesis** (from main chat):
+
 - Gamma Positioning → Volatility Amplification (C1)
 - Stock Pinning → Strike Convergence (C3)
 - 0DTE Hedging → Range Expansion (C4)
@@ -71,6 +73,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **KEY FINDING**: Detection days show **significantly LOWER** range expansion than random baseline.
 
 **Why This Refutes P-Hacking**:
+
 - If p-hacking: detection >> baseline (expect lift > 2x)
 - Observed: detection < baseline for C4 (p=0.033)
 - **You cannot p-hack your way to detecting patterns that materialize LESS than random days**
@@ -92,6 +95,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Verdict**: Pattern type and outcome are **INDEPENDENT** - patterns do NOT predict specific outcomes
 
 **Standardized Residuals** (all < 0.4, threshold: |z| > 2):
+
 - Gamma Positioning → C1: +0.15 (neutral, expected: strong positive)
 - Stock Pinning → C3: +0.32 (neutral, expected: strong positive)
 - 0DTE Hedging → C4: +0.10 (neutral, expected: strong positive)
@@ -105,6 +109,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 ### Strong Defense Against P-Hacking (Phase 2) ✅
 
 **Evidence**:
+
 1. **No universal volatility prediction**: C1 shows no difference (p=0.61)
 2. **Inverse relationship for range**: C4 shows detection < baseline (p=0.03)
 3. **Selectivity proven**: Moderate rates (21-42%) fall between random (50%) and universal (100%)
@@ -114,6 +119,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 ### Mechanism Specificity Not Proven (Phase 3) ❌
 
 **Evidence**:
+
 1. All patterns show nearly identical rates across all outcomes (variance < 3%)
 2. No pattern shows preferential association with expected outcome
 3. Chi-square test confirms independence (p=0.999)
@@ -131,6 +137,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Claim**: "Our analysis refutes p-hacking via inverse relationship - detection days show significantly LOWER range expansion than baseline (p=0.033)."
 
 **Rationale**:
+
 - Strong statistical evidence (p<0.05)
 - Conceptually clear (cannot p-hack to detect suppression)
 - Directly addresses MC's concern about "universal predictions"
@@ -142,6 +149,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Claim**: "The LLM detects general dealer gamma constraints, not pattern-specific mechanisms."
 
 **Rationale**:
+
 - Honest about null result
 - Reframes expectation (general vs. specific)
 - Still valuable (constraint detection matters)
@@ -153,6 +161,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 **Claim**: "Moderate-to-low materialization rates (21-42%) prove selectivity, not universal prediction."
 
 **Rationale**:
+
 - Avoids inverse relationship complexity
 - Simple statistical argument
 - Doesn't require explaining null result
@@ -164,6 +173,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 ## Data Integrity Verification ✅
 
 **All calculations verified**:
+
 - ✅ Detection counts match YAML sources (519 days)
 - ✅ Baseline sample is all non-detection (100 days)
 - ✅ Chi-square calculations confirmed
@@ -171,6 +181,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 - ✅ All data files present and consistent
 
 **Files Ready for MC Review**:
+
 - 6 Python scripts (verified, documented)
 - 9 data files (CSV + YAML)
 - 2 markdown reports
@@ -191,6 +202,7 @@ Conducted comprehensive analysis to address p-hacking concerns via three indepen
 ### If MC Requires Pattern Specificity:
 
 **Options**:
+
 - Redefine outcome criteria (C1-C4 may not capture pattern-specific effects)
 - Use alternative statistical methods (beyond chi-square)
 - Collect additional data (different time periods, regimes)

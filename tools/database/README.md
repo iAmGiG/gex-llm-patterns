@@ -43,6 +43,7 @@ Backups are stored in `.cache/backups/` with the following naming:
 ```
 
 Example:
+
 ```
 gex_database_backup_20251103_142420.db
 gex_database_backup_20251103_142420.txt
@@ -51,6 +52,7 @@ gex_database_backup_20251103_142420.txt
 ### Metadata File
 
 Each backup includes a metadata file with:
+
 - Backup timestamp
 - Source database name
 - Database size
@@ -70,12 +72,14 @@ Each backup includes a metadata file with:
 ### Before Major Operations
 
 Always create a backup before:
+
 - Backfilling missing data
 - Database schema changes
 - Bulk data modifications
 - Running experimental scripts
 
 Example:
+
 ```bash
 python tools/database/backup_database.py --description "Before Issue #102 backfill"
 ```
@@ -83,6 +87,7 @@ python tools/database/backup_database.py --description "Before Issue #102 backfi
 ### Regular Maintenance
 
 Use `--list` to review backups and clean up old ones:
+
 ```bash
 python tools/database/backup_database.py --list
 ```
@@ -90,6 +95,7 @@ python tools/database/backup_database.py --list
 ### Batch Backups
 
 For comprehensive safety, backup all databases:
+
 ```bash
 python tools/database/backup_database.py --all --description "End of week backup"
 ```
@@ -126,6 +132,7 @@ python tools/database/backfill_missing_dates.py --verify-only
 ### Missing Dates (Issue #102)
 
 The tool targets 10 missing trading dates from 2024:
+
 ```
 2024-02-02 (Friday)
 2024-02-09 (Friday)
@@ -158,6 +165,7 @@ The tool targets 10 missing trading dates from 2024:
 ### Output
 
 Shows real-time progress:
+
 ```
 Processing: 2024-02-02 (Friday)
   📥 Collecting options data from Alpha Vantage...
@@ -169,6 +177,7 @@ Processing: 2024-02-02 (Friday)
 ```
 
 Final summary:
+
 ```
 BACKFILL COMPLETE
 Statistics:

@@ -29,14 +29,14 @@ class AdvancedGreeks:
 
     # ========== First-Order Greeks (Base) ==========
 
-    def calculate_delta(self, S, K, T, r, sigma, option_type='call'):
+    def calculate_delta(self, S, K, T, r, sigma, option_type="call"):
         """Calculate option delta."""
         if T <= 0:
             return 0.0
 
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
 
-        if option_type == 'call':
+        if option_type == "call":
             delta = norm.cdf(d1)
         else:
             delta = norm.cdf(d1) - 1
@@ -63,7 +63,7 @@ class AdvancedGreeks:
 
         return vega
 
-    def calculate_theta(self, S, K, T, r, sigma, option_type='call'):
+    def calculate_theta(self, S, K, T, r, sigma, option_type="call"):
         """Calculate option theta."""
         if T <= 0:
             return 0.0
@@ -71,12 +71,10 @@ class AdvancedGreeks:
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         d2 = d1 - sigma * np.sqrt(T)
 
-        if option_type == 'call':
-            theta = (-S * norm.pdf(d1) * sigma / (2 * np.sqrt(T))
-                     - r * K * np.exp(-r * T) * norm.cdf(d2))
+        if option_type == "call":
+            theta = -S * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) - r * K * np.exp(-r * T) * norm.cdf(d2)
         else:
-            theta = (-S * norm.pdf(d1) * sigma / (2 * np.sqrt(T))
-                     + r * K * np.exp(-r * T) * norm.cdf(-d2))
+            theta = -S * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) + r * K * np.exp(-r * T) * norm.cdf(-d2)
 
         return theta / 365  # Convert to per day
 
@@ -107,7 +105,7 @@ class AdvancedGreeks:
         vanna = (delta_up - delta_down) / (2 * vol_bump)
         return vanna
 
-    def calculate_charm_analytical(self, S, K, T, r, sigma, option_type='call'):
+    def calculate_charm_analytical(self, S, K, T, r, sigma, option_type="call"):
         """
         Calculate Charm (∂²V/∂S∂τ) using analytical formula.
 
@@ -119,16 +117,14 @@ class AdvancedGreeks:
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         d2 = d1 - sigma * np.sqrt(T)
 
-        if option_type == 'call':
-            charm = -norm.pdf(d1) * (2 * r * T - d2 * sigma *
-                                     np.sqrt(T)) / (2 * T * sigma * np.sqrt(T))
+        if option_type == "call":
+            charm = -norm.pdf(d1) * (2 * r * T - d2 * sigma * np.sqrt(T)) / (2 * T * sigma * np.sqrt(T))
         else:
-            charm = norm.pdf(d1) * (2 * r * T - d2 * sigma *
-                                    np.sqrt(T)) / (2 * T * sigma * np.sqrt(T))
+            charm = norm.pdf(d1) * (2 * r * T - d2 * sigma * np.sqrt(T)) / (2 * T * sigma * np.sqrt(T))
 
         return charm
 
-    def calculate_charm_finite(self, S, K, T, r, sigma, time_bump=1/365, option_type='call'):
+    def calculate_charm_finite(self, S, K, T, r, sigma, time_bump=1 / 365, option_type="call"):
         """
         Calculate Charm using finite difference method.
         """
@@ -136,8 +132,7 @@ class AdvancedGreeks:
             return 0.0
 
         delta_now = self.calculate_delta(S, K, T, r, sigma, option_type)
-        delta_later = self.calculate_delta(
-            S, K, T - time_bump, r, sigma, option_type)
+        delta_later = self.calculate_delta(S, K, T - time_bump, r, sigma, option_type)
 
         charm = -(delta_later - delta_now) / time_bump
         return charm
@@ -179,11 +174,10 @@ class AdvancedGreeks:
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         d2 = d1 - sigma * np.sqrt(T)
 
-        veta = -S * norm.pdf(d1) * np.sqrt(T) * (r * d1 /
-                                                 (sigma * np.sqrt(T)) - (1 + d1 * d2) / (2 * T))
+        veta = -S * norm.pdf(d1) * np.sqrt(T) * (r * d1 / (sigma * np.sqrt(T)) - (1 + d1 * d2) / (2 * T))
         return veta
 
-    def calculate_veta_finite(self, S, K, T, r, sigma, time_bump=1/365):
+    def calculate_veta_finite(self, S, K, T, r, sigma, time_bump=1 / 365):
         """
         Calculate Veta using finite difference method.
         """
@@ -209,8 +203,7 @@ class AdvancedGreeks:
 
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
 
-        speed = -norm.pdf(d1) * (d1 / (sigma**2 * T) + 1 /
-                                 (sigma * np.sqrt(T))) / (S**2)
+        speed = -norm.pdf(d1) * (d1 / (sigma**2 * T) + 1 / (sigma * np.sqrt(T))) / (S**2)
         return speed
 
     def calculate_speed_finite(self, S, K, T, r, sigma, price_bump_pct=0.01):
@@ -262,11 +255,14 @@ class AdvancedGreeks:
         d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         d2 = d1 - sigma * np.sqrt(T)
 
-        color = -norm.pdf(d1) * (2 * r + (2 * r - sigma**2) * d1 / (sigma * np.sqrt(T))
-                                 - d1**2 / (sigma**2 * T)) / (2 * S * T * sigma * np.sqrt(T))
+        color = (
+            -norm.pdf(d1)
+            * (2 * r + (2 * r - sigma**2) * d1 / (sigma * np.sqrt(T)) - d1**2 / (sigma**2 * T))
+            / (2 * S * T * sigma * np.sqrt(T))
+        )
         return color
 
-    def calculate_color_finite(self, S, K, T, r, sigma, time_bump=1/365):
+    def calculate_color_finite(self, S, K, T, r, sigma, time_bump=1 / 365):
         """
         Calculate Color using finite difference on gamma.
         """
@@ -281,7 +277,7 @@ class AdvancedGreeks:
 
     # ========== Combined Calculations ==========
 
-    def calculate_all_greeks(self, S, K, T, r, sigma, option_type='call', method='analytical'):
+    def calculate_all_greeks(self, S, K, T, r, sigma, option_type="call", method="analytical"):
         """
         Calculate all Greeks for an option.
 
@@ -300,43 +296,36 @@ class AdvancedGreeks:
         greeks = {}
 
         # First-order Greeks
-        greeks['delta'] = self.calculate_delta(S, K, T, r, sigma, option_type)
-        greeks['gamma'] = self.calculate_gamma(S, K, T, r, sigma)
-        greeks['vega'] = self.calculate_vega(S, K, T, r, sigma)
-        greeks['theta'] = self.calculate_theta(S, K, T, r, sigma, option_type)
+        greeks["delta"] = self.calculate_delta(S, K, T, r, sigma, option_type)
+        greeks["gamma"] = self.calculate_gamma(S, K, T, r, sigma)
+        greeks["vega"] = self.calculate_vega(S, K, T, r, sigma)
+        greeks["theta"] = self.calculate_theta(S, K, T, r, sigma, option_type)
 
         # Second-order Greeks
-        if method == 'analytical':
-            greeks['vanna'] = self.calculate_vanna_analytical(
-                S, K, T, r, sigma)
-            greeks['charm'] = self.calculate_charm_analytical(
-                S, K, T, r, sigma, option_type)
-            greeks['vomma'] = self.calculate_vomma_analytical(
-                S, K, T, r, sigma)
-            greeks['veta'] = self.calculate_veta_analytical(S, K, T, r, sigma)
+        if method == "analytical":
+            greeks["vanna"] = self.calculate_vanna_analytical(S, K, T, r, sigma)
+            greeks["charm"] = self.calculate_charm_analytical(S, K, T, r, sigma, option_type)
+            greeks["vomma"] = self.calculate_vomma_analytical(S, K, T, r, sigma)
+            greeks["veta"] = self.calculate_veta_analytical(S, K, T, r, sigma)
 
             # Third-order Greeks
-            greeks['speed'] = self.calculate_speed_analytical(
-                S, K, T, r, sigma)
-            greeks['zomma'] = self.calculate_zomma_analytical(
-                S, K, T, r, sigma)
-            greeks['color'] = self.calculate_color_analytical(
-                S, K, T, r, sigma)
+            greeks["speed"] = self.calculate_speed_analytical(S, K, T, r, sigma)
+            greeks["zomma"] = self.calculate_zomma_analytical(S, K, T, r, sigma)
+            greeks["color"] = self.calculate_color_analytical(S, K, T, r, sigma)
         else:
-            greeks['vanna'] = self.calculate_vanna_finite(S, K, T, r, sigma)
-            greeks['charm'] = self.calculate_charm_finite(
-                S, K, T, r, sigma, option_type=option_type)
-            greeks['vomma'] = self.calculate_vomma_finite(S, K, T, r, sigma)
-            greeks['veta'] = self.calculate_veta_finite(S, K, T, r, sigma)
+            greeks["vanna"] = self.calculate_vanna_finite(S, K, T, r, sigma)
+            greeks["charm"] = self.calculate_charm_finite(S, K, T, r, sigma, option_type=option_type)
+            greeks["vomma"] = self.calculate_vomma_finite(S, K, T, r, sigma)
+            greeks["veta"] = self.calculate_veta_finite(S, K, T, r, sigma)
 
             # Third-order Greeks
-            greeks['speed'] = self.calculate_speed_finite(S, K, T, r, sigma)
-            greeks['zomma'] = self.calculate_zomma_finite(S, K, T, r, sigma)
-            greeks['color'] = self.calculate_color_finite(S, K, T, r, sigma)
+            greeks["speed"] = self.calculate_speed_finite(S, K, T, r, sigma)
+            greeks["zomma"] = self.calculate_zomma_finite(S, K, T, r, sigma)
+            greeks["color"] = self.calculate_color_finite(S, K, T, r, sigma)
 
         return greeks
 
-    def calculate_greeks_surface(self, spot_range, strike, T, r, sigma, greek_name='gamma'):
+    def calculate_greeks_surface(self, spot_range, strike, T, r, sigma, greek_name="gamma"):
         """
         Calculate a Greek across a range of spot prices.
 
@@ -354,20 +343,16 @@ class AdvancedGreeks:
         greek_values = []
 
         for spot in spot_range:
-            if greek_name == 'gamma':
+            if greek_name == "gamma":
                 value = self.calculate_gamma(spot, strike, T, r, sigma)
-            elif greek_name == 'vanna':
-                value = self.calculate_vanna_analytical(
-                    spot, strike, T, r, sigma)
-            elif greek_name == 'speed':
-                value = self.calculate_speed_analytical(
-                    spot, strike, T, r, sigma)
-            elif greek_name == 'zomma':
-                value = self.calculate_zomma_analytical(
-                    spot, strike, T, r, sigma)
-            elif greek_name == 'color':
-                value = self.calculate_color_analytical(
-                    spot, strike, T, r, sigma)
+            elif greek_name == "vanna":
+                value = self.calculate_vanna_analytical(spot, strike, T, r, sigma)
+            elif greek_name == "speed":
+                value = self.calculate_speed_analytical(spot, strike, T, r, sigma)
+            elif greek_name == "zomma":
+                value = self.calculate_zomma_analytical(spot, strike, T, r, sigma)
+            elif greek_name == "color":
+                value = self.calculate_color_analytical(spot, strike, T, r, sigma)
             else:
                 value = 0
 

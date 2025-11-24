@@ -20,10 +20,12 @@
 ### Years 2021-2024: Missing Columbus Day + Veterans Day
 
 Each year is missing exactly 2 trading days:
+
 - **Columbus Day** (2nd Monday in October) - NYSE TRADES
 - **Veterans Day** (November 11 or observed) - NYSE TRADES
 
 **Dates missing from database**:
+
 - 2021: Oct 11 (Columbus), Nov 11 (Veterans)
 - 2022: Oct 10 (Columbus), Nov 11 (Veterans)
 - 2023: Oct 9 (Columbus), Nov 10 (Veterans observed)
@@ -36,6 +38,7 @@ Each year is missing exactly 2 trading days:
 2025 database ends on **2025-11-20** but should continue through today's date.
 
 Missing dates (approximate):
+
 - Oct 14 (Columbus Day) - 1 day
 - Nov 11 (Veterans Day) - 1 day
 - Post-Nov 20 dates - ~7-8 days (Nov 21-Dec 31 YTD)
@@ -55,11 +58,13 @@ All 252 trading days present, including Columbus Day and Veterans Day.
 ## Recommendation
 
 Add missing 8-10 trading days for 2021-2024:
+
 1. Run targeted collection for Columbus Day + Veterans Day each year
 2. Verify NYSE actually traded those days (no emergency closures)
 3. Update 2025 to current date
 
 **Script to fix**:
+
 ```python
 missing_dates = [
     '2021-10-11', '2021-11-11',

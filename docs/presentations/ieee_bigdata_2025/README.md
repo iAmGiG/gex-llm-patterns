@@ -11,12 +11,14 @@
 ## Materials
 
 **[presentation_guide.md](presentation_guide.md)** - Complete presentation guide
+
 - Slide design guidelines (IEEE colors, typography, layout)
 - Figure inventory and mapping
 - Narration script for each slide
 - Timing breakdown (15 minutes total)
 
 **[figures/](figures/)** - Presentation-optimized figures
+
 - 11 slides with embedded figures
 - 16:9 aspect ratio (1920×1080)
 - IEEE color scheme (#003C7D blue, clean backgrounds)
@@ -50,6 +52,7 @@
 ## Size
 
 **Total**: ~2 MB
+
 - Presentation guide: ~50 KB
 - Figures: ~1.9 MB (11 PNG files)
 

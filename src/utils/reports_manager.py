@@ -31,7 +31,7 @@ class ReportsManager:
 
     Provides organized storage for:
     - GEX calculation results
-    - Pattern analysis outputs  
+    - Pattern analysis outputs
     - Agent conversation logs
     - Data quality reports
     """
@@ -48,8 +48,7 @@ class ReportsManager:
         # demo_results removed - use validation_experiments instead
 
         # Ensure all directories exist
-        for directory in [self.gex_dir, self.pattern_dir, self.quality_dir,
-                          self.agent_dir]:
+        for directory in [self.gex_dir, self.pattern_dir, self.quality_dir, self.agent_dir]:
             directory.mkdir(parents=True, exist_ok=True)
 
     # ===========================
@@ -68,24 +67,24 @@ class ReportsManager:
         Returns:
             Filtered GEX data
         """
-        if 'gex_by_strike' not in gex_data:
+        if "gex_by_strike" not in gex_data:
             return gex_data
 
         filtered_data = gex_data.copy()
-        gex_by_strike = gex_data['gex_by_strike']
+        gex_by_strike = gex_data["gex_by_strike"]
 
         if not isinstance(gex_by_strike, dict):
             return filtered_data
 
         # Count original strikes
-        original_count = len(gex_by_strike.get('strike', {}))
+        original_count = len(gex_by_strike.get("strike", {}))
 
         # Filter logic - keep strikes with volume OR open interest
         keep_indices = []
 
-        for i, (strike_key, strike_val) in enumerate(gex_by_strike.get('strike', {}).items()):
-            volume = gex_by_strike.get('volume', {}).get(str(i), 0)
-            oi = gex_by_strike.get('open_interest', {}).get(str(i), 0)
+        for i, (strike_key, strike_val) in enumerate(gex_by_strike.get("strike", {}).items()):
+            volume = gex_by_strike.get("volume", {}).get(str(i), 0)
+            oi = gex_by_strike.get("open_interest", {}).get(str(i), 0)
 
             # Keep if has volume OR open interest (potential GEX contribution)
             if volume >= min_volume or oi >= min_oi:
@@ -100,16 +99,14 @@ class ReportsManager:
                     filtered_field = {}
                     for new_idx, orig_idx in enumerate(keep_indices):
                         if str(orig_idx) in field_data:
-                            filtered_field[str(new_idx)
-                                           ] = field_data[str(orig_idx)]
+                            filtered_field[str(new_idx)] = field_data[str(orig_idx)]
                     filtered_gex_by_strike[field] = filtered_field
                 else:
                     filtered_gex_by_strike[field] = field_data
 
-            filtered_data['gex_by_strike'] = filtered_gex_by_strike
+            filtered_data["gex_by_strike"] = filtered_gex_by_strike
 
-            logger.info(
-                f"Filtered strike data: {original_count} -> {len(keep_indices)} strikes")
+            logger.info(f"Filtered strike data: {original_count} -> {len(keep_indices)} strikes")
 
         return filtered_data
 
@@ -117,9 +114,7 @@ class ReportsManager:
     # GEX Results Storage
     # ===========================
 
-    def save_gex_results(self, symbol, results: Dict[Any, Any],
-                         trading_date=None,
-                         filter_strikes: bool = True) -> Path:
+    def save_gex_results(self, symbol, results: Dict[Any, Any], trading_date=None, filter_strikes: bool = True) -> Path:
         """
         Save GEX calculation results with strike filtering.
 
@@ -157,23 +152,22 @@ class ReportsManager:
 
         # Add metadata
         output_data = {
-            'metadata': {
-                'symbol': symbol,
-                'trading_date': trading_date,
-                'generated_at': now_iso(),
-                'type': 'gex_calculation_results'
+            "metadata": {
+                "symbol": symbol,
+                "trading_date": trading_date,
+                "generated_at": now_iso(),
+                "type": "gex_calculation_results",
             },
-            'results': results
+            "results": results,
         }
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(output_data, f, indent=2, default=str)
 
         logger.info(f"Saved GEX results to {file_path}")
         return file_path
 
-    def save_gex_time_series(self, symbol, data: pd.DataFrame,
-                             is_demo: bool = False) -> Path:
+    def save_gex_time_series(self, symbol, data: pd.DataFrame, is_demo: bool = False) -> Path:
         """Save GEX time series data as CSV."""
         timestamp = now_timestamp()
         filename = f"{symbol}_{timestamp}_gex_timeseries.csv"
@@ -189,9 +183,7 @@ class ReportsManager:
     # Pattern Analysis Storage
     # ===========================
 
-    def save_pattern_analysis(self, pattern_type, results: Dict[Any, Any],
-                              symbol=None,
-                              is_demo: bool = False) -> Path:
+    def save_pattern_analysis(self, pattern_type, results: Dict[Any, Any], symbol=None, is_demo: bool = False) -> Path:
         """Save pattern analysis results."""
         timestamp = now_timestamp()
 
@@ -204,16 +196,16 @@ class ReportsManager:
         file_path = save_dir / filename
 
         output_data = {
-            'metadata': {
-                'pattern_type': pattern_type,
-                'symbol': symbol,
-                'generated_at': now_iso(),
-                'type': 'pattern_analysis_results'
+            "metadata": {
+                "pattern_type": pattern_type,
+                "symbol": symbol,
+                "generated_at": now_iso(),
+                "type": "pattern_analysis_results",
             },
-            'analysis': results
+            "analysis": results,
         }
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(output_data, f, indent=2, default=str)
 
         logger.info(f"Saved pattern analysis to {file_path}")
@@ -223,9 +215,9 @@ class ReportsManager:
     # Agent Outputs Storage
     # ===========================
 
-    def save_agent_conversation(self, agent_names: List[str],
-                                conversation_log: List[Dict[Any, Any]],
-                                is_demo: bool = False) -> Path:
+    def save_agent_conversation(
+        self, agent_names: List[str], conversation_log: List[Dict[Any, Any]], is_demo: bool = False
+    ) -> Path:
         """Save multi-agent conversation log."""
         timestamp = now_timestamp()
         agents_str = "_".join(agent_names)
@@ -235,23 +227,22 @@ class ReportsManager:
         file_path = save_dir / filename
 
         output_data = {
-            'metadata': {
-                'agents': agent_names,
-                'generated_at': now_iso(),
-                'type': 'agent_conversation_log',
-                'message_count': len(conversation_log)
+            "metadata": {
+                "agents": agent_names,
+                "generated_at": now_iso(),
+                "type": "agent_conversation_log",
+                "message_count": len(conversation_log),
             },
-            'conversation': conversation_log
+            "conversation": conversation_log,
         }
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(output_data, f, indent=2, default=str)
 
         logger.info(f"Saved agent conversation to {file_path}")
         return file_path
 
-    def save_agent_results(self, agent_name, task,
-                           results: Dict[Any, Any], is_demo: bool = False) -> Path:
+    def save_agent_results(self, agent_name, task, results: Dict[Any, Any], is_demo: bool = False) -> Path:
         """Save individual agent task results."""
         timestamp = now_timestamp()
         filename = f"{agent_name}_{task}_{timestamp}_results.json"
@@ -260,16 +251,16 @@ class ReportsManager:
         file_path = save_dir / filename
 
         output_data = {
-            'metadata': {
-                'agent_name': agent_name,
-                'task': task,
-                'generated_at': now_iso(),
-                'type': 'agent_task_results'
+            "metadata": {
+                "agent_name": agent_name,
+                "task": task,
+                "generated_at": now_iso(),
+                "type": "agent_task_results",
             },
-            'results': results
+            "results": results,
         }
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(output_data, f, indent=2, default=str)
 
         logger.info(f"Saved agent results to {file_path}")
@@ -279,9 +270,9 @@ class ReportsManager:
     # Data Quality Reports
     # ===========================
 
-    def save_quality_report(self, symbol, report: Dict[Any, Any],
-                            data_type: str = "options",
-                            is_demo: bool = False) -> Path:
+    def save_quality_report(
+        self, symbol, report: Dict[Any, Any], data_type: str = "options", is_demo: bool = False
+    ) -> Path:
         """Save data quality assessment report."""
         timestamp = now_timestamp()
         filename = f"{symbol}_{data_type}_{timestamp}_quality_report.json"
@@ -290,16 +281,16 @@ class ReportsManager:
         file_path = save_dir / filename
 
         output_data = {
-            'metadata': {
-                'symbol': symbol,
-                'data_type': data_type,
-                'generated_at': now_iso(),
-                'type': 'data_quality_report'
+            "metadata": {
+                "symbol": symbol,
+                "data_type": data_type,
+                "generated_at": now_iso(),
+                "type": "data_quality_report",
             },
-            'report': report
+            "report": report,
         }
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(output_data, f, indent=2, default=str)
 
         logger.info(f"Saved quality report to {file_path}")
@@ -323,14 +314,14 @@ class ReportsManager:
             return list(self.demo_dir.glob("*"))
         else:  # all
             all_files = []
-            for directory in [self.gex_dir, self.pattern_dir, self.quality_dir,
-                              self.agent_dir, self.demo_dir]:
+            for directory in [self.gex_dir, self.pattern_dir, self.quality_dir, self.agent_dir, self.demo_dir]:
                 all_files.extend(list(directory.glob("*")))
             return all_files
 
     def cleanup_old_results(self, older_than_days: int = 7) -> int:
         """Clean up old results across all directories."""
         from datetime import datetime
+
         cutoff_time = datetime.now().timestamp() - (older_than_days * 24 * 3600)
         cleaned = 0
 
@@ -341,8 +332,7 @@ class ReportsManager:
                     file_path.unlink()
                     cleaned += 1
 
-        logger.info(
-            f"Cleaned {cleaned} old files older than {older_than_days} days")
+        logger.info(f"Cleaned {cleaned} old files older than {older_than_days} days")
         return cleaned
 
     def get_summary(self):
@@ -354,7 +344,7 @@ class ReportsManager:
             ("pattern_analysis", self.pattern_dir),
             ("data_quality", self.quality_dir),
             ("agent_outputs", self.agent_dir),
-            ("demo_results", self.demo_dir)
+            ("demo_results", self.demo_dir),
         ]:
             files = list(directory.glob("*"))
             total_size = sum(f.stat().st_size for f in files if f.is_file())
@@ -362,8 +352,7 @@ class ReportsManager:
             summary[category] = {
                 "file_count": len(files),
                 "total_size_mb": round(total_size / (1024 * 1024), 2),
-                "latest": max([f.stat().st_mtime for f in files if f.is_file()],
-                              default=0)
+                "latest": max([f.stat().st_mtime for f in files if f.is_file()], default=0),
             }
 
         return summary

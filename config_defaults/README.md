@@ -15,6 +15,7 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 ## Removed Files (Agent-Driven Evolution)
 
 With the implementation of LLM-driven agent autonomy, several static configuration files have been removed:
+
 - `tokenization_config.yaml` - Tokenization moved to legacy architecture
 - `gex_calculation_config.yaml` - GEX calculations now handled by enhanced pattern detector
 - `data_source_config.yaml` - Data sources now managed by AutoGen tools with fallbacks

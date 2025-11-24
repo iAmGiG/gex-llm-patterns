@@ -46,6 +46,7 @@ scripts/validation/
 ### Paper #1: Pattern Taxonomy Validation
 
 **Single pattern test** (gamma positioning, Q1 2024):
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 
@@ -58,6 +59,7 @@ python scripts/validation/paper1/validate_pattern_taxonomy.py \
 ```
 
 **Multi-pattern batch**:
+
 ```bash
 python scripts/validation/paper1/validate_all_patterns.py \
   --patterns stock_pinning 0dte_hedging gamma_positioning \
@@ -72,6 +74,7 @@ python scripts/validation/paper1/validate_all_patterns.py \
 ### Paper #2: Regime Detection
 
 **Phase 1 validation** (Q1 2024, 52 windows, Batch API):
+
 ```bash
 # 1. Submit batch
 python scripts/validation/paper2/validate_regime_windows_batch.py \
@@ -91,6 +94,7 @@ python scripts/validation/paper2/validate_regime_windows_batch.py \
 ```
 
 **Phase 2 negative controls** (pending):
+
 ```bash
 # Generate shuffled windows
 python scripts/validation/paper2/generate_shuffled_windows.py \
@@ -119,6 +123,7 @@ python scripts/validation/paper2/generate_shuffled_windows.py \
 ## Validation Methodology
 
 ### Paper #1: Obfuscation Testing
+
 1. Strip all dates/tickers/events from market data
 2. Present as "Day T+0", "Day T+1", "INDEX_1" to LLM
 3. Test if LLM can still detect dealer constraints
@@ -129,6 +134,7 @@ python scripts/validation/paper2/generate_shuffled_windows.py \
 ---
 
 ### Paper #2: 4-Phase Validation
+
 1. **Phase 1**: Q1 2024 baseline (52 windows) - ✅ 71.2% detection
 2. **Phase 2**: Negative controls (30 windows) - 📅 Pending (<10% FP target)
 3. **Phase 3**: Full 2024 (223 windows) - 🔮 Planned (30-50% target)
@@ -143,16 +149,19 @@ python scripts/validation/paper2/generate_shuffled_windows.py \
 ### Before Starting Validation
 
 **1. Verify cache integrity**:
+
 ```bash
 python scripts/validation/shared/production_cache_test.py --date 2024-01-02 --symbol SPY
 ```
 
 **2. Check database coverage**:
+
 ```bash
 sqlite3 .cache/consolidated_historical.db "SELECT MIN(date), MAX(date), COUNT(*) FROM gex_daily_summary;"
 ```
 
 **3. Set PYTHONPATH** (required for all scripts):
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 ```
@@ -162,6 +171,7 @@ export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 ### After Validation Runs
 
 **1. Check results**:
+
 ```bash
 # Paper #1 results
 ls -lth reports/validation/pattern_taxonomy/
@@ -171,11 +181,13 @@ ls -lth reports/validation/regime_windows/
 ```
 
 **2. Verify YAML integrity**:
+
 ```bash
 python3 -c "import yaml; print(yaml.safe_load(open('reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q1.yaml')))"
 ```
 
 **3. Calculate statistics** (example for Paper #1):
+
 ```bash
 grep "detection_rate_pct" reports/validation/pattern_taxonomy/*.yaml | awk '{sum+=$2; count++} END {print "Avg Detection:", sum/count "%"}'
 ```
@@ -185,11 +197,13 @@ grep "detection_rate_pct" reports/validation/pattern_taxonomy/*.yaml | awk '{sum
 ## Cost Estimation
 
 ### Paper #1 (Full 2024)
+
 - **Windows**: 181 trading days × 3 patterns = 543 validations
 - **Cost per window**: ~$0.03 (o3-mini)
 - **Total**: ~$16.29
 
 ### Paper #2 (All Phases)
+
 - **Phase 1**: 52 windows × $0.016 = $0.83
 - **Phase 2**: 30 windows × $0.016 = $0.48
 - **Phase 3**: 223 windows × $0.016 = $3.57
@@ -201,9 +215,11 @@ grep "detection_rate_pct" reports/validation/pattern_taxonomy/*.yaml | awk '{sum
 ## Troubleshooting
 
 ### Import Errors
+
 **Problem**: `ModuleNotFoundError: No module named 'src'`
 
 **Solution**: Set PYTHONPATH before running scripts:
+
 ```bash
 export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 ```
@@ -211,9 +227,11 @@ export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
 ---
 
 ### Cache Misses
+
 **Problem**: API rate limits during validation
 
 **Solution**: Pre-populate cache with historical data:
+
 ```bash
 python scripts/validation/shared/export_db_to_cache.py \
   --start-date 2024-01-02 \
@@ -223,9 +241,11 @@ python scripts/validation/shared/export_db_to_cache.py \
 ---
 
 ### JSON Parsing Errors (Paper #2)
+
 **Problem**: `JSONDecodeError: Invalid \escape`
 
 **Solution**: Already fixed in Issue #137. If recurring, check:
+
 - Batch API using o4-mini-2025-04-16 (not older models)
 - Prompt includes numeric field specifications
 - Defensive parsing enabled in `batch_regime_validator.py`
@@ -244,11 +264,13 @@ python scripts/validation/shared/export_db_to_cache.py \
 ## GitHub Issues
 
 **Paper #1**:
+
 - #79 - Pattern taxonomy validation (COMPLETE)
 - #80 - Outcome calculator integration (COMPLETE)
 - #81 - Obfuscation bug fix (RESOLVED)
 
 **Paper #2**:
+
 - #89 - 30-day regime detection framework
 - #107 - Validation strategy (Phase 1 COMPLETE)
 - #112 - Batch API implementation (COMPLETE)
@@ -267,6 +289,7 @@ python scripts/validation/shared/export_db_to_cache.py \
 - **Root-level scripts** removed (all now in paper-specific folders)
 
 **Active Worktrees**:
+
 - Issue #140 (Paper #2 multi-year): `/mnt/bst/yxie2/cregan1/gex-llm-patterns-issue140`
 - Issue #141-146 (Paper #1 extensions): `/mnt/bst/yxie2/cregan1/gex-llm-patterns-issue141`
 

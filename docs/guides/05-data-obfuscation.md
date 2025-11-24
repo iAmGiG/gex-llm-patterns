@@ -220,6 +220,7 @@ def run_experiment(self,
 ```
 
 **Critical Separation**:
+
 - **LLM-facing data**: Uses obfuscated dates/tickers ("Day T+0", "INDEX_1")
 - **Cache-facing data**: Uses real dates for data retrieval ("2024-01-02")
 

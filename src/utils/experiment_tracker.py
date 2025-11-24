@@ -49,10 +49,7 @@ class ExperimentTracker:
 
         return max_id + 1
 
-    def create_experiment_name(self,
-                              event_id: str,
-                              model_info: Dict[str, str],
-                              experiment_type: str = "normal") -> str:
+    def create_experiment_name(self, event_id: str, model_info: Dict[str, str], experiment_type: str = "normal") -> str:
         """
         Create standardized experiment filename.
 
@@ -67,8 +64,8 @@ class ExperimentTracker:
             Standardized filename
         """
         # Clean model names for filename
-        tool_model = self._clean_model_name(model_info.get('tool_model', 'unknown'))
-        prompt_model = self._clean_model_name(model_info.get('prompt_model', 'unknown'))
+        tool_model = self._clean_model_name(model_info.get("tool_model", "unknown"))
+        prompt_model = self._clean_model_name(model_info.get("prompt_model", "unknown"))
 
         # If same model for both, use single name
         if tool_model == prompt_model:
@@ -103,11 +100,9 @@ class ExperimentTracker:
 
         return cleaned
 
-    def save_experiment(self,
-                       event_id: str,
-                       model_info: Dict[str, str],
-                       results: Dict[str, Any],
-                       experiment_type: str = "normal") -> str:
+    def save_experiment(
+        self, event_id: str, model_info: Dict[str, str], results: Dict[str, Any], experiment_type: str = "normal"
+    ) -> str:
         """
         Save experiment results with standardized naming.
 
@@ -121,13 +116,13 @@ class ExperimentTracker:
             Path to saved file
         """
         # Add model info to results
-        results['model_info'] = model_info
-        results['experiment_metadata'] = {
-            'timestamp': datetime.now().isoformat(),
-            'experiment_type': experiment_type,
-            'event_id': event_id,
-            'tool_model': model_info.get('tool_model', 'unknown'),
-            'prompt_model': model_info.get('prompt_model', 'unknown')
+        results["model_info"] = model_info
+        results["experiment_metadata"] = {
+            "timestamp": datetime.now().isoformat(),
+            "experiment_type": experiment_type,
+            "event_id": event_id,
+            "tool_model": model_info.get("tool_model", "unknown"),
+            "prompt_model": model_info.get("prompt_model", "unknown"),
         }
 
         # Create filename
@@ -135,7 +130,7 @@ class ExperimentTracker:
         filepath = self.base_dir / filename
 
         # Save results
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             json.dump(results, f, indent=2)
 
         logger.info(f"Saved experiment to {filepath}")
@@ -150,16 +145,15 @@ class ExperimentTracker:
             return None
 
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Error loading experiment: {e}")
             return None
 
-    def list_experiments(self,
-                        event_id: Optional[str] = None,
-                        model: Optional[str] = None,
-                        experiment_type: Optional[str] = None) -> list:
+    def list_experiments(
+        self, event_id: Optional[str] = None, model: Optional[str] = None, experiment_type: Optional[str] = None
+    ) -> list:
         """
         List experiments matching criteria.
 
@@ -200,17 +194,17 @@ class ExperimentTracker:
         if not data:
             return None
 
-        metadata = data.get('experiment_metadata', {})
+        metadata = data.get("experiment_metadata", {})
 
         return {
-            'filename': filename,
-            'event_id': metadata.get('event_id'),
-            'timestamp': metadata.get('timestamp'),
-            'tool_model': metadata.get('tool_model'),
-            'prompt_model': metadata.get('prompt_model'),
-            'experiment_type': metadata.get('experiment_type'),
-            'accuracy_score': data.get('accuracy_score', 0),
-            'confidence': data.get('llm_response', {}).get('confidence', 0)
+            "filename": filename,
+            "event_id": metadata.get("event_id"),
+            "timestamp": metadata.get("timestamp"),
+            "tool_model": metadata.get("tool_model"),
+            "prompt_model": metadata.get("prompt_model"),
+            "experiment_type": metadata.get("experiment_type"),
+            "accuracy_score": data.get("accuracy_score", 0),
+            "confidence": data.get("llm_response", {}).get("confidence", 0),
         }
 
 
@@ -220,34 +214,17 @@ def demo_experiment_tracker():
 
     # Example model configurations
     model_configs = [
-        {
-            'tool_model': 'gpt-4o-mini',
-            'prompt_model': 'gpt-4o-mini'
-        },
-        {
-            'tool_model': 'gpt-4o-mini',
-            'prompt_model': 'gpt-4-turbo'
-        },
-        {
-            'tool_model': 'gpt-4-turbo',
-            'prompt_model': 'gpt-4-turbo'
-        }
+        {"tool_model": "gpt-4o-mini", "prompt_model": "gpt-4o-mini"},
+        {"tool_model": "gpt-4o-mini", "prompt_model": "gpt-4-turbo"},
+        {"tool_model": "gpt-4-turbo", "prompt_model": "gpt-4-turbo"},
     ]
 
     print("Experiment Naming Examples:")
     print("-" * 50)
 
     for config in model_configs:
-        normal_name = tracker.create_experiment_name(
-            "covid_crash_2020",
-            config,
-            "normal"
-        )
-        obfuscated_name = tracker.create_experiment_name(
-            "covid_crash_2020",
-            config,
-            "obfuscated"
-        )
+        normal_name = tracker.create_experiment_name("covid_crash_2020", config, "normal")
+        obfuscated_name = tracker.create_experiment_name("covid_crash_2020", config, "obfuscated")
 
         print(f"\nModel Config: {config}")
         print(f"  Normal: {normal_name}")

@@ -22,6 +22,7 @@ This is the **MASTER VERSION** of Paper #1 containing:
 ## Contents
 
 ### LaTeX Source Files (Complete)
+
 - `Main.tex` - Master document
 - `00_Header.tex` - Packages and formatting
 - `01_Introduction.tex` - Full introduction
@@ -34,6 +35,7 @@ This is the **MASTER VERSION** of Paper #1 containing:
 - `references.bib` - **Complete bibliography (42 citations)**
 
 ### Figures
+
 (Copy from `docs/papers/paper1/figures/` as needed)
 
 ---
@@ -52,11 +54,13 @@ This is the **MASTER VERSION** of Paper #1 containing:
 ## Key Enhancements (vs. Workshop Version)
 
 ### 1. Complete Related Work (vs. condensed)
+
 - **Full dealer hedging literature** - Grossman, Frey, Avellaneda, Ni, Garleanu, Ge
 - **Comprehensive LLM section** - Brown, Wei, Kojima, Marcus, Lopez, Wu, Chen
 - **Detailed validation methods** - Ribeiro behavioral testing framework
 
 ### 2. Full GEX Limitations Discussion
+
 **Master version (lines 14-18 in 02_Related_work.tex):**
 > "Practitioner gamma exposure (GEX) calculations rely on a simplifying assumption: that aggregate customer positions are net short calls and net long puts. This assumption generally holds for broad index options where institutional hedging demand dominates; however, it may diverge during periods of speculative buying or distinctive customer positioning shifts. Krishnan and Bennington document how dealer delta hedging, while the primary defense against gamma risk, creates feedback loops and cascading volatility effects that can destabilize markets. Traders have noted that Options Depth (actual dealer positioning from order flow) can differ materially from GEX estimates, particularly during market stress or extreme volatility.
 >
@@ -65,10 +69,12 @@ This is the **MASTER VERSION** of Paper #1 containing:
 **Workshop version:** Condensed to 3 sentences
 
 ### 3. Complete Gamma-Centric Rationale
+
 **Master version:** 5 detailed arguments with academic citations
 **Workshop version:** Combined into 1 condensed paragraph
 
 ### 4. Full Citation List (42 total)
+
 Includes all dealer framework, LLM, and validation sources
 
 ---
@@ -106,6 +112,7 @@ Master Journal Version (12+ pages)
 **Branch:** `paper1-reviewer-revisions`
 
 **Key Features Added in This Version:**
+
 - Anderegg (2022) - Options hedging → spot volatility
 - Dim (2025) - Order flow validation of market maker positioning
 - Krishnan (2021) - Dealer hedging dynamics & feedback loops

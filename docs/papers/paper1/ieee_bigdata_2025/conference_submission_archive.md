@@ -49,12 +49,14 @@ This document consolidates the complete conference submission process - tracking
 ### Validation Data Summary
 
 **Full 2024 Unbiased Validation** (Primary Results):
+
 - gamma_positioning: 69.4% detection, 92.5% accuracy (263 KB)
 - stock_pinning: 67.4% detection, 90.4% accuracy (263 KB)
 - 0dte_hedging: 77.7% detection, 90.8% accuracy (266 KB)
 - **Sample**: N=242 days × 3 patterns = 726 total tests
 
 **Q2 2024 Biased Validation** (Sensitivity Analysis):
+
 - gamma_positioning: 100% detection, 91.7% accuracy (68 KB)
 - **Sample**: N=61 days
 
@@ -140,6 +142,7 @@ This document consolidates the complete conference submission process - tracking
 **Issue Discovered** (Oct 18): Figures 4,6-8 were using synthetic hardcoded values instead of actual validation data
 
 **Resolution**: All four figures rebuilt with actual YAML sources:
+
 - ✅ Figure 4: Real net GEX from 2024-01-02 (-$32.49B)
 - ✅ Figure 6: Real detection rates from unbiased YAML (67.4-77.7%)
 - ✅ Figure 7: Biased Q3+Q4 vs Unbiased with real data
@@ -215,42 +218,52 @@ This document consolidates the complete conference submission process - tracking
 ### Core Methodology Questions Addressed
 
 **Q1: How do you distinguish LLM reasoning from memorization?**
+
 - **Answer**: Obfuscation testing - strip temporal/identity context, test if LLM still detects pattern
 - **Result**: 69.4% unbiased detection (242 samples) → MECHANICAL ✅
 
 **Q2: Why is 242 days sufficient?**
+
 - **Answer**: Power analysis shows >99% power to detect our effect sizes
 - **Coverage**: 94% of trading days (242/257 available)
 
 **Q3: Why did profitability decline while detection stayed constant?**
+
 - **Answer**: Detection measures STRUCTURAL PRESENCE. Profitability measures ECONOMIC MAGNITUDE.
 - **Key Finding**: Detection 100% (constraint exists) while alpha declines (regime effect)
 
 **Q4: How do you measure "prediction materialized" objectively?**
+
 - **Answer**: Rule-based verification using forward returns and volatility thresholds
 - **Thresholds**: 0.3% move, 1.0% realized vol (theory-driven, not optimized)
 
 **Q5: Why LLM instead of formal methods?**
+
 - **Answer**: LLMs excel at high-dimensional context integration and causal reasoning
 - **Comparison**: 20+ variables with complex interactions (formal methods struggle)
 
 **Q6: How prevent LLM from "seeing the future"?**
+
 - **Answer**: Strict temporal cutoffs - LLM sees ONLY Day T close data, never T+1
 - **Verification**: Accuracy 92.5% (not 100%), predictions qualitative (not exact)
 
 **Q7: What LLM model used?**
+
 - **Answer**: GPT-4 (gpt-4-turbo), temperature=0.1
 - **Rationale**: Reasoning capability, structured output, reproducibility
 
 **Q8: Main limitations?**
+
 - **Answer**: Limited to one asset class (SPY), one year (2024), one model (GPT-4)
 - **Mitigation**: Methodology validated, generalization requires more testing
 
 **Q9: Is 69.4% detection good enough?**
+
 - **Answer**: YES - exceeds 60% threshold, conservative by design, pattern-specific reaches 100%
 - **Statistical**: Z=6.03, p<0.0001 vs random (50%)
 
 **Q10: How address "stochastic system" objection?**
+
 - **Answer**: We detect CONSTRAINTS (deterministic), not OUTCOMES (stochastic)
 - **Key**: Dealer hedging is mandated (constraint), effect magnitude varies (regime)
 
@@ -265,6 +278,7 @@ This document consolidates the complete conference submission process - tracking
 ## Key Metrics Summary
 
 **Paper Statistics**:
+
 - Text: ~50 KB markdown (8 sections)
 - Figures: 8 core (17 PNG files total, ~5.6 MB)
 - Tables: 3 main tables
@@ -274,12 +288,14 @@ This document consolidates the complete conference submission process - tracking
 - Length: ~8-10 pages IEEE two-column
 
 **Validation Coverage**:
+
 - Temporal: Full year 2024 (242 trading days, 96.8% coverage)
 - Patterns: 3 dealer constraint types
 - Configurations: 2 prompt templates
 - Total Tests: 726 pattern-day combinations
 
 **Results Summary**:
+
 - Primary Finding: 71.5% unbiased detection
 - Accuracy: 91.2% prediction materialization
 - Statistical Significance: All patterns p < 0.001
@@ -318,15 +334,19 @@ All source documents consolidated into this archive:
 ## Files Generated for Conference
 
 **LaTeX Source**:
+
 - `docs/papers/paper1/ieee_bigdata_2025/latex/` (complete IEEE template)
 
 **Figures** (final versions):
+
 - `docs/papers/paper1/figures/` (17 PNG files)
 
 **Scripts** (reproducible):
+
 - `scripts/visualization/generate_figure*.py` (11 Python scripts)
 
 **Validation Data**:
+
 - `reports/validation/pattern_taxonomy/*_unbiased.yaml` (primary results)
 - `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024Q2.yaml` (biased)
 
@@ -335,11 +355,13 @@ All source documents consolidated into this archive:
 ## Post-Conference: Journal Version Planning
 
 **Target Venues** (for extended journal version):
+
 1. ACM Transactions on Intelligent Systems and Technology (TIST) - Primary
 2. Journal of Artificial Intelligence Research (JAIR) - Alternative
 3. Management Science - Interdisciplinary option
 
 **Planned Extensions**:
+
 - Multi-year validation (2020-2024)
 - Cross-model comparison (GPT-4, Claude, Llama)
 - Additional asset classes (individual stocks, ETFs)

@@ -43,18 +43,18 @@ sys.path.insert(0, str(project_root))
 
 def load_phase3_sample():
     """Load Phase 3 BALANCED sample (26 detected + 26 rejected)."""
-    sample_file = Path('/tmp/phase3_balanced_sample.json')
+    sample_file = Path("/tmp/phase3_balanced_sample.json")
 
     if not sample_file.exists():
         print("ERROR: Phase 3 balanced sample not found.")
         print("Run: python scripts/validation/generate_phase3_balanced_sample.py")
         sys.exit(1)
 
-    with open(sample_file, 'r') as f:
+    with open(sample_file, "r") as f:
         sample_data = json.load(f)
 
     # Sample already contains full detection data (no need to reload from YAML)
-    detections = sample_data['dates']
+    detections = sample_data["dates"]
 
     print(f"Loaded Phase 3 balanced sample:")
     print(f"  Total: {len(detections)} dates")
@@ -111,58 +111,54 @@ Provide your analysis of these metrics."""
 def prepare_batch_file(detections):
     """Prepare JSONL file for Batch API."""
     # Load model from config (CRITICAL FIX)
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
 
-    model = config.get('OPEN_MODEL_LLM_PROMPT', 'o4-mini')
+    model = config.get("OPEN_MODEL_LLM_PROMPT", "o4-mini")
     print(f"✅ Loading model from config: {model}")
 
-    batch_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_o4mini_batch.jsonl'
+    batch_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_o4mini_batch.jsonl"
     batch_file.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(batch_file, 'w') as f:
+    with open(batch_file, "w") as f:
         for detection in detections:
-            date = detection['date']
-            gex_metrics = detection['quantitative_evidence']['gex_metrics']
+            date = detection["date"]
+            gex_metrics = detection["quantitative_evidence"]["gex_metrics"]
 
             # Control request - use o4-mini (reasoning model)
             control_body = {
                 "model": model,
-                "messages": [
-                    {"role": "user", "content": build_control_prompt(gex_metrics)}
-                ]
+                "messages": [{"role": "user", "content": build_control_prompt(gex_metrics)}],
             }
             # Only add temperature for non-reasoning models
-            if not model.startswith('o'):
+            if not model.startswith("o"):
                 control_body["temperature"] = 0.0
 
             control_request = {
                 "custom_id": f"control_{date}",
                 "method": "POST",
                 "url": "/v1/chat/completions",
-                "body": control_body
+                "body": control_body,
             }
-            f.write(json.dumps(control_request) + '\n')
+            f.write(json.dumps(control_request) + "\n")
 
             # Treatment request - use o4-mini (reasoning model)
             treatment_body = {
                 "model": model,
-                "messages": [
-                    {"role": "user", "content": build_treatment_prompt(gex_metrics)}
-                ]
+                "messages": [{"role": "user", "content": build_treatment_prompt(gex_metrics)}],
             }
             # Only add temperature for non-reasoning models
-            if not model.startswith('o'):
+            if not model.startswith("o"):
                 treatment_body["temperature"] = 0.0
 
             treatment_request = {
                 "custom_id": f"treatment_{date}",
                 "method": "POST",
                 "url": "/v1/chat/completions",
-                "body": treatment_body
+                "body": treatment_body,
             }
-            f.write(json.dumps(treatment_request) + '\n')
+            f.write(json.dumps(treatment_request) + "\n")
 
     print(f"Batch file prepared: {batch_file}")
     print(f"  Requests: {len(detections) * 2} (52 dates × 2 conditions)")
@@ -172,28 +168,25 @@ def prepare_batch_file(detections):
 def submit_batch(batch_file):
     """Submit batch to OpenAI API."""
     # Load API key and model from config
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
 
-    api_key = config.get('OPEN_AI_KEY') or config.get('OPENAI_API_KEY')
+    api_key = config.get("OPEN_AI_KEY") or config.get("OPENAI_API_KEY")
     if not api_key:
         print("ERROR: OPEN_AI_KEY not found in config/config.json")
         return None
 
     # Get model from config (CRITICAL FIX)
-    model = config.get('OPEN_MODEL_LLM_PROMPT', 'o4-mini')
+    model = config.get("OPEN_MODEL_LLM_PROMPT", "o4-mini")
     print(f"\n✅ Using model from config: {model}")
 
     client = OpenAI(api_key=api_key)
 
     # Upload batch file
     print(f"\nUploading batch file...")
-    with open(batch_file, 'rb') as f:
-        batch_input_file = client.files.create(
-            file=f,
-            purpose="batch"
-        )
+    with open(batch_file, "rb") as f:
+        batch_input_file = client.files.create(file=f, purpose="batch")
 
     print(f"File uploaded: {batch_input_file.id}")
 
@@ -203,10 +196,7 @@ def submit_batch(batch_file):
         input_file_id=batch_input_file.id,
         endpoint="/v1/chat/completions",
         completion_window="24h",
-        metadata={
-            "issue": "Issue #133 Phase 3",
-            "description": "Narrative removal test - CORRECTED balanced sample"
-        }
+        metadata={"issue": "Issue #133 Phase 3", "description": "Narrative removal test - CORRECTED balanced sample"},
     )
 
     print(f"Batch submitted: {batch.id}")
@@ -214,15 +204,19 @@ def submit_batch(batch_file):
     print(f"Requests: {batch.request_counts.total}")
 
     # Save batch metadata
-    metadata_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json'
-    with open(metadata_file, 'w') as f:
-        json.dump({
-            'batch_id': batch.id,
-            'file_id': batch_input_file.id,
-            'status': batch.status,
-            'submitted_at': datetime.now().isoformat(),
-            'total_requests': batch.request_counts.total
-        }, f, indent=2)
+    metadata_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json"
+    with open(metadata_file, "w") as f:
+        json.dump(
+            {
+                "batch_id": batch.id,
+                "file_id": batch_input_file.id,
+                "status": batch.status,
+                "submitted_at": datetime.now().isoformat(),
+                "total_requests": batch.request_counts.total,
+            },
+            f,
+            indent=2,
+        )
 
     print(f"\nMetadata saved: {metadata_file}")
     print(f"\nTo check status:")
@@ -235,17 +229,17 @@ def poll_batch(batch_id=None):
     """Poll batch status."""
     if not batch_id:
         # Load from metadata
-        metadata_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json'
-        with open(metadata_file, 'r') as f:
+        metadata_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json"
+        with open(metadata_file, "r") as f:
             metadata = json.load(f)
-        batch_id = metadata['batch_id']
+        batch_id = metadata["batch_id"]
 
     # Load API key
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
 
-    api_key = config.get('OPEN_AI_KEY') or config.get('OPENAI_API_KEY')
+    api_key = config.get("OPEN_AI_KEY") or config.get("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key)
 
     # Get batch status
@@ -258,11 +252,11 @@ def poll_batch(batch_id=None):
     print(f"Completed: {batch.request_counts.completed}")
     print(f"Failed: {batch.request_counts.failed}")
 
-    if batch.status == 'completed':
+    if batch.status == "completed":
         print(f"\n✅ Batch complete! Output file: {batch.output_file_id}")
         print(f"\nTo retrieve results:")
         print(f"  python {Path(__file__).name} --retrieve")
-    elif batch.status == 'failed':
+    elif batch.status == "failed":
         print(f"\n❌ Batch failed")
         if batch.errors:
             print(f"Errors: {batch.errors}")
@@ -276,23 +270,23 @@ def retrieve_results(batch_id=None):
     """Retrieve and parse batch results."""
     if not batch_id:
         # Load from metadata
-        metadata_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json'
-        with open(metadata_file, 'r') as f:
+        metadata_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_batch_metadata.json"
+        with open(metadata_file, "r") as f:
             metadata = json.load(f)
-        batch_id = metadata['batch_id']
+        batch_id = metadata["batch_id"]
 
     # Load API key
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
 
-    api_key = config.get('OPEN_AI_KEY') or config.get('OPENAI_API_KEY')
+    api_key = config.get("OPEN_AI_KEY") or config.get("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key)
 
     # Get batch
     batch = client.batches.retrieve(batch_id)
 
-    if batch.status != 'completed':
+    if batch.status != "completed":
         print(f"ERROR: Batch not yet completed (status: {batch.status})")
         return
 
@@ -301,8 +295,8 @@ def retrieve_results(batch_id=None):
     file_response = client.files.content(output_file_id)
 
     # Save raw output
-    raw_output_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_batch_output.jsonl'
-    with open(raw_output_file, 'wb') as f:
+    raw_output_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_batch_output.jsonl"
+    with open(raw_output_file, "wb") as f:
         f.write(file_response.content)
 
     print(f"Raw output saved: {raw_output_file}")
@@ -311,8 +305,8 @@ def retrieve_results(batch_id=None):
     results = parse_batch_results(raw_output_file)
 
     # Calculate statistics
-    control_detected = sum(1 for r in results if r['condition'] == 'control' and r['detected'])
-    treatment_detected = sum(1 for r in results if r['condition'] == 'treatment' and r['detected'])
+    control_detected = sum(1 for r in results if r["condition"] == "control" and r["detected"])
+    treatment_detected = sum(1 for r in results if r["condition"] == "treatment" and r["detected"])
     total_dates = len(results) // 2
 
     control_rate = control_detected / total_dates * 100
@@ -330,7 +324,7 @@ def retrieve_results(batch_id=None):
 
     contingency_table = [
         [control_detected, total_dates - control_detected],
-        [treatment_detected, total_dates - treatment_detected]
+        [treatment_detected, total_dates - treatment_detected],
     ]
 
     chi2, p_value, dof, expected = chi2_contingency(contingency_table)
@@ -341,35 +335,39 @@ def retrieve_results(batch_id=None):
     print(f"  Significant: {'YES' if p_value < 0.05 else 'NO'} (α=0.05)")
 
     # Load model from config for metadata
-    config_path = project_root / 'config/config.json'
-    with open(config_path, 'r') as f:
+    config_path = project_root / "config/config.json"
+    with open(config_path, "r") as f:
         config = json.load(f)
-    model_used = config.get('OPEN_MODEL_LLM_PROMPT', 'o4-mini')
+    model_used = config.get("OPEN_MODEL_LLM_PROMPT", "o4-mini")
 
     # Save results (convert numpy types to native Python)
-    results_file = project_root / 'reports/validation/paper2_extensions/issue133_phase3_o4mini_results.yaml'
-    with open(results_file, 'w') as f:
-        yaml.dump({
-            'test_metadata': {
-                'issue': 'Issue #133 Phase 3 - CORRECTED with o4-mini',
-                'test_date': datetime.now().isoformat(),
-                'batch_id': batch_id,
-                'total_dates': int(total_dates),
-                'control_detection_rate': float(control_rate),
-                'treatment_detection_rate': float(treatment_rate),
-                'difference_pp': float(control_rate - treatment_rate),
-                'chi2': float(chi2),
-                'p_value': float(p_value),
-                # Model metadata (REQUIRED)
-                'model_used': model_used,
-                'model_type': 'reasoning' if model_used.startswith('o') else 'standard',
-                'model_family': 'openai',
-                'config_verified': True,
-                'comparable_to_paper1': (model_used in ['o3-mini', 'o4-mini']),
-                'temperature': None if model_used.startswith('o') else 0.0
+    results_file = project_root / "reports/validation/paper2_extensions/issue133_phase3_o4mini_results.yaml"
+    with open(results_file, "w") as f:
+        yaml.dump(
+            {
+                "test_metadata": {
+                    "issue": "Issue #133 Phase 3 - CORRECTED with o4-mini",
+                    "test_date": datetime.now().isoformat(),
+                    "batch_id": batch_id,
+                    "total_dates": int(total_dates),
+                    "control_detection_rate": float(control_rate),
+                    "treatment_detection_rate": float(treatment_rate),
+                    "difference_pp": float(control_rate - treatment_rate),
+                    "chi2": float(chi2),
+                    "p_value": float(p_value),
+                    # Model metadata (REQUIRED)
+                    "model_used": model_used,
+                    "model_type": "reasoning" if model_used.startswith("o") else "standard",
+                    "model_family": "openai",
+                    "config_verified": True,
+                    "comparable_to_paper1": (model_used in ["o3-mini", "o4-mini"]),
+                    "temperature": None if model_used.startswith("o") else 0.0,
+                },
+                "results": results,
             },
-            'results': results
-        }, f, default_flow_style=False)
+            f,
+            default_flow_style=False,
+        )
 
     print(f"\nResults saved: {results_file}")
 
@@ -378,28 +376,30 @@ def parse_batch_results(output_file):
     """Parse batch API output."""
     results = []
 
-    with open(output_file, 'r') as f:
+    with open(output_file, "r") as f:
         for line in f:
             result = json.loads(line)
 
-            custom_id = result['custom_id']
-            condition, date = custom_id.split('_', 1)
+            custom_id = result["custom_id"]
+            condition, date = custom_id.split("_", 1)
 
-            response_text = result['response']['body']['choices'][0]['message']['content']
+            response_text = result["response"]["body"]["choices"][0]["message"]["content"]
 
-            if condition == 'control':
+            if condition == "control":
                 detected, confidence = parse_control_response(response_text)
             else:
                 detected = parse_treatment_response(response_text)
                 confidence = None
 
-            results.append({
-                'date': date,
-                'condition': condition,
-                'detected': detected,
-                'confidence': confidence,
-                'response': response_text[:500]  # First 500 chars
-            })
+            results.append(
+                {
+                    "date": date,
+                    "condition": condition,
+                    "detected": detected,
+                    "confidence": confidence,
+                    "response": response_text[:500],  # First 500 chars
+                }
+            )
 
     return results
 
@@ -408,13 +408,13 @@ def parse_control_response(response_text):
     """Parse control response."""
     try:
         data = json.loads(response_text)
-        confidence = data.get('confidence', 0)
+        confidence = data.get("confidence", 0)
         detected = confidence >= 60
         return detected, confidence
     except:
         # Fallback: check for keywords
-        has_who = 'market maker' in response_text.lower() or 'dealer' in response_text.lower()
-        has_constraint = 'force' in response_text.lower() or 'hedge' in response_text.lower()
+        has_who = "market maker" in response_text.lower() or "dealer" in response_text.lower()
+        has_constraint = "force" in response_text.lower() or "hedge" in response_text.lower()
         detected = has_who and has_constraint
         confidence = 50 if detected else 0
         return detected, confidence
@@ -424,10 +424,10 @@ def parse_treatment_response(response_text):
     """Parse treatment response."""
     text_lower = response_text.lower()
 
-    mentions_dealers = 'market maker' in text_lower or 'dealer' in text_lower
-    mentions_hedging = 'hedge' in text_lower or 'hedging' in text_lower
-    mentions_constraint = 'force' in text_lower or 'must' in text_lower or 'required' in text_lower
-    mentions_gamma = 'gamma' in text_lower
+    mentions_dealers = "market maker" in text_lower or "dealer" in text_lower
+    mentions_hedging = "hedge" in text_lower or "hedging" in text_lower
+    mentions_constraint = "force" in text_lower or "must" in text_lower or "required" in text_lower
+    mentions_gamma = "gamma" in text_lower
 
     detected = mentions_dealers and mentions_hedging and (mentions_constraint or mentions_gamma)
     return detected
@@ -437,9 +437,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Phase 2: Narrative Removal Test (Batch API)")
-    parser.add_argument('--submit', action='store_true', help='Submit batch')
-    parser.add_argument('--poll', action='store_true', help='Poll batch status')
-    parser.add_argument('--retrieve', action='store_true', help='Retrieve results')
+    parser.add_argument("--submit", action="store_true", help="Submit batch")
+    parser.add_argument("--poll", action="store_true", help="Poll batch status")
+    parser.add_argument("--retrieve", action="store_true", help="Retrieve results")
 
     args = parser.parse_args()
 

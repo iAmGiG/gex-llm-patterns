@@ -62,6 +62,7 @@ Characterize the 74 non-detection days to prove LLM has **signal sensitivity**, 
 **Database:** (Check `config_defaults/analysis_config.yaml` for connection details)
 
 **Query 1: Strike-Level Gamma Distribution**
+
 ```sql
 -- For GEX concentration analysis (Gini coefficient)
 SELECT
@@ -77,6 +78,7 @@ ORDER BY date, strike;
 ```
 
 **Query 2: Put vs Call Gamma Aggregates**
+
 ```sql
 -- For put-call balance analysis
 SELECT
@@ -90,6 +92,7 @@ GROUP BY date;
 ```
 
 **Query 3: Volume and Open Interest**
+
 ```sql
 -- For volume/OI signal strength analysis
 SELECT
@@ -108,6 +111,7 @@ GROUP BY date;
 **File to Create:** `scripts/validation/issue_141_non_detection_analysis.py`
 
 **Required Imports:**
+
 ```python
 import pandas as pd
 import numpy as np
@@ -233,6 +237,7 @@ results_df.to_csv('reports/validation_experiments/issue_141_hypothesis_tests.csv
 **Create 3 Key Figures:**
 
 1. **Heatmap of Non-Detection Days Across 2024**
+
 ```python
 import calendar
 
@@ -255,6 +260,7 @@ plt.savefig('docs/papers/paper1/figures/issue_141_detection_calendar.png', dpi=3
 ```
 
 2. **GEX Concentration Distribution**
+
 ```python
 plt.figure(figsize=(10, 6))
 plt.hist(detected['gex_concentration'].dropna(), bins=30, alpha=0.6, label='Detected', color='green')
@@ -267,6 +273,7 @@ plt.savefig('docs/papers/paper1/figures/issue_141_gex_concentration.png', dpi=30
 ```
 
 3. **Multi-Factor Scatter Plot**
+
 ```python
 fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
@@ -319,6 +326,7 @@ plt.savefig('docs/papers/paper1/figures/issue_141_multifactor_analysis.png', dpi
 **File:** `reports/validation_experiments/issue_141_non_detection_analysis.md`
 
 **Required Sections:**
+
 - Executive Summary (2-3 sentence finding)
 - Hypothesis Test Results Table
 - Significant Factors Identified (p < 0.05)
@@ -372,11 +380,13 @@ combined with institutional conviction (high volume/OI).
 ## Success Criteria
 
 ### Minimum Viable (MC Satisfied):
+
 - ✅ Identify 1-2 factors with p < 0.05
 - ✅ Show non-detected days are statistically distinct
 - ✅ Prove sensitivity to signal characteristics
 
 ### Strong Defense (Journal Quality):
+
 - ✅ Identify 3+ factors with p < 0.01
 - ✅ Show large effect sizes (Cohen's d > 0.5)
 - ✅ Create interpretable narrative (fragmentation + conflict + low conviction)
@@ -398,6 +408,7 @@ combined with institutional conviction (high volume/OI).
 ## Files to Create/Update on HPCC
 
 **New Files:**
+
 1. `scripts/validation/issue_141_non_detection_analysis.py` - Main analysis script
 2. `reports/validation_experiments/issue_141_non_detection_analysis.md` - Results documentation
 3. `docs/papers/paper1/figures/issue_141_detection_calendar.png`
@@ -405,6 +416,7 @@ combined with institutional conviction (high volume/OI).
 5. `docs/papers/paper1/figures/issue_141_multifactor_analysis.png`
 
 **Update Existing:**
+
 1. Issue #141 GitHub comment with final results
 2. `docs/papers/paper1/journal_version/05_Results.tex` - Add non-detection subsection
 3. `docs/papers/paper1/journal_version/06_Discussion.tex` - Reference sensitivity findings
@@ -428,8 +440,8 @@ After completing Issue #141, the execution sequence for remaining MC defenses is
 
 ## Contact Information
 
-**GitHub Issue:** https://github.com/iAmGiG/gex-llm-patterns/issues/141
-**Project Board:** https://github.com/users/iAmGiG/projects/6
+**GitHub Issue:** <https://github.com/iAmGiG/gex-llm-patterns/issues/141>
+**Project Board:** <https://github.com/users/iAmGiG/projects/6>
 
 **Status Updates:** Post to Issue #141 comments as progress is made
 

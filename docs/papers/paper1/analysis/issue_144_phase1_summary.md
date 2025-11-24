@@ -35,6 +35,7 @@ Phase 1 calculated 4 materialization criteria for 519 detection days across 3 pa
 
 **Definition**: Realized volatility T+1 exceeds forecast volatility T
 **Operationalization**: `realized_vol(t+1) > forecast_vol(t)`
+
 - Realized vol: `(high - low) / close * 100`
 - Forecast vol: 5-day rolling average of realized vol (shifted forward)
 
@@ -54,6 +55,7 @@ Phase 1 calculated 4 materialization criteria for 519 detection days across 3 pa
 
 **Definition**: Price direction matches GEX regime expectation
 **Operationalization**:
+
 - Negative GEX: Any directional move (trend amplification)
 - Positive GEX: Price change < median absolute change (stabilization)
 
@@ -70,6 +72,7 @@ Phase 1 calculated 4 materialization criteria for 519 detection days across 3 pa
 **Root Cause**: In 2024, 100% of days had **negative GEX** (persistent regime). Any price movement whatsoever counts as "materialization" under current logic.
 
 **Recommendation**: Refine criterion to measure **magnitude** of directional move, not just presence. Options:
+
 - Require move > 1.5x rolling average price change
 - Require move in predicted direction (not just any move)
 - Skip this criterion for Issue #144 (use only C1, C4)
@@ -88,6 +91,7 @@ Phase 1 calculated 4 materialization criteria for 519 detection days across 3 pa
 **Root Cause**: Historical GEX builder does not populate flip point field. Would require calculation from strike-level data (`strike_gex_details` table).
 
 **Options**:
+
 1. **Calculate flip point from strike data** (add to script, ~30 min work)
 2. **Skip this criterion** for Issue #144 (use only C1, C4)
 3. **Defer to future work** (Paper #2 or future extension)
@@ -125,12 +129,14 @@ These rates are **substantially below 100%** and **above random baseline** (to b
 ### Finding 2: Patterns Show Similar Rates
 
 All 3 patterns show similar materialization rates for C1 and C4:
+
 - Variance across patterns: < 3 percentage points
 - Suggests LLM is detecting **structural constraints** (GEX mechanics), not pattern-specific artifacts
 
 ### Finding 3: No Universal Predictions
 
 If LLM were p-hacking, we'd expect:
+
 - Either 100% materialization (always predicts outcome X)
 - Or 50% materialization (random guessing)
 
@@ -165,6 +171,7 @@ Observed rates (20-43%) fall between these extremes, indicating **signal-based d
 ### OHLCV Data Addition
 
 Successfully added OHLCV columns to `daily_gex_metrics` table:
+
 - Schema: 5 new columns (open, high, low, close, volume)
 - Coverage: 251/251 days (100%)
 - Source: Alpha Vantage TIME_SERIES_DAILY endpoint
@@ -173,6 +180,7 @@ Successfully added OHLCV columns to `daily_gex_metrics` table:
 ### YAML Data Sources
 
 Used full-year unbiased validation results:
+
 - `gamma_positioning_SPY_2024_unbiased.yaml`
 - `stock_pinning_SPY_2024_unbiased.yaml`
 - `0dte_hedging_SPY_2024_unbiased.yaml`

@@ -26,7 +26,7 @@ sys.path.insert(0, str(project_root))
 
 def load_phase1_results():
     """Load Phase 1 materialization criteria results."""
-    data_path = project_root / 'docs' / 'papers' / 'paper1' / 'analysis' / 'issue_144_materialization_criteria.csv'
+    data_path = project_root / "docs" / "papers" / "paper1" / "analysis" / "issue_144_materialization_criteria.csv"
 
     df = pd.read_csv(data_path)
 
@@ -52,7 +52,7 @@ def sample_baseline_days(df, n_samples=100, seed=42):
     print(f"\nSampling {n_samples} random baseline days...")
 
     # Get all non-detection days
-    non_detection = df[df['detected'] == False].copy()
+    non_detection = df[df["detected"] == False].copy()
 
     # Sample without replacement
     np.random.seed(seed)
@@ -65,8 +65,8 @@ def sample_baseline_days(df, n_samples=100, seed=42):
 
     print(f"  Sampled {len(baseline)} baseline days")
     print(f"  By pattern:")
-    for pattern in baseline['pattern_type'].unique():
-        n = len(baseline[baseline['pattern_type'] == pattern])
+    for pattern in baseline["pattern_type"].unique():
+        n = len(baseline[baseline["pattern_type"] == pattern])
         print(f"    {pattern}: {n}")
 
     return baseline
@@ -86,26 +86,22 @@ def calculate_baseline_rates(baseline_df):
     results = {}
 
     # Overall baseline rates
-    c1_rate = baseline_df['criterion_1_volatility_amplification'].sum() / len(baseline_df) * 100
-    c4_rate = baseline_df['criterion_4_range_expansion'].sum() / len(baseline_df) * 100
+    c1_rate = baseline_df["criterion_1_volatility_amplification"].sum() / len(baseline_df) * 100
+    c4_rate = baseline_df["criterion_4_range_expansion"].sum() / len(baseline_df) * 100
 
     print(f"\nOverall Baseline (n={len(baseline_df)}):")
     print(f"  C1 (Volatility Amplification): {c1_rate:.1f}%")
     print(f"  C4 (Range Expansion): {c4_rate:.1f}%")
 
-    results['overall'] = {
-        'n': len(baseline_df),
-        'c1_rate': c1_rate,
-        'c4_rate': c4_rate
-    }
+    results["overall"] = {"n": len(baseline_df), "c1_rate": c1_rate, "c4_rate": c4_rate}
 
     # By pattern
     print(f"\nBy Pattern:")
-    for pattern in baseline_df['pattern_type'].unique():
-        pattern_df = baseline_df[baseline_df['pattern_type'] == pattern]
+    for pattern in baseline_df["pattern_type"].unique():
+        pattern_df = baseline_df[baseline_df["pattern_type"] == pattern]
 
-        c1 = pattern_df['criterion_1_volatility_amplification'].sum()
-        c4 = pattern_df['criterion_4_range_expansion'].sum()
+        c1 = pattern_df["criterion_1_volatility_amplification"].sum()
+        c4 = pattern_df["criterion_4_range_expansion"].sum()
         n = len(pattern_df)
 
         c1_pct = c1 / n * 100 if n > 0 else 0
@@ -115,11 +111,7 @@ def calculate_baseline_rates(baseline_df):
         print(f"    C1: {c1_pct:.1f}%")
         print(f"    C4: {c4_pct:.1f}%")
 
-        results[pattern] = {
-            'n': n,
-            'c1_rate': c1_pct,
-            'c4_rate': c4_pct
-        }
+        results[pattern] = {"n": n, "c1_rate": c1_pct, "c4_rate": c4_pct}
 
     return results
 
@@ -138,26 +130,22 @@ def calculate_detection_rates(detection_df):
     results = {}
 
     # Overall detection rates
-    c1_rate = detection_df['criterion_1_volatility_amplification'].sum() / len(detection_df) * 100
-    c4_rate = detection_df['criterion_4_range_expansion'].sum() / len(detection_df) * 100
+    c1_rate = detection_df["criterion_1_volatility_amplification"].sum() / len(detection_df) * 100
+    c4_rate = detection_df["criterion_4_range_expansion"].sum() / len(detection_df) * 100
 
     print(f"\nOverall Detection (n={len(detection_df)}):")
     print(f"  C1 (Volatility Amplification): {c1_rate:.1f}%")
     print(f"  C4 (Range Expansion): {c4_rate:.1f}%")
 
-    results['overall'] = {
-        'n': len(detection_df),
-        'c1_rate': c1_rate,
-        'c4_rate': c4_rate
-    }
+    results["overall"] = {"n": len(detection_df), "c1_rate": c1_rate, "c4_rate": c4_rate}
 
     # By pattern
     print(f"\nBy Pattern:")
-    for pattern in detection_df['pattern_type'].unique():
-        pattern_df = detection_df[detection_df['pattern_type'] == pattern]
+    for pattern in detection_df["pattern_type"].unique():
+        pattern_df = detection_df[detection_df["pattern_type"] == pattern]
 
-        c1 = pattern_df['criterion_1_volatility_amplification'].sum()
-        c4 = pattern_df['criterion_4_range_expansion'].sum()
+        c1 = pattern_df["criterion_1_volatility_amplification"].sum()
+        c4 = pattern_df["criterion_4_range_expansion"].sum()
         n = len(pattern_df)
 
         c1_pct = c1 / n * 100 if n > 0 else 0
@@ -167,11 +155,7 @@ def calculate_detection_rates(detection_df):
         print(f"    C1: {c1_pct:.1f}%")
         print(f"    C4: {c4_pct:.1f}%")
 
-        results[pattern] = {
-            'n': n,
-            'c1_rate': c1_pct,
-            'c4_rate': c4_pct
-        }
+        results[pattern] = {"n": n, "c1_rate": c1_pct, "c4_rate": c4_pct}
 
     return results
 
@@ -190,8 +174,8 @@ def calculate_lift(detection_rates, baseline_rates):
     lifts = {}
 
     # Overall lift
-    c1_lift = detection_rates['overall']['c1_rate'] / baseline_rates['overall']['c1_rate']
-    c4_lift = detection_rates['overall']['c4_rate'] / baseline_rates['overall']['c4_rate']
+    c1_lift = detection_rates["overall"]["c1_rate"] / baseline_rates["overall"]["c1_rate"]
+    c4_lift = detection_rates["overall"]["c4_rate"] / baseline_rates["overall"]["c4_rate"]
 
     print(f"\nOverall Lift:")
     print(f"  C1 (Volatility Amplification): {c1_lift:.2f}x")
@@ -201,27 +185,33 @@ def calculate_lift(detection_rates, baseline_rates):
     print(f"    Detection: {detection_rates['overall']['c4_rate']:.1f}%")
     print(f"    Baseline: {baseline_rates['overall']['c4_rate']:.1f}%")
 
-    lifts['overall'] = {
-        'c1_lift': c1_lift,
-        'c4_lift': c4_lift
-    }
+    lifts["overall"] = {"c1_lift": c1_lift, "c4_lift": c4_lift}
 
     # By pattern
     print(f"\nBy Pattern:")
-    patterns = [p for p in detection_rates.keys() if p != 'overall']
+    patterns = [p for p in detection_rates.keys() if p != "overall"]
     for pattern in patterns:
         if pattern in baseline_rates:
-            c1_lift = detection_rates[pattern]['c1_rate'] / baseline_rates[pattern]['c1_rate'] if baseline_rates[pattern]['c1_rate'] > 0 else float('inf')
-            c4_lift = detection_rates[pattern]['c4_rate'] / baseline_rates[pattern]['c4_rate'] if baseline_rates[pattern]['c4_rate'] > 0 else float('inf')
+            c1_lift = (
+                detection_rates[pattern]["c1_rate"] / baseline_rates[pattern]["c1_rate"]
+                if baseline_rates[pattern]["c1_rate"] > 0
+                else float("inf")
+            )
+            c4_lift = (
+                detection_rates[pattern]["c4_rate"] / baseline_rates[pattern]["c4_rate"]
+                if baseline_rates[pattern]["c4_rate"] > 0
+                else float("inf")
+            )
 
             print(f"  {pattern}:")
-            print(f"    C1 Lift: {c1_lift:.2f}x ({detection_rates[pattern]['c1_rate']:.1f}% vs {baseline_rates[pattern]['c1_rate']:.1f}%)")
-            print(f"    C4 Lift: {c4_lift:.2f}x ({detection_rates[pattern]['c4_rate']:.1f}% vs {baseline_rates[pattern]['c4_rate']:.1f}%)")
+            print(
+                f"    C1 Lift: {c1_lift:.2f}x ({detection_rates[pattern]['c1_rate']:.1f}% vs {baseline_rates[pattern]['c1_rate']:.1f}%)"
+            )
+            print(
+                f"    C4 Lift: {c4_lift:.2f}x ({detection_rates[pattern]['c4_rate']:.1f}% vs {baseline_rates[pattern]['c4_rate']:.1f}%)"
+            )
 
-            lifts[pattern] = {
-                'c1_lift': c1_lift,
-                'c4_lift': c4_lift
-            }
+            lifts[pattern] = {"c1_lift": c1_lift, "c4_lift": c4_lift}
 
     return lifts
 
@@ -248,10 +238,7 @@ def build_contingency_table(detection_df, baseline_df, criterion):
     base_no = len(baseline_df) - base_yes
 
     # Contingency table
-    table = np.array([
-        [det_yes, det_no],      # Detection days
-        [base_yes, base_no]     # Baseline days
-    ])
+    table = np.array([[det_yes, det_no], [base_yes, base_no]])  # Detection days  # Baseline days
 
     return table
 
@@ -270,7 +257,7 @@ def chi_square_test(detection_df, baseline_df):
 
     # C1: Volatility Amplification
     print("\nCriterion 1: Volatility Amplification")
-    c1_table = build_contingency_table(detection_df, baseline_df, 'criterion_1_volatility_amplification')
+    c1_table = build_contingency_table(detection_df, baseline_df, "criterion_1_volatility_amplification")
 
     print(f"  Contingency Table:")
     print(f"                Materialized    Not Materialized")
@@ -284,17 +271,12 @@ def chi_square_test(detection_df, baseline_df):
     print(f"  Degrees of freedom: {dof_c1}")
     print(f"  Significant: {'Yes' if p_c1 < 0.05 else 'No'}")
 
-    results['c1'] = {
-        'chi2': chi2_c1,
-        'p_value': p_c1,
-        'significant': p_c1 < 0.05,
-        'table': c1_table
-    }
+    results["c1"] = {"chi2": chi2_c1, "p_value": p_c1, "significant": p_c1 < 0.05, "table": c1_table}
 
     # C4: Range Expansion
     print("\n" + "-" * 80)
     print("\nCriterion 4: Range Expansion")
-    c4_table = build_contingency_table(detection_df, baseline_df, 'criterion_4_range_expansion')
+    c4_table = build_contingency_table(detection_df, baseline_df, "criterion_4_range_expansion")
 
     print(f"  Contingency Table:")
     print(f"                Materialized    Not Materialized")
@@ -308,12 +290,7 @@ def chi_square_test(detection_df, baseline_df):
     print(f"  Degrees of freedom: {dof_c4}")
     print(f"  Significant: {'Yes' if p_c4 < 0.05 else 'No'}")
 
-    results['c4'] = {
-        'chi2': chi2_c4,
-        'p_value': p_c4,
-        'significant': p_c4 < 0.05,
-        'table': c4_table
-    }
+    results["c4"] = {"chi2": chi2_c4, "p_value": p_c4, "significant": p_c4 < 0.05, "table": c4_table}
 
     return results
 
@@ -328,7 +305,7 @@ def main():
     print()
 
     # Paths
-    output_dir = project_root / 'docs' / 'papers' / 'paper1' / 'analysis'
+    output_dir = project_root / "docs" / "papers" / "paper1" / "analysis"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Step 1: Load Phase 1 results
@@ -343,7 +320,7 @@ def main():
 
     # Step 3: Split detection vs baseline
     print("Step 3: Splitting detection vs baseline...")
-    detection_df = df[df['detected'] == True].copy()
+    detection_df = df[df["detected"] == True].copy()
     print(f"  Detection days: {len(detection_df)}")
     print(f"  Baseline days: {len(baseline_df)}")
     print()
@@ -368,15 +345,16 @@ def main():
 
     # Save comparison summary
     summary = {
-        'detection': detection_rates,
-        'baseline': baseline_rates,
-        'lift': lifts,
-        'chi_square': chi_square_results
+        "detection": detection_rates,
+        "baseline": baseline_rates,
+        "lift": lifts,
+        "chi_square": chi_square_results,
     }
 
     import yaml as yaml_lib
-    summary_path = output_dir / 'issue_144_phase2_summary.yaml'
-    with open(summary_path, 'w') as f:
+
+    summary_path = output_dir / "issue_144_phase2_summary.yaml"
+    with open(summary_path, "w") as f:
         # Convert numpy types to Python native types for YAML serialization
         def convert_numpy(obj):
             if isinstance(obj, np.ndarray):
@@ -396,7 +374,7 @@ def main():
     print(f"  Saved: {summary_path}")
 
     # Save baseline sample
-    baseline_path = output_dir / 'issue_144_baseline_sample.csv'
+    baseline_path = output_dir / "issue_144_baseline_sample.csv"
     baseline_df.to_csv(baseline_path, index=False)
     print(f"  Saved: {baseline_path}")
 
@@ -410,7 +388,7 @@ def main():
     print(f"  2. C4 Lift: {lifts['overall']['c4_lift']:.2f}x (p={chi_square_results['c4']['p_value']:.6f})")
     print()
     print("Interpretation:")
-    if chi_square_results['c1']['significant'] or chi_square_results['c4']['significant']:
+    if chi_square_results["c1"]["significant"] or chi_square_results["c4"]["significant"]:
         print("  ✅ Detection days show significantly different materialization rates")
         print("  ✅ Refutes p-hacking: patterns predict real outcomes, not noise")
     else:
@@ -421,5 +399,5 @@ def main():
     return summary
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     summary = main()

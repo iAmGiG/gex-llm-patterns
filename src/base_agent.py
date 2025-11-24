@@ -20,6 +20,7 @@ from autogen_ext.models.openai import OpenAIChatCompletionClient
 # Project components
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -40,15 +41,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
     - Simple tool registration
     """
 
-    def __init__(
-        self,
-        name,
-        description="",
-        tools=None,
-        model_name="gpt-4o-mini",
-        temperature=0.2,
-        cache_manager=None
-    ):
+    def __init__(self, name, description="", tools=None, model_name="gpt-4o-mini", temperature=0.2, cache_manager=None):
         """
         Initialize GEX agent with essential components.
 
@@ -62,20 +55,14 @@ class BaseGEXAgent(AssistantAgent, ABC):
         """
         # Load configuration
         config_loader = ConfigLoader()
-        api_key = os.getenv(
-            "OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
+        api_key = os.getenv("OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
 
         if not api_key:
-            raise ValueError(
-                "OpenAI API key required. Set OPENAI_API_KEY or update @config/")
+            raise ValueError("OpenAI API key required. Set OPENAI_API_KEY or update @config/")
 
         # Create OpenAI client with research-optimized settings
         model_client = OpenAIChatCompletionClient(
-            model=model_name,
-            api_key=api_key,
-            temperature=temperature,
-            max_tokens=4096,
-            timeout=120
+            model=model_name, api_key=api_key, temperature=temperature, max_tokens=4096, timeout=120
         )
 
         # Initialize parent AssistantAgent
@@ -83,13 +70,14 @@ class BaseGEXAgent(AssistantAgent, ABC):
             name=name,
             model_client=model_client,
             tools=tools or [],
-            description=description or f"{name} agent for GEX analysis"
+            description=description or f"{name} agent for GEX analysis",
         )
 
         # GEX-specific components
         self.cache_manager = cache_manager or UnifiedCacheManager()
         self.logger = logging.getLogger(f"GEX.{name}")
         from datetime import datetime
+
         self.created_at = datetime.now()
 
         # Agent state
@@ -158,7 +146,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
 
     def _extract_response_content(self, response: Any) -> str:
         """Extract content from LLM response."""
-        if hasattr(response, 'content'):
+        if hasattr(response, "content"):
             if isinstance(response.content, str):
                 return response.content
             elif isinstance(response.content, list) and response.content:
@@ -169,11 +157,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
 
     def store_data(self, key, data: Any) -> None:
         """Store data in agent's local storage."""
-        self.processed_data[key] = {
-            "data": data,
-            "timestamp": now_iso(),
-            "agent": self.name
-        }
+        self.processed_data[key] = {"data": data, "timestamp": now_iso(), "agent": self.name}
         self.log(f"Stored data: {key}")
 
     def get_data(self, key) -> Any:
@@ -184,11 +168,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
 
     def store_result(self, analysis_type, result: Any) -> None:
         """Store analysis results."""
-        self.analysis_results[analysis_type] = {
-            "result": result,
-            "timestamp": now_iso(),
-            "agent": self.name
-        }
+        self.analysis_results[analysis_type] = {"result": result, "timestamp": now_iso(), "agent": self.name}
         self.log(f"Stored analysis result: {analysis_type}")
 
     def get_result(self, analysis_type) -> Any:
@@ -205,7 +185,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
             "tools_count": len(self._tools),
             "data_items": len(self.processed_data),
             "analysis_results": len(self.analysis_results),
-            "cache_manager": self.cache_manager is not None
+            "cache_manager": self.cache_manager is not None,
         }
 
     @abstractmethod
@@ -228,7 +208,7 @@ class DataCollectionAgent(BaseGEXAgent):
             name="DataCollector",
             description="Collects SPY/SPX market data via Alpha Vantage API",
             tools=DATA_COLLECTION_TOOLS,
-            **kwargs
+            **kwargs,
         )
 
     async def generate_reply(self, messages, context=None) -> str:
@@ -238,7 +218,7 @@ class DataCollectionAgent(BaseGEXAgent):
         context_dict = {
             "role": "market data collection specialist",
             "task": "collect and validate SPY/SPX options and underlying data",
-            "constraints": "respect API rate limits, use caching when possible"
+            "constraints": "respect API rate limits, use caching when possible",
         }
 
         return await self.process_request(last_message, context_dict)
@@ -255,7 +235,7 @@ class GEXCalculationAgent(BaseGEXAgent):
             name="GEXCalculator",
             description="Calculates gamma exposure and related options metrics",
             tools=GEX_CALCULATION_TOOLS,
-            **kwargs
+            **kwargs,
         )
 
     async def generate_reply(self, messages, context=None) -> str:
@@ -265,7 +245,7 @@ class GEXCalculationAgent(BaseGEXAgent):
         context_dict = {
             "role": "gamma exposure calculation specialist",
             "task": "calculate GEX levels, flip points, and gamma-weighted metrics",
-            "constraints": "use Black-Scholes model, validate input data quality"
+            "constraints": "use Black-Scholes model, validate input data quality",
         }
 
         return await self.process_request(last_message, context_dict)
@@ -287,7 +267,7 @@ class PatternAnalysisAgent(BaseGEXAgent):
             name="PatternAnalyzer",
             description="Discovers patterns in GEX data using LLM analysis",
             tools=PATTERN_ANALYSIS_TOOLS,
-            **kwargs
+            **kwargs,
         )
 
     async def generate_reply(self, messages, context=None) -> str:
@@ -297,7 +277,7 @@ class PatternAnalysisAgent(BaseGEXAgent):
         context_dict = {
             "role": "quantitative pattern discovery specialist",
             "task": "identify exploitable patterns in GEX and price action data",
-            "constraints": "focus on statistical significance, avoid overfitting"
+            "constraints": "focus on statistical significance, avoid overfitting",
         }
 
         return await self.process_request(last_message, context_dict)

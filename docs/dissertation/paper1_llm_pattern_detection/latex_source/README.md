@@ -88,7 +88,7 @@ All figures referenced as `../figures/figN_*.png`:
 
 ### Missing pdflatex
 
-Install MiKTeX from https://miktex.org/download
+Install MiKTeX from <https://miktex.org/download>
 
 Add to PATH:
 

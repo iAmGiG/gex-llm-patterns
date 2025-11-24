@@ -7,6 +7,7 @@ Infrastructure and workflow documentation for developers working on the GEX LLM 
 ## Guides
 
 ### Worktree Cache Management
+
 **File**: `worktree_cache_management.md`
 **Created**: November 22, 2025 (Issue #149)
 
@@ -18,6 +19,7 @@ Comprehensive guide for managing `.cache/` directories across git worktrees:
 - **Troubleshooting**: Common pitfalls (database locks, accidental deletion, divergence)
 
 **Key Topics**:
+
 - Symlink strategy (recommended for read-only workflows)
 - Independent caches (safe for concurrent data collection)
 - Rsync patterns (selective sync, bootstrapping)
@@ -38,6 +40,7 @@ Comprehensive guide for managing `.cache/` directories across git worktrees:
 ## Contributing
 
 When adding development guides:
+
 1. Use descriptive filenames: `topic_name_guide.md`
 2. Include creation date and issue context in frontmatter
 3. Follow existing structure (problem, solution, examples, troubleshooting)

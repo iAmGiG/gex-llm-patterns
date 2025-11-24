@@ -41,13 +41,16 @@ class DualGEXMigration:
 
     def create_backup(self) -> Path:
         """Create backup of database before migration."""
-        backup_path = self.database_path.parent / \
-            f"{self.database_path.stem}_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+        backup_path = (
+            self.database_path.parent
+            / f"{self.database_path.stem}_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+        )
 
         logger.info(f"Creating backup: {backup_path}")
 
         # Copy database file
         import shutil
+
         shutil.copy2(self.database_path, backup_path)
 
         logger.info(f"✅ Backup created: {backup_path}")
@@ -58,14 +61,11 @@ class DualGEXMigration:
         cursor = conn.execute("PRAGMA table_info(daily_gex_metrics);")
         columns = [row[1] for row in cursor.fetchall()]
 
-        dual_gex_columns = ['gex_oi', 'gex_volume',
-                            'activity_ratio', 'economic_regime']
-        existing_dual_columns = [
-            col for col in dual_gex_columns if col in columns]
+        dual_gex_columns = ["gex_oi", "gex_volume", "activity_ratio", "economic_regime"]
+        existing_dual_columns = [col for col in dual_gex_columns if col in columns]
 
         if existing_dual_columns:
-            logger.warning(
-                f"Some dual GEX columns already exist: {existing_dual_columns}")
+            logger.warning(f"Some dual GEX columns already exist: {existing_dual_columns}")
             return False
 
         logger.info("Migration needed - dual GEX columns not found")
@@ -80,7 +80,7 @@ class DualGEXMigration:
             "ALTER TABLE daily_gex_metrics ADD COLUMN gex_oi REAL;",
             "ALTER TABLE daily_gex_metrics ADD COLUMN gex_volume REAL;",
             "ALTER TABLE daily_gex_metrics ADD COLUMN activity_ratio REAL;",
-            "ALTER TABLE daily_gex_metrics ADD COLUMN economic_regime TEXT;"
+            "ALTER TABLE daily_gex_metrics ADD COLUMN economic_regime TEXT;",
         ]
 
         for migration_sql in migrations:
@@ -103,10 +103,8 @@ class DualGEXMigration:
         cursor = conn.execute("PRAGMA table_info(daily_gex_metrics);")
         columns = [row[1] for row in cursor.fetchall()]
 
-        required_columns = ['gex_oi', 'gex_volume',
-                            'activity_ratio', 'economic_regime']
-        missing_columns = [
-            col for col in required_columns if col not in columns]
+        required_columns = ["gex_oi", "gex_volume", "activity_ratio", "economic_regime"]
+        missing_columns = [col for col in required_columns if col not in columns]
 
         if missing_columns:
             logger.error(f"❌ Migration incomplete - missing: {missing_columns}")
@@ -115,11 +113,9 @@ class DualGEXMigration:
         logger.info(f"✅ All required columns present: {required_columns}")
 
         # Verify backward compatibility (existing data still accessible)
-        cursor = conn.execute(
-            "SELECT COUNT(*) FROM daily_gex_metrics WHERE total_gex IS NOT NULL;")
+        cursor = conn.execute("SELECT COUNT(*) FROM daily_gex_metrics WHERE total_gex IS NOT NULL;")
         existing_count = cursor.fetchone()[0]
-        logger.info(
-            f"✅ Backward compatibility verified - {existing_count} existing records accessible")
+        logger.info(f"✅ Backward compatibility verified - {existing_count} existing records accessible")
 
         return True
 
@@ -140,8 +136,7 @@ class DualGEXMigration:
         try:
             # Step 3: Check if migration needed
             if not self.check_if_migration_needed(conn):
-                logger.warning(
-                    "Migration may have already been applied - verify manually")
+                logger.warning("Migration may have already been applied - verify manually")
                 return False
 
             # Step 4: Add columns
@@ -157,8 +152,7 @@ class DualGEXMigration:
             logger.info("=" * 80)
             logger.info("\nNext steps:")
             logger.info("1. Update HistoricalGEXDatabaseBuilder to populate dual metrics")
-            logger.info(
-                "2. Run backfill on sample data (Q1 2024) to test integration")
+            logger.info("2. Run backfill on sample data (Q1 2024) to test integration")
             logger.info("3. Verify agent queries work with new columns")
 
             return True
@@ -166,6 +160,7 @@ class DualGEXMigration:
         except Exception as e:
             logger.error(f"❌ Migration failed: {e}")
             import traceback
+
             traceback.print_exc()
             return False
 
@@ -175,20 +170,14 @@ class DualGEXMigration:
 
 def main():
     """CLI entry point."""
-    parser = argparse.ArgumentParser(
-        description="Migrate database to support dual GEX metrics (Issue #138)"
-    )
+    parser = argparse.ArgumentParser(description="Migrate database to support dual GEX metrics (Issue #138)")
     parser.add_argument(
-        '--database',
+        "--database",
         type=str,
-        default='.cache/consolidated_historical.db',
-        help='Path to database file (default: .cache/consolidated_historical.db)'
+        default=".cache/consolidated_historical.db",
+        help="Path to database file (default: .cache/consolidated_historical.db)",
     )
-    parser.add_argument(
-        '--no-backup',
-        action='store_true',
-        help='Skip backup creation (NOT recommended)'
-    )
+    parser.add_argument("--no-backup", action="store_true", help="Skip backup creation (NOT recommended)")
 
     args = parser.parse_args()
 

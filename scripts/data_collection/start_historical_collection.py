@@ -19,7 +19,7 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 
-def setup_logging(log_level='INFO', log_file=None):
+def setup_logging(log_level="INFO", log_file=None):
     """Setup logging configuration."""
     level = getattr(logging, log_level.upper(), logging.INFO)
 
@@ -27,62 +27,37 @@ def setup_logging(log_level='INFO', log_file=None):
     if log_file:
         handlers.append(logging.FileHandler(log_file))
 
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=handlers
-    )
+    logging.basicConfig(level=level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", handlers=handlers)
 
 
 def parse_arguments():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description='Collect historical options data from Alpha Vantage'
+    parser = argparse.ArgumentParser(description="Collect historical options data from Alpha Vantage")
+
+    parser.add_argument("--symbols", nargs="+", default=["SPY"], help="Symbols to collect (default: SPY)")
+
+    parser.add_argument(
+        "--start-date",
+        default=(date.today() - timedelta(days=30)).strftime("%Y-%m-%d"),
+        help="Start date in YYYY-MM-DD format (default: 30 days ago)",
     )
 
     parser.add_argument(
-        '--symbols',
-        nargs='+',
-        default=['SPY'],
-        help='Symbols to collect (default: SPY)'
+        "--end-date", default=date.today().strftime("%Y-%m-%d"), help="End date in YYYY-MM-DD format (default: today)"
     )
 
-    parser.add_argument(
-        '--start-date',
-        default=(date.today() - timedelta(days=30)).strftime('%Y-%m-%d'),
-        help='Start date in YYYY-MM-DD format (default: 30 days ago)'
-    )
+    parser.add_argument("--rate-limit", type=int, default=70, help="API calls per minute (default: 70, max: 75)")
 
     parser.add_argument(
-        '--end-date',
-        default=date.today().strftime('%Y-%m-%d'),
-        help='End date in YYYY-MM-DD format (default: today)'
+        "--log-level",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        default="INFO",
+        help="Logging level (default: INFO)",
     )
 
-    parser.add_argument(
-        '--rate-limit',
-        type=int,
-        default=70,
-        help='API calls per minute (default: 70, max: 75)'
-    )
+    parser.add_argument("--log-file", help="Log file path (optional, defaults to console only)")
 
-    parser.add_argument(
-        '--log-level',
-        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
-        default='INFO',
-        help='Logging level (default: INFO)'
-    )
-
-    parser.add_argument(
-        '--log-file',
-        help='Log file path (optional, defaults to console only)'
-    )
-
-    parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Show what would be collected without making API calls'
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be collected without making API calls")
 
     return parser.parse_args()
 
@@ -98,23 +73,21 @@ async def main():
     logger = logging.getLogger(__name__)
 
     # Display collection plan
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info("HISTORICAL OPTIONS DATA COLLECTION")
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info(f"Symbols: {', '.join(args.symbols)}")
     logger.info(f"Date Range: {args.start_date} to {args.end_date}")
     logger.info(f"Rate Limit: {args.rate_limit} calls/minute")
     logger.info(f"Log File: {log_file}")
-    logger.info("="*60)
+    logger.info("=" * 60)
 
     if args.dry_run:
         logger.info("DRY RUN MODE - No API calls will be made")
 
         # Calculate estimated trading days
-        collector = HistoricalOptionsCollector(
-            rate_limit_per_minute=args.rate_limit)
-        trading_dates = collector.get_trading_dates(
-            args.start_date, args.end_date)
+        collector = HistoricalOptionsCollector(rate_limit_per_minute=args.rate_limit)
+        trading_dates = collector.get_trading_dates(args.start_date, args.end_date)
 
         total_calls = len(trading_dates) * len(args.symbols)
         estimated_minutes = total_calls / args.rate_limit
@@ -122,48 +95,41 @@ async def main():
 
         logger.info(f"Estimated trading days: {len(trading_dates)}")
         logger.info(f"Total API calls needed: {total_calls}")
-        logger.info(
-            f"Estimated time: {estimated_minutes:.1f} minutes ({estimated_hours:.1f} hours)")
+        logger.info(f"Estimated time: {estimated_minutes:.1f} minutes ({estimated_hours:.1f} hours)")
         logger.info("Use --dry-run=false to start actual collection")
         return
 
     # Confirm with user for large collections
-    trading_dates = HistoricalOptionsCollector(
-    ).get_trading_dates(args.start_date, args.end_date)
+    trading_dates = HistoricalOptionsCollector().get_trading_dates(args.start_date, args.end_date)
     total_calls = len(trading_dates) * len(args.symbols)
 
     if total_calls > 100:
-        response = input(
-            f"This will make approximately {total_calls} API calls. Continue? (y/N): ")
-        if response.lower() != 'y':
+        response = input(f"This will make approximately {total_calls} API calls. Continue? (y/N): ")
+        if response.lower() != "y":
             logger.info("Collection cancelled by user")
             return
 
     # Initialize collector
-    collector = HistoricalOptionsCollector(
-        rate_limit_per_minute=args.rate_limit)
+    collector = HistoricalOptionsCollector(rate_limit_per_minute=args.rate_limit)
 
     try:
         # Start collection
         summary = await collector.collect_multi_symbol_historical(
-            symbols=args.symbols,
-            start_date=args.start_date,
-            end_date=args.end_date
+            symbols=args.symbols, start_date=args.start_date, end_date=args.end_date
         )
 
         # Display results
-        logger.info("="*60)
+        logger.info("=" * 60)
         logger.info("COLLECTION SUMMARY")
-        logger.info("="*60)
+        logger.info("=" * 60)
         logger.info(f"Total API Calls: {summary['total_api_calls']}")
         logger.info(f"Successful: {summary['total_successful']}")
         logger.info(f"Failed: {summary['total_failed']}")
 
-        for symbol, symbol_summary in summary['symbol_summaries'].items():
-            logger.info(
-                f"{symbol}: {symbol_summary['completed_dates']} dates completed")
+        for symbol, symbol_summary in summary["symbol_summaries"].items():
+            logger.info(f"{symbol}: {symbol_summary['completed_dates']} dates completed")
 
-        logger.info("="*60)
+        logger.info("=" * 60)
         logger.info("Collection completed successfully!")
 
     except KeyboardInterrupt:

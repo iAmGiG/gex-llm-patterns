@@ -26,16 +26,16 @@ sys.path.insert(0, str(project_root))
 
 def load_api_key():
     """Load Alpha Vantage API key from config."""
-    config_path = project_root / 'config' / 'config.json'
+    config_path = project_root / "config" / "config.json"
 
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
 
-    with open(config_path, 'r') as f:
+    with open(config_path, "r") as f:
         config = json.load(f)
 
     # Try PREMO key first (1000 calls/min), fallback to free key
-    api_key = config.get('ALPHA_VANTAGE_PREMO_KEY') or config.get('ALPHA_VANTAGE_KEY')
+    api_key = config.get("ALPHA_VANTAGE_PREMO_KEY") or config.get("ALPHA_VANTAGE_KEY")
 
     if not api_key:
         raise ValueError("No Alpha Vantage API key found in config")
@@ -51,10 +51,10 @@ def fetch_daily_ohlc(symbol, api_key):
     """
     url = "https://www.alphavantage.co/query"
     params = {
-        'function': 'TIME_SERIES_DAILY',
-        'symbol': symbol,
-        'outputsize': 'full',  # Get full history
-        'apikey': api_key
+        "function": "TIME_SERIES_DAILY",
+        "symbol": symbol,
+        "outputsize": "full",  # Get full history
+        "apikey": api_key,
     }
 
     print(f"Fetching OHLC data for {symbol}...")
@@ -63,13 +63,13 @@ def fetch_daily_ohlc(symbol, api_key):
 
     data = response.json()
 
-    if 'Error Message' in data:
+    if "Error Message" in data:
         raise ValueError(f"API Error: {data['Error Message']}")
 
-    if 'Note' in data:
+    if "Note" in data:
         raise ValueError(f"API Rate Limit: {data['Note']}")
 
-    time_series = data.get('Time Series (Daily)', {})
+    time_series = data.get("Time Series (Daily)", {})
 
     if not time_series:
         raise ValueError(f"No time series data returned for {symbol}")
@@ -79,14 +79,16 @@ def fetch_daily_ohlc(symbol, api_key):
     # Convert to list of records
     records = []
     for date_str, values in time_series.items():
-        records.append({
-            'date': date_str,
-            'open': float(values['1. open']),
-            'high': float(values['2. high']),
-            'low': float(values['3. low']),
-            'close': float(values['4. close']),
-            'volume': int(values['5. volume'])
-        })
+        records.append(
+            {
+                "date": date_str,
+                "open": float(values["1. open"]),
+                "high": float(values["2. high"]),
+                "low": float(values["3. low"]),
+                "close": float(values["4. close"]),
+                "volume": int(values["5. volume"]),
+            }
+        )
 
     return records
 
@@ -104,7 +106,7 @@ def update_database(symbol, ohlc_records, db_path, start_date=None, end_date=Non
     if start_date or end_date:
         filtered_records = []
         for record in ohlc_records:
-            date = record['date']
+            date = record["date"]
             if start_date and date < start_date:
                 continue
             if end_date and date > end_date:
@@ -115,10 +117,13 @@ def update_database(symbol, ohlc_records, db_path, start_date=None, end_date=Non
     print(f"\nUpdating database with {len(ohlc_records)} OHLC records...")
 
     # Check which dates exist in daily_gex_metrics
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT date FROM daily_gex_metrics
         WHERE symbol = ? AND date BETWEEN ? AND ?
-    """, (symbol, start_date or '1900-01-01', end_date or '2100-12-31'))
+    """,
+        (symbol, start_date or "1900-01-01", end_date or "2100-12-31"),
+    )
 
     existing_dates = {row[0] for row in cursor.fetchall()}
     print(f"  Found {len(existing_dates)} existing GEX records for {symbol}")
@@ -128,25 +133,20 @@ def update_database(symbol, ohlc_records, db_path, start_date=None, end_date=Non
     skipped = 0
 
     for record in ohlc_records:
-        date = record['date']
+        date = record["date"]
 
         if date not in existing_dates:
             skipped += 1
             continue
 
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE daily_gex_metrics
             SET open = ?, high = ?, low = ?, close = ?, volume = ?
             WHERE symbol = ? AND date = ?
-        """, (
-            record['open'],
-            record['high'],
-            record['low'],
-            record['close'],
-            record['volume'],
-            symbol,
-            date
-        ))
+        """,
+            (record["open"], record["high"], record["low"], record["close"], record["volume"], symbol, date),
+        )
 
         updated += 1
 
@@ -159,16 +159,19 @@ def update_database(symbol, ohlc_records, db_path, start_date=None, end_date=Non
     return updated, skipped
 
 
-def verify_update(symbol, db_path, sample_date='2024-01-02'):
+def verify_update(symbol, db_path, sample_date="2024-01-02"):
     """Verify OHLC data was added correctly."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT date, spot_price, open, high, low, close, volume
         FROM daily_gex_metrics
         WHERE symbol = ? AND date = ?
-    """, (symbol, sample_date))
+    """,
+        (symbol, sample_date),
+    )
 
     row = cursor.fetchone()
     conn.close()
@@ -192,11 +195,11 @@ def verify_update(symbol, db_path, sample_date='2024-01-02'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Fetch OHLC data from Alpha Vantage')
-    parser.add_argument('--symbol', default='SPY', help='Stock symbol')
-    parser.add_argument('--start-date', default='2024-01-02', help='Start date (YYYY-MM-DD)')
-    parser.add_argument('--end-date', default='2024-12-31', help='End date (YYYY-MM-DD)')
-    parser.add_argument('--db-path', default='.cache/consolidated_historical.db', help='Database path')
+    parser = argparse.ArgumentParser(description="Fetch OHLC data from Alpha Vantage")
+    parser.add_argument("--symbol", default="SPY", help="Stock symbol")
+    parser.add_argument("--start-date", default="2024-01-02", help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--end-date", default="2024-12-31", help="End date (YYYY-MM-DD)")
+    parser.add_argument("--db-path", default=".cache/consolidated_historical.db", help="Database path")
 
     args = parser.parse_args()
 
@@ -218,13 +221,7 @@ def main():
     ohlc_records = fetch_daily_ohlc(args.symbol, api_key)
 
     # Update database
-    updated, skipped = update_database(
-        args.symbol,
-        ohlc_records,
-        db_path,
-        args.start_date,
-        args.end_date
-    )
+    updated, skipped = update_database(args.symbol, ohlc_records, db_path, args.start_date, args.end_date)
 
     # Verify
     verify_update(args.symbol, db_path, args.start_date)
@@ -238,5 +235,5 @@ def main():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

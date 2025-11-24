@@ -364,6 +364,7 @@ Regulatory Mandate → Forced Hedging → Measurable Price Impact
 
 **Option 1 (Recommended): PowerPoint Diagram**
 **Create simple visual in PowerPoint:**
+
 - Center circle: "Dealer Hedging Constraint" (large, IEEE blue)
 - Three connected boxes:
   - Box 1: "Gamma Positioning" (multi-day amplification)
@@ -646,6 +647,7 @@ Regulatory Mandate → Forced Hedging → Measurable Price Impact
 
 **Option 2: Three-Box Positioning Diagram**
 **Create simple boxes in PowerPoint:**
+
 - Three rectangles side-by-side, each labeled with research area
 - Arrow from each box pointing to center box: "Our Work: Intersection"
 - Under each: key citations and differentiation point

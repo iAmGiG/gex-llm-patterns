@@ -13,6 +13,7 @@
 **File**: `src/data_sources/historical_gex_builder.py`
 
 **Change**:
+
 ```python
 # OLD (line 101):
 self.db_path = Path(database_path) if database_path else self.cache.base_dir / "gex_database.db"
@@ -22,6 +23,7 @@ self.db_path = Path(database_path) if database_path else self.cache.base_dir / "
 ```
 
 **Assessment**: ✅ **CORRECT**
+
 - Single line change, well-commented with Issue #140 reference
 - Changes default database from `gex_database.db` → `consolidated_historical.db`
 - Maintains backward compatibility (can still override with `database_path` parameter)
@@ -37,6 +39,7 @@ self.db_path = Path(database_path) if database_path else self.cache.base_dir / "
 **Evidence**:
 
 **Schema** (line 330-346):
+
 ```sql
 CREATE TABLE IF NOT EXISTS daily_gex_metrics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,12 +61,14 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ```
 
 **❌ Missing columns**:
+
 - `gex_oi REAL`
 - `gex_volume REAL`
 - `activity_ratio REAL`
 - `economic_regime TEXT`
 
 **INSERT Statement** (line 468-472):
+
 ```python
 (symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
  gamma_flip_point, flip_ratio, gex_regime, data_quality_score,
@@ -73,6 +78,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ```
 
 **Impact**:
+
 - **Phase 2 data collection will FAIL** with SQL error: `no such column: gex_oi`
 - Database builds will crash when trying to store dual GEX metrics
 - Issue #138 implementation incomplete (schema not updated)
@@ -119,6 +125,7 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ### Before Phase 2 Proceeds:
 
 1. **Schema Verification**:
+
    ```bash
    # After fix, verify schema
    sqlite3 .cache/consolidated_historical.db "PRAGMA table_info(daily_gex_metrics);"
@@ -126,6 +133,7 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
    ```
 
 2. **Test 2020 Rebuild**:
+
    ```python
    # Test with existing 2020 data
    builder = HistoricalGEXDatabaseBuilder()
@@ -134,6 +142,7 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
    ```
 
 3. **Verify Dual GEX Population**:
+
    ```sql
    SELECT date, gex_oi, gex_volume, activity_ratio, economic_regime
    FROM daily_gex_metrics
@@ -158,12 +167,14 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 **BLOCK Phase 2** until schema is fixed.
 
 **Action Required**:
+
 1. Chat A: Add 4 dual GEX columns to CREATE TABLE statement
 2. Chat A: Test with 2020 data rebuild (verify no SQL errors)
 3. Chat A: Verify dual GEX columns populated with real values
 4. Chat B: Review updated schema before Phase 2 proceeds
 
 **Risk if Unfixed**:
+
 - Phase 2 will fail on first date collection
 - Wasted time rebuilding databases multiple times
 - Data loss if partially written before crash
@@ -173,12 +184,14 @@ CREATE TABLE IF NOT EXISTS daily_gex_metrics (
 ## Positive Notes
 
 ✅ **Good Practices Observed**:
+
 - Clear Issue #140 reference in comment
 - Minimal change (single line, low risk)
 - Backward compatibility maintained
 - Existing dual GEX calculation code looks solid (Issue #138)
 
 ✅ **Schema Bug is Fixable**:
+
 - Simple 4-line addition to CREATE TABLE
 - No data migration needed (database doesn't exist yet)
 - Code already handles dual GEX correctly, just schema mismatch

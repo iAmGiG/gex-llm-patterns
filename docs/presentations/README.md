@@ -9,6 +9,7 @@ Educational and presentation materials organized by event type.
 ### 1. IEEE Big Data 2025 (Academic Conference)
 
 **[ieee_bigdata_2025/](ieee_bigdata_2025/)** - Paper #1 conference presentation
+
 - **Event**: IEEE Big Data 2025 (LLM-Finance Workshop)
 - **Format**: 15-minute pre-recorded video (slides + voiceover)
 - **Status**: Paper submitted October 26, 2025 ✅
@@ -19,6 +20,7 @@ Educational and presentation materials organized by event type.
 ### 2. PhD Symposium 2025 (Internal University)
 
 **[phd_symposium_2025/](phd_symposium_2025/)** - KSU PhD Symposium presentation
+
 - **Event**: Kennesaw State University PhD Symposium 2025
 - **Date**: October 22, 2025 ✅ Presented
 - **Format**: In-person presentation
@@ -29,6 +31,7 @@ Educational and presentation materials organized by event type.
 ### 3. C-Day Trading Event (Practitioner Conference)
 
 **[c_day_trading_event/](c_day_trading_event/)** - Trading conference presentation
+
 - **Event**: C-Day Trading Conference
 - **Format**: Practitioner-focused presentation
 - **Audience**: Trading professionals (not academic)
@@ -40,11 +43,13 @@ Educational and presentation materials organized by event type.
 ## Educational Resources
 
 **[fundamentals-explained.md](fundamentals-explained.md)** - Options market fundamentals
+
 - Greeks, gamma exposure, dealer hedging mechanics
 - Educational reference for understanding market microstructure
 - Conceptual foundation for research
 
 **[technical-deep-dive.md](technical-deep-dive.md)** - Technical implementation details
+
 - System architecture and validation pipeline
 - Pattern detection methodology with code examples
 - Deep technical reference for developers
@@ -92,18 +97,21 @@ presentations/
 ## Usage Notes
 
 **Conference Presentations** (IEEE, Symposium):
+
 - Academic audience
 - Research methodology focus
 - Obfuscation testing validation
 - Publication-quality results
 
 **Trading Event** (C-Day):
+
 - Practitioner audience
 - Practical trading implications
 - Market mechanics explanation
 - Less technical, more applied
 
 **Educational Resources**:
+
 - General learning materials
 - Onboarding new researchers
 - Teaching market microstructure concepts

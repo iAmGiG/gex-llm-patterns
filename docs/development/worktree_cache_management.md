@@ -17,6 +17,7 @@ Git worktrees share the Git history but have **independent working directories**
 ### Real-World Impact (Issue #140)
 
 During Paper #2 multi-year validation (November 2025):
+
 - Main worktree: `/mnt/bst/yxie2/cregan1/gex-llm-patterns` (branch: `paper2-sequential-gex`)
 - Issue #140 worktree: `/mnt/bst/yxie2/cregan1/gex-llm-patterns-issue140` (branch: `paper2-issue140-phase4`)
 - Cache divergence: Data collection in Issue #140 worktree, but queries from main worktree failed
@@ -46,11 +47,13 @@ During Paper #2 multi-year validation (November 2025):
 ### Database Schema
 
 **Single GEX** (`consolidated_historical.db`):
+
 - Table: `daily_gex_metrics`
 - Columns: `symbol`, `date`, `spot_price`, `net_gex_usd`, `total_gamma`, `flip_point`, etc.
 - Used by: Paper #1, legacy validation scripts
 
 **Dual GEX** (`consolidated_historical_dual.db`, Issue #140+):
+
 - Table: `daily_gex_metrics`
 - Additional column: `short_dated_gex_usd` (0-1 DTE gamma)
 - Used by: Paper #2 multi-year validation
@@ -94,16 +97,19 @@ readlink -f .cache  # Should show main worktree path
 ```
 
 **Pros**:
+
 - ✅ Zero disk space overhead (shared cache)
 - ✅ Automatic sync (all worktrees see same data)
 - ✅ Simple setup (single `ln -s` command)
 
 **Cons**:
+
 - ⚠️ **Concurrent writes**: Database writes from multiple worktrees can cause lock contention
 - ⚠️ **Deletion risk**: `rm -rf .cache` in one worktree deletes shared cache
 - ❌ **Worktree-specific configs**: Cannot have different cache configurations per worktree
 
 **Best For**:
+
 - Read-only workloads (validation, analysis)
 - Single writer, multiple readers
 - Development experiments (branching logic, not data collection)
@@ -126,16 +132,19 @@ ls -la .cache/  # Empty or minimal cache
 ```
 
 **Pros**:
+
 - ✅ Complete isolation (no interference between worktrees)
 - ✅ Safe concurrent writes (each worktree has own database)
 - ✅ Worktree-specific cache configs possible
 
 **Cons**:
+
 - ❌ **Disk space**: N worktrees = N×10GB cache overhead
 - ❌ **Data duplication**: Same GEX data stored multiple times
 - ⚠️ **Manual sync**: Changes in one cache don't propagate to others
 
 **Best For**:
+
 - Data collection workflows (different years, symbols)
 - Long-lived branches with divergent requirements
 - Testing database schema changes (Issue #140 dual GEX migration)
@@ -167,16 +176,19 @@ ls .cache/gex_data/SPY/ | wc -l  # Should match main worktree for synced dates
 ```
 
 **Pros**:
+
 - ✅ Selective sync (copy only needed data)
 - ✅ Independent after sync (no ongoing dependency)
 - ✅ Safe for concurrent workflows (snapshot in time)
 
 **Cons**:
+
 - ⚠️ **Manual process**: Requires explicit rsync commands
 - ❌ **Stale data**: Synced cache becomes outdated over time
 - ⚠️ **Overwrite risk**: rsync can accidentally overwrite newer local data
 
 **Best For**:
+
 - Bootstrapping new worktrees (copy base cache, then diverge)
 - Periodic sync workflows (weekly/monthly cache updates)
 - Cherry-picking specific date ranges (e.g., only 2024 data)
@@ -300,6 +312,7 @@ rsync -av .cache/consolidated_historical_dual.db \
 ```
 
 **Rationale**:
+
 - **Independent cache** during collection (safe concurrent writes, isolated testing)
 - **Rsync to main** after collection (centralize results for analysis)
 - **Main worktree symlink** for read-only validation scripts (shared access, zero overhead)
@@ -491,6 +504,7 @@ sqlite3 .cache/consolidated_historical_dual.db ".schema daily_gex_metrics"
 5. **Document ownership**: Which worktree owns the "source of truth" cache
 
 **Default Recommendation**:
+
 - Start with **symlink** (simplest, zero cost)
 - Switch to **independent** if you need concurrent writes
 - Use **rsync** to merge back after collection completes
@@ -498,6 +512,7 @@ sqlite3 .cache/consolidated_historical_dual.db ".schema daily_gex_metrics"
 ---
 
 **Related Documentation**:
+
 - [Issue #140 Multi-Year Validation](https://github.com/iAmGiG/gex-llm-patterns/issues/140)
 - [Issue #149 Infrastructure Grooming](https://github.com/iAmGiG/gex-llm-patterns/issues/149)
 - [Database Schema Guide](../database/schema_migration_dual_gex.md)

@@ -14,7 +14,7 @@ Currently, the system has a **dual storage architecture** that creates dependenc
 1. **Raw options data**: Stored in file cache (`.cache/gex_data/SPY/*.pickle`)
    - Temporary storage, not persistent
    - Required by `SequentialGEXFetcher` for validation scripts
-   
+
 2. **Calculated GEX metrics**: Stored in database (`daily_gex_metrics` table)
    - Persistent storage
    - Used for analysis and reporting
@@ -26,6 +26,7 @@ Currently, the system has a **dual storage architecture** that creates dependenc
 ## Root Cause (Phase 4A Issue)
 
 During Phase 2-3 multi-year data collection (Issue #140):
+
 1. Fetched raw options from Alpha Vantage API → stored to file cache
 2. Calculated GEX metrics from options → stored to database
 3. File cache pickle files are temporary and don't persist
@@ -66,6 +67,7 @@ CREATE TABLE raw_options_chain (
 ```
 
 **Benefits**:
+
 - Single source of truth (database)
 - No dependency on file cache
 - Complete audit trail of raw data
@@ -78,11 +80,13 @@ CREATE TABLE raw_options_chain (
 **File**: `src/data_sources/historical_gex_builder.py`
 
 **Current flow**:
+
 ```
 API → file cache → GEX calculation → database (GEX only)
 ```
 
 **Proposed flow**:
+
 ```
 API → database (raw options) → GEX calculation → database (GEX metrics)
         ↓
@@ -90,6 +94,7 @@ API → database (raw options) → GEX calculation → database (GEX metrics)
 ```
 
 **Changes needed**:
+
 1. Add `store_raw_options()` method to database builder
 2. Insert raw options to `raw_options_chain` table after API fetch
 3. Keep file cache write for backward compatibility (temporary)
@@ -102,6 +107,7 @@ API → database (raw options) → GEX calculation → database (GEX metrics)
 **File**: `src/data_sources/sequential_gex_fetcher.py`
 
 **Current behavior**:
+
 ```python
 # Tries database first, falls back to file cache
 data = self.gex_cache.get_data_from_db(symbol, date)
@@ -110,6 +116,7 @@ if data is None:
 ```
 
 **Proposed behavior**:
+
 ```python
 # Read from database only
 data = self.get_raw_options_from_db(symbol, date)
@@ -120,6 +127,7 @@ if data is None:
 ```
 
 **Changes needed**:
+
 1. Add `get_raw_options_from_db()` method
 2. Query `raw_options_chain` table
 3. Reconstruct DataFrame in same format as file cache
@@ -130,22 +138,26 @@ if data is None:
 ## Implementation Plan
 
 ### Phase 1: Schema + Backward Compatibility (Current)
+
 - [x] Create `raw_options_chain` table schema
 - [ ] Modify `historical_gex_builder.py` to write raw options to DB
 - [ ] Keep file cache writes for backward compat
 - [ ] Test with single year (2021)
 
 ### Phase 2: Fetcher Update
+
 - [ ] Add database read path to `SequentialGEXFetcher`
 - [ ] Fallback to file cache with deprecation warning
 - [ ] Test Phase 4A validation with database-only reads
 
 ### Phase 3: Migration
+
 - [ ] Backfill `raw_options_chain` for existing data (2020-2025)
 - [ ] Verify all validation scripts work with database reads
 - [ ] Remove file cache dependency entirely
 
 ### Phase 4: Cleanup
+
 - [ ] Remove file cache code from `GEXCacheManager`
 - [ ] Update documentation
 - [ ] Mark file cache as fully deprecated
@@ -166,11 +178,13 @@ if data is None:
 ## Alternative: Keep Current Architecture
 
 **Pros**:
+
 - No code changes needed
 - File cache works fine for 2024 data (already cached)
 - Minimal engineering effort
 
 **Cons**:
+
 - Must re-cache data when file cache is cleared
 - Duplicate storage (file cache + database)
 - Fragile dependency on pickle files
@@ -191,6 +205,7 @@ if data is None:
 ## Current Workaround (Phase 4A)
 
 **Temporary solution** for immediate Phase 4A needs:
+
 1. Re-cache 2021, 2022, 2025 using `/tmp/collect_year.py`
 2. Submit batch jobs once file cache is populated
 3. Track database storage as future infrastructure improvement
@@ -200,6 +215,7 @@ if data is None:
 ---
 
 **Next Steps**:
+
 1. Complete Phase 4A with file cache workaround
 2. Create GitHub issue for database storage implementation
 3. Schedule for post-Paper #2 submission (low priority)

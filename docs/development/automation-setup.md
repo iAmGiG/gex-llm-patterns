@@ -22,6 +22,7 @@ pre-commit run --all-files
 ```
 
 **What this does**:
+
 - Automatically formats code before every commit
 - Fixes markdown linting issues (MD022, MD032)
 - Sorts Python imports
@@ -31,11 +32,13 @@ pre-commit run --all-files
 ### 2. Enable GitHub Actions (Remote Automation)
 
 Already configured! When you push to:
+
 - `paper2-sequential-gex`
 - `feature/**` branches
 - `issue*` branches
 
 GitHub Actions will:
+
 - Auto-fix any issues you missed locally
 - Commit and push the fixes automatically
 - Add `[skip ci]` to prevent infinite loops
@@ -99,7 +102,9 @@ git pull  # Pull the auto-fix commit
 ## Configuration Files
 
 ### `.pre-commit-config.yaml`
+
 Defines which auto-fixes run locally:
+
 - **markdownlint-cli2**: Markdown formatting
 - **black**: Python code formatting (line length 120)
 - **isort**: Import sorting
@@ -107,20 +112,26 @@ Defines which auto-fixes run locally:
 - **end-of-file-fixer**: Ensures newline at EOF
 
 ### `.markdownlint.json`
+
 Markdown rules:
+
 - **MD032**: Blank lines around lists ✅
 - **MD022**: Blank lines around headings ✅
 - **MD013**: Line length ❌ (disabled for research docs)
 - **MD033**: Allow HTML tags for special formatting
 
 ### `.flake8`
+
 Python linting rules:
+
 - Max line length: 120
 - Ignores conflicts with black (E203, W503)
 - Per-file ignores for `__init__.py` and tests
 
 ### `pyproject.toml`
+
 Tool configuration:
+
 - Black settings (line length, Python version)
 - isort profile (compatible with black)
 - pytest configuration
@@ -130,16 +141,20 @@ Tool configuration:
 ## Workflows
 
 ### `auto-fix-on-push.yml`
+
 **Triggers**: Push to `paper2-sequential-gex`, `feature/**`, `issue*`
 **Actions**:
+
 - Runs black, isort, docformatter on Python
 - Runs markdownlint on all `.md` files
 - Commits and pushes fixes if changes detected
 **Time**: ~2-3 minutes
 
 ### `quality-check.yml`
+
 **Triggers**: Pull requests to any branch
 **Actions**:
+
 - Non-blocking checks (warnings only)
 - Comments on PR with summary
 - Helps catch issues before merge

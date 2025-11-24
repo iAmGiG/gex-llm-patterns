@@ -15,10 +15,11 @@ logger = logging.getLogger(__name__)
 
 class SignalStrength(Enum):
     """Trading signal strength levels."""
-    STRONG = "strong"      # >75% confidence
+
+    STRONG = "strong"  # >75% confidence
     MODERATE = "moderate"  # 60-75% confidence
-    WEAK = "weak"         # 50-60% confidence
-    NONE = None           # <50% confidence
+    WEAK = "weak"  # 50-60% confidence
+    NONE = None  # <50% confidence
 
 
 @dataclass
@@ -27,6 +28,7 @@ class ActionableSignal:
     Concrete trading signal with entry/exit/risk parameters.
     Extends the base pattern with actionable specifics.
     """
+
     # Pattern identification
     pattern: MarketMechanicsPattern
     signal_strength: SignalStrength
@@ -55,26 +57,23 @@ class ActionableSignal:
     def to_dict(self) -> Dict:
         """Convert to dictionary for YAML export."""
         return {
-            'pattern_name': self.pattern.pattern_name,
-            'signal_strength': self.signal_strength.value,
-            'entry': {
-                'price': self.entry_price,
-                'trigger': self.entry_trigger,
-                'distance_from_spot': f"{((self.entry_price/self.current_spot - 1) * 100):.2f}%"
+            "pattern_name": self.pattern.pattern_name,
+            "signal_strength": self.signal_strength.value,
+            "entry": {
+                "price": self.entry_price,
+                "trigger": self.entry_trigger,
+                "distance_from_spot": f"{((self.entry_price/self.current_spot - 1) * 100):.2f}%",
             },
-            'risk_management': {
-                'stop_loss': self.stop_loss,
-                'stop_distance': f"{((1 - self.stop_loss/self.entry_price) * 100):.2f}%",
-                'initial_target': self.initial_target,
-                'target_gain': f"{((self.initial_target/self.entry_price - 1) * 100):.2f}%",
-                'risk_reward': self.risk_reward_ratio,
-                'position_size': f"{self.position_size_pct}%",
-                'max_hold': self.max_holding_period
+            "risk_management": {
+                "stop_loss": self.stop_loss,
+                "stop_distance": f"{((1 - self.stop_loss/self.entry_price) * 100):.2f}%",
+                "initial_target": self.initial_target,
+                "target_gain": f"{((self.initial_target/self.entry_price - 1) * 100):.2f}%",
+                "risk_reward": self.risk_reward_ratio,
+                "position_size": f"{self.position_size_pct}%",
+                "max_hold": self.max_holding_period,
             },
-            'confidence': {
-                'strength': self.signal_strength.value,
-                'factors': self.confidence_factors
-            }
+            "confidence": {"strength": self.signal_strength.value, "factors": self.confidence_factors},
         }
 
 
@@ -90,18 +89,15 @@ class ActionablePatternDetector:
         self.config = config or {}
 
         # Risk management defaults
-        self.max_position_size = self.config.get(
-            'max_position_size', 2.0)  # 2% max
-        self.min_risk_reward = self.config.get('min_risk_reward', 1.5)
-        self.min_confidence = self.config.get('min_confidence', 60)
+        self.max_position_size = self.config.get("max_position_size", 2.0)  # 2% max
+        self.min_risk_reward = self.config.get("min_risk_reward", 1.5)
+        self.min_confidence = self.config.get("min_confidence", 60)
 
         logger.info("Initialized actionable pattern detector")
 
-    def generate_signals(self,
-                         gex_metrics: Dict,
-                         market_mechanics: Dict,
-                         spot_price: float,
-                         options_data: Optional[Dict] = None) -> List[ActionableSignal]:
+    def generate_signals(
+        self, gex_metrics: Dict, market_mechanics: Dict, spot_price: float, options_data: Optional[Dict] = None
+    ) -> List[ActionableSignal]:
         """
         Generate actionable trading signals from current market state.
 
@@ -117,31 +113,19 @@ class ActionablePatternDetector:
         signals = []
 
         # Check each high-priority pattern
-        priority_patterns = [
-            'gamma_squeeze',
-            'dealer_trap',
-            'opex_pin',
-            'delta_hedging_cascade'
-        ]
+        priority_patterns = ["gamma_squeeze", "dealer_trap", "opex_pin", "delta_hedging_cascade"]
 
         for pattern_name in priority_patterns:
-            signal = self._check_pattern(
-                pattern_name,
-                gex_metrics,
-                market_mechanics,
-                spot_price
-            )
+            signal = self._check_pattern(pattern_name, gex_metrics, market_mechanics, spot_price)
             if signal:
                 signals.append(signal)
 
         logger.info(f"Generated {len(signals)} actionable signals")
         return signals
 
-    def _check_pattern(self,
-                       pattern_name: str,
-                       gex_metrics: Dict,
-                       market_mechanics: Dict,
-                       spot_price: float) -> Optional[ActionableSignal]:
+    def _check_pattern(
+        self, pattern_name: str, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
+    ) -> Optional[ActionableSignal]:
         """Check if a specific pattern is actionable."""
 
         pattern = self.pattern_library.patterns.get(pattern_name)
@@ -149,22 +133,20 @@ class ActionablePatternDetector:
             return None
 
         # Pattern-specific detection logic
-        if pattern_name == 'gamma_squeeze':
+        if pattern_name == "gamma_squeeze":
             return self._check_gamma_squeeze(pattern, gex_metrics, market_mechanics, spot_price)
-        elif pattern_name == 'dealer_trap':
+        elif pattern_name == "dealer_trap":
             return self._check_dealer_trap(pattern, gex_metrics, market_mechanics, spot_price)
-        elif pattern_name == 'opex_pin':
+        elif pattern_name == "opex_pin":
             return self._check_opex_pin(pattern, gex_metrics, market_mechanics, spot_price)
-        elif pattern_name == 'delta_hedging_cascade':
+        elif pattern_name == "delta_hedging_cascade":
             return self._check_delta_cascade(pattern, gex_metrics, market_mechanics, spot_price)
 
         return None
 
-    def _check_gamma_squeeze(self,
-                             pattern: MarketMechanicsPattern,
-                             gex_metrics: Dict,
-                             market_mechanics: Dict,
-                             spot_price: float) -> Optional[ActionableSignal]:
+    def _check_gamma_squeeze(
+        self, pattern: MarketMechanicsPattern, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
+    ) -> Optional[ActionableSignal]:
         """
         Check for actionable gamma squeeze setup.
 
@@ -173,9 +155,9 @@ class ActionablePatternDetector:
         - High call concentration above spot
         - LLM confirms dealer hedging mechanics
         """
-        total_gex = gex_metrics.get('total_gamma', 0)
-        gamma_concentration = gex_metrics.get('gamma_concentration', 0)
-        mechanics_confidence = market_mechanics.get('confidence', 0)
+        total_gex = gex_metrics.get("total_gamma", 0)
+        gamma_concentration = gex_metrics.get("gamma_concentration", 0)
+        mechanics_confidence = market_mechanics.get("confidence", 0)
 
         # Check basic criteria
         if total_gex >= 0:  # Need negative GEX
@@ -188,21 +170,20 @@ class ActionablePatternDetector:
             return None
 
         # Check WHO/WHOM/WHAT aligns with gamma squeeze
-        who = market_mechanics.get('who', '').lower()
-        what = market_mechanics.get('what', '').lower()
+        who = market_mechanics.get("who", "").lower()
+        what = market_mechanics.get("what", "").lower()
 
         squeeze_indicators = [
-            'call' in who or 'buyer' in who,
-            'dealer' in market_mechanics.get('whom', '').lower(),
-            'hedge' in what or 'buy' in what or 'force' in what
+            "call" in who or "buyer" in who,
+            "dealer" in market_mechanics.get("whom", "").lower(),
+            "hedge" in what or "buy" in what or "force" in what,
         ]
 
         if sum(squeeze_indicators) < 2:
             return None
 
         # Calculate signal parameters
-        signal_strength = self._calculate_signal_strength(
-            mechanics_confidence, gamma_concentration)
+        signal_strength = self._calculate_signal_strength(mechanics_confidence, gamma_concentration)
 
         # Entry 0.5% above current (breakout confirmation)
         entry_price = spot_price * 1.005
@@ -225,16 +206,14 @@ class ActionablePatternDetector:
 
         # Position sizing based on confidence
         position_size = min(
-            self.max_position_size,
-            0.5 + (mechanics_confidence / 100) *
-            1.5  # 0.5-2% based on confidence
+            self.max_position_size, 0.5 + (mechanics_confidence / 100) * 1.5  # 0.5-2% based on confidence
         )
 
         confidence_factors = [
             f"Negative GEX: ${total_gex/1e9:.1f}B",
             f"Gamma concentration: {gamma_concentration:.1%}",
             f"Mechanics confidence: {mechanics_confidence}%",
-            f"Call buying detected in WHO/WHAT"
+            f"Call buying detected in WHO/WHAT",
         ]
 
         return ActionableSignal(
@@ -250,18 +229,16 @@ class ActionablePatternDetector:
             max_holding_period="3 days",
             current_spot=spot_price,
             gamma_metrics=gex_metrics,
-            confidence_factors=confidence_factors
+            confidence_factors=confidence_factors,
         )
 
-    def _check_dealer_trap(self,
-                           pattern: MarketMechanicsPattern,
-                           gex_metrics: Dict,
-                           market_mechanics: Dict,
-                           spot_price: float) -> Optional[ActionableSignal]:
+    def _check_dealer_trap(
+        self, pattern: MarketMechanicsPattern, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
+    ) -> Optional[ActionableSignal]:
         """Check for dealer trap pattern (dealers forced into bad position)."""
 
-        gamma_flip = gex_metrics.get('gamma_flip_point', 0)
-        total_gex = gex_metrics.get('total_gamma', 0)
+        gamma_flip = gex_metrics.get("gamma_flip_point", 0)
+        total_gex = gex_metrics.get("total_gamma", 0)
 
         if not gamma_flip:
             return None
@@ -271,7 +248,7 @@ class ActionablePatternDetector:
         if distance_to_flip > 0.01:
             return None
 
-        mechanics_confidence = market_mechanics.get('confidence', 0)
+        mechanics_confidence = market_mechanics.get("confidence", 0)
         if mechanics_confidence < self.min_confidence:
             return None
 
@@ -299,14 +276,13 @@ class ActionablePatternDetector:
         if risk_reward < self.min_risk_reward:
             return None
 
-        signal_strength = self._calculate_signal_strength(
-            mechanics_confidence, 60)
+        signal_strength = self._calculate_signal_strength(mechanics_confidence, 60)
 
         confidence_factors = [
             f"Gamma flip at: {gamma_flip:.2f}",
             f"Distance to flip: {distance_to_flip:.2%}",
             f"Total GEX: ${total_gex/1e9:.1f}B",
-            f"Above/Below flip: {'Above' if above_flip else 'Below'}"
+            f"Above/Below flip: {'Above' if above_flip else 'Below'}",
         ]
 
         return ActionableSignal(
@@ -321,14 +297,12 @@ class ActionablePatternDetector:
             max_holding_period="1 day",
             current_spot=spot_price,
             gamma_metrics=gex_metrics,
-            confidence_factors=confidence_factors
+            confidence_factors=confidence_factors,
         )
 
-    def _check_opex_pin(self,
-                        pattern: MarketMechanicsPattern,
-                        gex_metrics: Dict,
-                        market_mechanics: Dict,
-                        spot_price: float) -> Optional[ActionableSignal]:
+    def _check_opex_pin(
+        self, pattern: MarketMechanicsPattern, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
+    ) -> Optional[ActionableSignal]:
         """Check for options expiration pin risk pattern."""
 
         # Would need to check if today is expiration day
@@ -336,11 +310,9 @@ class ActionablePatternDetector:
         # Placeholder for now
         return None
 
-    def _check_delta_cascade(self,
-                             pattern: MarketMechanicsPattern,
-                             gex_metrics: Dict,
-                             market_mechanics: Dict,
-                             spot_price: float) -> Optional[ActionableSignal]:
+    def _check_delta_cascade(
+        self, pattern: MarketMechanicsPattern, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
+    ) -> Optional[ActionableSignal]:
         """Check for delta hedging cascade pattern."""
 
         # Look for rapid gamma changes that force hedging
@@ -348,9 +320,7 @@ class ActionablePatternDetector:
         # Placeholder for now
         return None
 
-    def _calculate_signal_strength(self,
-                                   mechanics_confidence: float,
-                                   pattern_confidence: float) -> SignalStrength:
+    def _calculate_signal_strength(self, mechanics_confidence: float, pattern_confidence: float) -> SignalStrength:
         """Calculate overall signal strength."""
 
         avg_confidence = (mechanics_confidence + pattern_confidence) / 2
@@ -373,7 +343,7 @@ class ActionablePatternDetector:
             signal.position_size_pct <= self.max_position_size,
             signal.entry_price > 0,
             signal.stop_loss > 0,
-            signal.initial_target > 0
+            signal.initial_target > 0,
         ]
 
         return all(validations)

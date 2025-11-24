@@ -37,16 +37,16 @@ class MissingDatesBackfiller:
 
     # Missing dates identified in Issue #102
     MISSING_DATES_2024 = [
-        '2024-02-02',  # Friday
-        '2024-02-09',  # Friday
-        '2024-02-16',  # Friday (Monthly OPEX)
-        '2024-02-23',  # Friday
-        '2024-03-01',  # Friday
-        '2024-03-08',  # Friday
-        '2024-03-22',  # Friday (Quarterly OPEX)
-        '2024-03-28',  # Thursday
-        '2024-06-04',  # Tuesday
-        '2024-06-06',  # Thursday
+        "2024-02-02",  # Friday
+        "2024-02-09",  # Friday
+        "2024-02-16",  # Friday (Monthly OPEX)
+        "2024-02-23",  # Friday
+        "2024-03-01",  # Friday
+        "2024-03-08",  # Friday
+        "2024-03-22",  # Friday (Quarterly OPEX)
+        "2024-03-28",  # Thursday
+        "2024-06-04",  # Tuesday
+        "2024-06-06",  # Thursday
     ]
 
     def __init__(self, database_path=None, dry_run=False):
@@ -69,17 +69,17 @@ class MissingDatesBackfiller:
 
         # Statistics
         self.stats = {
-            'attempted': 0,
-            'collected': 0,
-            'calculated': 0,
-            'inserted': 0,
-            'failed': 0,
-            'skipped': 0,
-            'start_time': None,
-            'end_time': None
+            "attempted": 0,
+            "collected": 0,
+            "calculated": 0,
+            "inserted": 0,
+            "failed": 0,
+            "skipped": 0,
+            "start_time": None,
+            "end_time": None,
         }
 
-    def check_date_exists(self, date, symbol='SPY'):
+    def check_date_exists(self, date, symbol="SPY"):
         """Check if date already exists in database.
 
         Args:
@@ -92,16 +92,13 @@ class MissingDatesBackfiller:
         conn = sqlite3.connect(str(self.db_path))
         cursor = conn.cursor()
 
-        cursor.execute(
-            "SELECT COUNT(*) FROM daily_gex_metrics WHERE date = ? AND symbol = ?",
-            (date, symbol)
-        )
+        cursor.execute("SELECT COUNT(*) FROM daily_gex_metrics WHERE date = ? AND symbol = ?", (date, symbol))
         count = cursor.fetchone()[0]
         conn.close()
 
         return count > 0
 
-    def collect_options_data(self, date, symbol='SPY'):
+    def collect_options_data(self, date, symbol="SPY"):
         """Collect options data for a specific date.
 
         Args:
@@ -127,6 +124,7 @@ class MissingDatesBackfiller:
         except Exception as e:
             print(f"  ❌ Error collecting data: {e}")
             import traceback
+
             traceback.print_exc()
             return None
 
@@ -143,16 +141,13 @@ class MissingDatesBackfiller:
         print(f"  🧮 Calculating GEX metrics...")
 
         try:
-            gex_results = self.gex_calc.calculate_gex_profile(
-                options_data,
-                underlying_price
-            )
+            gex_results = self.gex_calc.calculate_gex_profile(options_data, underlying_price)
 
             if not gex_results:
                 print(f"  ❌ GEX calculation returned empty results")
                 return None
 
-            net_gex = gex_results.get('net_gex', 0)
+            net_gex = gex_results.get("net_gex", 0)
             print(f"  ✅ Net GEX: ${net_gex/1e9:.2f}B")
 
             return gex_results
@@ -183,60 +178,59 @@ class MissingDatesBackfiller:
             cursor = conn.cursor()
 
             # Extract daily metrics and map to database schema
-            net_gex = gex_results.get('net_gex', 0)
-            call_gex = gex_results.get('call_gex', 0)
-            put_gex = gex_results.get('put_gex', 0)
-            gex_flip = gex_results.get('zero_gamma_level', 0)
-            spot_price = gex_results.get('spot_price', 0)
+            net_gex = gex_results.get("net_gex", 0)
+            call_gex = gex_results.get("call_gex", 0)
+            put_gex = gex_results.get("put_gex", 0)
+            gex_flip = gex_results.get("zero_gamma_level", 0)
+            spot_price = gex_results.get("spot_price", 0)
 
             # Determine GEX regime
             if net_gex > 0:
-                gex_regime = 'positive'
+                gex_regime = "positive"
             elif net_gex < 0:
-                gex_regime = 'negative'
+                gex_regime = "negative"
             else:
-                gex_regime = 'neutral'
+                gex_regime = "neutral"
 
             # Insert into daily_gex_metrics (matching actual schema)
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT OR REPLACE INTO daily_gex_metrics
                 (symbol, date, spot_price, total_gex, net_call_gex, net_put_gex,
                  gamma_flip_point, gex_regime, data_quality_score, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                symbol,
-                date,
-                float(spot_price) if spot_price else None,
-                float(net_gex),
-                float(call_gex),
-                float(put_gex),
-                float(gex_flip) if gex_flip else None,
-                gex_regime,
-                100,  # Quality score
-                datetime.now().isoformat()
-            ))
+            """,
+                (
+                    symbol,
+                    date,
+                    float(spot_price) if spot_price else None,
+                    float(net_gex),
+                    float(call_gex),
+                    float(put_gex),
+                    float(gex_flip) if gex_flip else None,
+                    gex_regime,
+                    100,  # Quality score
+                    datetime.now().isoformat(),
+                ),
+            )
 
             # Insert strike-level details if available
-            strike_gex = gex_results.get('strike_gex')
+            strike_gex = gex_results.get("strike_gex")
             if strike_gex is not None and not strike_gex.empty and spot_price:
                 # strike_gex is a DataFrame with columns: strike, net_gex, etc.
                 for _, row in strike_gex.iterrows():
-                    strike_price = float(row['strike'])
-                    gex_value = float(row.get('net_gex', 0))
+                    strike_price = float(row["strike"])
+                    gex_value = float(row.get("net_gex", 0))
                     distance = strike_price - float(spot_price)
 
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         INSERT OR REPLACE INTO strike_gex_details
                         (symbol, date, strike, net_gex, distance_from_spot, created_at)
                         VALUES (?, ?, ?, ?, ?, ?)
-                    """, (
-                        symbol,
-                        date,
-                        strike_price,
-                        gex_value,
-                        distance,
-                        datetime.now().isoformat()
-                    ))
+                    """,
+                        (symbol, date, strike_price, gex_value, distance, datetime.now().isoformat()),
+                    )
 
             conn.commit()
             conn.close()
@@ -248,7 +242,7 @@ class MissingDatesBackfiller:
             print(f"  ❌ Error inserting data: {e}")
             return False
 
-    def backfill_date(self, date, symbol='SPY'):
+    def backfill_date(self, date, symbol="SPY"):
         """Backfill a single date.
 
         Args:
@@ -258,67 +252,67 @@ class MissingDatesBackfiller:
         Returns:
             bool: True if successful
         """
-        day_of_week = datetime.strptime(date, '%Y-%m-%d').strftime('%A')
-        is_opex = "📅 OPEX" if date in ['2024-02-16', '2024-03-22'] else ""
+        day_of_week = datetime.strptime(date, "%Y-%m-%d").strftime("%A")
+        is_opex = "📅 OPEX" if date in ["2024-02-16", "2024-03-22"] else ""
 
         print(f"\n{'='*70}")
         print(f"Processing: {date} ({day_of_week}) {is_opex}")
         print(f"{'='*70}")
 
-        self.stats['attempted'] += 1
+        self.stats["attempted"] += 1
 
         # Check if already exists
         if self.check_date_exists(date, symbol):
             print(f"  ⏭️  Date already exists in database - skipping")
-            self.stats['skipped'] += 1
+            self.stats["skipped"] += 1
             return True
 
         # Step 1: Collect options data
         options_data = self.collect_options_data(date, symbol)
         if options_data is None:
-            self.stats['failed'] += 1
+            self.stats["failed"] += 1
             return False
 
-        self.stats['collected'] += 1
+        self.stats["collected"] += 1
 
         # Get underlying price (from options data or fetch separately)
         # For now, use mid of options data or fetch from polygon
         try:
             # Simple approach: use first option's underlying price if available
-            if 'underlying_price' in options_data.columns:
-                underlying_price = options_data['underlying_price'].iloc[0]
+            if "underlying_price" in options_data.columns:
+                underlying_price = options_data["underlying_price"].iloc[0]
             else:
                 # Estimate from strike prices (use ATM area)
-                underlying_price = options_data['strike'].median()
+                underlying_price = options_data["strike"].median()
 
             print(f"  📊 Underlying price: ${underlying_price:.2f}")
 
         except Exception as e:
             print(f"  ❌ Error getting underlying price: {e}")
-            self.stats['failed'] += 1
+            self.stats["failed"] += 1
             return False
 
         # Step 2: Calculate GEX
         gex_results = self.calculate_gex(options_data, underlying_price)
         if gex_results is None:
-            self.stats['failed'] += 1
+            self.stats["failed"] += 1
             return False
 
         # Add spot price to results for database insertion
-        gex_results['spot_price'] = underlying_price
+        gex_results["spot_price"] = underlying_price
 
-        self.stats['calculated'] += 1
+        self.stats["calculated"] += 1
 
         # Step 3: Insert into database
         success = self.insert_into_database(date, symbol, gex_results)
         if success:
-            self.stats['inserted'] += 1
+            self.stats["inserted"] += 1
             return True
         else:
-            self.stats['failed'] += 1
+            self.stats["failed"] += 1
             return False
 
-    def backfill_all(self, dates=None, symbol='SPY'):
+    def backfill_all(self, dates=None, symbol="SPY"):
         """Backfill all missing dates.
 
         Args:
@@ -339,8 +333,8 @@ class MissingDatesBackfiller:
         print(f"Dates to process: {len(dates_to_process)}")
         print(f"\nMissing dates:")
         for date in dates_to_process:
-            day = datetime.strptime(date, '%Y-%m-%d').strftime('%A')
-            opex = " (OPEX)" if date in ['2024-02-16', '2024-03-22'] else ""
+            day = datetime.strptime(date, "%Y-%m-%d").strftime("%A")
+            opex = " (OPEX)" if date in ["2024-02-16", "2024-03-22"] else ""
             print(f"  - {date} ({day}){opex}")
 
         if self.dry_run:
@@ -349,7 +343,7 @@ class MissingDatesBackfiller:
         # Confirm before proceeding (skip if --yes flag or dry_run)
         # Note: confirmation will be skipped in non-interactive environments
 
-        self.stats['start_time'] = datetime.now()
+        self.stats["start_time"] = datetime.now()
 
         # Process each date
         for i, date in enumerate(dates_to_process, 1):
@@ -363,7 +357,7 @@ class MissingDatesBackfiller:
                 print(f"  ⏳ Rate limiting: sleeping {sleep_time}s...")
                 time.sleep(sleep_time)
 
-        self.stats['end_time'] = datetime.now()
+        self.stats["end_time"] = datetime.now()
 
         # Print summary
         self.print_summary()
@@ -372,7 +366,7 @@ class MissingDatesBackfiller:
 
     def print_summary(self):
         """Print backfill summary statistics."""
-        duration = (self.stats['end_time'] - self.stats['start_time']).total_seconds()
+        duration = (self.stats["end_time"] - self.stats["start_time"]).total_seconds()
 
         print(f"\n{'='*70}")
         print(f"BACKFILL COMPLETE")
@@ -389,10 +383,12 @@ class MissingDatesBackfiller:
         if self.dry_run:
             print(f"\n⚠️  DRY RUN: No changes made to database")
         else:
-            success_rate = (self.stats['inserted'] / self.stats['attempted'] * 100) if self.stats['attempted'] > 0 else 0
+            success_rate = (
+                (self.stats["inserted"] / self.stats["attempted"] * 100) if self.stats["attempted"] > 0 else 0
+            )
             print(f"\nSuccess rate: {success_rate:.1f}%")
 
-            if self.stats['inserted'] > 0:
+            if self.stats["inserted"] > 0:
                 print(f"\n✅ Database updated successfully!")
                 print(f"   New coverage: {242 + self.stats['inserted']}/252 trading days")
 
@@ -452,51 +448,25 @@ Examples:
 
   # Verify database after backfill
   python tools/database/backfill_missing_dates.py --verify-only
-        """
+        """,
     )
 
-    parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Collect data but do not insert into database'
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Collect data but do not insert into database")
 
-    parser.add_argument(
-        '--dates',
-        nargs='+',
-        help='Specific dates to backfill (YYYY-MM-DD format)'
-    )
+    parser.add_argument("--dates", nargs="+", help="Specific dates to backfill (YYYY-MM-DD format)")
 
-    parser.add_argument(
-        '--database',
-        help='Path to GEX database (default: .cache/gex_database.db)'
-    )
+    parser.add_argument("--database", help="Path to GEX database (default: .cache/gex_database.db)")
 
-    parser.add_argument(
-        '--symbol',
-        default='SPY',
-        help='Trading symbol to backfill (default: SPY)'
-    )
+    parser.add_argument("--symbol", default="SPY", help="Trading symbol to backfill (default: SPY)")
 
-    parser.add_argument(
-        '--verify-only',
-        action='store_true',
-        help='Only verify database state, do not backfill'
-    )
+    parser.add_argument("--verify-only", action="store_true", help="Only verify database state, do not backfill")
 
-    parser.add_argument(
-        '--yes',
-        action='store_true',
-        help='Skip confirmation prompt (auto-confirm)'
-    )
+    parser.add_argument("--yes", action="store_true", help="Skip confirmation prompt (auto-confirm)")
 
     args = parser.parse_args()
 
     try:
-        backfiller = MissingDatesBackfiller(
-            database_path=args.database,
-            dry_run=args.dry_run
-        )
+        backfiller = MissingDatesBackfiller(database_path=args.database, dry_run=args.dry_run)
 
         if args.verify_only:
             backfiller.verify_database()
@@ -509,6 +479,7 @@ Examples:
     except Exception as e:
         print(f"\n❌ Fatal error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

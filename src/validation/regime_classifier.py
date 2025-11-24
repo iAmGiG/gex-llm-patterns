@@ -63,15 +63,15 @@ class RegimeClassifier:
     # Classification thresholds (class-level defaults, overridden by config)
     # Kept for backward compatibility with code that references these directly
     PERSISTENCE_THRESHOLD = 0.70  # 70% of days (21/30) same sign
-    MAGNITUDE_THRESHOLD = 5e9     # $5B average GEX
-    MAX_SIGN_FLIPS = 5            # Max flips for persistent regime
-    LOW_CONVICTION_MAG = 3e9      # $3B (below this is too weak even if persistent)
+    MAGNITUDE_THRESHOLD = 5e9  # $5B average GEX
+    MAX_SIGN_FLIPS = 5  # Max flips for persistent regime
+    LOW_CONVICTION_MAG = 3e9  # $3B (below this is too weak even if persistent)
 
     def __init__(
         self,
         persistence_threshold: Optional[float] = None,
         magnitude_threshold: Optional[float] = None,
-        max_sign_flips: Optional[int] = None
+        max_sign_flips: Optional[int] = None,
     ):
         """
         Initialize regime classifier with custom thresholds.
@@ -89,23 +89,15 @@ class RegimeClassifier:
 
         # Use explicit parameters if provided, otherwise use config, fallback to class constants
         self.persistence_threshold = persistence_threshold or config.get(
-            'regime_classification.persistence_threshold',
-            self.PERSISTENCE_THRESHOLD
+            "regime_classification.persistence_threshold", self.PERSISTENCE_THRESHOLD
         )
         self.magnitude_threshold = magnitude_threshold or config.get(
-            'regime_classification.magnitude_threshold',
-            self.MAGNITUDE_THRESHOLD
+            "regime_classification.magnitude_threshold", self.MAGNITUDE_THRESHOLD
         )
-        self.max_sign_flips = max_sign_flips or config.get(
-            'regime_classification.max_sign_flips',
-            self.MAX_SIGN_FLIPS
-        )
+        self.max_sign_flips = max_sign_flips or config.get("regime_classification.max_sign_flips", self.MAX_SIGN_FLIPS)
 
         # Load low conviction threshold from config (not exposed as parameter)
-        self.low_conviction_mag = config.get(
-            'regime_classification.low_conviction_threshold',
-            self.LOW_CONVICTION_MAG
-        )
+        self.low_conviction_mag = config.get("regime_classification.low_conviction_threshold", self.LOW_CONVICTION_MAG)
 
         logger.info(
             f"RegimeClassifier initialized: "
@@ -115,10 +107,7 @@ class RegimeClassifier:
             f"(source: {'config' if persistence_threshold is None else 'explicit'})"
         )
 
-    def classify_window(
-        self,
-        gex_sequence: List[Dict]
-    ) -> Dict[str, any]:
+    def classify_window(self, gex_sequence: List[Dict]) -> Dict[str, any]:
         """
         Classify 30-day GEX window into regime type.
 
@@ -137,16 +126,12 @@ class RegimeClassifier:
             ValueError: If sequence is not exactly 30 days
         """
         if len(gex_sequence) != 30:
-            raise ValueError(
-                f"Expected 30-day window, got {len(gex_sequence)} days"
-            )
+            raise ValueError(f"Expected 30-day window, got {len(gex_sequence)} days")
 
         # Validate all days have net_gex
         for i, day in enumerate(gex_sequence):
-            if 'net_gex' not in day:
-                raise ValueError(
-                    f"Day {i} missing 'net_gex' field: {day.keys()}"
-                )
+            if "net_gex" not in day:
+                raise ValueError(f"Day {i} missing 'net_gex' field: {day.keys()}")
 
         # Calculate metrics
         metrics = self._calculate_metrics(gex_sequence)
@@ -158,23 +143,17 @@ class RegimeClassifier:
         metrics.regime_type = regime_type
 
         # Determine if persistent
-        is_persistent = regime_type in [
-            'persistent_positive',
-            'persistent_negative'
-        ]
+        is_persistent = regime_type in ["persistent_positive", "persistent_negative"]
 
         return {
-            'regime_type': regime_type,
-            'is_persistent': is_persistent,
-            'should_detect': is_persistent,  # LLM should only detect persistent regimes
-            'metrics': metrics,
-            'window_size': len(gex_sequence)
+            "regime_type": regime_type,
+            "is_persistent": is_persistent,
+            "should_detect": is_persistent,  # LLM should only detect persistent regimes
+            "metrics": metrics,
+            "window_size": len(gex_sequence),
         }
 
-    def _calculate_metrics(
-        self,
-        gex_sequence: List[Dict]
-    ) -> RegimeMetrics:
+    def _calculate_metrics(self, gex_sequence: List[Dict]) -> RegimeMetrics:
         """
         Calculate regime metrics from 30-day sequence.
 
@@ -185,7 +164,7 @@ class RegimeClassifier:
             RegimeMetrics dataclass with all calculated values
         """
         # Extract GEX values
-        gex_values = [d['net_gex'] for d in gex_sequence]
+        gex_values = [d["net_gex"] for d in gex_sequence]
 
         # Count positive/negative days
         positive_days = sum(1 for v in gex_values if v > 0)
@@ -202,17 +181,10 @@ class RegimeClassifier:
         std_magnitude = np.std(gex_values)
 
         # Coefficient of variation (relative volatility)
-        coefficient_of_variation = (
-            std_magnitude / avg_magnitude
-            if avg_magnitude > 0
-            else 0
-        )
+        coefficient_of_variation = std_magnitude / avg_magnitude if avg_magnitude > 0 else 0
 
         # Count sign flips (regime transitions)
-        sign_flips = sum(
-            1 for i in range(1, 30)
-            if np.sign(gex_values[i]) != np.sign(gex_values[i-1])
-        )
+        sign_flips = sum(1 for i in range(1, 30) if np.sign(gex_values[i]) != np.sign(gex_values[i - 1]))
 
         return RegimeMetrics(
             positive_days=positive_days,
@@ -224,13 +196,10 @@ class RegimeClassifier:
             std_magnitude=std_magnitude,
             coefficient_of_variation=coefficient_of_variation,
             sign_flips=sign_flips,
-            regime_type=""  # Set by _classify_regime_type
+            regime_type="",  # Set by _classify_regime_type
         )
 
-    def _classify_regime_type(
-        self,
-        metrics: RegimeMetrics
-    ) -> str:
+    def _classify_regime_type(self, metrics: RegimeMetrics) -> str:
         """
         Determine regime type from calculated metrics.
 
@@ -259,19 +228,15 @@ class RegimeClassifier:
         min_days = int(30 * self.persistence_threshold)
 
         # Check for persistent positive regime
-        if (pos_days >= min_days and
-            avg_mag >= self.magnitude_threshold and
-                flips <= self.max_sign_flips):
+        if pos_days >= min_days and avg_mag >= self.magnitude_threshold and flips <= self.max_sign_flips:
             return "persistent_positive"
 
         # Check for persistent negative regime
-        if (neg_days >= min_days and
-            avg_mag >= self.magnitude_threshold and
-                flips <= self.max_sign_flips):
+        if neg_days >= min_days and avg_mag >= self.magnitude_threshold and flips <= self.max_sign_flips:
             return "persistent_negative"
 
         # Check for low conviction (persistent sign but weak magnitude)
-        if (pos_days >= min_days or neg_days >= min_days):
+        if pos_days >= min_days or neg_days >= min_days:
             if avg_mag >= self.low_conviction_mag:
                 return "low_conviction"
             else:
@@ -280,11 +245,7 @@ class RegimeClassifier:
         # Otherwise transitional (frequent flips, no persistent direction)
         return "transitional"
 
-    def classify_window_dual(
-        self,
-        gex_sequence: List[Dict],
-        gex_calc=None
-    ) -> Dict[str, any]:
+    def classify_window_dual(self, gex_sequence: List[Dict], gex_calc=None) -> Dict[str, any]:
         """
         Classify 30-day window with both structural and economic regimes (Issue #138).
 
@@ -315,36 +276,23 @@ class RegimeClassifier:
                 - has_dual_metrics: bool (whether economic regime is available)
         """
         if len(gex_sequence) != 30:
-            raise ValueError(
-                f"Expected 30-day window, got {len(gex_sequence)} days"
-            )
+            raise ValueError(f"Expected 30-day window, got {len(gex_sequence)} days")
 
         # Step 1: Classify structural persistence (existing logic)
         structural_classification = self.classify_window(gex_sequence)
 
         # Step 2: Check if dual GEX metrics are available
-        has_dual_metrics = all(
-            'gex_volume' in day for day in gex_sequence
-        )
+        has_dual_metrics = all("gex_volume" in day for day in gex_sequence)
 
         if has_dual_metrics:
             # Calculate average dual GEX metrics over 30 days
-            avg_gex_oi = np.mean([
-                day.get('gex_oi', day.get('net_gex', 0))
-                for day in gex_sequence
-            ])
-            avg_gex_volume = np.mean([
-                day.get('gex_volume', 0)
-                for day in gex_sequence
-            ])
+            avg_gex_oi = np.mean([day.get("gex_oi", day.get("net_gex", 0)) for day in gex_sequence])
+            avg_gex_volume = np.mean([day.get("gex_volume", 0) for day in gex_sequence])
 
             # Classify economic regime
-            economic_regime = self.classify_economic_regime(
-                avg_gex_oi,
-                avg_gex_volume
-            )
+            economic_regime = self.classify_economic_regime(avg_gex_oi, avg_gex_volume)
 
-            profitability_expectation = economic_regime['expected_profitability']
+            profitability_expectation = economic_regime["expected_profitability"]
 
             logger.info(
                 f"Dual classification complete: "
@@ -355,28 +303,23 @@ class RegimeClassifier:
         else:
             # No dual metrics available
             economic_regime = None
-            profitability_expectation = 'unknown'
+            profitability_expectation = "unknown"
 
-            logger.warning(
-                "Dual GEX metrics not available - economic regime not classified"
-            )
+            logger.warning("Dual GEX metrics not available - economic regime not classified")
 
         return {
-            'structural_regime': structural_classification['regime_type'],
-            'economic_regime': economic_regime,
-            'profitability_expectation': profitability_expectation,
-            'is_persistent': structural_classification['is_persistent'],
-            'should_detect': structural_classification['should_detect'],
-            'metrics': structural_classification['metrics'],
-            'has_dual_metrics': has_dual_metrics,
-            'window_size': 30
+            "structural_regime": structural_classification["regime_type"],
+            "economic_regime": economic_regime,
+            "profitability_expectation": profitability_expectation,
+            "is_persistent": structural_classification["is_persistent"],
+            "should_detect": structural_classification["should_detect"],
+            "metrics": structural_classification["metrics"],
+            "has_dual_metrics": has_dual_metrics,
+            "window_size": 30,
         }
 
     def classify_economic_regime(
-        self,
-        gex_oi: float,
-        gex_volume: float,
-        volume_threshold: float = 3e9
+        self, gex_oi: float, gex_volume: float, volume_threshold: float = 3e9
     ) -> Dict[str, any]:
         """
         Classify economic regime using dual GEX metrics (Issue #138).
@@ -411,40 +354,39 @@ class RegimeClassifier:
                 - activity_ratio: float (hedging intensity)
         """
         # Calculate activity ratio
-        activity_ratio = abs(
-            gex_volume / gex_oi) if gex_oi != 0 else 0.0
+        activity_ratio = abs(gex_volume / gex_oi) if gex_oi != 0 else 0.0
 
         # Classify regime
         if gex_oi < 0 and abs(gex_volume) < volume_threshold:
             # HIGH_FRAGILITY: Constraint exists but no active hedging
-            regime = 'high_fragility'
+            regime = "high_fragility"
             constraint_present = True
-            economic_activity = 'low'
-            expected_profitability = 'low'
+            economic_activity = "low"
+            expected_profitability = "low"
             description = "Dealers have short gamma exposure but minimal hedging activity"
 
         elif gex_oi < 0 and gex_volume < 0:
             # ELEVATED_RISK: Constraint exists AND active hedging
-            regime = 'elevated_risk'
+            regime = "elevated_risk"
             constraint_present = True
-            economic_activity = 'high'
-            expected_profitability = 'high'
+            economic_activity = "high"
+            expected_profitability = "high"
             description = "Dealers actively hedging short gamma exposure"
 
         elif gex_oi > 0 and gex_volume > 0:
             # STABLE_POSITIVE: Dealers stabilizing market
-            regime = 'stable_positive'
+            regime = "stable_positive"
             constraint_present = False
-            economic_activity = 'stabilizing'
-            expected_profitability = 'low_volatility'
+            economic_activity = "stabilizing"
+            expected_profitability = "low_volatility"
             description = "Dealers long gamma, suppressing volatility"
 
         else:
             # TRANSITIONAL: Mixed signals
-            regime = 'transitional'
-            constraint_present = 'mixed'
-            economic_activity = 'unstable'
-            expected_profitability = 'uncertain'
+            regime = "transitional"
+            constraint_present = "mixed"
+            economic_activity = "unstable"
+            expected_profitability = "uncertain"
             description = "Mixed signals - regime shift in progress"
 
         logger.info(
@@ -454,21 +396,18 @@ class RegimeClassifier:
         )
 
         return {
-            'regime': regime,
-            'constraint_present': constraint_present,
-            'economic_activity': economic_activity,
-            'expected_profitability': expected_profitability,
-            'description': description,
-            'gex_oi': gex_oi,
-            'gex_volume': gex_volume,
-            'activity_ratio': activity_ratio,
-            'volume_threshold': volume_threshold
+            "regime": regime,
+            "constraint_present": constraint_present,
+            "economic_activity": economic_activity,
+            "expected_profitability": expected_profitability,
+            "description": description,
+            "gex_oi": gex_oi,
+            "gex_volume": gex_volume,
+            "activity_ratio": activity_ratio,
+            "volume_threshold": volume_threshold,
         }
 
-    def get_classification_summary(
-        self,
-        classification: Dict
-    ) -> str:
+    def get_classification_summary(self, classification: Dict) -> str:
         """
         Generate human-readable summary of classification.
 
@@ -478,8 +417,8 @@ class RegimeClassifier:
         Returns:
             str: Multi-line summary
         """
-        metrics = classification['metrics']
-        regime = classification['regime_type']
+        metrics = classification["metrics"]
+        regime = classification["regime_type"]
 
         summary = f"""
 Regime Classification: {regime.upper()}
@@ -496,28 +435,16 @@ def example_usage():
     """Example usage of RegimeClassifier."""
 
     # Example 1: Persistent negative regime (2024 Q1-like)
-    persistent_negative = [
-        {'net_gex': -15e9 + np.random.normal(0, 2e9)}
-        for _ in range(25)
-    ] + [
-        {'net_gex': 5e9 + np.random.normal(0, 1e9)}
-        for _ in range(5)
+    persistent_negative = [{"net_gex": -15e9 + np.random.normal(0, 2e9)} for _ in range(25)] + [
+        {"net_gex": 5e9 + np.random.normal(0, 1e9)} for _ in range(5)
     ]
 
     # Example 2: Transitional (frequent flips)
-    transitional = [
-        {'net_gex': 10e9 * (1 if i % 2 == 0 else -1) +
-         np.random.normal(0, 2e9)}
-        for i in range(30)
-    ]
+    transitional = [{"net_gex": 10e9 * (1 if i % 2 == 0 else -1) + np.random.normal(0, 2e9)} for i in range(30)]
 
     # Example 3: Low conviction (persistent but weak)
-    low_conviction = [
-        {'net_gex': 2e9 + np.random.normal(0, 0.5e9)}
-        for _ in range(25)
-    ] + [
-        {'net_gex': -1e9}
-        for _ in range(5)
+    low_conviction = [{"net_gex": 2e9 + np.random.normal(0, 0.5e9)} for _ in range(25)] + [
+        {"net_gex": -1e9} for _ in range(5)
     ]
 
     classifier = RegimeClassifier()

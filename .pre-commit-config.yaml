@@ -17,7 +17,6 @@ repos:
     rev: 24.3.0
     hooks:
       - id: black
-        language_version: python3.10
         files: \.py$
 
   # Python import sorting
@@ -27,6 +26,7 @@ repos:
       - id: isort
         args: ['--profile', 'black']
         files: \.py$
+        stages: [pre-commit]
 
   # Trailing whitespace and end-of-file fixes
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -34,18 +34,16 @@ repos:
     hooks:
       - id: trailing-whitespace
         exclude: \.md$  # Markdown sometimes needs trailing spaces
+        stages: [pre-commit]
       - id: end-of-file-fixer
+        stages: [pre-commit]
       - id: check-yaml
+        stages: [pre-commit]
       - id: check-json
+        stages: [pre-commit]
       - id: check-added-large-files
         args: ['--maxkb=5000']
+        stages: [pre-commit]
       - id: mixed-line-ending
         args: ['--fix=lf']
-
-  # Python docstring formatting
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
-    hooks:
-      - id: docformatter
-        args: ['--in-place', '--wrap-summaries=120', '--wrap-descriptions=120']
-        files: \.py$
+        stages: [pre-commit]

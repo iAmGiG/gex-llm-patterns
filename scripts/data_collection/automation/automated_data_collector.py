@@ -24,7 +24,7 @@ import time
 
 # Add src to path
 project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root / 'src'))
+sys.path.append(str(project_root / "src"))
 
 
 class AutomatedDataCollector:
@@ -52,15 +52,38 @@ class AutomatedDataCollector:
         # Collection priorities
         self.options_priority = [
             # Core ETFs
-            'SPY', 'QQQ', 'IWM', 'DIA', 'TLT', 'GLD',
+            "SPY",
+            "QQQ",
+            "IWM",
+            "DIA",
+            "TLT",
+            "GLD",
             # Sector ETFs
-            'XLF', 'XLE', 'XLK', 'XLV', 'XLI', 'XLP', 'XLY', 'XLU', 'XLB',
+            "XLF",
+            "XLE",
+            "XLK",
+            "XLV",
+            "XLI",
+            "XLP",
+            "XLY",
+            "XLU",
+            "XLB",
             # Volatility
-            'VXX', 'UVXY', 'SVXY',
+            "VXX",
+            "UVXY",
+            "SVXY",
             # Bonds
-            'HYG', 'LQD', 'TIP', 'IEF', 'SHY',
+            "HYG",
+            "LQD",
+            "TIP",
+            "IEF",
+            "SHY",
             # International
-            'EEM', 'EFA', 'FXI', 'EWZ', 'VEA'
+            "EEM",
+            "EFA",
+            "FXI",
+            "EWZ",
+            "VEA",
         ]
 
         # Stock priorities (will expand based on ETF holdings)
@@ -71,8 +94,8 @@ class AutomatedDataCollector:
         self.stocks_per_minute = 5
 
         # Collection dates
-        self.start_date = '2008-01-01'  # Alpha Vantage historical limit
-        self.end_date = date.today().strftime('%Y-%m-%d')
+        self.start_date = "2008-01-01"  # Alpha Vantage historical limit
+        self.end_date = date.today().strftime("%Y-%m-%d")
 
         self.logger = logging.getLogger(__name__)
 
@@ -80,25 +103,25 @@ class AutomatedDataCollector:
         """Load collection progress."""
         if self.progress_file.exists():
             try:
-                with open(self.progress_file, 'r') as f:
+                with open(self.progress_file, "r") as f:
                     return json.load(f)
             except Exception as e:
                 self.logger.warning(f"Could not load progress: {e}")
 
         return {
-            'options_collected': {},  # symbol -> [dates]
-            'stocks_collected': {},   # symbol -> date_range
-            'gex_calculated': {},     # symbol_date -> True
-            'last_options_collection': None,
-            'last_stock_collection': None,
-            'options_calls_today': 0,
-            'options_date_reset': date.today().isoformat()
+            "options_collected": {},  # symbol -> [dates]
+            "stocks_collected": {},  # symbol -> date_range
+            "gex_calculated": {},  # symbol_date -> True
+            "last_options_collection": None,
+            "last_stock_collection": None,
+            "options_calls_today": 0,
+            "options_date_reset": date.today().isoformat(),
         }
 
     def save_progress(self):
         """Save collection progress."""
         try:
-            with open(self.progress_file, 'w') as f:
+            with open(self.progress_file, "w") as f:
                 json.dump(self.progress, f, indent=2)
         except Exception as e:
             self.logger.error(f"Could not save progress: {e}")
@@ -110,23 +133,92 @@ class AutomatedDataCollector:
 
         # S&P 500 top components (abbreviated for demo)
         sp500_top = [
-            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B',
-            'JPM', 'JNJ', 'V', 'PG', 'UNH', 'HD', 'MA', 'BAC', 'DIS', 'ADBE',
-            'NFLX', 'CRM', 'CMCSA', 'PFE', 'TMO', 'CSCO', 'PEP', 'ABT', 'CVX',
-            'ABBV', 'NKE', 'WMT', 'ACN', 'MRK', 'COST', 'T', 'DHR', 'VZ', 'NEE'
+            "AAPL",
+            "MSFT",
+            "GOOGL",
+            "AMZN",
+            "NVDA",
+            "META",
+            "TSLA",
+            "BRK.B",
+            "JPM",
+            "JNJ",
+            "V",
+            "PG",
+            "UNH",
+            "HD",
+            "MA",
+            "BAC",
+            "DIS",
+            "ADBE",
+            "NFLX",
+            "CRM",
+            "CMCSA",
+            "PFE",
+            "TMO",
+            "CSCO",
+            "PEP",
+            "ABT",
+            "CVX",
+            "ABBV",
+            "NKE",
+            "WMT",
+            "ACN",
+            "MRK",
+            "COST",
+            "T",
+            "DHR",
+            "VZ",
+            "NEE",
         ]
 
         # QQQ top holdings
         qqq_top = [
-            'MSFT', 'AAPL', 'AMZN', 'NVDA', 'META', 'GOOGL', 'GOOG', 'TSLA',
-            'AVGO', 'PEP', 'COST', 'TMUS', 'CSCO', 'ADBE', 'TXN', 'CMCSA', 'NFLX',
-            'QCOM', 'INTC', 'AMD', 'INTU', 'AMGN', 'HON', 'PYPL', 'SBUX'
+            "MSFT",
+            "AAPL",
+            "AMZN",
+            "NVDA",
+            "META",
+            "GOOGL",
+            "GOOG",
+            "TSLA",
+            "AVGO",
+            "PEP",
+            "COST",
+            "TMUS",
+            "CSCO",
+            "ADBE",
+            "TXN",
+            "CMCSA",
+            "NFLX",
+            "QCOM",
+            "INTC",
+            "AMD",
+            "INTU",
+            "AMGN",
+            "HON",
+            "PYPL",
+            "SBUX",
         ]
 
         # IWM top holdings (small cap)
         iwm_top = [
-            'SMCI', 'CHRD', 'MDB', 'FTAI', 'KVUE', 'TMDX', 'RVMD', 'ATI',
-            'MTDR', 'CG', 'SFM', 'RBC', 'VIRT', 'XPEL', 'AIT', 'PIPR'
+            "SMCI",
+            "CHRD",
+            "MDB",
+            "FTAI",
+            "KVUE",
+            "TMDX",
+            "RVMD",
+            "ATI",
+            "MTDR",
+            "CG",
+            "SFM",
+            "RBC",
+            "VIRT",
+            "XPEL",
+            "AIT",
+            "PIPR",
         ]
 
         # Combine and deduplicate
@@ -134,8 +226,22 @@ class AutomatedDataCollector:
 
         # Add high-volume options stocks
         options_popular = [
-            'GME', 'AMC', 'BB', 'PLTR', 'F', 'GE', 'BAC', 'WFC', 'C',
-            'SOFI', 'LCID', 'RIVN', 'NIO', 'COIN', 'MARA', 'RIOT'
+            "GME",
+            "AMC",
+            "BB",
+            "PLTR",
+            "F",
+            "GE",
+            "BAC",
+            "WFC",
+            "C",
+            "SOFI",
+            "LCID",
+            "RIVN",
+            "NIO",
+            "COIN",
+            "MARA",
+            "RIOT",
         ]
 
         all_stocks.extend(options_popular)
@@ -149,17 +255,15 @@ class AutomatedDataCollector:
         """
         # Check if we need to reset daily counter
         today = date.today().isoformat()
-        if self.progress.get('options_date_reset') != today:
-            self.progress['options_calls_today'] = 0
-            self.progress['options_date_reset'] = today
+        if self.progress.get("options_date_reset") != today:
+            self.progress["options_calls_today"] = 0
+            self.progress["options_date_reset"] = today
             self.save_progress()
 
         # Check daily limit
-        remaining_calls = self.options_daily_limit - \
-            self.progress['options_calls_today']
+        remaining_calls = self.options_daily_limit - self.progress["options_calls_today"]
         if remaining_calls <= 0:
-            self.logger.info(
-                "Daily options API limit reached. Will resume tomorrow.")
+            self.logger.info("Daily options API limit reached. Will resume tomorrow.")
             return 0
 
         collected = 0
@@ -172,50 +276,43 @@ class AutomatedDataCollector:
                 break
 
             # Get uncollected dates for this symbol
-            collected_dates = set(
-                self.progress['options_collected'].get(symbol, []))
-            remaining_dates = [
-                d for d in all_dates if d not in collected_dates]
+            collected_dates = set(self.progress["options_collected"].get(symbol, []))
+            remaining_dates = [d for d in all_dates if d not in collected_dates]
 
             if not remaining_dates:
                 continue
 
             # Collect oldest first
-            for date_str in remaining_dates[:remaining_calls - collected]:
+            for date_str in remaining_dates[: remaining_calls - collected]:
                 try:
                     # Check cache first
                     cached = self.cache.get_options_data(symbol, date_str)
                     if cached is not None and not cached.empty:
-                        self.logger.info(
-                            f"Using cached {symbol} options for {date_str}")
+                        self.logger.info(f"Using cached {symbol} options for {date_str}")
                     else:
                         # Fetch from API
-                        self.logger.info(
-                            f"Fetching {symbol} options for {date_str}")
-                        data = self.options_client.fetch_historical_options(
-                            symbol, date_str)
+                        self.logger.info(f"Fetching {symbol} options for {date_str}")
+                        data = self.options_client.fetch_historical_options(symbol, date_str)
 
                         if data is not None and not data.empty:
                             # Store in cache
-                            self.cache.store_options_data(
-                                symbol, date_str, data)
-                            self.progress['options_calls_today'] += 1
+                            self.cache.store_options_data(symbol, date_str, data)
+                            self.progress["options_calls_today"] += 1
 
                             # Auto-calculate GEX
                             await self.calculate_and_cache_gex(symbol, date_str, data)
 
                     # Mark as collected
-                    if symbol not in self.progress['options_collected']:
-                        self.progress['options_collected'][symbol] = []
-                    self.progress['options_collected'][symbol].append(date_str)
+                    if symbol not in self.progress["options_collected"]:
+                        self.progress["options_collected"][symbol] = []
+                    self.progress["options_collected"][symbol].append(date_str)
                     collected += 1
 
                     # Save progress after each successful collection
                     self.save_progress()
 
                 except Exception as e:
-                    self.logger.error(
-                        f"Error collecting {symbol} options for {date_str}: {e}")
+                    self.logger.error(f"Error collecting {symbol} options for {date_str}: {e}")
 
         return collected
 
@@ -229,27 +326,24 @@ class AutomatedDataCollector:
         for symbol in self.stock_priority:
             try:
                 # Check if we already have this stock's data
-                existing = self.cache.get_market_data(
-                    symbol, self.start_date, self.end_date)
+                existing = self.cache.get_market_data(symbol, self.start_date, self.end_date)
                 if existing is not None and not existing.empty:
                     self.logger.info(f"Stock data for {symbol} already cached")
                     continue
 
                 # Fetch from Polygon
                 self.logger.info(f"Fetching stock data for {symbol}")
-                data = self.polygon_client.fetch_daily_bars(
-                    symbol, self.start_date, self.end_date)
+                data = self.polygon_client.fetch_daily_bars(symbol, self.start_date, self.end_date)
 
                 if data is not None and not data.empty:
                     # Store in cache
-                    self.cache.store_market_data(
-                        symbol, data, self.start_date, self.end_date)
+                    self.cache.store_market_data(symbol, data, self.start_date, self.end_date)
 
                     # Mark as collected
-                    self.progress['stocks_collected'][symbol] = {
-                        'start': self.start_date,
-                        'end': self.end_date,
-                        'bars': len(data)
+                    self.progress["stocks_collected"][symbol] = {
+                        "start": self.start_date,
+                        "end": self.end_date,
+                        "bars": len(data),
                     }
                     collected += 1
 
@@ -261,8 +355,7 @@ class AutomatedDataCollector:
                     await asyncio.sleep(12)
 
             except Exception as e:
-                self.logger.error(
-                    f"Error collecting stock data for {symbol}: {e}")
+                self.logger.error(f"Error collecting stock data for {symbol}: {e}")
 
         return collected
 
@@ -272,53 +365,46 @@ class AutomatedDataCollector:
             gex_key = f"{symbol}_{date_str}"
 
             # Check if already calculated
-            if self.progress['gex_calculated'].get(gex_key):
+            if self.progress["gex_calculated"].get(gex_key):
                 return
 
             # Calculate GEX
             self.logger.info(f"Calculating GEX for {symbol} {date_str}")
 
             # Get spot price (use mid of bid/ask for options data estimation)
-            spot_price = options_data['strike'].median(
-            ) if 'strike' in options_data.columns else 100
+            spot_price = options_data["strike"].median() if "strike" in options_data.columns else 100
 
-            gex_results = self.gex_calculator.calculate_gex(
-                options_data,
-                spot_price=spot_price
-            )
+            gex_results = self.gex_calculator.calculate_gex(options_data, spot_price=spot_price)
 
-            if gex_results and gex_results.get('status') == 'success':
+            if gex_results and gex_results.get("status") == "success":
                 # Store in GEX cache
-                gex_summary = gex_results.get('metrics', {})
-                gex_summary.update({
-                    'symbol': symbol,
-                    'trading_date': date_str,
-                    'calculation_timestamp': datetime.now().isoformat()
-                })
+                gex_summary = gex_results.get("metrics", {})
+                gex_summary.update(
+                    {"symbol": symbol, "trading_date": date_str, "calculation_timestamp": datetime.now().isoformat()}
+                )
 
-                self.cache.gex_cache.store_gex_calculation(
-                    symbol, date_str, gex_summary)
+                self.cache.gex_cache.store_gex_calculation(symbol, date_str, gex_summary)
 
                 # Mark as calculated
-                self.progress['gex_calculated'][gex_key] = True
+                self.progress["gex_calculated"][gex_key] = True
                 self.save_progress()
 
-                self.logger.info(f"GEX cached for {symbol} {date_str}: "
-                                 f"Total GEX = ${gex_summary.get('total_gex', 0)/1e9:.2f}B")
+                self.logger.info(
+                    f"GEX cached for {symbol} {date_str}: " f"Total GEX = ${gex_summary.get('total_gex', 0)/1e9:.2f}B"
+                )
 
         except Exception as e:
-            self.logger.error(
-                f"Error calculating GEX for {symbol} {date_str}: {e}")
+            self.logger.error(f"Error calculating GEX for {symbol} {date_str}: {e}")
 
     def _get_trading_dates(self, start: str, end: str) -> List[str]:
         """Generate list of trading dates."""
         dates = []
-        current = datetime.strptime(start, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end, '%Y-%m-%d').date()
+        current = datetime.strptime(start, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end, "%Y-%m-%d").date()
 
         while current <= end_date:
             if current.weekday() < 5:  # Monday = 0, Friday = 4
-                dates.append(current.strftime('%Y-%m-%d'))
+                dates.append(current.strftime("%Y-%m-%d"))
             current += timedelta(days=1)
 
         return dates
@@ -326,20 +412,18 @@ class AutomatedDataCollector:
     def get_collection_status(self) -> Dict:
         """Get current collection status."""
         status = {
-            'options': {
-                'symbols_collected': len(self.progress['options_collected']),
-                'total_dates': sum(len(dates) for dates in self.progress['options_collected'].values()),
-                'calls_today': self.progress['options_calls_today'],
-                'calls_remaining': self.options_daily_limit - self.progress['options_calls_today']
+            "options": {
+                "symbols_collected": len(self.progress["options_collected"]),
+                "total_dates": sum(len(dates) for dates in self.progress["options_collected"].values()),
+                "calls_today": self.progress["options_calls_today"],
+                "calls_remaining": self.options_daily_limit - self.progress["options_calls_today"],
             },
-            'stocks': {
-                'symbols_collected': len(self.progress['stocks_collected']),
-                'total_bars': sum(s.get('bars', 0) for s in self.progress['stocks_collected'].values())
+            "stocks": {
+                "symbols_collected": len(self.progress["stocks_collected"]),
+                "total_bars": sum(s.get("bars", 0) for s in self.progress["stocks_collected"].values()),
             },
-            'gex': {
-                'calculations_cached': len(self.progress['gex_calculated'])
-            },
-            'cache': self.cache.get_cache_summary()
+            "gex": {"calculations_cached": len(self.progress["gex_calculated"])},
+            "cache": self.cache.get_cache_summary(),
         }
 
         return status
@@ -347,40 +431,32 @@ class AutomatedDataCollector:
     async def run_continuous_collection(self):
         """Run continuous collection respecting all API limits."""
         self.logger.info("Starting automated data collection system")
-        self.logger.info(
-            f"Options: {len(self.options_priority)} symbols prioritized")
-        self.logger.info(
-            f"Stocks: {len(self.stock_priority)} symbols prioritized")
+        self.logger.info(f"Options: {len(self.options_priority)} symbols prioritized")
+        self.logger.info(f"Stocks: {len(self.stock_priority)} symbols prioritized")
 
         while True:
             try:
                 # Collect options (25/day limit)
                 options_collected = await self.collect_options_batch()
                 if options_collected > 0:
-                    self.logger.info(
-                        f"Collected {options_collected} options datasets")
+                    self.logger.info(f"Collected {options_collected} options datasets")
 
                 # Collect stocks (much higher limit)
                 stocks_collected = await self.collect_stocks_batch()
                 if stocks_collected > 0:
-                    self.logger.info(
-                        f"Collected {stocks_collected} stock datasets")
+                    self.logger.info(f"Collected {stocks_collected} stock datasets")
 
                 # Log status
                 status = self.get_collection_status()
-                self.logger.info(
-                    f"Collection Status: {json.dumps(status, indent=2)}")
+                self.logger.info(f"Collection Status: {json.dumps(status, indent=2)}")
 
                 # If we've hit daily options limit and collected all stocks, wait until tomorrow
-                if status['options']['calls_remaining'] == 0:
+                if status["options"]["calls_remaining"] == 0:
                     tomorrow = datetime.now() + timedelta(days=1)
-                    tomorrow_start = tomorrow.replace(
-                        hour=0, minute=1, second=0)
-                    wait_seconds = (tomorrow_start -
-                                    datetime.now()).total_seconds()
+                    tomorrow_start = tomorrow.replace(hour=0, minute=1, second=0)
+                    wait_seconds = (tomorrow_start - datetime.now()).total_seconds()
 
-                    self.logger.info(
-                        f"Daily options limit reached. Waiting {wait_seconds/3600:.1f} hours until reset.")
+                    self.logger.info(f"Daily options limit reached. Waiting {wait_seconds/3600:.1f} hours until reset.")
                     await asyncio.sleep(wait_seconds)
                 else:
                     # Short pause between batches
@@ -398,11 +474,8 @@ async def main():
     """Run the automated collector."""
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler('automated_collection.log'),
-            logging.StreamHandler()
-        ]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("automated_collection.log"), logging.StreamHandler()],
     )
 
     collector = AutomatedDataCollector()

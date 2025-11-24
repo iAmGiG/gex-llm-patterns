@@ -77,23 +77,21 @@ class BatchRegimeValidator:
     def _load_api_key_from_json(self) -> str:
         """Load OpenAI API key from config/config.json."""
         import os
+
         try:
-            config_path = PROJECT_ROOT / 'config' / 'config.json'
+            config_path = PROJECT_ROOT / "config" / "config.json"
             if config_path.exists():
-                with open(config_path, 'r') as f:
+                with open(config_path, "r") as f:
                     json_config = json.load(f)
-                return json_config.get('OPEN_AI_KEY', '')
+                return json_config.get("OPEN_AI_KEY", "")
         except Exception as e:
             logger.warning(f"Failed to load config.json: {e}")
 
         # Fallback to environment
-        return os.getenv("OPEN_AI_KEY") or os.getenv("OPENAI_API_KEY") or ''
+        return os.getenv("OPEN_AI_KEY") or os.getenv("OPENAI_API_KEY") or ""
 
     def prepare_batch_file(
-        self,
-        windows: List[Dict],
-        model: str = "o4-mini",
-        output_file: Optional[Path] = None
+        self, windows: List[Dict], model: str = "o4-mini", output_file: Optional[Path] = None
     ) -> Path:
         """
         Generate JSONL batch file with regime detection prompts.
@@ -116,27 +114,19 @@ class BatchRegimeValidator:
         batch_requests = []
 
         for i, window in enumerate(windows):
-            end_date = window.get('end_date', f'Window_{i}')
-            gex_sequence = window.get('gex_sequence', [])
+            end_date = window.get("end_date", f"Window_{i}")
+            gex_sequence = window.get("gex_sequence", [])
 
             # Build regime detection prompt using consistent MechanicsPromptBuilder
             # This ensures batch API uses identical prompts as sync validator
-            prompt_text = self.prompt_builder.build_regime_prompt(
-                gex_sequence=gex_sequence,
-                end_date=end_date
-            )
+            prompt_text = self.prompt_builder.build_regime_prompt(gex_sequence=gex_sequence, end_date=end_date)
 
             # OpenAI Batch API format - single user message with full prompt
-            messages = [
-                {"role": "user", "content": prompt_text}
-            ]
+            messages = [{"role": "user", "content": prompt_text}]
 
             # OpenAI Batch API format
             # OpenAI Batch API format
-            request_body = {
-                "model": model,
-                "messages": messages
-            }
+            request_body = {"model": model, "messages": messages}
 
             # Only add temperature for non-reasoning models (o4-mini requires default temperature=1)
             if not model.startswith("o"):
@@ -146,26 +136,22 @@ class BatchRegimeValidator:
                 "custom_id": f"window-{end_date}",
                 "method": "POST",
                 "url": "/v1/chat/completions",
-                "body": request_body
+                "body": request_body,
             }
 
             batch_requests.append(request)
 
         # Write JSONL file
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             for request in batch_requests:
-                f.write(json.dumps(request) + '\n')
+                f.write(json.dumps(request) + "\n")
 
         logger.info(f"Generated {len(batch_requests)} batch requests")
         logger.info(f"Saved to {output_file}")
 
         return output_file
 
-    def submit_batch(
-        self,
-        batch_file: Path,
-        description: Optional[str] = None
-    ) -> str:
+    def submit_batch(self, batch_file: Path, description: Optional[str] = None) -> str:
         """
         Upload batch file and create batch job.
 
@@ -180,11 +166,8 @@ class BatchRegimeValidator:
         logger.info(f"File size: {batch_file.stat().st_size} bytes")
 
         # Upload file
-        with open(batch_file, 'rb') as f:
-            response = self.client.files.create(
-                file=f,
-                purpose="batch"
-            )
+        with open(batch_file, "rb") as f:
+            response = self.client.files.create(file=f, purpose="batch")
             batch_file_id = response.id
 
         logger.info(f"Uploaded file ID: {batch_file_id}")
@@ -196,7 +179,7 @@ class BatchRegimeValidator:
             input_file_id=batch_file_id,
             endpoint="/v1/chat/completions",
             completion_window="24h",
-            metadata={"description": batch_description}
+            metadata={"description": batch_description},
         )
 
         batch_id = batch.id
@@ -206,25 +189,26 @@ class BatchRegimeValidator:
 
         # Save batch metadata for tracking
         metadata_file = self.batch_dir / f"batch_{batch_id}_metadata.json"
-        with open(metadata_file, 'w') as f:
-            json.dump({
-                "batch_id": batch_id,
-                "file_id": batch_file_id,
-                "input_file": str(batch_file),
-                "created_at": datetime.now().isoformat(),
-                "description": batch_description,
-                "status": batch.status
-            }, f, indent=2)
+        with open(metadata_file, "w") as f:
+            json.dump(
+                {
+                    "batch_id": batch_id,
+                    "file_id": batch_file_id,
+                    "input_file": str(batch_file),
+                    "created_at": datetime.now().isoformat(),
+                    "description": batch_description,
+                    "status": batch.status,
+                },
+                f,
+                indent=2,
+            )
 
         logger.info(f"Saved metadata to {metadata_file}")
 
         return batch_id
 
     def poll_batch(
-        self,
-        batch_id: str,
-        poll_interval: int = 60,
-        max_polls: int = 1440  # 24 hours at 1 min intervals
+        self, batch_id: str, poll_interval: int = 60, max_polls: int = 1440  # 24 hours at 1 min intervals
     ) -> Dict:
         """
         Poll batch job status until completion.
@@ -255,7 +239,7 @@ class BatchRegimeValidator:
                     "status": batch.status,
                     "output_file_id": batch.output_file_id,
                     "elapsed_seconds": elapsed,
-                    "request_counts": batch.request_counts
+                    "request_counts": batch.request_counts,
                 }
 
             elif batch.status == "failed":
@@ -263,7 +247,7 @@ class BatchRegimeValidator:
                 return {
                     "batch_id": batch_id,
                     "status": batch.status,
-                    "errors": batch.errors if hasattr(batch, 'errors') else "Unknown error"
+                    "errors": batch.errors if hasattr(batch, "errors") else "Unknown error",
                 }
 
             elif batch.status in ["validating", "queued", "in_progress", "finalizing"]:
@@ -277,17 +261,9 @@ class BatchRegimeValidator:
                 time.sleep(poll_interval)
 
         logger.error(f"Polling timeout after {max_polls} attempts")
-        return {
-            "batch_id": batch_id,
-            "status": "timeout",
-            "elapsed_seconds": time.time() - start_time
-        }
+        return {"batch_id": batch_id, "status": "timeout", "elapsed_seconds": time.time() - start_time}
 
-    def retrieve_results(
-        self,
-        batch_id: str,
-        output_file: Optional[Path] = None
-    ) -> List[Dict]:
+    def retrieve_results(self, batch_id: str, output_file: Optional[Path] = None) -> List[Dict]:
         """
         Download and parse batch results.
 
@@ -317,12 +293,12 @@ class BatchRegimeValidator:
         logger.info(f"Downloading results to {output_file}")
 
         file_content = self.client.files.content(output_file_id)
-        with open(output_file, 'wb') as f:
+        with open(output_file, "wb") as f:
             f.write(file_content.read())
 
         # Parse results
         results = []
-        with open(output_file, 'r') as f:
+        with open(output_file, "r") as f:
             for line in f:
                 if line.strip():
                     result = json.loads(line)
@@ -352,42 +328,34 @@ class BatchRegimeValidator:
         Returns:
             Parsed regime detection result
         """
-        custom_id = batch_result.get('custom_id', 'unknown')
+        custom_id = batch_result.get("custom_id", "unknown")
 
         # Check for errors
-        if batch_result.get('error'):
-            return {
-                "window_id": custom_id,
-                "error": batch_result['error'],
-                "regime_detected": False
-            }
+        if batch_result.get("error"):
+            return {"window_id": custom_id, "error": batch_result["error"], "regime_detected": False}
 
         # Extract LLM response
         try:
-            response = batch_result.get('response', {})
-            body = response.get('body', {})
-            choices = body.get('choices', [])
+            response = batch_result.get("response", {})
+            body = response.get("body", {})
+            choices = body.get("choices", [])
 
             if not choices:
                 logger.warning(f"No choices in response for {custom_id}")
-                return {
-                    "window_id": custom_id,
-                    "error": "No choices in response",
-                    "regime_detected": False
-                }
+                return {"window_id": custom_id, "error": "No choices in response", "regime_detected": False}
 
-            message = choices[0].get('message', {})
-            content = message.get('content', '{}')
+            message = choices[0].get("message", {})
+            content = message.get("content", "{}")
 
             # Strip markdown code blocks if present (LLM often wraps JSON in ```json ... ```)
-            if content.startswith('```json'):
-                content = content.replace('```json\n', '', 1).replace('\n```', '', 1).strip()
-            elif content.startswith('```'):
-                content = content.replace('```\n', '', 1).replace('\n```', '', 1).strip()
+            if content.startswith("```json"):
+                content = content.replace("```json\n", "", 1).replace("\n```", "", 1).strip()
+            elif content.startswith("```"):
+                content = content.replace("```\n", "", 1).replace("\n```", "", 1).strip()
 
             # FIX: Handle o4-mini JSON formatting quirks (Issue #137)
             # o4-mini sometimes uses invalid escape sequences like \$ in reasoning text
-            content = content.replace(r'\$', '$')
+            content = content.replace(r"\$", "$")
 
             # o4-mini occasionally writes confidence as word instead of number (rare)
             content = re.sub(r'"confidence":\s*thirty-five,', '"confidence": 35,', content, flags=re.IGNORECASE)
@@ -397,28 +365,18 @@ class BatchRegimeValidator:
 
             return {
                 "window_id": custom_id,
-                "regime_type": llm_response.get('regime_type', 'unknown'),
-                "regime_detected": llm_response.get('regime_detected', False),
-                "confidence": llm_response.get('confidence', 0),
-                "reasoning": llm_response.get('reasoning', ''),
-                "raw_response": llm_response
+                "regime_type": llm_response.get("regime_type", "unknown"),
+                "regime_detected": llm_response.get("regime_detected", False),
+                "confidence": llm_response.get("confidence", 0),
+                "reasoning": llm_response.get("reasoning", ""),
+                "raw_response": llm_response,
             }
 
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse JSON for {custom_id}: {e}")
-            return {
-                "window_id": custom_id,
-                "error": f"JSON parse error: {e}",
-                "regime_detected": False
-            }
+            return {"window_id": custom_id, "error": f"JSON parse error: {e}", "regime_detected": False}
 
-    def save_results_yaml(
-        self,
-        results: List[Dict],
-        windows: List[Dict],
-        output_file: Path,
-        batch_id: str
-    ):
+    def save_results_yaml(self, results: List[Dict], windows: List[Dict], output_file: Path, batch_id: str):
         """
         Save batch results in YAML format compatible with sync validation.
 
@@ -438,29 +396,29 @@ class BatchRegimeValidator:
                 "windows_tested": len(results),
                 "timestamp": datetime.now().isoformat(),
                 "cost_savings_pct": 50,
-                "note": "Results from OpenAI Batch API (50% cost reduction)"
+                "note": "Results from OpenAI Batch API (50% cost reduction)",
             },
             "summary_statistics": self._calculate_summary(results),
-            "windows": results
+            "windows": results,
         }
 
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             yaml.dump(yaml_output, f, default_flow_style=False, sort_keys=False)
 
         logger.info(f"Saved results to {output_file}")
 
     def _calculate_summary(self, results: List[Dict]) -> Dict:
         """Calculate summary statistics from results."""
-        detected = sum(1 for r in results if r.get('regime_detected', False))
+        detected = sum(1 for r in results if r.get("regime_detected", False))
         total = len(results)
 
         return {
             "detection_rate_pct": (detected / total * 100) if total > 0 else 0,
             "regimes_detected": detected,
             "total_windows": total,
-            "confidence_avg": sum(r.get('confidence', 0) for r in results) / total if total > 0 else 0
+            "confidence_avg": sum(r.get("confidence", 0) for r in results) / total if total > 0 else 0,
         }
 
 
@@ -513,8 +471,9 @@ def main():
         results = validator.retrieve_results(args.retrieve)
         print(f"Retrieved {len(results)} results")
         for result in results[:5]:
-            print(f"  {result.get('window_id')}: {result.get('regime_type')} "
-                  f"(confidence={result.get('confidence')})")
+            print(
+                f"  {result.get('window_id')}: {result.get('regime_type')} " f"(confidence={result.get('confidence')})"
+            )
 
 
 if __name__ == "__main__":

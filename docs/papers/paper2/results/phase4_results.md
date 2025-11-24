@@ -18,6 +18,7 @@
 | **Cost** | $0.60 | $0.07 | Faster model |
 
 **KEY FINDING**: 69.1 percentage point difference between 2024 and 2020 proves:
+
 1. ✅ **Framework IS selective** (not universal detector)
 2. ✅ **2024 WAS genuinely extreme** (not framework overdetection)
 3. ✅ **0DTE hypothesis supported** (0DTE creates persistent regimes)
@@ -50,16 +51,19 @@
 ### Detection Breakdown
 
 **Persistent Positive Regime** (27/223 windows, 12.1%):
+
 - Windows that met all three criteria (≥70% persistence, ≥$5B, ≤5 flips)
 - Genuine regimes in 2020 normal market
 - Framework correctly identified true persistent periods
 
 **Transitional Regime** (196/223 windows, 87.9%):
+
 - Failed at least one criterion (typically persistence <70%)
 - Normal market volatility with frequent sign changes
 - Framework correctly rejected non-regimes
 
 **Average Confidence**:
+
 - Detected: 75% (strong signal)
 - Rejected: Not measured (low priority)
 
@@ -70,18 +74,21 @@
 ### The 69.1 Percentage Point Difference
 
 **2024 (Post-0DTE)**: 81.2% detection
+
 - 0DTE options volume exploded (50%+ of SPY volume by 2024)
 - Dealers forced into constant gamma rebalancing
 - Created persistent negative gamma exposure
 - **Result**: Framework detected this structural shift (181/223 windows)
 
 **2020 (Pre-0DTE)**: 12.1% detection
+
 - 0DTE options barely existed (<5% of volume)
 - Normal market dynamics with mixed regimes
 - Dealers had more flexibility (less constrained)
 - **Result**: Framework correctly rejected most windows (196/223)
 
 **Difference**: 69.1 percentage points
+
 - **Interpretation**: Framework IS selective - only detects persistent regimes
 - **Validation**: 2024 was genuinely extreme (not framework overdetection)
 - **0DTE Thesis**: Supported by 5.7x detection rate increase (2020→2024)
@@ -95,11 +102,13 @@
 **Before Phase 4**: Concerned 81.2% detection meant framework too loose
 
 **After Phase 4**: Proved framework IS selective
+
 - Detects persistent regimes: 81.2% (when present in 2024)
 - Rejects normal volatility: 87.9% (when absent in 2020)
 - **5.7x difference** demonstrates discrimination power
 
 **Validation Metrics**:
+
 - Phase 2 negative controls: 0% FP on transitional/low-magnitude
 - Phase 4 normal market: 12.1% detection (acceptable baseline)
 - Phase 3 extreme market: 81.2% detection (captures anomaly)
@@ -109,11 +118,13 @@
 **User Insight**: "I saw a VolSignals on X.com say 2024 was a 'wild regime shift'"
 
 **Data Confirms**:
+
 - 2024 had 5.7x more persistent regimes than 2020
 - 0DTE options proliferation (2021-2024) fundamentally changed dealer constraints
 - Framework correctly identified this structural market change
 
 **Evidence**:
+
 - 2020: 12.1% persistent regimes (normal market)
 - 2024: 81.2% persistent regimes (extreme market)
 - Difference: Not framework error, genuine market shift
@@ -123,10 +134,12 @@
 **Hypothesis**: 0DTE options create persistent gamma regimes
 
 **Test**:
+
 - H0: No difference between 2020 and 2024 detection rates
 - H1: 2024 shows significantly higher detection (0DTE effect)
 
 **Result**: **REJECT H0**
+
 - p < 0.001 (Chi-square test)
 - 69.1pp difference (81.2% vs 12.1%)
 - 5.7x detection rate increase
@@ -141,6 +154,7 @@
 **Challenge**: Database had no 2020 data (only 2024)
 
 **Solution**: SequentialGEXFetcher fallback architecture
+
 ```python
 if len(available_dates) == 0:
     # No data in database - fall back to file cache
@@ -148,6 +162,7 @@ if len(available_dates) == 0:
 ```
 
 **File Cache Status**:
+
 - 2020: 252 trading days available ✅
 - GEX summary files present ✅
 - Successfully generated all 223 windows ✅
@@ -157,6 +172,7 @@ if len(available_dates) == 0:
 **Issue**: 2020 cache missing `net_gex_usd` field (has `net_gex` instead)
 
 **Fix**: Added compatibility aliases in GEXCacheManager
+
 ```python
 if 'net_gex' in data and 'net_gex_usd' not in data:
     data['net_gex_usd'] = data['net_gex']
@@ -169,11 +185,13 @@ if 'spot_price' in data and 'underlying_price' not in data:
 ### Model Selection: gpt-4o-mini
 
 **Why Not o4-mini (Reasoning Model)?**
+
 - Phase 4 is speed-optimized comparison
 - Regime criteria are mechanical (no reasoning needed)
 - gpt-4o-mini 3x faster, 8x cheaper
 
 **Performance**:
+
 - Processing: 6.6 minutes (vs 23 minutes for o4-mini)
 - Cost: $0.07 (vs ~$0.60 for o4-mini)
 - Quality: 98.7% success rate (3 JSON parse errors)
@@ -187,6 +205,7 @@ if 'spot_price' in data and 'underlying_price' not in data:
 **User Guidance**: "I'm viewing the cache like a redis solution and db as the storage"
 
 **Implementation**:
+
 ```
 Layer 1: Get trading days list
   1. Try database query (primary source)
@@ -244,6 +263,7 @@ Layer 2: Get GEX data for each day
 **Null Hypothesis (H0)**: No difference in detection rates between 2020 and 2024
 
 **Contingency Table**:
+
 ```
           Detected   Rejected   Total
 2020         27        196      223
@@ -264,12 +284,14 @@ Total       208        238      446
 ### 2020: Normal Market (Pre-0DTE)
 
 **Characteristics**:
+
 - Balanced gamma exposure (dealers flexible)
 - Mixed positive/negative days (normal volatility)
 - 87.9% of windows were transitional (no persistent regime)
 - 12.1% genuine regimes detected (normal baseline)
 
 **Dealer Behavior**:
+
 - Voluntary positioning based on market view
 - Not forced into sustained gamma exposure
 - Can adjust positions freely (low rebalancing costs)
@@ -277,12 +299,14 @@ Total       208        238      446
 ### 2024: Extreme Market (Post-0DTE)
 
 **Characteristics**:
+
 - Persistent negative gamma (dealers constrained)
 - 0DTE volume 50%+ of total options (constant rebalancing)
 - 81.2% of windows were persistent regimes (anomalous)
 - Sustained dealer short-gamma for entire year
 
 **Dealer Behavior**:
+
 - Forced into constant gamma hedging (0DTE decay)
 - Cannot adjust positions (locked into negative gamma)
 - Must buy rallies, sell dips (momentum-reinforcing)
@@ -296,9 +320,11 @@ Total       208        238      446
 ### Phase 4 Results
 
 **Primary Output**:
+
 - `reports/validation/paper2_regime_windows/phase4_baseline_2020.yaml`
 
 **Batch Files**:
+
 - `batch_jobs/batch_691f37d94ef0819099136e88a69bef82_metadata.json`
 - `batch_jobs/input_phase4_2020_baseline.jsonl`
 - `batch_jobs/results_batch_691f37d94ef0819099136e88a69bef82.jsonl`
@@ -306,9 +332,11 @@ Total       208        238      446
 ### Supporting Scripts
 
 **Database Import** (created, not executed):
+
 - `scripts/maintenance/import_2020_to_database.py`
 
 **Data Collection** (created, not used):
+
 - `scripts/data_collection/collect_year_gex.py`
 
 ### Documentation Updates
@@ -325,17 +353,20 @@ Total       208        238      446
 ### Immediate: Paper Writing ✅
 
 **Framework Validated**:
+
 - ✅ Selectivity proven (5.7x detection difference)
 - ✅ Negative controls passed (Phase 2: 0% FP on artificial data)
 - ✅ Normal market baseline established (Phase 4: 12.1%)
 - ✅ Extreme market detected (Phase 3: 81.2%)
 
 **0DTE Thesis**:
+
 - ✅ Statistical significance (p < 0.001)
 - ✅ Large effect size (φ = 0.672)
 - ✅ Mechanistic explanation (0DTE forces constant rebalancing)
 
 **Paper Structure**:
+
 1. Introduction: LLMs for market microstructure
 2. Methodology: 30-day regime criteria + obfuscation
 3. Validation: 4-phase framework (1,307 windows)
@@ -346,11 +377,13 @@ Total       208        238      446
 ### Optional: Additional Years (Not Essential)
 
 **2023**: Transition year (0DTE growth)
+
 - Expected: 30-50% detection (intermediate)
 - Cost: $0.07
 - Value: Confirms gradual transition (not step change)
 
 **2025 YTD**: Current year (ongoing)
+
 - Expected: 70-80% detection (sustained extreme)
 - Cost: $0.05 (220 days YTD)
 - Value: Confirms 2024 not anomaly (structural shift persists)
@@ -360,9 +393,11 @@ Total       208        238      446
 ### Background Maintenance (Low Priority)
 
 **Import 2020 to Database**:
+
 ```bash
 python scripts/maintenance/import_2020_to_database.py
 ```
+
 - Redundancy (file cache already works)
 - Consistency (all data in database)
 - Low urgency (Phase 4 already complete)
@@ -390,16 +425,19 @@ python scripts/maintenance/import_2020_to_database.py
 **Phase 4 confirmed the 0DTE hypothesis with a 69.1 percentage point detection rate difference.**
 
 **Framework Validation**:
+
 - ✅ Selective (5.7x discrimination 2020 vs 2024)
 - ✅ Accurate (0% FP on artificial data, 12.1% on normal market)
 - ✅ Mechanistic (correctly identifies dealer constraints)
 
 **Market Finding**:
+
 - ✅ 2024 genuinely extreme (not framework error)
 - ✅ 0DTE proliferation creates persistent regimes
 - ✅ Structural market shift (not temporary anomaly)
 
 **Paper Readiness**: ✅ **READY FOR WRITING**
+
 - All 4 validation phases complete
 - 1,307 windows tested ($13.60 total cost)
 - Statistical significance established (p < 0.001)

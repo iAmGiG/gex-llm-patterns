@@ -8,6 +8,7 @@ This document tracks unused/orphaned code in the codebase that may be candidates
 ## Purpose
 
 During code reviews, we sometimes discover code that:
+
 - Was part of earlier experiments
 - Has been superseded by better implementations
 - Is not imported or used anywhere in the codebase
@@ -29,6 +30,7 @@ Rather than immediately deleting potentially useful code, we document it here fo
 An abstract base class framework for implementing versioned GEX trading strategies (V0-V4):
 
 **Files**:
+
 1. [src/strategies/base_gex_strategy.py](../src/strategies/base_gex_strategy.py) (293 lines)
    - Abstract base class `BaseGEXStrategy`
    - Dataclasses: `GEXSignal`, `StrategyMetrics`
@@ -49,6 +51,7 @@ An abstract base class framework for implementing versioned GEX trading strategi
 **The actual baseline comparison (Issue #58) uses a completely different implementation:**
 
 **Active Code**: [src/analysis/baseline_gex_strategy.py](../src/analysis/baseline_gex_strategy.py) (492 lines)
+
 - Used by: [scripts/baseline_comparison/run_baseline_comparison.py](../scripts/baseline_comparison/run_baseline_comparison.py)
 - Implements proper baseline strategies for Issue #58
 - Loads configuration from `config_defaults/trading_config.yaml`
@@ -65,6 +68,7 @@ grep -r "from.*strategies.*import\|import.*strategies" \
 ```
 
 The `BaseGEXStrategy` class name appears only in:
+
 - [src/analysis/baseline_gex_strategy.py](../src/analysis/baseline_gex_strategy.py) - but as `BaselineGEXStrategy` (different class)
 
 ### History
@@ -72,44 +76,55 @@ The `BaseGEXStrategy` class name appears only in:
 Based on file timestamps (Sept 18, 2023), this appears to be an **early experiment** for a "continuous experiment framework" that was **superseded** by the cleaner implementation in `src/analysis/baseline_gex_strategy.py`.
 
 The abstract base class approach (V0-V4 versioning) was likely intended for A/B testing multiple strategy versions, but the project pivoted to:
+
 1. **Issue #79**: LLM-based pattern detection (not mechanical strategies)
 2. **Issue #58**: Simple baseline comparison (doesn't need abstract framework)
 
 ### Options
 
 #### Option 1: Archive (Recommended)
+
 Move to `docs/archive/unused_strategies/` with:
+
 - All three files
 - README explaining why it was superseded
 - Link to this document
 
 **Pros**:
+
 - Preserves historical context
 - Can be referenced if needed
 - Removes clutter from active codebase
 
 **Cons**:
+
 - None (git history still preserves everything)
 
 #### Option 2: Delete
+
 Simply remove the folder and files.
 
 **Pros**:
+
 - Cleaner codebase
 - Less confusion for new developers
 - Git history preserves everything if needed later
 
 **Cons**:
+
 - Less immediately accessible if context is needed
 
 #### Option 3: Keep As-Is
+
 Leave the code in place.
 
 **Pros**:
+
 - No action needed
 - Might be useful someday
 
 **Cons**:
+
 - ⚠️ Creates confusion (developers may think it's active code)
 - ⚠️ Adds maintenance burden (linting, imports, etc.)
 - ⚠️ Clutters codebase
@@ -119,6 +134,7 @@ Leave the code in place.
 **✅ Option 2: Delete - COMPLETED October 12, 2025**
 
 **Rationale**:
+
 - Completely unused (verified no imports anywhere)
 - Superseded by cleaner implementation in `src/analysis/baseline_gex_strategy.py`
 - Git history preserves all code if needed later
@@ -126,6 +142,7 @@ Leave the code in place.
 - Part of Issue #63 code review cleanup
 
 **What was removed**:
+
 - `src/strategies/base_gex_strategy.py` (293 lines)
 - `src/strategies/gex_strategy_v0.py` (96 lines)
 - `src/strategies/gex_strategy_v2.py` (410 lines)

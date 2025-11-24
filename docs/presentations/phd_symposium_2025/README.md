@@ -9,6 +9,7 @@
 ## Presentation
 
 **[presentation.md](presentation.md)** - Complete symposium presentation
+
 - Paper #1 results: 100% detection, 87-98% accuracy across full 2024
 - Key finding: Detection stable as profitability declined (proves methodology rigor)
 - Full-year validation: Q1, Q3, Q4 2024 (181 trading days)
@@ -19,6 +20,7 @@
 ## Archived Materials
 
 **[diagrams_archive/](diagrams_archive/)** - October 2022 presentation diagrams
+
 - 12 presentation-optimized figures (1920×1080, 120 DPI)
 - High-contrast colors for well-lit academic rooms
 - Historical reference only (superseded by Paper #1 figures)

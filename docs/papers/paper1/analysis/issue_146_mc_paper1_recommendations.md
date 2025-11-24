@@ -62,6 +62,7 @@ despite limited expressiveness.
 ```
 
 **Rationale**:
+
 - Ties confidence increase to structural vs profitable pattern distinction
 - Connects linguistic shift to 0DTE proliferation narrative (MC's recommendation)
 - Frames as evidence of genuine but limited reasoning capacity
@@ -120,6 +121,7 @@ pattern memorization.
 ```
 
 **Rationale**:
+
 - Frames Phase 2 null result as methodological contribution, not failure
 - Provides actionable guidance for FinLLM research community
 - Demonstrates scientific rigor (honest reporting of null finding)
@@ -151,6 +153,7 @@ short gamma positioning.
 ```
 
 **Rationale**:
+
 - Connects 0DTE proliferation to persistent negative gamma regime
 - Frames single-regime environment as rigorous test (not limitation)
 - Sets up Q1→Q4 adaptation narrative (amplification → equilibrium)
@@ -162,11 +165,13 @@ short gamma positioning.
 **Timing**: Integrate before journal resubmission (Paper #1 revisions in progress)
 
 **Priority Order**:
+
 1. ✅ **Highest**: Results section confidence metric paragraph (core defense)
 2. ✅ **High**: Discussion section prompting limitations (methodological contribution)
 3. 🔄 **Medium**: Introduction 0DTE framing enhancement (narrative improvement)
 
 **Dependencies**:
+
 - No new analysis required (all findings from Issue #146 complete)
 - Can integrate immediately into journal version LaTeX files
 - Should coordinate with Issue #145 temporal mismatch clarifications
@@ -178,11 +183,13 @@ short gamma positioning.
 MC's feedback on Issue #146 directly connects to Issue #145 (Temporal Mismatch):
 
 **Issue #146 Defense (Reasoning Adaptation)**:
+
 - Proves LLM detects structural constraints, not profitable patterns
 - Confidence increase (79.5→80.7) refutes alpha-chasing hypothesis
 - Validates genuine reasoning with Q1→Q4 linguistic shift
 
 **Issue #145 Defense (EOD→T+1/T+2 Scope)**:
+
 - Clarifies detection scope: EOD snapshot → next-day constraint (not intraday)
 - Requires statistical validation: EOD GEX predicts T+1/T+2 materialization
 - Frames as "overnight constraint persistence" not "real-time detection"
@@ -195,16 +202,19 @@ MC's feedback on Issue #146 directly connects to Issue #145 (Temporal Mismatch):
 ## Files for Integration
 
 **LaTeX Files to Update**:
+
 1. `docs/papers/paper1/journal_version/05_Results.tex` - Add reasoning adaptation paragraph
 2. `docs/papers/paper1/journal_version/06_Discussion.tex` - Add prompting limitations subsection
 3. `docs/papers/paper1/journal_version/01_Introduction.tex` - Enhance 0DTE proliferation framing
 
 **Supporting Documentation**:
+
 - `docs/papers/paper1/analysis/issue_146_complete_analysis.md` - Full technical analysis
 - `docs/papers/paper1/analysis/issue_146_mc_summary.md` - Executive summary for MC
 - `docs/papers/paper1/analysis/issue_146_mc_paper1_recommendations.md` - This document
 
 **GitHub Reference**:
+
 - [Issue #146](https://github.com/iAmGiG/gex-llm-patterns/issues/146) - Complete analysis and MC feedback
 
 ---
@@ -219,6 +229,7 @@ MC's feedback on Issue #146 directly connects to Issue #145 (Temporal Mismatch):
 4. **0DTE narrative strengthened**: Proliferation → persistent regime → reasoning adaptation arc clearly communicated
 
 **Expected reviewer response**:
+
 - ✅ "Authors demonstrate LLM reasoning adapts to structural transitions independent of profitability"
 - ✅ "Prompting fidelity finding is valuable methodological contribution to field"
 - ✅ "Confidence increase despite alpha decline convincingly refutes alpha-optimization hypothesis"

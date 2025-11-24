@@ -61,25 +61,25 @@ def main():
     fail_count = 0
 
     for idx, row in df.iterrows():
-        trade_date = row['date']
+        trade_date = row["date"]
 
         try:
             # Create GEX summary dict in expected format
             gex_summary = {
-                'date': trade_date,
-                'symbol': row['symbol'],
-                'total_gex': float(row['total_gex']),
-                'net_call_gex': float(row['net_call_gex']),
-                'net_put_gex': float(row['net_put_gex']),
-                'spot_price': float(row['spot_price']),
-                'options_count': int(row['options_count']),
-                'source': 'database_export'
+                "date": trade_date,
+                "symbol": row["symbol"],
+                "total_gex": float(row["total_gex"]),
+                "net_call_gex": float(row["net_call_gex"]),
+                "net_put_gex": float(row["net_put_gex"]),
+                "spot_price": float(row["spot_price"]),
+                "options_count": int(row["options_count"]),
+                "source": "database_export",
             }
 
             # Save to cache using GEXCacheManager format
             cache_file = Path(f".cache/gex_summary_{trade_date}.parquet")
             summary_df = pd.DataFrame([gex_summary])
-            summary_df.to_parquet(cache_file, engine='pyarrow')
+            summary_df.to_parquet(cache_file, engine="pyarrow")
 
             success_count += 1
 

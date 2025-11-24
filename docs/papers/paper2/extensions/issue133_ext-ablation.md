@@ -23,6 +23,7 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **Research Question**: Is the WHO→WHOM→WHAT framework necessary for LLM detection, or can models detect constraints from data alone?
 
 **Test Design**:
+
 - **Control**: Full framework with causal narrative
 - **Treatment**: Data-only (raw GEX, no WHO→WHOM→WHAT explanation)
 
@@ -37,14 +38,17 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **Status**: ❌ Invalid (sampling bias + model mismatch)
 
 **Sample**: 3 dates (2024-04-03, 2024-11-06, 2024-11-12)
+
 - ALL sampled from Paper #1 detected dates (circular reasoning)
 - No rejected dates = no test of selectivity
 
 **Results** (gpt-4):
+
 - Control: 100% detection (3/3)
 - Treatment: 33% detection (1/3)
 
 **Issues**:
+
 1. Sampling bias (only tested known positives)
 2. Model mismatch (gpt-4 instead of o4-mini)
 
@@ -55,14 +59,17 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **Status**: ❌ Invalid (sampling bias + model mismatch)
 
 **Sample**: 52 dates sampled from Paper #1 detected dates
+
 - Same sampling bias as Phase 1
 - No rejected dates included
 
 **Results** (gpt-4):
+
 - Control: 100% detection (52/52)
 - Treatment: 57.7% detection (30/52)
 
 **Issues**:
+
 1. Sampling bias (only tested detected dates)
 2. Model mismatch (gpt-4 instead of o4-mini)
 3. Cannot test selectivity without negative cases
@@ -74,23 +81,27 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **Status**: ✅ Complete (model mismatch corrected)
 
 **Sample Design** (corrected):
+
 - 26 detected dates (from Paper #1)
 - 26 rejected dates (from Paper #1)
 - Stratified by quarter (Q1-Q4 2024)
 - Balanced sample tests selectivity
 
 **Results (gpt-4 - INVALID)**:
+
 - Control: 100% detection (26/26 detected, 26/26 rejected)
 - Treatment: 100% detection (26/26 detected, 26/26 rejected)
 - Model: gpt-4 (wrong model)
 
 **Results (o4-mini - CORRECTED)**:
+
 - Control: 100% detection (26/26)
 - Treatment: 100% detection (26/26)
 - Model: o4-mini (correct)
 - Batch ID: batch_691f9acb5df081909ad1ddce6a71b979
 
 **Interpretation**: Both conditions achieved 100% detection, suggesting:
+
 1. Task may be too easy with o4-mini (not selective enough)
 2. Framework effect exists but test design cannot isolate it
 3. o4-mini may have different calibration than gpt-4
@@ -102,6 +113,7 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **Discovery**: All phases used gpt-4 instead of o4-mini
 
 **Evidence**:
+
 ```python
 # Batch scripts hardcoded gpt-4
 "body": {
@@ -110,6 +122,7 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 ```
 
 **Impact**:
+
 - Paper #1 used o4-mini → 69% detection (selective)
 - Issue #133 used gpt-4 → 100% detection (not selective)
 - Results not comparable
@@ -148,6 +161,7 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 **GitHub**: Issue #133 (CLOSED)
 **Comment**: Framework testing inconclusive, Paper #1 validates framework necessity
 **Raw Data**:
+
 - reports/validation/paper2_extensions/issue133_phase1_results.yaml
 - reports/validation/paper2_extensions/issue133_phase2_results.yaml
 - reports/validation/paper2_extensions/issue133_phase3_results.yaml
@@ -159,6 +173,7 @@ Framework necessity testing attempted to determine if the WHO→WHOM→WHAT fram
 ## Recommendation
 
 **For Dissertation**: Include as methodological exploration showing:
+
 - Framework necessity validated in Paper #1
 - Ablation testing attempted but inconclusive due to model calibration
 - Demonstrates rigorous validation approach

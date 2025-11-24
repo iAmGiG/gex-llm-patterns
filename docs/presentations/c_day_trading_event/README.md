@@ -9,6 +9,7 @@
 ## Materials
 
 **[presentation_guide.md](presentation_guide.md)** - Complete presentation guide
+
 - Trading event context (practitioner audience)
 - Options market mechanics explanation
 - Practical gamma exposure concepts

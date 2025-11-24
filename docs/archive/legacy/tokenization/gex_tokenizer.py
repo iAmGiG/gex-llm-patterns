@@ -20,9 +20,7 @@ class GEXTokenizer:
     Tokenize GEX values using adaptive percentile-based binning.
     """
 
-    def __init__(self,
-                 lookback_days=None,
-                 update_frequency=None):
+    def __init__(self, lookback_days=None, update_frequency=None):
         """
         Initialize GEX tokenizer.
 
@@ -33,14 +31,12 @@ class GEXTokenizer:
         config = get_config()
 
         # Use config values as defaults, allow override via parameters
-        self.lookback_days = lookback_days or config.get(
-            'tokenization.gex_tokenizer.lookback_days', 252)
-        self.update_frequency = update_frequency or config.get(
-            'tokenization.gex_tokenizer.update_frequency', 'monthly')
-        self.min_history_samples = config.get(
-            'tokenization.gex_tokenizer.min_history_samples', 20)
+        self.lookback_days = lookback_days or config.get("tokenization.gex_tokenizer.lookback_days", 252)
+        self.update_frequency = update_frequency or config.get("tokenization.gex_tokenizer.update_frequency", "monthly")
+        self.min_history_samples = config.get("tokenization.gex_tokenizer.min_history_samples", 20)
         self.percentile_thresholds = config.get(
-            'tokenization.gex_tokenizer.percentile_thresholds', [10, 20, 30, 40, 50, 60, 70, 80, 90])
+            "tokenization.gex_tokenizer.percentile_thresholds", [10, 20, 30, 40, 50, 60, 70, 80, 90]
+        )
 
         self.vocabulary = TokenVocabulary()
 
@@ -48,10 +44,7 @@ class GEXTokenizer:
         self._percentile_cache = {}
         self._last_update = None
 
-    def tokenize_single(self,
-                        gex_value,
-                        historical_gex,
-                        date=None) -> str:
+    def tokenize_single(self, gex_value, historical_gex, date=None) -> str:
         """
         Tokenize a single GEX value.
 
@@ -67,16 +60,13 @@ class GEXTokenizer:
             return "[UNK]"
 
         # Calculate percentile
-        percentile = self._calculate_percentile(
-            gex_value, historical_gex, date)
+        percentile = self._calculate_percentile(gex_value, historical_gex, date)
 
         # Get token from percentile
         token = GEXToken.from_percentile(percentile)
         return token.value
 
-    def tokenize_series(self,
-                        gex_series,
-                        rolling_window=True):
+    def tokenize_series(self, gex_series, rolling_window=True):
         """
         Tokenize a series of GEX values.
 
@@ -92,8 +82,7 @@ class GEXTokenizer:
         for date, gex_value in gex_series.items():
             if rolling_window:
                 # Get historical data up to this date
-                lookback_start = date - \
-                    datetime.timedelta(days=self.lookback_days)
+                lookback_start = date - datetime.timedelta(days=self.lookback_days)
                 historical = gex_series[lookback_start:date]
             else:
                 # Use entire series for percentile calculation
@@ -104,11 +93,7 @@ class GEXTokenizer:
 
         return tokens
 
-    def tokenize_with_context(self,
-                              gex_value,
-                              historical_gex,
-                              spot_price,
-                              flip_point=None):
+    def tokenize_with_context(self, gex_value, historical_gex, spot_price, flip_point=None):
         """
         Tokenize GEX with additional context information.
 
@@ -122,23 +107,19 @@ class GEXTokenizer:
             Dictionary with multiple tokens including context
         """
         result = {
-            'gex_state': self.tokenize_single(gex_value, historical_gex),
-            'gex_sign': 'GEX_POSITIVE' if gex_value > 0 else 'GEX_NEGATIVE',
-            'gex_magnitude': self._tokenize_magnitude(abs(gex_value), historical_gex)
+            "gex_state": self.tokenize_single(gex_value, historical_gex),
+            "gex_sign": "GEX_POSITIVE" if gex_value > 0 else "GEX_NEGATIVE",
+            "gex_magnitude": self._tokenize_magnitude(abs(gex_value), historical_gex),
         }
 
         # Add flip point context if available
         if flip_point is not None and spot_price is not None:
             distance_to_flip = (flip_point - spot_price) / spot_price
-            result['flip_distance'] = self._tokenize_flip_distance(
-                distance_to_flip)
+            result["flip_distance"] = self._tokenize_flip_distance(distance_to_flip)
 
         return result
 
-    def _calculate_percentile(self,
-                              value,
-                              historical,
-                              date=None) -> float:
+    def _calculate_percentile(self, value, historical, date=None) -> float:
         """
         Calculate percentile of value in historical distribution.
 
@@ -151,8 +132,7 @@ class GEXTokenizer:
             Percentile (0-100)
         """
         if len(historical) < self.min_history_samples:  # Need minimum history
-            logger.warning(
-                f"Insufficient history ({len(historical)} values), using naive percentile")
+            logger.warning(f"Insufficient history ({len(historical)} values), using naive percentile")
             return 50.0
 
         # Check if we need to update cache
@@ -174,8 +154,7 @@ class GEXTokenizer:
         if len(abs_historical) < self.min_history_samples:
             return "MAG_UNKNOWN"
 
-        percentile = (abs_historical <= abs_gex).sum() / \
-            len(abs_historical) * 100
+        percentile = (abs_historical <= abs_gex).sum() / len(abs_historical) * 100
 
         if percentile < 20:
             return "MAG_VERY_LOW"
@@ -210,12 +189,12 @@ class GEXTokenizer:
         if date is None:
             return "default"
 
-        if self.update_frequency == 'daily':
-            return date.strftime('%Y-%m-%d')
-        elif self.update_frequency == 'weekly':
-            return date.strftime('%Y-W%U')
-        elif self.update_frequency == 'monthly':
-            return date.strftime('%Y-%m')
+        if self.update_frequency == "daily":
+            return date.strftime("%Y-%m-%d")
+        elif self.update_frequency == "weekly":
+            return date.strftime("%Y-W%U")
+        elif self.update_frequency == "monthly":
+            return date.strftime("%Y-%m")
         else:
             return "default"
 
@@ -227,11 +206,11 @@ class GEXTokenizer:
         if date is None:
             return False
 
-        if self.update_frequency == 'daily':
+        if self.update_frequency == "daily":
             return date.date() != self._last_update.date()
-        elif self.update_frequency == 'weekly':
+        elif self.update_frequency == "weekly":
             return date.isocalendar()[1] != self._last_update.isocalendar()[1]
-        elif self.update_frequency == 'monthly':
+        elif self.update_frequency == "monthly":
             return date.month != self._last_update.month
 
         return False
@@ -263,20 +242,17 @@ class GEXTokenizer:
             stats[token_enum.value] = count / total
 
         # Add balance metrics
-        neg_tokens = sum(1 for t in tokens if 'NEG' in t)
-        pos_tokens = sum(1 for t in tokens if 'POS' in t)
+        neg_tokens = sum(1 for t in tokens if "NEG" in t)
+        pos_tokens = sum(1 for t in tokens if "POS" in t)
 
-        stats['balance_ratio'] = pos_tokens / max(1, neg_tokens)
-        stats['extremes_ratio'] = (
-            tokens.count(GEXToken.EXTREME_NEG.value) +
-            tokens.count(GEXToken.EXTREME_POS.value)
+        stats["balance_ratio"] = pos_tokens / max(1, neg_tokens)
+        stats["extremes_ratio"] = (
+            tokens.count(GEXToken.EXTREME_NEG.value) + tokens.count(GEXToken.EXTREME_POS.value)
         ) / total
 
         return stats
 
-    def validate_tokenization(self,
-                              original_series,
-                              tokens):
+    def validate_tokenization(self, original_series, tokens):
         """
         Validate that tokenization preserves important properties.
 
@@ -288,9 +264,9 @@ class GEXTokenizer:
             Validation report
         """
         validation = {
-            'length_match': len(original_series) == len(tokens),
-            'na_handling': sum(pd.isna(original_series)) == tokens.count('[UNK]'),
-            'token_distribution': self.get_token_statistics(tokens)
+            "length_match": len(original_series) == len(tokens),
+            "na_handling": sum(pd.isna(original_series)) == tokens.count("[UNK]"),
+            "token_distribution": self.get_token_statistics(tokens),
         }
 
         # Check for regime preservation
@@ -303,19 +279,13 @@ class GEXTokenizer:
             extreme_low_idx = original_series <= extreme_low
 
             if extreme_high_idx.any():
-                high_tokens = [tokens[i]
-                               for i in extreme_high_idx[extreme_high_idx].index]
-                validation['extreme_high_mapping'] = (
-                    sum(1 for t in high_tokens if 'EXTREME_POS' in t) /
-                    len(high_tokens)
+                high_tokens = [tokens[i] for i in extreme_high_idx[extreme_high_idx].index]
+                validation["extreme_high_mapping"] = sum(1 for t in high_tokens if "EXTREME_POS" in t) / len(
+                    high_tokens
                 )
 
             if extreme_low_idx.any():
-                low_tokens = [tokens[i]
-                              for i in extreme_low_idx[extreme_low_idx].index]
-                validation['extreme_low_mapping'] = (
-                    sum(1 for t in low_tokens if 'EXTREME_NEG' in t) /
-                    len(low_tokens)
-                )
+                low_tokens = [tokens[i] for i in extreme_low_idx[extreme_low_idx].index]
+                validation["extreme_low_mapping"] = sum(1 for t in low_tokens if "EXTREME_NEG" in t) / len(low_tokens)
 
         return validation

@@ -13,7 +13,7 @@ import pandas as pd
 
 # Add src to path
 project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root / 'src'))
+sys.path.append(str(project_root / "src"))
 
 
 def explain_options_data():
@@ -25,7 +25,7 @@ def explain_options_data():
     # Get sample data
     cache = UnifiedCacheManager()
     client = AlphaVantageGEXClient(cache_manager=cache)
-    data = client.fetch_historical_options('SPY', '2024-01-08')
+    data = client.fetch_historical_options("SPY", "2024-01-08")
 
     # 1. Dataset Overview
     print("\n📊 DATASET OVERVIEW:")
@@ -33,8 +33,7 @@ def explain_options_data():
     print(f"   • Data columns: {len(data.columns)}")
     print(f"   • Date: January 8, 2024")
     print(f"   • Symbol: SPY (S&P 500 ETF)")
-    print(
-        f"   • Memory usage: {data.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
+    print(f"   • Memory usage: {data.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
 
     # 2. What Each Row Represents
     print("\n🏷️  WHAT EACH ROW IS:")
@@ -44,7 +43,7 @@ def explain_options_data():
     print("   • Includes all pricing, volume, and Greeks data")
 
     # 3. Strike Distribution
-    strikes = sorted(data['strike'].dropna().unique())
+    strikes = sorted(data["strike"].dropna().unique())
     print(f"\n💰 STRIKE PRICES:")
     print(f"   • Range: ${strikes[0]:.0f} to ${strikes[-1]:.0f}")
     print(f"   • Total strikes: {len(strikes)}")
@@ -52,17 +51,16 @@ def explain_options_data():
     print(f"   • Sample strikes: {[int(s) for s in strikes[:10]]}")
 
     # 4. Expiration Analysis
-    expirations = sorted(data['expiration'].unique())
+    expirations = sorted(data["expiration"].unique())
     print(f"\n📅 EXPIRATION DATES:")
     print(f"   • Total expirations: {len(expirations)}")
     print(f"   • 0 DTE (same day): {expirations[0].strftime('%Y-%m-%d')}")
-    print(
-        f"   • Near-term: {expirations[1].strftime('%Y-%m-%d')}, {expirations[2].strftime('%Y-%m-%d')}")
+    print(f"   • Near-term: {expirations[1].strftime('%Y-%m-%d')}, {expirations[2].strftime('%Y-%m-%d')}")
     print(f"   • LEAPs (long-term): {expirations[-1].strftime('%Y-%m-%d')}")
 
     # 5. Call vs Put Split
-    call_count = len(data[data['type'] == 'call'])
-    put_count = len(data[data['type'] == 'put'])
+    call_count = len(data[data["type"] == "call"])
+    put_count = len(data[data["type"] == "put"])
     print(f"\n📈 CALLS vs PUTS:")
     print(f"   • Calls: {call_count:,} contracts")
     print(f"   • Puts: {put_count:,} contracts")
@@ -71,15 +69,15 @@ def explain_options_data():
     # 6. Key Columns for GEX
     print(f"\n🎯 CRITICAL COLUMNS FOR GEX CALCULATION:")
     key_columns = {
-        'strike': 'Strike price ($)',
-        'type': 'Call or Put',
-        'open_interest': 'Outstanding contracts',
-        'gamma': 'Price sensitivity (Greek)',
-        'implied_volatility': 'Market volatility expectation',
-        'delta': 'Hedge ratio (Greek)',
-        'bid': 'Buyer price',
-        'ask': 'Seller price',
-        'volume': 'Daily trading activity'
+        "strike": "Strike price ($)",
+        "type": "Call or Put",
+        "open_interest": "Outstanding contracts",
+        "gamma": "Price sensitivity (Greek)",
+        "implied_volatility": "Market volatility expectation",
+        "delta": "Hedge ratio (Greek)",
+        "bid": "Buyer price",
+        "ask": "Seller price",
+        "volume": "Daily trading activity",
     }
 
     for col, desc in key_columns.items():
@@ -87,14 +85,13 @@ def explain_options_data():
 
     # 7. Sample Data Around Current Price
     print(f"\n📋 SAMPLE DATA (Around $474 SPY Price):")
-    gex_cols = ['strike', 'type', 'open_interest',
-                'gamma', 'delta', 'implied_volatility']
-    sample = data[data['strike'].between(470, 478)][gex_cols].head(10)
+    gex_cols = ["strike", "type", "open_interest", "gamma", "delta", "implied_volatility"]
+    sample = data[data["strike"].between(470, 478)][gex_cols].head(10)
     print(sample.to_string(index=False))
 
     # 8. Open Interest Analysis
-    total_call_oi = data[data['type'] == 'call']['open_interest'].sum()
-    total_put_oi = data[data['type'] == 'put']['open_interest'].sum()
+    total_call_oi = data[data["type"] == "call"]["open_interest"].sum()
+    total_put_oi = data[data["type"] == "put"]["open_interest"].sum()
     total_oi = total_call_oi + total_put_oi
 
     print(f"\n📊 OPEN INTEREST (Market Positioning):")
