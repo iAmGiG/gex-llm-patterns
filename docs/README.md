@@ -1,6 +1,6 @@
 # Documentation
 
-**Last Updated**: November 4, 2025
+**Last Updated**: November 24, 2025
 
 ---
 
@@ -8,16 +8,19 @@
 
 ### New to the Project?
 
-1. Start with [System Overview](system/architecture/01-project-overview.md)
-2. Read [Architecture Overview](system/architecture/02-architecture-overview.md)
-3. Understand [GEX Metrics](guides/02-gex-metrics-explained.md)
-4. Explore [Pattern Taxonomy](guides/03-pattern-taxonomy.md)
+1. Start with [Project Overview](infrastructure/01-project-overview.md)
+2. Read [Architecture Overview](infrastructure/02-architecture-overview.md)
+3. Understand [Data & Database](infrastructure/03-data-and-database.md)
+4. Explore [GEX Metrics Guide](guides/02-gex-metrics-explained.md)
+
+**Full Infrastructure Learning Path**: See [infrastructure/README.md](infrastructure/README.md) for sequential 01-08 reading order (~2-3 hours)
 
 ### Looking for Something Specific?
 
 - **Research Papers** → [papers/](papers/)
 - **User Guides** → [guides/](guides/)
-- **System Architecture** → [system/architecture/](system/architecture/)
+- **Infrastructure & Architecture** → [infrastructure/](infrastructure/) (📖 start here for system understanding)
+- **Development Workflows** → [development/](development/)
 - **Validation Methodology** → [validation/](validation/)
 - **Presentations** → [presentations/](presentations/)
 - **Change History** → [CHANGELOG.md](CHANGELOG.md)
@@ -30,6 +33,21 @@
 docs/
 ├── CHANGELOG.md                    # Project evolution tracking
 ├── README.md                       # This file (navigation hub)
+│
+├── infrastructure/                 # 📖 System architecture & implementation (START HERE)
+│   ├── 01-project-overview.md     # Research hypothesis and vision
+│   ├── 02-architecture-overview.md # High-level system design
+│   ├── 03-data-and-database.md    # Data architecture & database schema
+│   ├── 04-cache-and-performance.md # Cache system & token optimization
+│   ├── 05-llm-integration.md      # Model selection & LLM integration
+│   ├── 06-implementation-guide.md # Patterns & intraday support
+│   ├── 07-experiments-and-validation.md # Continuous experiment framework
+│   ├── 08-maintenance-and-audits.md # Maintenance & infrastructure audits
+│   └── README.md                  # Sequential learning path guide
+│
+├── development/                    # Developer workflows & tools
+│   ├── worktree_cache_management.md # Git worktree cache strategies
+│   └── README.md                  # Development guide index
 │
 ├── papers/                         # Research papers
 │   ├── adr/                        # Cross-paper architecture decisions
@@ -47,19 +65,6 @@ docs/
 │   ├── 08-baseline-strategy.md
 │   └── 09-documentation-security.md
 │
-├── system/                         # System architecture & implementation
-│   ├── architecture/               # Design documents
-│   │   ├── 01-project-overview.md
-│   │   ├── 02-architecture-overview.md
-│   │   ├── 03-data-architecture.md
-│   │   ├── 04-database-architecture.md
-│   │   ├── 05-cache-architecture.md
-│   │   └── 06-continuous-experiment.md
-│   └── implementation/             # Implementation notes
-│       ├── actionable-patterns.md
-│       ├── intraday-implementation.md
-│       └── llm-cost-optimization/
-│
 ├── validation/                     # Validation methodology
 │   └── statistical/                # Statistical validation methods
 │       ├── granger-causality-pipeline.md
@@ -72,9 +77,8 @@ docs/
 │   └── archive/                    # Historical presentations
 │
 ├── reference/                      # Technical reference
-│   ├── api/                        # API documentation
-│   ├── technical/                  # Technical specs
-│   └── model-selection-research.md
+│   ├── api/                        # API documentation (Alpha Vantage, etc.)
+│   └── technical/                  # Technical specs & audits
 │
 └── archive/                        # Historical/deprecated content
     ├── sessions/                   # Old session logs
@@ -107,12 +111,12 @@ docs/
 - `04-pattern-validation.md` → Methodology
 - ... logical progression
 
-**Architecture**: Numbered by dependency (01-06)
+**Infrastructure**: Numbered by dependency (01-08)
 
 - `01-project-overview.md` → Start here
 - `02-architecture-overview.md` → High-level design
-- `03-data-architecture.md` → Data layer
-- ... builds on previous
+- `03-data-and-database.md` → Data & database layer
+- ... builds on previous (see [infrastructure/README.md](infrastructure/README.md))
 
 **ADRs**: Numbered chronologically (001, 002, ...)
 
@@ -127,6 +131,22 @@ All docs include **Navigation** sections with:
 - **Related**: Similar/connected topics
 - **Next**: Where to go next
 - **Issues**: Relevant GitHub issues
+
+### Documentation Management
+
+**File Consolidation Principles** (Nov 2025 update):
+
+- **Sequential numbering** for learning paths (01-08 infrastructure, 02-09 guides)
+- **Consolidate related content** to reduce file count while preserving detail
+- **Part-based organization** for long files (Part 1, Part 2, etc.)
+- **Living documentation** for active systems (not archived unless obsolete)
+- **Clear naming** that describes content (`issue_NNN_description.md`, `topic-name.md`)
+
+**Recent Consolidation** (Nov 24, 2025):
+
+- Merged 13 files (system/ + reference/ + infrastructure/) → 9 sequential infrastructure files
+- 31% reduction in file count, 100% detail preservation
+- See [infrastructure/08-maintenance-and-audits.md](infrastructure/08-maintenance-and-audits.md) for audit history
 
 ---
 
@@ -166,15 +186,17 @@ Sequential how-to documentation for users:
 
 **Start**: [guides/02-gex-metrics-explained.md](guides/02-gex-metrics-explained.md)
 
-### System
+### Infrastructure
 
-Architecture and implementation documentation:
+Comprehensive system architecture and implementation documentation (📖 recommended reading path):
 
-- **Architecture**: 6 docs covering system design (01-06)
-- **Implementation**: Specific feature implementations
-- **Cost Optimization**: LLM model selection and optimization
+- **Architecture** (01-03): Project overview, high-level design, data & database
+- **Performance** (04-05): Cache system, token optimization, LLM integration
+- **Implementation** (06-07): Patterns, intraday support, experiments, validation
+- **Maintenance** (08): Infrastructure audits, best practices, known issues
 
-**Start**: [system/architecture/01-project-overview.md](system/architecture/01-project-overview.md)
+**Start**: [infrastructure/01-project-overview.md](infrastructure/01-project-overview.md)
+**Learning Path**: [infrastructure/README.md](infrastructure/README.md) (~2-3 hour sequential read)
 
 ### Validation
 
@@ -200,6 +222,14 @@ Educational materials and symposium presentations:
 
 ## Recent Updates (November 2025)
 
+### Infrastructure Consolidation (Nov 24) 🆕
+
+- Merged 13 files (system/ + reference/ + infrastructure/) → 9 sequential files (01-08)
+- Created comprehensive learning path with sequential numbering
+- Consolidated related concepts while preserving 100% detail
+- Added navigation links (Prerequisites/Next/Related) to all infrastructure docs
+- **Impact**: 31% reduction in file count, clear learning progression, AutoTrader-AgentEdge adoption ready
+
 ### Documentation Reorganization (Nov 4)
 
 - Standardized all files to `kebab-case` naming
@@ -216,13 +246,6 @@ Educational materials and symposium presentations:
 - Fixed 3 critical bugs
 - **Result**: Proof-of-concept validated (120 windows)
 
-### Architecture Documentation (Nov 4)
-
-- Created architecture separation ADR (Paper #1 vs #2)
-- Documented shared vs paper-specific components
-- Defined extension pattern for future papers
-- **Impact**: Clear boundaries for Paper #3 planning
-
 **Full History**: See [CHANGELOG.md](CHANGELOG.md)
 
 ---
@@ -232,16 +255,23 @@ Educational materials and symposium presentations:
 ### Active Documentation
 
 - **Papers**: 2 papers, 9 ADRs, 6 methodology docs, 4 session logs
-- **Guides**: 8 sequenced guides
-- **System**: 6 architecture docs, 3 implementation docs
+- **Guides**: 8 sequenced guides (02-09)
+- **Infrastructure**: 9 sequential docs (01-08 + README)
+- **Development**: 2 guides (worktree management + README)
 - **Presentations**: 3 active, 1 archived
-- **Total**: ~90 markdown files
+- **Total**: ~85 markdown files (reduced from ~90 via consolidation)
 
 ### Size
 
-- **Active docs**: ~2.5 MB
+- **Active docs**: ~2.7 MB
 - **Archived**: ~3.5 MB
-- **Total**: ~6 MB
+- **Total**: ~6.2 MB
+
+### Consolidation Impact (Nov 24, 2025)
+
+- **Before**: 13 files (system/ + reference/ + infrastructure/)
+- **After**: 9 files (infrastructure/ 01-08 + README)
+- **Reduction**: 31% fewer files, 100% detail preserved
 
 ---
 
@@ -249,11 +279,12 @@ Educational materials and symposium presentations:
 
 ### Adding New Documentation
 
-1. **Determine type**: Guide, architecture, ADR, or session log?
-2. **Choose location**: `guides/`, `system/`, `papers/adr/`, `papers/paper{N}/sessions/`
-3. **Follow naming**: `kebab-case`, number if sequential
+1. **Determine type**: Guide, infrastructure, ADR, or session log?
+2. **Choose location**: `guides/`, `infrastructure/`, `papers/adr/`, `papers/paper{N}/sessions/`
+3. **Follow naming**: `kebab-case`, number if sequential (01-08 for infrastructure, 02-09 for guides)
 4. **Add navigation**: Prerequisites, related, next sections
 5. **Update parent README**: Link from appropriate section
+6. **Consolidate when possible**: Prefer adding to existing files (as "Part N") over creating new files
 
 ### Deprecating Documentation
 
@@ -268,7 +299,7 @@ Educational materials and symposium presentations:
 
 **Start Here**:
 
-- [System Overview](system/architecture/01-project-overview.md)
+- [Infrastructure Overview](infrastructure/01-project-overview.md)
 - [GEX Metrics Explained](guides/02-gex-metrics-explained.md)
 - [Paper #1 README](papers/paper1/README.md)
 - [Paper #2 README](papers/paper2/README.md)

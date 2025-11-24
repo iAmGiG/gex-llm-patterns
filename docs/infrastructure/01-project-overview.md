@@ -84,7 +84,7 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 - **Data Processing**: JSON format, derived fields, validation
 - **Rate Limiting**: Entry premium tier (75 calls/min) ready
 
-#### Agent Framework  
+#### Agent Framework
 
 - **BaseGEXAgent**: Simplified from reference, AutoGen 0.7.4 compatible
 - **Three Agents**: DataCollector, GEXCalculator, PatternAnalyzer
@@ -159,7 +159,7 @@ patterns = pattern_agent.process_with_tools(
 
 #### 3. **Statistical Validation**
 
-- **Backtesting**: Out-of-sample performance on 2023-2024 data  
+- **Backtesting**: Out-of-sample performance on 2023-2024 data
 - **Monte Carlo**: Random pattern generation vs. real signal detection
 - **Cross-validation**: Multiple market regimes and volatility environments
 - **Bias Controls**: Temporal validation, seasonal robustness testing
@@ -169,7 +169,7 @@ patterns = pattern_agent.process_with_tools(
 #### Pattern Detection Performance
 
 - **Precision**: >80% accuracy identifying true patterns
-- **Recall**: >70% capture rate of known instances  
+- **Recall**: >70% capture rate of known instances
 - **False Positive Rate**: <10% (critical for trading applications)
 - **Timing**: Detection within 15-30 minutes of pattern initiation
 
@@ -189,7 +189,7 @@ patterns = pattern_agent.process_with_tools(
 client = AlphaVantageGEXClient()
 options_data = client.fetch_historical_options("SPY", "2024-07-15")
 
-# 2. Pattern Analysis (Working) 
+# 2. Pattern Analysis (Working)
 analyzer = OptionsChainAnalyzer()
 patterns = analyzer.detect_short_put_arbitrage_signals(options_data)
 
@@ -210,7 +210,7 @@ results = await agents["analyzer"].generate_reply([{"content": analysis_request}
 ├── options/          # 14 complete options chains
 │   ├── spy_options_2024-07-15.json    # 530 contracts
 │   └── spx_options_2024-07-15.json    # 1050 contracts
-├── stocks/           # 4 years OHLCV data  
+├── stocks/           # 4 years OHLCV data
 ├── metadata/         # Data quality reports
 └── news/            # Ready for future integration
 ```
@@ -235,7 +235,7 @@ gex_levels = gex_calculator.calculate_daily_gex(options_chain, underlying_price)
 
 results = {
     "total_gex": 2.5e9,                    # $2.5B total exposure
-    "flip_point": 447.50,                  # Gamma flip level  
+    "flip_point": 447.50,                  # Gamma flip level
     "net_gex": 1.2e9,                      # Net dealer exposure
     "gex_by_expiration": {...},            # Breakdown by expiry
     "sensitivity_analysis": {...}          # Price sensitivity
@@ -247,7 +247,7 @@ results = {
 **Objective**: Convert market data to LLM-optimized sequences
 
 ```python
-# Target Implementation  
+# Target Implementation
 tokenizer = MarketDataTokenizer()
 sequences = tokenizer.create_sequences(
     options_data=spy_chains,
@@ -282,7 +282,7 @@ discovered_patterns = pattern_miner.discover_patterns(
 
 - **Statistical Testing**: Hypothesis testing, significance analysis
 - **Performance Validation**: Backtesting, out-of-sample testing
-- **Bias Analysis**: Overfitting detection, robustness testing  
+- **Bias Analysis**: Overfitting detection, robustness testing
 - **Research Documentation**: Methodology, results, limitations
 
 ## Integration Points
@@ -340,10 +340,18 @@ discovered_patterns = pattern_miner.discover_patterns(
 ### Long-term Vision (12 Months)
 
 1. **Academic publication** on LLM market pattern detection
-2. **Open-source framework** for options pattern analysis  
+2. **Open-source framework** for options pattern analysis
 3. **Real-time pattern detection** system
 4. **Cross-market validation** (other asset classes)
 
 ---
 
 This research represents a novel intersection of **market microstructure analysis**, **options market mechanics**, and **advanced AI pattern recognition**. The goal is to demonstrate that LLMs can identify sophisticated institutional trading patterns that traditional quantitative methods miss, advancing both academic understanding of market dynamics and practical applications of AI in financial analysis.
+
+---
+
+## Navigation
+
+**Prerequisites**: None (start here)
+**Next**: [02-architecture-overview.md](02-architecture-overview.md)
+**Related**: [docs/guides/02-gex-metrics-explained.md](../guides/02-gex-metrics-explained.md)

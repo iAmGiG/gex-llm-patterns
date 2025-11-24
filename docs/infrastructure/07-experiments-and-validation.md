@@ -216,3 +216,11 @@ Strategy-Specific Data:
 3. **Strike-Level V2**: Build enhanced strategy addressing Issue #71 discovery
 4. **Batch LLM Processing**: Adapt weekly analysis for options context
 5. **Metrics Framework**: Implement GEX-specific performance tracking
+
+---
+
+## Navigation
+
+**Prerequisites**: [06-implementation-guide.md](06-implementation-guide.md)
+**Next**: [08-maintenance-and-audits.md](08-maintenance-and-audits.md)
+**Related**: [docs/validation/](../validation/)

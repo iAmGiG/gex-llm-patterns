@@ -56,7 +56,7 @@ The GEX-LLM Pattern Analysis system is a research platform designed for CS PhD d
 ### Data Flow
 
 1. **Market Data APIs** → **2-Tier Storage** → **GEX Calculator**
-2. **GEX Metrics** → **Pattern Library** → **Market Mechanics Agent**  
+2. **GEX Metrics** → **Pattern Library** → **Market Mechanics Agent**
 3. **Agent** → **LLM Analysis** → **Actionable Signals** → **Validation Results**
 
 ## Key Components
@@ -159,7 +159,7 @@ return result['actionable_signal']
 ```bash
 src/
 ├── cache/                  # Unified caching system
-│   ├── unified_cache.py   # Main cache manager  
+│   ├── unified_cache.py   # Main cache manager
 │   ├── market_data_cache.py # Market-specific caching
 │   └── cache_adapter.py   # Adapter interfaces
 ├── data_sources/          # External data integration
@@ -196,7 +196,7 @@ docs/legacy/              # Moved components
 - Smart expiration based on data type
 - Critical for rate-limited APIs (Alpha Vantage: 75 calls/min)
 
-### 3. Research Integrity  
+### 3. Research Integrity
 
 - Data obfuscation prevents LLM training bias
 - Statistical validation ensures robustness
@@ -226,7 +226,7 @@ docs/legacy/              # Moved components
 ### Bottlenecks
 
 1. **Alpha Vantage API**: 75 calls/minute rate limit
-2. **GEX Calculations**: CPU-intensive for large option chains  
+2. **GEX Calculations**: CPU-intensive for large option chains
 3. **Pattern Mining**: Memory-intensive for long sequences
 4. **LLM Calls**: Cost and latency considerations
 
@@ -243,3 +243,11 @@ docs/legacy/              # Moved components
 - **API Key Protection**: Via @config/ system
 - **No Network Data**: All processing local or on approved academic infrastructure
 - **Research Ethics**: Academic use only, no market manipulation
+
+---
+
+## Navigation
+
+**Prerequisites**: [01-project-overview.md](01-project-overview.md)
+**Next**: [03-data-and-database.md](03-data-and-database.md)
+**Related**: [docs/system/](../system/)

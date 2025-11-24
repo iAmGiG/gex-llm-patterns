@@ -1,12 +1,16 @@
-# Cache System Architecture
+# Cache System and Performance Optimization
 
 ## Overview
 
-The GEX-LLM Pattern Analysis system uses a multi-layer cache system optimized for PhD research data storage and retrieval. The system supports both daily and intraday data storage with lazy directory creation for efficiency.
+The GEX-LLM Pattern Analysis system uses a multi-layer cache system optimized for PhD research data storage and retrieval. The system supports both daily and intraday data storage with lazy directory creation for efficiency, combined with token optimization strategies for cost-efficient LLM usage.
 
-## Cache System Components
+---
 
-### 1. UnifiedCacheManager (`src/cache/unified_cache.py`)
+## Part 1: Cache System Architecture
+
+### Cache System Components
+
+#### 1. UnifiedCacheManager (`src/cache/unified_cache.py`)
 
 **Primary cache interface for live market data storage**
 
@@ -38,7 +42,7 @@ cache = UnifiedCacheManager()
 - `store_market_data(symbol, df, start_date, end_date)` - Store market data
 - `get_market_data(symbol, start_date, end_date)` - Retrieve market data
 
-### 2. GEXCacheManager (`src/cache/gex_cache_manager.py`)
+#### 2. GEXCacheManager (`src/cache/gex_cache_manager.py`)
 
 **SQLite-based storage for GEX calculations and pattern analysis**
 
@@ -67,7 +71,7 @@ CREATE TABLE historical_pattern_performance (
 - `get_gex_data(symbol, date_range)` - Retrieve GEX calculations
 - `get_pattern_performance(pattern_name)` - Get pattern statistics
 
-### 3. IntradayCacheManager (`src/cache/intraday_cache.py`)
+#### 3. IntradayCacheManager (`src/cache/intraday_cache.py`)
 
 **Timestamp-based storage for intraday analysis**
 
@@ -92,7 +96,7 @@ CREATE TABLE historical_pattern_performance (
 - Configurable intervals from `analysis_config.yaml`
 - Optimized for gamma pinning validation research
 
-### 4. ConcurrentGEXProcessor (`src/cache/concurrent_gex_processor.py`)
+#### 4. ConcurrentGEXProcessor (`src/cache/concurrent_gex_processor.py`)
 
 **High-performance parallel processing for multi-symbol GEX calculations**
 
@@ -104,9 +108,9 @@ CREATE TABLE historical_pattern_performance (
 - Progress tracking and error handling
 - Integrates with UnifiedCacheManager and GEXCacheManager
 
-## Data Flow
+### Data Flow
 
-### Live Data Collection
+#### Live Data Collection
 
 ```python
 # 1. Fetch from API/source
@@ -124,7 +128,7 @@ gex_cache.store_gex_calculation("SPY", "2024-08-01", gex_data)
 # Stores in: .cache/consolidated_historical.db
 ```
 
-### Pattern Validation
+#### Pattern Validation
 
 ```python
 # 1. Historical event validation
@@ -140,25 +144,25 @@ patterns = validator._detect_patterns_from_data(market_data, date, symbol)
 # Automatically stored in consolidated_historical.db
 ```
 
-## Current Usage Patterns
+### Current Usage Patterns
 
-### 1. Validation Framework (`scripts/validation/validate_patterns.py`)
+#### 1. Validation Framework (`scripts/validation/validate_patterns.py`)
 
 - Uses UnifiedCacheManager for live data caching
 - Stores validation results in consolidated_historical.db
 - Lazy directory creation (only creates what's needed)
 
-### 2. Market Data System (`src/data/market_data_system.py`)
+#### 2. Market Data System (`src/data/market_data_system.py`)
 
 - Uses both UnifiedCacheManager and IntradayCacheManager
 - Handles both daily and intraday data flows
 
-### 3. MarketMechanicsAgent (`src/agents/market_mechanics_agent.py`)
+#### 3. MarketMechanicsAgent (`src/agents/market_mechanics_agent.py`)
 
 - Primary consumer of cached data
 - Integrates all cache layers for comprehensive analysis
 
-## Configuration
+### Configuration
 
 **Cache configuration** in `config_defaults/analysis_config.yaml`:
 
@@ -170,27 +174,27 @@ cache_settings:
   retention_days: 90
 ```
 
-## Performance Optimizations
+### Performance Optimizations
 
-### 1. Lazy Directory Creation
+#### 1. Lazy Directory Creation
 
 - Directories only created when data is actually stored
 - Eliminates unused empty directories
 - Faster initialization
 
-### 2. Format Selection
+#### 2. Format Selection
 
 - Pickle: Fast serialization for DataFrames
 - Parquet: Efficient columnar storage (with pyarrow)
 - SQLite: Structured data with SQL querying
 
-### 3. Concurrent Processing
+#### 3. Concurrent Processing
 
 - ThreadPoolExecutor for parallel GEX calculations
 - Memory-efficient batch operations
 - Progress tracking for long-running operations
 
-## Storage Structure
+### Storage Structure
 
 ```bash
 .cache/
@@ -200,7 +204,7 @@ cache_settings:
 └── intraday_gex/SPY/2024-08-01/     # Intraday GEX calculations
 ```
 
-## Integration Points
+### Integration Points
 
 **Used by**:
 
@@ -216,9 +220,9 @@ cache_settings:
 - `src/utils/config_manager.py` - Configuration
 - `pandas`, `sqlite3`, `pathlib` - Core dependencies
 
-## Best Practices
+### Best Practices
 
-### 1. Use Lazy Loading
+#### 1. Use Lazy Loading
 
 ```python
 # Good - only creates directories when storing data
@@ -228,7 +232,7 @@ cache.store_options_data("SPY", "2024-08-01", df)
 # Avoid - don't pre-create unused directories
 ```
 
-### 2. Check Cache Before API Calls
+#### 2. Check Cache Before API Calls
 
 ```python
 # Always check cache first
@@ -239,30 +243,30 @@ if cached_data is None:
     cache.store_options_data("SPY", "2024-08-01", fresh_data)
 ```
 
-### 3. Use Appropriate Cache Layer
+#### 3. Use Appropriate Cache Layer
 
 - **UnifiedCacheManager**: Live market data (options, stocks, news)
 - **GEXCacheManager**: Computed GEX results and pattern analysis
 - **IntradayCacheManager**: Timestamp-specific data for gamma pinning
 
-## Troubleshooting
+### Troubleshooting
 
-### Empty Directories Created
+#### Empty Directories Created
 
 **Issue**: `.cache/options/`, `.cache/market_data/` created but empty
 **Solution**: Directories are created lazily - they'll populate when data is stored
 
-### Import Errors
+#### Import Errors
 
 **Issue**: `ModuleNotFoundError: No module named 'cache'`
 **Solution**: Use absolute imports: `from src.cache.unified_cache import UnifiedCacheManager`
 
-### Database Locked
+#### Database Locked
 
 **Issue**: SQLite database locked during concurrent access
 **Solution**: GEXCacheManager handles concurrent access automatically
 
-## Migration Notes
+### Migration Notes
 
 From previous cache system:
 
@@ -271,3 +275,132 @@ From previous cache system:
 - ✅ All 4 cache files verified as actively used
 - ✅ Lazy directory creation implemented
 - ✅ Consolidated documentation updated
+
+---
+
+## Part 2: Token Configuration and Cost Optimization
+
+### Overview
+
+The GEX-LLM system uses a hybrid approach with different token configurations for different components, separating data operations (zero tokens) from LLM reasoning (optimized tokens).
+
+### Architecture
+
+#### AutoGen Tools (NO LLM TOKENS)
+
+**Location**: `src/tools/autogen_tools.py`
+**Type**: Direct Python function calls
+**Token Usage**: Zero - these are not LLM calls
+
+**Functions**:
+
+- `fetch_options_data()` - Direct cache/API data retrieval
+- `calculate_gamma_exposure()` - Mathematical GEX calculations
+- `fetch_market_data()` - Direct market data API calls
+
+**Key Point**: These tools run as pure Python functions. No LLM involvement, no token costs.
+
+#### Market Mechanics Analysis (LLM REASONING)
+
+**Location**: `src/llm/autogen_market_mechanics.py`
+**Type**: O3-mini/O4-mini for reasoning, GPT-4o-mini for tool calls
+**Token Limit**: 4000 tokens for analysis
+
+**Configuration**:
+
+```python
+# For O3-mini models
+client_params["max_completion_tokens"] = 4000
+
+# For standard models (if used)
+client_params["max_tokens"] = 4000
+```
+
+**Usage**: Complex market mechanics interpretation requiring detailed reasoning.
+
+### Token Usage by Component
+
+| Component | Model | Token Limit | Purpose |
+|-----------|-------|-------------|---------|
+| AutoGen Tools | None | 0 | Direct function calls |
+| Market Analysis | O3-mini/O4-mini | 4000 | Pattern reasoning |
+| Tool Calling | GPT-4o-mini | Minimal | Function execution |
+| Data Fetching | None | 0 | Cache/API calls |
+| GEX Calculation | None | 0 | Mathematical operations |
+
+### Cost Optimization
+
+#### High Efficiency Design
+
+- **Tool Calls**: Zero tokens (direct Python functions)
+- **Data Processing**: Zero tokens (local calculations)
+- **LLM Usage**: Only for complex market interpretation
+- **Token Cost**: ~4000 tokens per analysis (not per tool call)
+
+#### Example Flow
+
+```bash
+1. fetch_options_data() → 0 tokens (cache hit)
+2. calculate_gamma_exposure() → 0 tokens (math)
+3. Market mechanics analysis → 4000 tokens (O3-mini)
+Total: 4000 tokens for complete analysis
+```
+
+### Failed Test Handling
+
+#### Token Limit Errors
+
+**Detection**: System detects "max_tokens" errors in LLM responses
+**Action**: Mark test as `failed_retry_needed`
+**Resolution**: Increased token limits from 1000 → 4000
+
+#### Error Categories
+
+- `token_limit`: LLM hit token limit, needs retry
+- `llm_failure`: Other LLM errors
+- `invalid_response`: Null confidence/direction
+
+### Configuration Files
+
+#### LLM Configuration
+
+**File**: `src/llm/autogen_market_mechanics.py`
+**Key Setting**: `analysis_tokens = 4000`
+
+#### Tool Configuration
+
+**File**: `src/tools/autogen_tools.py`
+**Key Point**: No token configuration needed (direct function calls)
+
+### Best Practices
+
+1. **Separate Concerns**: Tools do data/math, LLM does reasoning
+2. **Token Efficiency**: Only use LLM for complex interpretation
+3. **Error Handling**: Detect and retry token limit failures
+4. **Cost Control**: High token limits only for analysis, not tools
+
+### Validation
+
+**Test**: `scripts/validation/production_cache_test.py`
+**Result**: ✅ 90% confidence analysis with 4000 tokens
+**Performance**: ~4000 tokens per complete market analysis
+
+---
+
+## Summary
+
+The combined cache and performance architecture provides:
+
+- **Multi-layer caching**: Lazy directory creation, format optimization, concurrent processing
+- **Zero-token operations**: Data fetching and GEX calculations run locally
+- **Optimized LLM usage**: 4000 tokens only for complex market reasoning
+- **Cost efficiency**: Significant savings through intelligent separation of concerns
+- **Scalability**: Handles multi-year, multi-symbol, intraday data efficiently
+
+---
+
+## Navigation
+
+**Prerequisites**: [03-data-and-database.md](03-data-and-database.md)
+**Next**: [05-llm-integration.md](05-llm-integration.md)
+**Related**: [docs/development/worktree_cache_management.md](../development/worktree_cache_management.md)
