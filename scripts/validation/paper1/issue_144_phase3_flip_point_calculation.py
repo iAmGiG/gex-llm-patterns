@@ -24,8 +24,7 @@ sys.path.insert(0, str(project_root))
 
 
 def calculate_flip_point(strikes_df, spot_price):
-    """
-    Calculate gamma flip point from strike-level GEX data.
+    """Calculate gamma flip point from strike-level GEX data.
 
     The flip point is the strike price where net GEX crosses zero.
 
@@ -97,8 +96,7 @@ def calculate_flip_point(strikes_df, spot_price):
 
 
 def calculate_all_flip_points(db_path, start_date="2024-01-02", end_date="2024-12-31"):
-    """
-    Calculate flip points for all dates from strike-level data.
+    """Calculate flip points for all dates from strike-level data.
 
     Returns:
         DataFrame with date, flip_point, distance_from_spot

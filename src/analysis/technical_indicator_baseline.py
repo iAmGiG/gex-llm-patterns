@@ -21,15 +21,13 @@ logger = logging.getLogger(__name__)
 
 
 class TechnicalIndicatorBaseline:
-    """
-    Traditional technical indicator strategy using MACD, RSI, and Bollinger Bands.
+    """Traditional technical indicator strategy using MACD, RSI, and Bollinger Bands.
 
     Purpose: Establish baseline performance without GEX or LLM intelligence.
     """
 
     def __init__(self, config_path: Optional[str] = None):
-        """
-        Initialize technical indicator strategy with configuration.
+        """Initialize technical indicator strategy with configuration.
 
         Args:
             config_path: Path to trading config YAML file
@@ -123,8 +121,7 @@ class TechnicalIndicatorBaseline:
             return {}
 
     def calculate_indicators(self, price_data: pd.DataFrame) -> Dict:
-        """
-        Calculate all technical indicators using the indicator library.
+        """Calculate all technical indicators using the indicator library.
 
         Args:
             price_data: DataFrame with OHLC data
@@ -152,8 +149,7 @@ class TechnicalIndicatorBaseline:
         }
 
     def generate_signals(self, price_data: pd.DataFrame) -> List[Dict]:
-        """
-        Generate signals based on technical indicators.
+        """Generate signals based on technical indicators.
 
         Uses majority voting from:
         - RSI oversold/overbought
@@ -287,8 +283,7 @@ class TechnicalIndicatorBaseline:
         return signals
 
     def backtest(self, price_data: pd.DataFrame, symbol: str = "SPY", test_period: Optional[str] = None) -> Dict:
-        """
-        Backtest the technical indicator strategy.
+        """Backtest the technical indicator strategy.
 
         Args:
             price_data: Price data with columns ['date', 'open', 'high', 'low', 'close']
@@ -522,8 +517,7 @@ class TechnicalIndicatorBaseline:
 
 
 class GEXAwareTechnicalBaseline(TechnicalIndicatorBaseline):
-    """
-    Technical indicator strategy that also considers GEX levels (but no LLM).
+    """Technical indicator strategy that also considers GEX levels (but no LLM).
 
     Combines technical indicators with simple GEX regime rules.
     """
@@ -543,8 +537,7 @@ class GEXAwareTechnicalBaseline(TechnicalIndicatorBaseline):
         )
 
     def generate_signals_with_gex(self, price_data: pd.DataFrame, gex_data: Dict) -> List[Dict]:
-        """
-        Generate signals combining technical indicators with GEX regime.
+        """Generate signals combining technical indicators with GEX regime.
 
         Args:
             price_data: Price data DataFrame

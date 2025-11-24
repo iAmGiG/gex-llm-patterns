@@ -27,8 +27,7 @@ from src.utils.date_utils import (
 
 
 def filter_options_data(df: pd.DataFrame, min_volume: int = 1, min_oi: int = 1) -> pd.DataFrame:
-    """
-    Filter options data to remove strikes with zero or low volume/open interest.
+    """Filter options data to remove strikes with zero or low volume/open interest.
 
     Args:
         df: Options DataFrame
@@ -100,8 +99,7 @@ validator = OptionsDataValidator()
 
 
 def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache: bool = True):
-    """
-    Fetch options data from cache or API.
+    """Fetch options data from cache or API.
 
     Args:
         symbol: Stock symbol (SPY, SPX, etc.)
@@ -166,8 +164,7 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
 
 
 def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str = None, use_cache: bool = True):
-    """
-    Fetch stock/market data from cache or API.
+    """Fetch stock/market data from cache or API.
 
     Args:
         symbol: Stock symbol
@@ -218,8 +215,7 @@ def fetch_market_data(symbol: str = "SPY", start_date: str = None, end_date: str
 def calculate_gamma_exposure(
     symbol: str = "SPY", trading_date: str = None, spot_price: float = None, use_cache: bool = True
 ):
-    """
-    Calculate gamma exposure metrics for a symbol with caching support.
+    """Calculate gamma exposure metrics for a symbol with caching support.
 
     Args:
         symbol: Stock symbol
@@ -292,8 +288,7 @@ def calculate_gamma_exposure(
 
 
 def validate_options_data(options_df):
-    """
-    Validate options data quality.
+    """Validate options data quality.
 
     Args:
         options_df: DataFrame with options data
@@ -329,8 +324,7 @@ def fetch_algo_time_analysis(
     algo_time: str = "15:30:00",
     weekday_filter: str = None,
 ):
-    """
-    Fetch data for specific algo times with flexible parameters.
+    """Fetch data for specific algo times with flexible parameters.
 
     Perfect for advanced plays that happen at different algo times like 3:50 PM.
     Supports both 0DTE tickers (SPY/QQQ daily) and regular tickers (Friday only).
@@ -401,8 +395,7 @@ def fetch_algo_time_analysis(
 
 
 def find_gex_flip_points(symbol: str = "SPY", trading_date: str = None):
-    """
-    Find gamma flip points where dealer hedging changes direction.
+    """Find gamma flip points where dealer hedging changes direction.
 
     Args:
         symbol: Stock symbol
@@ -469,8 +462,7 @@ def _interpret_flip_point(metrics: dict):
 
 
 def analyze_query_intent(query: str):
-    """
-    Analyze user query to extract trading intent and market context.
+    """Analyze user query to extract trading intent and market context.
 
     Args:
         query: User's natural language query
@@ -532,8 +524,7 @@ def _generate_analysis_recommendations(details: dict) -> dict:
 
 
 def analyze_gex_technical_confluence(symbol: str = "SPY", trading_date: str = None):
-    """
-    Analyze technical indicators in confluence with GEX levels.
+    """Analyze technical indicators in confluence with GEX levels.
 
     Args:
         symbol: Stock symbol
@@ -619,8 +610,7 @@ def _generate_confluence_insights(confluence: dict, vol_regime: dict) -> list:
 def process_historical_gex_range(
     symbol: str = "SPY", start_date: str = None, end_date: str = None, max_workers: int = 4
 ):
-    """
-    Process GEX calculations for a date range using concurrent processing.
+    """Process GEX calculations for a date range using concurrent processing.
 
     Args:
         symbol: Stock symbol
@@ -833,8 +823,7 @@ ALL_TOOLS_DICT = {tool.name: tool for tool in ALL_TOOLS if tool is not None}
 
 
 def get_tools_for_agent(agent_type):
-    """
-    Get the list of tools that should be used by a specific agent type.
+    """Get the list of tools that should be used by a specific agent type.
 
     Args:
         agent_type: Type of agent (e.g., 'data', 'gex', 'analysis')

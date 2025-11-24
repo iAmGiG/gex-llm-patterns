@@ -1,6 +1,4 @@
-"""
-Intraday Cache Manager
-Extends UnifiedCacheManager with timestamp-based storage for 10-minute intervals.
+"""Intraday Cache Manager Extends UnifiedCacheManager with timestamp-based storage for 10-minute intervals.
 
 Structure:
 .cache/
@@ -142,8 +140,7 @@ class IntradayCacheManager(UnifiedCacheManager):
             return False, "unknown"
 
     def store_intraday_options(self, symbol: str, timestamp: str, data: Dict) -> bool:
-        """
-        Store intraday options data.
+        """Store intraday options data.
 
         Args:
             symbol: Stock symbol
@@ -189,8 +186,7 @@ class IntradayCacheManager(UnifiedCacheManager):
             return False
 
     def get_intraday_options(self, symbol: str, timestamp: str) -> Optional[Dict]:
-        """
-        Get intraday options data.
+        """Get intraday options data.
 
         Args:
             symbol: Stock symbol

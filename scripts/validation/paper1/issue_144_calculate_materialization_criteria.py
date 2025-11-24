@@ -29,8 +29,7 @@ sys.path.insert(0, str(project_root))
 
 
 def load_detection_days_from_yaml():
-    """
-    Load detection status from 3 pattern YAML validation files.
+    """Load detection status from 3 pattern YAML validation files.
 
     Returns:
         DataFrame with columns: date, pattern_type, detected
@@ -79,8 +78,7 @@ def load_detection_days_from_yaml():
 
 
 def extract_database_metrics(db_path, start_date="2024-01-02", end_date="2024-12-31"):
-    """
-    Extract daily metrics from consolidated database.
+    """Extract daily metrics from consolidated database.
 
     Returns:
         DataFrame with date, OHLCV, GEX metrics, volatility
@@ -244,8 +242,7 @@ def calculate_range_expansion(df):
 
 
 def merge_with_patterns(metrics_df, validation_df):
-    """
-    Merge calculated criteria with pattern detection status.
+    """Merge calculated criteria with pattern detection status.
 
     Returns:
         DataFrame with date, pattern_type, detected, 4 criteria columns
@@ -279,8 +276,7 @@ def merge_with_patterns(metrics_df, validation_df):
 
 
 def calculate_pattern_specific_rates(df):
-    """
-    Calculate materialization rates by pattern type.
+    """Calculate materialization rates by pattern type.
 
     Returns:
         DataFrame with pattern-level summaries

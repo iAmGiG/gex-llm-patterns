@@ -1,5 +1,4 @@
-"""
-Data Obfuscation Utilities for LLM Trading Validation
+"""Data Obfuscation Utilities for LLM Trading Validation.
 
 This module provides functions to remove temporal and ticker references
 that could allow LLMs to use training knowledge rather than genuine analysis.
@@ -46,8 +45,7 @@ logger = logging.getLogger(__name__)
 
 
 class DataObfuscator:
-    """
-    Obfuscates market data to prevent LLM from using training knowledge.
+    """Obfuscates market data to prevent LLM from using training knowledge.
 
     Key transformations:
     - Dates: "2022-07-26" → "Day T+0", "Day T+1", etc.
@@ -56,8 +54,7 @@ class DataObfuscator:
     """
 
     def __init__(self, config_path=None):
-        """
-        Initialize obfuscator with mapping dictionaries.
+        """Initialize obfuscator with mapping dictionaries.
 
         Args:
             config_path: Path to obfuscation patterns YAML config.
@@ -142,8 +139,7 @@ class DataObfuscator:
         self.validation_config = {}
 
     def _compile_temporal_patterns(self):
-        """
-        Pre-compile temporal regex patterns for performance.
+        """Pre-compile temporal regex patterns for performance.
 
         Returns:
             List of (compiled_pattern, replacement) tuples
@@ -166,8 +162,7 @@ class DataObfuscator:
         return compiled
 
     def obfuscate_dates(self, date_list, base_date=None):
-        """
-        Convert real dates to relative timestamps.
+        """Convert real dates to relative timestamps.
 
         Args:
             date_list of date strings to obfuscate
@@ -205,8 +200,7 @@ class DataObfuscator:
         return mapping
 
     def obfuscate_tickers(self, ticker_list):
-        """
-        Convert real tickers to anonymous symbols.
+        """Convert real tickers to anonymous symbols.
 
         Args:
             ticker_list: List of ticker symbols to obfuscate
@@ -250,8 +244,7 @@ class DataObfuscator:
         return mapping
 
     def obfuscate_text_content(self, text) -> str:
-        """
-        Remove temporal and market context from text.
+        """Remove temporal and market context from text.
 
         Args:
             text: Raw text containing potential temporal references
@@ -281,8 +274,7 @@ class DataObfuscator:
         return obfuscated
 
     def obfuscate_market_data(self, market_data):
-        """
-        Obfuscate a complete market data DataFrame.
+        """Obfuscate a complete market data DataFrame.
 
         Args:
             market_data: DataFrame with Date index and market data
@@ -331,8 +323,7 @@ class DataObfuscator:
         return obfuscated_df, metadata
 
     def obfuscate_news_data(self, news_data):
-        """
-        Obfuscate news articles by removing temporal references.
+        """Obfuscate news articles by removing temporal references.
 
         Args:
             news_data of news article dictionaries
@@ -361,8 +352,7 @@ class DataObfuscator:
         return obfuscated_articles
 
     def create_reverse_mapping(self):
-        """
-        Create reverse mappings to convert obfuscated data back to original.
+        """Create reverse mappings to convert obfuscated data back to original.
 
         Returnsionary with reverse mappings for dates and tickers
         """
@@ -398,8 +388,7 @@ class DataObfuscator:
 
 
 def validate_obfuscation_quality(original_text, obfuscated_text):
-    """
-    Validate that obfuscation successfully removed temporal references.
+    """Validate that obfuscation successfully removed temporal references.
 
     Args:
         original_text: Original text with temporal references

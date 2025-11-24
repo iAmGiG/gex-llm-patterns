@@ -1,7 +1,5 @@
-"""
-GEX Calculation Caching System
-Pre-computed gamma exposure storage for efficient multi-symbol, multi-timeframe analysis.
-"""
+"""GEX Calculation Caching System Pre-computed gamma exposure storage for efficient multi-symbol, multi-timeframe
+analysis."""
 
 import json
 import logging
@@ -27,8 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class GEXCacheManager:
-    """
-    High-performance caching system for GEX calculations.
+    """High-performance caching system for GEX calculations.
 
     Provides hierarchical storage with SQLite indexing for fast lookup:
     - Daily GEX summaries (JSON)
@@ -97,8 +94,7 @@ class GEXCacheManager:
         strike_breakdown: pd.DataFrame = None,
         expiry_breakdown: Dict[str, Any] = None,
     ) -> bool:
-        """
-        Store complete GEX calculation results with indexing.
+        """Store complete GEX calculation results with indexing.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
@@ -195,8 +191,7 @@ class GEXCacheManager:
             logger.error(f"Failed to update index for {symbol} {trading_date}: {e}")
 
     def get_raw_options_from_db(self, symbol: str, trading_date: str) -> Optional[pd.DataFrame]:
-        """
-        Retrieve raw options chain from database (Issue #147).
+        """Retrieve raw options chain from database (Issue #147).
 
         Args:
             symbol: Stock symbol (SPY)
@@ -247,8 +242,7 @@ class GEXCacheManager:
             return None
 
     def get_gex_summary(self, symbol: str, trading_date: str) -> Optional[Dict[str, Any]]:
-        """
-        Retrieve daily GEX summary from cache.
+        """Retrieve daily GEX summary from cache.
 
         Strategy (Nov 20, 2025 update): Query database first, fall back to file cache.
         Rationale: Database is single source of truth with complete historical data.
@@ -350,8 +344,7 @@ class GEXCacheManager:
     def get_gex_by_strike_range(
         self, symbol: str, trading_date: str, strike_min: float = None, strike_max: float = None
     ) -> Optional[pd.DataFrame]:
-        """
-        Retrieve GEX data for specific strike range.
+        """Retrieve GEX data for specific strike range.
 
         Args:
             symbol: Stock symbol
@@ -389,8 +382,7 @@ class GEXCacheManager:
             return None
 
     def get_historical_flip_points(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
-        """
-        Retrieve historical gamma flip point time series.
+        """Retrieve historical gamma flip point time series.
 
         Args:
             symbol: Stock symbol
@@ -427,8 +419,7 @@ class GEXCacheManager:
     def find_nearest_flip_points(
         self, symbol: str, target_price: float, date_range: Tuple[str, str], tolerance: float = 5.0
     ) -> pd.DataFrame:
-        """
-        Find dates where flip point was near target price.
+        """Find dates where flip point was near target price.
 
         Args:
             symbol: Stock symbol
@@ -464,8 +455,7 @@ class GEXCacheManager:
             return pd.DataFrame()
 
     def batch_get_gex(self, requests: List[Tuple[str, str]]) -> Dict[str, Dict[str, Any]]:
-        """
-        Efficient batch retrieval for multiple symbol/date combinations.
+        """Efficient batch retrieval for multiple symbol/date combinations.
 
         Args:
             requests: List of (symbol, trading_date) tuples
@@ -486,8 +476,7 @@ class GEXCacheManager:
         return results
 
     def invalidate_cache(self, symbol: str, trading_date: str = None) -> bool:
-        """
-        Remove cached GEX data for recalculation.
+        """Remove cached GEX data for recalculation.
 
         Args:
             symbol: Stock symbol

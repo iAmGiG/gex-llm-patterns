@@ -20,17 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 class GEXCalculator:
-    """
-    Calculate Gamma Exposure (GEX) for dealer positioning analysis.
+    """Calculate Gamma Exposure (GEX) for dealer positioning analysis.
 
-    GEX represents the amount dealers must buy/sell for every 1% move
-    in the underlying. Positive GEX suggests dealers are long gamma
-    (supportive), negative suggests short gamma (reactive hedging).
+    GEX represents the amount dealers must buy/sell for every 1% move in the underlying. Positive GEX suggests dealers
+    are long gamma (supportive), negative suggests short gamma (reactive hedging).
     """
 
     def __init__(self, risk_free_rate: float = None):
-        """
-        Initialize GEX Calculator.
+        """Initialize GEX Calculator.
 
         Args:
             risk_free_rate: Risk-free rate for Black-Scholes calculations (default from config)
@@ -48,8 +45,7 @@ class GEXCalculator:
         self.key_levels_count = config.get("gex_calculation.gex_calculator.key_levels_count", 5)
 
     def black_scholes_gamma(self, S, K, T, r, sigma) -> float:
-        """
-        Calculate Black-Scholes gamma for an option.
+        """Calculate Black-Scholes gamma for an option.
 
         Args:
             S: Current stock price
@@ -72,8 +68,7 @@ class GEXCalculator:
     def calculate_dealer_gamma_exposure(
         self, options_data: pd.DataFrame, underlying_price: float, open_interest_multiplier: int = 100
     ) -> pd.DataFrame:
-        """
-        Calculate dealer GEX for each option contract.
+        """Calculate dealer GEX for each option contract.
 
         Dealer GEX = -1 * Customer Position * Gamma * Underlying Price^2 * 0.01
 
@@ -137,8 +132,7 @@ class GEXCalculator:
         return gex_data
 
     def aggregate_gex_by_strike(self, gex_data: pd.DataFrame) -> pd.DataFrame:
-        """
-        Aggregate GEX by strike price for market level analysis.
+        """Aggregate GEX by strike price for market level analysis.
 
         Args:
             gex_data: Output from calculate_dealer_gamma_exposure
@@ -163,8 +157,7 @@ class GEXCalculator:
         return strike_gex
 
     def calculate_net_gex(self, gex_data) -> float:
-        """
-        Calculate total net GEX across all strikes.
+        """Calculate total net GEX across all strikes.
 
         Args:
             gex_data: Output from calculate_dealer_gamma_exposure
@@ -178,8 +171,7 @@ class GEXCalculator:
         return gex_data["weighted_gex"].sum()
 
     def calculate_gex_velocity(self, current_gex: float, previous_gex: float) -> Dict[str, float]:
-        """
-        Calculate GEX velocity metrics (day-over-day changes).
+        """Calculate GEX velocity metrics (day-over-day changes).
 
         Issue #80: Velocity metrics are often the primary signal, not absolute levels.
 
@@ -204,8 +196,7 @@ class GEXCalculator:
     def calculate_gex_profile(
         self, options_data: pd.DataFrame, underlying_price: float, price_range_pct: float = None
     ) -> Dict[str, Any]:
-        """
-        Calculate comprehensive GEX profile for market analysis.
+        """Calculate comprehensive GEX profile for market analysis.
 
         Args:
             options_data: DataFrame with options data
@@ -372,8 +363,7 @@ class GEXCalculator:
         }
 
     def analyze_gex_regime(self, net_gex: float, underlying_price: float) -> Dict[str, Any]:
-        """
-        Determine market regime based on GEX levels.
+        """Determine market regime based on GEX levels.
 
         Args:
             net_gex: Net gamma exposure

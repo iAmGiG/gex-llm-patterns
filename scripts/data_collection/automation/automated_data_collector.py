@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Automated Historical Data Collection System
+"""Automated Historical Data Collection System.
 
-Collects options data from Alpha Vantage (25/day limit) and
-stock data from Polygon.io (7,200/day) with intelligent scheduling.
+Collects options data from Alpha Vantage (25/day limit) and stock data from Polygon.io (7,200/day) with intelligent
+scheduling.
 
 Designed to run continuously, respecting API limits.
 """
@@ -29,8 +28,7 @@ sys.path.append(str(project_root / "src"))
 
 
 class AutomatedDataCollector:
-    """
-    Comprehensive automated data collection system.
+    """Comprehensive automated data collection system.
 
     Features:
     - Collects options from Alpha Vantage (25/day)
@@ -250,8 +248,8 @@ class AutomatedDataCollector:
         return list(set(all_stocks))
 
     async def collect_options_batch(self) -> int:
-        """
-        Collect one batch of options data (respecting 25/day limit).
+        """Collect one batch of options data (respecting 25/day limit).
+
         Returns number of successful collections.
         """
         # Check if we need to reset daily counter
@@ -318,8 +316,8 @@ class AutomatedDataCollector:
         return collected
 
     async def collect_stocks_batch(self) -> int:
-        """
-        Collect stock data from Polygon.io.
+        """Collect stock data from Polygon.io.
+
         Returns number of stocks collected.
         """
         collected = 0

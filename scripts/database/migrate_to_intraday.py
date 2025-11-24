@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Database Migration Script for Intraday Support
-Adds intraday tables alongside existing daily tables.
-"""
+"""Database Migration Script for Intraday Support Adds intraday tables alongside existing daily tables."""
 
 import logging
 import sqlite3

@@ -140,8 +140,7 @@ def parse_treatment_response(response_text):
 
 
 def run_pilot_test(dry_run=True):
-    """
-    Run Phase 1 pilot test.
+    """Run Phase 1 pilot test.
 
     Args:
         dry_run: If True, print prompts without calling LLM (default)

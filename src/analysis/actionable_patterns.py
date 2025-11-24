@@ -1,7 +1,5 @@
-"""
-Actionable Trading Patterns Extension
-Enhances pattern_library.py patterns with specific trading signals and risk management.
-"""
+"""Actionable Trading Patterns Extension Enhances pattern_library.py patterns with specific trading signals and risk
+management."""
 
 import logging
 from dataclasses import dataclass
@@ -24,8 +22,8 @@ class SignalStrength(Enum):
 
 @dataclass
 class ActionableSignal:
-    """
-    Concrete trading signal with entry/exit/risk parameters.
+    """Concrete trading signal with entry/exit/risk parameters.
+
     Extends the base pattern with actionable specifics.
     """
 
@@ -78,8 +76,8 @@ class ActionableSignal:
 
 
 class ActionablePatternDetector:
-    """
-    Converts pattern library patterns into actionable trading signals.
+    """Converts pattern library patterns into actionable trading signals.
+
     Bridges the gap between pattern identification and trade execution.
     """
 
@@ -98,8 +96,7 @@ class ActionablePatternDetector:
     def generate_signals(
         self, gex_metrics: Dict, market_mechanics: Dict, spot_price: float, options_data: Optional[Dict] = None
     ) -> List[ActionableSignal]:
-        """
-        Generate actionable trading signals from current market state.
+        """Generate actionable trading signals from current market state.
 
         Args:
             gex_metrics: Current GEX calculations
@@ -147,8 +144,7 @@ class ActionablePatternDetector:
     def _check_gamma_squeeze(
         self, pattern: MarketMechanicsPattern, gex_metrics: Dict, market_mechanics: Dict, spot_price: float
     ) -> Optional[ActionableSignal]:
-        """
-        Check for actionable gamma squeeze setup.
+        """Check for actionable gamma squeeze setup.
 
         Criteria:
         - Negative total GEX (dealers short gamma)

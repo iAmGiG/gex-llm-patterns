@@ -1,7 +1,4 @@
-"""
-Options Data Validator
-Validates and cleans Alpha Vantage options data for GEX calculations.
-"""
+"""Options Data Validator Validates and cleans Alpha Vantage options data for GEX calculations."""
 
 import logging
 
@@ -40,8 +37,7 @@ class OptionsDataValidator:
     }
 
     def __init__(self, strict_mode=False):
-        """
-        Initialize validator.
+        """Initialize validator.
 
         Argsict_mode: If True, raises errors on validation failures.
                         If False, logs warnings and attempts to fix.
@@ -55,8 +51,7 @@ class OptionsDataValidator:
         self.put_call_parity_tolerance = config.get("validation.options_data_validator.put_call_parity_tolerance", 0.2)
 
     def validate(self, df):
-        """
-        Validate and clean options data.
+        """Validate and clean options data.
 
         Args:
             df: Options data DataFrame
@@ -311,8 +306,7 @@ class OptionsDataValidator:
         return df
 
     def get_quality_metrics(self, df):
-        """
-        Calculate quality metrics for the validated data.
+        """Calculate quality metrics for the validated data.
 
         Args:
             df: Validated DataFrame

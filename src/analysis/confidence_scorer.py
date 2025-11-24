@@ -1,5 +1,4 @@
-"""
-Confidence Scorer
+"""Confidence Scorer.
 
 Advanced confidence scoring system for pattern predictions that combines:
 - Pattern strength (historical win rate and sample size)
@@ -23,8 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConfidenceScorer:
-    """
-    Advanced confidence scoring system for pattern predictions.
+    """Advanced confidence scoring system for pattern predictions.
 
     Combines multiple factors to produce calibrated confidence scores:
     - Historical performance metrics
@@ -35,8 +33,7 @@ class ConfidenceScorer:
     """
 
     def __init__(self, base_lookback_days: int = None, recent_weight_days: int = None, min_sample_size: int = None):
-        """
-        Initialize confidence scorer.
+        """Initialize confidence scorer.
 
         Args:
             base_lookback_days: Days for base historical analysis (default from config)
@@ -84,8 +81,7 @@ class ConfidenceScorer:
         market_context: Dict = None,
         recent_data: Dict = None,
     ) -> Dict:
-        """
-        Calculate comprehensive confidence score for a pattern.
+        """Calculate comprehensive confidence score for a pattern.
 
         Args:
             pattern_data: Historical pattern performance data
@@ -153,8 +149,7 @@ class ConfidenceScorer:
     def batch_score_patterns(
         self, patterns_data: Dict, statistical_results: Dict = None, market_context: Dict = None
     ) -> Dict:
-        """
-        Score confidence for multiple patterns in batch.
+        """Score confidence for multiple patterns in batch.
 
         Args:
             patterns_data: Dictionary mapping pattern names to data

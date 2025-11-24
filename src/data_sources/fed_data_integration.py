@@ -1,8 +1,7 @@
-"""
-FOMC/Fed Data Integration Module
+"""FOMC/Fed Data Integration Module.
 
-Fetches and caches Federal Reserve data for market context analysis.
-Integrates FRED API for economic indicators and FOMC calendar events.
+Fetches and caches Federal Reserve data for market context analysis. Integrates FRED API for economic indicators and
+FOMC calendar events.
 """
 
 import datetime
@@ -29,8 +28,7 @@ except ImportError:
 
 
 class FedDataIntegration:
-    """
-    Integrates Federal Reserve data for pattern context analysis.
+    """Integrates Federal Reserve data for pattern context analysis.
 
     Provides:
     - FOMC meeting calendar and decisions
@@ -51,8 +49,7 @@ class FedDataIntegration:
     ]
 
     def __init__(self, fred_api_key: str = None, cache_dir: str = ".cache/fed_data"):
-        """
-        Initialize Fed Data Integration.
+        """Initialize Fed Data Integration.
 
         Args:
             fred_api_key: FRED API key (will load from config if None)
@@ -90,8 +87,7 @@ class FedDataIntegration:
             raise
 
     def fetch_fomc_calendar(self, start_year: int = 2010, end_year: int = 2025) -> pd.DataFrame:
-        """
-        Fetch or load cached FOMC meeting calendar.
+        """Fetch or load cached FOMC meeting calendar.
 
         Args:
             start_year: Start year for calendar
@@ -182,8 +178,7 @@ class FedDataIntegration:
         return df
 
     def get_fomc_context(self, date: pd.Timestamp):
-        """
-        Get FOMC context for a specific date.
+        """Get FOMC context for a specific date.
 
         Args:
             date: Date to analyze
@@ -239,8 +234,7 @@ class FedDataIntegration:
         }
 
     def fetch_economic_indicators(self, start_date: str = "2010-01-01", end_date: str = None) -> pd.DataFrame:
-        """
-        Fetch economic indicators from FRED.
+        """Fetch economic indicators from FRED.
 
         Args:
             start_date: Start date for data
@@ -288,8 +282,7 @@ class FedDataIntegration:
         return df
 
     def calculate_market_stress(self, date: pd.Timestamp, indicators: pd.DataFrame = None):
-        """
-        Calculate market stress indicators for pattern context.
+        """Calculate market stress indicators for pattern context.
 
         Args:
             date: Date to analyze
@@ -378,8 +371,7 @@ class FedDataIntegration:
         return stress_metrics
 
     def get_full_context(self, date: pd.Timestamp):
-        """
-        Get complete Fed/market context for a date.
+        """Get complete Fed/market context for a date.
 
         Args:
             date: Date to analyze
@@ -406,8 +398,7 @@ class FedDataIntegration:
         return full_context
 
     def _calculate_pattern_weights(self, fomc_context: Dict, stress_metrics: Dict):
-        """
-        Calculate how Fed context should weight pattern confidence.
+        """Calculate how Fed context should weight pattern confidence.
 
         Args:
             fomc_context: FOMC meeting context
@@ -445,8 +436,7 @@ class FedDataIntegration:
         return weights
 
     def prepare_backtest_context(self, start_date, end_date) -> pd.DataFrame:
-        """
-        Prepare all Fed context for backtesting period.
+        """Prepare all Fed context for backtesting period.
 
         Args:
             start_date: Start date for backtest

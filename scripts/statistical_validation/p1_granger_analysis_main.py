@@ -48,8 +48,7 @@ class GrangerAnalysis:
     def __init__(
         self, symbol: str = "SPY", start_date: str = "2024-01-01", end_date: str = "2024-12-31", forward_window: int = 3
     ):
-        """
-        Initialize Granger analysis.
+        """Initialize Granger analysis.
 
         Args:
             symbol: Ticker to analyze
@@ -292,8 +291,7 @@ Lag & F-Statistic & p-value & Significant \\
         return latex
 
     def run_full_analysis(self) -> dict:
-        """
-        Run complete Granger causality analysis pipeline.
+        """Run complete Granger causality analysis pipeline.
 
         Returns:
             dict with all results

@@ -1,7 +1,4 @@
-"""
-Baseline Comparison System
-Compares pattern-based trading strategies against simple baselines to validate edge.
-"""
+"""Baseline Comparison System Compares pattern-based trading strategies against simple baselines to validate edge."""
 
 import logging
 import sqlite3
@@ -238,8 +235,7 @@ class BaselineComparison:
     def _load_validation_results(
         self, pattern_name: str, symbol: str = "SPY", start_date: str = None, end_date: str = None
     ) -> List[Dict]:
-        """
-        Load pattern validation results from YAML files.
+        """Load pattern validation results from YAML files.
 
         Returns list of detections with outcome metrics.
         """

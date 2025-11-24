@@ -1,7 +1,5 @@
-"""
-AutoGen-based Market Mechanics LLM Integration
-Uses AutoGen framework for consistent LLM interaction across the system
-"""
+"""AutoGen-based Market Mechanics LLM Integration Uses AutoGen framework for consistent LLM interaction across the
+system."""
 
 import asyncio
 import logging
@@ -22,8 +20,7 @@ class AutoGenMarketMechanics:
     """AutoGen-based market mechanics interpreter using existing infrastructure."""
 
     def __init__(self, model: str = None, temperature: float = None):
-        """
-        Initialize AutoGen OpenAI client for mechanics interpretation.
+        """Initialize AutoGen OpenAI client for mechanics interpretation.
 
         Args:
             model: Model to use (defaults to config)
@@ -80,8 +77,7 @@ class AutoGenMarketMechanics:
         logger.info(f"AutoGenMarketMechanics initialized with {self.model}")
 
     async def interpret_mechanics_async(self, prompt: str) -> Dict[str, Any]:
-        """
-        Async method to get LLM interpretation of market mechanics.
+        """Async method to get LLM interpretation of market mechanics.
 
         Args:
             prompt: Formatted prompt with GEX data and context
@@ -107,8 +103,7 @@ class AutoGenMarketMechanics:
             return self._error_response(str(e))
 
     def interpret_mechanics(self, prompt: str) -> Dict[str, Any]:
-        """
-        Synchronous wrapper for mechanics interpretation.
+        """Synchronous wrapper for mechanics interpretation.
 
         Args:
             prompt: Formatted prompt with GEX data and context
@@ -130,8 +125,7 @@ class AutoGenMarketMechanics:
             return asyncio.run(self.interpret_mechanics_async(prompt))
 
     def generate(self, prompt: str) -> str:
-        """
-        Simple generation for compatibility with existing code.
+        """Simple generation for compatibility with existing code.
 
         Args:
             prompt: Text prompt
@@ -143,8 +137,7 @@ class AutoGenMarketMechanics:
         return result.get("narrative", "")
 
     def _extract_content(self, response: Any) -> str:
-        """
-        Extract content from AutoGen response object.
+        """Extract content from AutoGen response object.
 
         Args:
             response: Response from AutoGen client
@@ -175,8 +168,7 @@ class AutoGenMarketMechanics:
         return str(response)
 
     def _parse_llm_response(self, response: str) -> Dict[str, Any]:
-        """
-        Parse LLM response into structured format.
+        """Parse LLM response into structured format.
 
         Args:
             response: Raw LLM response

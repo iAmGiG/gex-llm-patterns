@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Rebuild GEX Database with Real Spot Prices
+"""Rebuild GEX Database with Real Spot Prices.
 
 Rebuilds the database using the fixed get_stock_price() method that:
 - Uses put-call parity estimation

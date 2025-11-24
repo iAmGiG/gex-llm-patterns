@@ -39,8 +39,7 @@ def load_phase1_results():
 
 
 def sample_baseline_days(df, n_samples=100, seed=42):
-    """
-    Sample random non-detection days for baseline comparison.
+    """Sample random non-detection days for baseline comparison.
 
     Args:
         df: Full dataset with detection status
@@ -74,8 +73,7 @@ def sample_baseline_days(df, n_samples=100, seed=42):
 
 
 def calculate_baseline_rates(baseline_df):
-    """
-    Calculate materialization rates for baseline (non-detection) days.
+    """Calculate materialization rates for baseline (non-detection) days.
 
     Returns:
         dict with overall and pattern-specific rates
@@ -118,8 +116,7 @@ def calculate_baseline_rates(baseline_df):
 
 
 def calculate_detection_rates(detection_df):
-    """
-    Calculate materialization rates for detection days.
+    """Calculate materialization rates for detection days.
 
     Returns:
         dict with overall and pattern-specific rates
@@ -218,8 +215,7 @@ def calculate_lift(detection_rates, baseline_rates):
 
 
 def build_contingency_table(detection_df, baseline_df, criterion):
-    """
-    Build 2x2 contingency table for chi-square test.
+    """Build 2x2 contingency table for chi-square test.
 
     Rows: Detection status (detected, baseline)
     Cols: Criterion outcome (materialized, not materialized)
@@ -245,8 +241,7 @@ def build_contingency_table(detection_df, baseline_df, criterion):
 
 
 def chi_square_test(detection_df, baseline_df):
-    """
-    Perform chi-square tests for C1 and C4.
+    """Perform chi-square tests for C1 and C4.
 
     Tests null hypothesis: materialization rate is independent of detection status.
     """

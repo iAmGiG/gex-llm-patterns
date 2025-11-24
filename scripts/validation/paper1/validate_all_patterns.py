@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Batch validation script for all 6 patterns in Issue #79.
+"""Batch validation script for all 6 patterns in Issue #79.
+
 Tests each pattern individually and generates a summary report.
 """
 

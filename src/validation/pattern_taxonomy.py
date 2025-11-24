@@ -109,8 +109,8 @@ class PatternValidation:
 
 
 class PatternTaxonomy:
-    """
-    Systematic taxonomy mapping dealer constraints to tradeable patterns.
+    """Systematic taxonomy mapping dealer constraints to tradeable patterns.
+
     Distinguishes mechanical patterns from narrative folklore.
     """
 
@@ -223,8 +223,8 @@ class PatternTaxonomy:
         )
 
     def classify_pattern(self, pattern_name: str, test_results: Dict[str, Any]) -> PatternValidation:
-        """
-        Classify a pattern as mechanical, probabilistic, or narrative.
+        """Classify a pattern as mechanical, probabilistic, or narrative.
+
         Updates validation based on test results.
         """
         if pattern_name not in self.validations:
@@ -263,8 +263,8 @@ class PatternTaxonomy:
         return validation
 
     def test_obfuscation_resistance(self, pattern_name: str, obfuscated_results: float, normal_results: float) -> bool:
-        """
-        Test if pattern works without context clues.
+        """Test if pattern works without context clues.
+
         Pattern is real if it works when LLM doesn't know:
         - It's Friday at 3:30 PM
         - It's option expiration
@@ -292,8 +292,8 @@ class PatternTaxonomy:
         return net_return
 
     def track_degradation(self, pattern_name: str, historical_performance: List[Tuple[str, float]]) -> float:
-        """
-        Track if pattern alpha is degrading over time.
+        """Track if pattern alpha is degrading over time.
+
         Returns annual degradation rate.
         """
         if len(historical_performance) < 2:
@@ -377,8 +377,8 @@ represent real structural market mechanics, not narrative folklore.
         return report
 
     def create_state_machine(self) -> Dict[str, List[Tuple[str, DealerAction]]]:
-        """
-        Create dealer state machine showing transitions.
+        """Create dealer state machine showing transitions.
+
         Maps market conditions to forced dealer actions.
         """
         state_machine = {
@@ -408,8 +408,8 @@ represent real structural market mechanics, not narrative folklore.
 
 
 def validate_pattern_library():
-    """
-    Run validation framework on pattern library.
+    """Run validation framework on pattern library.
+
     Distinguishes real patterns from folklore.
     """
     taxonomy = PatternTaxonomy()

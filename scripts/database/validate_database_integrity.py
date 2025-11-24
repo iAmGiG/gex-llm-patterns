@@ -1,8 +1,7 @@
-"""
-Database Integrity Validation Script
+"""Database Integrity Validation Script.
 
-Compares database GEX values against fresh calculations to identify corruption.
-Checks all tables for data quality issues.
+Compares database GEX values against fresh calculations to identify corruption. Checks all tables for data quality
+issues.
 """
 
 import logging
@@ -24,8 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager, sample_size: int = 20):
-    """
-    Validate GEX data in database against fresh calculations.
+    """Validate GEX data in database against fresh calculations.
 
     Args:
         db_path: Path to database

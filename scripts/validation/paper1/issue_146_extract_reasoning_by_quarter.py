@@ -56,8 +56,7 @@ def categorize_by_quarter(date_str):
 
 
 def extract_reasoning_by_quarter(patterns):
-    """
-    Extract WHO/WHOM/WHAT reasoning texts categorized by quarter.
+    """Extract WHO/WHOM/WHAT reasoning texts categorized by quarter.
 
     Returns:
         dict: {quarter: [reasoning_texts]}
@@ -122,8 +121,7 @@ def extract_reasoning_by_quarter(patterns):
 
 
 def analyze_keyword_frequencies(reasoning_by_quarter):
-    """
-    Analyze keyword frequencies in WHAT texts by quarter.
+    """Analyze keyword frequencies in WHAT texts by quarter.
 
     Focus on MC's expected keywords:
     - Q1 (high alpha): "amplification", "cascading", "reinforcing"

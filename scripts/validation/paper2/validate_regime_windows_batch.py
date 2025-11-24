@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Batch API wrapper for validate_regime_windows.py
+"""Batch API wrapper for validate_regime_windows.py.
 
 Provides CLI interface for OpenAI Batch API mode for regime validation.
 
@@ -89,8 +88,7 @@ def prepare_windows(
     sample_every_n: int = 1,
     phase: str = None,
 ) -> List[Dict]:
-    """
-    Prepare regime windows for batch submission with optional transformations.
+    """Prepare regime windows for batch submission with optional transformations.
 
     Args:
         start_date: Start date (YYYY-MM-DD)
@@ -239,8 +237,7 @@ def prepare_windows(
 def submit_batch_job(
     start_date: str, end_date: str, symbol: str = "SPY", sample_every_n: int = 1, phase: str = None
 ) -> str:
-    """
-    Prepare and submit batch job with optional phase transformation.
+    """Prepare and submit batch job with optional phase transformation.
 
     Args:
         start_date: Start date (YYYY-MM-DD)
@@ -299,8 +296,7 @@ def submit_batch_job(
 
 
 def poll_batch_job(batch_id: str, poll_interval: int = 60) -> Dict:
-    """
-    Poll batch job status.
+    """Poll batch job status.
 
     Args:
         batch_id: Batch job ID
@@ -333,8 +329,7 @@ def poll_batch_job(batch_id: str, poll_interval: int = 60) -> Dict:
 
 
 def retrieve_batch_results(batch_id: str) -> List[Dict]:
-    """
-    Retrieve batch results and save as YAML.
+    """Retrieve batch results and save as YAML.
 
     Args:
         batch_id: Batch job ID

@@ -1,7 +1,5 @@
-"""
-Checkpoint Manager for Continuous GEX Backtesting
-Handles state persistence and resumption for long-running experiments.
-"""
+"""Checkpoint Manager for Continuous GEX Backtesting Handles state persistence and resumption for long-running
+experiments."""
 
 import json
 import logging
@@ -34,8 +32,7 @@ class BacktestCheckpoint:
 
 
 class CheckpointManager:
-    """
-    Manages checkpoints for resumable continuous backtesting.
+    """Manages checkpoints for resumable continuous backtesting.
 
     Features:
     - Save state every N trading days
@@ -57,8 +54,7 @@ class CheckpointManager:
         logger.info(f"Initialized CheckpointManager at {self.checkpoint_dir}")
 
     def save_checkpoint(self, checkpoint: BacktestCheckpoint) -> str:
-        """
-        Save experiment checkpoint to disk.
+        """Save experiment checkpoint to disk.
 
         Args:
             checkpoint: BacktestCheckpoint object with current state
@@ -95,8 +91,7 @@ class CheckpointManager:
             raise
 
     def load_checkpoint(self, experiment_id: str, strategy_version: str) -> Optional[BacktestCheckpoint]:
-        """
-        Load the latest checkpoint for an experiment.
+        """Load the latest checkpoint for an experiment.
 
         Args:
             experiment_id: Unique experiment identifier
@@ -133,8 +128,7 @@ class CheckpointManager:
             return None
 
     def should_checkpoint(self, days_since_last: int) -> bool:
-        """
-        Determine if a checkpoint should be saved.
+        """Determine if a checkpoint should be saved.
 
         Args:
             days_since_last: Trading days since last checkpoint
@@ -145,8 +139,7 @@ class CheckpointManager:
         return days_since_last >= self.checkpoint_frequency
 
     def get_experiment_status(self, experiment_id: str = None) -> List[Dict]:
-        """
-        Get status of all experiments or specific experiment.
+        """Get status of all experiments or specific experiment.
 
         Args:
             experiment_id: Optional specific experiment ID
@@ -211,8 +204,7 @@ class CheckpointManager:
         return sorted(status_list, key=lambda x: x["checkpoint_date"], reverse=True)
 
     def resume_from_checkpoint(self, experiment_id: str, strategy_version: str) -> Optional[Dict]:
-        """
-        Prepare to resume experiment from checkpoint.
+        """Prepare to resume experiment from checkpoint.
 
         Args:
             experiment_id: Experiment identifier
@@ -269,8 +261,7 @@ class CheckpointManager:
     def create_experiment_checkpoint(
         self, experiment_id: str, strategy_version: str, symbol: str, start_date: str, end_date: str, config: Dict
     ) -> BacktestCheckpoint:
-        """
-        Create initial checkpoint for new experiment.
+        """Create initial checkpoint for new experiment.
 
         Args:
             experiment_id: Unique experiment identifier

@@ -29,8 +29,7 @@ def load_data():
 
 
 def test_specification(data, gex_transform, vol_transform, maxlag, name):
-    """
-    Test a specific specification.
+    """Test a specific specification.
 
     Args:
         data: Input DataFrame

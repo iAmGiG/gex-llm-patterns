@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class OutcomeCalculator:
-    """
-    Calculates outcome metrics to validate pattern predictions.
+    """Calculates outcome metrics to validate pattern predictions.
 
     Measures:
     1. Forward returns (T+1, T+3)
@@ -35,8 +34,7 @@ class OutcomeCalculator:
         self.cache = cache_manager
 
     def calculate_forward_returns(self, symbol: str, date_str: str, horizons: List[int] = [1, 3]) -> Dict[str, float]:
-        """
-        Calculate forward returns for given horizons.
+        """Calculate forward returns for given horizons.
 
         Args:
             symbol: Ticker symbol (e.g., 'SPY')
@@ -82,8 +80,7 @@ class OutcomeCalculator:
             return {}
 
     def calculate_forward_drawdown_and_gains(self, symbol: str, date_str: str, window: int = 3) -> Dict[str, float]:
-        """
-        Calculate maximum drawdown and maximum gain over forward window.
+        """Calculate maximum drawdown and maximum gain over forward window.
 
         Args:
             symbol: Ticker symbol
@@ -137,8 +134,7 @@ class OutcomeCalculator:
             return {}
 
     def calculate_realized_volatility(self, symbol: str, date_str: str, window: int = 3) -> Optional[float]:
-        """
-        Calculate realized volatility over forward window.
+        """Calculate realized volatility over forward window.
 
         This measures the actual volatility that occurred after the prediction,
         which is critical for validating predictions about volatility expansion
@@ -191,8 +187,7 @@ class OutcomeCalculator:
             return None
 
     def verify_prediction(self, narrative: Dict, quantitative_evidence: Dict, forward_metrics: Dict) -> Dict:
-        """
-        Verify if predicted mechanics actually materialized.
+        """Verify if predicted mechanics actually materialized.
 
         Uses rule-based logic to determine if the expected outcome occurred:
         - Trend acceleration/reversal
@@ -320,8 +315,7 @@ class OutcomeCalculator:
         }
 
     def add_outcome_metrics(self, detection: Dict, symbol: str) -> Dict:
-        """
-        Add comprehensive outcome_metrics to a detection dict.
+        """Add comprehensive outcome_metrics to a detection dict.
 
         Args:
             detection: Detection dict from PatternTaxonomyValidator
@@ -442,8 +436,7 @@ class OutcomeCalculator:
             return None
 
     def _add_trading_days(self, date_str: str, days: int) -> Optional[str]:
-        """
-        Add trading days to a date (skips weekends, approximation for holidays).
+        """Add trading days to a date (skips weekends, approximation for holidays).
 
         Args:
             date_str: Date in 'YYYY-MM-DD' format
@@ -472,8 +465,7 @@ class OutcomeCalculator:
 
 
 def enrich_validation_results_with_outcomes(validation_result: Dict, symbol: str, cache_manager) -> Dict:
-    """
-    Enrich existing validation results with outcome metrics for all detections.
+    """Enrich existing validation results with outcome metrics for all detections.
 
     This is a helper function to update existing YAML files from Issue #79 Phase 1
     with the new outcome metrics for Phase 2 economic backtesting.

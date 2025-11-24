@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-"""
-Enhanced Experiment Orchestrator with YAML Reporting
-Includes data obfuscation, test metadata, and structured output.
-"""
+"""Enhanced Experiment Orchestrator with YAML Reporting Includes data obfuscation, test metadata, and structured
+output."""
 
 import argparse
 import logging

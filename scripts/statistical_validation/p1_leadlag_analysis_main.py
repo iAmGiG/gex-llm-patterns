@@ -65,8 +65,7 @@ class LeadLagAnalysis:
         neg_threshold: float = -2e9,
         pos_threshold: float = 2e9,
     ):
-        """
-        Initialize lead-lag analysis.
+        """Initialize lead-lag analysis.
 
         Args:
             symbol: Ticker to analyze
@@ -422,8 +421,7 @@ Negative vs. Positive & +"""
         logger.info(f"Saved figure to {output_file}")
 
     def run_full_analysis(self, include_regression: bool = True, include_plot: bool = True) -> dict:
-        """
-        Run complete lead-lag analysis pipeline.
+        """Run complete lead-lag analysis pipeline.
 
         Args:
             include_regression: Whether to run regression analysis

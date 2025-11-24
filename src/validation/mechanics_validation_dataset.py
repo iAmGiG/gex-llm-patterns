@@ -77,16 +77,14 @@ class ValidationResult:
 
 
 class MechanicsValidationDataset:
-    """
-    Curated dataset of historical market mechanics events for LLM validation.
+    """Curated dataset of historical market mechanics events for LLM validation.
 
-    This class manages known market events, fetches historical data,
-    and validates LLM interpretations against documented mechanics.
+    This class manages known market events, fetches historical data, and validates LLM interpretations against
+    documented mechanics.
     """
 
     def __init__(self, data_dir: str = "reports/validation_experiments"):
-        """
-        Initialize validation dataset.
+        """Initialize validation dataset.
 
         Args:
             data_dir: Directory to store validation data and results (follows reports/ structure)
@@ -210,8 +208,7 @@ class MechanicsValidationDataset:
     def validate_event(
         self, event: MechanicsEvent, use_cached_data: bool = True, obfuscate_data: bool = True
     ) -> ValidationResult:
-        """
-        Validate LLM interpretation against a known market mechanics event.
+        """Validate LLM interpretation against a known market mechanics event.
 
         Args:
             event: The market event to analyze
@@ -310,8 +307,7 @@ class MechanicsValidationDataset:
             logger.warning(f"Data preparation for {event.event_id} had issues: {e}")
 
     def _apply_obfuscation(self, event: MechanicsEvent) -> MechanicsEvent:
-        """
-        Apply data obfuscation to prevent LLM training data leakage.
+        """Apply data obfuscation to prevent LLM training data leakage.
 
         Args:
             event: Original market event
@@ -383,8 +379,7 @@ class MechanicsValidationDataset:
     def _score_llm_response(
         self, llm_analysis: Dict, expected_mechanics: Dict, expected_response: str
     ) -> tuple[float, bool]:
-        """
-        Score LLM response against expected market mechanics.
+        """Score LLM response against expected market mechanics.
 
         Returns:
             (accuracy_score, matches_expected) tuple
@@ -508,8 +503,7 @@ class MechanicsValidationDataset:
             logger.error(f"Error saving validation result: {e}")
 
     def run_full_validation(self, use_cached_data: bool = True, obfuscate_data: bool = True) -> Dict[str, Any]:
-        """
-        Run validation against all curated events with academic rigor by default.
+        """Run validation against all curated events with academic rigor by default.
 
         Args:
             use_cached_data: Whether to use cached data for faster processing
@@ -605,8 +599,7 @@ class MechanicsValidationDataset:
 
 # Convenience function for quick validation testing
 def quick_validate_event(event_id: str, use_cache: bool = True, obfuscate_data: bool = True) -> ValidationResult:
-    """
-    Quick validation of a single event with academic rigor by default.
+    """Quick validation of a single event with academic rigor by default.
 
     Args:
         event_id: ID of the event to validate (e.g., 'covid_crash_2020')

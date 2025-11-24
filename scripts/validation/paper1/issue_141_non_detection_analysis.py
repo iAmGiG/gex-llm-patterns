@@ -32,8 +32,7 @@ sys.path.insert(0, str(project_root))
 
 
 def calculate_gini_coefficient(values):
-    """
-    Calculate Gini coefficient for concentration measurement.
+    """Calculate Gini coefficient for concentration measurement.
 
     Higher Gini (closer to 1) = more concentrated
     Lower Gini (closer to 0) = more dispersed/fragmented
@@ -60,8 +59,7 @@ def calculate_gini_coefficient(values):
 
 
 def test_hypothesis(detected_values, not_detected_values, hypothesis_name):
-    """
-    Statistical comparison with t-test and effect size.
+    """Statistical comparison with t-test and effect size.
 
     Args:
         detected_values: Values for detection days
@@ -129,8 +127,7 @@ def test_hypothesis(detected_values, not_detected_values, hypothesis_name):
 
 
 def extract_database_data(db_path, start_date="2024-01-02", end_date="2024-12-31"):
-    """
-    Extract strike-level and daily metrics from consolidated database.
+    """Extract strike-level and daily metrics from consolidated database.
 
     Args:
         db_path: Path to consolidated_historical.db

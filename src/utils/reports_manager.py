@@ -1,5 +1,4 @@
-"""
-Reports Manager for GEX-LLM Analysis Outputs
+"""Reports Manager for GEX-LLM Analysis Outputs.
 
 ⚠️ DEPRECATED: This module is deprecated in favor of unified_reports_manager.py
 Please update your imports to:
@@ -28,8 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class ReportsManager:
-    """
-    Manages all analysis outputs and reports.
+    """Manages all analysis outputs and reports.
 
     Provides organized storage for:
     - GEX calculation results
@@ -58,8 +56,7 @@ class ReportsManager:
     # ===========================
 
     def filter_strike_data(self, gex_data: Dict, min_volume: int = 0, min_oi: int = 1) -> Dict:
-        """
-        Filter strike data to remove zero OI strikes (keep volume > 0 for potential GEX).
+        """Filter strike data to remove zero OI strikes (keep volume > 0 for potential GEX).
 
         Args:
             gex_data: GEX data dictionary
@@ -117,8 +114,7 @@ class ReportsManager:
     # ===========================
 
     def save_gex_results(self, symbol, results: Dict[Any, Any], trading_date=None, filter_strikes: bool = True) -> Path:
-        """
-        Save GEX calculation results with strike filtering.
+        """Save GEX calculation results with strike filtering.
 
         Args:
             symbol: Stock symbol

@@ -1,7 +1,5 @@
-"""
-Enhanced Pattern Detector with Contrarian Logic
-Updated based on statistical analysis showing GAMMA_TRAP works as contrarian indicator.
-"""
+"""Enhanced Pattern Detector with Contrarian Logic Updated based on statistical analysis showing GAMMA_TRAP works as
+contrarian indicator."""
 
 import logging
 from typing import Dict, List
@@ -27,8 +25,7 @@ class EnhancedPatternDetector:
         }
 
     def detect_gamma_trap_enhanced(self, gex_data: Dict, market_data: Dict, fed_context: Dict = None) -> Dict:
-        """
-        Enhanced GAMMA_TRAP detection with contrarian signal interpretation.
+        """Enhanced GAMMA_TRAP detection with contrarian signal interpretation.
 
         Based on empirical analysis:
         - Original strategy: 42.9% win rate, -0.507% return

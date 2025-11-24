@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ExperimentTracker:
-    """
-    Track experiments with standardized naming and model information.
+    """Track experiments with standardized naming and model information.
 
     Naming convention:
     {event_id}_{model_name}_{experiment_type}_{timestamp}.json
@@ -50,8 +49,7 @@ class ExperimentTracker:
         return max_id + 1
 
     def create_experiment_name(self, event_id: str, model_info: Dict[str, str], experiment_type: str = "normal") -> str:
-        """
-        Create standardized experiment filename.
+        """Create standardized experiment filename.
 
         Args:
             event_id: Event identifier (e.g., "covid_crash_2020")
@@ -103,8 +101,7 @@ class ExperimentTracker:
     def save_experiment(
         self, event_id: str, model_info: Dict[str, str], results: Dict[str, Any], experiment_type: str = "normal"
     ) -> str:
-        """
-        Save experiment results with standardized naming.
+        """Save experiment results with standardized naming.
 
         Args:
             event_id: Event identifier
@@ -154,8 +151,7 @@ class ExperimentTracker:
     def list_experiments(
         self, event_id: Optional[str] = None, model: Optional[str] = None, experiment_type: Optional[str] = None
     ) -> list:
-        """
-        List experiments matching criteria.
+        """List experiments matching criteria.
 
         Args:
             event_id: Filter by event ID

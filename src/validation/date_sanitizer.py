@@ -1,5 +1,5 @@
-"""
-Date sanitization utilities for V4 sentiment agent.
+"""Date sanitization utilities for V4 sentiment agent.
+
 Removes temporal information while preserving entity relationships.
 """
 
@@ -7,9 +7,8 @@ import re
 
 
 def sanitize_dates_only(text) -> str:
-    """
-    Remove temporal anchors while preserving all other content.
-    Prevents the LLM from using knowledge of future events.
+    """Remove temporal anchors while preserving all other content. Prevents the LLM from using knowledge of future
+    events.
 
     Args:
         text: Original text (typically article summary)
@@ -42,9 +41,8 @@ def sanitize_dates_only(text) -> str:
 
 
 def prepare_news_for_v4(news_df, requested_ticker=None):
-    """
-    Prepare news data for V4 with date sanitization and selective ticker obfuscation.
-    Leverages the categorization already done by hierarchical_news_tool.
+    """Prepare news data for V4 with date sanitization and selective ticker obfuscation. Leverages the categorization
+    already done by hierarchical_news_tool.
 
     Args:
         news_df: DataFrame from hierarchical news tool (already categorized)
@@ -87,9 +85,8 @@ def prepare_news_for_v4(news_df, requested_ticker=None):
 
 
 def format_news_for_llm_prompt(processed_news) -> str:
-    """
-    Format processed news into structured text for LLM prompt.
-    Replaces the raw DataFrame string representation that was leaking dates.
+    """Format processed news into structured text for LLM prompt. Replaces the raw DataFrame string representation that
+    was leaking dates.
 
     Args:
         processed_news of news items from prepare_news_for_v4

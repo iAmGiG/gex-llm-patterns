@@ -15,14 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class LiveGEXInterface:
-    """
-    Interface for calculating GEX from live cached options data.
+    """Interface for calculating GEX from live cached options data.
+
     No sample data dependencies - uses only provided DataFrame.
     """
 
     def __init__(self, risk_free_rate=0.05, validate_data=True, obfuscate_data=False):
-        """
-        Initialize the live GEX interface.
+        """Initialize the live GEX interface.
 
         Args:
             risk_free_rate: Risk-free rate for Black-Scholes calculations
@@ -44,8 +43,7 @@ class LiveGEXInterface:
         logger.info("Initialized LiveGEXInterface for cached options data")
 
     def _obfuscate_options_data(self, options_data, symbol, trading_date):
-        """
-        Obfuscate options data to prevent LLM training data leakage.
+        """Obfuscate options data to prevent LLM training data leakage.
 
         Args:
             options_data: DataFrame with options data
@@ -96,8 +94,7 @@ class LiveGEXInterface:
             return options_data, {"obfuscated": False, "error": str(e)}
 
     def calculate_gex_for_symbol(self, symbol, trading_date=None, spot_price=None, options_data=None):
-        """
-        Calculate complete GEX metrics for a symbol using live data.
+        """Calculate complete GEX metrics for a symbol using live data.
 
         Args:
             symbol: Stock symbol

@@ -28,8 +28,7 @@ class BaselineGEXStrategy:
     """
 
     def __init__(self, config_path: Optional[str] = None):
-        """
-        Initialize baseline strategy with configuration.
+        """Initialize baseline strategy with configuration.
 
         Args:
             config_path: Path to trading config YAML file
@@ -85,8 +84,7 @@ class BaselineGEXStrategy:
             return {}
 
     def set_position_sizing(self, mode: str = "conservative"):
-        """
-        Set position sizing mode.
+        """Set position sizing mode.
 
         Args:
             mode: 'conservative', 'kelly', or 'aggressive'
@@ -105,8 +103,7 @@ class BaselineGEXStrategy:
     def generate_signals(
         self, gex_data: Dict, price_data: Optional[pd.DataFrame] = None, flip_points: Optional[Dict] = None
     ) -> List[Dict]:
-        """
-        Generate signals for every negative GEX day (no filtering).
+        """Generate signals for every negative GEX day (no filtering).
 
         Args:
             gex_data: Dictionary with date -> GEX value mappings
@@ -173,8 +170,7 @@ class BaselineGEXStrategy:
         symbol: str = "SPY",
         test_period: Optional[str] = None,
     ) -> Dict:
-        """
-        Backtest the baseline strategy.
+        """Backtest the baseline strategy.
 
         Args:
             gex_data: GEX values by date
@@ -371,8 +367,7 @@ class BaselineGEXStrategy:
         }
 
     def compare_to_llm(self, llm_results: Dict) -> Dict:
-        """
-        Compare baseline performance to LLM-filtered strategy.
+        """Compare baseline performance to LLM-filtered strategy.
 
         Args:
             llm_results: Results from LLM strategy backtest

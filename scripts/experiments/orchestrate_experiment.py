@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple Experiment Orchestrator
-Starts the system, then lets MarketMechanicsAgent take over and orchestrate tools.
-"""
+"""Simple Experiment Orchestrator Starts the system, then lets MarketMechanicsAgent take over and orchestrate tools."""
 
 import argparse
 import logging
@@ -45,8 +42,8 @@ def process_date_result(date, result, args, high_confidence_signals, all_results
 
 
 def run_batch_validation(args):
-    """
-    Run batch validation on multiple dates.
+    """Run batch validation on multiple dates.
+
     Generic function that can test any date range with configurable parameters.
     """
     # Configure logging

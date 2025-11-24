@@ -21,13 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 class FedDataAnalyzer:
-    """
-    Analyzes and breaks down Fed data for pattern detection context.
-    """
+    """Analyzes and breaks down Fed data for pattern detection context."""
 
     def __init__(self, fed_integration):
-        """
-        Initialize analyzer with Fed data integration instance.
+        """Initialize analyzer with Fed data integration instance.
 
         Args:
             fed_integration: FedDataIntegration instance
@@ -37,8 +34,7 @@ class FedDataAnalyzer:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def analyze_policy_cycle(self, start_date, end_date):
-        """
-        Analyze the complete Fed policy cycle over a period.
+        """Analyze the complete Fed policy cycle over a period.
 
         Args:
             start_date: Start date for analysis
@@ -111,8 +107,7 @@ class FedDataAnalyzer:
         return cycle_analysis
 
     def analyze_market_stress_trends(self, indicators: pd.DataFrame, lookback_days: int = 60):
-        """
-        Analyze market stress indicator trends.
+        """Analyze market stress indicator trends.
 
         Args:
             indicators: DataFrame with economic indicators
@@ -196,8 +191,7 @@ class FedDataAnalyzer:
             return "stable"
 
     def create_context_summary(self, date: pd.Timestamp):
-        """
-        Create a concise summary of Fed context for a specific date.
+        """Create a concise summary of Fed context for a specific date.
 
         Args:
             date: Date to analyze
@@ -317,8 +311,7 @@ class FedDataAnalyzer:
         return considerations if considerations else ["standard risk environment"]
 
     def export_analysis_report(self, start_date, end_date, output_path: str = None) -> str:
-        """
-        Export comprehensive Fed analysis report.
+        """Export comprehensive Fed analysis report.
 
         Args:
             start_date: Start date for analysis

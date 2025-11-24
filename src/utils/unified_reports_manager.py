@@ -1,5 +1,4 @@
-"""
-Unified Reports Manager with Clean Directory Structure
+"""Unified Reports Manager with Clean Directory Structure.
 
 Organizes reports by purpose:
 - experiments/ - All experiment results (YAML format)
@@ -21,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class UnifiedReportsManager:
-    """
-    Unified reports manager with clean directory structure.
+    """Unified reports manager with clean directory structure.
+
     All outputs in YAML for token efficiency.
     """
 
@@ -53,8 +52,7 @@ class UnifiedReportsManager:
         llm_analysis: Dict,
         obfuscate: bool = False,
     ) -> Path:
-        """
-        Save complete experiment results with full LLM analysis.
+        """Save complete experiment results with full LLM analysis.
 
         Args:
             ticker: Stock symbol
@@ -379,8 +377,7 @@ class UnifiedReportsManager:
     def save_gex_results(
         self, symbol: str, results: Dict[Any, Any], trading_date: str = None, is_demo: bool = False
     ) -> Path:
-        """
-        Save GEX calculation results (backward compatibility method).
+        """Save GEX calculation results (backward compatibility method).
 
         Args:
             symbol: Stock symbol
@@ -410,8 +407,7 @@ class UnifiedReportsManager:
     def save_pattern_analysis(
         self, pattern_type: str, results: Dict[Any, Any], symbol: str = None, is_demo: bool = False
     ) -> Path:
-        """
-        Save pattern analysis results (backward compatibility method).
+        """Save pattern analysis results (backward compatibility method).
 
         Args:
             pattern_type: Type of pattern analyzed
@@ -438,8 +434,7 @@ class UnifiedReportsManager:
     def save_analysis_results(
         self, symbol: str, results: Dict[Any, Any], trading_date: str, analysis_type: str = "general"
     ) -> Path:
-        """
-        Save generic analysis results (backward compatibility method).
+        """Save generic analysis results (backward compatibility method).
 
         Args:
             symbol: Stock symbol
@@ -469,8 +464,7 @@ class UnifiedReportsManager:
     def save_agent_conversation(
         self, agent_names: list, messages: list, final_result: Any = None, context: Dict = None
     ) -> Path:
-        """
-        Save agent conversation logs (backward compatibility method).
+        """Save agent conversation logs (backward compatibility method).
 
         Args:
             agent_names: List of participating agents
@@ -497,8 +491,7 @@ class UnifiedReportsManager:
         return file_path
 
     def filter_strike_data(self, gex_data: Dict, min_volume: int = 0, min_oi: int = 1) -> Dict:
-        """
-        Filter strike data by volume and open interest (utility method).
+        """Filter strike data by volume and open interest (utility method).
 
         Args:
             gex_data: GEX data dictionary
@@ -527,8 +520,7 @@ class UnifiedReportsManager:
         return filtered_data
 
     def cleanup_old_results(self, older_than_days: int = 30) -> int:
-        """
-        Move old results to archive (backward compatibility for cleanup_old_results).
+        """Move old results to archive (backward compatibility for cleanup_old_results).
 
         Args:
             older_than_days: Age threshold in days
@@ -543,8 +535,7 @@ class UnifiedReportsManager:
         return archived_count
 
     def get_summary(self) -> Dict:
-        """
-        Get summary of all reports (backward compatibility method).
+        """Get summary of all reports (backward compatibility method).
 
         Returns:
             Dictionary with report counts and stats

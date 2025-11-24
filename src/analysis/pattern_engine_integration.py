@@ -1,8 +1,7 @@
-"""
-Pattern Engine Integration
+"""Pattern Engine Integration.
 
-Integrates Pattern Probability Mapper with existing GEX pattern detection
-and Fed context for comprehensive pattern analysis workflow.
+Integrates Pattern Probability Mapper with existing GEX pattern detection and Fed context for comprehensive pattern
+analysis workflow.
 """
 
 import datetime
@@ -38,8 +37,7 @@ class PatternEngineIntegration:
     """
 
     def __init__(self, historical_database_path: str = None):
-        """
-        Initialize integrated pattern engine.
+        """Initialize integrated pattern engine.
 
         Args:
             historical_database_path: Path to historical database
@@ -57,8 +55,7 @@ class PatternEngineIntegration:
         logger.info("PatternEngineIntegration initialized")
 
     def analyze_current_patterns(self, gex_data: Dict, price_data: Dict, analysis_date: str = None) -> Dict:
-        """
-        Comprehensive pattern analysis for current market conditions.
+        """Comprehensive pattern analysis for current market conditions.
 
         Args:
             gex_data: GEX data from calculate_daily_gex_metrics
@@ -123,8 +120,7 @@ class PatternEngineIntegration:
     def run_historical_analysis(
         self, historical_data: pd.DataFrame, start_date: str = None, end_date: str = None
     ) -> Dict:
-        """
-        Run comprehensive historical pattern analysis.
+        """Run comprehensive historical pattern analysis.
 
         Args:
             historical_data: DataFrame with historical GEX and price data
@@ -191,8 +187,7 @@ class PatternEngineIntegration:
     def generate_comprehensive_report(
         self, current_analysis: Dict = None, historical_analysis: Dict = None, output_path: str = None
     ) -> str:
-        """
-        Generate comprehensive pattern analysis report.
+        """Generate comprehensive pattern analysis report.
 
         Args:
             current_analysis: Current pattern analysis results

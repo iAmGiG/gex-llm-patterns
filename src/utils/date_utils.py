@@ -1,6 +1,4 @@
-"""
-Utilities for dynamic date handling in data tools.
-"""
+"""Utilities for dynamic date handling in data tools."""
 
 import datetime
 import os
@@ -44,9 +42,8 @@ def localize_df(df, tz):
 
 
 def get_default_date_range(days_back=5):
-    """
-    Calculate a default date range based on the current date.
-    Returns (start_date, end_date) as strings in YYYY-MM-DD format.
+    """Calculate a default date range based on the current date. Returns (start_date, end_date) as strings in YYYY-MM-DD
+    format.
 
     Args:
         days_back: Number of trading days to look back (default: 5)
@@ -76,9 +73,8 @@ def get_default_date_range(days_back=5):
 
 
 def process_date_param(date_param):
-    """
-    Process a date parameter that might be a relative date string.
-    Handles special strings like "today", "yesterday", "-7d", etc.
+    """Process a date parameter that might be a relative date string. Handles special strings like "today", "yesterday",
+    "-7d", etc.
 
     Args:
         date_param: Date string to process, can be:
@@ -157,8 +153,7 @@ def process_date_param(date_param):
 
 
 def get_processed_date_range(start_date=None, end_date=None, default_days_back=5):
-    """
-    Process start and end date parameters, applying defaults if needed.
+    """Process start and end date parameters, applying defaults if needed.
 
     Args:
         start_date: Optional start date string (YYYY-MM-DD or relative)
@@ -311,8 +306,7 @@ def resolve_anchor(df, anchor_token):
 
 
 def get_datetime_now() -> datetime.datetime:
-    """
-    Get current datetime object.
+    """Get current datetime object.
 
     Returns:
         Current datetime.datetime object
@@ -321,8 +315,7 @@ def get_datetime_now() -> datetime.datetime:
 
 
 def get_datetime_from_timestamp(timestamp: float) -> datetime.datetime:
-    """
-    Convert Unix timestamp to datetime object.
+    """Convert Unix timestamp to datetime object.
 
     Args:
         timestamp: Unix timestamp (seconds since epoch)
@@ -334,8 +327,7 @@ def get_datetime_from_timestamp(timestamp: float) -> datetime.datetime:
 
 
 def subtract_days(dt: datetime.datetime, days: int) -> datetime.datetime:
-    """
-    Subtract days from a datetime object.
+    """Subtract days from a datetime object.
 
     Args:
         dt: datetime object
@@ -348,8 +340,7 @@ def subtract_days(dt: datetime.datetime, days: int) -> datetime.datetime:
 
 
 def now_iso() -> str:
-    """
-    Get current timestamp as ISO string.
+    """Get current timestamp as ISO string.
 
     Returns:
         Current timestamp in ISO format (YYYY-MM-DDTHH:MM:SS.ffffff)
@@ -358,8 +349,7 @@ def now_iso() -> str:
 
 
 def now_timestamp() -> str:
-    """
-    Get current timestamp formatted for filenames/IDs.
+    """Get current timestamp formatted for filenames/IDs.
 
     Returns:
         Current timestamp as YYYYMMDD_HHMMSS string
@@ -368,8 +358,7 @@ def now_timestamp() -> str:
 
 
 def today_str() -> str:
-    """
-    Get today's date as string.
+    """Get today's date as string.
 
     Returns:
         Today's date in YYYY-MM-DD format
@@ -378,8 +367,7 @@ def today_str() -> str:
 
 
 def add_business_days(date_str, days) -> str:
-    """
-    Add business days to a date string.
+    """Add business days to a date string.
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -405,9 +393,8 @@ def add_business_days(date_str, days) -> str:
 
 
 def parse_date_string(date_str) -> datetime.datetime:
-    """
-    Parse various date string formats to datetime object.
-    Supports both real dates and obfuscated dates from data obfuscation system.
+    """Parse various date string formats to datetime object. Supports both real dates and obfuscated dates from data
+    obfuscation system.
 
     Args:
         date_str: Date string in various formats, including obfuscated "Day T+N" format
@@ -461,8 +448,7 @@ def parse_date_string(date_str) -> datetime.datetime:
 
 
 def date_range_trading_days(start_date, end_date) -> list:
-    """
-    Generate list of trading days between start and end dates.
+    """Generate list of trading days between start and end dates.
 
     Args:
         start_date: Start date in YYYY-MM-DD format
@@ -483,8 +469,7 @@ def date_range_trading_days(start_date, end_date) -> list:
 
 
 def calculate_duration_minutes(start_iso, end_iso) -> float:
-    """
-    Calculate duration in minutes between two ISO timestamp strings.
+    """Calculate duration in minutes between two ISO timestamp strings.
 
     Args:
         start_iso: Start timestamp in ISO format
@@ -500,8 +485,7 @@ def calculate_duration_minutes(start_iso, end_iso) -> float:
 
 
 def next_business_day(date_str) -> str:
-    """
-    Get the next business day after the given date.
+    """Get the next business day after the given date.
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -513,8 +497,7 @@ def next_business_day(date_str) -> str:
 
 
 def is_opex_week(date) -> bool:
-    """
-    Check if date is in OPEX week (third Friday of the month).
+    """Check if date is in OPEX week (third Friday of the month).
 
     Args:
         date: Date as string (YYYY-MM-DD) or datetime object
@@ -539,8 +522,7 @@ def is_opex_week(date) -> bool:
 
 
 def is_business_day(date_str) -> bool:
-    """
-    Check if a date is a business day (Monday-Friday, excluding holidays).
+    """Check if a date is a business day (Monday-Friday, excluding holidays).
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -562,8 +544,7 @@ def is_business_day(date_str) -> bool:
 
 
 def is_valid_trading_date(date_str: str, allow_future: bool = False) -> bool:
-    """
-    Check if a date is a valid trading date (business day and not in future).
+    """Check if a date is a valid trading date (business day and not in future).
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -603,8 +584,7 @@ def is_valid_trading_date(date_str: str, allow_future: bool = False) -> bool:
 
 
 def format_for_filename(dt: datetime.datetime = None) -> str:
-    """
-    Format datetime for use in filenames (no special characters).
+    """Format datetime for use in filenames (no special characters).
 
     Args:
         dt: datetime object (defaults to now)
@@ -619,8 +599,7 @@ def format_for_filename(dt: datetime.datetime = None) -> str:
 
 
 def get_market_open_time(date_str, timezone: str = "America/New_York") -> datetime.datetime:
-    """
-    Get market open time for a given date.
+    """Get market open time for a given date.
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -642,8 +621,7 @@ def get_market_open_time(date_str, timezone: str = "America/New_York") -> dateti
 
 
 def get_market_close_time(date_str, timezone: str = "America/New_York") -> datetime.datetime:
-    """
-    Get market close time for a given date.
+    """Get market close time for a given date.
 
     Args:
         date_str: Date in YYYY-MM-DD format
@@ -665,9 +643,8 @@ def get_market_close_time(date_str, timezone: str = "America/New_York") -> datet
 
 
 def calculate_days_to_expiration(expiration_dates, trade_dates):
-    """
-    Calculate days to expiration for options data.
-    Handles both pandas Series and individual dates, and supports obfuscated dates.
+    """Calculate days to expiration for options data. Handles both pandas Series and individual dates, and supports
+    obfuscated dates.
 
     Args:
         expiration_dates: pandas Series or single date value representing expiration dates

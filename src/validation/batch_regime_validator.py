@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Batch API validator for regime window detection using OpenAI Batch API.
+"""Batch API validator for regime window detection using OpenAI Batch API.
 
 Purpose:
     Process 30-day regime windows using OpenAI Batch API for 50% cost reduction
@@ -44,8 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 class BatchRegimeValidator:
-    """
-    Validates regime windows using OpenAI Batch API for cost efficiency.
+    """Validates regime windows using OpenAI Batch API for cost efficiency.
 
     Batch API workflow:
     1. Prepare batch file (JSONL format)
@@ -56,8 +54,7 @@ class BatchRegimeValidator:
     """
 
     def __init__(self, api_key: Optional[str] = None):
-        """
-        Initialize batch validator.
+        """Initialize batch validator.
 
         Args:
             api_key: OpenAI API key (or use OPENAI_API_KEY env var or config.json)
@@ -93,8 +90,7 @@ class BatchRegimeValidator:
     def prepare_batch_file(
         self, windows: List[Dict], model: str = "o4-mini", output_file: Optional[Path] = None
     ) -> Path:
-        """
-        Generate JSONL batch file with regime detection prompts.
+        """Generate JSONL batch file with regime detection prompts.
 
         Args:
             windows: List of window dicts with 'end_date' and 'gex_values'
@@ -152,8 +148,7 @@ class BatchRegimeValidator:
         return output_file
 
     def submit_batch(self, batch_file: Path, description: Optional[str] = None) -> str:
-        """
-        Upload batch file and create batch job.
+        """Upload batch file and create batch job.
 
         Args:
             batch_file: Path to JSONL batch file
@@ -210,8 +205,7 @@ class BatchRegimeValidator:
     def poll_batch(
         self, batch_id: str, poll_interval: int = 60, max_polls: int = 1440  # 24 hours at 1 min intervals
     ) -> Dict:
-        """
-        Poll batch job status until completion.
+        """Poll batch job status until completion.
 
         Args:
             batch_id: Batch job ID
@@ -264,8 +258,7 @@ class BatchRegimeValidator:
         return {"batch_id": batch_id, "status": "timeout", "elapsed_seconds": time.time() - start_time}
 
     def retrieve_results(self, batch_id: str, output_file: Optional[Path] = None) -> List[Dict]:
-        """
-        Download and parse batch results.
+        """Download and parse batch results.
 
         Args:
             batch_id: Batch job ID
@@ -319,8 +312,7 @@ class BatchRegimeValidator:
         return parsed_results
 
     def _parse_batch_result(self, batch_result: Dict) -> Dict:
-        """
-        Parse individual batch result from OpenAI format.
+        """Parse individual batch result from OpenAI format.
 
         Args:
             batch_result: Single result from batch output
@@ -377,8 +369,7 @@ class BatchRegimeValidator:
             return {"window_id": custom_id, "error": f"JSON parse error: {e}", "regime_detected": False}
 
     def save_results_yaml(self, results: List[Dict], windows: List[Dict], output_file: Path, batch_id: str):
-        """
-        Save batch results in YAML format compatible with sync validation.
+        """Save batch results in YAML format compatible with sync validation.
 
         Args:
             results: Parsed batch results from retrieve_results()
@@ -423,8 +414,7 @@ class BatchRegimeValidator:
 
 
 def format_gex_for_prompt(gex_values: List[float]) -> str:
-    """
-    Format GEX values for LLM prompt (obfuscated dates).
+    """Format GEX values for LLM prompt (obfuscated dates).
 
     Args:
         gex_values: List of GEX values in dollars

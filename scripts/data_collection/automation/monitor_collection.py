@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Monitor Automated Data Collection Progress
+"""Monitor Automated Data Collection Progress.
 
 Shows real-time status of the automated collection system.
 """

@@ -45,8 +45,7 @@ class UnifiedCacheManager:
     # === OPTIONS DATA ===
 
     def store_options_data(self, symbol, trading_date, df: pd.DataFrame) -> bool:
-        """
-        Store real options data.
+        """Store real options data.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
@@ -69,8 +68,7 @@ class UnifiedCacheManager:
             return False
 
     def get_options_data(self, symbol, trading_date):
-        """
-        Get real options data.
+        """Get real options data.
 
         Args:
             symbol: Stock symbol
@@ -94,8 +92,7 @@ class UnifiedCacheManager:
     # === MARKET DATA ===
 
     def store_market_data(self, symbol, df: pd.DataFrame, start_date: str = None, end_date: str = None) -> bool:
-        """
-        Store real market/stock data.
+        """Store real market/stock data.
 
         Args:
             symbol: Stock symbol
@@ -124,8 +121,7 @@ class UnifiedCacheManager:
             return False
 
     def get_market_data(self, symbol, start_date: str = None, end_date: str = None):
-        """
-        Get real market data.
+        """Get real market data.
 
         Args:
             symbol: Stock symbol
@@ -161,8 +157,7 @@ class UnifiedCacheManager:
     # === NEWS DATA ===
 
     def store_news_data(self, category, df: pd.DataFrame, date_range: str = None) -> bool:
-        """
-        Store real news data.
+        """Store real news data.
 
         Args:
             category: News category (SPY, general, earnings, etc.)
@@ -195,8 +190,7 @@ class UnifiedCacheManager:
             return False
 
     def get_news_data(self, category, start_date: str = None, end_date: str = None):
-        """
-        Get real news data.
+        """Get real news data.
 
         Args:
             category: News category
@@ -336,9 +330,7 @@ class UnifiedCacheManager:
         return self._gex_cache
 
     def get_or_calculate_gex(self, symbol, trading_date) -> dict:
-        """
-        Get GEX from cache or calculate if missing.
-        Integration point for seamless GEX caching.
+        """Get GEX from cache or calculate if missing. Integration point for seamless GEX caching.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
@@ -405,8 +397,7 @@ class UnifiedCacheManager:
             return None
 
     def batch_get_gex(self, requests: list) -> dict:
-        """
-        Efficient batch GEX retrieval.
+        """Efficient batch GEX retrieval.
 
         Args:
             requests: List of (symbol, trading_date) tuples

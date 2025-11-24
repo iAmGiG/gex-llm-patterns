@@ -1,9 +1,7 @@
-"""
-Base Agent for GEX-LLM Pattern Analysis
+"""Base Agent for GEX-LLM Pattern Analysis.
 
-Simplified agent framework focused on the specific needs of gamma exposure
-analysis and LLM pattern discovery. Based on AutoGen 0.7.x architecture
-but streamlined for research workflows.
+Simplified agent framework focused on the specific needs of gamma exposure analysis and LLM pattern discovery. Based on
+AutoGen 0.7.x architecture but streamlined for research workflows.
 """
 
 import logging
@@ -33,8 +31,7 @@ except ImportError:
 
 
 class BaseGEXAgent(AssistantAgent, ABC):
-    """
-    Base class for GEX analysis agents.
+    """Base class for GEX analysis agents.
 
     Provides common functionality for:
     - OpenAI/AutoGen integration
@@ -44,8 +41,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
     """
 
     def __init__(self, name, description="", tools=None, model_name="gpt-4o-mini", temperature=0.2, cache_manager=None):
-        """
-        Initialize GEX agent with essential components.
+        """Initialize GEX agent with essential components.
 
         Args:
             name: Agent identifier
@@ -100,8 +96,7 @@ class BaseGEXAgent(AssistantAgent, ABC):
             self.logger.info(log_msg)
 
     async def process_request(self, request, context=None) -> str:
-        """
-        Process a request with the LLM.
+        """Process a request with the LLM.
 
         Args:
             request: The request/prompt to process
@@ -192,8 +187,8 @@ class BaseGEXAgent(AssistantAgent, ABC):
 
     @abstractmethod
     def generate_reply(self, messages, context=None) -> str:
-        """
-        AutoGen required method for handling incoming messages.
+        """AutoGen required method for handling incoming messages.
+
         Must be implemented by subclasses.
         """
         pass

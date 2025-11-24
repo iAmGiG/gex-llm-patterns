@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""
-Regenerate Issue #141 Figures for Paper #1 Journal Version
-Removes "Issue #141" references and fixes text overlap issues
+"""Regenerate Issue #141 Figures for Paper #1 Journal Version Removes "Issue #141" references and fixes text overlap
+issues.
 
 Generates:
 1. GEX Concentration Distribution (Detection vs Non-Detection)
@@ -61,9 +60,8 @@ def load_data():
 
 
 def figure1_gex_concentration(df, output_path):
-    """
-    Create histogram comparing GEX concentration (Gini) distribution
-    between detection and non-detection days.
+    """Create histogram comparing GEX concentration (Gini) distribution between detection and non-detection days.
+
     Matches original style but removes "Issue #141" reference.
     """
     print("Creating GEX concentration distribution...")
@@ -152,10 +150,9 @@ def figure1_gex_concentration(df, output_path):
 
 
 def figure2_detection_calendar(df, output_path):
-    """
-    Create a calendar heatmap showing detection/non-detection days across 2024.
-    Matches original style but removes "Issue #141" reference.
-    Green = Detection, Red = Non-detection
+    """Create a calendar heatmap showing detection/non-detection days across 2024.
+
+    Matches original style but removes "Issue #141" reference. Green = Detection, Red = Non-detection
     """
     print("Creating calendar heatmap...")
 

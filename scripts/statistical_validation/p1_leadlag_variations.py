@@ -1,5 +1,4 @@
-"""
-Lead-Lag Analysis Variations
+"""Lead-Lag Analysis Variations.
 
 Since all 242 days are negative GEX, we test within-regime relationships:
 1. Correlation between GEX magnitude and volatility

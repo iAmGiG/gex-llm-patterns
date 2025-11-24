@@ -1,8 +1,7 @@
-"""
-Statistical Validator
+"""Statistical Validator.
 
-Provides statistical significance testing and validation for pattern analysis.
-Includes chi-square tests, bootstrap confidence intervals, and permutation testing.
+Provides statistical significance testing and validation for pattern analysis. Includes chi-square tests, bootstrap
+confidence intervals, and permutation testing.
 """
 
 import logging
@@ -18,16 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 class StatisticalValidator:
-    """
-    Statistical significance framework for pattern validation.
+    """Statistical significance framework for pattern validation.
 
-    Provides robust statistical testing to determine if patterns have
-    statistically significant predictive power vs random chance.
+    Provides robust statistical testing to determine if patterns have statistically significant predictive power vs
+    random chance.
     """
 
     def __init__(self, confidence_level: float = 0.95, min_samples: int = 30):
-        """
-        Initialize statistical validator.
+        """Initialize statistical validator.
 
         Args:
             confidence_level: Confidence level for statistical tests (default 0.95)
@@ -40,8 +37,7 @@ class StatisticalValidator:
         logger.info(f"StatisticalValidator initialized (α={self.alpha}, min_n={min_samples})")
 
     def calculate_significance(self, pattern_results: Dict) -> Dict:
-        """
-        Determine statistical significance of pattern success rates.
+        """Determine statistical significance of pattern success rates.
 
         Args:
             pattern_results: Dictionary with pattern analysis results
@@ -93,8 +89,7 @@ class StatisticalValidator:
         }
 
     def chi_square_test(self, observed_outcomes: Dict, expected_probability: float = 0.5) -> Tuple[float, float]:
-        """
-        Chi-square test for independence of pattern and positive outcomes.
+        """Chi-square test for independence of pattern and positive outcomes.
 
         Args:
             observed_outcomes: Dictionary with 'positive' and 'negative' outcome counts
@@ -128,8 +123,7 @@ class StatisticalValidator:
         return chi2_stat, p_value
 
     def bootstrap_ci(self, returns: np.ndarray, statistic_func=np.mean, n_bootstrap: int = 1000) -> Tuple[float, float]:
-        """
-        Bootstrap confidence intervals for return statistics.
+        """Bootstrap confidence intervals for return statistics.
 
         Args:
             returns: Array of return values
@@ -158,8 +152,7 @@ class StatisticalValidator:
         return ci_lower, ci_upper
 
     def permutation_test(self, returns: np.ndarray, null_mean: float = 0.0, n_permutations: int = 1000) -> float:
-        """
-        Permutation test for mean return significance.
+        """Permutation test for mean return significance.
 
         Args:
             returns: Array of return values
@@ -190,8 +183,7 @@ class StatisticalValidator:
         return p_value
 
     def t_test_one_sample(self, returns: np.ndarray, null_mean: float = 0.0) -> Tuple[float, float]:
-        """
-        One-sample t-test for mean return significance.
+        """One-sample t-test for mean return significance.
 
         Args:
             returns: Array of return values
@@ -211,8 +203,7 @@ class StatisticalValidator:
             return np.nan, 1.0
 
     def calculate_effect_size(self, returns: np.ndarray, baseline_returns: np.ndarray = None) -> Dict:
-        """
-        Calculate effect size measures (Cohen's d, etc.).
+        """Calculate effect size measures (Cohen's d, etc.).
 
         Args:
             returns: Array of pattern returns
@@ -257,8 +248,7 @@ class StatisticalValidator:
         return effect_sizes
 
     def multiple_testing_correction(self, p_values: List[float], method: str = "bonferroni") -> List[float]:
-        """
-        Multiple testing correction for pattern analysis.
+        """Multiple testing correction for pattern analysis.
 
         Args:
             p_values: List of p-values from multiple tests
@@ -303,8 +293,7 @@ class StatisticalValidator:
         return corrected.tolist()
 
     def validate_pattern_stability(self, returns_by_period: Dict[str, np.ndarray]) -> Dict:
-        """
-        Test pattern stability across different time periods.
+        """Test pattern stability across different time periods.
 
         Args:
             returns_by_period: Dictionary mapping period names to return arrays

@@ -27,8 +27,7 @@ sys.path.insert(0, str(project_root))
 
 
 def recalculate_c3_with_flip_points(df, flip_points_df):
-    """
-    Recalculate C3 (Strike Convergence) using real flip points.
+    """Recalculate C3 (Strike Convergence) using real flip points.
 
     C3: Distance to flip point decreases T+1
     """
@@ -70,8 +69,7 @@ def recalculate_c3_with_flip_points(df, flip_points_df):
 
 
 def build_contingency_matrix(df):
-    """
-    Build 3×4 contingency matrix: 3 patterns × 4 outcomes.
+    """Build 3×4 contingency matrix: 3 patterns × 4 outcomes.
 
     Returns:
         matrix: 3×4 numpy array
@@ -208,8 +206,7 @@ def chi_square_test_independence(matrix, pattern_names, criterion_names):
 
 
 def analyze_mechanism_specificity(matrix, residuals, pattern_names, criterion_names):
-    """
-    Analyze whether patterns show mechanism-specific associations.
+    """Analyze whether patterns show mechanism-specific associations.
 
     Expected:
     - Gamma Positioning → C1 (Volatility Amplification)

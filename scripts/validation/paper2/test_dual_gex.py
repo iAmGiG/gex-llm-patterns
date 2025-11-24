@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Test Dual GEX Framework Implementation (Issue #138)
+"""Test Dual GEX Framework Implementation (Issue #138)
 
 Purpose:
     Verify that calculate_dual_gex() and classify_economic_regime() work correctly

@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Run Baseline Comparison for Issue #58
-Compares LLM-filtered dealer gamma hedging strategy against naive baselines.
-"""
+"""Run Baseline Comparison for Issue #58 Compares LLM-filtered dealer gamma hedging strategy against naive baselines."""
 
 import argparse
 import logging

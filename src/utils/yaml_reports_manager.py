@@ -1,5 +1,4 @@
-"""
-YAML Reports Manager for GEX-LLM Analysis Outputs
+"""YAML Reports Manager for GEX-LLM Analysis Outputs.
 
 ⚠️ DEPRECATED: This module is deprecated in favor of unified_reports_manager.py
 Please update your imports to:
@@ -28,8 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class YAMLReportsManager:
-    """
-    Manages analysis outputs in YAML format with obfuscation support.
+    """Manages analysis outputs in YAML format with obfuscation support.
 
     Key improvements:
     - YAML format for token efficiency
@@ -78,8 +76,7 @@ class YAMLReportsManager:
         results: Dict,
         obfuscate: bool = False,
     ) -> Path:
-        """
-        Save experiment results in structured YAML format.
+        """Save experiment results in structured YAML format.
 
         Args:
             ticker: Stock symbol
@@ -137,8 +134,7 @@ class YAMLReportsManager:
         return file_path
 
     def _get_test_rationale(self, date: str, test_type: str) -> Dict[str, str]:
-        """
-        Explain why this date/test combination was chosen.
+        """Explain why this date/test combination was chosen.
 
         Args:
             date: Trading date
@@ -218,8 +214,7 @@ class YAMLReportsManager:
         return {k: v for k, v in metrics.items() if v is not None}
 
     def _structure_llm_analysis(self, results: Dict) -> Dict[str, Any]:
-        """
-        Structure LLM analysis into clear components.
+        """Structure LLM analysis into clear components.
 
         Breaks down the messy reasoning line into structured fields.
         """

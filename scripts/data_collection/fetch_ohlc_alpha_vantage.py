@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Fetch OHLC data from Alpha Vantage and update daily_gex_metrics table.
+"""Fetch OHLC data from Alpha Vantage and update daily_gex_metrics table.
 
 Usage:
     python fetch_ohlc_alpha_vantage.py --symbol SPY --start-date 2024-01-02 --end-date 2024-12-31
@@ -45,8 +44,7 @@ def load_api_key():
 
 
 def fetch_daily_ohlc(symbol, api_key):
-    """
-    Fetch daily OHLC data from Alpha Vantage TIME_SERIES_DAILY.
+    """Fetch daily OHLC data from Alpha Vantage TIME_SERIES_DAILY.
 
     Returns full history (20+ years if premium key).
     """
@@ -95,8 +93,7 @@ def fetch_daily_ohlc(symbol, api_key):
 
 
 def update_database(symbol, ohlc_records, db_path, start_date=None, end_date=None):
-    """
-    Update daily_gex_metrics table with OHLC data.
+    """Update daily_gex_metrics table with OHLC data.
 
     Only updates records that already exist in the table (have GEX data).
     """

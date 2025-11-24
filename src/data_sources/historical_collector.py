@@ -1,8 +1,7 @@
-"""
-Historical Options Data Collection Service
+"""Historical Options Data Collection Service.
 
-Systematically collects historical options chains from Alpha Vantage API
-with rate limiting, progress tracking, and resume capability.
+Systematically collects historical options chains from Alpha Vantage API with rate limiting, progress tracking, and
+resume capability.
 """
 
 import asyncio
@@ -27,8 +26,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class HistoricalOptionsCollector:
-    """
-    Service to systematically collect historical options data.
+    """Service to systematically collect historical options data.
 
     Features:
     - Rate-limited API calls (75/min for Entry Premium)
@@ -39,8 +37,7 @@ class HistoricalOptionsCollector:
     """
 
     def __init__(self, cache_manager=None, rate_limit_per_minute=70):
-        """
-        Initialize historical data collector.
+        """Initialize historical data collector.
 
         Args:
             cache_manager: UnifiedCacheManager instance
@@ -66,8 +63,7 @@ class HistoricalOptionsCollector:
         }
 
     def get_trading_dates(self, start_date, end_date):
-        """
-        Generate list of trading dates between start and end dates.
+        """Generate list of trading dates between start and end dates.
 
         Args:
             start_date: Start date in YYYY-MM-DD format
@@ -110,8 +106,7 @@ class HistoricalOptionsCollector:
             self.logger.error(f"Could not save progress: {e}")
 
     def validate_options_data(self, data: pd.DataFrame, symbol, date):
-        """
-        Validate collected options data quality.
+        """Validate collected options data quality.
 
         Args:
             data: Options chain DataFrame
@@ -143,8 +138,7 @@ class HistoricalOptionsCollector:
         return True, "Valid"
 
     async def collect_symbol_historical(self, symbol, start_date, end_date):
-        """
-        Collect historical options data for a single symbol.
+        """Collect historical options data for a single symbol.
 
         Args:
             symbol: Symbol to collect (SPY, SPX, QQQ)
@@ -302,8 +296,7 @@ class HistoricalOptionsCollector:
         }
 
     async def collect_multi_symbol_historical(self, symbols: List[str], start_date, end_date):
-        """
-        Collect historical data for multiple symbols.
+        """Collect historical data for multiple symbols.
 
         Args:
             symbols: List of symbols to collect

@@ -1,5 +1,4 @@
-"""
-GEX Analysis Agents
+"""GEX Analysis Agents.
 
 Agent modules for the GEX-LLM Pattern Analysis project.
 """

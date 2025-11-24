@@ -43,8 +43,7 @@ class RegimeMetrics:
 
 
 class RegimeClassifier:
-    """
-    Classifies 30-day GEX windows into persistent regime types.
+    """Classifies 30-day GEX windows into persistent regime types.
 
     Regime Types:
         - persistent_positive: >70% positive days, >$5B avg, ≤5 flips
@@ -75,8 +74,7 @@ class RegimeClassifier:
         magnitude_threshold: Optional[float] = None,
         max_sign_flips: Optional[int] = None,
     ):
-        """
-        Initialize regime classifier with custom thresholds.
+        """Initialize regime classifier with custom thresholds.
 
         Thresholds are loaded from config_defaults/analysis_config.yaml by default.
         Explicit parameters override config values (for testing/experimentation).
@@ -110,8 +108,7 @@ class RegimeClassifier:
         )
 
     def classify_window(self, gex_sequence: List[Dict]) -> Dict[str, any]:
-        """
-        Classify 30-day GEX window into regime type.
+        """Classify 30-day GEX window into regime type.
 
         Args:
             gex_sequence: List of 30 daily GEX observations
@@ -156,8 +153,7 @@ class RegimeClassifier:
         }
 
     def _calculate_metrics(self, gex_sequence: List[Dict]) -> RegimeMetrics:
-        """
-        Calculate regime metrics from 30-day sequence.
+        """Calculate regime metrics from 30-day sequence.
 
         Args:
             gex_sequence: List of 30 daily GEX observations
@@ -202,8 +198,7 @@ class RegimeClassifier:
         )
 
     def _classify_regime_type(self, metrics: RegimeMetrics) -> str:
-        """
-        Determine regime type from calculated metrics.
+        """Determine regime type from calculated metrics.
 
         Classification Logic:
             1. Check persistence (≥70% same sign)
@@ -248,8 +243,7 @@ class RegimeClassifier:
         return "transitional"
 
     def classify_window_dual(self, gex_sequence: List[Dict], gex_calc=None) -> Dict[str, any]:
-        """
-        Classify 30-day window with both structural and economic regimes (Issue #138).
+        """Classify 30-day window with both structural and economic regimes (Issue #138).
 
         Combines:
         1. Structural persistence (from classify_window) - structural constraint
@@ -323,8 +317,7 @@ class RegimeClassifier:
     def classify_economic_regime(
         self, gex_oi: float, gex_volume: float, volume_threshold: float = 3e9
     ) -> Dict[str, any]:
-        """
-        Classify economic regime using dual GEX metrics (Issue #138).
+        """Classify economic regime using dual GEX metrics (Issue #138).
 
         4-Regime Framework (from @TailThatWagsDog):
         1. HIGH_FRAGILITY: GEX_OI negative, GEX_Volume near zero
@@ -410,8 +403,7 @@ class RegimeClassifier:
         }
 
     def get_classification_summary(self, classification: Dict) -> str:
-        """
-        Generate human-readable summary of classification.
+        """Generate human-readable summary of classification.
 
         Args:
             classification: Output from classify_window()

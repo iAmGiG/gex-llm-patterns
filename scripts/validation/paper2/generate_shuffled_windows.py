@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Generate shuffled windows for Phase 2a negative control testing.
+"""Generate shuffled windows for Phase 2a negative control testing.
 
 Purpose: Validate that LLM doesn't detect false regimes in randomized data.
 
@@ -29,8 +28,7 @@ DATA_CACHE = PROJECT_ROOT / ".cache"
 
 
 def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict:
-    """
-    Fetch GEX sequence for a specific window end date.
+    """Fetch GEX sequence for a specific window end date.
 
     Args:
         db_path: Path to consolidated_historical.db
@@ -74,8 +72,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
 
 
 def shuffle_gex_sequence(gex_sequence: dict) -> dict:
-    """
-    Shuffle a GEX sequence while preserving metadata.
+    """Shuffle a GEX sequence while preserving metadata.
 
     Destroys temporal structure by randomizing day order.
     This breaks any regime persistence that exists in the real data.
@@ -108,8 +105,7 @@ def shuffle_gex_sequence(gex_sequence: dict) -> dict:
 def generate_phase2a_windows(
     db_path: str, q1_2024_end_dates: list, sampling_interval: int = 5, num_windows: int = 10
 ) -> list:
-    """
-    Generate Phase 2a shuffled windows.
+    """Generate Phase 2a shuffled windows.
 
     Args:
         db_path: Path to database

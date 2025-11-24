@@ -32,8 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def convert_numpy_types(obj):
-    """
-    Recursively convert numpy types to native Python types for YAML serialization.
+    """Recursively convert numpy types to native Python types for YAML serialization.
 
     Fixes Issue: numpy.float64, numpy.int64, etc. serialize as binary in YAML.
     Solution: Convert to Python float/int before serialization.
@@ -55,8 +54,7 @@ def convert_numpy_types(obj):
 
 
 class PatternTaxonomyValidator:
-    """
-    Validates patterns using obfuscation tests to prove they work without context.
+    """Validates patterns using obfuscation tests to prove they work without context.
 
     Issue #79 Requirements:
     - Obfuscation: Pattern works without date/ticker context
@@ -109,11 +107,10 @@ class PatternTaxonomyValidator:
         return trading_days
 
     def get_test_date_range(self, start_date: str, end_date: str) -> List[str]:
-        """
-        Get all trading days in range from cache.
+        """Get all trading days in range from cache.
 
-        Issue #84 Fix: Validates data coverage and fails fast if insufficient.
-        Requires >=80% coverage for statistical validity (prevents silent incomplete testing).
+        Issue #84 Fix: Validates data coverage and fails fast if insufficient. Requires >=80% coverage for statistical
+        validity (prevents silent incomplete testing).
         """
         logger.info(f"Scanning cache for dates between {start_date} and {end_date}")
 
@@ -170,8 +167,8 @@ class PatternTaxonomyValidator:
         return available_dates
 
     def validate_data_continuity(self, dates: List[str]) -> Dict:
-        """
-        Check data continuity and identify gaps.
+        """Check data continuity and identify gaps.
+
         Returns gaps that need to be filled by agent.
         """
         logger.info(f"Validating data continuity for {len(dates)} dates")
@@ -213,8 +210,7 @@ class PatternTaxonomyValidator:
     def validate_pattern_with_obfuscation(
         self, pattern_name: str, dates: List[str], confidence_threshold: float = None
     ) -> Dict:
-        """
-        Validate single pattern using obfuscation test.
+        """Validate single pattern using obfuscation test.
 
         Args:
             pattern_name: Pattern to validate (e.g., 'gamma_positioning')
@@ -539,8 +535,7 @@ class PatternTaxonomyValidator:
         return pattern_experiments.get(pattern_name, f"Analyze {self.symbol} options market mechanics on {date_str}.")
 
     def _generate_verdict(self, success_rate: float, sample_size: int) -> str:
-        """
-        Generate human-readable verdict with actionable interpretation.
+        """Generate human-readable verdict with actionable interpretation.
 
         Verdict Categories:
         - MECHANICAL (>=60%): Structural pattern, high confidence trading

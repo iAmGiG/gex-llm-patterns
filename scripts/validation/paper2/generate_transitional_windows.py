@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Generate transitional windows for Phase 2b negative control testing.
+"""Generate transitional windows for Phase 2b negative control testing.
 
 Purpose: Validate that LLM correctly rejects windows with frequent sign flips.
 
@@ -88,8 +87,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
 
 
 def create_synthetic_transitional(gex_sequence: dict, flip_count: int = 8) -> dict:
-    """
-    Create transitional window by splicing positive and negative periods.
+    """Create transitional window by splicing positive and negative periods.
 
     Strategy:
     - Take real persistent sequence
@@ -149,8 +147,7 @@ def find_transitional_windows(
     sampling_interval: int = 5,
     num_windows: int = 10,
 ) -> list:
-    """
-    Find or generate Phase 2b transitional windows.
+    """Find or generate Phase 2b transitional windows.
 
     Strategy: First try to find natural transitional windows in the data.
     If not enough exist, create synthetic ones by splicing.

@@ -60,8 +60,7 @@ def safe_convert_for_sqlite(value):
 
 
 class HistoricalGEXDatabaseBuilder:
-    """
-    Enhanced GEX database builder with production-ready features.
+    """Enhanced GEX database builder with production-ready features.
 
     Features:
     - Database concurrency control
@@ -73,8 +72,7 @@ class HistoricalGEXDatabaseBuilder:
     """
 
     def __init__(self, database_path=None, cache_manager=None):
-        """
-        Initialize enhanced GEX database builder.
+        """Initialize enhanced GEX database builder.
 
         Args:
             database_path: Path to SQLite database file
@@ -139,8 +137,7 @@ class HistoricalGEXDatabaseBuilder:
     # === CONCURRENCY CONTROL ===
 
     def acquire_db_lock(self) -> Path:
-        """
-        Prevent concurrent database writes.
+        """Prevent concurrent database writes.
 
         Returns:
             Path to lock file
@@ -179,8 +176,7 @@ class HistoricalGEXDatabaseBuilder:
 
     @contextmanager
     def get_connection(self):
-        """
-        Get a database connection from the pool.
+        """Get a database connection from the pool.
 
         Yields:
             sqlite3.Connection: Database connection
@@ -203,8 +199,7 @@ class HistoricalGEXDatabaseBuilder:
     # === MEMORY MONITORING ===
 
     def check_memory_usage(self) -> bool:
-        """
-        Monitor memory usage to prevent OOM.
+        """Monitor memory usage to prevent OOM.
 
         Returns:
             bool: True if memory is within limits, False if warning issued
@@ -237,8 +232,7 @@ class HistoricalGEXDatabaseBuilder:
     # === RESUME CAPABILITY ===
 
     def get_resume_point(self, symbol):
-        """
-        Find last successfully processed date for resume capability.
+        """Find last successfully processed date for resume capability.
 
         Args:
             symbol: Stock symbol
@@ -268,8 +262,7 @@ class HistoricalGEXDatabaseBuilder:
     # === GEX VALIDATION ===
 
     def validate_gex_results(self, gex_profile: Dict) -> bool:
-        """
-        Validate GEX calculations are reasonable.
+        """Validate GEX calculations are reasonable.
 
         Args:
             gex_profile: GEX calculation results
@@ -434,8 +427,7 @@ class HistoricalGEXDatabaseBuilder:
     # === BATCH OPERATIONS ===
 
     def add_to_batch(self, operation_type, data: Tuple):
-        """
-        Add operation to batch buffer for efficient database writes.
+        """Add operation to batch buffer for efficient database writes.
 
         Args:
             operation_type: Type of operation ('gex', 'strike', 'pattern', 'fed')
@@ -530,8 +522,7 @@ class HistoricalGEXDatabaseBuilder:
     # === CORE METHODS FROM ORIGINAL ===
 
     def get_stock_price(self, symbol, date, options_data: pd.DataFrame = None):
-        """
-        Get REAL stock closing price for the date.
+        """Get REAL stock closing price for the date.
 
         CRITICAL: Database must store REAL market prices, NEVER obfuscated values.
         Obfuscation is ONLY for LLM analysis layer (data_obfuscation.py), not storage.
@@ -628,11 +619,10 @@ class HistoricalGEXDatabaseBuilder:
             return None
 
     def prepare_options_data_for_gex(self, options_data: pd.DataFrame) -> pd.DataFrame:
-        """
-        Transform options data format for GEX calculator compatibility.
+        """Transform options data format for GEX calculator compatibility.
 
-        Validates required columns and converts from separate call/put rows
-        to combined format expected by GEX calculator.
+        Validates required columns and converts from separate call/put rows to combined format expected by GEX
+        calculator.
         """
         # Validate required columns
         required_cols = ["strike", "expiration", "type", "open_interest", "volume", "implied_volatility"]
@@ -679,8 +669,7 @@ class HistoricalGEXDatabaseBuilder:
             return pd.DataFrame()
 
     def calculate_daily_gex_profile(self, symbol, date, options_data: pd.DataFrame, spot_price):
-        """
-        Calculate complete GEX profile for a trading day with validation.
+        """Calculate complete GEX profile for a trading day with validation.
 
         CRITICAL: Must use calculate_dealer_gamma_exposure() to match validation pipeline.
 
@@ -949,8 +938,7 @@ class HistoricalGEXDatabaseBuilder:
     def store_raw_options_chain(
         self, conn: sqlite3.Connection, symbol: str, date: str, options_df: pd.DataFrame, underlying_price: float
     ) -> int:
-        """
-        Store raw options chain data to database (Issue #147).
+        """Store raw options chain data to database (Issue #147).
 
         Args:
             conn: Database connection
@@ -1035,8 +1023,7 @@ class HistoricalGEXDatabaseBuilder:
             raise  # Re-raise to trigger transaction rollback
 
     def build_gex_database(self, symbols: List[str], start_date, end_date, min_quality_score: int = 60):
-        """
-        Build complete GEX database with resume capability and batch operations.
+        """Build complete GEX database with resume capability and batch operations.
 
         Args:
             symbols: List of symbols to process

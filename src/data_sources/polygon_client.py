@@ -1,5 +1,5 @@
-"""
-Polygon.io REST API client for stock data.
+"""Polygon.io REST API client for stock data.
+
 Free tier provides daily stock data with 5 calls/minute limit.
 """
 
@@ -60,8 +60,7 @@ class PolygonClient:
         self.last_request_times.append(now)
 
     def fetch_daily_bars(self, symbol, start_date, end_date):
-        """
-        Fetch daily OHLCV data for a symbol.
+        """Fetch daily OHLCV data for a symbol.
 
         Args:
             symbol: Stock symbol (e.g., SPY)
@@ -137,8 +136,7 @@ class PolygonClient:
             return None
 
     def fetch_recent_data(self, symbol, days: int = 30):
-        """
-        Fetch recent daily data for a symbol.
+        """Fetch recent daily data for a symbol.
 
         Args:
             symbol: Stock symbol

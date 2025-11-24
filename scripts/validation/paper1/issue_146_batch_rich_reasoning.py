@@ -88,8 +88,7 @@ class RichReasoningBatchValidator:
         return df
 
     def sample_days_for_batch(self, detections_df: pd.DataFrame, n_per_quarter: int = 25) -> Dict[str, List[Dict]]:
-        """
-        Sample days from Q1 and Q4 for batch processing.
+        """Sample days from Q1 and Q4 for batch processing.
 
         Args:
             detections_df: Phase 1 detection data
@@ -120,8 +119,7 @@ class RichReasoningBatchValidator:
         return samples
 
     def load_gex_data_for_date(self, date_str: str) -> Optional[Dict]:
-        """
-        Load GEX data for a specific date from consolidated database.
+        """Load GEX data for a specific date from consolidated database.
 
         Args:
             date_str: Date in YYYY-MM-DD format
@@ -167,8 +165,7 @@ class RichReasoningBatchValidator:
             return None
 
     def build_rich_reasoning_prompt(self, date_str: str, gex_data: Dict) -> str:
-        """
-        Build rich reasoning prompt for a single day.
+        """Build rich reasoning prompt for a single day.
 
         Uses the new "detailed_causal_explanation" question template
         from config_defaults/llm_prompts.yaml.
@@ -235,8 +232,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         return prompt
 
     def prepare_batch_file(self, samples: Dict[str, List[Dict]], model: str = "gpt-4o-mini") -> Path:
-        """
-        Generate JSONL batch file for OpenAI Batch API.
+        """Generate JSONL batch file for OpenAI Batch API.
 
         Args:
             samples: Dict with 'Q1' and 'Q4' sample lists
@@ -293,8 +289,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         return output_file
 
     def submit_batch(self, batch_file: Path) -> str:
-        """
-        Upload batch file and submit batch job to OpenAI.
+        """Upload batch file and submit batch job to OpenAI.
 
         Args:
             batch_file: Path to JSONL batch file
@@ -340,8 +335,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         return batch_id
 
     def poll_batch_status(self, batch_id: str):
-        """
-        Poll batch job status.
+        """Poll batch job status.
 
         Args:
             batch_id: Batch ID from submit_batch()
@@ -358,8 +352,7 @@ IMPORTANT: Use rich descriptive language in what_mechanism, intensity_language, 
         return batch.status
 
     def retrieve_results(self, batch_id: str) -> Path:
-        """
-        Retrieve and parse batch results.
+        """Retrieve and parse batch results.
 
         Args:
             batch_id: Batch ID from submit_batch()

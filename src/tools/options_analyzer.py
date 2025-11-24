@@ -1,8 +1,7 @@
-"""
-Options Chain Analysis Tools
+"""Options Chain Analysis Tools.
 
-Tools for analyzing options chain data with focus on patterns like
-Short Put Arbitrage and other institutional flow behaviors.
+Tools for analyzing options chain data with focus on patterns like Short Put Arbitrage and other institutional flow
+behaviors.
 """
 
 import logging
@@ -36,8 +35,7 @@ class OptionsChainAnalyzer:
         self.summer_months = config.get("options_analysis.options_chain_analyzer.summer_months", [6, 7, 8])
 
     def detect_short_put_arbitrage_signals(self, options_df):
-        """
-        Detect potential Short Put Arbitrage patterns in options chain data.
+        """Detect potential Short Put Arbitrage patterns in options chain data.
 
         Args:
             options_df: DataFrame with options chain data from Alpha Vantage

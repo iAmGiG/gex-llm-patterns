@@ -1,6 +1,4 @@
-"""
-Market Intelligence Module for Agent Tools
-Extracted from agent_utils.py for clean integration.
+"""Market Intelligence Module for Agent Tools Extracted from agent_utils.py for clean integration.
 
 Provides market sector classification and query parsing capabilities.
 """
@@ -62,8 +60,7 @@ class MarketIntelligence:
         }
 
     def extract_query_details(self, message):
-        """
-        Extract ticker, sector, dates from a user query.
+        """Extract ticker, sector, dates from a user query.
 
         Args:
             message: User's query message

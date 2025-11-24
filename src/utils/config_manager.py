@@ -1,7 +1,4 @@
-"""
-Configuration Manager
-Centralized configuration loading with environment override support.
-"""
+"""Configuration Manager Centralized configuration loading with environment override support."""
 
 import logging
 import os
@@ -14,16 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 class ConfigManager:
-    """
-    Centralized configuration manager for system parameters.
+    """Centralized configuration manager for system parameters.
 
-    Loads configuration from YAML files with environment variable override support.
-    Provides dot-notation access to nested configuration values.
+    Loads configuration from YAML files with environment variable override support. Provides dot-notation access to
+    nested configuration values.
     """
 
     def __init__(self, config_dir: Optional[str] = None, environment: Optional[str] = None):
-        """
-        Initialize configuration manager.
+        """Initialize configuration manager.
 
         Args:
             config_dir: Path to configuration directory (default: project_root/config_defaults)
@@ -71,8 +66,7 @@ class ConfigManager:
                 logger.error(f"Failed to load config file {config_file}: {e}")
 
     def get(self, key_path: str, default: Any = None) -> Any:
-        """
-        Get configuration value using dot notation.
+        """Get configuration value using dot notation.
 
         Args:
             key_path: Dot-separated path to configuration value (e.g., 'tokenization.gex.lookback_days')
@@ -136,8 +130,7 @@ class ConfigManager:
         return value
 
     def get_section(self, section_name: str) -> Dict[str, Any]:
-        """
-        Get entire configuration section.
+        """Get entire configuration section.
 
         Args:
             section_name: Name of configuration section
@@ -156,8 +149,7 @@ class ConfigManager:
             return False
 
     def list_keys(self, section: Optional[str] = None) -> list:
-        """
-        List all available configuration keys.
+        """List all available configuration keys.
 
         Args:
             section: Specific section to list (None for all)
@@ -197,8 +189,7 @@ class ConfigManager:
         logger.info("Configuration reloaded")
 
     def validate_required_keys(self, required_keys: list) -> Dict[str, bool]:
-        """
-        Validate that required configuration keys are present.
+        """Validate that required configuration keys are present.
 
         Args:
             required_keys: List of required key paths

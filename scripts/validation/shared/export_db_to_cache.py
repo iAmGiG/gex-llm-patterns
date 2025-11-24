@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Export GEX from database to cache parquet files.
+"""Export GEX from database to cache parquet files.
 
 The Sequential GEX validation requires cache parquet files, but we have
 2020 data only in the database. This script bridges that gap.

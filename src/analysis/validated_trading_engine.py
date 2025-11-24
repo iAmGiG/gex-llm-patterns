@@ -1,6 +1,5 @@
-"""
-Validated Trading Engine
-Statistically-validated trading rules based on empirical analysis of historical patterns.
+"""Validated Trading Engine Statistically-validated trading rules based on empirical analysis of historical patterns.
+
 Provides production-ready trading signals with risk management and execution logic.
 """
 
@@ -106,8 +105,7 @@ class ValidatedTradingEngine:
     def evaluate_gamma_trap_contrarian(
         self, gex_data: Dict, market_data: Dict, fed_context: Dict = None, pattern_confidence: float = 0
     ):
-        """
-        Evaluate GAMMA_TRAP contrarian trading rule.
+        """Evaluate GAMMA_TRAP contrarian trading rule.
 
         Returns trading decision with statistical backing.
         """
@@ -273,8 +271,7 @@ class ValidatedTradingEngine:
 def create_production_trading_signal(
     date, gex_data: Dict, market_data: Dict, pattern_results: List[Dict], fed_context: Dict = None
 ):
-    """
-    Create production trading signal with statistical validation.
+    """Create production trading signal with statistical validation.
 
     This is the main entry point for production trading decisions.
     """

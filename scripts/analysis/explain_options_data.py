@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Explain Options Data Structure
+"""Explain Options Data Structure.
 
 Shows what we're collecting and how it enables GEX analysis.
 """

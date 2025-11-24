@@ -41,8 +41,7 @@ logger = logging.getLogger(__name__)
 
 
 def backup_database(db_path: Path) -> Path:
-    """
-    Create timestamped backup of existing database.
+    """Create timestamped backup of existing database.
 
     Args:
         db_path: Path to database file
@@ -83,8 +82,7 @@ def backup_database(db_path: Path) -> Path:
 
 
 def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager, sample_dates: list) -> dict:
-    """
-    Validate rebuilt database against fresh calculations.
+    """Validate rebuilt database against fresh calculations.
 
     Args:
         db_path: Path to rebuilt database
@@ -165,8 +163,7 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager, sample_d
 
 
 def rebuild_database(db_path: Path, start_date: str, end_date: str, symbol: str = "SPY", force: bool = False):
-    """
-    Rebuild database with fresh GEX calculations.
+    """Rebuild database with fresh GEX calculations.
 
     Args:
         db_path: Path to database file

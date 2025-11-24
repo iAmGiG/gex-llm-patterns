@@ -36,14 +36,13 @@ except ImportError as e:
 
 
 class MarketMechanicsAgent:
-    """
-    Single agent that interprets market mechanics from GEX data.
+    """Single agent that interprets market mechanics from GEX data.
+
     Focus: WHO is forcing WHOM to do WHAT
     """
 
     def __init__(self, symbol: str = "SPY", llm_provider: Optional[object] = None, config: Optional[Dict] = None):
-        """
-        Initialize the Market Mechanics Agent.
+        """Initialize the Market Mechanics Agent.
 
         Args:
             symbol: Trading symbol to analyze
@@ -144,8 +143,8 @@ class MarketMechanicsAgent:
             return {}
 
     def _build_mechanics_dict_from_library(self) -> Dict:
-        """
-        Convert PatternLibrary patterns to mechanics dict format.
+        """Convert PatternLibrary patterns to mechanics dict format.
+
         Bridges between comprehensive PatternLibrary and simplified mechanics dict.
         """
         mechanics = {}
@@ -162,8 +161,8 @@ class MarketMechanicsAgent:
     def _normalize_date(self, date) -> tuple[datetime.datetime, str]:
         """Normalize date input to (datetime_obj, date_string) tuple.
 
-        Supports both daily dates ('2024-01-15') and intra-day timestamps ('2024-01-15 15:30:00').
-        For intra-day timestamps, preserves the full timestamp format.
+        Supports both daily dates ('2024-01-15') and intra-day timestamps ('2024-01-15 15:30:00'). For intra-day
+        timestamps, preserves the full timestamp format.
         """
         if isinstance(date, str):
             try:
@@ -229,9 +228,8 @@ class MarketMechanicsAgent:
         return insights
 
     def run_experiment(self, experiment_description: str, date: str = "2024-06-28", obfuscate: bool = False) -> Dict:
-        """
-        Run flexible experiment based on natural language description.
-        Agent decides what tools to call and how to analyze.
+        """Run flexible experiment based on natural language description. Agent decides what tools to call and how to
+        analyze.
 
         Args:
             experiment_description: Natural language experiment request
@@ -353,8 +351,7 @@ class MarketMechanicsAgent:
     def run_batch_experiments(
         self, dates: List[str], experiment_template: str = None, use_obfuscation: bool = True
     ) -> Dict:
-        """
-        Run experiments on multiple dates in a single LLM call for better pattern recognition.
+        """Run experiments on multiple dates in a single LLM call for better pattern recognition.
 
         Args:
             dates: List of dates to analyze
@@ -661,8 +658,8 @@ Confidence must be a number 0-100.
         return results
 
     def _plan_experiment_tools(self, experiment_description: str, date: str) -> Dict:
-        """
-        Use LLM to analyze experiment description and decide what tools/data are needed.
+        """Use LLM to analyze experiment description and decide what tools/data are needed.
+
         Returns a tool execution plan using templates from config.
         """
         templates = self.prompt_templates.get("experiment_planning", {})
@@ -753,8 +750,8 @@ Respond with a JSON plan:
 """
 
     def _execute_tool_plan(self, tool_plan: Dict, date: str) -> Dict:
-        """
-        Execute the tools specified in the LLM-generated plan.
+        """Execute the tools specified in the LLM-generated plan.
+
         Returns collected data for analysis.
         """
         experiment_data = {}
@@ -829,8 +826,8 @@ Respond with a JSON plan:
             return self.daily_analysis(date)
 
     def _analyze_experiment_results(self, experiment_description: str, experiment_data: Dict, tool_plan: Dict) -> Dict:
-        """
-        Use LLM to analyze the collected data and generate insights specific to the experiment.
+        """Use LLM to analyze the collected data and generate insights specific to the experiment.
+
         Uses templates from config.
         """
         templates = self.prompt_templates.get("experiment_analysis", {})
@@ -994,8 +991,7 @@ Respond with JSON:
     def daily_analysis(self, date) -> Dict:
         # Store current date for logging
         self._current_date = date
-        """
-        Perform complete daily market mechanics analysis.
+        """Perform complete daily market mechanics analysis.
 
         Returns:
             Dict containing:
@@ -1096,9 +1092,8 @@ Respond with JSON:
     def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
         """Fetch GEX data from database, calculate and populate if missing.
 
-        Supports both daily data and intra-day data retrieval.
-        For timestamps, queries intraday_gex_metrics table.
-        For dates, queries daily_gex_metrics table.
+        Supports both daily data and intra-day data retrieval. For timestamps, queries intraday_gex_metrics table. For
+        dates, queries daily_gex_metrics table.
         """
         try:
             conn = sqlite3.connect("./.cache/consolidated_historical.db")
@@ -1504,8 +1499,8 @@ Respond with JSON:
         return patterns
 
     def _detect_compound_patterns(self, strike_patterns: Dict, context: Dict) -> List[Dict]:
-        """
-        Detect compound patterns where multiple signals align for higher probability.
+        """Detect compound patterns where multiple signals align for higher probability.
+
         Based on main chat suggestion for pattern combination detection.
         """
         compound_patterns = []

@@ -1,9 +1,7 @@
-"""
-Alpha Vantage API Client for GEX-LLM Pattern Analysis
+"""Alpha Vantage API Client for GEX-LLM Pattern Analysis.
 
-This module specializes in retrieving options chain data from Alpha Vantage API
-for SPY/SPX gamma exposure calculations. Optimized for entry premium tier rate limits
-(75 calls/min) with intelligent caching.
+This module specializes in retrieving options chain data from Alpha Vantage API for SPY/SPX gamma exposure calculations.
+Optimized for entry premium tier rate limits (75 calls/min) with intelligent caching.
 """
 
 import datetime
@@ -16,13 +14,13 @@ import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
+
 from src.cache import UnifiedCacheManager
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
 
 
 class AlphaVantageGEXClient:
-    """
-    Alpha Vantage client specialized for GEX calculation data needs.
+    """Alpha Vantage client specialized for GEX calculation data needs.
 
     Focuses on:
     - SPY/SPX options chains (historical and current)
@@ -80,8 +78,7 @@ class AlphaVantageGEXClient:
         return True
 
     def fetch_historical_options(self, symbol, date=None, datatype="json"):
-        """
-        Fetch full historical options chain for a specific trading date.
+        """Fetch full historical options chain for a specific trading date.
 
         Args:
             symbol: Underlying symbol (SPY, SPX, IBM, etc.)
@@ -167,8 +164,7 @@ class AlphaVantageGEXClient:
             return pd.DataFrame()
 
     def fetch_underlying_data(self, symbol, start_date, end_date):
-        """
-        Fetch underlying stock data for GEX calculations.
+        """Fetch underlying stock data for GEX calculations.
 
         Args:
             symbol: Stock symbol (SPY, SPX)
@@ -270,8 +266,7 @@ class AlphaVantageGEXClient:
             return pd.DataFrame()
 
     def _process_csv_response(self, csv_text, symbol, date):
-        """
-        Process CSV response from Alpha Vantage Historical Options API.
+        """Process CSV response from Alpha Vantage Historical Options API.
 
         Args:
             csv_text: Raw CSV response text
@@ -311,8 +306,7 @@ class AlphaVantageGEXClient:
         return df
 
     def _process_options_data(self, raw_data):
-        """
-        Process raw options data into standardized format for GEX calculations.
+        """Process raw options data into standardized format for GEX calculations.
 
         Args:
             raw_data: Raw API response data from Historical Options endpoint
@@ -339,8 +333,7 @@ class AlphaVantageGEXClient:
             return pd.DataFrame()
 
     def _apply_standard_processing(self, df):
-        """
-        Apply standard processing to options DataFrame (shared by JSON and CSV).
+        """Apply standard processing to options DataFrame (shared by JSON and CSV).
 
         Args:
             df: Raw options DataFrame

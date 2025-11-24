@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Generate low-magnitude windows for Phase 2c negative control testing.
+"""Generate low-magnitude windows for Phase 2c negative control testing.
 
 Purpose: Validate that LLM correctly rejects persistent-sign but weak-magnitude windows.
 
@@ -89,8 +88,7 @@ def get_gex_sequence(db_path: str, end_date: str, window_size: int = 30) -> dict
 
 
 def scale_to_low_magnitude(gex_sequence: dict, scale_factor: float = 0.3, target_magnitude_b: float = 2.4) -> dict:
-    """
-    Scale GEX values to low magnitude while preserving sign persistence.
+    """Scale GEX values to low magnitude while preserving sign persistence.
 
     Args:
         gex_sequence: Original sequence
@@ -137,8 +135,7 @@ def find_low_magnitude_windows(
     sampling_interval: int = 5,
     num_windows: int = 10,
 ) -> list:
-    """
-    Find and scale windows to low magnitude.
+    """Find and scale windows to low magnitude.
 
     Strategy: Find windows with high persistence (>70%), then scale down.
     """

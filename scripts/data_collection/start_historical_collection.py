@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Start Historical Options Data Collection
+"""Start Historical Options Data Collection.
 
-Script to begin systematic collection of historical options data
-from Alpha Vantage API. Configurable date ranges and symbols.
+Script to begin systematic collection of historical options data from Alpha Vantage API. Configurable date ranges and
+symbols.
 """
 
 import argparse

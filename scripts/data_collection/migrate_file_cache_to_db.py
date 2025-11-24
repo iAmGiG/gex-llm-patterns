@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 def migrate_file_cache_to_database(
     symbol: str = "SPY", cache_dir: Path = None, db_path: Path = None, dry_run: bool = False
 ):
-    """
-    Migrate all file cache data to database.
+    """Migrate all file cache data to database.
 
     Args:
         symbol: Stock symbol to migrate

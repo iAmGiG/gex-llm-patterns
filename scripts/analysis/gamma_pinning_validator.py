@@ -26,8 +26,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 class GammaPinningValidator:
-    """
-    Gamma pinning validation tool for Friday algo time analysis.
+    """Gamma pinning validation tool for Friday algo time analysis.
 
     Tests:
     1. Friday 3:30 PM gamma pinning behavior
@@ -56,8 +55,7 @@ class GammaPinningValidator:
         self.moderate_distance_threshold = 10.0  # $10 considered "moderate"
 
     def validate_friday_gamma_pinning(self, start_date: str, end_date: str, target_time: str = "15:30:00") -> Dict:
-        """
-        Main validation of Friday gamma pinning at target time.
+        """Main validation of Friday gamma pinning at target time.
 
         Args:
             start_date: Start date for analysis

@@ -92,8 +92,8 @@ class MarketMechanicsPattern:
 
 
 class PatternLibrary:
-    """
-    Comprehensive pattern library manager implementing Issue #54.
+    """Comprehensive pattern library manager implementing Issue #54.
+
     Contains 15 core market mechanics patterns.
     """
 
@@ -817,8 +817,8 @@ class PatternLibrary:
         return [p for p in self.patterns.values() if p.category == category]
 
     def match_patterns(self, market_data: Dict) -> List[Dict[str, Any]]:
-        """
-        Match current market conditions against all patterns.
+        """Match current market conditions against all patterns.
+
         Returns list of matching patterns with confidence scores.
         """
         matches = []

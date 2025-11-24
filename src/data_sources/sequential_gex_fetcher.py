@@ -31,8 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class SequentialGEXFetcher:
-    """
-    Fetch N-day GEX sequences for regime and trajectory analysis (Paper #2).
+    """Fetch N-day GEX sequences for regime and trajectory analysis (Paper #2).
 
     Architecture:
     - Delegates to existing GEXCacheManager for single-day retrieval
@@ -57,8 +56,7 @@ class SequentialGEXFetcher:
     """
 
     def __init__(self, cache_manager: UnifiedCacheManager, window_size: int = 30):
-        """
-        Initialize Sequential GEX Fetcher.
+        """Initialize Sequential GEX Fetcher.
 
         Args:
             cache_manager: UnifiedCacheManager instance (provides GEX cache access)
@@ -74,8 +72,7 @@ class SequentialGEXFetcher:
         logger.info(f"SequentialGEXFetcher initialized with window_size={window_size} days")
 
     def get_sequential_gex(self, symbol: str, end_date: str, lookback_days: Optional[int] = None) -> Optional[Dict]:
-        """
-        Fetch GEX data for N-day window ending at end_date.
+        """Fetch GEX data for N-day window ending at end_date.
 
         Args:
             symbol: Trading symbol (SPY, SPX, etc.)
@@ -171,8 +168,7 @@ class SequentialGEXFetcher:
         }
 
     def _get_trading_days_before(self, symbol: str, end_date: str, n_days: int) -> List[str]:
-        """
-        Get N trading days before end_date (inclusive).
+        """Get N trading days before end_date (inclusive).
 
         Strategy: Query database for actual trading days (Nov 20, 2025 update).
         Rationale: Database is single source of truth with complete historical data.
@@ -261,8 +257,7 @@ class SequentialGEXFetcher:
             return available_dates
 
     def calculate_trajectory_metrics(self, gex_sequence: List[Dict]) -> Dict:
-        """
-        Calculate trajectory summary metrics for LLM prompt.
+        """Calculate trajectory summary metrics for LLM prompt.
 
         Computes:
         - GEX trend direction (INCREASING/DECREASING/STABLE)
@@ -331,8 +326,7 @@ class SequentialGEXFetcher:
         }
 
     def _classify_trajectory(self, gex_values: List[float]) -> str:
-        """
-        Classify 5-day GEX trajectory type.
+        """Classify 5-day GEX trajectory type.
 
         Classification Logic:
         1. Reversal: Sign flip (neg → pos or pos → neg)
@@ -384,8 +378,7 @@ class SequentialGEXFetcher:
             return "persistent"
 
     def validate_sequence_data_quality(self, gex_sequence: List[Dict]) -> Dict[str, bool]:
-        """
-        Validate data quality of GEX sequence.
+        """Validate data quality of GEX sequence.
 
         Checks:
         - All required fields present (net_gex, flip_point, spot_price)
@@ -437,8 +430,7 @@ class SequentialGEXFetcher:
         return {"valid": len(errors) == 0, "errors": errors}
 
     def get_sequential_statistics(self, symbol: str, start_date: str, end_date: str, lookback_days: int = 5) -> Dict:
-        """
-        Get statistics about sequential windows in date range.
+        """Get statistics about sequential windows in date range.
 
         Useful for validation planning (how many windows available?).
 

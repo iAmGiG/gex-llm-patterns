@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class UnifiedDataSystem:
-    """
-    Unified 2-tier data system supporting both daily and intraday queries.
+    """Unified 2-tier data system supporting both daily and intraday queries.
 
     Features:
     - Automatic detection of daily vs intraday queries
@@ -41,8 +40,7 @@ class UnifiedDataSystem:
     """
 
     def __init__(self, db_path: str = ".cache/consolidated_historical.db"):
-        """
-        Initialize unified data system.
+        """Initialize unified data system.
 
         Args:
             db_path: Path to SQLite database
@@ -70,8 +68,7 @@ class UnifiedDataSystem:
         logger.info(f"Initialized UnifiedDataSystem with database: {self.db_path}")
 
     def fetch_options_data(self, date_or_timestamp: str, symbol: str = "SPY") -> Optional[Dict]:
-        """
-        Fetch options data with automatic daily/intraday detection.
+        """Fetch options data with automatic daily/intraday detection.
 
         Args:
             date_or_timestamp: Either YYYY-MM-DD or YYYY-MM-DD HH:MM:SS
@@ -89,8 +86,7 @@ class UnifiedDataSystem:
             return self._fetch_daily_options(date_or_timestamp, symbol)
 
     def fetch_market_data(self, date_or_timestamp: str, symbol: str = "SPY") -> Optional[Dict]:
-        """
-        Fetch market data with automatic daily/intraday detection.
+        """Fetch market data with automatic daily/intraday detection.
 
         Args:
             date_or_timestamp: Either YYYY-MM-DD or YYYY-MM-DD HH:MM:SS
@@ -108,8 +104,7 @@ class UnifiedDataSystem:
             return self._fetch_daily_market(date_or_timestamp, symbol)
 
     def fetch_gex_data(self, date_or_timestamp: str, symbol: str = "SPY") -> Optional[Dict]:
-        """
-        Fetch GEX data with automatic daily/intraday detection.
+        """Fetch GEX data with automatic daily/intraday detection.
 
         Args:
             date_or_timestamp: Either YYYY-MM-DD or YYYY-MM-DD HH:MM:SS
@@ -303,8 +298,7 @@ class UnifiedDataSystem:
     # ============= Database Operations =============
 
     def _query_database(self, date_or_timestamp: str, symbol: str, data_type: str, is_intraday: bool) -> Optional[Dict]:
-        """
-        Query database for data.
+        """Query database for data.
 
         Args:
             date_or_timestamp: Date or timestamp string
@@ -389,8 +383,7 @@ class UnifiedDataSystem:
             return None
 
     def _store_in_database(self, date_or_timestamp: str, symbol: str, data: Dict, data_type: str, is_intraday: bool):
-        """
-        Store data in database for future Tier 1 access.
+        """Store data in database for future Tier 1 access.
 
         Args:
             date_or_timestamp: Date or timestamp string
@@ -587,8 +580,7 @@ class UnifiedDataSystem:
     # ============= Utility Methods =============
 
     def _is_intraday(self, date_or_timestamp: str) -> bool:
-        """
-        Determine if input is an intraday timestamp or daily date.
+        """Determine if input is an intraday timestamp or daily date.
 
         Args:
             date_or_timestamp: Input string
@@ -600,8 +592,7 @@ class UnifiedDataSystem:
         return " " in date_or_timestamp and ":" in date_or_timestamp
 
     def _convert_cache_result(self, data, single_record: bool = False):
-        """
-        Convert cache result (DataFrame or dict) to dictionary.
+        """Convert cache result (DataFrame or dict) to dictionary.
 
         Args:
             data: Data from cache (can be DataFrame, dict, or None)
@@ -630,8 +621,7 @@ class UnifiedDataSystem:
         market_data: Dict = None,
         gex_data: Dict = None,
     ) -> bool:
-        """
-        Store data in the system (both cache and database).
+        """Store data in the system (both cache and database).
 
         Args:
             date_or_timestamp: Date or timestamp
@@ -672,8 +662,7 @@ class UnifiedDataSystem:
     def get_algo_time_data(
         self, start_date: str, end_date: str, symbol: str = "SPY", algo_time: str = "15:30:00", weekday: int = None
     ) -> List[Dict]:
-        """
-        Get algo time data for flexible analysis.
+        """Get algo time data for flexible analysis.
 
         Args:
             start_date: Start date (YYYY-MM-DD)
@@ -707,8 +696,7 @@ class UnifiedDataSystem:
         return algo_data
 
     def get_friday_gamma_data(self, start_date: str, end_date: str, symbol: str = "SPY") -> List[Dict]:
-        """
-        Backward compatibility method for Friday 3:30 PM gamma data.
+        """Backward compatibility method for Friday 3:30 PM gamma data.
 
         Args:
             start_date: Start date (YYYY-MM-DD)
@@ -721,8 +709,7 @@ class UnifiedDataSystem:
         return self.get_algo_time_data(start_date, end_date, symbol, "15:30:00", weekday=4)
 
     def get_algo_time_from_config(self, algo_name: str) -> str:
-        """
-        Get algo time from config by name.
+        """Get algo time from config by name.
 
         Args:
             algo_name: Name like 'gamma_330pm', 'gamma_350pm', 'market_close'
@@ -752,8 +739,7 @@ class UnifiedDataSystem:
     def _query_algo_time_database(
         self, start_date: str, end_date: str, symbol: str, algo_time: str, weekday: int = None
     ) -> List[Dict]:
-        """
-        Query database for algo time data with flexible parameters.
+        """Query database for algo time data with flexible parameters.
 
         Args:
             start_date: Start date
@@ -799,8 +785,7 @@ class UnifiedDataSystem:
             return []
 
     def get_performance_stats(self) -> Dict:
-        """
-        Get comprehensive performance statistics.
+        """Get comprehensive performance statistics.
 
         Returns:
             Dictionary of performance metrics
@@ -866,8 +851,8 @@ class UnifiedDataSystem:
         logger.info("Performance statistics reset")
 
     def _make_json_serializable(self, data):
-        """
-        Convert data to JSON-serializable format.
+        """Convert data to JSON-serializable format.
+
         Handles pandas Timestamps and other non-serializable types.
         """
         if isinstance(data, list):

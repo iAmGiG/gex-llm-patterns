@@ -1,8 +1,5 @@
-"""
-Alpha Vantage Sample Data Loader
-Handles loading and parsing of sample Alpha Vantage options data
-for testing and development without API calls.
-"""
+"""Alpha Vantage Sample Data Loader Handles loading and parsing of sample Alpha Vantage options data for testing and
+development without API calls."""
 
 import json
 import logging
@@ -17,8 +14,7 @@ class AlphaVantageSampleLoader:
     """Load and parse Alpha Vantage sample options data."""
 
     def __init__(self, sample_file_path=None):
-        """
-        Initialize the sample data loader.
+        """Initialize the sample data loader.
 
         Args:
             sample_file_path: Path to the sample JSON file.
@@ -33,8 +29,7 @@ class AlphaVantageSampleLoader:
         self._df_cache = None
 
     def load_raw_data(self):
-        """
-        Load raw JSON data from sample file.
+        """Load raw JSON data from sample file.
 
         Returnsionary containing the raw Alpha Vantage response
         """
@@ -53,8 +48,7 @@ class AlphaVantageSampleLoader:
         return self._data_cache
 
     def to_dataframe(self):
-        """
-        Convert sample data to a pandas DataFrame.
+        """Convert sample data to a pandas DataFrame.
 
         Returns:
             DataFrame with parsed options data
@@ -106,8 +100,7 @@ class AlphaVantageSampleLoader:
         return df
 
     def get_options_chain(self, symbol, date=None):
-        """
-        Get options chain for a specific symbol and date.
+        """Get options chain for a specific symbol and date.
 
         Args:
             symbol: Stock symbol (e.g., 'IBM')
@@ -144,8 +137,7 @@ class AlphaVantageSampleLoader:
         return {"start": df["date"].min().strftime("%Y-%m-%d"), "end": df["date"].max().strftime("%Y-%m-%d")}
 
     def get_expiration_dates(self, symbol=None):
-        """
-        Get unique expiration dates.
+        """Get unique expiration dates.
 
         Args:
             symbol: If specified, returns expirations only for that symbol
@@ -161,8 +153,7 @@ class AlphaVantageSampleLoader:
         return sorted(exp_dates)
 
     def get_strikes(self, symbol, expiration):
-        """
-        Get all strikes for a symbol and expiration.
+        """Get all strikes for a symbol and expiration.
 
         Args:
             symbol: Stock symbol
@@ -179,8 +170,7 @@ class AlphaVantageSampleLoader:
         return sorted(strikes.tolist())
 
     def filter_by_greeks(self, min_delta=None, max_delta=None, min_gamma=None, min_volume=None):
-        """
-        Filter options by Greek values and volume.
+        """Filter options by Greek values and volume.
 
         Args:
             min_delta: Minimum delta value
@@ -222,14 +212,13 @@ class AlphaVantageSampleLoader:
 
 
 class SampleDataProvider:
-    """
-    Provides a cache-like interface for agents to retrieve sample data.
+    """Provides a cache-like interface for agents to retrieve sample data.
+
     Mimics the behavior of pulling from cache/API.
     """
 
     def __init__(self, loader=None):
-        """
-        Initialize the data provider.
+        """Initialize the data provider.
 
         Args:
             loader: AlphaVantageSampleLoader instance. Creates new one if None.
@@ -245,8 +234,7 @@ class SampleDataProvider:
             logger.info("Sample data provider initialized")
 
     def fetch_options_data(self, symbol, date=None, use_cache=True):
-        """
-        Fetch options data with cache-like interface.
+        """Fetch options data with cache-like interface.
 
         Args:
             symbol: Stock symbol
@@ -272,8 +260,7 @@ class SampleDataProvider:
         return sorted(dates.tolist())
 
     def is_data_available(self, symbol, date) -> bool:
-        """
-        Check if data is available for symbol and date.
+        """Check if data is available for symbol and date.
 
         Args:
             symbol: Stock symbol

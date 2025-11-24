@@ -47,15 +47,13 @@ logger = logging.getLogger(__name__)
 
 
 class RegimeWindowValidator:
-    """
-    Validates LLM regime detection on 30-day windows.
+    """Validates LLM regime detection on 30-day windows.
 
     Compares LLM classifications against deterministic RegimeClassifier.
     """
 
     def __init__(self, symbol: str = "SPY", window_size: int = 30, obfuscate: bool = True):
-        """
-        Initialize regime window validator.
+        """Initialize regime window validator.
 
         Args:
             symbol: Ticker symbol to analyze
@@ -85,8 +83,7 @@ class RegimeWindowValidator:
         logger.info(f"Using MarketMechanicsAgent with LLM: {self.agent.llm.model if self.agent.llm else 'None'}")
 
     def _get_trading_days_in_range(self, start_date: str, end_date: str) -> List[str]:
-        """
-        Get list of trading days in date range from cache.
+        """Get list of trading days in date range from cache.
 
         Args:
             start_date: Start date (YYYY-MM-DD)
@@ -116,8 +113,7 @@ class RegimeWindowValidator:
         return trading_days
 
     def validate_date_range(self, start_date: str, end_date: str, sample_every_n: int = 1) -> Dict:
-        """
-        Validate regime detection across a date range.
+        """Validate regime detection across a date range.
 
         Args:
             start_date: Start date (YYYY-MM-DD)
@@ -175,8 +171,7 @@ class RegimeWindowValidator:
         }
 
     def _validate_single_window(self, end_date: str) -> Optional[Dict]:
-        """
-        Validate a single 30-day regime window.
+        """Validate a single 30-day regime window.
 
         Args:
             end_date: Window end date (YYYY-MM-DD)
@@ -256,8 +251,7 @@ class RegimeWindowValidator:
         }
 
     def _obfuscate_sequence(self, gex_sequence: List[Dict]) -> List[Dict]:
-        """
-        Obfuscate 30-day GEX sequence for LLM.
+        """Obfuscate 30-day GEX sequence for LLM.
 
         Args:
             gex_sequence: List of 30 daily GEX dicts with real dates
@@ -291,8 +285,7 @@ class RegimeWindowValidator:
         return obfuscated
 
     def _call_llm(self, prompt: str) -> str:
-        """
-        Call LLM via MarketMechanicsAgent.
+        """Call LLM via MarketMechanicsAgent.
 
         Args:
             prompt: Regime detection prompt
@@ -317,8 +310,7 @@ class RegimeWindowValidator:
             return ""
 
     def _calculate_summary_stats(self, results: List[Dict], start_date: str, end_date: str) -> Dict:
-        """
-        Calculate summary statistics from validation results.
+        """Calculate summary statistics from validation results.
 
         Args:
             results: List of window validation results

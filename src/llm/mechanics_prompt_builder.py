@@ -39,8 +39,7 @@ class MechanicsPromptBuilder:
     def build_analysis_prompt(
         date: datetime.datetime, gex_metrics: Dict, options_flow: Dict, market_context: Dict
     ) -> str:
-        """
-        Build analysis prompt in the exact format from the example.
+        """Build analysis prompt in the exact format from the example.
 
         Args:
             date: Analysis date
@@ -223,8 +222,7 @@ NARRATIVE: [2-3 sentence explanation of the mechanics]"""
         likely_outcome: Dict,
         actionable_intelligence: List[str],
     ) -> str:
-        """
-        Build expected response format for validation.
+        """Build expected response format for validation.
 
         This shows what we expect the LLM to return.
         """
@@ -252,8 +250,7 @@ KEY PLAYERS:"""
 
     @staticmethod
     def parse_llm_response(response: str) -> Dict:
-        """
-        Parse LLM response into structured format.
+        """Parse LLM response into structured format.
 
         Args:
             response: Raw LLM response text
@@ -358,8 +355,7 @@ KEY PLAYERS:"""
 
     @staticmethod
     def build_regime_prompt(gex_sequence: List[Dict], end_date: str = None) -> str:
-        """
-        Build regime detection prompt for 30-day GEX window analysis (Paper #2).
+        """Build regime detection prompt for 30-day GEX window analysis (Paper #2).
 
         NOTE: Prompt structure is documented in config_defaults/llm_prompts.yaml under
         paper2_prompts.regime_classification. Current implementation uses hardcoded prompt

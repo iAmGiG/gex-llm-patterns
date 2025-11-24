@@ -1,6 +1,4 @@
-"""
-Batch LLM Processing System
-Implements Issue #70: Batch LLM API Optimization for continuous experiment framework.
+"""Batch LLM Processing System Implements Issue #70: Batch LLM API Optimization for continuous experiment framework.
 
 Reduces API calls by 5x through weekly batching while maintaining individual day analysis quality.
 """
@@ -20,8 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class BatchLLMProcessor:
-    """
-    Batch LLM processor for efficient options analysis.
+    """Batch LLM processor for efficient options analysis.
 
     Features:
     - Weekly batching (5 trading days per LLM call)
@@ -32,8 +29,7 @@ class BatchLLMProcessor:
     """
 
     def __init__(self, llm_provider, batch_size: int = None, max_retries: int = None):
-        """
-        Initialize batch processor.
+        """Initialize batch processor.
 
         Args:
             llm_provider: LLM client (O3-mini, GPT-4o, etc.)
@@ -65,8 +61,7 @@ class BatchLLMProcessor:
     def prepare_batch_analysis(
         self, start_date: str, end_date: str, symbol: str, market_data: Dict, gex_data: Dict
     ) -> Dict:
-        """
-        Prepare batch analysis for entire date range.
+        """Prepare batch analysis for entire date range.
 
         This is the main optimization: instead of 252 individual LLM calls per year,
         we make ~52 weekly batch calls.
@@ -138,8 +133,7 @@ class BatchLLMProcessor:
         }
 
     def get_day_analysis(self, date: str, market_data: Dict, gex_data: Dict, symbol: str = "SPY") -> Optional[Dict]:
-        """
-        Get analysis for specific day with 3-tier fallback.
+        """Get analysis for specific day with 3-tier fallback.
 
         Tier 1: Batch prepared data (90%+ of cases)
         Tier 2: Individual LLM call (cache miss or batch failure)

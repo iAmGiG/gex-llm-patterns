@@ -56,8 +56,8 @@ def supertrend(
     period=10,
     mult=3.0,
 ):
-    """
-    Vectorised Supertrend implementation (no explicit Python loop).
+    """Vectorised Supertrend implementation (no explicit Python loop).
+
     Returns a pd.Series aligned to `close.index`.
     """
     atr_vals = atr(high=high, low=low, close=close, period=period)
@@ -290,8 +290,7 @@ def fibonacci_retracement(high, low, period=20):
 
 
 def gex_volatility_regime(price_data, atr_period: int = 14):
-    """
-    Assess volatility regime to contextualize GEX calculations.
+    """Assess volatility regime to contextualize GEX calculations.
 
     Args:
         price_data: DataFrame with OHLCV data
@@ -334,8 +333,7 @@ def gex_volatility_regime(price_data, atr_period: int = 14):
 
 
 def identify_key_levels(price_data, gex_levels=None):
-    """
-    Identify key technical levels that may align with gamma concentrations.
+    """Identify key technical levels that may align with gamma concentrations.
 
     Args:
         price_data: DataFrame with OHLCV data
@@ -410,8 +408,7 @@ def identify_key_levels(price_data, gex_levels=None):
 
 
 def enhanced_gex_context(price_data, gex_data=None):
-    """
-    Comprehensive technical context for GEX analysis.
+    """Comprehensive technical context for GEX analysis.
 
     Args:
         price_data: DataFrame with OHLCV data

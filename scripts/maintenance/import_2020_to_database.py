@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Import 2020 File Cache to Database (Background Task)
+"""Import 2020 File Cache to Database (Background Task)
 
 Purpose:
     Import 2020 GEX data from file cache into database for redundancy.
@@ -45,8 +44,7 @@ logger = logging.getLogger(__name__)
 
 
 def import_2020_to_database(dry_run: bool = False):
-    """
-    Import 2020 file cache data into database.
+    """Import 2020 file cache data into database.
 
     Args:
         dry_run: If True, print actions without executing

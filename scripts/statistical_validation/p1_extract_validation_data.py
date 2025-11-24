@@ -1,5 +1,4 @@
-"""
-Extract GEX and forward return data from validation YAML files.
+"""Extract GEX and forward return data from validation YAML files.
 
 This script reads the existing validation reports and extracts the time series
 data needed for statistical validation (Issues #99 and #100).
@@ -24,8 +23,7 @@ class ValidationDataExtractor:
     """Extract time series data from validation YAML files."""
 
     def __init__(self, validation_dir: str = "reports/validation/pattern_taxonomy"):
-        """
-        Initialize extractor.
+        """Initialize extractor.
 
         Args:
             validation_dir: Directory containing validation YAML files
@@ -38,8 +36,7 @@ class ValidationDataExtractor:
             return yaml.safe_load(f)
 
     def extract_time_series(self, pattern: str = "gamma_positioning", use_unbiased: bool = True) -> pd.DataFrame:
-        """
-        Extract time series data from validation reports.
+        """Extract time series data from validation reports.
 
         Args:
             pattern: Pattern name (gamma_positioning, stock_pinning, 0dte_hedging)
@@ -143,8 +140,7 @@ class ValidationDataExtractor:
         return df
 
     def extract_full_year(self, pattern: str = "gamma_positioning", use_unbiased: bool = True) -> pd.DataFrame:
-        """
-        Extract full 2024 data (all quarters combined).
+        """Extract full 2024 data (all quarters combined).
 
         Args:
             pattern: Pattern name

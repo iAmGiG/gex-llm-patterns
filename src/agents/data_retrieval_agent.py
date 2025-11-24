@@ -1,7 +1,5 @@
-"""
-Data Retrieval Agent
-Production-ready agent for retrieving and processing options data.
-Uses cache-first approach with Alpha Vantage Premium API and sample fallback.
+"""Data Retrieval Agent Production-ready agent for retrieving and processing options data. Uses cache-first approach
+with Alpha Vantage Premium API and sample fallback.
 
 Data Flow: Cache → Alpha Vantage Premium → Sample (fallback only)
 """
@@ -28,14 +26,13 @@ logger = logging.getLogger(__name__)
 
 
 class DataRetrievalAgent:
-    """
-    Production agent for retrieving and processing options data.
+    """Production agent for retrieving and processing options data.
+
     Uses cache-first approach with Alpha Vantage Premium API and sample fallback.
     """
 
     def __init__(self, data_source="production", cache_dir=None, validate=True, enable_sample_fallback=True):
-        """
-        Initialize the production data retrieval agent.
+        """Initialize the production data retrieval agent.
 
         Args:
             data_source: "production" for live data, "sample" for testing only
@@ -80,8 +77,7 @@ class DataRetrievalAgent:
         self.request_stats = {"total_requests": 0, "cache_hits": 0, "api_calls": 0, "sample_fallbacks": 0}
 
     def initialize(self):
-        """
-        Initialize the agent and return available data info.
+        """Initialize the agent and return available data info.
 
         Returns:
             Dictionary with available symbols, dates, and status
@@ -149,8 +145,7 @@ class DataRetrievalAgent:
             }
 
     def retrieve_options_data(self, symbol, date=None, filters=None):
-        """
-        Retrieve options data for analysis using production data flow.
+        """Retrieve options data for analysis using production data flow.
 
         Args:
             symbol: Stock symbol
@@ -303,8 +298,7 @@ class DataRetrievalAgent:
         return {"status": "error", "message": f"No options data available for {symbol} on {date}"}
 
     def calculate_gex(self, symbol=None, date=None, spot_price=None):
-        """
-        Calculate GEX metrics using production interface.
+        """Calculate GEX metrics using production interface.
 
         Args:
             symbol: Stock symbol (uses current if None)
@@ -350,8 +344,7 @@ class DataRetrievalAgent:
         return gex_results
 
     def get_pattern_candidates(self, pattern_type="short_put_arbitrage", min_volume=100):
-        """
-        Identify potential pattern candidates from available data.
+        """Identify potential pattern candidates from available data.
 
         Args:
             pattern_type: Type of pattern to search for
@@ -572,13 +565,10 @@ class DataRetrievalAgent:
 
 
 class AgentOrchestrator:
-    """
-    Orchestrates multiple production data retrieval agents for parallel processing.
-    """
+    """Orchestrates multiple production data retrieval agents for parallel processing."""
 
     def __init__(self, num_agents=3, **agent_kwargs):
-        """
-        Initialize the orchestrator.
+        """Initialize the orchestrator.
 
         Args:
             num_agents: Number of parallel agents to create
@@ -588,8 +578,7 @@ class AgentOrchestrator:
         self.results = {}
 
     def parallel_gex_calculation(self, symbols, date=None):
-        """
-        Calculate GEX for multiple symbols in parallel.
+        """Calculate GEX for multiple symbols in parallel.
 
         Args:
             symbols: List of symbols to process
