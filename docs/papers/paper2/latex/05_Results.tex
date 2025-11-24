@@ -2,6 +2,8 @@
 
 \subsection{Phase 1: Q1 2024 Baseline}
 
+\vspace{0.2cm}
+
 Phase 1 established baseline detection rates on Q1 2024 data (52 windows). Results showed 71.2\% detection rate (37/52 windows), borderline above the 30-50\% target range.
 
 \begin{table}[h]
@@ -24,6 +26,8 @@ The 39 percentage point persistence gap and \$6.84B magnitude gap demonstrated m
 
 \subsection{Phase 2: Negative Controls}
 
+\vspace{0.2cm}
+
 Phase 2 validated framework selectivity through three synthetic tests totaling 809 windows. All three tests passed their respective success criteria.
 
 \begin{table}[h]
@@ -40,11 +44,17 @@ Low-Magnitude (203 total) & 0\% & 0\% & <10\% \\
 \end{tabular}
 \end{table}
 
-\textbf{Key Finding}: Shuffle test revealed 5x false positive difference between 2020 (12.1\%) and Q1 2024 (61.1\%), providing early evidence that 2024 market structure differs fundamentally from 2020. This unexpected result motivated Phase 4's 2020 full-year comparison.
+\vspace{0.2cm}
+
+\noindent\textbf{Key Finding}: Shuffle test revealed 5x false positive difference between 2020 (12.1\%) and Q1 2024 (61.1\%), providing early evidence that 2024 market structure differs fundamentally from 2020. This unexpected result motivated Phase 4's 2020 full-year comparison.
+
+\vspace{0.2cm}
 
 Transitional and low-magnitude tests achieved perfect 0\% false positive rates, validating that the framework correctly enforces stability and magnitude criteria.
 
 \subsection{Phase 3: Full 2024 Validation}
+
+\vspace{0.2cm}
 
 Phase 3 tested 223 windows spanning all 252 trading days in 2024. Results showed 81.2\% detection rate, significantly higher than Q1's 71.2\%.
 
@@ -63,22 +73,32 @@ Low Conviction & 0 & 0\% & -- \\
 \end{tabular}
 \end{table}
 
-\textbf{Confidence Distribution}:
+\vspace{0.2cm}
+
+\noindent\textbf{Confidence Distribution}:
 \begin{itemize}
 \item 90-100\%: 144 windows (79.6\% of detections)
 \item 70-89\%: 37 windows (20.4\% of detections)
 \end{itemize}
 
+\vspace{0.2cm}
+
 The 81.2\% detection rate initially raised concerns about framework selectivity (expected 30-50\%). However, two factors supported validity:
+
+\vspace{0.1cm}
 
 \begin{enumerate}
 \item \textbf{Perfect regime homogeneity}: 100\% of detections were persistent\_negative (no false positives on wrong regime type)
 \item \textbf{Phase 2 validation}: 0\% FP on transitional/low-magnitude tests proved framework discrimination
 \end{enumerate}
 
+\vspace{0.2cm}
+
 Critical question: Is 81.2\% detection evidence of loose criteria, or genuine 2024 market anomaly?
 
 \subsection{Phase 4: 2020 Comparison (Market Structure Evolution Test)}
+
+\vspace{0.2cm}
 
 Phase 4 tested 223 windows from 2020 using identical methodology to establish a pre-0DTE baseline. Results revealed a 69.1 percentage point detection difference between periods.
 
@@ -99,7 +119,11 @@ Avg Magnitude & \$13.95B & \$2.85B & +\$11.1B \\
 \end{tabular}
 \end{table}
 
-\textbf{Key Findings}:
+\vspace{0.2cm}
+
+\noindent\textbf{Key Findings}:
+
+\vspace{0.1cm}
 
 \begin{enumerate}
 \item \textbf{Framework is selective}: 2020 detection rate (12.1\%) validates that criteria correctly reject non-regimes when market structure lacks persistence
@@ -110,6 +134,8 @@ Avg Magnitude & \$13.95B & \$2.85B & +\$11.1B \\
 \end{enumerate}
 
 \subsection{Phase 4A: Multi-Year Expansion (0DTE Transition Timing)}
+
+\vspace{0.2cm}
 
 Phase 4A extended validation to all years 2020-2025 (1,418 total windows) to identify when the structural market shift occurred. Results revealed a sharp 2020→2021 transition, not gradual evolution.
 
@@ -133,9 +159,15 @@ Phase 4A extended validation to all years 2020-2025 (1,418 total windows) to ide
 \end{tabular}
 \end{table}
 
-\textbf{The 2020→2021 Transition}:
+\vspace{0.2cm}
+
+\noindent\textbf{The 2020→2021 Transition}:
+
+\vspace{0.1cm}
 
 The most dramatic change occurred between 2020 and 2021:
+
+\vspace{0.1cm}
 
 \begin{itemize}
 \item \textbf{Detection rate}: 12.1\% → 100\% (8.3x increase, +87.9 pp)
@@ -144,28 +176,44 @@ The most dramatic change occurred between 2020 and 2021:
 \item \textbf{Sign flips}: Eliminated (perfect stability)
 \end{itemize}
 
+\vspace{0.2cm}
+
 This was NOT a gradual evolution. 2021 immediately achieved 100\% detection and maintained it through 2023, indicating a permanent new structural equilibrium.
 
-\textbf{Post-Transition Stability (2021-2023)}:
+\vspace{0.2cm}
+
+\noindent\textbf{Post-Transition Stability (2021-2023)}:
+
+\vspace{0.1cm}
 
 All three years showed identical 100\% detection rates (751/751 windows), demonstrating:
+
+\vspace{0.1cm}
 \begin{enumerate}
 \item \textbf{Structural regime}: Not temporary anomaly but sustained market change
 \item \textbf{Dealer constraints}: Forced into persistent short gamma positions
 \item \textbf{Framework consistency}: Reliably detected stable vs unstable periods
 \end{enumerate}
 
-\textbf{2024 Volatility Correctly Identified}:
+\vspace{0.2cm}
+
+\noindent\textbf{2024 Volatility Correctly Identified}:
+
+\vspace{0.1cm}
 
 2024's 81.2\% detection (vs 100\% in 2021-2023) reflects genuine market instability:
 \begin{itemize}
-\item 42 non-detected windows had 6-10 sign flips (above ≤5 threshold)
+\item 42 non-detected windows had 6-10 sign flips (above $\leq$5 threshold)
 \item Magnitude and persistence remained high (\$32B, 90\%+ days)
 \item Framework correctly rejected transitional periods
 \item February-March 2024 volatility spike caused regime instability
 \end{itemize}
 
-\textbf{2025 Return to Stability}:
+\vspace{0.2cm}
+
+\noindent\textbf{2025 Return to Stability}:
+
+\vspace{0.1cm}
 
 2025 restored 100\% detection (221/221 windows), confirming:
 \begin{itemize}
@@ -176,19 +224,33 @@ All three years showed identical 100\% detection rates (751/751 windows), demons
 
 \subsection{Combined Interpretation}
 
+\vspace{0.2cm}
+
 The six-year validation (Phases 1-4A) reveals a coherent story:
 
-\textbf{Phase 1 (Q1 2024)}: 71.2\% detection, borderline high but within extreme market bounds
+\vspace{0.2cm}
 
-\textbf{Phase 2 (Negative Controls)}: Framework discrimination validated (0\% FP on transitional/low-magnitude, 5x difference on shuffle)
+\noindent\textbf{Phase 1 (Q1 2024)}: 71.2\% detection, borderline high but within extreme market bounds
 
-\textbf{Phase 3 (Full 2024)}: 81.2\% detection, initially concerning but consistent with Q1 trend
+\vspace{0.1cm}
 
-\textbf{Phase 4 (2020 Comparison)}: 12.1\% detection, proving framework selectivity and confirming 2024 anomaly
+\noindent\textbf{Phase 2 (Negative Controls)}: Framework discrimination validated (0\% FP on transitional/low-magnitude, 5x difference on shuffle)
 
-\textbf{Phase 4A (Multi-Year 2020-2025)}: 2020→2021 transition identified (12.1\% → 100\%), with sustained 100\% detection in 2021-2023 and 2025
+\vspace{0.1cm}
 
-\textbf{Conclusion}: The multi-year validation reveals 0DTE options caused a \textbf{permanent structural market shift in 2021}. Detection rates jumped from 12.1\% (2020 pre-0DTE) to 100\% (2021-2023 post-0DTE) and remained stable except during 2024's brief volatility (81.2\%). The framework correctly:
+\noindent\textbf{Phase 3 (Full 2024)}: 81.2\% detection, initially concerning but consistent with Q1 trend
+
+\vspace{0.1cm}
+
+\noindent\textbf{Phase 4 (2020 Comparison)}: 12.1\% detection, proving framework selectivity and confirming 2024 anomaly
+
+\vspace{0.1cm}
+
+\noindent\textbf{Phase 4A (Multi-Year 2020-2025)}: 2020→2021 transition identified (12.1\% → 100\%), with sustained 100\% detection in 2021-2023 and 2025
+
+\vspace{0.2cm}
+
+\noindent\textbf{Conclusion}: The multi-year validation reveals 0DTE options caused a \textbf{permanent structural market shift in 2021}. Detection rates jumped from 12.1\% (2020 pre-0DTE) to 100\% (2021-2023 post-0DTE) and remained stable except during 2024's brief volatility (81.2\%). The framework correctly:
 \begin{enumerate}
 \item Discriminates persistent regimes (2021-2023, 2025: 100\%) from normal markets (2020: 12.1\%)
 \item Identifies transitional volatility (2024: 81.2\% with sign flip failures)
@@ -228,38 +290,56 @@ The 2024 market exhibits extreme persistence (96.0\% vs 83.3\%), higher magnitud
 
 \subsection{LLM Reasoning Quality}
 
+\vspace{0.2cm}
+
 Manual review of 50 randomly sampled detections (25 from 2024, 25 from 2020) revealed:
 
-\textbf{Mechanical Accuracy}:
+\vspace{0.2cm}
+
+\noindent\textbf{Mechanical Accuracy}:
 \begin{itemize}
 \item 98\% of LLM-stated persistence values within $\pm$2\% of ground truth
 \item 96\% of LLM-stated magnitude values within $\pm$\$0.5B of ground truth
 \item 100\% of LLM-stated flip counts exactly matched ground truth
 \end{itemize}
 
-\textbf{Reasoning Coherence}:
+\vspace{0.2cm}
+
+\noindent\textbf{Reasoning Coherence}:
 \begin{itemize}
 \item 100\% explicitly cited all three criteria (persistence, magnitude, flips)
 \item 94\% correctly identified dominant direction (positive/negative)
 \item 88\% provided step-by-step calculation verification
 \end{itemize}
 
+\vspace{0.2cm}
+
 The o4-mini reasoning model demonstrated reliable structural analysis, correctly computing regime metrics and applying classification criteria with minimal error.
 
 \subsection{Statistical Significance}
 
-\textbf{2020 vs 2024 Comparison (Phase 4)}:
+\vspace{0.2cm}
+
+\noindent\textbf{2020 vs 2024 Comparison (Phase 4)}:
+
+\vspace{0.1cm}
 
 Binomial test:
 \begin{equation}
 H_0: p_{2024} = p_{2020} \quad \text{vs} \quad H_1: p_{2024} > p_{2020}
 \end{equation}
 
-Result: $p < 0.0001$, $\phi = 0.672$ (large effect size)
+\noindent Result: $p < 0.0001$, $\phi = 0.672$ (large effect size)
+
+\vspace{0.1cm}
 
 The 69.1 percentage point difference is statistically significant, confirming fundamentally different market regimes.
 
-\textbf{2020→2021 Transition (Phase 4A)}:
+\vspace{0.2cm}
+
+\noindent\textbf{2020→2021 Transition (Phase 4A)}:
+
+\vspace{0.1cm}
 
 The 2020→2021 transition shows even larger effect:
 \begin{itemize}
@@ -269,9 +349,15 @@ The 2020→2021 transition shows even larger effect:
 \item Effect size: $\phi = 0.909$ (extremely large)
 \end{itemize}
 
-\textbf{Post-2021 Consistency Test}:
+\vspace{0.2cm}
+
+\noindent\textbf{Post-2021 Consistency Test}:
+
+\vspace{0.1cm}
 
 Years 2021, 2022, 2023, 2025 all achieved 100\% detection (972/972 windows). Binomial test against null hypothesis of 50\% detection: $p < 10^{-292}$.
+
+\vspace{0.1cm}
 
 The sustained perfect detection across 4 non-consecutive years confirms structural regime change, not temporary anomaly.
 

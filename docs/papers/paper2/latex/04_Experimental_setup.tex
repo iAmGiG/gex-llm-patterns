@@ -93,14 +93,18 @@ Transform each window before LLM submission:
 
 Each prompt contains:
 
-\textbf{System Message}:
+\vspace{0.2cm}
+
+\noindent\textbf{System Message}:
 \begin{verbatim}
 You are a financial market analyst identifying
 persistent dealer gamma regimes from 30-day
 GEX sequences.
 \end{verbatim}
 
-\textbf{User Message}:
+\vspace{0.2cm}
+
+\noindent\textbf{User Message}:
 \begin{itemize}
 \item 30-day GEX sequence with obfuscated dates
 \item Regime classification criteria (70\% persistence, \$5B magnitude, $\leq$5 flips)
@@ -108,7 +112,9 @@ GEX sequences.
 \item Output format: JSON with regime\_type, confidence, reasoning, metrics
 \end{itemize}
 
-\textbf{Output Schema}:
+\vspace{0.2cm}
+
+\noindent\textbf{Output Schema}:
 \begin{verbatim}
 {
   "regime_type": "persistent_negative",
@@ -125,68 +131,49 @@ GEX sequences.
 
 \subsection{Validation Protocol}
 
-\subsubsection{Phase 1: Q1 2024 Baseline}
+Our multi-phase validation strategy tests both framework selectivity and market structure evolution:
 
-\begin{itemize}
-\item Windows: 52 (January 2 - March 27, 2024)
-\item Purpose: Establish baseline detection rate
-\item Success criteria: 30-50\% detection (demonstrates selectivity)
-\end{itemize}
+\vspace{0.2cm}
 
-\subsubsection{Phase 2: Negative Controls}
+\noindent\textbf{Phase 1 - Q1 2024 Baseline} (52 windows): Establish baseline detection rate on January-March 2024 data. Success criteria: 30-50\% detection demonstrating selectivity rather than universal pattern matching.
 
-\textbf{Phase 2a - Shuffle Test}:
-\begin{itemize}
-\item Windows: 404 (202 Q1 2024 + 202 2020, randomized day order)
-\item Purpose: Test temporal structure dependence
-\item Success criteria: <20\% false positive rate
-\end{itemize}
+\vspace{0.2cm}
 
-\textbf{Phase 2b - Transitional Test}:
-\begin{itemize}
-\item Windows: 101 Q1 2024 + 101 2020 (7-10 sign flips)
-\item Purpose: Test stability criterion enforcement
-\item Success criteria: <10\% false positive rate
-\end{itemize}
+\noindent\textbf{Phase 2 - Negative Controls} (809 windows): Validate discrimination through three synthetic tests. Shuffle test (404 windows) randomizes day order within sequences to destroy temporal structure, expected $<$20\% false positive rate. Transitional test (202 windows) filters high-volatility periods with 7-10 sign flips, expected $<$10\% FP. Low-magnitude test (203 windows) scales persistent sequences below \$5B threshold, expected $<$10\% FP.
 
-\textbf{Phase 2c - Low-Magnitude Test}:
-\begin{itemize}
-\item Windows: 101 Q1 2024 + 102 2020 (scaled to <\$5B)
-\item Purpose: Test magnitude threshold enforcement
-\item Success criteria: <10\% false positive rate
-\end{itemize}
+\vspace{0.2cm}
 
-\subsubsection{Phase 3: Full 2024 Validation}
+\noindent\textbf{Phase 3 - Full 2024 Validation} (223 windows): Test generalization across all 252 trading days in 2024 to determine whether Q1 results extend to full year or reflect quarterly anomaly.
 
-\begin{itemize}
-\item Windows: 223 (all 252 trading days in 2024)
-\item Purpose: Test generalization beyond Q1
-\end{itemize}
+\vspace{0.2cm}
 
-\subsubsection{Phase 4: 2020 Comparison}
+\noindent\textbf{Phase 4 - 2020 Comparison} (223 windows): Test pre-0DTE era (2020, 0DTE $<$5\% volume) versus post-0DTE era (2024, 0DTE 43\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
 
-\begin{itemize}
-\item Windows: 223 (all 252 trading days in 2020)
-\item Purpose: Test 0DTE hypothesis (2024 vs 2020 regime persistence)
-\end{itemize}
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 4A - Multi-Year Expansion} (972 windows): Extend validation to years 2021-2023 and 2025 for total coverage of 1,418 windows across 6 years (2020-2025). Purpose: Identify precise timing of structural transition. Hypothesis: Sharp 2020$\rightarrow$2021 transition (not gradual 2020$\rightarrow$2024 evolution) isolates 0DTE causal mechanism.
 
 \subsection{Quality Control}
 
-\textbf{Mechanical Verification}:
+\vspace{0.2cm}
+
+\noindent\textbf{Mechanical Verification}:
 
 For each LLM response, we extract the model's stated metrics (persistence\_pct, avg\_magnitude\_b, sign\_flips) and compare against ground truth calculated from actual GEX data. Windows with >5\% metric discrepancy are flagged for manual review.
 
-\textbf{JSON Parsing}:
+\vspace{0.2cm}
 
-All LLM outputs validated for:
+\noindent\textbf{Output Validation}:
+
+All LLM outputs validated for correct structure and required fields:
 \begin{itemize}
-\item Valid JSON structure
+\item Valid JSON structure (LLM responses)
 \item Required fields present (regime\_type, confidence, reasoning, llm\_metrics)
 \item Confidence in valid range [0, 100]
 \item Regime type in valid set (persistent\_positive, persistent\_negative, transitional, low\_conviction)
 \end{itemize}
 
-Invalid responses logged and excluded from analysis (Phase 3: 0\% invalid, Phase 4: 0\% invalid).
+Validation results stored in YAML format for reproducibility and batch metadata in JSON. Invalid responses logged and excluded from analysis (Phase 3: 0\% invalid, Phase 4: 0\% invalid).
 
 \subsection{Reproducibility}
 

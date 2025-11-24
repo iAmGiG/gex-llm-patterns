@@ -68,31 +68,51 @@ To prevent temporal memorization, we apply the same obfuscation protocol from ou
 
 The LLM receives 30 consecutive GEX values with no contextual information, forcing purely structural reasoning about dealer constraints.
 
-\subsection{Four-Phase Validation Strategy}
+\subsection{Multi-Phase Validation Strategy}
 
-To ensure methodological rigor and avoid false positives, we implemented a four-phase validation protocol:
+To ensure methodological rigor and avoid false positives, we implemented a comprehensive validation protocol spanning six years (2020-2025):
+
+\vspace{0.2cm}
 
 \subsubsection{Phase 1: Q1 2024 Baseline (52 windows)}
 
-Establish baseline detection rate on Q1 2024 data (January 2 - March 27, 2024). Success criteria: 30-50\% detection rate demonstrating framework selectivity.
+Establish baseline detection rate on Q1 2024 data (January 2 - March 27, 2024). Success criteria: 30-50\% detection rate demonstrating framework selectivity, not universal pattern matching.
+
+\vspace{0.2cm}
 
 \subsubsection{Phase 2: Negative Controls (809 windows)}
 
 Validate framework discrimination using three synthetic tests:
 
-\textbf{Phase 2a - Shuffle Test} (404 windows): Randomize day order within real 30-day sequences to destroy temporal structure while preserving statistical properties. Expected: <20\% false positive rate.
+\vspace{0.1cm}
 
-\textbf{Phase 2b - Transitional Test} (202 windows): Filter for high-volatility periods with 7-10 sign flips. Expected: <10\% false positive rate (should reject as non-regimes).
+\noindent\textbf{Phase 2a - Shuffle Test} (404 windows): Randomize day order within real 30-day sequences to destroy temporal structure while preserving statistical properties. Expected: $<$20\% false positive rate.
 
-\textbf{Phase 2c - Low-Magnitude Test} (203 windows): Scale persistent sequences by 75\% to fall below \$5B threshold. Expected: <10\% false positive rate (should reject as low conviction).
+\vspace{0.1cm}
+
+\noindent\textbf{Phase 2b - Transitional Test} (202 windows): Filter for high-volatility periods with 7-10 sign flips. Expected: $<$10\% false positive rate (should reject as non-regimes).
+
+\vspace{0.1cm}
+
+\noindent\textbf{Phase 2c - Low-Magnitude Test} (203 windows): Scale persistent sequences by 75\% to fall below \$5B threshold. Expected: $<$10\% false positive rate (should reject as low conviction).
+
+\vspace{0.2cm}
 
 \subsubsection{Phase 3: Full 2024 Validation (223 windows)}
 
-If Phase 1-2 pass, validate across full 2024 year (all 252 trading days). This tests whether Q1 results generalize across different market conditions.
+If Phase 1-2 pass, validate across full 2024 year (all 252 trading days). This tests whether Q1 results generalize across different market conditions including February-March volatility.
+
+\vspace{0.2cm}
 
 \subsubsection{Phase 4: 2020 Comparison (223 windows)}
 
-Test pre-0DTE era (2020) to validate the hypothesis that 0DTE proliferation increased regime persistence. Expected: Lower detection rate in 2020 vs 2024.
+Test pre-0DTE era (2020) to validate the hypothesis that 0DTE proliferation increased regime persistence. Expected: Lower detection rate in 2020 vs 2024, establishing baseline for normal market fragmentation.
+
+\vspace{0.2cm}
+
+\subsubsection{Phase 4A: Multi-Year Expansion (1,418 windows)}
+
+Extend validation to all years 2020-2025 (6 full years, 1,418 total windows) to identify precise timing of structural transition. This phase isolates whether regime persistence increased gradually (2020$\rightarrow$2024) or sharply at specific year (e.g., 2020$\rightarrow$2021), strengthening causal attribution to 0DTE proliferation beyond temporal coincidence.
 
 \subsection{LLM Detection Pipeline}
 
@@ -110,23 +130,32 @@ We use OpenAI's o4-mini reasoning model with temperature=1.0 to generate explici
 
 \subsection{Statistical Framework}
 
-We assess framework performance through:
+We assess framework performance through three primary metrics:
 
-\textbf{Detection Rate}: Fraction of windows classified as persistent regimes
+\vspace{0.3cm}
+
+\noindent\textbf{Detection Rate}: Fraction of windows classified as persistent regimes.
+
 \begin{equation}
 \text{DR} = \frac{\text{persistent regimes detected}}{\text{total windows}}
 \end{equation}
 
-\textbf{Selectivity Metrics}: Discrimination between real and synthetic data
+\vspace{0.2cm}
+
+\noindent\textbf{Selectivity Metrics}: Discrimination between real and synthetic data measured through:
+
 \begin{itemize}
-\item Persistence gap: $P_{\text{detected}} - P_{\text{rejected}}$
-\item Magnitude gap: $M_{\text{detected}} - M_{\text{rejected}}$
-\item Confidence gap: $C_{\text{detected}} - C_{\text{rejected}}$
+\item Persistence gap: $P_{\text{detected}} - P_{\text{rejected}}$ (percentage points)
+\item Magnitude gap: $M_{\text{detected}} - M_{\text{rejected}}$ (billions USD)
+\item Confidence gap: $C_{\text{detected}} - C_{\text{rejected}}$ (0-100 scale)
 \end{itemize}
 
-\textbf{0DTE Effect}: Change in detection rate between 2020 and 2024
+\vspace{0.2cm}
+
+\noindent\textbf{Market Structure Evolution}: Cross-period detection difference quantifies structural change.
+
 \begin{equation}
-\Delta_{\text{0DTE}} = \text{DR}_{2024} - \text{DR}_{2020}
+\Delta_{\text{period}} = \text{DR}_{\text{year}_2} - \text{DR}_{\text{year}_1}
 \end{equation}
 
-A large positive $\Delta_{\text{0DTE}}$ (e.g., >50 percentage points) indicates that 0DTE options fundamentally altered market structure, creating more persistent dealer gamma regimes.
+A large positive $\Delta_{\text{period}}$ (e.g., $>$50 percentage points) indicates fundamental market structure shift. We test this across multiple year pairs (2020 vs 2021, 2020 vs 2024) to isolate transition timing and distinguish sharp transitions from gradual evolution.
