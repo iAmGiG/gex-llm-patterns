@@ -59,18 +59,19 @@ Cost Savings:
 Related: Issue #112 - OpenAI Batch API for cost optimization
 """
 
-from src.validation.data_obfuscation import DataObfuscator
-from src.cache.unified_cache import UnifiedCacheManager
-from src.validation.regime_classifier import RegimeClassifier
-from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
-from src.validation.batch_regime_validator import BatchRegimeValidator
 import argparse
-import sys
 import logging
 import random
-from pathlib import Path
-from typing import List, Dict, Optional
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
+from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
+from src.validation.batch_regime_validator import BatchRegimeValidator
+from src.validation.data_obfuscation import DataObfuscator
+from src.validation.regime_classifier import RegimeClassifier
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent

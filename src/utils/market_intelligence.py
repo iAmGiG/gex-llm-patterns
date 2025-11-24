@@ -5,8 +5,8 @@ Extracted from agent_utils.py for clean integration.
 Provides market sector classification and query parsing capabilities.
 """
 
-import os
 import json
+import os
 import re
 
 

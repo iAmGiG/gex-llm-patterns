@@ -6,15 +6,17 @@ Tests the hypothesis: "SPY prices move toward max gamma strikes on Fridays at ke
 Uses intraday database and cache system for validation.
 """
 
-from src.utils.date_utils import date_range_trading_days, parse_date_string, format_for_filename
-from src.data.market_data_system import UnifiedDataSystem
-from typing import Dict, List, Optional
 import logging
-import numpy as np
-import pandas as pd
 import sqlite3
 import sys
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import numpy as np
+import pandas as pd
+
+from src.data.market_data_system import UnifiedDataSystem
+from src.utils.date_utils import date_range_trading_days, format_for_filename, parse_date_string
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 

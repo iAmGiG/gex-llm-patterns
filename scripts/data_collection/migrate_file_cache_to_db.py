@@ -9,11 +9,12 @@ Usage:
     python scripts/data_collection/migrate_file_cache_to_db.py --symbol SPY
 """
 
-import sys
-import sqlite3
 import argparse
 import logging
+import sqlite3
+import sys
 from pathlib import Path
+
 from tqdm import tqdm
 
 # Add project root to path

@@ -7,9 +7,10 @@ Shows the evolution from biased to unbiased prompts:
 - Refined approach: Removed all hints (71.5% detection - proves true reasoning)
 """
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
-from pathlib import Path
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

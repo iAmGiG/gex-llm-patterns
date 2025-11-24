@@ -5,11 +5,12 @@ Tools for analyzing options chain data with focus on patterns like
 Short Put Arbitrage and other institutional flow behaviors.
 """
 
-from src.utils.date_utils import now_iso
-from src.utils.config_manager import get_config
 import logging
-import sys
 import os
+import sys
+
+from src.utils.config_manager import get_config
+from src.utils.date_utils import now_iso
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -266,8 +267,8 @@ def test_with_alpha_vantage_demo():
 
     try:
         # Use the updated Alpha Vantage client
-        from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
         from src.cache.unified_cache import UnifiedCacheManager
+        from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
         # Initialize client with cache
         cache = UnifiedCacheManager()

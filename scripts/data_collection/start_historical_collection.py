@@ -6,13 +6,14 @@ Script to begin systematic collection of historical options data
 from Alpha Vantage API. Configurable date ranges and symbols.
 """
 
-from src.data_sources.historical_collector import HistoricalOptionsCollector
-import asyncio
 import argparse
+import asyncio
 import logging
 import sys
 from datetime import date, timedelta
 from pathlib import Path
+
+from src.data_sources.historical_collector import HistoricalOptionsCollector
 
 # Add src to path
 project_root = Path(__file__).parent.parent

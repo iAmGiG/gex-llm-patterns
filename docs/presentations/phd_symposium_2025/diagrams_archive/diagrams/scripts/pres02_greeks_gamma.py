@@ -9,9 +9,10 @@ Simple explanation of Delta and Gamma:
 Visual: Gamma as "Urgency Beacon"
 """
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, Circle, FancyArrowPatch
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

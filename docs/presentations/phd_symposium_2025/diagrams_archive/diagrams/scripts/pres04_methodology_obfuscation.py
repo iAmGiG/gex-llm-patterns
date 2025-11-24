@@ -6,9 +6,10 @@ Shows the novel obfuscation testing methodology (before/after comparison).
 This is your key academic contribution.
 """
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from pathlib import Path
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

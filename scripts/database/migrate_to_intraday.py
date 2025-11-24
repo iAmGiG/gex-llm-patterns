@@ -4,11 +4,12 @@ Database Migration Script for Intraday Support
 Adds intraday tables alongside existing daily tables.
 """
 
-from src.utils.date_utils import now_iso, format_for_filename
 import logging
 import sqlite3
 import sys
 from pathlib import Path
+
+from src.utils.date_utils import format_for_filename, now_iso
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 

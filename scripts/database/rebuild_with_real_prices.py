@@ -11,10 +11,11 @@ Run this after fixing the architectural violation where obfuscated
 prices were being stored in the database.
 """
 
-from data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 import logging
 import sys
 from pathlib import Path
+
+from data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent

@@ -15,10 +15,11 @@ Data sources:
 - Unbiased: gamma_positioning_SPY_2024_unbiased.yaml
 """
 
-import yaml
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import yaml
+from matplotlib.lines import Line2D
 
 # IEEE two-column format
 plt.rcParams.update(

@@ -7,9 +7,10 @@ Shows the progression from biased prompts to validated methodology:
 - Refined (Unbiased): 71.5% detection, 91-92% accuracy - validated!
 """
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from pathlib import Path
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

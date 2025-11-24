@@ -7,13 +7,15 @@ Organizes reports by purpose:
 - archive/ - Old reports for reference
 """
 
-import yaml
 import json
-from pathlib import Path
 import logging
-from typing import Dict, Any, Optional
-from .date_utils import now_iso
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+import yaml
+
 from ..validation.data_obfuscation import DataObfuscator
+from .date_utils import now_iso
 
 logger = logging.getLogger(__name__)
 

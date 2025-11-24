@@ -3,11 +3,13 @@ Polygon.io REST API client for stock data.
 Free tier provides daily stock data with 5 calls/minute limit.
 """
 
-import requests
-import pandas as pd
 import datetime
 import logging
 import time
+
+import pandas as pd
+import requests
+
 from src.utils.config_manager import get_config
 
 
@@ -16,8 +18,8 @@ class PolygonClient:
 
     def __init__(self, api_key: str = None):
         """Initialize client with API key."""
-        import os
         import json
+        import os
         from pathlib import Path
 
         # Try to load from config if not provided

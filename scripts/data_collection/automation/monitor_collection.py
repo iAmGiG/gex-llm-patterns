@@ -5,12 +5,13 @@ Monitor Automated Data Collection Progress
 Shows real-time status of the automated collection system.
 """
 
-from cache.unified_cache import UnifiedCacheManager
-import sys
 import json
-from pathlib import Path
-from datetime import datetime
+import sys
 import time
+from datetime import datetime
+from pathlib import Path
+
+from cache.unified_cache import UnifiedCacheManager
 
 # Add src to path
 project_root = Path(__file__).parent.parent

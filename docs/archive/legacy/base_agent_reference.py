@@ -8,33 +8,31 @@ for all agents in the system.
 # Import standard Python libraries
 import asyncio
 import json
-import traceback
-import pandas as pd
-from abc import ABC, abstractmethod
-
-# Import the proper AutoGen core components
-from autogen_core.models import (
-    SystemMessage,
-    UserMessage,
-    AssistantMessage,
-    FunctionExecutionResult,
-    FunctionExecutionResultMessage,
-)
-from autogen_agentchat.agents._assistant_agent import AssistantAgent
-from autogen_ext.models.openai import OpenAIChatCompletionClient
-from autogen_core._cancellation_token import CancellationToken
-
-# Import tool dictionary for dynamic tool access
-from src.tools.tools import ALL_TOOLS
-
-# Import only functions that are still active (minimal architecture)
-from src.tools.tools import (
-    fetch_unified_market_data,
-)
 
 # Yahoo functions removed - no longer used
 import os
+import traceback
+from abc import ABC, abstractmethod
+
+import pandas as pd
+from autogen_agentchat.agents._assistant_agent import AssistantAgent
+from autogen_core._cancellation_token import CancellationToken
+
+# Import the proper AutoGen core components
+from autogen_core.models import (
+    AssistantMessage,
+    FunctionExecutionResult,
+    FunctionExecutionResultMessage,
+    SystemMessage,
+    UserMessage,
+)
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
 from config.config_loader import ConfigLoader
+
+# Import only functions that are still active (minimal architecture)
+# Import tool dictionary for dynamic tool access
+from src.tools.tools import ALL_TOOLS, fetch_unified_market_data
 
 # Load configuration file for fallback values
 config_loader = ConfigLoader()

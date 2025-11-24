@@ -4,11 +4,12 @@ Simple Experiment Orchestrator
 Starts the system, then lets MarketMechanicsAgent take over and orchestrate tools.
 """
 
-from agents.market_mechanics_agent import MarketMechanicsAgent
+import argparse
+import logging
 import sys
 from pathlib import Path
-import logging
-import argparse
+
+from agents.market_mechanics_agent import MarketMechanicsAgent
 
 # Add both src and root paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

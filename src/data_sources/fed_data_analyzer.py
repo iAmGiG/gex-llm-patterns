@@ -8,10 +8,11 @@ Provides utilities for:
 - Pattern-specific Fed data processing
 """
 
-import pandas as pd
 import logging
 from pathlib import Path
 from typing import Dict
+
+import pandas as pd
 
 # Use date_utils for standardized datetime operations
 from src.utils.date_utils import format_for_filename

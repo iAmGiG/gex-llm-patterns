@@ -8,19 +8,20 @@ stock data from Polygon.io (7,200/day) with intelligent scheduling.
 Designed to run continuously, respecting API limits.
 """
 
-from gex.gex_calculator import GEXCalculator
+import asyncio
+import json
+import logging
+import sys
+import time
+from datetime import date, datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Set
+
 from cache.unified_cache import UnifiedCacheManager
+from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from data_sources.historical_collector import HistoricalOptionsCollector
 from data_sources.polygon_client import PolygonClient
-from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-import sys
-import asyncio
-import logging
-import json
-from pathlib import Path
-from datetime import datetime, date, timedelta
-from typing import List, Dict, Set
-import time
+from gex.gex_calculator import GEXCalculator
 
 # Add src to path
 project_root = Path(__file__).parent.parent

@@ -12,16 +12,17 @@ Organized by agent type for clean tool assignment and efficient agent workflows.
 
 # Standard library imports
 import logging
+
 import pandas as pd
 
 # Project imports for date handling
 from src.utils.date_utils import (
-    today_str,
     add_business_days,
-    parse_date_string,
-    format_for_filename,
     calculate_duration_minutes,
+    format_for_filename,
     is_valid_trading_date,
+    parse_date_string,
+    today_str,
 )
 
 
@@ -60,9 +61,10 @@ def filter_options_data(df: pd.DataFrame, min_volume: int = 1, min_oi: int = 1) 
     return df
 
 
+import pandas as pd
+
 # Third-party imports
 from autogen_core.tools import FunctionTool
-import pandas as pd
 
 # Project imports - only tools actually used
 from src.cache import UnifiedCacheManager
@@ -70,10 +72,10 @@ from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
 from src.gex.live_gex_interface import LiveGEXInterface
-from src.validation.options_data_validator import OptionsDataValidator
-from src.utils.unified_reports_manager import reports_manager
-from src.utils.market_intelligence import market_intelligence
 from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
+from src.utils.market_intelligence import market_intelligence
+from src.utils.unified_reports_manager import reports_manager
+from src.validation.options_data_validator import OptionsDataValidator
 
 logger = logging.getLogger(__name__)
 

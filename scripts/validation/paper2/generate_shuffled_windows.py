@@ -15,11 +15,12 @@ Expected Results: <10% false positive detection rate (should mostly reject as "t
 Related: Issue #89 (30-day regime detection), validation_phases.md (Phase 2a)
 """
 
-import sqlite3
-import numpy as np
 import random
-from pathlib import Path
+import sqlite3
 from datetime import datetime, timedelta
+from pathlib import Path
+
+import numpy as np
 import yaml
 
 # Get project root

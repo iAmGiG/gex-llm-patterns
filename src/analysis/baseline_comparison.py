@@ -3,12 +3,13 @@ Baseline Comparison System
 Compares pattern-based trading strategies against simple baselines to validate edge.
 """
 
-import sqlite3
-import pandas as pd
-import numpy as np
-from typing import Dict, Optional, List
-from pathlib import Path
 import logging
+import sqlite3
+from pathlib import Path
+from typing import Dict, List, Optional
+
+import numpy as np
+import pandas as pd
 import yaml
 
 logger = logging.getLogger(__name__)

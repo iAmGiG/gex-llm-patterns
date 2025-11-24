@@ -13,11 +13,12 @@ Data sources:
 - 0dte_hedging_SPY_2024_unbiased.yaml
 """
 
-import yaml
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
-import numpy as np
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import yaml
+from matplotlib.patches import FancyBboxPatch
 
 # IEEE two-column format
 plt.rcParams.update(

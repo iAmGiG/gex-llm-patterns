@@ -4,9 +4,10 @@ Example: Flexible Algo Time Analysis
 Demonstrates the new parameterizable algo time system.
 """
 
-from src.data.market_data_system import UnifiedDataSystem
 import sys
 from pathlib import Path
+
+from src.data.market_data_system import UnifiedDataSystem
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 

@@ -28,21 +28,21 @@ See docs/validation-framework.md for comprehensive documentation.
 
 import json
 import logging
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.tools.autogen_tools import (
-    fetch_options_data,
-    fetch_market_data,
     calculate_gamma_exposure,
+    fetch_market_data,
+    fetch_options_data,
     process_historical_gex_range,
 )
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-from src.utils.date_utils import today_str, parse_date_string
+from src.utils.date_utils import parse_date_string, today_str
 from src.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)

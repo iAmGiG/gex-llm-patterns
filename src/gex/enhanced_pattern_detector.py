@@ -3,8 +3,8 @@ Enhanced Pattern Detector with Contrarian Logic
 Updated based on statistical analysis showing GAMMA_TRAP works as contrarian indicator.
 """
 
-from typing import Dict, List
 import logging
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 

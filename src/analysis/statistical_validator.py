@@ -5,11 +5,12 @@ Provides statistical significance testing and validation for pattern analysis.
 Includes chi-square tests, bootstrap confidence intervals, and permutation testing.
 """
 
+import logging
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 from scipy import stats
 from scipy.stats import chi2
-import logging
-from typing import Dict, List, Tuple, Optional
 
 from ..utils.date_utils import now_iso
 

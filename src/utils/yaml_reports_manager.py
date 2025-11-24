@@ -15,12 +15,14 @@ New code should use UnifiedReportsManager which provides:
 Legacy code using this import will continue to work through global alias.
 """
 
-import yaml
-from pathlib import Path
 import logging
-from typing import Dict, Any, List, Optional
-from .date_utils import now_iso
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import yaml
+
 from ..validation.data_obfuscation import DataObfuscator
+from .date_utils import now_iso
 
 logger = logging.getLogger(__name__)
 

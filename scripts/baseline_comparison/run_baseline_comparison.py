@@ -4,11 +4,12 @@ Run Baseline Comparison for Issue #58
 Compares LLM-filtered dealer gamma hedging strategy against naive baselines.
 """
 
-from analysis.baseline_comparison import BaselineComparison
+import argparse
+import logging
 import sys
 from pathlib import Path
-import logging
-import argparse
+
+from analysis.baseline_comparison import BaselineComparison
 
 # Add src path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

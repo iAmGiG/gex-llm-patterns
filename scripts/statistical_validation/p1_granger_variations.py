@@ -4,11 +4,12 @@ Additional Granger Causality Tests - Multiple Specifications
 Tests various specifications to ensure robustness of null finding.
 """
 
-import pandas as pd
-import numpy as np
-from pathlib import Path
-from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 import logging
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -10,14 +10,15 @@ Date: 2025-11-22
 Purpose: Add OHLC data for Issue #144 Range Expansion calculation
 """
 
-import sys
-import json
-import time
-import sqlite3
-import requests
 import argparse
-from pathlib import Path
+import json
+import sqlite3
+import sys
+import time
 from datetime import datetime, timedelta
+from pathlib import Path
+
+import requests
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent

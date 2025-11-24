@@ -29,11 +29,12 @@ Usage:
     python scripts/validation/test_narrative_removal_phase3_batch.py --retrieve
 """
 
-import yaml
 import json
-from pathlib import Path
 import sys
 from datetime import datetime
+from pathlib import Path
+
+import yaml
 from openai import OpenAI
 
 # Add project root to path

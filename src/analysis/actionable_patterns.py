@@ -4,11 +4,11 @@ Enhances pattern_library.py patterns with specific trading signals and risk mana
 """
 
 import logging
-from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
 
-from .pattern_library import PatternLibrary, MarketMechanicsPattern
+from .pattern_library import MarketMechanicsPattern, PatternLibrary
 
 logger = logging.getLogger(__name__)
 

@@ -34,12 +34,13 @@ Usage:
 See docs/data-obfuscation.md for comprehensive documentation.
 """
 
-import pandas as pd
-import re
 import json
-import yaml
-import os
 import logging
+import os
+import re
+
+import pandas as pd
+import yaml
 
 logger = logging.getLogger(__name__)
 

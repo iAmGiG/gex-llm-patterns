@@ -14,9 +14,10 @@ GitHub Issue: https://github.com/iAmGiG/gex-llm-patterns/issues/144
 """
 
 import sys
-import pandas as pd
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 from scipy import stats
 
 # Add project root to path

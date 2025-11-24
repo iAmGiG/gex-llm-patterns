@@ -3,16 +3,16 @@ GEX Calculation Caching System
 Pre-computed gamma exposure storage for efficient multi-symbol, multi-timeframe analysis.
 """
 
-import sqlite3
 import json
 import logging
+import sqlite3
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+
+import pandas as pd
 
 # Use date_utils instead of direct datetime calls
 from src.utils.date_utils import now_iso
-
-import pandas as pd
 
 # Optional pyarrow dependency for parquet support
 try:
@@ -169,9 +169,9 @@ class GEXCacheManager:
             with sqlite3.connect(self.index_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO gex_cache_index 
+                    INSERT OR REPLACE INTO gex_cache_index
                     (symbol, trading_date, calculation_timestamp, data_type, file_path,
-                     total_gex, net_gex, flip_point, underlying_price, 
+                     total_gex, net_gex, flip_point, underlying_price,
                      contracts_processed, calculation_duration_ms)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -403,7 +403,7 @@ class GEXCacheManager:
         try:
             with sqlite3.connect(self.index_path) as conn:
                 query = """
-                    SELECT symbol, trading_date, flip_point, total_gex, net_gex, 
+                    SELECT symbol, trading_date, flip_point, total_gex, net_gex,
                            underlying_price, calculation_timestamp
                     FROM gex_cache_index
                     WHERE symbol = ? AND trading_date BETWEEN ? AND ?
@@ -549,7 +549,7 @@ class GEXCacheManager:
                 # Recent activity
                 recent_calculations = conn.execute(
                     """
-                    SELECT COUNT(*) FROM gex_cache_index 
+                    SELECT COUNT(*) FROM gex_cache_index
                     WHERE datetime(created_at) > datetime('now', '-7 days')
                 """
                 ).fetchone()[0]

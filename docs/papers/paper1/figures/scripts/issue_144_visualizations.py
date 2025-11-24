@@ -14,16 +14,17 @@ GitHub Issue: https://github.com/iAmGiG/gex-llm-patterns/issues/144
 """
 
 import sys
-import pandas as pd
-import numpy as np
 from pathlib import Path
+
 import matplotlib
+import numpy as np
+import pandas as pd
 
 matplotlib.use("Agg")  # Non-interactive backend for HPCC
-import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from matplotlib.gridspec import GridSpec
+import matplotlib.pyplot as plt
 import yaml
+from matplotlib.gridspec import GridSpec
 
 # Add project root to path
 script_path = Path(__file__).resolve()

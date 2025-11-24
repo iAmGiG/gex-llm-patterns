@@ -3,18 +3,19 @@ Sequence Builder
 Combines tokens from different sources to create LLM-ready sequences.
 """
 
-import pandas as pd
-import numpy as np
+import datetime
 import json
 import logging
 
-import datetime
+import numpy as np
+import pandas as pd
 
+from src.utils.config_manager import get_config
+
+from .event_tokenizer import EventTokenizer
 from .gex_tokenizer import GEXTokenizer
 from .price_tokenizer import PriceTokenizer
-from .event_tokenizer import EventTokenizer
-from .vocabulary import TokenVocabulary, SpecialToken
-from src.utils.config_manager import get_config
+from .vocabulary import SpecialToken, TokenVocabulary
 
 logger = logging.getLogger(__name__)
 

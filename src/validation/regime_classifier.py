@@ -15,10 +15,12 @@ Related:
     - Issues #89, #107, #149
 """
 
-import numpy as np
-from typing import Dict, List, Optional
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+import numpy as np
+
 from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)

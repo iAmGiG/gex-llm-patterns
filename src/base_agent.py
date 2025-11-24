@@ -6,20 +6,22 @@ analysis and LLM pattern discovery. Based on AutoGen 0.7.x architecture
 but streamlined for research workflows.
 """
 
-from cache import UnifiedCacheManager
 import logging
-from abc import ABC, abstractmethod
-from typing import Any
-from utils.date_utils import now_iso
-
-# AutoGen core components (0.7.4)
-from autogen_core.models import SystemMessage, UserMessage
-from autogen_agentchat.agents import AssistantAgent
-from autogen_ext.models.openai import OpenAIChatCompletionClient
+import os
 
 # Project components
 import sys
-import os
+from abc import ABC, abstractmethod
+from typing import Any
+
+from autogen_agentchat.agents import AssistantAgent
+
+# AutoGen core components (0.7.4)
+from autogen_core.models import SystemMessage, UserMessage
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
+from cache import UnifiedCacheManager
+from utils.date_utils import now_iso
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

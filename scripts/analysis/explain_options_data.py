@@ -5,11 +5,13 @@ Explain Options Data Structure
 Shows what we're collecting and how it enables GEX analysis.
 """
 
-from cache.unified_cache import UnifiedCacheManager
-from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 import sys
 from pathlib import Path
+
 import pandas as pd
+
+from cache.unified_cache import UnifiedCacheManager
+from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # Add src to path
 project_root = Path(__file__).parent.parent

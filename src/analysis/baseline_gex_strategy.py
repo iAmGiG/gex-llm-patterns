@@ -6,12 +6,14 @@ This strategy proves whether LLM intelligence adds value over mechanical rules.
 Uses configuration from config_defaults/trading_config.yaml
 """
 
-import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional
 import logging
-import yaml
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import numpy as np
+import pandas as pd
+import yaml
+
 from src.utils.date_utils import today_str
 
 logger = logging.getLogger(__name__)

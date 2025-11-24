@@ -2,21 +2,22 @@
 Confidence Scorer
 
 Advanced confidence scoring system for pattern predictions that combines:
-- Pattern strength (historical win rate and sample size)  
+- Pattern strength (historical win rate and sample size)
 - Statistical significance (p-values and confidence intervals)
 - Regime stability (consistency across different market conditions)
 - Recent performance (weighted emphasis on recent occurrences)
 - Context factors (Fed environment, market stress, etc.)
 """
 
-import numpy as np
+import logging
 from typing import Dict
 
-import logging
+import numpy as np
+
+from src.utils.config_manager import get_config
 
 from ..utils.date_utils import now_iso
 from .statistical_validator import StatisticalValidator
-from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
 

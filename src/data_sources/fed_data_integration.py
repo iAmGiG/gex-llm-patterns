@@ -5,13 +5,14 @@ Fetches and caches Federal Reserve data for market context analysis.
 Integrates FRED API for economic indicators and FOMC calendar events.
 """
 
-import pandas as pd
 import datetime
-import pickle
 import json
 import logging
+import pickle
 from pathlib import Path
 from typing import Dict
+
+import pandas as pd
 
 # Use date_utils for standardized datetime operations
 from src.utils.date_utils import today_str

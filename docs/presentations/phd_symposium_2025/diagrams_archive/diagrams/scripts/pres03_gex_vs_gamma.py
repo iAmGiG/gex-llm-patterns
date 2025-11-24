@@ -9,9 +9,10 @@ Clarifies the critical distinction between:
 For CS/ML audience unfamiliar with options trading terminology.
 """
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, Circle, FancyArrowPatch
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

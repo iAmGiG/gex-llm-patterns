@@ -6,19 +6,21 @@ Validates core mechanical patterns using obfuscation tests across full 2024 data
 Proof-of-concept: Start with single pattern to validate workflow.
 """
 
-from src.cache.unified_cache import UnifiedCacheManager
-from src.validation.outcome_calculator import OutcomeCalculator
-from src.validation.data_obfuscation import DataObfuscator
-from src.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-import sys
-from pathlib import Path
 import logging
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
-import yaml
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+import yaml
+
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.cache.unified_cache import UnifiedCacheManager
+from src.validation.data_obfuscation import DataObfuscator
+from src.validation.outcome_calculator import OutcomeCalculator
+from src.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

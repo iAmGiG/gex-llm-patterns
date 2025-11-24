@@ -9,11 +9,13 @@ Issue: #111 (Test 4)
 """
 
 import logging
-from src.cache.unified_cache import UnifiedCacheManager
-import sys
 import sqlite3
+import sys
 from pathlib import Path
+
 import pandas as pd
+
+from src.cache.unified_cache import UnifiedCacheManager
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent

@@ -5,14 +5,16 @@ Implements Issue #70: Batch LLM API Optimization for continuous experiment frame
 Reduces API calls by 5x through weekly batching while maintaining individual day analysis quality.
 """
 
-import logging
 import json
-from typing import Dict, List, Optional
+import logging
 from datetime import datetime
+from typing import Dict, List, Optional
+
 import pandas as pd
+
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 from src.utils.config_manager import get_config
-from src.utils.date_utils import parse_date_string, date_range_trading_days, now_iso
+from src.utils.date_utils import date_range_trading_days, now_iso, parse_date_string
 
 logger = logging.getLogger(__name__)
 

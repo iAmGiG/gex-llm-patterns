@@ -19,11 +19,12 @@ Expected Results:
     - Dual classification combines both metrics
 """
 
-import sys
 import os
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).resolve().parents[2]

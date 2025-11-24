@@ -16,12 +16,13 @@ Expected Outcomes:
     - Treatment ≥ 60% → Framework unnecessary (concern)
 """
 
-import yaml
 import json
-from pathlib import Path
 import sys
-import pandas as pd
 from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
+import yaml
 
 # Add project root to path
 project_root = Path(__file__).resolve().parents[2]
@@ -191,8 +192,9 @@ def run_pilot_test(dry_run=True):
     print("=" * 80)
 
     # Import OpenAI client only when actually running
-    from openai import OpenAI
     import json
+
+    from openai import OpenAI
 
     # Load API key from config
     config_path = project_root / "config/config.json"

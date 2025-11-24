@@ -9,10 +9,11 @@ import logging
 # Third-party imports
 from autogen_core.tools import FunctionTool
 
+from src.tools.data_sources.market.market_context_tool import market_context_tool
+
 # Project imports - only tools actually used
 from src.tools.data_sources.market.unified_market_tool import fetch_unified_market_data
 from src.tools.data_sources.market.vxx_volatility_tool import fetch_vxx_volatility_data
-from src.tools.data_sources.market.market_context_tool import market_context_tool
 from src.tools.data_sources.news.google_search_simple import google_search_smart_tool, set_news_governor
 from src.tools.data_sources.news.hierarchical_news_tool import fetch_hierarchical_news
 

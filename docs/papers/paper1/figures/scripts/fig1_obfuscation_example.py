@@ -9,9 +9,10 @@ Before: Real dates, tickers, context
 After: Day T+N format, INDEX_1, no context
 """
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 # IEEE two-column format
 plt.rcParams.update(

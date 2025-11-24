@@ -5,11 +5,11 @@ Comprehensive pattern documentation with full template structure
 Core hypothesis: Document WHO is forcing WHOM to do WHAT for each pattern
 """
 
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field, asdict
-from datetime import datetime
 import json
 import logging
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

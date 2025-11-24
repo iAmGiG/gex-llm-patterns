@@ -8,12 +8,13 @@ Usage:
     python scripts/statistical_validation/extract_validation_data.py
 """
 
-import yaml
-import pandas as pd
-import numpy as np
+import logging
 from pathlib import Path
 from typing import Dict, List
-import logging
+
+import numpy as np
+import pandas as pd
+import yaml
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -3,19 +3,19 @@ Mechanics Prompt Builder - Matches exact format from Issue #51
 Builds prompts for LLM to identify WHO is forcing WHOM to do WHAT
 """
 
-from typing import Dict, List
-import logging
 import datetime
+import logging
+from typing import Dict, List
 
 from src.utils.config_manager import get_config
 
 # Use date_utils for datetime operations
 from src.utils.date_utils import (
-    today_str,
-    now_timestamp,
-    parse_date_string,
     add_business_days,
     calculate_duration_minutes,
+    now_timestamp,
+    parse_date_string,
+    today_str,
 )
 
 logger = logging.getLogger(__name__)

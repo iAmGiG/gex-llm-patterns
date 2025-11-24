@@ -13,15 +13,16 @@ Date: 2025-11-22
 GitHub Issue: https://github.com/iAmGiG/gex-llm-patterns/issues/141
 """
 
-import sys
-import pandas as pd
-import numpy as np
-from pathlib import Path
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.gridspec import GridSpec
 import calendar
+import sys
 from datetime import datetime
+from pathlib import Path
+
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.gridspec import GridSpec
 
 # Add project root to path
 # From: docs/papers/paper1/figures/scripts/ -> go up 6 levels to project root

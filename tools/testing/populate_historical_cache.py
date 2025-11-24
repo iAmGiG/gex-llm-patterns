@@ -5,12 +5,13 @@ Uses Alpha Vantage Premium API to populate cache with historical options data.
 Can also create intraday snapshots from daily data for testing.
 """
 
-from gex.live_gex_interface import LiveGEXInterface
-from agents.data_retrieval_agent import DataRetrievalAgent
-import sys
 import argparse
-from pathlib import Path
 import logging
+import sys
+from pathlib import Path
+
+from agents.data_retrieval_agent import DataRetrievalAgent
+from gex.live_gex_interface import LiveGEXInterface
 
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent / "src"))

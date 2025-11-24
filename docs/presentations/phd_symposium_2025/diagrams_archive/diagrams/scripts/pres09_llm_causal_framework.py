@@ -10,9 +10,10 @@ Shows actual example from validation:
 Uses real data from Jan 2, 2024 (gamma_positioning pattern)
 """
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 # PRESENTATION SETTINGS
 plt.rcParams.update(

@@ -5,8 +5,9 @@ Usage: python tools/pickle_viewer.py path/to/file.pickle
 """
 
 import sys
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 
 def view_pickle(pickle_path, output_csv: bool = False):

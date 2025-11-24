@@ -11,10 +11,11 @@ Components:
 With example outputs at each stage.
 """
 
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from pathlib import Path
+
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 # IEEE two-column format
 plt.rcParams.update(

@@ -4,15 +4,16 @@ Production Cache Test
 Tests the complete production flow: Cache -> API -> Real Data with LLM analysis
 """
 
-from src.utils.unified_reports_manager import reports_manager
-from utils.date_utils import is_valid_trading_date
-from tools.autogen_tools import calculate_gamma_exposure, fetch_options_data
-from agents.market_mechanics_agent import MarketMechanicsAgent
-import sys
-from pathlib import Path
-import logging
 import argparse
+import logging
+import sys
 from datetime import datetime
+from pathlib import Path
+
+from agents.market_mechanics_agent import MarketMechanicsAgent
+from src.utils.unified_reports_manager import reports_manager
+from tools.autogen_tools import calculate_gamma_exposure, fetch_options_data
+from utils.date_utils import is_valid_trading_date
 
 # Add both src and root paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))

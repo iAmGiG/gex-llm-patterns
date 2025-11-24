@@ -4,38 +4,40 @@ Historical GEX Database Builder - Issue #36
 Production-ready version with:
 - Concurrency control via lock files
 - GEX results validation
-- Resume capability for interrupted builds  
+- Resume capability for interrupted builds
 - Batch database operations
 - Memory monitoring
 - Connection pooling
 
 Builds comprehensive historical GEX database by combining:
 1. Historical options data collection
-2. GEX calculations for each trading day  
+2. GEX calculations for each trading day
 3. Fed context integration
 4. Pattern detection and storage
 5. Quality validation and database indexing
 """
 
-from src.cache.unified_cache import UnifiedCacheManager
-from src.data_sources.polygon_client import PolygonClient
-from src.data_sources.fed_data_integration import FedDataIntegration
-from src.gex.gex_calculator import GEXCalculator
-from src.data_sources.historical_collector import HistoricalOptionsCollector
-from src.utils.date_utils import now_iso, now_timestamp, parse_date_string, calculate_duration_minutes
-import logging
-import pandas as pd
-import sqlite3
-import json
-import numpy as np
-import psutil
-import time
 import atexit
 import datetime
-from pathlib import Path
-from typing import List, Dict, Optional, Tuple
-from contextlib import contextmanager
+import json
+import logging
+import sqlite3
 import sys
+import time
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+import psutil
+
+from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.fed_data_integration import FedDataIntegration
+from src.data_sources.historical_collector import HistoricalOptionsCollector
+from src.data_sources.polygon_client import PolygonClient
+from src.gex.gex_calculator import GEXCalculator
+from src.utils.date_utils import calculate_duration_minutes, now_iso, now_timestamp, parse_date_string
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))

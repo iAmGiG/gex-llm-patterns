@@ -5,28 +5,29 @@ Implements Issue #50: LLM as Market Mechanics Interpreter
 Core hypothesis: LLM identifies WHO is forcing WHOM to do WHAT in market mechanics
 """
 
-from typing import Dict, List, Optional
+import datetime
 import logging
-import pandas as pd
-import numpy as np
-import yaml
 import sqlite3
 from pathlib import Path
+from typing import Dict, List, Optional
 
-from src.utils.date_utils import is_opex_week, now_iso, parse_date_string, add_business_days
-import datetime
+import numpy as np
+import pandas as pd
+import yaml
+
+from src.analysis.actionable_patterns import ActionablePatternDetector
 from src.cache.unified_cache import UnifiedCacheManager
 from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
 from src.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+from src.utils.date_utils import add_business_days, is_opex_week, now_iso, parse_date_string
 from src.utils.unified_reports_manager import unified_reports
-from src.analysis.actionable_patterns import ActionablePatternDetector
 
 logger = logging.getLogger(__name__)
 
 # Import autogen_tools at module level with fallback
 try:
-    from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
+    from src.tools.autogen_tools import calculate_gamma_exposure, fetch_market_data, fetch_options_data
 
     AUTOGEN_TOOLS_AVAILABLE = True
 except ImportError as e:

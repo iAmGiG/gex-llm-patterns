@@ -4,14 +4,16 @@ Enhanced Experiment Orchestrator with YAML Reporting
 Includes data obfuscation, test metadata, and structured output.
 """
 
-from src.validation.data_obfuscation import DataObfuscator
-from src.utils.unified_reports_manager import yaml_reports
-from agents.market_mechanics_agent import MarketMechanicsAgent
+import argparse
+import logging
 import sys
 from pathlib import Path
-import logging
-import argparse
+
 import yaml
+
+from agents.market_mechanics_agent import MarketMechanicsAgent
+from src.utils.unified_reports_manager import yaml_reports
+from src.validation.data_obfuscation import DataObfuscator
 
 # Add both src and root paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

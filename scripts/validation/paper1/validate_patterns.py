@@ -15,20 +15,22 @@ Features:
 - Generates comprehensive validation reports
 """
 
-from src.cache.unified_cache import UnifiedCacheManager
-from src.utils.date_utils import parse_date_string, is_business_day
-from src.agents.market_mechanics_agent import MarketMechanicsAgent
-from src.analysis.pattern_library import PatternLibrary
-import logging
-from typing import Dict, List, Optional
 import json
-import yaml
-from pathlib import Path
-from datetime import datetime, timedelta
-import pandas as pd
+import logging
+import os
 import sqlite3
 import sys
-import os
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional
+
+import pandas as pd
+import yaml
+
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.analysis.pattern_library import PatternLibrary
+from src.cache.unified_cache import UnifiedCacheManager
+from src.utils.date_utils import is_business_day, parse_date_string
 
 # Add project root to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -37,7 +39,7 @@ sys.path.insert(0, project_root)
 
 # Try to use AutoGen tools for live data
 try:
-    from src.tools.autogen_tools import fetch_options_data, calculate_gamma_exposure, fetch_market_data
+    from src.tools.autogen_tools import calculate_gamma_exposure, fetch_market_data, fetch_options_data
 
     AUTOGEN_AVAILABLE = True
 except ImportError:

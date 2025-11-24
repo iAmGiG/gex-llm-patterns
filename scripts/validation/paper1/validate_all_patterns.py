@@ -4,13 +4,14 @@ Batch validation script for all 6 patterns in Issue #79.
 Tests each pattern individually and generates a summary report.
 """
 
-import sys
-from pathlib import Path
-import logging
-import yaml
-from datetime import datetime
-import subprocess
 import json
+import logging
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+import yaml
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

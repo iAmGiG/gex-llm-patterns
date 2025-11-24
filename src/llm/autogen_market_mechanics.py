@@ -3,13 +3,13 @@ AutoGen-based Market Mechanics LLM Integration
 Uses AutoGen framework for consistent LLM interaction across the system
 """
 
-import os
 import asyncio
 import logging
-from typing import Dict, Any
+import os
+from typing import Any, Dict
 
 # AutoGen imports
-from autogen_core.models import UserMessage, SystemMessage
+from autogen_core.models import SystemMessage, UserMessage
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
 # Import config

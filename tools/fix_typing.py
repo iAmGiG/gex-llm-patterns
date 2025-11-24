@@ -4,8 +4,8 @@ Fix Typing Issues - Remove complex parameter typing for computational effectiven
 Converts strict typing to relaxed typing for better research/development workflow.
 """
 
-import re
 import os
+import re
 
 
 def fix_file_typing(filepath):

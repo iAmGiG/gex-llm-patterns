@@ -5,13 +5,15 @@ Compares database GEX values against fresh calculations to identify corruption.
 Checks all tables for data quality issues.
 """
 
-from src.gex.gex_calculator import GEXCalculator
-from src.cache.unified_cache import UnifiedCacheManager
+import logging
 import sqlite3
 import sys
 from pathlib import Path
+
 import pandas as pd
-import logging
+
+from src.cache.unified_cache import UnifiedCacheManager
+from src.gex.gex_calculator import GEXCalculator
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

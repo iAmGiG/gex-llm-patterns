@@ -18,11 +18,11 @@ Usage:
     python scripts/database/migrate_add_dual_gex.py --database .cache/consolidated_historical.db
 """
 
-import sqlite3
 import argparse
 import logging
-from pathlib import Path
+import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
