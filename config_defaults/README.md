@@ -15,6 +15,7 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 - **`tool_registry_config.yaml`** - Tool registry settings and agent tool assignments (Issue #152)
 - **`trading_config.yaml`** - Trading system and risk management parameters
 - **`agent_factory_config.yaml`** - Agent factory pattern configuration (Issue #153)
+- **`agent_bus_config.yaml`** - Agent communication bus configuration (Issue #154)
 
 ## Removed Files (Agent-Driven Evolution)
 
@@ -64,6 +65,55 @@ agent = instance.agent
 - Default model and temperature per agent type
 - Tool assignments
 - Agent-specific extra configuration
+
+### Agent Communication Bus (Issue #154)
+
+Use the `AgentBus` for multi-agent coordination:
+
+```python
+import asyncio
+from src.agents import (
+    AgentBus, EventType, AgentMessage,
+    get_agent_bus, create_message, publish_result
+)
+
+# Get singleton bus
+bus = get_agent_bus()
+
+# Subscribe to events
+def on_gex_calculated(msg: AgentMessage):
+    print(f"GEX ready: {msg.payload}")
+
+bus.subscribe("my_agent", EventType.GEX_CALCULATED, on_gex_calculated)
+
+# Publish results
+async def publish_gex():
+    await publish_result(
+        source_agent="spy_agent",
+        event_type=EventType.GEX_CALCULATED,
+        payload={"symbol": "SPY", "net_gex": 5000000}
+    )
+
+# Wait for results from other agents
+async def wait_for_data():
+    result = await bus.wait_for_result("spy_agent", EventType.GEX_CALCULATED)
+    return result.payload
+
+# Gather multiple results
+async def gather_all():
+    results = await bus.gather_results([
+        ("spy_agent", EventType.GEX_CALCULATED),
+        ("qqq_agent", EventType.GEX_CALCULATED),
+    ])
+    return results
+```
+
+**Configuration**: Edit `agent_bus_config.yaml` to customize:
+
+- Message history limits
+- Default timeouts
+- Event type definitions
+- Default subscriptions
 
 ### Agent Prompt Templates (November 2025)
 

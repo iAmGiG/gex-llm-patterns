@@ -1,0 +1,79 @@
+# Agent Communication Bus Configuration
+# Issue #154: Pub-Sub message bus for inter-agent communication
+
+agent_bus:
+  # Maximum messages to keep in history
+  max_history: 1000
+
+  # Default timeout for wait operations (seconds)
+  default_timeout: 30.0
+
+  # Enable async callbacks (if false, callbacks run synchronously)
+  async_callbacks: true
+
+  # Message retention settings
+  retention:
+    # Auto-cleanup results older than (seconds), 0 = disabled
+    auto_cleanup_seconds: 300
+    # Maximum stored results before cleanup triggers
+    max_stored_results: 500
+
+  # Logging settings
+  logging:
+    # Log all published messages
+    log_publishes: true
+    # Log subscription changes
+    log_subscriptions: true
+    # Log waits and timeouts
+    log_waits: true
+
+# Standard event types and their descriptions
+event_types:
+  data_fetched:
+    description: "Raw options data available"
+    expected_payload:
+      - symbol
+      - date
+      - record_count
+
+  gex_calculated:
+    description: "GEX metrics computed"
+    expected_payload:
+      - symbol
+      - date
+      - net_gex
+      - flip_point
+      - gamma_levels
+
+  patterns_detected:
+    description: "Patterns identified in data"
+    expected_payload:
+      - symbol
+      - date
+      - patterns
+      - confidence_scores
+
+  analysis_complete:
+    description: "Full analysis done"
+    expected_payload:
+      - symbol
+      - date
+      - summary
+      - recommendations
+
+  error:
+    description: "Processing error occurred"
+    expected_payload:
+      - error_type
+      - message
+      - recoverable
+
+# Default subscriptions (agent_id -> list of event types)
+default_subscriptions:
+  portfolio_agent:
+    - gex_calculated
+    - analysis_complete
+
+  aggregator_agent:
+    - data_fetched
+    - gex_calculated
