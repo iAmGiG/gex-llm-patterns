@@ -822,15 +822,26 @@ ALL_TOOLS_DICT = {tool.name: tool for tool in ALL_TOOLS if tool is not None}
 ##################################
 
 
-def get_tools_for_agent(agent_type):
+def get_tools_for_agent(agent_type, use_registry: bool = False):
     """Get the list of tools that should be used by a specific agent type.
 
     Args:
         agent_type: Type of agent (e.g., 'data', 'gex', 'analysis')
+        use_registry: If True, use the new ToolRegistry system (Issue #152)
 
     Returns:
         List of FunctionTool objects appropriate for the agent type
     """
+    # Use new registry system if requested
+    if use_registry:
+        try:
+            from src.tools.registry_integration import get_autogen_tools_for_agent
+
+            return get_autogen_tools_for_agent(agent_type)
+        except ImportError:
+            logger.warning("ToolRegistry not available, falling back to legacy tools")
+
+    # Legacy tool assignment (backward compatible)
     if agent_type == DATA_AGENT:
         return DATA_COLLECTION_TOOLS
     elif agent_type == GEX_AGENT:
@@ -840,3 +851,23 @@ def get_tools_for_agent(agent_type):
     else:
         # Return all tools if agent type is unknown
         return ALL_TOOLS
+
+
+##################################
+# Tool Registry Integration (Issue #152)
+##################################
+
+
+def initialize_registry():
+    """Initialize the tool registry with all defined tools.
+
+    Call this during application startup to enable registry features. Returns the registry instance for further
+    configuration.
+    """
+    try:
+        from src.tools.registry_integration import initialize_tool_registry
+
+        return initialize_tool_registry()
+    except ImportError as e:
+        logger.warning(f"Could not initialize tool registry: {e}")
+        return None

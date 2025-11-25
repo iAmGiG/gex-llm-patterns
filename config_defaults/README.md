@@ -12,6 +12,7 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 - **`obfuscation_patterns.yaml`** - Data obfuscation templates for anti-cheating validation
 - **`pattern_library_config.yaml`** - Pattern library definitions and mechanics
 - **`technical_indicators_config.yaml`** - Technical indicator calculations and adaptive consensus parameters
+- **`tool_registry_config.yaml`** - Tool registry settings and agent tool assignments (Issue #152)
 - **`trading_config.yaml`** - Trading system and risk management parameters
 
 ## Removed Files (Agent-Driven Evolution)

@@ -1,0 +1,194 @@
+# Tool Registry Configuration
+# Centralized tool management settings for agent architecture
+# Issue #152: Implement Tool Registry System
+
+# ==============================================================================
+# Registry Settings
+# ==============================================================================
+
+tool_registry:
+  # Tools to disable globally (by name)
+  # Add tool names here to prevent them from being used
+  disabled_tools: []
+  # Example:
+  # disabled_tools:
+  #   - "deprecated_tool_name"
+  #   - "experimental_tool"
+
+  # Enable strict validation (fail if required tools missing)
+  strict_validation: false
+
+  # Log tool usage statistics
+  log_usage: true
+
+# ==============================================================================
+# Tool Definitions
+# Reference for available tools and their configurations
+# ==============================================================================
+
+tools:
+  # Data Retrieval Tools
+  data_retrieval:
+    fetch_options_data:
+      description: "Fetch options chain data from Alpha Vantage or cache"
+      agent_types: ["data", "analysis"]
+      requires_cache: true
+      requires_api: true
+      rate_limited: true
+      estimated_latency_ms: 500
+      tags: ["options", "alpha_vantage", "cache"]
+
+    fetch_market_data:
+      description: "Fetch market data from Polygon.io or cache"
+      agent_types: ["data", "analysis"]
+      requires_cache: true
+      requires_api: true
+      rate_limited: true
+      estimated_latency_ms: 300
+      tags: ["market", "polygon", "cache"]
+
+    query_analysis:
+      description: "Parse and analyze user queries with market intelligence"
+      agent_types: ["data", "analysis", "market_mechanics"]
+      requires_cache: false
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 50
+      tags: ["query", "intelligence"]
+
+    algo_time_analysis:
+      description: "Analyze data at key algo trading times (3:30, 3:50, etc.)"
+      agent_types: ["data", "analysis", "market_mechanics"]
+      requires_cache: true
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 100
+      tags: ["intraday", "algo", "timing"]
+
+  # GEX Calculation Tools
+  gex_calculation:
+    calculate_gamma_exposure:
+      description: "Calculate gamma exposure metrics using Black-Scholes"
+      agent_types: ["gex", "analysis", "market_mechanics"]
+      requires_cache: true
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 200
+      tags: ["gex", "gamma", "calculation"]
+
+    find_flip_points:
+      description: "Identify gamma flip points and dealer positioning"
+      agent_types: ["gex", "analysis", "market_mechanics"]
+      requires_cache: true
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 150
+      tags: ["gex", "flip_point", "dealer"]
+
+    process_historical_gex_range:
+      description: "Process GEX calculations for date range with caching"
+      agent_types: ["gex", "analysis"]
+      requires_cache: true
+      requires_api: true
+      rate_limited: true
+      estimated_latency_ms: 5000
+      tags: ["gex", "historical", "batch"]
+
+  # Pattern Analysis Tools
+  pattern_analysis:
+    technical_confluence:
+      description: "Analyze technical-GEX confluence patterns"
+      agent_types: ["analysis", "market_mechanics"]
+      requires_cache: true
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 300
+      tags: ["pattern", "technical", "confluence"]
+
+  # Validation Tools
+  validation:
+    validate_options_data:
+      description: "Validate options data quality and completeness"
+      agent_types: ["validation", "data"]
+      requires_cache: false
+      requires_api: false
+      rate_limited: false
+      estimated_latency_ms: 50
+      tags: ["validation", "quality"]
+
+# ==============================================================================
+# Agent Tool Assignments
+# Default tool sets for each agent type
+# ==============================================================================
+
+agent_assignments:
+  data:
+    tools:
+      - "fetch_options_data"
+      - "fetch_market_data"
+      - "query_analysis"
+      - "algo_time_analysis"
+    description: "Data retrieval and caching agent"
+
+  gex:
+    tools:
+      - "calculate_gamma_exposure"
+      - "find_flip_points"
+      - "process_historical_gex_range"
+    description: "Gamma exposure calculation agent"
+
+  analysis:
+    tools:
+      - "fetch_options_data"
+      - "calculate_gamma_exposure"
+      - "find_flip_points"
+      - "algo_time_analysis"
+      - "query_analysis"
+      - "technical_confluence"
+      - "process_historical_gex_range"
+    description: "Pattern detection and analysis agent"
+
+  market_mechanics:
+    tools:
+      - "fetch_options_data"
+      - "calculate_gamma_exposure"
+      - "find_flip_points"
+      - "algo_time_analysis"
+      - "query_analysis"
+      - "technical_confluence"
+    description: "Market mechanics interpretation agent"
+
+  validation:
+    tools:
+      - "validate_options_data"
+    description: "Data validation agent"
+
+# ==============================================================================
+# Tool Categories
+# Organizational groupings for tool discovery
+# ==============================================================================
+
+categories:
+  data_retrieval:
+    description: "Tools for fetching and caching market data"
+    priority: 1
+
+  gex_calculation:
+    description: "Tools for gamma exposure calculations"
+    priority: 2
+
+  pattern_analysis:
+    description: "Tools for pattern detection and analysis"
+    priority: 3
+
+  validation:
+    description: "Tools for data validation and quality checks"
+    priority: 4
+
+  reporting:
+    description: "Tools for generating reports and summaries"
+    priority: 5
+
+  market_intelligence:
+    description: "Tools for market context and intelligence"
+    priority: 3
