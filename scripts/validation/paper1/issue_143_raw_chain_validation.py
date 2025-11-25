@@ -477,24 +477,314 @@ class RawChainValidator:
             logger.info(f"Saved example prompt to {example_file}")
 
 
+class RawChainBatchValidator:
+    """Batch API integration for raw chain validation using OpenAI Batch API."""
+
+    def __init__(self, output_dir: str = 'reports/validation/paper1_raw_chain'):
+        """Initialize batch validator."""
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        self.validator = RawChainValidator()
+        self.parser = RawChainResponseParser()
+
+        # Load OpenAI API key
+        self.api_key = self._load_api_key()
+        self.client = None
+
+    def _load_api_key(self) -> str:
+        """Load OpenAI API key from config."""
+        import os
+
+        config_path = Path('/mnt/bst/yxie2/cregan1/gex-llm-patterns/config/config.json')
+        if config_path.exists():
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            return config.get('OPEN_AI_KEY', '')
+
+        return os.getenv('OPENAI_API_KEY', '')
+
+    def _get_client(self):
+        """Get or create OpenAI client."""
+        if self.client is None:
+            from openai import OpenAI
+            self.client = OpenAI(api_key=self.api_key)
+        return self.client
+
+    def prepare_batch_file(self, test_dates: List[str], model: str = 'o4-mini') -> Path:
+        """
+        Prepare JSONL batch file for raw chain validation.
+
+        Args:
+            test_dates: List of dates to validate
+            model: OpenAI model (default: o4-mini)
+
+        Returns:
+            Path to generated JSONL file
+        """
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        batch_file = self.output_dir / f'batch_raw_chain_{timestamp}.jsonl'
+
+        logger.info(f"Preparing batch file for {len(test_dates)} dates")
+
+        batch_requests = []
+        skipped = 0
+
+        for date in test_dates:
+            prompt = self.validator.generate_prompt_for_date(date)
+
+            if prompt is None:
+                logger.warning(f"Skipping {date}: no data")
+                skipped += 1
+                continue
+
+            # OpenAI Batch API format
+            request = {
+                'custom_id': f'raw-chain-{date}',
+                'method': 'POST',
+                'url': '/v1/chat/completions',
+                'body': {
+                    'model': model,
+                    'messages': [{'role': 'user', 'content': prompt}]
+                    # Note: o4-mini requires temperature=1 (default), don't set explicitly
+                }
+            }
+
+            batch_requests.append(request)
+
+        # Write JSONL
+        with open(batch_file, 'w') as f:
+            for req in batch_requests:
+                f.write(json.dumps(req) + '\n')
+
+        logger.info(f"Generated {len(batch_requests)} requests ({skipped} skipped)")
+        logger.info(f"Saved to {batch_file}")
+
+        return batch_file
+
+    def submit_batch(self, batch_file: Path, description: str = None) -> str:
+        """
+        Submit batch file to OpenAI Batch API.
+
+        Args:
+            batch_file: Path to JSONL batch file
+            description: Optional description
+
+        Returns:
+            Batch job ID
+        """
+        client = self._get_client()
+
+        logger.info(f"Uploading batch file: {batch_file}")
+
+        # Upload file
+        with open(batch_file, 'rb') as f:
+            response = client.files.create(file=f, purpose='batch')
+            file_id = response.id
+
+        logger.info(f"Uploaded file ID: {file_id}")
+
+        # Create batch job
+        desc = description or f"Issue #143 Raw Chain Validation - {datetime.now().isoformat()}"
+
+        batch = client.batches.create(
+            input_file_id=file_id,
+            endpoint='/v1/chat/completions',
+            completion_window='24h',
+            metadata={'description': desc}
+        )
+
+        batch_id = batch.id
+        logger.info(f"Created batch job: {batch_id}")
+        logger.info(f"Status: {batch.status}")
+
+        # Save metadata
+        metadata_file = self.output_dir / f'batch_{batch_id}_metadata.json'
+        with open(metadata_file, 'w') as f:
+            json.dump({
+                'batch_id': batch_id,
+                'file_id': file_id,
+                'description': desc,
+                'created_at': datetime.now().isoformat(),
+                'batch_file': str(batch_file)
+            }, f, indent=2)
+
+        logger.info(f"Saved metadata to {metadata_file}")
+
+        return batch_id
+
+    def check_status(self, batch_id: str) -> Dict:
+        """Check batch job status."""
+        client = self._get_client()
+        batch = client.batches.retrieve(batch_id)
+
+        status = {
+            'batch_id': batch_id,
+            'status': batch.status,
+            'completed': batch.request_counts.completed if batch.request_counts else 0,
+            'failed': batch.request_counts.failed if batch.request_counts else 0,
+            'total': batch.request_counts.total if batch.request_counts else 0
+        }
+
+        logger.info(f"Batch {batch_id}: {status['status']} ({status['completed']}/{status['total']} complete)")
+
+        return status
+
+    def retrieve_results(self, batch_id: str) -> List[Dict]:
+        """
+        Retrieve and parse batch results.
+
+        Args:
+            batch_id: Batch job ID
+
+        Returns:
+            List of parsed results
+        """
+        client = self._get_client()
+        batch = client.batches.retrieve(batch_id)
+
+        if batch.status != 'completed':
+            logger.warning(f"Batch not complete: {batch.status}")
+            return []
+
+        # Download output file
+        output_file_id = batch.output_file_id
+        if not output_file_id:
+            logger.error("No output file available")
+            return []
+
+        content = client.files.content(output_file_id)
+        output_path = self.output_dir / f'results_{batch_id}.jsonl'
+
+        with open(output_path, 'wb') as f:
+            f.write(content.read())
+
+        logger.info(f"Downloaded results to {output_path}")
+
+        # Parse results
+        results = []
+        with open(output_path, 'r') as f:
+            for line in f:
+                response = json.loads(line)
+                custom_id = response.get('custom_id', '')
+                date = custom_id.replace('raw-chain-', '')
+
+                # Extract LLM response
+                try:
+                    llm_response = response['response']['body']['choices'][0]['message']['content']
+                    parsed = self.parser.parse_response(llm_response)
+                    quality = self.parser.analyze_reasoning_quality(parsed)
+
+                    results.append({
+                        'date': date,
+                        'detected': parsed['detected'],
+                        'confidence': parsed['confidence'],
+                        'who': parsed['who'],
+                        'what': parsed['what'],
+                        'reasoning_score': quality['reasoning_score'],
+                        'reasoning_quality': quality
+                    })
+
+                except Exception as e:
+                    logger.error(f"Failed to parse response for {date}: {e}")
+                    results.append({
+                        'date': date,
+                        'detected': False,
+                        'confidence': 0,
+                        'error': str(e)
+                    })
+
+        # Save parsed results
+        results_file = self.output_dir / f'issue_143_raw_chain_results_{batch_id}.yaml'
+        with open(results_file, 'w') as f:
+            yaml.dump(results, f, default_flow_style=False)
+
+        logger.info(f"Saved {len(results)} parsed results to {results_file}")
+
+        return results
+
+    def run_full_validation(self, n_high: int = 25, n_low: int = 25) -> str:
+        """
+        Run full raw chain validation.
+
+        Args:
+            n_high: Number of high-detection dates
+            n_low: Number of low-detection dates
+
+        Returns:
+            Batch job ID
+        """
+        # Get test sample
+        high_dates, low_dates = self.validator.get_test_sample(n_high, n_low)
+        all_dates = high_dates + low_dates
+
+        logger.info(f"Running validation on {len(all_dates)} dates")
+        logger.info(f"  High-detection: {len(high_dates)}")
+        logger.info(f"  Low-detection: {len(low_dates)}")
+
+        # Prepare and submit batch
+        batch_file = self.prepare_batch_file(all_dates)
+        batch_id = self.submit_batch(batch_file, f"Issue #143: {len(all_dates)} days raw chain validation")
+
+        return batch_id
+
+
 def main():
     """Main entry point."""
-    logger.info("Issue #143: Raw Chain Validation - Setup")
+    import argparse
 
-    validator = RawChainValidator()
+    parser = argparse.ArgumentParser(description='Issue #143: Raw Chain Validation')
+    parser.add_argument('--mode', choices=['setup', 'submit', 'status', 'retrieve'],
+                       default='setup', help='Operation mode')
+    parser.add_argument('--batch-id', type=str, help='Batch ID for status/retrieve')
+    parser.add_argument('--n-high', type=int, default=25, help='Number of high-detection dates')
+    parser.add_argument('--n-low', type=int, default=25, help='Number of low-detection dates')
 
-    # Generate sample prompts for review
-    logger.info("Generating sample prompts...")
-    validator.save_sample_prompts(n_samples=3)
+    args = parser.parse_args()
 
-    # Show test sample statistics
-    high_dates, low_dates = validator.get_test_sample()
-    logger.info(f"\nTest sample ready:")
-    logger.info(f"  High-detection dates: {len(high_dates)}")
-    logger.info(f"  Low-detection dates: {len(low_dates)}")
-    logger.info(f"  Total: {len(high_dates) + len(low_dates)}")
+    if args.mode == 'setup':
+        logger.info("Issue #143: Raw Chain Validation - Setup")
+        validator = RawChainValidator()
+        validator.save_sample_prompts(n_samples=3)
 
-    logger.info("\nSetup complete. Review sample prompts before proceeding to full validation.")
+        high_dates, low_dates = validator.get_test_sample()
+        logger.info(f"\nTest sample ready:")
+        logger.info(f"  High-detection dates: {len(high_dates)}")
+        logger.info(f"  Low-detection dates: {len(low_dates)}")
+        logger.info(f"  Total: {len(high_dates) + len(low_dates)}")
+        logger.info("\nRun with --mode submit to start validation")
+
+    elif args.mode == 'submit':
+        logger.info("Issue #143: Submitting batch validation")
+        batch_validator = RawChainBatchValidator()
+        batch_id = batch_validator.run_full_validation(args.n_high, args.n_low)
+        logger.info(f"\nBatch submitted: {batch_id}")
+        logger.info(f"Run with --mode status --batch-id {batch_id} to check progress")
+
+    elif args.mode == 'status':
+        if not args.batch_id:
+            logger.error("--batch-id required for status mode")
+            return 1
+        batch_validator = RawChainBatchValidator()
+        status = batch_validator.check_status(args.batch_id)
+        logger.info(f"Status: {status}")
+
+    elif args.mode == 'retrieve':
+        if not args.batch_id:
+            logger.error("--batch-id required for retrieve mode")
+            return 1
+        batch_validator = RawChainBatchValidator()
+        results = batch_validator.retrieve_results(args.batch_id)
+        logger.info(f"Retrieved {len(results)} results")
+
+        # Summary statistics
+        detected = sum(1 for r in results if r.get('detected', False))
+        logger.info(f"\n=== Results Summary ===")
+        logger.info(f"Total: {len(results)}")
+        logger.info(f"Detected: {detected} ({100*detected/len(results):.1f}%)")
+        logger.info(f"Not detected: {len(results) - detected}")
+
+    return 0
 
 
 if __name__ == '__main__':
