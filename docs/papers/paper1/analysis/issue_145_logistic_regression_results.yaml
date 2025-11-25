@@ -56,6 +56,33 @@ model_comparison:
 model_type: LogisticRegression
 n_features: 10
 n_samples: 167
+overnight_persistence:
+  chi2_pvalue: 0.9341216111070818
+  chi2_statistic: 0.006832733865866342
+  correlation_significant: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args:
+    - b1
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - '|'
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    AA==
+  gap_rate_difference: 0.01835915088927137
+  gex_gap_correlation: -0.0019358814321843408
+  gex_gap_pvalue: 0.9801911822679881
+  high_gex_gap_rate: 0.47619047619047616
+  low_gex_gap_rate: 0.4578313253012048
+  n_samples: 167
+  persistence_found: false
 std_cv_auc: 0.06852500334292767
 success_criteria:
   achieved: 0.6813460595323341

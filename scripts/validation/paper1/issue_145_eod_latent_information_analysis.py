@@ -483,8 +483,14 @@ class EODPredictiveAnalysis:
         # Phase 6: LLM vs Statistical comparison
         llm_results = self._calculate_llm_auc(outcomes)
 
+        # Phase 7: Overnight persistence analysis
+        persistence_results = self._analyze_overnight_persistence(eod_features, outcomes)
+
         # Combine results
         results = logistic_results.copy() if logistic_results else {}
+
+        if persistence_results:
+            results['overnight_persistence'] = persistence_results
         if llm_results:
             results['llm_comparison'] = llm_results
 
@@ -853,6 +859,123 @@ class EODPredictiveAnalysis:
             'high_confidence_materialization': float(high_conf['any_materialization'].mean()) if len(high_conf) > 0 else None,
             'low_confidence_materialization': float(low_conf['any_materialization'].mean()) if len(low_conf) > 0 else None
         }
+
+    def _analyze_overnight_persistence(self, features: pd.DataFrame,
+                                       outcomes: pd.DataFrame) -> Dict:
+        """
+        Analyze overnight constraint persistence: EOD GEX → T+1 opening gap.
+
+        Tests whether large EOD GEX magnitude predicts larger overnight gaps,
+        validating that dealer gamma constraints persist overnight.
+
+        Args:
+            features: EOD feature DataFrame
+            outcomes: Next-day outcome DataFrame
+
+        Returns:
+            Dictionary with persistence analysis results
+        """
+        logger.info("=== Phase 7: Overnight Constraint Persistence ===")
+
+        # Merge datasets
+        merged = pd.merge(features, outcomes, on='date', how='inner')
+
+        if len(merged) < 30:
+            logger.warning(f"Insufficient data for persistence analysis ({len(merged)} samples)")
+            return {}
+
+        # Calculate overnight gap (T+1 open vs T close)
+        # Gap is already captured in close_open_change but let's use gap_move outcome
+        gap_column = 'gap_return' if 'gap_return' in merged.columns else None
+
+        # Use total_gex magnitude (absolute value)
+        merged['gex_magnitude'] = merged['total_gex'].abs()
+
+        # Use gap_move as binary indicator and gap_return if available
+        from scipy import stats
+
+        results = {}
+
+        # 1. Correlation: GEX magnitude vs gap probability
+        if 'gap_move' in merged.columns:
+            gex_mag = merged['gex_magnitude']
+            gap_flag = merged['gap_move'].astype(int)
+
+            # Point-biserial correlation (continuous vs binary)
+            corr, p_value = stats.pointbiserialr(gap_flag, gex_mag)
+
+            logger.info(f"\nGEX Magnitude vs Gap Move (>0.3% overnight gap):")
+            logger.info(f"  Point-biserial correlation: r = {corr:.4f}")
+            logger.info(f"  P-value: {p_value:.4f}")
+
+            results['gex_gap_correlation'] = float(corr)
+            results['gex_gap_pvalue'] = float(p_value)
+            results['correlation_significant'] = p_value < 0.05
+
+        # 2. Regime analysis: High vs Low GEX days
+        gex_median = merged['gex_magnitude'].median()
+        high_gex = merged[merged['gex_magnitude'] >= gex_median]
+        low_gex = merged[merged['gex_magnitude'] < gex_median]
+
+        if 'gap_move' in merged.columns:
+            high_gap_rate = high_gex['gap_move'].mean()
+            low_gap_rate = low_gex['gap_move'].mean()
+
+            logger.info(f"\nGap Move Rates by GEX Regime:")
+            logger.info(f"  High GEX (>= median): {high_gap_rate:.1%} ({len(high_gex)} days)")
+            logger.info(f"  Low GEX (< median): {low_gap_rate:.1%} ({len(low_gex)} days)")
+            logger.info(f"  Difference: {(high_gap_rate - low_gap_rate):.1%}")
+
+            # Chi-squared test for independence
+            contingency = pd.crosstab(
+                merged['gex_magnitude'] >= gex_median,
+                merged['gap_move']
+            )
+            chi2, p_chi, dof, expected = stats.chi2_contingency(contingency)
+
+            logger.info(f"\nChi-squared test for independence:")
+            logger.info(f"  Chi-squared: {chi2:.4f}")
+            logger.info(f"  P-value: {p_chi:.4f}")
+            logger.info(f"  DOF: {dof}")
+
+            results['high_gex_gap_rate'] = float(high_gap_rate)
+            results['low_gex_gap_rate'] = float(low_gap_rate)
+            results['gap_rate_difference'] = float(high_gap_rate - low_gap_rate)
+            results['chi2_statistic'] = float(chi2)
+            results['chi2_pvalue'] = float(p_chi)
+
+        # 3. Directional analysis: GEX sign vs next-day direction
+        if 'directional_move' in merged.columns and 'next_day_return' in merged.columns:
+            # Check if negative GEX (amplification) leads to larger moves
+            neg_gex = merged[merged['gex_sign'] == 1]  # gex_sign=1 means negative GEX
+            if len(neg_gex) > 0:
+                direction_rate = neg_gex['directional_move'].mean()
+                avg_return_mag = neg_gex['next_day_return'].abs().mean()
+
+                logger.info(f"\nNegative GEX Days (n={len(neg_gex)}):")
+                logger.info(f"  Directional move rate: {direction_rate:.1%}")
+                logger.info(f"  Avg absolute return: {avg_return_mag:.4f}")
+
+                results['negative_gex_directional_rate'] = float(direction_rate)
+                results['negative_gex_avg_return'] = float(avg_return_mag)
+
+        # Overall verdict
+        persistence_found = (
+            results.get('correlation_significant', False) or
+            results.get('chi2_pvalue', 1.0) < 0.05 or
+            results.get('gap_rate_difference', 0) > 0.10
+        )
+
+        logger.info(f"\n=== Overnight Persistence Verdict ===")
+        if persistence_found:
+            logger.info(">> Evidence of overnight constraint persistence found <<")
+        else:
+            logger.info(">> Weak overnight persistence (constraints may be contemporaneous) <<")
+
+        results['persistence_found'] = persistence_found
+        results['n_samples'] = len(merged)
+
+        return results
 
 
 def main():
