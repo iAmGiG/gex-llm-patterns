@@ -3,8 +3,9 @@ calculations."""
 
 import datetime
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import pandas as pd
 
@@ -17,6 +18,23 @@ from .unified_cache import UnifiedCacheManager
 logger = logging.getLogger(__name__)
 
 
+def _get_optimal_workers(max_workers: Optional[int] = None) -> int:
+    """Calculate optimal worker count based on CPU cores.
+
+    Args:
+        max_workers: Optional override for max workers
+
+    Returns:
+        Optimal number of workers (between 2 and 8)
+    """
+    if max_workers is not None:
+        return max_workers
+
+    cpu_count = os.cpu_count() or 4
+    # Use CPU count - 1 to leave headroom, bounded between 2 and 8
+    return max(2, min(8, cpu_count - 1))
+
+
 class ConcurrentGEXProcessor:
     """Concurrent processor for efficient GEX calculation and caching.
 
@@ -27,22 +45,29 @@ class ConcurrentGEXProcessor:
     - Progress tracking and error handling
     """
 
-    def __init__(self, max_workers: int = None, unified_cache_manager=None):
+    def __init__(self, max_workers: Optional[int] = None, unified_cache_manager=None):
         """Initialize concurrent processor.
 
         Args:
-            max_workers: Maximum concurrent threads (default from config)
+            max_workers: Maximum concurrent threads (auto-calculated if None, or from config)
             unified_cache_manager: Existing cache manager (optional)
         """
         # Load configuration from centralized config system
         config = get_config()
 
         # Get defaults from data_sources_config.yaml
-        default_max_workers = config.get("data_sources.concurrent_processor.max_workers", 4)
+        config_max_workers = config.get("data_sources.concurrent_processor.max_workers", None)
         self.future_timeout = config.get("data_sources.concurrent_processor.future_timeout", 300)
         self.log_interval = config.get("data_sources.concurrent_processor.log_interval", 10)
 
-        self.max_workers = max_workers if max_workers is not None else default_max_workers
+        # Use adaptive worker calculation if not explicitly overridden
+        if max_workers is not None:
+            self.max_workers = max_workers
+        elif config_max_workers is not None:
+            self.max_workers = config_max_workers
+        else:
+            self.max_workers = _get_optimal_workers()
+
         self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
 
         # Use provided cache manager or create new one
@@ -55,7 +80,7 @@ class ConcurrentGEXProcessor:
             self.cache_manager = UnifiedCacheManager()
             self.gex_cache = GEXCacheManager()
 
-        logger.info(f"Concurrent GEX Processor initialized with {max_workers} workers")
+        logger.info(f"Concurrent GEX Processor initialized with {self.max_workers} workers")
 
     def process_symbol_date_range(self, symbol, start_date, end_date, force_recalculate: bool = False):
         """Process GEX for entire date range concurrently.

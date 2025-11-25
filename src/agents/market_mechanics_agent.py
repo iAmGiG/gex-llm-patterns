@@ -1744,7 +1744,7 @@ Respond with JSON:
 
     def _llm_interpret_mechanics(self, context: Dict, patterns: List[Dict]) -> Dict:
         """Use LLM to interpret market mechanics."""
-        logger.info(f"DEBUG: _llm_interpret_mechanics called, LLM available: {self.llm is not None}")
+        logger.debug(f"_llm_interpret_mechanics called, LLM available: {self.llm is not None}")
         if not self.llm:
             logger.warning("No LLM available, falling back to rule-based interpretation")
             return self._rule_based_interpretation(patterns)
@@ -1773,11 +1773,11 @@ Respond with JSON:
 
     def _invoke_llm_safely(self, prompt: str) -> Dict:
         """Safely invoke LLM with proper interface detection."""
-        logger.info(f"DEBUG: _invoke_llm_safely called with prompt length: {len(prompt)}")
+        logger.debug(f"_invoke_llm_safely called with prompt length: {len(prompt)}")
         # Try structured interpretation method first (preferred)
         try:
             if callable(getattr(self.llm, "interpret_mechanics", None)):
-                logger.info("DEBUG: Using interpret_mechanics method")
+                logger.debug("Using interpret_mechanics method")
                 response = self.llm.interpret_mechanics(prompt)
                 # Log raw LLM response for analysis
                 logger.info("RAW_LLM_RESPONSE_START")
@@ -1791,13 +1791,13 @@ Respond with JSON:
                 logger.info("RAW_LLM_RESPONSE_END")
                 return response
         except (AttributeError, TypeError) as e:
-            logger.info(f"DEBUG: interpret_mechanics failed: {e}")
+            logger.debug(f"interpret_mechanics not available: {e}")
             pass
 
         # Try AutoGen-style interpretation
         try:
             if callable(getattr(self.llm, "analyze_market_mechanics", None)):
-                logger.info("DEBUG: Using analyze_market_mechanics method")
+                logger.debug("Using analyze_market_mechanics method")
                 response = self.llm.analyze_market_mechanics(prompt)
                 # Log raw LLM response for analysis
                 logger.info("RAW_LLM_RESPONSE_START")
@@ -1811,7 +1811,7 @@ Respond with JSON:
                 logger.info("RAW_LLM_RESPONSE_END")
                 return response
         except (AttributeError, TypeError) as e:
-            logger.info(f"DEBUG: analyze_market_mechanics failed: {e}")
+            logger.debug(f"analyze_market_mechanics not available: {e}")
             pass
 
         # Fall back to generic generate method

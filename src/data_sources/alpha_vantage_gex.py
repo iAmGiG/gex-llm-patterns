@@ -8,13 +8,13 @@ import datetime
 import logging
 import os
 import sys
+from collections import deque
 
 import pandas as pd
 import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
-
 from src.cache import UnifiedCacheManager
 from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
@@ -62,6 +62,7 @@ class AlphaVantageGEXClient:
         self.request_timeout = config.get("data_sources.alpha_vantage.request_timeout", 30)
 
         # Rate limiting - premium tier has higher limits (configurable)
+        # Use deque with maxlen for O(1) rate limiting instead of O(n) list scan
         premium_key = config_loader.get("ALPHA_VANTAGE_PREMO_KEY")
         default_calls_per_minute = config.get("data_sources.alpha_vantage.calls_per_minute", 75)
         if self.api_key == premium_key:
@@ -70,13 +71,20 @@ class AlphaVantageGEXClient:
         else:
             self.calls_per_minute = default_calls_per_minute  # Standard tier limit from config
             logging.info(f"Using standard tier rate limits ({self.calls_per_minute}/min)")
-        self.call_timestamps = []
+        # deque with maxlen auto-evicts oldest entries - O(1) operations
+        self.call_timestamps = deque(maxlen=self.calls_per_minute)
 
     def _check_rate_limit(self) -> bool:
-        """Check if we're within API rate limits (premium or standard tier)."""
+        """Check if we're within API rate limits (premium or standard tier).
+
+        Uses deque with maxlen for O(1) rate limiting instead of O(n) list scan.
+        """
         now = datetime.datetime.now()
-        # Remove calls older than 1 minute
-        self.call_timestamps = [ts for ts in self.call_timestamps if now - ts < datetime.timedelta(minutes=1)]
+        one_minute_ago = now - datetime.timedelta(minutes=1)
+
+        # Remove old timestamps from front (they're in chronological order)
+        while self.call_timestamps and self.call_timestamps[0] < one_minute_ago:
+            self.call_timestamps.popleft()
 
         if len(self.call_timestamps) >= self.calls_per_minute:
             self.logger.warning("Rate limit approached, caching is critical")
@@ -403,7 +411,10 @@ class AlphaVantageGEXClient:
     def get_rate_limit_status(self):
         """Get current rate limit status."""
         now = datetime.datetime.now()
-        recent_calls = len([ts for ts in self.call_timestamps if now - ts < datetime.timedelta(minutes=1)])
+        one_minute_ago = now - datetime.timedelta(minutes=1)
+
+        # Count recent calls (deque is already bounded, just filter by time)
+        recent_calls = sum(1 for ts in self.call_timestamps if ts >= one_minute_ago)
 
         return {
             "calls_last_minute": recent_calls,
