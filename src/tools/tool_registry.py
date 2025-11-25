@@ -1,7 +1,7 @@
 """Tool Registry System for GEX-LLM Pattern Analysis.
 
-Centralized tool registration, discovery, and management for multi-agent coordination.
-Supports dynamic tool assignment, validation, and configuration-driven tool definitions.
+Centralized tool registration, discovery, and management for multi-agent coordination. Supports dynamic tool assignment,
+validation, and configuration-driven tool definitions.
 
 Issue #152: Implement Tool Registry System for Agent Architecture
 """

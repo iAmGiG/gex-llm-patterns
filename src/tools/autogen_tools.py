@@ -861,8 +861,8 @@ def get_tools_for_agent(agent_type, use_registry: bool = False):
 def initialize_registry():
     """Initialize the tool registry with all defined tools.
 
-    Call this during application startup to enable registry features.
-    Returns the registry instance for further configuration.
+    Call this during application startup to enable registry features. Returns the registry instance for further
+    configuration.
     """
     try:
         from src.tools.registry_integration import initialize_tool_registry

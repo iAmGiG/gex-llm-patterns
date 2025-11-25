@@ -1,7 +1,7 @@
 """Registry Integration for Existing AutoGen Tools.
 
-Bridges the existing autogen_tools.py with the new ToolRegistry system.
-Provides backward compatibility while enabling new registry features.
+Bridges the existing autogen_tools.py with the new ToolRegistry system. Provides backward compatibility while enabling
+new registry features.
 
 Issue #152: Implement Tool Registry System for Agent Architecture
 """
@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 def register_existing_tools():
     """Register all existing tools from autogen_tools.py with the registry.
 
-    This function bridges the legacy tool definitions with the new registry system.
-    Call this during application startup to populate the registry.
+    This function bridges the legacy tool definitions with the new registry system. Call this during application startup
+    to populate the registry.
     """
     # Import existing tools lazily to avoid circular imports
     from src.tools import autogen_tools
