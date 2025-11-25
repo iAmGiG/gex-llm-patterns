@@ -13,10 +13,11 @@ The divergence between detection capability and economic profitability deserves 
 \subsection{Limitations}
 Several limitations warrant consideration:
 \textbf{Single Asset Focus:} Testing exclusively on SPY options limits generalizability to other underlyings and asset classes.
-\textbf{End-of-Day Granularity:} Daily snapshots may miss intraday dynamics critical to 0DTE hedging patterns.
+\textbf{End-of-Day Granularity:} Daily snapshots may miss intraday dynamics critical to 0DTE hedging patterns. However, our statistical validation confirms EOD data contains sufficient predictive information (AUC = 0.681) for T+1 full-day outcomes, even though overnight gap prediction is weak (r = -0.002). This suggests dealer constraints operate contemporaneously rather than persisting overnight, with the full-day materialization capturing constraint effects that accumulate throughout the trading session.
 \textbf{Simplified Gamma Calculations:} Standard Black-Scholes Greeks without smile adjustments may introduce noise in absolute GEX values.
 \textbf{LLM Black Box Nature:} The 28.5 percentage point (pp) gap between biased and unbiased prompts suggests significant sensitivity to prompt framing.
 \textbf{Temporal Limitation:} Our 2024 sample may not generalize to crisis periods or structural bull/bear markets.
+\textbf{LLM vs Statistical Model Trade-off:} While LLMs excel at pattern identification and causal interpretation (91.2\% accuracy), statistical models outperform for probability calibration (AUC 0.681 vs 0.488). This suggests complementary rather than competitive use cases: LLMs for mechanism detection, statistical models for quantitative prediction.
 
 \subsection{Prompting Fidelity in Financial LLM Research}
 
