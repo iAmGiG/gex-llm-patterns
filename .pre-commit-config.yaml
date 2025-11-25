@@ -43,6 +43,7 @@ repos:
         stages: [pre-commit]
       - id: check-added-large-files
         args: ['--maxkb=5000']
+        exclude: '\.pdf$'
         stages: [pre-commit]
       - id: mixed-line-ending
         args: ['--fix=lf']
