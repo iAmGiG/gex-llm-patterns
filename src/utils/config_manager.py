@@ -2,6 +2,7 @@
 
 import logging
 import os
+import threading
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
@@ -212,13 +213,24 @@ class ConfigManager:
         return dict(self._config_cache)
 
 
-# Global instance for easy access
+# Global instance for easy access with thread-safe initialization
 _global_config_manager = None
+_config_lock = threading.Lock()
 
 
 def get_config() -> ConfigManager:
-    """Get global configuration manager instance."""
+    """Get global configuration manager instance (thread-safe singleton)."""
     global _global_config_manager
     if _global_config_manager is None:
-        _global_config_manager = ConfigManager()
+        with _config_lock:
+            # Double-check locking pattern
+            if _global_config_manager is None:
+                _global_config_manager = ConfigManager()
     return _global_config_manager
+
+
+def reset_config() -> None:
+    """Reset the global config manager (for testing)."""
+    global _global_config_manager
+    with _config_lock:
+        _global_config_manager = None

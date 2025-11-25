@@ -68,6 +68,26 @@ The GEX-LLM Pattern Analysis system is a research platform designed for CS PhD d
 - **LLM Integration**: Supports multiple LLM providers with fallback handling
 - **Capabilities**: Tool orchestration, batch processing, experimental framework
 
+### Agent Infrastructure (Issues #152-154)
+
+**Tool Registry** (`src/tools/tool_registry.py`) - Branch: `issue152-tool-registry`
+
+- Centralized tool management with agent type filtering
+- AutoGen FunctionTool integration
+- Tool enable/disable and validation
+
+**Agent Factory** (`src/agents/agent_factory.py`) - Branch: `issue153-agent-factory`
+
+- Factory pattern for centralized agent creation
+- Configuration-driven defaults from YAML
+- Convenience functions: `create_agent()`, `create_market_mechanics_agent()`
+
+**Agent Bus** (`src/agents/agent_bus.py`) - Branch: `issue154-agent-communication-bus`
+
+- Pub/sub message bus for multi-agent coordination
+- Async `wait_for_result()` and `gather_results()` for parallel workflows
+- Foundation for Paper 3 multi-asset analysis
+
 ### Pattern Library (`src/analysis/pattern_library.py`)
 
 - **15 Documented Patterns**: Gamma squeeze, OPEX pin, dealer trap, etc.

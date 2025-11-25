@@ -107,6 +107,7 @@ CREATE TABLE historical_pattern_performance (
 - Memory-efficient batch operations
 - Progress tracking and error handling
 - Integrates with UnifiedCacheManager and GEXCacheManager
+- **Adaptive worker count**: Auto-calculates optimal threads based on CPU cores (2-8 range)
 
 ### Data Flow
 
@@ -193,6 +194,19 @@ cache_settings:
 - ThreadPoolExecutor for parallel GEX calculations
 - Memory-efficient batch operations
 - Progress tracking for long-running operations
+- **Adaptive worker count**: `max(2, min(8, cpu_count - 1))` (Issue #155)
+
+#### 4. Rate Limiting (Issue #155)
+
+- O(1) rate limiting using `collections.deque` with maxlen
+- Replaces O(n) list scan for API rate limit checking
+- Applied to Alpha Vantage client (`src/data_sources/alpha_vantage_gex.py`)
+
+#### 5. Thread-Safe Configuration (Issue #155)
+
+- ConfigManager uses double-check locking pattern
+- Thread-safe singleton initialization
+- Prevents multiple config file loads in concurrent scenarios
 
 ### Storage Structure
 

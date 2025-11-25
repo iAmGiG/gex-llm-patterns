@@ -3,8 +3,9 @@ calculations."""
 
 import datetime
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import pandas as pd
 
@@ -14,6 +15,23 @@ from .gex_cache_manager import GEXCacheManager
 from .unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)
+
+
+def _get_optimal_workers(max_workers: Optional[int] = None) -> int:
+    """Calculate optimal worker count based on CPU cores.
+
+    Args:
+        max_workers: Optional override for max workers
+
+    Returns:
+        Optimal number of workers (between 2 and 8)
+    """
+    if max_workers is not None:
+        return max_workers
+
+    cpu_count = os.cpu_count() or 4
+    # Use CPU count - 1 to leave headroom, bounded between 2 and 8
+    return max(2, min(8, cpu_count - 1))
 
 
 class ConcurrentGEXProcessor:
@@ -26,15 +44,15 @@ class ConcurrentGEXProcessor:
     - Progress tracking and error handling
     """
 
-    def __init__(self, max_workers: int = 4, unified_cache_manager=None):
+    def __init__(self, max_workers: Optional[int] = None, unified_cache_manager=None):
         """Initialize concurrent processor.
 
         Args:
-            max_workers: Maximum concurrent threads
+            max_workers: Maximum concurrent threads (auto-calculated if None)
             unified_cache_manager: Existing cache manager (optional)
         """
-        self.max_workers = max_workers
-        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        self.max_workers = _get_optimal_workers(max_workers)
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
 
         # Use provided cache manager or create new one
         if unified_cache_manager:
