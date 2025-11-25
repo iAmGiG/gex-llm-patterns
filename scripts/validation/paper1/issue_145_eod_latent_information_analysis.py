@@ -612,6 +612,9 @@ class EODPredictiveAnalysis:
         logger.info(f"\n=== Defense Status: {defense_status} ===")
         logger.info(f"Target: AUC > 0.60 (minimum), > 0.70 (strong), > 0.75 (optimal)")
 
+        # Calculate p-values using statsmodels
+        p_values = self._calculate_feature_pvalues(X, y, available_features)
+
         return {
             'model_type': 'LogisticRegression',
             'n_samples': len(merged),
@@ -624,15 +627,89 @@ class EODPredictiveAnalysis:
             'std_cv_auc': float(std_auc),
             'full_model_auc': float(full_auc),
             'feature_coefficients': coef_dict,
+            'feature_pvalues': p_values,
             'top_features': [(f, float(c)) for f, c in sorted_coef[:5]],
             'defense_status': defense_status,
             'success_criteria': {
                 'minimum': 0.60,
                 'strong': 0.70,
                 'optimal': 0.75,
-                'achieved': float(mean_auc)
+                'achieved': float(mean_auc),
+                'significant_features': sum(1 for p in p_values.values() if p < 0.05) if p_values else 0
             }
         }
+
+    def _calculate_feature_pvalues(self, X: pd.DataFrame, y: pd.Series,
+                                   feature_names: List[str]) -> Dict[str, float]:
+        """
+        Calculate p-values for each feature using statsmodels logistic regression.
+
+        Args:
+            X: Feature DataFrame
+            y: Target Series
+            feature_names: List of feature names
+
+        Returns:
+            Dictionary of feature name -> p-value
+        """
+        try:
+            import statsmodels.api as sm
+        except ImportError:
+            logger.warning("statsmodels not installed. Cannot calculate p-values.")
+            return {}
+
+        try:
+            # Filter out zero-variance features (cause singular matrix)
+            valid_features = []
+            valid_indices = []
+            for i, feat in enumerate(feature_names):
+                if X.iloc[:, i].var() > 1e-10:
+                    valid_features.append(feat)
+                    valid_indices.append(i)
+                else:
+                    logger.info(f"  Skipping {feat}: zero variance (constant)")
+
+            if len(valid_features) == 0:
+                logger.warning("No valid features with non-zero variance")
+                return {}
+
+            X_filtered = X.iloc[:, valid_indices]
+
+            # Add constant for intercept
+            X_with_const = sm.add_constant(X_filtered)
+
+            # Fit logistic regression with statsmodels
+            model = sm.Logit(y, X_with_const)
+            result = model.fit(disp=0, maxiter=1000)
+
+            # Extract p-values (skip constant at index 0)
+            p_values = {}
+            for i, feat in enumerate(valid_features):
+                p_values[feat] = float(result.pvalues[i + 1])  # +1 to skip constant
+
+            # Add zero-variance features with p=1.0 (no significance)
+            for feat in feature_names:
+                if feat not in p_values:
+                    p_values[feat] = 1.0
+
+            # Log significant features
+            sig_features = [(f, p) for f, p in p_values.items() if p < 0.05]
+            logger.info(f"\n=== Feature Statistical Significance ===")
+            logger.info(f"Significant features (p < 0.05): {len(sig_features)}/{len(feature_names)}")
+
+            for feat, p in sorted(sig_features, key=lambda x: x[1]):
+                logger.info(f"  {feat}: p = {p:.4f} ***")
+
+            # Log non-significant features
+            nonsig = [(f, p) for f, p in p_values.items() if p >= 0.05]
+            for feat, p in sorted(nonsig, key=lambda x: x[1]):
+                logger.info(f"  {feat}: p = {p:.4f}")
+
+            return p_values
+
+        except Exception as e:
+            logger.warning(f"Failed to calculate p-values: {e}")
+            return {}
 
 
 def main():

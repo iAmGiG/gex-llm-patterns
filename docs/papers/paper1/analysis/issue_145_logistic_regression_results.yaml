@@ -17,6 +17,17 @@ feature_coefficients:
   spot_price: -0.11141193732961784
   total_gex: 0.26569596230546133
   zero_gamma_proximity: 0.0
+feature_pvalues:
+  activity_ratio: 0.46910093363447847
+  close_open_change: 0.24043236196785012
+  gex_oi: 0.007504268220064481
+  gex_sign: 1.0
+  gex_volume: 0.6436917966683372
+  intraday_range: 0.20824286350564525
+  spot_above_flip: 1.0
+  spot_price: 0.5240003711300755
+  total_gex: 0.12164157604493196
+  zero_gamma_proximity: 1.0
 features_used:
 - total_gex
 - gex_sign
@@ -38,6 +49,7 @@ success_criteria:
   achieved: 0.6813460595323341
   minimum: 0.6
   optimal: 0.75
+  significant_features: 1
   strong: 0.7
 target: any_materialization
 top_features:
