@@ -42,7 +42,7 @@ We employ two prompt templates to test detection robustness:
 
 \textbf{Biased Template (Sensitivity).} Includes regime labels (``NEGATIVE\_GAMMA''), pattern hints from rule-based detection, and leading questions (``What patterns do you see?''). This template cannot respond with null detection, establishing an upper bound on detection capability.
 
-Both templates implement complete temporal obfuscation as demonstrated in Figure~\ref{fig:obfuscation}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
+Both templates implement complete temporal obfuscation as demonstrated in Figure~\ref{fig:obfuscation-jv}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
 
 \subsection{Validation Pipeline}
 
@@ -81,7 +81,7 @@ Our null hypothesis assumes 50\% random detection; actual detection must signifi
 \begin{equation}
 \text{Accuracy} = \frac{\text{Materialized Predictions}}{\text{Total Detections}} \times 100\%
 \end{equation}
-Materialization criteria vary by pattern type (detailed in Table~\ref{tab:materialization}) but generally require observed volatility amplification or directional follow-through matching predictions.
+Materialization criteria vary by pattern type (detailed in Table~\ref{tab:materialization-jv}) but generally require observed volatility amplification or directional follow-through matching predictions.
 
 \medskip
 \textbf{Economic Alpha.} Net return after transaction costs:
