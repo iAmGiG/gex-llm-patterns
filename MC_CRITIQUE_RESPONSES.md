@@ -2,22 +2,28 @@
 
 ## Executive Summary
 
-All four MC critiques have been systematically addressed with quantitative analysis and concrete experimental plans. **3 of 4 are complete with results; 1 (threshold normalization) in final testing stage.**
+All 4 MC critiques complete and integrated into manuscript.
+
+All four critiques have been addressed with quantitative analysis and operationalized into the Paper #2 LaTeX files (Abstract, Discussion, Conclusion).
 
 ---
 
 ## Critique #1: The "$5B Inflation Trap"
 
-**Status**: ⏳ IN PROGRESS - Critical normalization experiment underway
+**Status**: ✅ COMPLETE - Mixed causation finding (34% price / 66% structure)
 
-**Plan**:
+**Result**:
 
-- Scale 2020 GEX by (2024_SPY_Price / 2020_SPY_Price)² ratio
-- Re-validate 2020 windows with normalized magnitude threshold
-- Test whether detection rate jumps from 12.1% → 80%+ (hypothesis falsified) or stays low (hypothesis bulletproof)
+- Price normalization increased 2020 detection from 8.5% → 33.2% (+24.7 pp)
+- This accounts for **34%** of the total 72.7 pp gap
+- Remaining **66%** (48.0 pp) persists after normalization due to structural differences
+- 2024 outperforms normalized 2020 across ALL criteria: persistence (+27 pp), magnitude (+48 pp), stability (+45 pp)
 
-**Timeline**: Chat B currently executing, results expected within 24 hours
-**Why This Matters**: This is the single biggest threat to the structural shift defense. Whichever way it goes, we publish it.
+**Manuscript Integration**:
+
+- Abstract: Added price normalization finding with criterion-level comparison
+- Discussion VI.C: New subsection "Price Normalization and Asset Inflation"
+- Conclusion: Added "Robustness against inflation" key finding
 
 ---
 
@@ -169,31 +175,37 @@ Strengthen Section V.E with explicit causal chain:
 
 | Critique | Issue | Status | Key Finding | Defense Strength |
 |----------|-------|--------|-------------|------------------|
-| $5B Inflation | #160 | ⏳ Testing | Experiment pending | TBD (critical) |
+| $5B Inflation | #160 | ✅ Complete | 34% price / 66% structure | Strong (mixed causation) |
 | Expensive Calculator | #161 | ✅ Complete | r=+0.501 persistence correlation | Strong (quantified) |
 | 100% Detection | #162 | ✅ Complete | Saturation = market shift finding | Strong (reframed) |
-| 0DTE Causality | #163 | ✅ Complete | Explicit causal chain + metaphor | Strong (mechanistic) |
+| 0DTE Causality | #163 | ✅ Complete | Explicit causal chain + scar tissue | Strong (mechanistic) |
 
 ---
 
-## Next Steps
+## Manuscript Integration Complete
 
-**Immediate** (24 hours):
+All MC critique defenses have been operationalized into Paper #2:
 
-- Await Issue #160 results (threshold normalization)
-- If hypothesis holds: All 4 critiques addressed comprehensively
-- If hypothesis fails: Document as limitation, adjust narrative
+**Abstract (Main.tex)**:
 
-**For Paper #2**:
+- Price normalization finding (34/66 split)
+- Criterion-level comparison (persistence/magnitude/stability)
 
-- Integrate Issue #161 confidence analysis into Discussion
-- Integrate Issue #162 regime saturation reframe into Discussion
-- Integrate Issue #163 causality chain into Section V.E
-- Incorporate Issue #160 results (if favorable: strengthen, if unfavorable: acknowledge)
+**Discussion Section (06_Discussion.tex)**:
 
-**Overall Status**: 3/4 complete with strong defenses. 1/4 (critical test) in final stage.
+- VI.C: Price Normalization and Asset Inflation (NEW)
+- VI.E: Regime Saturation: A Feature, Not a Bug (existing)
+- VI.G: Regime Quality vs. Binary Classification (NEW)
+- VI.H: Open Interest vs Volume-Based GEX with scar tissue metaphor (existing)
+
+**Conclusion Section (07_Conclusion.tex)**:
+
+- "Robustness against inflation" key finding (NEW)
+- "Tiered regime classification" future direction (NEW)
+
+**Status**: READY FOR COMPILATION
 
 ---
 
 **Generated**: November 26, 2025
-**By**: Chat A (Confidence analysis, Issue #161) + Chat B (Issues #162, #163, #160 in progress)
+**By**: Chat A (All MC critique integration into manuscript)
