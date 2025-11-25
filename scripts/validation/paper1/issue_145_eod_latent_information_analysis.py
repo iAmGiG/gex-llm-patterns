@@ -478,7 +478,38 @@ class EODPredictiveAnalysis:
 
         # Phase 5: Train logistic regression
         logger.info("=== Phase 5: Logistic Regression Training ===")
-        results = self._train_logistic_regression(eod_features, outcomes)
+        logistic_results = self._train_logistic_regression(eod_features, outcomes)
+
+        # Phase 6: LLM vs Statistical comparison
+        llm_results = self._calculate_llm_auc(outcomes)
+
+        # Combine results
+        results = logistic_results.copy() if logistic_results else {}
+        if llm_results:
+            results['llm_comparison'] = llm_results
+
+            # Calculate performance delta
+            if logistic_results:
+                stat_auc = logistic_results.get('mean_cv_auc', 0)
+                llm_auc = llm_results.get('llm_auc', 0)
+                delta = llm_auc - stat_auc
+
+                logger.info(f"\n=== Model Comparison Summary ===")
+                logger.info(f"Statistical Model AUC (CV): {stat_auc:.4f}")
+                logger.info(f"LLM Detection AUC: {llm_auc:.4f}")
+                logger.info(f"Delta (LLM - Stat): {delta:+.4f}")
+
+                if llm_auc > stat_auc:
+                    logger.info(">> LLM outperforms statistical baseline <<")
+                else:
+                    logger.info(">> Statistical model outperforms LLM (LLM adds interpretability) <<")
+
+                results['model_comparison'] = {
+                    'statistical_auc': float(stat_auc),
+                    'llm_auc': float(llm_auc),
+                    'delta': float(delta),
+                    'llm_outperforms': llm_auc > stat_auc
+                }
 
         if results:
             # Save results
@@ -486,7 +517,7 @@ class EODPredictiveAnalysis:
             import yaml
             with open(results_file, 'w') as f:
                 yaml.dump(results, f, default_flow_style=False)
-            logger.info(f"Saved logistic regression results to {results_file}")
+            logger.info(f"Saved results to {results_file}")
 
         logger.info("Analysis complete!")
         return True
@@ -710,6 +741,118 @@ class EODPredictiveAnalysis:
         except Exception as e:
             logger.warning(f"Failed to calculate p-values: {e}")
             return {}
+
+    def _get_llm_confidence_scores(self) -> Dict[str, float]:
+        """
+        Extract LLM confidence scores from detection YAML files.
+
+        Returns:
+            Dictionary of date -> confidence (0-1 scale)
+        """
+        confidence_scores = {}
+
+        pattern_dir = Path('reports/validation/paper1_pattern_taxonomy')
+        if not pattern_dir.exists():
+            logger.warning(f"Pattern directory not found: {pattern_dir}")
+            return confidence_scores
+
+        # Load from unbiased gamma_positioning detections
+        import glob
+        yaml_files = glob.glob(str(pattern_dir / '*gamma_positioning*SPY*2024*unbiased*.yaml'))
+
+        for yaml_file in yaml_files:
+            try:
+                with open(yaml_file, 'r') as f:
+                    data = yaml.safe_load(f)
+
+                if not data or 'detections' not in data:
+                    continue
+
+                for detection in data['detections']:
+                    if detection.get('detected', False):
+                        date = detection.get('date')
+                        narrative = detection.get('narrative', {})
+                        confidence = narrative.get('confidence', 0)
+
+                        if date and confidence:
+                            # Convert 0-100 scale to 0-1
+                            confidence_scores[date] = confidence / 100.0
+
+            except Exception as e:
+                logger.warning(f"Failed to parse {yaml_file}: {e}")
+
+        logger.info(f"Loaded LLM confidence scores for {len(confidence_scores)} detections")
+        return confidence_scores
+
+    def _calculate_llm_auc(self, outcomes: pd.DataFrame) -> Dict:
+        """
+        Calculate LLM detection AUC against T+1 materialization outcomes.
+
+        Args:
+            outcomes: DataFrame with next-day outcomes
+
+        Returns:
+            Dictionary with LLM AUC results
+        """
+        logger.info("=== Phase 6: LLM vs Statistical Model Comparison ===")
+
+        # Get LLM confidence scores
+        confidence_scores = self._get_llm_confidence_scores()
+
+        if not confidence_scores:
+            logger.warning("No LLM confidence scores found")
+            return {}
+
+        # Merge with outcomes
+        outcomes_with_llm = outcomes.copy()
+        outcomes_with_llm['llm_confidence'] = outcomes_with_llm['date'].map(confidence_scores)
+
+        # Filter to dates with both outcomes and LLM scores
+        valid_mask = outcomes_with_llm['llm_confidence'].notna() & outcomes_with_llm['any_materialization'].notna()
+        valid_data = outcomes_with_llm[valid_mask]
+
+        if len(valid_data) < 30:
+            logger.warning(f"Insufficient data for LLM AUC ({len(valid_data)} samples)")
+            return {}
+
+        logger.info(f"Valid samples for LLM comparison: {len(valid_data)}")
+
+        # Calculate LLM AUC
+        from sklearn.metrics import roc_auc_score
+        y_true = valid_data['any_materialization'].astype(int)
+        y_score = valid_data['llm_confidence']
+
+        try:
+            llm_auc = roc_auc_score(y_true, y_score)
+        except ValueError as e:
+            logger.warning(f"Failed to calculate LLM AUC: {e}")
+            return {}
+
+        # Log results
+        logger.info(f"\n=== LLM AUC Results ===")
+        logger.info(f"LLM Detection AUC: {llm_auc:.4f}")
+        logger.info(f"Mean LLM Confidence: {y_score.mean():.3f}")
+        logger.info(f"Std LLM Confidence: {y_score.std():.3f}")
+
+        # Analyze high vs low confidence
+        high_conf = valid_data[valid_data['llm_confidence'] >= 0.75]
+        low_conf = valid_data[valid_data['llm_confidence'] < 0.75]
+
+        if len(high_conf) > 0 and len(low_conf) > 0:
+            high_rate = high_conf['any_materialization'].mean()
+            low_rate = low_conf['any_materialization'].mean()
+            logger.info(f"\nMaterialization by LLM Confidence:")
+            logger.info(f"  High confidence (>=75): {high_rate:.1%} ({len(high_conf)} days)")
+            logger.info(f"  Low confidence (<75): {low_rate:.1%} ({len(low_conf)} days)")
+
+        return {
+            'llm_auc': float(llm_auc),
+            'n_samples': len(valid_data),
+            'mean_confidence': float(y_score.mean()),
+            'std_confidence': float(y_score.std()),
+            'high_confidence_materialization': float(high_conf['any_materialization'].mean()) if len(high_conf) > 0 else None,
+            'low_confidence_materialization': float(low_conf['any_materialization'].mean()) if len(low_conf) > 0 else None
+        }
 
 
 def main():
