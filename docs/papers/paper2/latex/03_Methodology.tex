@@ -1,5 +1,14 @@
 \section{Methodology}
 
+Figure~\ref{fig:architecture} presents our system architecture, showing the complete pipeline from data ingestion through LLM regime detection.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/output/figure10_architecture.png}
+\caption{LLM Regime Detection System Architecture. The pipeline processes 1,475 trading days through five stages: data ingestion from Alpha Vantage API, GEX calculation with OI/Volume aggregation, temporal obfuscation to prevent memorization, 30-day window generation, and LLM analysis using OpenAI o4-mini via Batch API.}
+\label{fig:architecture}
+\end{figure*}
+
 \subsection{30-Day Regime Detection Framework}
 
 Building on the single-day obfuscation methodology from our prior work~\cite{regan2025obfuscation}, we extend the framework to detect \textit{persistent market regimes} rather than daily hedging patterns. A regime is defined as a 30-day window exhibiting sustained dealer gamma positioning that creates predictable market dynamics.
@@ -33,6 +42,13 @@ S = \text{count}(\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)) \
 
 These thresholds were selected based on empirical analysis of 2024 SPY options data: median daily GEX magnitude was \$13.95B, and 70\% persistence represents a clear structural bias rather than random variation.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{../figures/output/figure6_regime_window.png}
+\caption{30-Day Persistent Negative Regime Example. Daily GEX values showing 28/30 days negative (93.3\% persistence), average magnitude \$14.1B, and only 2 sign flips. All three detection criteria pass, triggering regime classification.}
+\label{fig:regime_window}
+\end{figure}
+
 \subsection{GEX Calculation Methodology}
 
 Following standard market microstructure practice~\cite{anderegg2022impact,spotgamma2021}, we calculate dealer gamma exposure from end-of-day open interest:
@@ -57,7 +73,7 @@ Critically, dealers must maintain delta neutrality regardless of whether gamma i
 
 \subsection{Obfuscation Testing}
 
-To prevent temporal memorization, we apply the same obfuscation protocol from our prior work~\cite{regan2025obfuscation}:
+To prevent temporal memorization, we apply the same obfuscation protocol from our prior work~\cite{regan2025obfuscation}. Figure~\ref{fig:obfuscation} illustrates the transformation process:
 
 \begin{itemize}
 \item Calendar dates → Relative labels ("Day T-29" through "Day T+0")
@@ -67,6 +83,13 @@ To prevent temporal memorization, we apply the same obfuscation protocol from ou
 \end{itemize}
 
 The LLM receives 30 consecutive GEX values with no contextual information, forcing purely structural reasoning about dealer constraints.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.48\textwidth]{../figures/output/figure5_obfuscation.png}
+\caption{Temporal Obfuscation Process. Calendar dates, ticker symbols, and temporal context are removed while preserving GEX magnitude and structural relationships.}
+\label{fig:obfuscation}
+\end{figure}
 
 \subsection{Multi-Phase Validation Strategy}
 
