@@ -525,6 +525,9 @@ class EODPredictiveAnalysis:
                 yaml.dump(results, f, default_flow_style=False)
             logger.info(f"Saved results to {results_file}")
 
+        # Phase 8: Generate figures
+        self._generate_figures(eod_features, outcomes, logistic_results, llm_results)
+
         logger.info("Analysis complete!")
         return True
 
@@ -976,6 +979,215 @@ class EODPredictiveAnalysis:
         results['n_samples'] = len(merged)
 
         return results
+
+    def _generate_figures(self, features: pd.DataFrame, outcomes: pd.DataFrame,
+                          logistic_results: Dict, llm_results: Dict) -> None:
+        """
+        Generate publication-quality figures for Issue #145 analysis.
+
+        Figures generated:
+        1. ROC curves (Statistical vs Random baseline)
+        2. Feature importance bar chart
+        3. Model comparison bar chart
+
+        Args:
+            features: EOD feature DataFrame
+            outcomes: Next-day outcome DataFrame
+            logistic_results: Results from logistic regression
+            llm_results: Results from LLM comparison
+        """
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+
+        logger.info("=== Phase 8: Generating Figures ===")
+        figures_dir = Path('docs/papers/paper1/figures')
+        figures_dir.mkdir(parents=True, exist_ok=True)
+
+        # Figure 1: Feature Importance Bar Chart
+        logger.info("Generating feature importance bar chart...")
+        self._generate_feature_importance_figure(logistic_results, figures_dir)
+
+        # Figure 2: Model Comparison Bar Chart
+        logger.info("Generating model comparison bar chart...")
+        self._generate_model_comparison_figure(logistic_results, llm_results, figures_dir)
+
+        # Figure 3: ROC Curve
+        logger.info("Generating ROC curve...")
+        self._generate_roc_curve(features, outcomes, logistic_results, figures_dir)
+
+        logger.info(f"Figures saved to {figures_dir}")
+
+    def _generate_feature_importance_figure(self, results: Dict, output_dir: Path) -> None:
+        """Generate feature importance bar chart."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+
+        if not results or 'feature_coefficients' not in results:
+            logger.warning("No feature coefficients for figure generation")
+            return
+
+        coefficients = results['feature_coefficients']
+        p_values = results.get('feature_pvalues', {})
+
+        # Sort by absolute coefficient magnitude
+        sorted_feats = sorted(coefficients.items(), key=lambda x: abs(x[1]), reverse=True)
+
+        # Filter to non-zero coefficients
+        sorted_feats = [(f, c) for f, c in sorted_feats if abs(c) > 0.01]
+
+        if not sorted_feats:
+            logger.warning("No significant feature coefficients to plot")
+            return
+
+        features = [f[0] for f in sorted_feats]
+        coefs = [f[1] for f in sorted_feats]
+
+        # Color by significance
+        colors = []
+        for f in features:
+            p = p_values.get(f, 1.0)
+            if p < 0.01:
+                colors.append('#2E7D32')  # Dark green for highly significant
+            elif p < 0.05:
+                colors.append('#4CAF50')  # Green for significant
+            elif p < 0.10:
+                colors.append('#FFA726')  # Orange for marginal
+            else:
+                colors.append('#9E9E9E')  # Gray for non-significant
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+
+        bars = ax.barh(features, coefs, color=colors, edgecolor='black', linewidth=0.5)
+
+        ax.set_xlabel('Logistic Regression Coefficient', fontsize=12)
+        ax.set_ylabel('Feature', fontsize=12)
+        ax.set_title('EOD GEX Feature Importance for T+1 Materialization Prediction', fontsize=14)
+        ax.axvline(x=0, color='black', linewidth=0.8, linestyle='-')
+
+        # Add significance legend
+        from matplotlib.patches import Patch
+        legend_elements = [
+            Patch(facecolor='#2E7D32', label='p < 0.01 ***'),
+            Patch(facecolor='#4CAF50', label='p < 0.05 **'),
+            Patch(facecolor='#FFA726', label='p < 0.10 *'),
+            Patch(facecolor='#9E9E9E', label='p ≥ 0.10')
+        ]
+        ax.legend(handles=legend_elements, loc='lower right', fontsize=9)
+
+        plt.tight_layout()
+        output_path = output_dir / 'issue_145_feature_importance.png'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"  Saved: {output_path}")
+
+    def _generate_model_comparison_figure(self, logistic_results: Dict,
+                                          llm_results: Dict, output_dir: Path) -> None:
+        """Generate model comparison bar chart."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+
+        stat_auc = logistic_results.get('mean_cv_auc', 0)
+        llm_auc = llm_results.get('llm_auc', 0) if llm_results else 0
+
+        models = ['Statistical Model\n(Logistic Regression)', 'LLM Confidence\n(Detection Score)', 'Random Baseline']
+        aucs = [stat_auc, llm_auc, 0.5]
+        colors = ['#1976D2', '#FF5722', '#9E9E9E']
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        bars = ax.bar(models, aucs, color=colors, edgecolor='black', linewidth=0.8)
+
+        # Add value labels
+        for bar, auc in zip(bars, aucs):
+            height = bar.get_height()
+            ax.annotate(f'{auc:.3f}',
+                       xy=(bar.get_x() + bar.get_width() / 2, height),
+                       xytext=(0, 3),
+                       textcoords="offset points",
+                       ha='center', va='bottom', fontsize=11, fontweight='bold')
+
+        ax.set_ylabel('AUC-ROC Score', fontsize=12)
+        ax.set_title('Model Comparison: EOD GEX → T+1 Materialization Prediction', fontsize=14)
+        ax.set_ylim(0, 1.0)
+        ax.axhline(y=0.5, color='gray', linestyle='--', linewidth=0.8, label='Random chance')
+
+        # Add interpretation annotation
+        if stat_auc > llm_auc:
+            delta = stat_auc - llm_auc
+            ax.text(0.5, 0.95, f'Statistical model outperforms LLM by {delta:.3f}',
+                   transform=ax.transAxes, ha='center', va='top',
+                   fontsize=10, style='italic')
+
+        plt.tight_layout()
+        output_path = output_dir / 'issue_145_model_comparison.png'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"  Saved: {output_path}")
+
+    def _generate_roc_curve(self, features: pd.DataFrame, outcomes: pd.DataFrame,
+                            logistic_results: Dict, output_dir: Path) -> None:
+        """Generate ROC curve for statistical model."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.metrics import roc_curve, auc
+
+        # Merge and prepare data
+        merged = pd.merge(features, outcomes, on='date', how='inner')
+
+        feature_cols = ['total_gex', 'gex_sign', 'gex_oi', 'gex_volume', 'activity_ratio',
+                       'zero_gamma_proximity', 'spot_above_flip', 'intraday_range',
+                       'close_open_change', 'spot_price']
+
+        available = [c for c in feature_cols if c in merged.columns]
+        X = merged[available].values
+        y = merged['any_materialization'].astype(int).values
+
+        # Scale and fit
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        model = LogisticRegression(max_iter=1000, random_state=42)
+        model.fit(X_scaled, y)
+
+        # Get probabilities
+        y_prob = model.predict_proba(X_scaled)[:, 1]
+
+        # Compute ROC curve
+        fpr, tpr, _ = roc_curve(y, y_prob)
+        roc_auc = auc(fpr, tpr)
+
+        # Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        ax.plot(fpr, tpr, color='#1976D2', lw=2,
+                label=f'Statistical Model (AUC = {roc_auc:.3f})')
+        ax.plot([0, 1], [0, 1], color='gray', lw=1.5, linestyle='--',
+                label='Random Chance (AUC = 0.500)')
+
+        ax.fill_between(fpr, tpr, alpha=0.2, color='#1976D2')
+
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, 1.05])
+        ax.set_xlabel('False Positive Rate', fontsize=12)
+        ax.set_ylabel('True Positive Rate', fontsize=12)
+        ax.set_title('ROC Curve: EOD GEX Features → T+1 Materialization', fontsize=14)
+        ax.legend(loc='lower right', fontsize=10)
+        ax.grid(True, alpha=0.3)
+
+        plt.tight_layout()
+        output_path = output_dir / 'issue_145_roc_curve.png'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"  Saved: {output_path}")
 
 
 def main():
