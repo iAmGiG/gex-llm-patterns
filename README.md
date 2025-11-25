@@ -5,7 +5,6 @@
 [![Paper 1](https://img.shields.io/badge/Paper%201-Submitted-success.svg)](https://github.com/iAmGiG/gex-llm-patterns/issues/88)
 [![Research](https://img.shields.io/badge/Research-PhD%20Project-purple.svg)](docs/papers/research_roadmap.md)
 
-[![Validation](https://img.shields.io/badge/2024%20Validation-Complete-brightgreen.svg)](reports/validation/pattern_taxonomy/)
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-71.5%25%20Unbiased-orange.svg)](docs/presentations/phd_symposium_2025.md)
 [![Accuracy](https://img.shields.io/badge/Predictive%20Accuracy-91.2%25-green.svg)](docs/presentations/phd_symposium_2025.md)
 [![Documentation](https://img.shields.io/badge/docs-130%2B%20files-informational.svg)](docs/)
