@@ -1,14 +1,14 @@
 \section{Results}
-\label{sec:results}
+\label{sec:results-jv}
 
 \subsection{Primary Detection Results}
 
-Table~\ref{tab:detection} presents detection rates across all three dealer constraint patterns using both unbiased and biased prompt templates. The unbiased configuration achieves an average detection rate of 71.5\% (95\% CI: 68.2\%-74.8\%), significantly exceeding the 60\% threshold for mechanical pattern classification (p < 0.001).
+Table~\ref{tab:detection-jv} presents detection rates across all three dealer constraint patterns using both unbiased and biased prompt templates. The unbiased configuration achieves an average detection rate of 71.5\% (95\% CI: 68.2\%-74.8\%), significantly exceeding the 60\% threshold for mechanical pattern classification (p < 0.001).
 
 \begin{table}[htbp]
 \centering
 \caption{Pattern Detection Rates and Accuracy Metrics}
-\label{tab:detection}
+\label{tab:detection-jv}
 \begin{tabular}{lcccc}
 \toprule
 Pattern & \multicolumn{2}{c}{Detection Rate} & Accuracy & Sample \\
@@ -23,41 +23,41 @@ Stock Pinning & 67.4\% & 100\% & 90.4\% & 242 \\
 \end{tabular}
 \end{table}
 
-Figure~\ref{fig:performance_matrix} visualizes these results, showing that all patterns exceed the 60\% mechanical threshold. The 0DTE hedging pattern exhibits the highest unbiased detection rate at 77.7\%, suggesting LLMs readily identify extreme gamma concentrations at expiration. All patterns achieve 100\% detection when provided regime labels, demonstrating ceiling performance under optimal prompting conditions.
+Figure~\ref{fig:performance_matrix-jv} visualizes these results, showing that all patterns exceed the 60\% mechanical threshold. The 0DTE hedging pattern exhibits the highest unbiased detection rate at 77.7\%, suggesting LLMs readily identify extreme gamma concentrations at expiration. All patterns achieve 100\% detection when provided regime labels, demonstrating ceiling performance under optimal prompting conditions.
 
 \begin{figure*}[!tb]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/fig8_performance_matrix.png}
 \caption{Pattern detection performance metrics using unbiased prompts. All three patterns exceed the 60\% mechanical threshold with detection rates averaging 71.5\% and prediction accuracy averaging 90.8\% across 242 trading days.}
-\label{fig:performance_matrix}
+\label{fig:performance_matrix-jv}
 \end{figure*}
 
-Figure~\ref{fig:bias_comparison} directly compares biased versus unbiased detection rates, revealing a 28.5 percentage point average gap. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
+Figure~\ref{fig:bias_comparison-jv} directly compares biased versus unbiased detection rates, revealing a 28.5 percentage point average gap. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig4_detection_comparison.png}
 \caption{Impact of prompt bias on detection rates. Biased prompts with regime labels achieve 100\% detection across all patterns, while unbiased prompts achieve 69.4\%, 67.4\%, and 77.7\% for gamma positioning, stock pinning, and 0DTE hedging respectively, demonstrating robust detection without leading information.}
-\label{fig:bias_comparison}
+\label{fig:bias_comparison-jv}
 \end{figure}
 
 \subsection{Temporal Stability Analysis}
 
-Figure~\ref{fig:quarterly_stability} presents our key finding: detection capability remains stable while economic profitability varies significantly. Detection rates maintain consistency across quarters (ranging from 84\% to 100\% with biased prompts), while net alpha declines monotonically from +21 bps in Q1 to -1 bp in Q4. This divergence validates that LLMs identify structural patterns rather than optimizing for profitable trades.
+Figure~\ref{fig:quarterly_stability-jv} presents our key finding: detection capability remains stable while economic profitability varies significantly. Detection rates maintain consistency across quarters (ranging from 84\% to 100\% with biased prompts), while net alpha declines monotonically from +21 bps in Q1 to -1 bp in Q4. This divergence validates that LLMs identify structural patterns rather than optimizing for profitable trades.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig5_quarterly_stability.png}
 \caption{Pattern detection persists above threshold despite declining profitability. Detection rates remain stable (100\% to 84\%) while net alpha declines from +21 bps to -1 bp across quarters, validating structural pattern detection independent of economic outcomes.}
-\label{fig:quarterly_stability}
+\label{fig:quarterly_stability-jv}
 \end{figure}
 
-Table~\ref{tab:quarterly} provides the detailed quarterly breakdown, revealing stable performance despite varying market conditions. Detection rates remain within a narrow band across all quarters, with no statistically significant temporal trend (Cochran-Armitage test, p = 0.42).
+Table~\ref{tab:quarterly-jv} provides the detailed quarterly breakdown, revealing stable performance despite varying market conditions. Detection rates remain within a narrow band across all quarters, with no statistically significant temporal trend (Cochran-Armitage test, p = 0.42).
 
 \begin{table}[htbp]
 \centering
 \caption{Quarterly Detection Performance (Unbiased Prompts)}
-\label{tab:quarterly}
+\label{tab:quarterly-jv}
 \begin{tabular}{l@{\hskip 6pt}c@{\hskip 6pt}c@{\hskip 6pt}c@{\hskip 6pt}c@{\hskip 6pt}c}
 \toprule
 Quarter & Days & Detection & Accuracy & Avg Return & Net Alpha \\
@@ -93,13 +93,13 @@ Without dates, ticker symbols, or market context, successful detection requires 
 
 \subsection{Statistical Validation}
 
-Figure~\ref{fig:confidence_dist} displays the distribution of detection confidence scores across all three patterns. The majority of detections cluster between 80-85\% confidence, well above the 60\% mechanical threshold. Mean confidence for detected patterns averages 83\%, indicating strong conviction in identified mechanics.
+Figure~\ref{fig:confidence_dist-jv} displays the distribution of detection confidence scores across all three patterns. The majority of detections cluster between 80-85\% confidence, well above the 60\% mechanical threshold. Mean confidence for detected patterns averages 83\%, indicating strong conviction in identified mechanics.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig7_confidence_distribution.png}
 \caption{Distribution of detection confidence scores across three patterns. All patterns show mean confidence above 79\% for detected instances, with 100\% of detections exceeding the 60\% mechanical threshold. Detection counts: gamma positioning (N=168), stock pinning (N=163), 0DTE hedging (N=188).}
-\label{fig:confidence_dist}
+\label{fig:confidence_dist-jv}
 \end{figure}
 
 Power analysis confirms our sample provides >99\% power to detect the observed 71.5\% rate versus a 50\% random baseline. With n=242 observations:
@@ -115,21 +115,21 @@ Bonferroni-corrected p-values remain significant (p < 0.001) for all three patte
 
 \subsection{Prediction Materialization and Statistical Validation}
 
-Figure~\ref{fig:validation_funnel} presents the validation funnel from detection through materialization. Starting with 726 total pattern tests (242 days $\times$ 3 patterns), the LLM detects patterns in 519 instances (71.5\%). Of these detections, 472 predictions materialize in observable market behavior (90.9\% accuracy), yielding an overall success rate of 65.0\%.
+Figure~\ref{fig:validation_funnel-jv} presents the validation funnel from detection through materialization. Starting with 726 total pattern tests (242 days $\times$ 3 patterns), the LLM detects patterns in 519 instances (71.5\%). Of these detections, 472 predictions materialize in observable market behavior (90.9\% accuracy), yielding an overall success rate of 65.0\%.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig6_validation_funnel.png}
 \caption{Pattern detection validation funnel showing progression from 726 total tests to 519 detections (71.5\% detection rate) to 472 materialized predictions (90.9\% accuracy), yielding 65.0\% overall success rate.}
-\label{fig:validation_funnel}
+\label{fig:validation_funnel-jv}
 \end{figure}
 
-Table~\ref{tab:materialization} details how detected patterns translate into observable market behavior. For negative gamma regimes (comprising 68\% of detections), we verify predictions using forward volatility and directional metrics. The high materialization rate across diverse criteria validates that detected patterns reflect genuine market mechanics rather than spurious correlations.
+Table~\ref{tab:materialization-jv} details how detected patterns translate into observable market behavior. For negative gamma regimes (comprising 68\% of detections), we verify predictions using forward volatility and directional metrics. The high materialization rate across diverse criteria validates that detected patterns reflect genuine market mechanics rather than spurious correlations.
 
 \begin{table}[!htbp]
 \centering
 \caption{Prediction Materialization Criteria and Results}
-\label{tab:materialization}
+\label{tab:materialization-jv}
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{>{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{4.2cm} c}
 \toprule
@@ -148,12 +148,12 @@ Strike Convergence & Price within 0.5\% of strike & 93.4\% \\
 
 \subsubsection{Granger Causality Validation}
 
-To validate the predictive relationship between gamma exposure and forward volatility, we conduct Granger causality tests across multiple specifications. Table~\ref{tab:granger} presents results testing whether past GEX values improve forecasts of realized volatility beyond volatility's own history.
+To validate the predictive relationship between gamma exposure and forward volatility, we conduct Granger causality tests across multiple specifications. Table~\ref{tab:granger-jv} presents results testing whether past GEX values improve forecasts of realized volatility beyond volatility's own history.
 
 \begin{table}[htbp]
 \centering
 \caption{Granger Causality: GEX → Realized Volatility}
-\label{tab:granger}
+\label{tab:granger-jv}
 \begin{tabular}{cccc}
 \toprule
 Lag & F-Statistic & p-value & Significant \\
@@ -174,12 +174,12 @@ Critically, within the negative GEX regime, volatility does not correlate linear
 
 \subsubsection{Market Regime Characterization}
 
-Statistical analysis reveals a uniform market structure in 2024: all 242 tested days (95.6\% of trading days) exhibited negative net gamma exposure (GEX < -\$2B), with mean -\$19.87B (range: -\$40.69B to -\$4.75B). Table~\ref{tab:gex_regime} presents the regime distribution.
+Statistical analysis reveals a uniform market structure in 2024: all 242 tested days (95.6\% of trading days) exhibited negative net gamma exposure (GEX < -\$2B), with mean -\$19.87B (range: -\$40.69B to -\$4.75B). Table~\ref{tab:gex_regime-jv} presents the regime distribution.
 
 \begin{table}[htbp]
 \centering
 \caption{GEX Regime Distribution (2024 Sample)}
-\label{tab:gex_regime}
+\label{tab:gex_regime-jv}
 \begin{tabular}{lcc}
 \toprule
 GEX Regime & Days & Percentage \\
@@ -195,25 +195,25 @@ Positive (> +\$2B) & 0 & 0.0\% \\
 
 This persistent negative gamma regime, driven by explosive growth in zero-days-to-expiration (0DTE) options \cite{cboe2023,jpmorgan2023}, represents a structural shift from historical market dynamics where positive and negative gamma regimes alternated \cite{ni2005stock,garleanu2009demand}. The single-regime environment provides a particularly rigorous test of LLM structural reasoning: unlike traditional pattern recognition that exploits regime variation, our model must identify the underlying constraint mechanism within a uniform environment.
 
-The 69.4\% detection rate across 242 structurally identical days, combined with significant Granger causality (Table~\ref{tab:granger}), validates that LLMs recognize forced hedging constraints through mechanism-based reasoning rather than memorizing regime-switching patterns. The divergence between stable detection capability and declining economic profitability (Figure~\ref{fig:quarterly_stability}) further confirms identification of structural mechanics independent of trading value.
+The 69.4\% detection rate across 242 structurally identical days, combined with significant Granger causality (Table~\ref{tab:granger-jv}), validates that LLMs recognize forced hedging constraints through mechanism-based reasoning rather than memorizing regime-switching patterns. The divergence between stable detection capability and declining economic profitability (Figure~\ref{fig:quarterly_stability}) further confirms identification of structural mechanics independent of trading value.
 
 \subsubsection{Non-Detection Day Characterization}
 
-To address potential concerns that the 30.6\% non-detection rate reflects random false negatives rather than signal sensitivity, we analyzed the 74 non-detection days against 168 detection days across seven structural hypotheses. Figure~\ref{fig:gex_concentration} presents the key finding: non-detection days exhibit significantly more fragmented gamma distribution (Gini coefficient: -0.866 vs -0.853, p < 0.0001, Cohen's d = 0.68), indicating dispersed hedging pressure across strikes.
+To address potential concerns that the 30.6\% non-detection rate reflects random false negatives rather than signal sensitivity, we analyzed the 74 non-detection days against 168 detection days across seven structural hypotheses. Figure~\ref{fig:gex_concentration-jv} presents the key finding: non-detection days exhibit significantly more fragmented gamma distribution (Gini coefficient: -0.866 vs -0.853, p < 0.0001, Cohen's d = 0.68), indicating dispersed hedging pressure across strikes.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/issue_141_gex_concentration.png}
 \caption{GEX concentration distribution comparing detection versus non-detection days. Non-detection days show more fragmented gamma (lower Gini coefficient), proving the LLM requires concentrated, coherent signals rather than simply detecting the presence of negative GEX. Statistical test: t = 4.71, p < 0.0001, Cohen's d = 0.68 (medium effect).}
-\label{fig:gex_concentration}
+\label{fig:gex_concentration-jv}
 \end{figure}
 
-Table~\ref{tab:nondetection} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
+Table~\ref{tab:nondetection-jv} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
 
 \begin{table}[htbp]
 \centering
 \caption{Detection vs Non-Detection Day Characteristics}
-\label{tab:nondetection}
+\label{tab:nondetection-jv}
 \small
 \begin{tabular}{lrrr}
 \toprule
@@ -237,23 +237,23 @@ Opts. Count & 9,080 & 9,191 & .319 \\
 
 These findings validate that the LLM exhibits sensitivity to signal \emph{clarity} and structural coherence, not base rate guessing. The strongest discriminator—GEX concentration (medium effect size, d = 0.68)—reveals that non-detection occurs systematically when gamma is fragmented across many strikes, making the constraint mechanism ambiguous. Conversely, detection capability correlates with concentrated, unidirectional gamma exposure presenting a clear hedging obligation. This proves the 30.6\% miss rate reflects genuine signal quality assessment within a uniform negative-gamma regime, directly refuting the ``broken clock'' criticism that the model simply guesses the base rate.
 
-Figure~\ref{fig:detection_calendar} visualizes the temporal distribution of non-detection days throughout 2024, confirming non-random clustering during periods of dispersed gamma positioning.
+Figure~\ref{fig:detection_calendar-jv} visualizes the temporal distribution of non-detection days throughout 2024, confirming non-random clustering during periods of dispersed gamma positioning.
 
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=0.9\textwidth]{../figures/issue_141_detection_calendar.png}
 \caption{Calendar heatmap of detection status across 2024. Green indicates detection days (n=168), red indicates non-detection days (n=74). Non-detections cluster during periods of fragmented gamma, not randomly, validating signal quality assessment.}
-\label{fig:detection_calendar}
+\label{fig:detection_calendar-jv}
 \end{figure*}
 
 \subsubsection{Materialization Specificity (P-Hacking Defense)}
 
-To address potential concerns that pattern detection reflects p-hacking (detecting patterns that universally predict common outcomes), we analyzed materialization rates for two outcome criteria across 519 detection days versus 100 randomly sampled non-detection days (Table~\ref{tab:materialization}).
+To address potential concerns that pattern detection reflects p-hacking (detecting patterns that universally predict common outcomes), we analyzed materialization rates for two outcome criteria across 519 detection days versus 100 randomly sampled non-detection days (Table~\ref{tab:phacking_defense-jv}).
 
 \begin{table}[htbp]
 \centering
 \caption{Materialization Rates: Detection vs Baseline}
-\label{tab:materialization}
+\label{tab:phacking_defense-jv}
 \small
 \begin{tabular}{lcccc}
 \toprule

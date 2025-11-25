@@ -1,5 +1,5 @@
 \section{Experimental Setup}
-\label{sec:experimental}
+\label{sec:experimental-jv}
 
 \subsection{Data Sources and Coverage}
 
@@ -25,13 +25,13 @@ We test three manifestations of dealer hedging constraints, each representing di
 
 \textbf{Pattern 3: 0DTE Hedging.} Same-day expiration options create extreme gamma concentration, forcing rapid dealer rehedging \cite{cboe2023,jpmorgan2023}. Detection criteria: Expiration = 0 days, net GEX magnitude $>$ \$3B, and gamma concentration $>$ 75\%.
 
-Figure~\ref{fig:gex_profile} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
+Figure~\ref{fig:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig2_gex_profile.png}
 \caption{Representative gamma exposure profile showing negative net GEX of -\$32.5B. Red bars indicate dealer short gamma positions requiring pro-cyclical hedging (selling rallies, buying dips) that amplifies price movements.}
-\label{fig:gex_profile}
+\label{fig:gex_profile-jv}
 \end{figure}
 
 \subsection{Prompt Template Configurations}
@@ -46,13 +46,13 @@ Both templates implement complete temporal obfuscation as demonstrated in Figure
 
 \subsection{Validation Pipeline}
 
-Figure~\ref{fig:pipeline} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
+Figure~\ref{fig:pipeline-jv} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
 
 \begin{figure*}[!tb]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/fig3_validation_pipeline.png}
 \caption{Five-component validation pipeline architecture transforming raw options data through GEX calculation, temporal obfuscation, LLM analysis, outcome verification, and statistical validation.}
-\label{fig:pipeline}
+\label{fig:pipeline-jv}
 \end{figure*}
 
 \textbf{Component 1: GEX Calculator.} Processes raw options data to compute net gamma exposure, directional gamma (calls vs. puts), flip point, and concentration metrics. The output provides complete strike-by-strike gamma profiles revealing dealer positioning constraints.

@@ -18,7 +18,7 @@ Practitioner gamma exposure (GEX) calculations rely on a simplifying assumption:
 Our analysis acknowledges this limitation explicitly: we employ GEX as a practical proxy for dealer gamma exposure due to data availability constraints, not as definitional truth. Critically, our LLM detection framework is robust to moderate GEX variations because validation occurs through forward-return materialization in unbiased obfuscation testing (91.2\% prediction materialization rate with fully obfuscated temporal and ticker data), not GEX accuracy. If actual dealer positioning diverges from our GEX estimates, such divergences represent measurement artifacts, not invalidations of the underlying mechanism. Dealers must hedge their options exposure to maintain delta neutrality regardless of whether gamma is measured from order flow, open interest, or alternative methodologies. Thus, detected patterns reflect fundamental market mechanics rather than artifacts of any particular gamma estimation formula.
 
 \subsection{Rationale for Gamma-Centric Analysis}
-\label{sec:gamma-focus}
+\label{sec:gamma-focus-jv}
 
 We deliberately constrain our analysis to gamma exposure rather than incorporating higher-order Greeks (vanna, charm, vomma) for both theoretical and practical reasons that strengthen rather than limit our validation framework.
 
