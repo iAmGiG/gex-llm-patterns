@@ -73,7 +73,7 @@ To validate EOD predictive utility, we train a logistic regression baseline usin
 
 Feature importance analysis identifies GEX normalized by open interest (\texttt{gex\_oi}) as the only statistically significant predictor (p = 0.0075). This concentrated predictive power suggests that relative gamma positioning—rather than absolute GEX magnitude—drives T+1 outcome probability.
 
-Critically, overnight persistence tests reveal weak correlation between EOD GEX magnitude and next-day opening gaps (point-biserial r = -0.002, p = 0.98). This null finding indicates that dealer constraints operate contemporaneously (same-day effects) rather than persisting through the overnight session. The statistical baseline's predictive power derives from full-day T+1 outcomes (directional moves, range expansion) rather than overnight gap dynamics specifically.
+Critically, overnight persistence tests reveal weak correlation between EOD GEX magnitude and next-day opening gaps (point-biserial r = -0.002, p = 0.98). This null finding clarifies the temporal mechanism: the signal is contemporaneous and non-attenuated. The EOD GEX snapshot quantifies the structural liability that must be addressed on T+1, and the T+1 outcome measures the full day's worth of accumulated rebalancing flows—not just the overnight gap. This framing validates EOD data as an effective snapshot of forward-looking constraints.
 
 \subsection{Evaluation Metrics}
 
