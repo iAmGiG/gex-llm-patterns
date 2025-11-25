@@ -4,8 +4,10 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 
 ## Current Configuration Files
 
+- **`agent_config.yaml`** - Agent LLM settings, timeouts, and multi-agent configuration (Issue #151)
 - **`analysis_config.yaml`** - Core pattern detection, GEX thresholds, and statistical analysis parameters
 - **`continuous_testing_config.yaml`** - Baseline comparison testing and strategy validation parameters
+- **`data_sources_config.yaml`** - API timeouts, rate limits, and data source settings (Issue #151)
 - **`llm_prompts.yaml`** - LLM prompt templates for pattern detection (Issue #90) and agent workflows
 - **`obfuscation_patterns.yaml`** - Data obfuscation templates for anti-cheating validation
 - **`pattern_library_config.yaml`** - Pattern library definitions and mechanics
@@ -91,6 +93,12 @@ The following classes now use the configuration system:
 
 - `src/gex/gex_calculator.py` - Risk-free rate from config
 - `src/data_sources/polygon_client.py` - Rate limiting from config
+
+### Issue #151 Updates (November 2025)
+
+- `src/base_agent.py` - Model, temperature, timeout, max_tokens from `agent_config.yaml`
+- `src/cache/concurrent_gex_processor.py` - max_workers, timeout from `data_sources_config.yaml`
+- `src/data_sources/alpha_vantage_gex.py` - Request timeout, rate limits from `data_sources_config.yaml`
 
 ## Benefits
 

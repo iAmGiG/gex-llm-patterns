@@ -1,0 +1,103 @@
+# Agent Configuration
+# LLM settings, timeouts, and agent behavior parameters
+# Extracted from hardcoded values in src/ (Issue #151)
+
+# ==============================================================================
+# Base Agent Defaults (src/base_agent.py)
+# ==============================================================================
+
+base_agent:
+  # Default model for agents
+  default_model: "gpt-4o-mini"  # Cost-efficient default
+  default_temperature: 0.2      # Low for consistency
+  max_tokens: 4096              # Maximum response length
+  timeout_seconds: 120          # API call timeout
+
+  # Fallback models for cost/performance trade-offs
+  fallback_models:
+    high_quality: "gpt-4o"
+    fast_cheap: "gpt-4o-mini"
+    reasoning: "o4-mini"
+
+# ==============================================================================
+# Market Mechanics Agent (src/agents/market_mechanics_agent.py)
+# ==============================================================================
+
+market_mechanics_agent:
+  # LLM configuration (Paper #2 settings)
+  model: "o4-mini"              # From analysis_config.yaml llm_market_mechanics section
+  temperature: 0.3
+  timeout_seconds: 30
+  max_retries: 3
+
+  # Analysis parameters
+  analysis_tokens: 4000
+  top_p: 0.95
+
+  # Confidence adjustments
+  confidence_adjustments:
+    fomc_near_event: 0.8        # Reduce confidence 20% near FOMC
+    pin_probability_base: 0.75  # Base pin probability (Issue #73 validated)
+
+# ==============================================================================
+# AutoGen Integration Settings
+# ==============================================================================
+
+autogen:
+  # Version compatibility
+  version: "0.7.4"
+
+  # Client settings
+  client:
+    default_timeout: 120
+    max_retries: 3
+    retry_delay_seconds: 1.0
+
+  # Tool execution settings
+  tools:
+    max_concurrent: 4
+    execution_timeout: 300      # 5 minutes per tool
+
+# ==============================================================================
+# Agent Registry (for future multi-agent support - Paper 3)
+# ==============================================================================
+
+agent_registry:
+  # Enable agent registration/discovery
+  enabled: false  # Not yet implemented
+
+  # Registered agents (placeholder for Paper 3)
+  agents:
+    market_mechanics:
+      class: "MarketMechanicsAgent"
+      default_tools:
+        - "fetch_options_data"
+        - "calculate_gamma_exposure"
+        - "fetch_market_data"
+
+# ==============================================================================
+# Confidence Scoring Configuration
+# Duplicate of analysis_config.yaml for agent-specific access
+# ==============================================================================
+
+confidence_mapping:
+  # Text to numeric confidence mapping
+  high: 80
+  medium: 60
+  low: 40
+  default: 50
+
+# ==============================================================================
+# Agent Communication (future multi-agent - Paper 3/4)
+# ==============================================================================
+
+communication:
+  # Message passing settings
+  enabled: false  # Not yet implemented
+  max_message_length: 10000
+  timeout_seconds: 30
+
+  # Broadcast settings
+  broadcast:
+    enabled: false
+    topics: []

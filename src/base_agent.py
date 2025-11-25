@@ -19,6 +19,7 @@ from autogen_core.models import SystemMessage, UserMessage
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
 from cache import UnifiedCacheManager
+from utils.config_manager import get_config
 from utils.date_utils import now_iso
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -40,27 +41,46 @@ class BaseGEXAgent(AssistantAgent, ABC):
     - Simple tool registration
     """
 
-    def __init__(self, name, description="", tools=None, model_name="gpt-4o-mini", temperature=0.2, cache_manager=None):
+    def __init__(self, name, description="", tools=None, model_name=None, temperature=None, cache_manager=None):
         """Initialize GEX agent with essential components.
 
         Args:
             name: Agent identifier
             description: Agent role description
             tools of tools agent can use
-            model_name: OpenAI model (default: gpt-4o-mini for cost efficiency)
-            temperature: LLM temperature for consistency
+            model_name: OpenAI model (default from config: gpt-4o-mini for cost efficiency)
+            temperature: LLM temperature for consistency (default from config)
             cache_manager: Shared cache for market data
         """
-        # Load configuration
-        config_loader = ConfigLoader()
-        api_key = os.getenv("OPENAI_API_KEY", config_loader.get("OPENAI_API_KEY"))
+        # Load configuration from centralized config system
+        config = get_config()
+
+        # Get defaults from agent_config.yaml
+        default_model = config.get("agent.base_agent.default_model", "gpt-4o-mini")
+        default_temperature = config.get("agent.base_agent.default_temperature", 0.2)
+        default_max_tokens = config.get("agent.base_agent.max_tokens", 4096)
+        default_timeout = config.get("agent.base_agent.timeout_seconds", 120)
+
+        # Use provided values or fall back to config defaults
+        model_name = model_name or default_model
+        temperature = temperature if temperature is not None else default_temperature
+
+        # Load API key (try ConfigLoader for backward compatibility, then env var)
+        config_loader = ConfigLoader() if ConfigLoader else None
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key and config_loader:
+            api_key = config_loader.get("OPENAI_API_KEY")
 
         if not api_key:
             raise ValueError("OpenAI API key required. Set OPENAI_API_KEY or update @config/")
 
-        # Create OpenAI client with research-optimized settings
+        # Create OpenAI client with config-driven settings
         model_client = OpenAIChatCompletionClient(
-            model=model_name, api_key=api_key, temperature=temperature, max_tokens=4096, timeout=120
+            model=model_name,
+            api_key=api_key,
+            temperature=temperature,
+            max_tokens=default_max_tokens,
+            timeout=default_timeout,
         )
 
         # Initialize parent AssistantAgent

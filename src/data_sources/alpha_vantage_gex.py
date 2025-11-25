@@ -16,6 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from config.config_loader import ConfigLoader
 
 from src.cache import UnifiedCacheManager
+from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
 
 
@@ -30,6 +31,9 @@ class AlphaVantageGEXClient:
     """
 
     def __init__(self, cache_manager=None):
+        # Load configuration from centralized config system
+        config = get_config()
+
         # Load premium API key from @config/ loader
         config_loader = ConfigLoader()
         self.api_key = os.getenv("ALPHA_VANTAGE_PREMO_KEY", config_loader.get("ALPHA_VANTAGE_PREMO_KEY"))
@@ -54,14 +58,18 @@ class AlphaVantageGEXClient:
         # Initialize unified cache (critical for premium tier)
         self.cache = cache_manager or UnifiedCacheManager()
 
-        # Rate limiting - premium tier has higher limits
+        # Load request timeout from config
+        self.request_timeout = config.get("data_sources.alpha_vantage.request_timeout", 30)
+
+        # Rate limiting - premium tier has higher limits (configurable)
         premium_key = config_loader.get("ALPHA_VANTAGE_PREMO_KEY")
+        default_calls_per_minute = config.get("data_sources.alpha_vantage.calls_per_minute", 75)
         if self.api_key == premium_key:
-            self.calls_per_minute = 1000  # Premium tier limit
+            self.calls_per_minute = 1000  # Premium tier limit (fixed)
             logging.info("Using premium tier rate limits (1000/min)")
         else:
-            self.calls_per_minute = 75  # Standard tier limit
-            logging.info("Using standard tier rate limits (75/min)")
+            self.calls_per_minute = default_calls_per_minute  # Standard tier limit from config
+            logging.info(f"Using standard tier rate limits ({self.calls_per_minute}/min)")
         self.call_timestamps = []
 
     def _check_rate_limit(self) -> bool:
@@ -124,7 +132,7 @@ class AlphaVantageGEXClient:
                 f"Fetching options data for {symbol}" + (f" on {date}" if date else " (previous trading day)")
             )
 
-            response = requests.get(self.base_url, params=params, timeout=30)
+            response = requests.get(self.base_url, params=params, timeout=self.request_timeout)
 
             if response.status_code != 200:
                 self.logger.error(f"Alpha Vantage API error: {response.status_code}")

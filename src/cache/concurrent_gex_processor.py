@@ -8,6 +8,7 @@ from typing import List, Tuple
 
 import pandas as pd
 
+from src.utils.config_manager import get_config
 from src.utils.date_utils import now_iso
 
 from .gex_cache_manager import GEXCacheManager
@@ -26,15 +27,23 @@ class ConcurrentGEXProcessor:
     - Progress tracking and error handling
     """
 
-    def __init__(self, max_workers: int = 4, unified_cache_manager=None):
+    def __init__(self, max_workers: int = None, unified_cache_manager=None):
         """Initialize concurrent processor.
 
         Args:
-            max_workers: Maximum concurrent threads
+            max_workers: Maximum concurrent threads (default from config)
             unified_cache_manager: Existing cache manager (optional)
         """
-        self.max_workers = max_workers
-        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        # Load configuration from centralized config system
+        config = get_config()
+
+        # Get defaults from data_sources_config.yaml
+        default_max_workers = config.get("data_sources.concurrent_processor.max_workers", 4)
+        self.future_timeout = config.get("data_sources.concurrent_processor.future_timeout", 300)
+        self.log_interval = config.get("data_sources.concurrent_processor.log_interval", 10)
+
+        self.max_workers = max_workers if max_workers is not None else default_max_workers
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
 
         # Use provided cache manager or create new one
         if unified_cache_manager:
@@ -82,11 +91,11 @@ class ConcurrentGEXProcessor:
                 processed_count += 1
 
                 try:
-                    # 5 minute timeout per calculation
-                    result = future.result(timeout=300)
+                    # Configurable timeout per calculation
+                    result = future.result(timeout=self.future_timeout)
                     results[date] = result
 
-                    if processed_count % 10 == 0:  # Progress logging
+                    if processed_count % self.log_interval == 0:  # Progress logging
                         logger.info(f"Progress: {processed_count}/{len(trading_dates)} dates processed")
 
                 except Exception as e:
@@ -145,7 +154,7 @@ class ConcurrentGEXProcessor:
                 symbol = futures[future]
 
                 try:
-                    result = future.result(timeout=300)
+                    result = future.result(timeout=self.future_timeout)
                     results[symbol] = result
 
                 except Exception as e:
@@ -200,10 +209,10 @@ class ConcurrentGEXProcessor:
                 processed += 1
 
                 try:
-                    result = future.result(timeout=300)
+                    result = future.result(timeout=self.future_timeout)
                     results[key] = result
 
-                    if processed % 25 == 0:  # Progress logging
+                    if processed % (self.log_interval * 2.5) == 0:  # Progress logging (batch)
                         logger.info(f"Batch progress: {processed}/{len(requests)} requests processed")
 
                 except Exception as e:
