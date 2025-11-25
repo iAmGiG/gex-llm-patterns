@@ -17,15 +17,20 @@ Detection Days vs. Random Baseline). Visualizing the shift to the left
 (lower volatility) is powerful."
 """
 
-import pandas as pd
-import numpy as np
 import os
+
+import numpy as np
+import pandas as pd
+
 os.environ['MPLBACKEND'] = 'Agg'  # Force non-GUI backend before import
 import matplotlib
+
 matplotlib.use('Agg')  # Ensure we use Agg backend
-import matplotlib.pyplot as plt
-from pathlib import Path
 import warnings
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+
 warnings.filterwarnings('ignore')
 
 # Paths

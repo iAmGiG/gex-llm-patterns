@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Issue #143: Raw Option Chain Validation (The Nuclear Option)
+"""Issue #143: Raw Option Chain Validation (The Nuclear Option)
 
 This script validates LLM structural reasoning by providing ONLY raw option
 chain data (Strike, OI, IV, Bid/Ask) WITHOUT pre-calculated GEX metrics.
@@ -12,14 +11,15 @@ Author: Claude Code (Chat C)
 Date: November 25, 2025
 """
 
-import sqlite3
-import logging
-import yaml
 import json
+import logging
+import sqlite3
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from datetime import datetime
+
 import pandas as pd
+import yaml
 
 # Configure logging
 logging.basicConfig(
@@ -49,8 +49,7 @@ class RawChainExtractor:
             logger.info("Database connection closed")
 
     def get_raw_chain(self, date: str, symbol: str = 'SPY') -> pd.DataFrame:
-        """
-        Extract raw option chain aggregated by strike and type.
+        """Extract raw option chain aggregated by strike and type.
 
         DOES NOT calculate GEX, flip points, or any derived metrics.
         Only provides: strike, type, total OI, avg IV, total volume, bid/ask spread.
@@ -149,8 +148,7 @@ Provide your analysis in the structured format above. If you do not detect any c
     def format_strike_table(self, chain_df: pd.DataFrame,
                            spot_price: float,
                            max_strikes: int = 60) -> str:
-        """
-        Format raw chain data as a readable table for LLM.
+        """Format raw chain data as a readable table for LLM.
 
         Args:
             chain_df: DataFrame with raw chain data
@@ -206,8 +204,7 @@ Provide your analysis in the structured format above. If you do not detect any c
     def build_prompt(self, chain_df: pd.DataFrame,
                     spot_price: float,
                     date: str) -> str:
-        """
-        Build complete LLM prompt from raw chain data.
+        """Build complete LLM prompt from raw chain data.
 
         Args:
             chain_df: DataFrame with raw chain data
@@ -239,8 +236,7 @@ class RawChainResponseParser:
     """Parse LLM responses for raw chain analysis."""
 
     def parse_response(self, response: str) -> Dict:
-        """
-        Parse LLM response to extract detection and reasoning.
+        """Parse LLM response to extract detection and reasoning.
 
         Args:
             response: Raw LLM response text
@@ -301,8 +297,7 @@ class RawChainResponseParser:
         return result
 
     def analyze_reasoning_quality(self, parsed: Dict) -> Dict:
-        """
-        Analyze the quality of LLM reasoning.
+        """Analyze the quality of LLM reasoning.
 
         Args:
             parsed: Parsed response dictionary
@@ -403,8 +398,7 @@ class RawChainValidator:
         return high_sample, low_sample
 
     def generate_prompt_for_date(self, date: str) -> Optional[str]:
-        """
-        Generate raw chain prompt for a specific date.
+        """Generate raw chain prompt for a specific date.
 
         Args:
             date: Date string (YYYY-MM-DD)
@@ -430,8 +424,7 @@ class RawChainValidator:
             return None
 
     def save_sample_prompts(self, n_samples: int = 5):
-        """
-        Generate and save sample prompts for review.
+        """Generate and save sample prompts for review.
 
         Args:
             n_samples: Number of sample prompts to generate
@@ -512,8 +505,7 @@ class RawChainBatchValidator:
         return self.client
 
     def prepare_batch_file(self, test_dates: List[str], model: str = 'o4-mini') -> Path:
-        """
-        Prepare JSONL batch file for raw chain validation.
+        """Prepare JSONL batch file for raw chain validation.
 
         Args:
             test_dates: List of dates to validate
@@ -563,8 +555,7 @@ class RawChainBatchValidator:
         return batch_file
 
     def submit_batch(self, batch_file: Path, description: str = None) -> str:
-        """
-        Submit batch file to OpenAI Batch API.
+        """Submit batch file to OpenAI Batch API.
 
         Args:
             batch_file: Path to JSONL batch file
@@ -631,8 +622,7 @@ class RawChainBatchValidator:
         return status
 
     def retrieve_results(self, batch_id: str) -> List[Dict]:
-        """
-        Retrieve and parse batch results.
+        """Retrieve and parse batch results.
 
         Args:
             batch_id: Batch job ID
@@ -704,8 +694,7 @@ class RawChainBatchValidator:
         return results
 
     def run_full_validation(self, n_high: int = 25, n_low: int = 25) -> str:
-        """
-        Run full raw chain validation.
+        """Run full raw chain validation.
 
         Args:
             n_high: Number of high-detection dates

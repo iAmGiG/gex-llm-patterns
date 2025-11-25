@@ -3,35 +3,45 @@
 ## Issues CLOSED Per MC Guidance
 
 ### ✅ #105: Causal Discovery (PC/FCI Algorithms)
+
 **Reason**: Shifts paper from "LLM validation" to "mechanism discovery"
+
 - Granger causality (p=0.042) is sufficient
 - High risk of noisy results
 - Would bury Issue #143's "mic drop" moment
 **Save for**: Paper #3 (mechanism discovery focus)
 
 ### ✅ #121: Multi-Year Validation (2022-2024)
+
 **Reason**: Cross-regime validation is "nice-to-have", not "fatal flaw"
+
 - Issue #143 (raw chain) is stronger evidence
 - 242 days in 2024 = robust sample
 - Issue #141 proves sensitivity within regime
 **Save for**: Dissertation appendix / future research
 
 ### ✅ #148: Expand Pattern Taxonomy (3 → 5+ patterns)
+
 **Reason**: More patterns = more p-hacking attack surface
+
 - Current 3 patterns test same mechanism (dealer hedging)
 - Three is sufficient for framework generality
 - Six patterns dilutes focus without proportional benefit
 **Save for**: Future research / Paper #3
 
 ### ✅ #87: Individual Equities Extension
+
 **Reason**: SPY is optimal test case (liquid, no confounders)
+
 - Individual stocks introduce earnings/news noise
 - Not claiming "works for all assets"
 - Claiming "LLM does structural reasoning"
 **Save for**: Future research / dissertation
 
 ### ✅ #142: Base Rate via Dual GEX (OI vs Volume)
+
 **Reason**: Issue #141 already solved base rate problem
+
 - 3.72× weaker signal in misses (p < 0.0001)
 - Dual GEX introduces novel methodology (wrong paper)
 - Clean defense > complex defense
@@ -42,17 +52,20 @@
 ## Issues KEPT (Critical Path)
 
 ### ✅ #143: Raw Chain Validation - COMPLETE
+
 **Status**: LaTeX integrated, ready for merge
 **Impact**: Definitive defense (92.3% > 61.5%)
 **Next**: Merge `paper1-issue143-raw-chain` branch to main
 
 ### 🔄 #144: P-Hacking Defense (Inverse P-Hacking) - ⚡ ACCELERATED
+
 **Status**: IN PROGRESS (Chat C)
 **Timeline**: 2.5 weeks (accelerated from 4 weeks per MC)
 **Impact**: One of 5 core defenses - CRITICAL
 **Keep**: MC directive - "Without #144, reviewer can say 'it just flags high variance days'"
 
 **MC's Acceleration Rationale**:
+
 - We ALREADY have the key result (Lift 0.67x, p=0.033)
 - No need for 4 weeks of exploration
 - Week 1: Finalize data table
@@ -63,9 +76,11 @@
 > "The Raw Chain (#143) proves the model is smart (it calculates). The Inverse P-Hacking (#144) proves the model is discriminating (it detects suppression, not just noise)."
 
 ### ⏳ #159: Publication-Quality Figures (4 Required)
+
 **Status**: NEEDED
 **Timeline**: 1-2 weeks (after #144 complete)
 **MC's Specification** (4 figures, not 3):
+
 - **Figure 1**: The Divergence (Alpha down, Detection flat)
 - **Figure 2**: The Miss Rate (Signal strength - 3.72× weaker, p < 0.0001)
 - **Figure 3**: The Raw Chain (Bar chart: 92.3% vs 61.5%)
@@ -73,12 +88,14 @@
 **Requirement**: ALL must use real data (no synthetic)
 
 ### ⏳ #164: Model Upgrade to o4-mini - ⚠️ MC WARNING
+
 **Status**: MINIMAL SCOPE ONLY
 **Timeline**: Documentation only (no re-runs)
 **MC's Critical Warning**:
 > "If you re-run the full 242-day dataset with o4-mini and the detection rate drops to 55% or jumps to 99%, you have created a new problem. You will have to rewrite the entire Results section."
 
 **Approved Scope**:
+
 - ✅ Keep baseline model for 242-day study (o3-mini/o1-preview)
 - ✅ Use o4-mini ONLY for Raw Chain (#143) - already complete
 - ✅ Document in paper: "For Raw Chain Validation, we utilized o4-mini..."
@@ -166,6 +183,7 @@
 ## Timeline to Submission (MC-Approved)
 
 ### Critical Path (WITH Issue #144 - Required)
+
 - **Week 1-2.5**: Complete #144 (inverse p-hacking defense) ⚡ ACCELERATED
 - **Week 3-4**: Generate publication figures (#159) - all 4 figures
 - **Week 5**: Final integration, proofreading, submission package
@@ -174,11 +192,13 @@
 **Target Submission**: End of December 2025 / Early January 2026
 
 ### MC's Green Light
+>
 > "Green Light to execute. 🟢 Prioritize #144 immediately, but time-box it to 2-3 weeks. Do not let it drift. The paper is winning; you just need to cross the finish line."
 
 **MC's Decision**: YES, Issue #144 is worth 2.5 weeks delay
 
 **Rationale**:
+
 - Raw Chain (#143): Proves model calculates constraints from first principles
 - Inverse P-Hacking (#144): Proves model discriminates (detects suppression, not noise)
 - **Without #144**: Reviewer can say "Maybe it just flags high variance days?"
@@ -191,6 +211,7 @@
 ## Success Criteria (Paper #1 Ready)
 
 ### Content Complete
+
 - [x] 71.5% detection rate validated
 - [x] 91.2% materialization rate verified
 - [x] Granger causality (p = 0.042)
@@ -201,6 +222,7 @@
 - [ ] Inverse p-hacking (pending #144)
 
 ### LaTeX Complete
+
 - [x] Abstract updated (5 defenses)
 - [x] Section IV: Methodology Validation (raw chain)
 - [x] Conclusion: Twin pillars narrative
@@ -208,6 +230,7 @@
 - [ ] Publication figures integrated (pending #159)
 
 ### Submission Package
+
 - [ ] Main manuscript PDF
 - [ ] Supplementary materials
 - [ ] Code repository (GitHub)

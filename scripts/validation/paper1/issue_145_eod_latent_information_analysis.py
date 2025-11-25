@@ -21,14 +21,15 @@ Author: Research Team (Chat C)
 Date: November 25, 2025
 """
 
+import logging
 import sqlite3
-import pandas as pd
-import numpy as np
-import yaml
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
-import logging
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+import yaml
 
 # Configure logging
 logging.basicConfig(
@@ -62,8 +63,7 @@ class EODFeatureExtractor:
             logger.info("Database connection closed")
 
     def get_eod_gex_data(self, date: str) -> Optional[Dict]:
-        """
-        Fetch EOD GEX metrics for a specific date.
+        """Fetch EOD GEX metrics for a specific date.
 
         Args:
             date: Date string (YYYY-MM-DD)
@@ -121,8 +121,7 @@ class EODFeatureExtractor:
             return None
 
     def extract_features(self, dates: List[str]) -> pd.DataFrame:
-        """
-        Extract EOD features for a list of dates.
+        """Extract EOD features for a list of dates.
 
         Args:
             dates: List of date strings (YYYY-MM-DD)
@@ -149,8 +148,7 @@ class EODFeatureExtractor:
         return df
 
     def _calculate_features(self, gex_data: Dict) -> Dict:
-        """
-        Calculate 13 EOD features from GEX data.
+        """Calculate 13 EOD features from GEX data.
 
         Args:
             gex_data: Dictionary with raw GEX metrics
@@ -230,8 +228,7 @@ class NextDayOutcomeCalculator:
             logger.info("Database connection closed")
 
     def get_ohlcv(self, date: str, symbol: str = 'SPY') -> Optional[Dict]:
-        """
-        Fetch OHLCV data for a specific date.
+        """Fetch OHLCV data for a specific date.
 
         Args:
             date: Date string (YYYY-MM-DD)
@@ -278,8 +275,7 @@ class NextDayOutcomeCalculator:
             return None
 
     def calculate_outcomes(self, eod_dates: List[str]) -> pd.DataFrame:
-        """
-        Calculate next-day outcome targets.
+        """Calculate next-day outcome targets.
 
         Args:
             eod_dates: List of EOD dates (targets are for next trading day)
@@ -332,8 +328,7 @@ class NextDayOutcomeCalculator:
         return df
 
     def _calculate_materialization_flags(self, eod_data: Dict, next_data: Dict) -> Dict:
-        """
-        Calculate binary materialization flags from OHLCV data.
+        """Calculate binary materialization flags from OHLCV data.
 
         Args:
             eod_data: EOD (T+0) OHLCV dictionary
@@ -393,8 +388,7 @@ class EODPredictiveAnalysis:
         logger.info(f"Output directory: {self.output_dir}")
 
     def get_detection_dates(self) -> List[str]:
-        """
-        Load detection dates from Paper #1 validation YAML files.
+        """Load detection dates from Paper #1 validation YAML files.
 
         Returns:
             List of detection dates (YYYY-MM-DD)
@@ -545,8 +539,7 @@ class EODPredictiveAnalysis:
                     logger.info(f"  {col}: {rate:.1f}%")
 
     def _train_logistic_regression(self, features: pd.DataFrame, outcomes: pd.DataFrame) -> Dict:
-        """
-        Train logistic regression model to predict T+1 materialization.
+        """Train logistic regression model to predict T+1 materialization.
 
         Args:
             features: EOD feature DataFrame
@@ -557,8 +550,8 @@ class EODPredictiveAnalysis:
         """
         try:
             from sklearn.linear_model import LogisticRegression
+            from sklearn.metrics import classification_report, roc_auc_score
             from sklearn.model_selection import TimeSeriesSplit, cross_val_score
-            from sklearn.metrics import roc_auc_score, classification_report
             from sklearn.preprocessing import StandardScaler
         except ImportError:
             logger.error("scikit-learn not installed. Cannot train model.")
@@ -681,8 +674,7 @@ class EODPredictiveAnalysis:
 
     def _calculate_feature_pvalues(self, X: pd.DataFrame, y: pd.Series,
                                    feature_names: List[str]) -> Dict[str, float]:
-        """
-        Calculate p-values for each feature using statsmodels logistic regression.
+        """Calculate p-values for each feature using statsmodels logistic regression.
 
         Args:
             X: Feature DataFrame
@@ -752,8 +744,7 @@ class EODPredictiveAnalysis:
             return {}
 
     def _get_llm_confidence_scores(self) -> Dict[str, float]:
-        """
-        Extract LLM confidence scores from detection YAML files.
+        """Extract LLM confidence scores from detection YAML files.
 
         Returns:
             Dictionary of date -> confidence (0-1 scale)
@@ -794,8 +785,7 @@ class EODPredictiveAnalysis:
         return confidence_scores
 
     def _calculate_llm_auc(self, outcomes: pd.DataFrame) -> Dict:
-        """
-        Calculate LLM detection AUC against T+1 materialization outcomes.
+        """Calculate LLM detection AUC against T+1 materialization outcomes.
 
         Args:
             outcomes: DataFrame with next-day outcomes
@@ -982,8 +972,7 @@ class EODPredictiveAnalysis:
 
     def _generate_figures(self, features: pd.DataFrame, outcomes: pd.DataFrame,
                           logistic_results: Dict, llm_results: Dict) -> None:
-        """
-        Generate publication-quality figures for Issue #145 analysis.
+        """Generate publication-quality figures for Issue #145 analysis.
 
         Figures generated:
         1. ROC curves (Statistical vs Random baseline)
@@ -1136,8 +1125,8 @@ class EODPredictiveAnalysis:
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
         from sklearn.linear_model import LogisticRegression
+        from sklearn.metrics import auc, roc_curve
         from sklearn.preprocessing import StandardScaler
-        from sklearn.metrics import roc_curve, auc
 
         # Merge and prepare data
         merged = pd.merge(features, outcomes, on='date', how='inner')

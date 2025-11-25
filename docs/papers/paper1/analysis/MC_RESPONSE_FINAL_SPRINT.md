@@ -73,23 +73,27 @@ We have strong results with existing model. No risk-taking.
 ### The Complete Narrative Arc
 
 **Figure 1: The Divergence (Alpha Down, Detection Flat)**
+
 - Detection rate: FLAT line around 68-74%
 - Sharpe ratio: DECLINING line (1.8 → 0.1)
 - **Purpose**: Proves LLM is structural analyst, not trading bot
 
 **Figure 2: The Miss Rate (Signal Strength Comparison)**
+
 - Detection days vs Non-detection days
 - Metric: GEX Gini coefficient (concentration)
 - Key Result: 3.72× weaker signal on misses (p < 0.0001)
 - **Purpose**: Proves sensitivity, not guessing
 
 **Figure 3: The Raw Chain (Bar Chart: GEX-Assisted vs Raw Chain)**
+
 - GEX-assisted baseline: 61.5% (8/13)
 - Raw chain (no GEX): 92.3% (12/13)
 - Annotation: +30.8pp advantage
 - **Purpose**: Definitive "Nuclear Option"
 
 **Figure 4: The Inverse P-Hacking (NEW - from Issue #144)**
+
 - Density plot / histogram overlay
 - Detection days: Intraday range expansion (mean: 21.6%)
 - Random baseline: Intraday range expansion (mean: 32.0%)

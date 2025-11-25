@@ -13,12 +13,15 @@ structural analysis from first principles.
 """
 
 import os
+
 os.environ['MPLBACKEND'] = 'Agg'
 import matplotlib
+
 matplotlib.use('Agg')
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 
 # Paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent

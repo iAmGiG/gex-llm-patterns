@@ -7,6 +7,7 @@ We've completed the "Nuclear Option" validation - raw chain detection with ZERO 
 ## The Test Setup
 
 **Methodology**:
+
 - Input: Strike tables containing ONLY open interest, implied volatility, volume, and bid/ask spreads
 - NO GEX values, NO flip points, NO regime labels
 - Dates obfuscated as "Day T+0" (same obfuscation as baseline)
@@ -17,11 +18,13 @@ We've completed the "Nuclear Option" validation - raw chain detection with ZERO 
 ## The Results
 
 **Raw Chain Detection: 92.3% (12/13)**
+
 - Confidence range: 55-85 (appropriate, not overconfident)
 - Reasoning quality: 5.5/6 average (excellent structural reasoning)
 - Single non-detection had PERFECT reasoning (score 6/6), just below confidence threshold
 
 **Comparison to Baseline (same 13 dates)**:
+
 - Baseline with GEX: 61.5% (8/13)
 - Raw chain without GEX: 92.3% (12/13)
 - **Raw chain outperforms GEX-assisted baseline by 31pp**
@@ -33,6 +36,7 @@ We've completed the "Nuclear Option" validation - raw chain detection with ZERO 
 When we remove GEX entirely, the LLM still detects dealer gamma constraints at 92.3% accuracy. The mechanism identification is independent of our pre-calculated metrics.
 
 Example from 2024-03-15 (conf=70):
+
 - **Input**: Strike table showing 80k OI at $500 puts, 82-98k at $520-530 calls
 - **Output** (no GEX provided):
   - WHO: "Dealers net short gamma around $500 puts and $520-530 calls"
@@ -44,10 +48,12 @@ The LLM inferred the gamma constraint structure directly from the OI distributio
 ### 2. Genuinely More Robust Than Parametric Approach
 
 The 6 disagreements between methods are striking:
+
 - Raw chain detected in 5 cases that baseline missed entirely
 - Only 1 case where baseline's GEX data helped
 
 This suggests:
+
 - GEX-assisted method may overconstrain (too reliant on single metric)
 - Raw chain method captures subtler structural signals
 - LLM reasoning is actually MORE robust without the distraction of absolute GEX magnitude
@@ -55,6 +61,7 @@ This suggests:
 ### 3. Reasoning Quality is Consistently High
 
 Even in the single non-detection (2024-01-02):
+
 - Reasoning score: 6/6 (perfect)
 - The LLM correctly identified: symmetrical 300k-400k OI blocks, dealer gamma concentration, forced hedging mechanism
 - Failure was ONLY in confidence calibration (55 vs 60 threshold)
@@ -72,6 +79,7 @@ This validation transforms the "glorified calculator" critique:
 ## Recommendation
 
 This becomes **Appendix C: Raw Chain Validation** in the revised Paper #1:
+
 - Placement: After Issue #141 (non-detection analysis) and before conclusion
 - Purpose: Direct evidence that the LLM is a structural analyst, not a calculator
 - Length: ~2 pages (methodology, results table, 2-3 example prompts/responses, interpretation)
