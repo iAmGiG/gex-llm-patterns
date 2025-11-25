@@ -88,7 +88,7 @@ python scripts/validation/validate_regime_windows_batch.py \
 
 **Output:**
 
-```
+```text
 ✅ Batch submitted successfully!
 Batch ID: batch_66d4d5c11ecf4f4fa1b30b8c7adf11ce
 Windows: 32
@@ -113,7 +113,7 @@ python scripts/validation/validate_regime_windows_batch.py \
 
 **Output:**
 
-```
+```text
 Polling batch: batch_66d4d5c11ecf4f4fa1b30b8c7adf11ce
 Poll interval: 60s
 Max duration: 24 hours
@@ -136,7 +136,7 @@ python scripts/validation/validate_regime_windows_batch.py \
 
 **Output:**
 
-```
+```text
 ✅ Retrieved 32 results
 Saved to: reports/validation/regime_windows/phase_batch_batch_66d4d5c11ecf4f4fa1b30b8c7adf11ce.yaml
 
