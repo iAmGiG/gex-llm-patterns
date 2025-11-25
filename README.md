@@ -2,13 +2,13 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Phase 1](https://img.shields.io/badge/Phase%201-Complete-success.svg)](https://github.com/iAmGiG/gex-llm-patterns/issues/88)
+[![Paper 1](https://img.shields.io/badge/Paper%201-Submitted-success.svg)](https://github.com/iAmGiG/gex-llm-patterns/issues/88)
 [![Research](https://img.shields.io/badge/Research-PhD%20Project-purple.svg)](docs/papers/research_roadmap.md)
 
 [![Validation](https://img.shields.io/badge/2024%20Validation-Complete-brightgreen.svg)](reports/validation/pattern_taxonomy/)
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-71.5%25%20Unbiased-orange.svg)](docs/presentations/phd_symposium_2025.md)
 [![Accuracy](https://img.shields.io/badge/Predictive%20Accuracy-91.2%25-green.svg)](docs/presentations/phd_symposium_2025.md)
-[![Documentation](https://img.shields.io/badge/docs-40%2B%20files-informational.svg)](docs/)
+[![Documentation](https://img.shields.io/badge/docs-130%2B%20files-informational.svg)](docs/)
 
 [![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
 [![AutoGen](https://img.shields.io/badge/Framework-AutoGen%200.7-00A36C.svg)](https://github.com/microsoft/autogen)
@@ -24,19 +24,19 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
-- [Key Results](#-key-results)
-- [Quick Links](#-quick-links)
-- [Research Roadmap](#️-research-roadmap)
+- [Key Results](#key-results)
+- [Quick Links](#quick-links)
+- [Research Roadmap](#research-roadmap)
 - [Project Status](#project-status-november-2025)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
 
 ---
 
-## 🎯 Key Results
+## Key Results
 
 > **Main Finding**: LLMs can detect structural market constraints without temporal context
 
@@ -45,47 +45,47 @@
 | **Detection Rate** | 71.5% | 100% |
 | **Predictive Accuracy** | 91.2% | 87-98% |
 | **Test Coverage** | 242 days (2024) | 181 days (Q1,Q3,Q4) |
-| **Obfuscation** | ✅ Full (no dates/tickers) | ✅ Full (no dates/tickers) |
+| **Obfuscation** | Full (no dates/tickers) | Full (no dates/tickers) |
 | **Pattern Types** | 3 validated | 3 validated |
 
-**Significance**: Detection remains stable (71-100%) while profitability varies (+70bps → -1bps), proving LLM detects **structural mechanics**, not profitable anomalies.
+**Significance**: Detection remains stable (71-100%) while profitability varies (+70bps to -1bps), proving LLM detects **structural mechanics**, not profitable anomalies.
 
 ---
 
-## 🔗 Quick Links
+## Quick Links
 
 | Category | Link | Description |
 |----------|------|-------------|
-| 📊 **Research** | [Research Roadmap](docs/papers/research_roadmap.md) | Multi-paper strategy (Phase 1-3) |
-| 🎤 **Presentation** | [PhD Symposium 2025](docs/presentations/phd_symposium_2025.md) | Complete presentation guide |
-| 📖 **Fundamentals** | [Concepts Explained](docs/presentations/fundamentals_explained.md) | Non-technical introduction |
-| 🔧 **Implementation** | [Technical Deep Dive](docs/presentations/technical_deep_dive.md) | Code walkthrough |
-| 📈 **Validation** | [Pattern Taxonomy](reports/validation/pattern_taxonomy/) | Full 2024 test results |
-| 🐛 **Issues** | [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) | Active development tracker |
+| **Research** | [Research Roadmap](docs/papers/research_roadmap.md) | Multi-paper strategy (Phase 1-3) |
+| **Presentation** | [PhD Symposium 2025](docs/presentations/phd_symposium_2025.md) | Complete presentation guide |
+| **Fundamentals** | [Concepts Explained](docs/presentations/fundamentals_explained.md) | Non-technical introduction |
+| **Implementation** | [Technical Deep Dive](docs/presentations/technical_deep_dive.md) | Code walkthrough |
+| **Validation** | [Pattern Taxonomy](reports/validation/pattern_taxonomy/) | Full 2024 test results |
+| **Issues** | [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) | Active development tracker |
 
 ---
 
-## 🗺️ Research Roadmap
+## Research Roadmap
 
 ```text
-Phase 1: Methodology Validation ✅ COMPLETE
+Phase 1: Methodology Validation [COMPLETE]
 ├─ Obfuscation testing framework
-├─ 15 pattern library (WHO→WHOM→WHAT)
+├─ 15 pattern library (WHO->WHOM->WHAT)
 ├─ Full 2024 validation (252 days, 3 patterns)
 ├─ Symposium presentation delivered
 └─ Paper #1 submitted to IEEE LLM-Finance 2025
 
-Phase 2: Temporal Dynamics 🔄 IN PROGRESS
+Phase 2: Temporal Dynamics [IN PROGRESS]
 ├─ Sequential GEX (5-day lookback)
 ├─ Constraint trajectory detection
 └─ Target: Q1 2026 journal submission
 
-Phase 3: Cross-Asset Generalization 📋 PLANNED
+Phase 3: Cross-Asset Generalization [PLANNED]
 ├─ Individual equities (AAPL, TSLA, NVDA, etc.)
 ├─ Index vs single-name comparison
 └─ Target: Q2 2026 journal submission
 
-Future: Discovery & Applications 💭 CONCEPTUAL
+Future: Discovery & Applications [CONCEPTUAL]
 ├─ Pattern discovery (unsupervised)
 ├─ Comparative LLM analysis
 └─ Real-time monitoring systems
@@ -108,24 +108,24 @@ Future: Discovery & Applications 💭 CONCEPTUAL
 
 Both approaches prove LLM detects structural dealer constraints even when temporal context is removed.
 
-**Q2 excluded due to insufficient data coverage (~27% availability) - remaining quarters represent full 2024 validation coverage
+*Q2 excluded due to insufficient data coverage (~27% availability) - remaining quarters represent full 2024 validation coverage
 
 ## Project Status (November 2025)
 
 ### Completed
 
-- ✅ **Pattern Library**: 15 comprehensive market mechanics patterns with WHO→WHOM→WHAT framework
-- ✅ **Validation Framework**: Complete obfuscation testing system for historical validation
-- ✅ **Data Infrastructure**: Historical GEX database (corrected Oct 2025), options data cache, automated collection
-- ✅ **LLM Integration**: O3-mini deployment with structured reasoning prompts
-- ✅ **Obfuscation System**: Date/ticker anonymization with 35x performance optimization
-- ✅ **Documentation**: 40+ markdown files covering methodology, implementation, and findings
-- ✅ **Full 2024 Validation**: 252 trading days (100% coverage) tested with unbiased prompts
-- ✅ **Quarterly Validation**: 181 trading days (Q1, Q3, Q4) tested with pattern-specific prompts
-- ✅ **Prompt Bias Analysis**: Biased vs unbiased prompt comparison complete
-- ✅ **Symposium Presentation**: PhD symposium delivered (October 2025)
-- ✅ **Paper #1 Submitted**: IEEE LLM-Finance 2025 workshop (submitted Oct 26, 2025) - [Workshop](https://intelligentfinance.github.io/IEEE-LLM-finance-2025/index.html) | [Host Conference](https://conferences.cis.um.edu.mo/ieeebigdata2025/)
-- ✅ **Agent Infrastructure** (November 2025):
+- **Pattern Library**: 15 comprehensive market mechanics patterns with WHO->WHOM->WHAT framework
+- **Validation Framework**: Complete obfuscation testing system for historical validation
+- **Data Infrastructure**: Historical GEX database (corrected Oct 2025), options data cache, automated collection
+- **LLM Integration**: O3-mini deployment with structured reasoning prompts
+- **Obfuscation System**: Date/ticker anonymization with 35x performance optimization
+- **Documentation**: 130+ markdown files covering methodology, implementation, and findings
+- **Full 2024 Validation**: 252 trading days (100% coverage) tested with unbiased prompts
+- **Quarterly Validation**: 181 trading days (Q1, Q3, Q4) tested with pattern-specific prompts
+- **Prompt Bias Analysis**: Biased vs unbiased prompt comparison complete
+- **Symposium Presentation**: PhD symposium delivered (October 2025)
+- **Paper #1 Submitted**: IEEE LLM-Finance 2025 workshop (submitted Oct 26, 2025) - [Workshop](https://intelligentfinance.github.io/IEEE-LLM-finance-2025/index.html) | [Host Conference](https://conferences.cis.um.edu.mo/ieeebigdata2025/)
+- **Agent Infrastructure** (November 2025):
   - Agent Factory Pattern - centralized agent creation with YAML config
   - Agent Communication Bus - async pub/sub messaging for multi-agent coordination
   - Tool Registry - AutoGen 0.7 compatible tool management
@@ -134,14 +134,14 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 
 ### In Progress
 
-- ⏳ **Paper #1 Review**: Awaiting reviews from IEEE LLM-Finance 2025 (4-6 weeks)
-- 🔄 **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM (Issue #87)
-- 🔄 **Sequential GEX**: 5-day lookback analysis for temporal constraint detection (Issue #89)
+- **Paper #1 Review**: Awaiting reviews from IEEE LLM-Finance 2025 (4-6 weeks)
+- **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM (Issue #87)
+- **Sequential GEX**: 5-day lookback analysis for temporal constraint detection (Issue #89)
 
 ### Deferred
 
-- ⏸️ **Multi-Year Validation**: 2023/2025 out-of-sample testing for regime robustness (future work)
-- ⏸️ **Advanced Figures**: Causal network diagram, statistical power analysis (journal submission)
+- **Multi-Year Validation**: 2023/2025 out-of-sample testing for regime robustness (future work)
+- **Advanced Figures**: Causal network diagram, statistical power analysis (journal submission)
 
 See [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) for detailed roadmap.
 
@@ -151,9 +151,9 @@ See [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) for detai
 
 **Obfuscation Testing Framework**:
 
-- Remove dates → "Day T+0", "Day T+1"
-- Remove tickers → "INDEX_1", "STOCK_G"
-- Remove events → No FOMC, earnings, COVID references
+- Remove dates -> "Day T+0", "Day T+1"
+- Remove tickers -> "INDEX_1", "STOCK_G"
+- Remove events -> No FOMC, earnings, COVID references
 - **Result**: Forces LLM to reason from pure mechanics, not memorize training data
 
 **Applications**: Can be applied to any domain requiring validation of LLM structural understanding (medical diagnosis, supply chain, engineering systems).
@@ -179,7 +179,7 @@ Each pattern documented with:
 
 ### 3. Empirical Evidence for LLM Structural Reasoning
 
-**Key Finding**: Detection ≠ Profitability
+**Key Finding**: Detection does not equal Profitability
 
 | Quarter | Biased Detection | Unbiased Detection | Predictive Accuracy | Net Alpha | Interpretation |
 |---------|------------------|--------------------|--------------------|-----------|----------------|
@@ -195,10 +195,10 @@ Each pattern documented with:
 
 **MECHANICAL vs. NARRATIVE classification**:
 
-- **MECHANICAL**: Pattern exists due to structural constraints (passes obfuscation test ≥60% detection)
+- **MECHANICAL**: Pattern exists due to structural constraints (passes obfuscation test >=60% detection)
 - **NARRATIVE**: Pattern requires context/memorization (fails obfuscation test <60% detection)
 
-**Validated**: All three tested patterns (gamma positioning, stock pinning, 0DTE hedging) achieved 100% detection → MECHANICAL classification.
+**Validated**: All three tested patterns (gamma positioning, stock pinning, 0DTE hedging) achieved 100% detection -> MECHANICAL classification.
 
 ## Architecture
 
@@ -407,7 +407,7 @@ Comprehensive documentation available in `docs/`:
 
 **Contribution**: Novel obfuscation testing framework for validating LLM structural reasoning
 
-**Status**: ✅ Draft complete (10 pages, IEEE format), under advisor review ([Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88))
+**Status**: Draft complete (10 pages, IEEE format), under advisor review ([Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88))
 
 **Key Results**: 71.5% unbiased detection rate and 91.2% predictive accuracy across 242 trading days (full 2024)
 
@@ -441,18 +441,18 @@ Comprehensive documentation available in `docs/`:
 
 ### Recently Closed
 
-- ✅ **[Issue #96](https://github.com/iAmGiG/gex-llm-patterns/issues/96)**: DataObfuscator optimization (35x performance improvement)
-- ✅ **[Issue #97](https://github.com/iAmGiG/gex-llm-patterns/issues/97)**: Performance benchmarks documentation
-- ✅ **[Issue #91-93](https://github.com/iAmGiG/gex-llm-patterns/issues/)**: All 8 must-have paper figures complete
-- ✅ **[Issue #79](https://github.com/iAmGiG/gex-llm-patterns/issues/79)**: Pattern taxonomy validation (full 2024 complete)
-- ✅ **[Issue #80](https://github.com/iAmGiG/gex-llm-patterns/issues/80)**: Outcome calculator integration
-- ✅ **[Issue #81](https://github.com/iAmGiG/gex-llm-patterns/issues/81)**: Obfuscation bug fix
+- **[Issue #96](https://github.com/iAmGiG/gex-llm-patterns/issues/96)**: DataObfuscator optimization (35x performance improvement)
+- **[Issue #97](https://github.com/iAmGiG/gex-llm-patterns/issues/97)**: Performance benchmarks documentation
+- **[Issue #91-93](https://github.com/iAmGiG/gex-llm-patterns/issues/)**: All 8 must-have paper figures complete
+- **[Issue #79](https://github.com/iAmGiG/gex-llm-patterns/issues/79)**: Pattern taxonomy validation (full 2024 complete)
+- **[Issue #80](https://github.com/iAmGiG/gex-llm-patterns/issues/80)**: Outcome calculator integration
+- **[Issue #81](https://github.com/iAmGiG/gex-llm-patterns/issues/81)**: Obfuscation bug fix
 
 ### Key Findings
 
 1. **LLMs can detect structural constraints** - 71.5% detection rate (unbiased) to 100% (biased) with obfuscated data across 242 days, proving detection without temporal memorization
-2. **Detection ≠ Profitability** - Detection remains stable (71-100%) while economic outcomes vary (+70bps to -1bps), proving LLM detects structural mechanics not profitable anomalies
-3. **Obfuscation testing works** - All tested patterns passed ≥60% threshold for MECHANICAL classification, even with fully unbiased prompts (no regime labels)
+2. **Detection does not equal Profitability** - Detection remains stable (71-100%) while economic outcomes vary (+70bps to -1bps), proving LLM detects structural mechanics not profitable anomalies
+3. **Obfuscation testing works** - All tested patterns passed >=60% threshold for MECHANICAL classification, even with fully unbiased prompts (no regime labels)
 4. **Cross-pattern generalization** - Same methodology detects gamma positioning (69.4%), stock pinning (67.4%), and 0DTE hedging (77.7%) - three manifestations of dealer constraints
 5. **Prompt bias quantified** - Adding regime labels increases detection from 71.5% to 100% (+28.5%), but accuracy remains stable (91-92%), demonstrating robust pattern materialization
 
