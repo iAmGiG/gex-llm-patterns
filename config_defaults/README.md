@@ -11,6 +11,7 @@ This directory contains centralized configuration files for the GEX LLM Patterns
 - **`pattern_library_config.yaml`** - Pattern library definitions and mechanics
 - **`technical_indicators_config.yaml`** - Technical indicator calculations and adaptive consensus parameters
 - **`trading_config.yaml`** - Trading system and risk management parameters
+- **`agent_factory_config.yaml`** - Agent factory pattern configuration (Issue #153)
 
 ## Removed Files (Agent-Driven Evolution)
 
@@ -33,6 +34,33 @@ from src.utils.config_manager import get_config
 config = get_config()
 lookback_days = config.get('tokenization.gex_tokenizer.lookback_days')
 ```
+
+### Agent Factory Pattern (Issue #153)
+
+Use the `AgentFactory` for centralized agent creation:
+
+```python
+from src.agents import (
+    AgentFactory, AgentType,
+    create_agent, create_market_mechanics_agent
+)
+
+# Create via factory
+factory = AgentFactory()
+instance = factory.create(AgentType.MARKET_MECHANICS, symbol='SPY')
+
+# Or use convenience functions
+instance = create_market_mechanics_agent(symbol='SPY')
+
+# Access the actual agent
+agent = instance.agent
+```
+
+**Configuration**: Edit `agent_factory_config.yaml` to customize:
+
+- Default model and temperature per agent type
+- Tool assignments
+- Agent-specific extra configuration
 
 ### Agent Prompt Templates (November 2025)
 
