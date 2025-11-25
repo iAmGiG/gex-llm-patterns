@@ -54,6 +54,7 @@
 | Stability (≤5 flips) | 121/223 (54%) | 121/223 (54%) | ~220/223 (99%) |
 
 **Key Insight**:
+
 - **Magnitude** improved significantly with normalization (8.5% → 33%)
 - **Persistence** and **Stability** unchanged (normalization doesn't affect sign patterns)
 - **2024 advantage** persists across ALL THREE criteria, not just magnitude
@@ -143,6 +144,7 @@ The $5B threshold was selected based on 2024 empirical distribution (median $13.
 **Discrepancy (8.5% vs 12.1%)**:
 
 Minor difference likely due to:
+
 1. **Database vs File Cache**: Phase 4 used file cache; this experiment used `consolidated_historical.db`
 2. **Window Alignment**: Slight differences in rolling window start/end dates
 3. **GEX Calculation Timing**: Database reflects final calculations; file cache may have intermediate values
