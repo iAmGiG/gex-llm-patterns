@@ -246,6 +246,7 @@ class NextDayOutcomeCalculator:
         cursor = self.conn.cursor()
 
         try:
+            # OHLCV is stored in daily_gex_metrics table
             cursor.execute("""
                 SELECT
                     date,
@@ -254,7 +255,7 @@ class NextDayOutcomeCalculator:
                     low,
                     close,
                     volume
-                FROM daily_ohlcv
+                FROM daily_gex_metrics
                 WHERE date = ? AND symbol = ?
                 LIMIT 1
             """, (date, symbol))
@@ -291,7 +292,7 @@ class NextDayOutcomeCalculator:
         # Get list of all trading dates for lookups
         cursor = self.conn.cursor()
         cursor.execute("""
-            SELECT DISTINCT date FROM daily_ohlcv
+            SELECT DISTINCT date FROM daily_gex_metrics
             WHERE symbol = 'SPY'
             ORDER BY date
         """)
@@ -475,6 +476,18 @@ class EODPredictiveAnalysis:
         logger.info("=== Phase 4: Summary Statistics ===")
         self._print_summary_stats(eod_features, outcomes)
 
+        # Phase 5: Train logistic regression
+        logger.info("=== Phase 5: Logistic Regression Training ===")
+        results = self._train_logistic_regression(eod_features, outcomes)
+
+        if results:
+            # Save results
+            results_file = self.output_dir / 'issue_145_logistic_regression_results.yaml'
+            import yaml
+            with open(results_file, 'w') as f:
+                yaml.dump(results, f, default_flow_style=False)
+            logger.info(f"Saved logistic regression results to {results_file}")
+
         logger.info("Analysis complete!")
         return True
 
@@ -490,6 +503,136 @@ class EODPredictiveAnalysis:
                 if col in outcomes.columns:
                     rate = outcomes[col].mean() * 100
                     logger.info(f"  {col}: {rate:.1f}%")
+
+    def _train_logistic_regression(self, features: pd.DataFrame, outcomes: pd.DataFrame) -> Dict:
+        """
+        Train logistic regression model to predict T+1 materialization.
+
+        Args:
+            features: EOD feature DataFrame
+            outcomes: Next-day outcome DataFrame
+
+        Returns:
+            Dictionary with model results and metrics
+        """
+        try:
+            from sklearn.linear_model import LogisticRegression
+            from sklearn.model_selection import TimeSeriesSplit, cross_val_score
+            from sklearn.metrics import roc_auc_score, classification_report
+            from sklearn.preprocessing import StandardScaler
+        except ImportError:
+            logger.error("scikit-learn not installed. Cannot train model.")
+            return None
+
+        # Merge features and outcomes on date
+        merged = features.merge(outcomes, on='date', how='inner')
+        logger.info(f"Merged dataset: {len(merged)} rows")
+
+        # Feature columns (exclude date and target-related columns)
+        feature_cols = ['total_gex', 'gex_sign', 'gex_oi', 'gex_volume',
+                       'activity_ratio', 'zero_gamma_proximity', 'spot_above_flip',
+                       'intraday_range', 'close_open_change', 'spot_price']
+
+        # Check which columns exist
+        available_features = [c for c in feature_cols if c in merged.columns]
+        logger.info(f"Using features: {available_features}")
+
+        # Prepare data
+        X = merged[available_features].copy()
+        y = merged['any_materialization'].copy()
+
+        # Handle missing values
+        X = X.fillna(0)
+
+        # Scale features
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        # Time-series cross-validation (5 folds)
+        tscv = TimeSeriesSplit(n_splits=5)
+
+        # Train model
+        model = LogisticRegression(
+            penalty='l2',
+            C=1.0,
+            solver='lbfgs',
+            max_iter=1000,
+            random_state=42
+        )
+
+        # Cross-validated AUC scores
+        auc_scores = []
+        for fold, (train_idx, test_idx) in enumerate(tscv.split(X_scaled)):
+            X_train, X_test = X_scaled[train_idx], X_scaled[test_idx]
+            y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+            model.fit(X_train, y_train)
+            y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+            # Calculate AUC
+            try:
+                auc = roc_auc_score(y_test, y_pred_proba)
+                auc_scores.append(auc)
+                logger.info(f"  Fold {fold + 1}: AUC = {auc:.4f}")
+            except ValueError as e:
+                logger.warning(f"  Fold {fold + 1}: Could not calculate AUC - {e}")
+
+        # Final model on all data
+        model.fit(X_scaled, y)
+        y_pred_proba_full = model.predict_proba(X_scaled)[:, 1]
+
+        try:
+            full_auc = roc_auc_score(y, y_pred_proba_full)
+        except ValueError:
+            full_auc = 0.0
+
+        # Calculate mean and std of CV AUC
+        mean_auc = np.mean(auc_scores) if auc_scores else 0.0
+        std_auc = np.std(auc_scores) if auc_scores else 0.0
+
+        logger.info(f"\n=== Logistic Regression Results ===")
+        logger.info(f"Mean CV AUC: {mean_auc:.4f} (+/- {std_auc:.4f})")
+        logger.info(f"Full model AUC: {full_auc:.4f}")
+
+        # Feature coefficients
+        coef_dict = {f: float(c) for f, c in zip(available_features, model.coef_[0])}
+        sorted_coef = sorted(coef_dict.items(), key=lambda x: abs(x[1]), reverse=True)
+
+        logger.info(f"\nTop 5 features by coefficient magnitude:")
+        for i, (feat, coef) in enumerate(sorted_coef[:5]):
+            logger.info(f"  {i+1}. {feat}: {coef:.4f}")
+
+        # Evaluate defense success criteria
+        defense_status = "MINIMUM" if mean_auc > 0.60 else "FAILED"
+        if mean_auc > 0.70:
+            defense_status = "STRONG"
+        if mean_auc > 0.75:
+            defense_status = "OPTIMAL"
+
+        logger.info(f"\n=== Defense Status: {defense_status} ===")
+        logger.info(f"Target: AUC > 0.60 (minimum), > 0.70 (strong), > 0.75 (optimal)")
+
+        return {
+            'model_type': 'LogisticRegression',
+            'n_samples': len(merged),
+            'n_features': len(available_features),
+            'features_used': available_features,
+            'target': 'any_materialization',
+            'cv_folds': 5,
+            'cv_auc_scores': [float(s) for s in auc_scores],
+            'mean_cv_auc': float(mean_auc),
+            'std_cv_auc': float(std_auc),
+            'full_model_auc': float(full_auc),
+            'feature_coefficients': coef_dict,
+            'top_features': [(f, float(c)) for f, c in sorted_coef[:5]],
+            'defense_status': defense_status,
+            'success_criteria': {
+                'minimum': 0.60,
+                'strong': 0.70,
+                'optimal': 0.75,
+                'achieved': float(mean_auc)
+            }
+        }
 
 
 def main():

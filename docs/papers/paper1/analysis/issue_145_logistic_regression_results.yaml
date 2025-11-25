@@ -1,0 +1,58 @@
+cv_auc_scores:
+- 0.5909090909090908
+- 0.7784090909090909
+- 0.6764705882352942
+- 0.7345679012345678
+- 0.6263736263736264
+cv_folds: 5
+defense_status: MINIMUM
+feature_coefficients:
+  activity_ratio: -0.21255703168357074
+  close_open_change: 0.23106116915990169
+  gex_oi: 0.6346107733237256
+  gex_sign: 0.0
+  gex_volume: -0.08767785808259393
+  intraday_range: 0.27377503713964296
+  spot_above_flip: 0.0
+  spot_price: -0.11141193732961784
+  total_gex: 0.26569596230546133
+  zero_gamma_proximity: 0.0
+features_used:
+- total_gex
+- gex_sign
+- gex_oi
+- gex_volume
+- activity_ratio
+- zero_gamma_proximity
+- spot_above_flip
+- intraday_range
+- close_open_change
+- spot_price
+full_model_auc: 0.705603448275862
+mean_cv_auc: 0.6813460595323341
+model_type: LogisticRegression
+n_features: 10
+n_samples: 167
+std_cv_auc: 0.06852500334292767
+success_criteria:
+  achieved: 0.6813460595323341
+  minimum: 0.6
+  optimal: 0.75
+  strong: 0.7
+target: any_materialization
+top_features:
+- !!python/tuple
+  - gex_oi
+  - 0.6346107733237256
+- !!python/tuple
+  - intraday_range
+  - 0.27377503713964296
+- !!python/tuple
+  - total_gex
+  - 0.26569596230546133
+- !!python/tuple
+  - close_open_change
+  - 0.23106116915990169
+- !!python/tuple
+  - activity_ratio
+  - -0.21255703168357074
