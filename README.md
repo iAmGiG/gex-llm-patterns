@@ -11,10 +11,16 @@
 [![Documentation](https://img.shields.io/badge/docs-40%2B%20files-informational.svg)](docs/)
 
 [![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
+[![AutoGen](https://img.shields.io/badge/Framework-AutoGen%200.7-00A36C.svg)](https://github.com/microsoft/autogen)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003B57.svg)](https://www.sqlite.org/)
 [![Alpha Vantage](https://img.shields.io/badge/Data-Alpha%20Vantage%20Premium-0066CC.svg)](https://www.alphavantage.co/)
 [![Matplotlib](https://img.shields.io/badge/Viz-Matplotlib-11557c.svg)](https://matplotlib.org/)
 [![Graphviz](https://img.shields.io/badge/Diagrams-Graphviz-2C3E50.svg)](https://graphviz.org/)
+
+[![Agent Factory](https://img.shields.io/badge/Pattern-Agent%20Factory-9B59B6.svg)](#architecture)
+[![Agent Bus](https://img.shields.io/badge/Pattern-Pub%2FSub%20Bus-E67E22.svg)](#architecture)
+[![Tool Registry](https://img.shields.io/badge/Pattern-Tool%20Registry-3498DB.svg)](#architecture)
+[![Config System](https://img.shields.io/badge/Config-YAML%20Centralized-2ECC71.svg)](config_defaults/)
 
 ---
 
@@ -23,8 +29,8 @@
 - [Overview](#overview)
 - [Key Results](#-key-results)
 - [Quick Links](#-quick-links)
-- [Research Roadmap](#-research-roadmap)
-- [Project Status](#project-status-october-2025)
+- [Research Roadmap](#️-research-roadmap)
+- [Project Status](#project-status-november-2025)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
 
@@ -61,7 +67,7 @@
 
 ## 🗺️ Research Roadmap
 
-```
+```text
 Phase 1: Methodology Validation ✅ COMPLETE
 ├─ Obfuscation testing framework
 ├─ 15 pattern library (WHO→WHOM→WHAT)
@@ -104,7 +110,7 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 
 **Q2 excluded due to insufficient data coverage (~27% availability) - remaining quarters represent full 2024 validation coverage
 
-## Project Status (October 2025)
+## Project Status (November 2025)
 
 ### Completed
 
@@ -119,6 +125,12 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 - ✅ **Prompt Bias Analysis**: Biased vs unbiased prompt comparison complete
 - ✅ **Symposium Presentation**: PhD symposium delivered (October 2025)
 - ✅ **Paper #1 Submitted**: IEEE LLM-Finance 2025 workshop (submitted Oct 26, 2025) - [Workshop](https://intelligentfinance.github.io/IEEE-LLM-finance-2025/index.html) | [Host Conference](https://conferences.cis.um.edu.mo/ieeebigdata2025/)
+- ✅ **Agent Infrastructure** (November 2025):
+  - Agent Factory Pattern - centralized agent creation with YAML config
+  - Agent Communication Bus - async pub/sub messaging for multi-agent coordination
+  - Tool Registry - AutoGen 0.7 compatible tool management
+  - Performance Optimizations - O(1) rate limiting, adaptive thread pools, thread-safe singletons
+  - Configuration Extraction - all hardcoded values moved to `config_defaults/`
 
 ### In Progress
 
@@ -493,8 +505,8 @@ If you use this methodology or code in your research, please cite:
 
 ---
 
-**Last Updated**: October 2025
-**Project Status**: Full 2024 validation complete (242 days), Paper #1 draft under advisor review
-**Next Milestone**: Paper #1 submission (Oct 26), individual equities extension, sequential GEX analysis
+**Last Updated**: November 2025
+**Project Status**: Full 2024 validation complete (242 days), Paper #1 submitted, agent infrastructure deployed
+**Next Milestone**: Paper #1 reviews, Paper #2 sequential GEX analysis, individual equities extension
 
 *This research explores the intersection of large language models, market microstructure, and validation methodology for testing AI structural reasoning capabilities.*
