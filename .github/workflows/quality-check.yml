@@ -6,6 +6,10 @@ on:
       - '**.py'
       - '**.md'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   quality-check:
     runs-on: ubuntu-latest
