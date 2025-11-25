@@ -11,6 +11,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Set
 
+# AutoGen tool types for compatibility
+from autogen_core.tools import FunctionTool, ToolResult, ToolSchema
+
 from src.utils.config_manager import get_config
 
 logger = logging.getLogger(__name__)
@@ -375,6 +378,85 @@ class ToolRegistry:
         self._category_tools = {cat: set() for cat in ToolCategory}
         self._tag_index.clear()
         logger.info("ToolRegistry cleared")
+
+    # =========================================================================
+    # AutoGen Integration Methods (Quick Wins)
+    # =========================================================================
+
+    def get_function_tool(self, name: str) -> Optional[FunctionTool]:
+        """Get an AutoGen FunctionTool by name.
+
+        Args:
+            name: Tool identifier
+
+        Returns:
+            AutoGen FunctionTool if found and enabled, None otherwise
+        """
+        tool = self.get_tool(name)
+        if not tool:
+            return None
+
+        try:
+            return FunctionTool(
+                func=tool.func,
+                name=tool.name,
+                description=tool.description,
+            )
+        except Exception as e:
+            logger.warning("Failed to create FunctionTool for %s: %s", name, e)
+            return None
+
+    def get_function_tools_for_agent(self, agent_type: AgentType) -> List[FunctionTool]:
+        """Get AutoGen FunctionTools for an agent type.
+
+        Args:
+            agent_type: The agent type
+
+        Returns:
+            List of AutoGen FunctionTool objects
+        """
+        tools = self.get_tools_for_agent(agent_type)
+        function_tools = []
+
+        for tool_meta in tools:
+            try:
+                ft = FunctionTool(
+                    func=tool_meta.func,
+                    name=tool_meta.name,
+                    description=tool_meta.description,
+                )
+                function_tools.append(ft)
+            except Exception as e:
+                logger.warning("Failed to create FunctionTool for %s: %s", tool_meta.name, e)
+
+        return function_tools
+
+    def get_tool_schema(self, name: str) -> Optional[ToolSchema]:
+        """Get the AutoGen ToolSchema for a tool.
+
+        Args:
+            name: Tool identifier
+
+        Returns:
+            ToolSchema dict if found, None otherwise
+        """
+        ft = self.get_function_tool(name)
+        if ft:
+            return ft.schema
+        return None
+
+    def get_all_schemas(self) -> List[ToolSchema]:
+        """Get schemas for all enabled tools.
+
+        Returns:
+            List of ToolSchema dicts for LLM tool calling
+        """
+        schemas = []
+        for name in self.list_all_tools():
+            schema = self.get_tool_schema(name)
+            if schema:
+                schemas.append(schema)
+        return schemas
 
 
 # Global registry instance
