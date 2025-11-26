@@ -148,4 +148,4 @@ This document contains all figure captions for the paper.
 
 ---
 
-*Last updated: October 16, 2025*
+Last updated: October 16, 2025

@@ -234,7 +234,7 @@ def main():
 
     # Save histogram
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / "fig7_confidence_distribution.png"
+    output_file = OUTPUT_DIR / "../fig08_confidence_distribution.png"
     fig_hist.savefig(output_file, dpi=300, bbox_inches="tight")
     print(f"✅ Saved: {output_file}")
     plt.close(fig_hist)

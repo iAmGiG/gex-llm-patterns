@@ -197,7 +197,7 @@ ax.axis("off")
 ax.set_title("Validation Funnel\n(Unbiased, 2024)", fontsize=10, fontweight="bold", pad=8)
 
 plt.tight_layout()
-output1 = OUTPUT_DIR / "fig6_validation_funnel.png"
+output1 = OUTPUT_DIR / "../fig09_validation_funnel.png"
 plt.savefig(output1, dpi=300, bbox_inches="tight")
 print(f"✅ Figure 6 (Validation Funnel): {output1}")
 plt.close()

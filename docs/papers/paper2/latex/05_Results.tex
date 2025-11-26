@@ -15,7 +15,7 @@ Figure~\ref{fig:validation_pipeline} summarizes our multi-phase validation appro
 
 Phase 1 established baseline detection rates on Q1 2024 data (52 windows). Results showed 71.2\% detection rate (37/52 windows), borderline above the 30-50\% target range.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Phase 1 Detection Results (Q1 2024)}
 \begin{tabular}{lrrr}
@@ -39,7 +39,7 @@ The 39 percentage point persistence gap and \$6.84B magnitude gap demonstrated m
 
 Phase 2 validated framework selectivity through three synthetic tests totaling 809 windows. All three tests passed their respective success criteria.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Phase 2 Negative Control Results}
 \begin{tabular}{lrrr}
@@ -67,7 +67,7 @@ Transitional and low-magnitude tests achieved perfect 0\% false positive rates, 
 
 Phase 3 tested 223 windows spanning all 252 trading days in 2024. Results showed 81.2\% detection rate, significantly higher than Q1's 71.2\%.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Phase 3 Detection Results (Full 2024)}
 \begin{tabular}{lrrr}
@@ -118,7 +118,7 @@ Critical question: Is 81.2\% detection evidence of loose criteria, or genuine 20
 
 Phase 4 tested 223 windows from 2020 using identical methodology to establish a pre-0DTE baseline. Results revealed a 69.1 percentage point detection difference between periods.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Phase 4 Detection Results (2020 vs 2024 Comparison)}
 \small
@@ -155,7 +155,7 @@ Avg Magnitude & \$13.95B & \$2.85B & +\$11.1B \\
 
 Phase 4A extended validation to all years 2020-2025 (1,418 total windows) to identify when the structural market shift occurred. Results revealed a sharp 2020→2021 transition, not gradual evolution (Figure~\ref{fig:temporal_trend}).
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Multi-Year Detection Rates (2020-2025)}
 \small
@@ -196,7 +196,7 @@ The most dramatic change occurred between 2020 and 2021:
 
 This was NOT a gradual evolution. 2021 immediately achieved 100\% detection and maintained it through 2023, indicating a permanent new structural equilibrium.
 
-\begin{figure*}[t]
+\begin{figure*}[ht]
 \centering
 \includegraphics[width=\textwidth]{../figures/output/fig09_temporal_trend.png}
 \caption{Detection Rate by Year: 0DTE Market Structure Transition. The 2020→2021 transition shows an 8.3x increase in detection rate (12.1\% to 100\%), with sustained 100\% detection in 2021-2023 and 2025. The 2024 dip (81.2\%) reflects transitional volatility correctly identified by the framework.}
@@ -386,7 +386,7 @@ The sustained perfect detection across 4 non-consecutive years confirms structur
 
 \subsection{Cost and Efficiency}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Validation Execution Metrics (All Phases)}
 \begin{tabular}{lrrr}

@@ -22,31 +22,32 @@ import os
 import numpy as np
 import pandas as pd
 
-os.environ['MPLBACKEND'] = 'Agg'  # Force non-GUI backend before import
+os.environ["MPLBACKEND"] = "Agg"  # Force non-GUI backend before import
 import matplotlib
 
-matplotlib.use('Agg')  # Ensure we use Agg backend
+matplotlib.use("Agg")  # Ensure we use Agg backend
 import warnings
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 # Paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-DATA_DIR = PROJECT_ROOT / 'docs' / 'papers' / 'paper1' / 'analysis'
-OUTPUT_DIR = PROJECT_ROOT / 'docs' / 'papers' / 'paper1' / 'figures'
+DATA_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "analysis"
+OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
+
 
 def load_data():
     """Load materialization criteria and baseline data."""
 
     # Detection days (519 days with detection)
-    detection_file = DATA_DIR / 'issue_144_materialization_criteria_with_c3.csv'
+    detection_file = DATA_DIR / "issue_144_materialization_criteria_with_c3.csv"
     detection_df = pd.read_csv(detection_file)
 
     # Baseline days (100 random non-detection days)
-    baseline_file = DATA_DIR / 'issue_144_baseline_sample.csv'
+    baseline_file = DATA_DIR / "issue_144_baseline_sample.csv"
     baseline_df = pd.read_csv(baseline_file)
 
     print(f"Detection days: {len(detection_df)}")
@@ -60,10 +61,10 @@ def calculate_range_expansion(df):
     # C4: Range Expansion = intraday_range / avg_5day_range > 1.3
     # For density plot, use the ratio directly
 
-    if 'intraday_range' in df.columns and 'avg_5day_range' in df.columns:
-        ratio = df['intraday_range'] / df['avg_5day_range']
+    if "intraday_range" in df.columns and "avg_5day_range" in df.columns:
+        ratio = df["intraday_range"] / df["avg_5day_range"]
         return ratio
-    elif 'c4_range_expansion' in df.columns:
+    elif "c4_range_expansion" in df.columns:
         # If we have the boolean, we need to reconstruct from criteria
         # Use approximate values based on known results
         return None
@@ -82,11 +83,11 @@ def create_figure_4():
     print(f"Baseline columns: {baseline_df.columns.tolist()[:10]}...")
 
     # Try to get range expansion data - USE REAL DATA
-    if 'intraday_range' in detection_df.columns and 'avg_5day_range' in detection_df.columns:
+    if "intraday_range" in detection_df.columns and "avg_5day_range" in detection_df.columns:
         print("\nUsing REAL data from CSV files!")
         # Calculate range expansion ratio from real data
-        detection_range = (detection_df['intraday_range'] / detection_df['avg_5day_range']).dropna().values
-        baseline_range = (baseline_df['intraday_range'] / baseline_df['avg_5day_range']).dropna().values
+        detection_range = (detection_df["intraday_range"] / detection_df["avg_5day_range"]).dropna().values
+        baseline_range = (baseline_df["intraday_range"] / baseline_df["avg_5day_range"]).dropna().values
 
         # Filter out outliers (keep 1st-99th percentile)
         det_p1, det_p99 = np.percentile(detection_range, [1, 99])
@@ -124,66 +125,98 @@ def create_figure_4():
     bins = np.linspace(0.4, 2.2, 40)
 
     # Detection days (blue)
-    ax.hist(detection_range, bins=bins, density=True, alpha=0.6,
-            color='#2563eb', label=f'Detection Days (n={n_detection})',
-            edgecolor='white', linewidth=0.5)
+    ax.hist(
+        detection_range,
+        bins=bins,
+        density=True,
+        alpha=0.6,
+        color="#2563eb",
+        label=f"Detection Days (n={n_detection})",
+        edgecolor="white",
+        linewidth=0.5,
+    )
 
     # Baseline days (red)
-    ax.hist(baseline_range, bins=bins, density=True, alpha=0.6,
-            color='#dc2626', label=f'Random Baseline (n={n_baseline})',
-            edgecolor='white', linewidth=0.5)
+    ax.hist(
+        baseline_range,
+        bins=bins,
+        density=True,
+        alpha=0.6,
+        color="#dc2626",
+        label=f"Random Baseline (n={n_baseline})",
+        edgecolor="white",
+        linewidth=0.5,
+    )
 
     # Add threshold line
-    ax.axvline(x=1.3, color='#059669', linestyle='--', linewidth=2,
-               label='C4 Threshold (1.3×)')
+    ax.axvline(x=1.3, color="#059669", linestyle="--", linewidth=2, label="C4 Threshold (1.3×)")
 
     # Add mean lines
     det_mean = detection_range.mean()
     base_mean = baseline_range.mean()
-    ax.axvline(x=det_mean, color='#2563eb', linestyle=':', linewidth=2, alpha=0.8)
-    ax.axvline(x=base_mean, color='#dc2626', linestyle=':', linewidth=2, alpha=0.8)
+    ax.axvline(x=det_mean, color="#2563eb", linestyle=":", linewidth=2, alpha=0.8)
+    ax.axvline(x=base_mean, color="#dc2626", linestyle=":", linewidth=2, alpha=0.8)
 
     # Annotations
-    ax.annotate(f'Detection Mean: {det_mean:.2f}',
-                xy=(det_mean, ax.get_ylim()[1]*0.95),
-                xytext=(det_mean-0.3, ax.get_ylim()[1]*0.85),
-                fontsize=10, color='#2563eb',
-                arrowprops=dict(arrowstyle='->', color='#2563eb', lw=1.5))
+    ax.annotate(
+        f"Detection Mean: {det_mean:.2f}",
+        xy=(det_mean, ax.get_ylim()[1] * 0.95),
+        xytext=(det_mean - 0.3, ax.get_ylim()[1] * 0.85),
+        fontsize=10,
+        color="#2563eb",
+        arrowprops=dict(arrowstyle="->", color="#2563eb", lw=1.5),
+    )
 
-    ax.annotate(f'Baseline Mean: {base_mean:.2f}',
-                xy=(base_mean, ax.get_ylim()[1]*0.9),
-                xytext=(base_mean+0.15, ax.get_ylim()[1]*0.75),
-                fontsize=10, color='#dc2626',
-                arrowprops=dict(arrowstyle='->', color='#dc2626', lw=1.5))
+    ax.annotate(
+        f"Baseline Mean: {base_mean:.2f}",
+        xy=(base_mean, ax.get_ylim()[1] * 0.9),
+        xytext=(base_mean + 0.15, ax.get_ylim()[1] * 0.75),
+        fontsize=10,
+        color="#dc2626",
+        arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.5),
+    )
 
     # Key finding box
-    textstr = '\n'.join([
-        'Key Finding: Inverse P-Hacking',
-        '─' * 30,
-        f'Detection Days: 21.6% exceed threshold',
-        f'Random Baseline: 32.0% exceed threshold',
-        f'Lift: 0.67× (p = 0.033)',
-        '',
-        'LLM detects volatility SUPPRESSION,',
-        'not high-volatility days'
-    ])
-    props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='gray')
-    ax.text(0.98, 0.98, textstr, transform=ax.transAxes, fontsize=9,
-            verticalalignment='top', horizontalalignment='right', bbox=props,
-            family='monospace')
+    textstr = "\n".join(
+        [
+            "Key Finding: Inverse P-Hacking",
+            "─" * 30,
+            f"Detection Days: 21.6% exceed threshold",
+            f"Random Baseline: 32.0% exceed threshold",
+            f"Lift: 0.67× (p = 0.033)",
+            "",
+            "LLM detects volatility SUPPRESSION,",
+            "not high-volatility days",
+        ]
+    )
+    props = dict(boxstyle="round", facecolor="white", alpha=0.9, edgecolor="gray")
+    ax.text(
+        0.98,
+        0.98,
+        textstr,
+        transform=ax.transAxes,
+        fontsize=9,
+        verticalalignment="top",
+        horizontalalignment="right",
+        bbox=props,
+        family="monospace",
+    )
 
     # Labels and title
-    ax.set_xlabel('Intraday Range Expansion (Ratio to 5-Day Average)', fontsize=12)
-    ax.set_ylabel('Density', fontsize=12)
-    ax.set_title('Figure 4: Detection Days Show LOWER Range Expansion Than Baseline\n'
-                 '(Proof Against P-Hacking: LLM Detects Suppression, Not Amplification)',
-                 fontsize=11, fontweight='bold')
+    ax.set_xlabel("Intraday Range Expansion (Ratio to 5-Day Average)", fontsize=12)
+    ax.set_ylabel("Density", fontsize=12)
+    ax.set_title(
+        "Figure 4: Detection Days Show LOWER Range Expansion Than Baseline\n"
+        "(Proof Against P-Hacking: LLM Detects Suppression, Not Amplification)",
+        fontsize=11,
+        fontweight="bold",
+    )
 
     # Legend
-    ax.legend(loc='upper left', fontsize=10, framealpha=0.9)
+    ax.legend(loc="upper left", fontsize=10, framealpha=0.9)
 
     # Grid
-    ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5)
+    ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5)
     ax.set_axisbelow(True)
 
     # Set axis limits
@@ -195,14 +228,14 @@ def create_figure_4():
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # PNG (for presentations)
-    png_path = OUTPUT_DIR / 'fig4_inverse_phacking.png'
-    plt.savefig(png_path, dpi=300, bbox_inches='tight', facecolor='white')
+    # PNG (for paper)
+    png_path = OUTPUT_DIR / "fig12_inverse_phacking.png"
+    plt.savefig(png_path, dpi=300, bbox_inches="tight", facecolor="white")
     print(f"\nSaved: {png_path}")
 
-    # PDF (for LaTeX)
-    pdf_path = OUTPUT_DIR / 'fig4_inverse_phacking.pdf'
-    plt.savefig(pdf_path, bbox_inches='tight', facecolor='white')
+    # PDF (for archive)
+    pdf_path = OUTPUT_DIR / "archive/fig12_inverse_phacking.pdf"
+    plt.savefig(pdf_path, bbox_inches="tight", facecolor="white")
     print(f"Saved: {pdf_path}")
 
     plt.close()
@@ -216,52 +249,65 @@ def create_bar_chart_version():
     fig, ax = plt.subplots(figsize=(6, 5), dpi=300)
 
     # Data (from verified Issue #144 results)
-    categories = ['Detection Days\n(n=519)', 'Random Baseline\n(n=100)']
+    categories = ["Detection Days\n(n=519)", "Random Baseline\n(n=100)"]
     rates = [21.6, 32.0]  # C4 range expansion rates
-    colors = ['#2563eb', '#dc2626']
+    colors = ["#2563eb", "#dc2626"]
 
-    bars = ax.bar(categories, rates, color=colors, width=0.6, edgecolor='white', linewidth=2)
+    bars = ax.bar(categories, rates, color=colors, width=0.6, edgecolor="white", linewidth=2)
 
     # Add value labels
     for bar, rate in zip(bars, rates):
         height = bar.get_height()
-        ax.annotate(f'{rate}%',
-                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 5), textcoords='offset points',
-                    ha='center', va='bottom', fontsize=14, fontweight='bold')
+        ax.annotate(
+            f"{rate}%",
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 5),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            fontsize=14,
+            fontweight="bold",
+        )
 
     # Add lift annotation
-    ax.annotate('', xy=(0, 21.6), xytext=(1, 32.0),
-                arrowprops=dict(arrowstyle='<->', color='#059669', lw=2))
-    ax.text(0.5, 27, 'Lift: 0.67×\np = 0.033', ha='center', fontsize=11,
-            color='#059669', fontweight='bold')
+    ax.annotate("", xy=(0, 21.6), xytext=(1, 32.0), arrowprops=dict(arrowstyle="<->", color="#059669", lw=2))
+    ax.text(0.5, 27, "Lift: 0.67×\np = 0.033", ha="center", fontsize=11, color="#059669", fontweight="bold")
 
     # Labels
-    ax.set_ylabel('Range Expansion Rate (%)', fontsize=12)
-    ax.set_title('C4: Range Expansion (Intraday > 1.3× 5-Day Avg)\n'
-                 'Detection Days Show LOWER Rate Than Baseline',
-                 fontsize=11, fontweight='bold')
+    ax.set_ylabel("Range Expansion Rate (%)", fontsize=12)
+    ax.set_title(
+        "C4: Range Expansion (Intraday > 1.3× 5-Day Avg)\n" "Detection Days Show LOWER Rate Than Baseline",
+        fontsize=11,
+        fontweight="bold",
+    )
 
     # Add interpretation
-    ax.text(0.5, -0.15, 'Inverse P-Hacking: LLM detects volatility SUPPRESSION, not amplification',
-            transform=ax.transAxes, ha='center', fontsize=10, style='italic')
+    ax.text(
+        0.5,
+        -0.15,
+        "Inverse P-Hacking: LLM detects volatility SUPPRESSION, not amplification",
+        transform=ax.transAxes,
+        ha="center",
+        fontsize=10,
+        style="italic",
+    )
 
     ax.set_ylim(0, 45)
-    ax.grid(True, axis='y', alpha=0.3)
+    ax.grid(True, axis="y", alpha=0.3)
     ax.set_axisbelow(True)
 
     plt.tight_layout()
 
     # Save
-    bar_path = OUTPUT_DIR / 'fig4_inverse_phacking_bar.png'
-    plt.savefig(bar_path, dpi=300, bbox_inches='tight', facecolor='white')
+    bar_path = OUTPUT_DIR / "fig4_inverse_phacking_bar.png"
+    plt.savefig(bar_path, dpi=300, bbox_inches="tight", facecolor="white")
     print(f"Saved: {bar_path}")
 
     plt.close()
     return bar_path
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("=" * 60)
     print("Issue #144: Figure 4 - The Inverse P-Hacking")
     print("=" * 60)

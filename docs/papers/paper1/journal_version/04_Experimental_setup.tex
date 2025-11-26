@@ -27,12 +27,12 @@ We test three manifestations of dealer hedging constraints, each representing di
 
 Figure~\ref{fig:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
 
-\begin{figure}[!htbp]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig2_gex_profile.png}
+\includegraphics[width=0.85\textwidth]{../figures/fig02_gex_profile.png}
 \caption{Representative gamma exposure profile showing negative net GEX of -\$32.5B. Red bars indicate dealer short gamma positions requiring pro-cyclical hedging (selling rallies, buying dips) that amplifies price movements.}
 \label{fig:gex_profile-jv}
-\end{figure}
+\end{figure*}
 
 \subsection{Prompt Template Configurations}
 
@@ -50,7 +50,7 @@ Figure~\ref{fig:pipeline-jv} illustrates our five-component validation pipeline 
 
 \begin{figure*}[!tb]
 \centering
-\includegraphics[width=0.75\textwidth]{../figures/fig3_validation_pipeline.png}
+\includegraphics[width=0.75\textwidth]{../figures/fig03_validation_pipeline.png}
 \caption{Five-component validation pipeline architecture transforming raw options data through GEX calculation, temporal obfuscation, LLM analysis, outcome verification, and statistical validation.}
 \label{fig:pipeline-jv}
 \end{figure*}

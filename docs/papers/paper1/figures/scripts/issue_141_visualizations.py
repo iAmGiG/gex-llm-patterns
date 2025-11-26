@@ -406,16 +406,16 @@ def main():
     print("Generating visualizations...")
     print()
 
-    # Figure 1: Calendar Heatmap
-    calendar_path = output_dir / "issue_141_detection_calendar.png"
+    # Figure 11: Calendar Heatmap
+    calendar_path = output_dir / "fig11_detection_calendar.png"
     create_calendar_heatmap(df, calendar_path)
 
-    # Figure 2: Concentration Distribution
-    concentration_path = output_dir / "issue_141_gex_concentration.png"
+    # Figure 10: Concentration Distribution
+    concentration_path = output_dir / "fig10_gex_concentration.png"
     create_concentration_distribution(df, concentration_path)
 
-    # Figure 3: Multi-Factor Scatter
-    scatter_path = output_dir / "issue_141_multifactor_analysis.png"
+    # Archived: Multi-Factor Scatter (not used in paper)
+    scatter_path = output_dir / "archive/issue_141_multifactor_analysis.png"
     create_multifactor_scatter(df, scatter_path)
 
     print()

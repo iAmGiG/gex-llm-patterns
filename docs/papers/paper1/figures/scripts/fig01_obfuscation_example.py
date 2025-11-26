@@ -240,7 +240,7 @@ def main():
 
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = OUTPUT_DIR / "../fig1_obfuscation_example.png"
+    output_file = OUTPUT_DIR / "../fig01_obfuscation_example.png"
     fig.savefig(output_file, dpi=300, bbox_inches="tight")
     print(f"✅ Saved: {output_file}")
 
