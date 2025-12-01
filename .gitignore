@@ -80,6 +80,7 @@ env_test/
 # Old/backup config files
 *.cfg.bak
 *.toml.bak
+*.bak
 .pep8
 .isort.cfg
 
@@ -87,6 +88,9 @@ env_test/
 # ====
 
 # Claude Code agent configurations
+# IMPORTANT: Do NOT attempt to commit .claude/ files
+# This folder is for inter-agent coordination only (sync.yaml, status, notes)
+# Use -f flag only in emergency; proper way is to update committed docs instead
 .claude/
 
 # PyCharm
@@ -120,9 +124,13 @@ ipython_config.py
 sample_data/
 
 # Generated reports (validation outputs, experiment results)
-reports/validation/**/*.yaml
+# Note: Keep final validation results for papers (research reproducibility)
+# Ignore intermediate/test results
 reports/experiments/*.yaml
 reports/testing/
+reports/validation/**/test_*.yaml
+reports/validation/**/debug_*.yaml
+reports/validation/**/*_test.yaml
 !reports/validation/**/README.md
 !reports/**/README.md
 
@@ -185,6 +193,7 @@ services/cache_service_status.sh
 # Deployment Tools (environment-specific)
 tools/deployment/
 *.sh
+!docs/papers/**/latex/build.sh
 
 # SEC Edgar data
 sec-edgar-filings/
@@ -242,3 +251,40 @@ cython_debug/
 .pypirc
 .clauderc
 config/config.json
+
+# LaTeX
+# =====
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.pdfsync
+*.nav
+*.snm
+*.vrb
+
+# LaTeX output PDFs (compiled documents are tracked for documentation)
+# Excluded from large-file checks via pre-commit configuration
+
+# LaTeX temporary archives
+*.tar.gz
+*.zip
+
+# IEEE Big Data 2025 figures (managed in Overleaf, local copies not needed)
+docs/papers/paper1/ieee_bigdata_2025/latex/figures/
+
+# LaTeX build scripts (environment-specific, contain local paths)
+docs/papers/**/latex/*.bat
+docs/papers/**/latex/*.sh
+
+# Batch API test artifacts
+reports/validation/paper2_regime_windows/batch_jobs/

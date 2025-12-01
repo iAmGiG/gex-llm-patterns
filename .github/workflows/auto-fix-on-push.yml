@@ -1,0 +1,75 @@
+name: Auto-Fix Code Quality
+
+on:
+  push:
+    branches:
+      - paper2-sequential-gex
+      - 'feature/**'
+      - 'issue*'
+    paths:
+      - '**.py'
+      - '**.md'
+      - '**.yaml'
+      - '**.yml'
+
+jobs:
+  auto-fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install black isort docformatter
+
+      - name: Run Black Formatter
+        run: |
+          black src/ scripts/ tests/ --line-length=120 || true
+
+      - name: Run isort Import Sorter
+        run: |
+          isort src/ scripts/ tests/ --profile black --line-length=120 || true
+
+      - name: Run docformatter
+        run: |
+          docformatter --in-place --wrap-summaries=120 --wrap-descriptions=120 --recursive src/ scripts/ tests/ || true
+
+      - name: Fix Markdown Linting
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: '**/*.md'
+          fix: true
+        continue-on-error: true
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push Auto-Fixes
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "style: Auto-fix code quality issues [skip ci]
+
+          - Applied black formatting
+          - Sorted imports with isort
+          - Fixed markdown linting (MD022, MD032)
+          - Fixed docstring formatting
+
+          🤖 Automated by GitHub Actions"
+          git push

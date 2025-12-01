@@ -1,0 +1,6 @@
+# Ignore intermediate batch files
+issue_146_rich_reasoning_*.jsonl
+batch_results_*.jsonl
+
+# Keep only metadata for reference
+!batch_metadata_*.yaml

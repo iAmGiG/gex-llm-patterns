@@ -1,0 +1,2250 @@
+pattern_name: 0dte_hedging
+test_metadata:
+  symbol: SPY
+  start_date: '2024-10-01'
+  end_date: '2024-12-31'
+  test_period: 2024-10-01 to 2024-12-31
+  total_dates_requested: 64
+  total_dates_tested: 64
+  failed_fetches: 0
+  confidence_threshold: 60.0
+  obfuscation_enabled: true
+  test_date: '2025-10-12T15:57:20.636991'
+performance_metrics:
+  total_tested: 64
+  detection_rate_pct: 100.0
+  high_confidence_detections: 64
+  low_confidence_detections: 0
+  predictive_accuracy_pct: 88.88888888888889
+  avg_forward_1d_return_pct: 0.042759016393442636
+  net_alpha_pct: -0.007240983606557366
+  passes_economic_threshold: false
+  is_validated: true
+obfuscation_test:
+  passed: true
+  success_rate: 100.0
+  sample_size: 64
+  required_success_rate: 60.0
+  required_sample_size: 30
+  verdict: MECHANICAL - 100.0% success with 64 samples (validated for trading)
+detections:
+- date: '2024-10-01'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8938067851.735073
+      net_gex_change_1d_usd: null
+      net_gex_change_1d_pct: null
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -837862205.9614226
+      put_gamma: -8100205645.773653
+  outcome_metrics:
+    forward_1d_return_pct: 0.0931
+    forward_3d_return_pct: 0.6941
+    forward_3d_max_drawdown_pct: -0.1599
+    forward_3d_max_gain_pct: 0.6941
+    subsequent_volatility: 0.005651
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.09%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.69%
+      gain / -0.16% drawdown'
+    forward_1d_direction: flat
+- date: '2024-10-02'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8517324427.349641
+      net_gex_change_1d_usd: 420743424.38543224
+      net_gex_change_1d_pct: 4.71
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -760805676.3535525
+      put_gamma: -7756518750.996088
+  outcome_metrics:
+    forward_1d_return_pct: -0.2528
+    forward_3d_return_pct: -0.2669
+    forward_3d_max_drawdown_pct: -0.2669
+    forward_3d_max_gain_pct: 0.6004
+    subsequent_volatility: 0.008705
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.25%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.60%
+      gain / -0.27% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-03'
+  date_obfuscated: Day T+2
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8523033668.528986
+      net_gex_change_1d_usd: -5709241.179345131
+      net_gex_change_1d_pct: -0.07
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -642419658.7421349
+      put_gamma: -7880614009.786851
+  outcome_metrics:
+    forward_1d_return_pct: 0.8554
+    forward_3d_return_pct: 0.8748
+    forward_3d_max_drawdown_pct: -0.0141
+    forward_3d_max_gain_pct: 0.8748
+    subsequent_volatility: 0.010014
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.86%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.87%
+      gain / -0.01% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-04'
+  date_obfuscated: Day T+3
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8630718855.228132
+      net_gex_change_1d_usd: -107685186.69914627
+      net_gex_change_1d_pct: -1.26
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -662622995.0897714
+      put_gamma: -7968095860.138363
+  outcome_metrics:
+    forward_1d_return_pct: -0.8621
+    forward_3d_return_pct: 0.6283
+    forward_3d_max_drawdown_pct: -0.8621
+    forward_3d_max_gain_pct: 0.6283
+    subsequent_volatility: 0.00941
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.86%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.63%
+      gain / -0.86% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-07'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9581546334.975185
+      net_gex_change_1d_usd: -950827479.7470531
+      net_gex_change_1d_pct: -11.02
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -725421966.9795761
+      put_gamma: -8856124367.99561
+  outcome_metrics:
+    forward_1d_return_pct: 0.889
+    forward_3d_return_pct: 1.396
+    forward_3d_max_drawdown_pct: 0.889
+    forward_3d_max_gain_pct: 1.5034
+    subsequent_volatility: 0.005111
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.89%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.50%
+      gain / 0.89% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-08'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9347829798.906033
+      net_gex_change_1d_usd: 233716536.06915283
+      net_gex_change_1d_pct: 2.44
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -718617476.3804362
+      put_gamma: -8629212322.525597
+  outcome_metrics:
+    forward_1d_return_pct: 0.609
+    forward_3d_return_pct: 1.0871
+    forward_3d_max_drawdown_pct: 0.5025
+    forward_3d_max_gain_pct: 1.0871
+    subsequent_volatility: 0.00404
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.61%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.09%
+      gain / 0.50% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-09'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9445071292.294794
+      net_gex_change_1d_usd: -97241493.38876152
+      net_gex_change_1d_pct: -1.04
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -813693929.879665
+      put_gamma: -8631377362.41513
+  outcome_metrics:
+    forward_1d_return_pct: -0.1058
+    forward_3d_return_pct: 1.3285
+    forward_3d_max_drawdown_pct: -0.1058
+    forward_3d_max_gain_pct: 1.3285
+    subsequent_volatility: 0.00491
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.11%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.33%
+      gain / -0.11% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-10'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9058868666.46812
+      net_gex_change_1d_usd: 386202625.8266735
+      net_gex_change_1d_pct: 4.09
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -712784822.4844073
+      put_gamma: -8346083843.983714
+  outcome_metrics:
+    forward_1d_return_pct: 0.5816
+    forward_3d_return_pct: 0.6163
+    forward_3d_max_drawdown_pct: 0.5816
+    forward_3d_max_gain_pct: 1.4358
+    subsequent_volatility: 0.008898
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.58%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.44%
+      gain / 0.58% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-11'
+  date_obfuscated: Day T+10
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9244516154.818668
+      net_gex_change_1d_usd: -185647488.3505478
+      net_gex_change_1d_pct: -2.05
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -765065113.2592175
+      put_gamma: -8479451041.55945
+  outcome_metrics:
+    forward_1d_return_pct: 0.8492
+    forward_3d_return_pct: 0.4971
+    forward_3d_max_drawdown_pct: 0.0345
+    forward_3d_max_gain_pct: 0.8492
+    subsequent_volatility: 0.008672
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.85%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.85%
+      gain / 0.03% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-14'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options traders
+    what: Hedging against potential volatility
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9967689521.1817
+      net_gex_change_1d_usd: -723173366.3630314
+      net_gex_change_1d_pct: -7.82
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -880473138.9171116
+      put_gamma: -9087216382.264587
+  outcome_metrics:
+    forward_1d_return_pct: -0.8079
+    forward_3d_return_pct: -0.2807
+    forward_3d_max_drawdown_pct: -0.8079
+    forward_3d_max_gain_pct: -0.2807
+    subsequent_volatility: 0.006516
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.81%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.28%
+      gain / -0.81% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-15'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9716062849.863144
+      net_gex_change_1d_usd: 251626671.31855583
+      net_gex_change_1d_pct: 2.52
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -838287081.0673578
+      put_gamma: -8877775768.795788
+  outcome_metrics:
+    forward_1d_return_pct: 0.4624
+    forward_3d_return_pct: 0.8835
+    forward_3d_max_drawdown_pct: 0.4624
+    forward_3d_max_gain_pct: 0.8835
+    subsequent_volatility: 0.002023
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.46%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.88%
+      gain / 0.46% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-16'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9427507927.505527
+      net_gex_change_1d_usd: 288554922.3576164
+      net_gex_change_1d_pct: 2.97
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -690793013.8894999
+      put_gamma: -8736714913.616028
+  outcome_metrics:
+    forward_1d_return_pct: 0.0687
+    forward_3d_return_pct: 0.2731
+    forward_3d_max_drawdown_pct: 0.0687
+    forward_3d_max_gain_pct: 0.4191
+    subsequent_volatility: 0.002483
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: 0.07% next-day return.
+      Expected amplification did not materialize (low vol=0.0025)'
+    forward_1d_direction: flat
+- date: '2024-10-17'
+  date_obfuscated: Day T+2
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9123054353.19249
+      net_gex_change_1d_usd: 304453574.3130379
+      net_gex_change_1d_pct: 3.23
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -806650277.1142486
+      put_gamma: -8316404076.078241
+  outcome_metrics:
+    forward_1d_return_pct: 0.3501
+    forward_3d_return_pct: 0.0893
+    forward_3d_max_drawdown_pct: 0.0893
+    forward_3d_max_gain_pct: 0.3501
+    subsequent_volatility: 0.002774
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.35%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.35%
+      gain / 0.09% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-18'
+  date_obfuscated: Day T+3
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Adjust hedging due to flip point change
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9158955783.549068
+      net_gex_change_1d_usd: -35901430.35657883
+      net_gex_change_1d_pct: -0.39
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -753892027.6483034
+      put_gamma: -8405063755.900764
+  outcome_metrics:
+    forward_1d_return_pct: -0.1454
+    forward_3d_return_pct: -1.0433
+    forward_3d_max_drawdown_pct: -1.0433
+    forward_3d_max_gain_pct: -0.1454
+    subsequent_volatility: 0.003804
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.15%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.15%
+      gain / -1.04% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-21'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9347873930.670837
+      net_gex_change_1d_usd: -188918147.12176895
+      net_gex_change_1d_pct: -2.06
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -733847306.1414549
+      put_gamma: -8614026624.529383
+  outcome_metrics:
+    forward_1d_return_pct: -0.1148
+    forward_3d_return_pct: -0.6869
+    forward_3d_max_drawdown_pct: -0.8993
+    forward_3d_max_gain_pct: -0.1148
+    subsequent_volatility: 0.005111
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.11%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.11%
+      gain / -0.90% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-22'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9007929199.119017
+      net_gex_change_1d_usd: 339944731.55182076
+      net_gex_change_1d_pct: 3.64
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -707903647.7149978
+      put_gamma: -8300025551.40402
+  outcome_metrics:
+    forward_1d_return_pct: -0.7854
+    forward_3d_return_pct: -0.7511
+    forward_3d_max_drawdown_pct: -0.7854
+    forward_3d_max_gain_pct: -0.5728
+    subsequent_volatility: 0.005051
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.79%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.57%
+      gain / -0.79% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-23'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9348546660.518911
+      net_gex_change_1d_usd: -340617461.3998947
+      net_gex_change_1d_pct: -3.78
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -877651518.3428584
+      put_gamma: -8470895142.176054
+  outcome_metrics:
+    forward_1d_return_pct: 0.2143
+    forward_3d_return_pct: 0.42
+    forward_3d_max_drawdown_pct: 0.0346
+    forward_3d_max_gain_pct: 0.42
+    subsequent_volatility: 0.002893
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: 0.21% next-day return.
+      Expected amplification did not materialize (low vol=0.0029)'
+    forward_1d_direction: up
+- date: '2024-10-24'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8666481371.168316
+      net_gex_change_1d_usd: 682065289.3505955
+      net_gex_change_1d_pct: 7.3
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -758819812.8037275
+      put_gamma: -7907661558.364589
+  outcome_metrics:
+    forward_1d_return_pct: -0.1794
+    forward_3d_return_pct: 0.5347
+    forward_3d_max_drawdown_pct: -0.1794
+    forward_3d_max_gain_pct: 0.5347
+    subsequent_volatility: 0.003107
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.18%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.53%
+      gain / -0.18% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-25'
+  date_obfuscated: Day T+10
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9057059144.939812
+      net_gex_change_1d_usd: -390577773.7714958
+      net_gex_change_1d_pct: -4.51
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -900981496.2087665
+      put_gamma: -8156077648.731045
+  outcome_metrics:
+    forward_1d_return_pct: 0.3853
+    forward_3d_return_pct: 0.0691
+    forward_3d_max_drawdown_pct: 0.0691
+    forward_3d_max_gain_pct: 0.7153
+    subsequent_volatility: 0.005781
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.39%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.72%
+      gain / 0.07% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-28'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Options Traders
+    what: Maintain spot price stability
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8266347273.735812
+      net_gex_change_1d_usd: 790711871.2039995
+      net_gex_change_1d_pct: 8.73
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -745435406.676125
+      put_gamma: -7520911867.059687
+  outcome_metrics:
+    forward_1d_return_pct: 0.3287
+    forward_3d_return_pct: -2.0086
+    forward_3d_max_drawdown_pct: -2.0086
+    forward_3d_max_gain_pct: 0.3287
+    subsequent_volatility: 0.010213
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.33%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.33%
+      gain / -2.01% drawdown'
+    forward_1d_direction: up
+- date: '2024-10-29'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Buying into rising markets and selling into falling markets
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8205456867.159452
+      net_gex_change_1d_usd: 60890406.57635975
+      net_gex_change_1d_pct: 0.74
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -790812866.2098196
+      put_gamma: -7414644000.949633
+  outcome_metrics:
+    forward_1d_return_pct: -0.6416
+    forward_3d_return_pct: -1.9283
+    forward_3d_max_drawdown_pct: -2.3297
+    forward_3d_max_gain_pct: -0.6416
+    subsequent_volatility: 0.010619
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.64%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.64%
+      gain / -2.33% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-30'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Reinforcing the spot price at $450.00
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8474468681.528016
+      net_gex_change_1d_usd: -269011814.36856365
+      net_gex_change_1d_pct: -3.28
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1056011933.9040902
+      put_gamma: -7418456747.623926
+  outcome_metrics:
+    forward_1d_return_pct: -1.699
+    forward_3d_return_pct: -1.554
+    forward_3d_max_drawdown_pct: -1.699
+    forward_3d_max_gain_pct: -1.295
+    subsequent_volatility: 0.010854
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 1.70%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -1.29%
+      gain / -1.70% drawdown'
+    forward_1d_direction: down
+- date: '2024-10-31'
+  date_obfuscated: Day T+2
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Maintaining spot price stability
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8335388178.198568
+      net_gex_change_1d_usd: 139080503.32944775
+      net_gex_change_1d_pct: 1.64
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -937907489.7532372
+      put_gamma: -7397480688.445332
+  outcome_metrics:
+    forward_1d_return_pct: 0.411
+    forward_3d_return_pct: 1.4245
+    forward_3d_max_drawdown_pct: 0.1475
+    forward_3d_max_gain_pct: 1.4245
+    subsequent_volatility: 0.007667
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.41%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.42%
+      gain / 0.15% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-01'
+  date_obfuscated: Day T+3
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Potential shift in market sentiment
+    confidence: 75
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7352374604.272658
+      net_gex_change_1d_usd: 983013573.92591
+      net_gex_change_1d_pct: 11.79
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -827222005.7674426
+      put_gamma: -6525152598.505216
+  outcome_metrics:
+    forward_1d_return_pct: -0.2624
+    forward_3d_return_pct: 3.3796
+    forward_3d_max_drawdown_pct: -0.2624
+    forward_3d_max_gain_pct: 3.3796
+    subsequent_volatility: 0.012984
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.26%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 3.38%
+      gain / -0.26% drawdown'
+    forward_1d_direction: down
+- date: '2024-11-04'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Reinforcing the spot price at $450.00
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7574066809.241842
+      net_gex_change_1d_usd: -221692204.96918392
+      net_gex_change_1d_pct: -3.02
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -805056280.8631244
+      put_gamma: -6769010528.378718
+  outcome_metrics:
+    forward_1d_return_pct: 1.2751
+    forward_3d_return_pct: 4.5286
+    forward_3d_max_drawdown_pct: 1.2751
+    forward_3d_max_gain_pct: 4.5286
+    subsequent_volatility: 0.007604
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 1.28%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 4.53%
+      gain / 1.28% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-05'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Maintaining spot price stability
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7634292943.051811
+      net_gex_change_1d_usd: -60226133.80996895
+      net_gex_change_1d_pct: -0.8
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -843794188.048487
+      put_gamma: -6790498755.0033245
+  outcome_metrics:
+    forward_1d_return_pct: 2.3466
+    forward_3d_return_pct: 3.5987
+    forward_3d_max_drawdown_pct: 2.3466
+    forward_3d_max_gain_pct: 3.5987
+    subsequent_volatility: 0.010156
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 2.35%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 3.60%
+      gain / 2.35% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-06'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Reinforcing the spot price at $450.00
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8514959926.915787
+      net_gex_change_1d_usd: -880666983.8639755
+      net_gex_change_1d_pct: -11.54
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1041450407.2019081
+      put_gamma: -7473509519.71388
+  outcome_metrics:
+    forward_1d_return_pct: 0.8461
+    forward_3d_return_pct: 1.2657
+    forward_3d_max_drawdown_pct: 0.8461
+    forward_3d_max_gain_pct: 1.2657
+    subsequent_volatility: 0.004023
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.85%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.27%
+      gain / 0.85% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-07'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Reinforcing the spot price at $450.00
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8656465025.721472
+      net_gex_change_1d_usd: -141505098.80568504
+      net_gex_change_1d_pct: -1.66
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -912624824.6681669
+      put_gamma: -7743840201.053303
+  outcome_metrics:
+    forward_1d_return_pct: 0.3742
+    forward_3d_return_pct: 0.2181
+    forward_3d_max_drawdown_pct: 0.2181
+    forward_3d_max_gain_pct: 0.4161
+    subsequent_volatility: 0.002867
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.37%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.42%
+      gain / 0.22% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-08'
+  date_obfuscated: Day T+10
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Potential shift in market sentiment
+    confidence: 75
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8156566633.01139
+      net_gex_change_1d_usd: 499898392.71008205
+      net_gex_change_1d_pct: 5.77
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -975523198.2397406
+      put_gamma: -7181043434.771648
+  outcome_metrics:
+    forward_1d_return_pct: 0.0418
+    forward_3d_return_pct: -0.0986
+    forward_3d_max_drawdown_pct: -0.1555
+    forward_3d_max_gain_pct: 0.0418
+    subsequent_volatility: 0.001426
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: 0.04% next-day return.
+      Expected amplification did not materialize (low vol=0.0014)'
+    forward_1d_direction: flat
+- date: '2024-11-11'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Maintaining spot price stability
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8348264889.221389
+      net_gex_change_1d_usd: -191698256.20999908
+      net_gex_change_1d_pct: -2.35
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -932434133.6098119
+      put_gamma: -7415830755.611579
+  outcome_metrics:
+    forward_1d_return_pct: -0.1972
+    forward_3d_return_pct: -1.046
+    forward_3d_max_drawdown_pct: -1.046
+    forward_3d_max_gain_pct: -0.1404
+    subsequent_volatility: 0.005018
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.20%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.14%
+      gain / -1.05% drawdown'
+    forward_1d_direction: down
+- date: '2024-11-12'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8135844781.618252
+      net_gex_change_1d_usd: 212420107.60313702
+      net_gex_change_1d_pct: 2.54
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -922207057.7165419
+      put_gamma: -7213637723.9017105
+  outcome_metrics:
+    forward_1d_return_pct: 0.0569
+    forward_3d_return_pct: -1.8768
+    forward_3d_max_drawdown_pct: -1.8768
+    forward_3d_max_gain_pct: 0.0569
+    subsequent_volatility: 0.005997
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.06%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.06%
+      gain / -1.88% drawdown'
+    forward_1d_direction: flat
+- date: '2024-11-13'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7905315242.7364855
+      net_gex_change_1d_usd: 230529538.88176632
+      net_gex_change_1d_pct: 2.83
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -852060246.1421067
+      put_gamma: -7053254996.594378
+  outcome_metrics:
+    forward_1d_return_pct: -0.9069
+    forward_3d_return_pct: -1.608
+    forward_3d_max_drawdown_pct: -1.9327
+    forward_3d_max_gain_pct: -0.9069
+    subsequent_volatility: 0.007569
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.91%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.91%
+      gain / -1.93% drawdown'
+    forward_1d_direction: down
+- date: '2024-11-14'
+  date_obfuscated: Day T+2
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8176974135.698605
+      net_gex_change_1d_usd: -271658892.9621191
+      net_gex_change_1d_pct: -3.44
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1271765181.143392
+      put_gamma: -6905208954.555212
+  outcome_metrics:
+    forward_1d_return_pct: -1.0351
+    forward_3d_return_pct: -0.2567
+    forward_3d_max_drawdown_pct: -1.0351
+    forward_3d_max_gain_pct: -0.2567
+    subsequent_volatility: 0.008292
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 1.04%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.26%
+      gain / -1.04% drawdown'
+    forward_1d_direction: down
+- date: '2024-11-15'
+  date_obfuscated: Day T+3
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7635622961.967583
+      net_gex_change_1d_usd: 541351173.7310219
+      net_gex_change_1d_pct: 6.62
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -849519814.9759349
+      put_gamma: -6786103146.991647
+  outcome_metrics:
+    forward_1d_return_pct: 0.331
+    forward_3d_return_pct: 0.7968
+    forward_3d_max_drawdown_pct: 0.331
+    forward_3d_max_gain_pct: 0.7968
+    subsequent_volatility: 0.002287
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.33%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.80%
+      gain / 0.33% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-18'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7250311167.360033
+      net_gex_change_1d_usd: 385311794.60754967
+      net_gex_change_1d_pct: 5.05
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -810578179.1670123
+      put_gamma: -6439732988.19302
+  outcome_metrics:
+    forward_1d_return_pct: 0.4541
+    forward_3d_return_pct: 0.949
+    forward_3d_max_drawdown_pct: 0.4541
+    forward_3d_max_gain_pct: 0.949
+    subsequent_volatility: 0.002642
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.45%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.95%
+      gain / 0.45% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-19'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6903972916.752237
+      net_gex_change_1d_usd: 346338250.6077957
+      net_gex_change_1d_pct: 4.78
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -720259810.6136154
+      put_gamma: -6183713106.13862
+  outcome_metrics:
+    forward_1d_return_pct: 0.0102
+    forward_3d_return_pct: 0.8431
+    forward_3d_max_drawdown_pct: 0.0102
+    forward_3d_max_gain_pct: 0.8431
+    subsequent_volatility: 0.002429
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.01%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.84%
+      gain / 0.01% drawdown'
+    forward_1d_direction: flat
+- date: '2024-11-20'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7075808683.337315
+      net_gex_change_1d_usd: -171835766.5850773
+      net_gex_change_1d_pct: -2.49
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -693055304.9739441
+      put_gamma: -6382753378.363371
+  outcome_metrics:
+    forward_1d_return_pct: 0.4824
+    forward_3d_return_pct: 1.2408
+    forward_3d_max_drawdown_pct: 0.4824
+    forward_3d_max_gain_pct: 1.2408
+    subsequent_volatility: 0.000669
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.48%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.24%
+      gain / 0.48% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-21'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7137208289.332996
+      net_gex_change_1d_usd: -61399605.99568176
+      net_gex_change_1d_pct: -0.87
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -720009472.0545744
+      put_gamma: -6417198817.278421
+  outcome_metrics:
+    forward_1d_return_pct: 0.3487
+    forward_3d_return_pct: 1.2854
+    forward_3d_max_drawdown_pct: 0.3487
+    forward_3d_max_gain_pct: 1.2854
+    subsequent_volatility: 0.000906
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.35%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.29%
+      gain / 0.35% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-22'
+  date_obfuscated: Day T+10
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7207933490.029287
+      net_gex_change_1d_usd: -70725200.69629097
+      net_gex_change_1d_pct: -0.99
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -834541709.7735943
+      put_gamma: -6373391780.2556925
+  outcome_metrics:
+    forward_1d_return_pct: 0.4046
+    forward_3d_return_pct: 0.5255
+    forward_3d_max_drawdown_pct: 0.4046
+    forward_3d_max_gain_pct: 0.9334
+    subsequent_volatility: 0.005057
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.40%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.93%
+      gain / 0.40% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-25'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market makers
+    whom: Options holders
+    what: Dynamic hedging
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7274116311.107016
+      net_gex_change_1d_usd: -66182821.07772827
+      net_gex_change_1d_pct: -0.92
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -793678972.3011646
+      put_gamma: -6480437338.805851
+  outcome_metrics:
+    forward_1d_return_pct: 0.5267
+    forward_3d_max_drawdown_pct: 0.1204
+    forward_3d_max_gain_pct: 0.5267
+    subsequent_volatility: 0.006578
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.53%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.53%
+      gain / 0.12% drawdown'
+    forward_1d_direction: up
+- date: '2024-11-26'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6891804679.736342
+      net_gex_change_1d_usd: 382311631.3706732
+      net_gex_change_1d_pct: 5.26
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -731153090.7098758
+      put_gamma: -6160651589.026466
+  outcome_metrics:
+    forward_1d_return_pct: -0.4042
+    forward_3d_return_pct: 0.2029
+    forward_3d_max_drawdown_pct: -0.4042
+    forward_3d_max_gain_pct: 0.2029
+    subsequent_volatility: 0.007161
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.40%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.20%
+      gain / -0.40% drawdown'
+    forward_1d_direction: down
+- date: '2024-11-27'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6802860778.463762
+      net_gex_change_1d_usd: 88943901.27258015
+      net_gex_change_1d_pct: 1.29
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -766996281.7280978
+      put_gamma: -6035864496.735664
+  outcome_metrics:
+    forward_3d_return_pct: 0.9603
+    forward_3d_max_drawdown_pct: 0.6096
+    forward_3d_max_gain_pct: 0.9603
+    subsequent_volatility: 0.001837
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved volatile with
+      0.00% next-day return. Dealers amplified move via forced hedging. Max 3d move:
+      0.96% gain / 0.61% drawdown'
+    forward_1d_direction: flat
+- date: '2024-11-29'
+  date_obfuscated: Day T+3
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6353888742.253628
+      net_gex_change_1d_usd: 448972036.2101345
+      net_gex_change_1d_pct: 6.6
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -581359498.3534484
+      put_gamma: -5772529243.900179
+  outcome_metrics:
+    forward_1d_return_pct: 0.3486
+    forward_3d_return_pct: 0.8515
+    forward_3d_max_drawdown_pct: 0.3486
+    forward_3d_max_gain_pct: 0.8515
+    subsequent_volatility: 0.00237
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.35%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.85%
+      gain / 0.35% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-02'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6539141886.192333
+      net_gex_change_1d_usd: -185253143.93870544
+      net_gex_change_1d_pct: -2.92
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -815493769.1661158
+      put_gamma: -5723648117.026218
+  outcome_metrics:
+    forward_1d_return_pct: 0.0198
+    forward_3d_return_pct: 0.3027
+    forward_3d_max_drawdown_pct: 0.0198
+    forward_3d_max_gain_pct: 0.5012
+    subsequent_volatility: 0.003461
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.02%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.50%
+      gain / 0.02% drawdown'
+    forward_1d_direction: flat
+- date: '2024-12-03'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6399410782.069082
+      net_gex_change_1d_usd: 139731104.12325096
+      net_gex_change_1d_pct: 2.14
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -755292612.1520345
+      put_gamma: -5644118169.9170475
+  outcome_metrics:
+    forward_1d_return_pct: 0.4813
+    forward_3d_return_pct: 0.5243
+    forward_3d_max_drawdown_pct: 0.2828
+    forward_3d_max_gain_pct: 0.5243
+    subsequent_volatility: 0.003437
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.48%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.52%
+      gain / 0.28% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-04'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 75
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7073410244.40506
+      net_gex_change_1d_usd: -673999462.3359776
+      net_gex_change_1d_pct: -10.53
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1178707279.054543
+      put_gamma: -5894702965.350515
+  outcome_metrics:
+    forward_1d_return_pct: -0.1975
+    forward_3d_return_pct: -0.4658
+    forward_3d_max_drawdown_pct: -0.4658
+    forward_3d_max_gain_pct: 0.0428
+    subsequent_volatility: 0.003768
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: -0.20% next-day return.
+      Expected amplification did not materialize (low vol=0.0038)'
+    forward_1d_direction: down
+- date: '2024-12-05'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6714572882.993853
+      net_gex_change_1d_usd: 358837361.4112072
+      net_gex_change_1d_pct: 5.07
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1209863434.532834
+      put_gamma: -5504709448.461018
+  outcome_metrics:
+    forward_1d_return_pct: 0.2408
+    forward_3d_return_pct: -0.5046
+    forward_3d_max_drawdown_pct: -0.5046
+    forward_3d_max_gain_pct: 0.2408
+    subsequent_volatility: 0.003797
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.24%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.24%
+      gain / -0.50% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-06'
+  date_obfuscated: Day T+10
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6256413809.546106
+      net_gex_change_1d_usd: 458159073.4477463
+      net_gex_change_1d_pct: 6.82
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -717752397.4043105
+      put_gamma: -5538661412.141796
+  outcome_metrics:
+    forward_1d_return_pct: -0.5084
+    forward_3d_return_pct: -0.1152
+    forward_3d_max_drawdown_pct: -0.7436
+    forward_3d_max_gain_pct: -0.1152
+    subsequent_volatility: 0.005957
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.51%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.12%
+      gain / -0.74% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-09'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 70
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7084911029.878421
+      net_gex_change_1d_usd: -828497220.3323145
+      net_gex_change_1d_pct: -13.24
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1324532472.3954716
+      put_gamma: -5760378557.482948
+  outcome_metrics:
+    forward_1d_return_pct: -0.2365
+    forward_3d_return_pct: -0.0777
+    forward_3d_max_drawdown_pct: -0.2365
+    forward_3d_max_gain_pct: 0.3952
+    subsequent_volatility: 0.005811
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: -0.24% next-day return.
+      Expected amplification did not materialize (low vol=0.0058)'
+    forward_1d_direction: down
+- date: '2024-12-10'
+  date_obfuscated: Day T+14
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Options dealers
+    whom: Market participants
+    what: Hedging by buying into rising markets and selling into falling markets
+    confidence: 75
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6385930068.39956
+      net_gex_change_1d_usd: 698980961.4788609
+      net_gex_change_1d_pct: 9.87
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -798881082.0743033
+      put_gamma: -5587048986.325257
+  outcome_metrics:
+    forward_1d_return_pct: 0.6332
+    forward_3d_return_pct: 0.068
+    forward_3d_max_drawdown_pct: 0.068
+    forward_3d_max_gain_pct: 0.6332
+    subsequent_volatility: 0.005604
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.63%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.63%
+      gain / 0.07% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-11'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7226998134.095487
+      net_gex_change_1d_usd: -841068065.6959267
+      net_gex_change_1d_pct: -13.17
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1466461154.9106226
+      put_gamma: -5760536979.184864
+  outcome_metrics:
+    forward_1d_return_pct: -0.4711
+    forward_3d_return_pct: -0.1268
+    forward_3d_max_drawdown_pct: -0.5617
+    forward_3d_max_gain_pct: -0.1268
+    subsequent_volatility: 0.004562
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.47%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.13%
+      gain / -0.56% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-12'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6331363814.951942
+      net_gex_change_1d_usd: 895634319.1435442
+      net_gex_change_1d_pct: 12.39
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -522824766.4276436
+      put_gamma: -5808539048.524298
+  outcome_metrics:
+    forward_1d_return_pct: -0.091
+    forward_3d_return_pct: -0.053
+    forward_3d_max_drawdown_pct: -0.091
+    forward_3d_max_gain_pct: 0.3459
+    subsequent_volatility: 0.004221
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: -0.09% next-day return.
+      Expected amplification did not materialize (low vol=0.0042)'
+    forward_1d_direction: flat
+- date: '2024-12-13'
+  date_obfuscated: Day T+2
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7121001665.024965
+      net_gex_change_1d_usd: -789637850.0730228
+      net_gex_change_1d_pct: -12.47
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -1578234047.58956
+      put_gamma: -5542767617.435406
+  outcome_metrics:
+    forward_1d_return_pct: 0.4373
+    forward_3d_return_pct: -3.1339
+    forward_3d_max_drawdown_pct: -3.1339
+    forward_3d_max_gain_pct: 0.4373
+    subsequent_volatility: 0.019173
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.44%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 0.44%
+      gain / -3.13% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-16'
+  date_obfuscated: Day T+5
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7636519787.719648
+      net_gex_change_1d_usd: -515518122.6946831
+      net_gex_change_1d_pct: -7.24
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -2028607556.5186307
+      put_gamma: -5607912231.201018
+  outcome_metrics:
+    forward_1d_return_pct: -0.3975
+    forward_3d_return_pct: -3.3891
+    forward_3d_max_drawdown_pct: -3.5556
+    forward_3d_max_gain_pct: -0.3975
+    subsequent_volatility: 0.018177
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.40%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.40%
+      gain / -3.56% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-17'
+  date_obfuscated: Day T+6
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 90
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -7809844970.484621
+      net_gex_change_1d_usd: -173325182.7649727
+      net_gex_change_1d_pct: -2.27
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -2294285192.344805
+      put_gamma: -5515559778.139816
+  outcome_metrics:
+    forward_1d_return_pct: -3.1708
+    forward_3d_return_pct: -2.1873
+    forward_3d_max_drawdown_pct: -3.1708
+    forward_3d_max_gain_pct: -2.1873
+    subsequent_volatility: 0.021776
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 3.17%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -2.19%
+      gain / -3.17% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-18'
+  date_obfuscated: Day T+7
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 95
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -8907382658.531979
+      net_gex_change_1d_usd: -1097537688.0473576
+      net_gex_change_1d_pct: -14.05
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -2900300593.409452
+      put_gamma: -6007082065.122528
+  outcome_metrics:
+    forward_1d_return_pct: 0.1727
+    forward_3d_return_pct: 1.7237
+    forward_3d_max_drawdown_pct: 0.1727
+    forward_3d_max_gain_pct: 1.7237
+    subsequent_volatility: 0.003509
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.17%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.72%
+      gain / 0.17% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-19'
+  date_obfuscated: Day T+8
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 95
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -9704543901.50369
+      net_gex_change_1d_usd: -797161242.9717121
+      net_gex_change_1d_pct: -8.95
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -3536907459.994572
+      put_gamma: -6167636441.509117
+  outcome_metrics:
+    forward_1d_return_pct: 0.8416
+    forward_3d_return_pct: 2.6374
+    forward_3d_max_drawdown_pct: 0.8416
+    forward_3d_max_gain_pct: 2.6374
+    subsequent_volatility: 0.00186
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.84%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 2.64%
+      gain / 0.84% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-20'
+  date_obfuscated: Day T+9
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -4977058258.450684
+      net_gex_change_1d_usd: 4727485643.053007
+      net_gex_change_1d_pct: 48.71
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -552242368.0092049
+      put_gamma: -4424815890.441479
+  outcome_metrics:
+    forward_1d_return_pct: 0.7008
+    forward_3d_max_drawdown_pct: 0.7008
+    forward_3d_max_gain_pct: 1.7808
+    subsequent_volatility: 0.002605
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 0.70%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.78%
+      gain / 0.70% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-23'
+  date_obfuscated: Day T+12
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 75
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -4750586250.398945
+      net_gex_change_1d_usd: 226472008.05173874
+      net_gex_change_1d_pct: 4.55
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -453584013.15708905
+      put_gamma: -4297002237.241856
+  outcome_metrics:
+    forward_1d_return_pct: 1.0725
+    forward_3d_return_pct: 1.0355
+    forward_3d_max_drawdown_pct: 1.0355
+    forward_3d_max_gain_pct: 1.0725
+    subsequent_volatility: 0.007802
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved up with 1.07%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: 1.07%
+      gain / 1.04% drawdown'
+    forward_1d_direction: up
+- date: '2024-12-24'
+  date_obfuscated: Day T+13
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Traders
+    what: Hedging by buying into declines
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -5324299032.262555
+      net_gex_change_1d_usd: -573712781.8636103
+      net_gex_change_1d_pct: -12.08
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -372149011.71576107
+      put_gamma: -4952150020.546794
+  outcome_metrics:
+    forward_3d_return_pct: -1.0212
+    forward_3d_max_drawdown_pct: -1.0212
+    forward_3d_max_gain_pct: -0.0366
+    subsequent_volatility: 0.00674
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved volatile with
+      0.00% next-day return. Dealers amplified move via forced hedging. Max 3d move:
+      -0.04% gain / -1.02% drawdown'
+    forward_1d_direction: flat
+- date: '2024-12-26'
+  date_obfuscated: Day T+0
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Underlying Asset Market
+    what: Hedging by buying/selling to maintain delta neutrality
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -5747813349.310432
+      net_gex_change_1d_usd: -423514317.0478773
+      net_gex_change_1d_pct: -7.95
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -366621632.2985039
+      put_gamma: -5381191717.011929
+  outcome_metrics:
+    forward_1d_return_pct: -0.985
+    forward_3d_return_pct: -2.4458
+    forward_3d_max_drawdown_pct: -2.4458
+    forward_3d_max_gain_pct: -0.985
+    subsequent_volatility: 0.004803
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 0.98%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -0.98%
+      gain / -2.45% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-27'
+  date_obfuscated: Day T+1
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Underlying Asset Market
+    what: Hedging by buying/selling to maintain delta neutrality
+    confidence: 85
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6243051682.99575
+      net_gex_change_1d_usd: -495238333.685318
+      net_gex_change_1d_pct: -8.62
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -470596340.87983245
+      put_gamma: -5772455342.115917
+  outcome_metrics:
+    forward_1d_return_pct: -1.1947
+    forward_3d_max_drawdown_pct: -1.4753
+    forward_3d_max_gain_pct: -1.1947
+    subsequent_volatility: 0.006488
+    prediction_materialized: true
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime validated: Market moved down with 1.19%
+      next-day return. Dealers amplified move via forced hedging. Max 3d move: -1.19%
+      gain / -1.48% drawdown'
+    forward_1d_direction: down
+- date: '2024-12-30'
+  date_obfuscated: Day T+4
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Underlying Asset Market
+    what: Hedging by buying/selling to maintain delta neutrality
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6170211847.463348
+      net_gex_change_1d_usd: 72839835.53240204
+      net_gex_change_1d_pct: 1.17
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -482031792.76925194
+      put_gamma: -5688180054.694095
+  outcome_metrics:
+    forward_1d_return_pct: -0.284
+    forward_3d_max_drawdown_pct: -0.284
+    forward_3d_max_gain_pct: -0.284
+    subsequent_volatility: .nan
+    prediction_materialized: false
+    verification_method: rule_based
+    verification_note: 'Negative GEX regime but muted response: -0.28% next-day return.
+      Expected amplification did not materialize (low vol=nan)'
+    forward_1d_direction: down
+- date: '2024-12-31'
+  date_obfuscated: Day T+5
+  detected: true
+  obfuscation_verified: true
+  narrative:
+    who: Market Makers
+    whom: Underlying Asset Market
+    what: Hedging by buying/selling to maintain delta neutrality
+    confidence: 80
+    time_horizon: Unknown
+  quantitative_evidence:
+    gex_metrics:
+      net_gex_usd: -6000302758.197165
+      net_gex_change_1d_usd: 169909089.26618385
+      net_gex_change_1d_pct: 2.75
+      regime: NEGATIVE_GAMMA
+      flip_level_price: null
+      gamma_concentration: null
+      spot_price: 450.0
+      source: null
+    market_metrics:
+      call_gamma: -504562804.7728982
+      put_gamma: -5495739953.424267
+  outcome_metrics:
+    error: No forward price data available
+    subsequent_volatility: null
+    prediction_materialized: null
+failed_dates: []

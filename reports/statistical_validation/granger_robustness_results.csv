@@ -1,0 +1,7 @@
+specification,gex_transform,vol_transform,maxlag,min_p_value,significant_lags,result
+Original: Differenced GEX vs Level Vol (Lags 1-5),diff,level,5,0.04201404643720838,1,SIGNIFICANT
+Both Levels (Lags 1-5),level,level,5,0.1372961261883773,0,NULL
+Both Differenced (Lags 1-5),diff,diff,5,0.021201211937411712,2,SIGNIFICANT
+Extended Lags: Differenced GEX vs Level Vol (Lags 1-10),diff,level,10,0.04201404643720838,1,SIGNIFICANT
+Percentage Changes (Lags 1-5),pct_change,pct_change,5,0.23225189128512727,0,NULL
+Short Lags Only: Differenced GEX vs Level Vol (Lags 1-3),diff,level,3,0.04201404643720838,1,SIGNIFICANT

@@ -13,6 +13,7 @@
 **Total Regenerations**: ~25+ iterations
 
 ### Core Improvements
+
 - ✅ Fixed all overlapping UI elements (legends, tooltips, annotations)
 - ✅ Corrected z-order layering issues across all figures
 - ✅ Rebuilt problematic figures from scratch (Figures 2, 6 matrix, 7 comparison)
@@ -25,14 +26,17 @@
 ## Figure-by-Figure Changes
 
 ### Figure 1: System Architecture
+
 **Script**: `generate_figure1_system_architecture.py`
 
 **Issues Fixed**:
+
 1. Overlapping output boxes (Outcome Calculator behind Net GEX box)
 2. LLM Agent needed to specify reasoning model
 3. Arrow from LLM Agent to Outcome Calculator cutting through "Day T+0" output box
 
 **Solutions**:
+
 - Moved output boxes down (y from 3.3 to 3.1) for 0.3 unit gap
 - Updated LLM Agent subtitle: "GPT-4" → "GPT-o3-mini"
 - Created custom routed arrow with waypoints (right → down → left → down)
@@ -43,15 +47,18 @@
 ---
 
 ### Figure 2: Obfuscation Example
+
 **Script**: `generate_figure2_obfuscation_example.py`
 
 **Issues Fixed**:
+
 1. Background text showing through semi-transparent boxes
 2. Z-order issues with dashed lines and text
 3. Large gap in center between before/after panels
 4. Red/green annotation labels overlapping with boxes
 
 **Solution**: **Complete rebuild from scratch**
+
 - Single canvas layout (not dual subplots)
 - Absolute positioning with proper z-order
 - Boxes: 4.5 units wide, 1.5 unit center gap
@@ -65,21 +72,26 @@
 ---
 
 ### Figure 3: Detection vs Profitability
+
 **Script**: `generate_figure3_detection_profitability.py`
 
 **Issues Fixed**:
+
 1. Y-axis compressed (data cramped at top)
 2. Detection rates 84-100% all showing at top of 60-105% range
 
 **Solutions** (Chat A's dynamic y-axis):
+
 - Increased figure height: 4.5 → 5.5 inches
 - Reduced margins: `tight_layout(rect=[0, 0.04, 1, 0.96])` → `[0, 0.03, 1, 0.98]`
 - **Dynamic y-axis logic**:
+
   ```python
   min_det_quarterly = min(detection_rates)  # 84.4%
   if min_det_quarterly > 75:
       ax1.set_ylim(max(60, min_det_quarterly - 10), min(105, max_det + 5))
   ```
+
 - Result: Y-axis now 74.4-105% (using full vertical space)
 - Annotation positioned dynamically at 85% of y-axis range
 
@@ -88,14 +100,17 @@
 ---
 
 ### Figure 4: GEX Profile
+
 **Script**: `generate_figure4_yaml_data.py`
 
 **Issues Fixed** (Comparison version was fine, Profile version had issues):
+
 1. ATM region rendering after spot line (z-order issue)
 2. Net GEX box covering bars on right side
 3. Dealer tooltip and Net GEX box hugging x-axis
 
 **Solutions**:
+
 - **Z-order fix**:
   - Bars: zorder=3
   - Zero line: zorder=2
@@ -114,13 +129,16 @@
 ---
 
 ### Figure 5: Confidence Distribution
+
 **Script**: `generate_figure5_confidence_distribution.py`
 
 **Issues Fixed**:
+
 1. Stats box overlapping histogram bars (right side)
 2. Wasted white space 0-50% on x-axis (no data below ~55%)
 
 **Solutions**:
+
 - Stats box: Moved from (0.98, 0.65) upper-right to (0.02, 0.60) upper-left
 - **X-axis truncation**: 0-100% → **50-100%**
   - Scientifically rigorous (just viewing window, not data manipulation)
@@ -132,24 +150,30 @@
 ---
 
 ### Figure 6: Pattern Performance
+
 **Script**: `generate_figure6_yaml_data.py`
 
 #### Version 1: Bars
+
 **Issues Fixed**: Legend blocking Gamma Positioning bars
 
 **Solution**: Moved legend from 'upper center' to **'center left'** at (0.02, 0.30)
+
 - Positioned across from stats box on right (also at y=0.30)
 - Creates balanced symmetry
 
 **Files Modified**: Lines 121-122
 
 #### Version 2: Scatter
+
 **No changes needed** - already fixed in previous session
 
 #### Version 3: Performance Matrix
+
 **Issues Fixed**: Completely illegible - white text on circles unreadable against white background
 
 **Solution**: **Complete rebuild from scratch**
+
 - Large colored circles (s=1200) for each pattern
 - Labels ABOVE points in white boxes (no overlap)
 - Metrics BELOW points in yellow boxes (clearly separated)
@@ -164,23 +188,29 @@
 ---
 
 ### Figure 7: Biased vs Unbiased
+
 **Script**: `generate_figure7_yaml_data.py`
 
 #### All 3 Versions: Error Bar Removal
+
 **Issue**: Eye-beam style error bars cluttering charts
 
 **Solution**: Removed `yerr` parameters from all bar plots
+
 - Lines 136-137 (detection comparison)
 - Lines 214-215 (dual panels)
 - Lines 292-293 (minimal)
 
 #### Version 1: Detection Comparison
+
 **Issues Fixed**:
+
 1. Too cluttered (stats box, yellow delta boxes, legend, threshold, explanation text)
 2. Sample size text overlapping x-axis label
 3. Legend in top-right instead of bottom-right
 
 **Solution**: **Complete rebuild from scratch**
+
 - Larger figure: 10×6 → 12×7
 - **Removed clutter**: No stats box, no yellow highlighted delta boxes
 - **Simple delta labels**: Just "Δ=-22.8%" in italic red above bars
@@ -196,9 +226,11 @@
 **Files Modified**: Lines 122-183 (complete rewrite)
 
 #### Version 2: Dual Panels
+
 **No additional changes needed** - error bars removed
 
 #### Version 3: Minimal Publication
+
 **Issue**: Legend in upper-right
 
 **Solution**: Changed `loc='upper right'` → `loc='lower right'`
@@ -210,18 +242,22 @@
 ## Established Design Patterns
 
 ### 1. Legend Positioning Hierarchy
+
 **Preferred locations (in order)**:
+
 1. Lower right (most common)
 2. Center left (when balanced with stats box on right)
 3. Upper left (sparse data area)
 4. Avoid upper right unless necessary
 
 ### 2. Stats Box Positioning
+
 - **Default**: Bottom-left (0.02, 0.02) or (0.02, 0.05)
 - **Alternative**: Center-right when legend is center-left
 - **Never**: Overlapping with data
 
 ### 3. Z-Order Standards
+
 ```python
 # Background
 zorder=0     # Grid, shading
@@ -236,10 +272,12 @@ zorder=12+   # Critical annotations (must be on top)
 ```
 
 ### 4. Text Anchoring
+
 - Bottom boxes: `verticalalignment='bottom'`, y=0.05 (not 0.02, needs breathing room)
 - Top annotations: Use transform coordinates, avoid absolute positions
 
 ### 5. When to Rebuild vs Fix
+
 **Fix**: Simple positioning/z-order issues
 **Rebuild**: When > 3 overlapping elements or fundamental design flaw
 
@@ -248,6 +286,7 @@ zorder=12+   # Critical annotations (must be on top)
 ## File Modifications Summary
 
 ### Scripts Updated
+
 1. `scripts/visualization/generate_figure1_system_architecture.py`
 2. `scripts/visualization/generate_figure2_obfuscation_example.py` (rebuilt)
 3. `scripts/visualization/generate_figure3_detection_profitability.py`
@@ -257,7 +296,9 @@ zorder=12+   # Critical annotations (must be on top)
 7. `scripts/visualization/generate_figure7_yaml_data.py` (comparison rebuilt)
 
 ### Figure Files Updated (Total: 25)
+
 **Primary versions**:
+
 1. figure1_system_architecture.png
 2. figure2_obfuscation_example.png
 3. figure3_detection_vs_profitability.png
@@ -280,6 +321,7 @@ zorder=12+   # Critical annotations (must be on top)
 ## Quality Checklist (All Figures)
 
 ### Visual Quality
+
 - ✅ No overlapping text elements
 - ✅ No data obscured by annotations
 - ✅ All legends clearly readable
@@ -289,6 +331,7 @@ zorder=12+   # Critical annotations (must be on top)
 - ✅ Professional appearance
 
 ### Technical Quality
+
 - ✅ All figures use actual YAML validation data
 - ✅ IEEE two-column format compliance
 - ✅ 300 DPI resolution
@@ -296,6 +339,7 @@ zorder=12+   # Critical annotations (must be on top)
 - ✅ Consistent styling across all figures
 
 ### Content Quality
+
 - ✅ Clear titles explaining what's shown
 - ✅ Axis labels with units
 - ✅ Sample sizes indicated
@@ -316,6 +360,7 @@ zorder=12+   # Critical annotations (must be on top)
 ## Comparison: Before vs After
 
 ### Before Round 2
+
 - Multiple overlapping elements across 6 figures
 - Z-order issues causing important elements to be hidden
 - Cluttered layouts with too much information
@@ -323,6 +368,7 @@ zorder=12+   # Critical annotations (must be on top)
 - Some figures using hardcoded/synthetic data
 
 ### After Round 2
+
 - ✅ Zero overlapping elements
 - ✅ Perfect z-order layering
 - ✅ Clean, focused layouts
@@ -348,6 +394,7 @@ zorder=12+   # Critical annotations (must be on top)
 **Figures Complete**: 8/8 must-have figures + 17 alternate versions
 
 **Quality Level**: HIGHEST
+
 - Professional appearance
 - No visual issues remaining
 - Consistent styling

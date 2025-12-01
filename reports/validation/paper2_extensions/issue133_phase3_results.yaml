@@ -1,0 +1,999 @@
+results:
+- condition: control
+  confidence: 85
+  date: '2024-04-03'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Option buyers and\
+    \ sellers\",\n    \"what\": \"Market makers are forced to buy when prices are\
+    \ rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-03'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$35.64B. Gamma Exposure is a second-order Greek in options trading that\
+    \ measures the rate of change of delta with respect to changes in the underlying\
+    \ price. A negative GEX indicates that market makers are net short gamma. This\
+    \ means that as the price of the underlying asset increases, market makers will\
+    \ have to sell more of the asset, and "
+- condition: control
+  confidence: 90
+  date: '2024-11-06'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are falling and sell when prices are rising to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-06'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$28.77B. GEX is a measure of the overall exposure of market makers to the\
+    \ price movement of the underlying asset, in this case, INDEX_1. A negative GEX\
+    \ indicates that market makers are net short gamma, meaning they will have to\
+    \ sell as the market rises and buy as the market falls, potentially exacerbating\
+    \ price movements and increasing vola"
+- condition: control
+  confidence: 90
+  date: '2024-11-12'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-12'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$33.23B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-01-30'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Option buyers and\
+    \ sellers\",\n    \"what\": \"Market makers are forced to buy when prices are\
+    \ rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-30'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$30.83B. Gamma Exposure (GEX) is a second-order Greek that measures the\
+    \ rate of change in delta for each one-point move in the underlying asset. A negative\
+    \ GEX indicates that market makers are net short gamma, meaning they will have\
+    \ to sell when prices go down and buy when prices go up, potentially exacerbating\
+    \ price movements and increasin"
+- condition: control
+  confidence: 85
+  date: '2024-11-04'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-04'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$27.22B. GEX is a measure of the overall exposure of options market makers\
+    \ to the underlying asset's price changes. A negative GEX, as in this case, suggests\
+    \ that market makers are net short gamma. This means that as the price of the\
+    \ underlying asset (INDEX_1) increases, market makers will have to sell more of\
+    \ the asset to remain delta neut"
+- condition: control
+  confidence: 90
+  date: '2024-07-17'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Option buyers and\
+    \ sellers\",\n    \"what\": \"Market makers are forced to buy when prices are\
+    \ rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-17'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$32.83B. GEX is a measure of the overall exposure of options market makers\
+    \ to the underlying asset's price changes. A negative GEX, as in this case, suggests\
+    \ that market makers are net short gamma. This means that as the price of the\
+    \ underlying asset (INDEX_1) increases, market makers will have to sell more of\
+    \ it, and vice versa. This can p"
+- condition: control
+  confidence: 85
+  date: '2024-07-08'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-08'
+  detected: true
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\nThe Net GEX (Gamma Exposure) is -$25.73B. Gamma Exposure is a second-order\
+    \ Greek in options trading that measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying asset increases,\
+    \ market makers will have to sell more of the asset, and vice versa. This can\
+    \ lead to increased "
+- condition: control
+  confidence: 85
+  date: '2024-09-27'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-09-27'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$30.29B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-07-11'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-11'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$33.75B. Gamma Exposure is a second-order Greek in options trading that\
+    \ measures the rate of change in the delta with respect to changes in the underlying\
+    \ price. A negative GEX indicates that market makers are net short gamma. This\
+    \ means that as the price of the underlying asset increases, market makers will\
+    \ have to sell more of the underly"
+- condition: control
+  confidence: 85
+  date: '2024-04-08'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-08'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$34.00B. GEX is a measure of the overall exposure of market makers to the\
+    \ price movement of the underlying asset, in this case, INDEX_1. A negative GEX\
+    \ indicates that market makers are net short gamma, meaning they will have to\
+    \ sell as the market rises and buy as the market falls, potentially exacerbating\
+    \ price movements and increasing vola"
+- condition: control
+  confidence: 85
+  date: '2024-12-10'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-12-10'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$41.75B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and as the price"
+- condition: control
+  confidence: 90
+  date: '2024-11-07'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-07'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$29.01B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-05-30'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-05-30'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$33.09B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-01-05'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are falling and sell when prices are rising to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-05'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$32.47B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-04-10'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-10'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$35.26B. Gamma Exposure is a second-order Greek in options trading that\
+    \ measures the rate of change of delta with respect to changes in the underlying\
+    \ price. A negative GEX indicates that market makers are net short gamma. This\
+    \ means that as the price of the underlying asset increases, market makers will\
+    \ have to sell more of the asset, and "
+- condition: control
+  confidence: 90
+  date: '2024-07-01'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-01'
+  detected: false
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\n1. Net GEX: The Net Gamma Exposure (GEX) is -$28.29B. Gamma Exposure\
+    \ is a second-order Greek which measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the index increases, market\
+    \ makers will have to sell more of the index to remain delta neutral, and vice\
+    \ versa. This can potentially"
+- condition: control
+  confidence: 90
+  date: '2024-03-15'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-03-15'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$29.29B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying asset's price.\
+    \ A negative GEX indicates that market makers are net short gamma. This means\
+    \ that as the price of the underlying asset increases, market makers will have\
+    \ to sell more of the asset, and vice"
+- condition: control
+  confidence: 90
+  date: '2024-01-12'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-12'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$34.36B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma, meaning they will have\
+    \ to sell when prices go down and buy when prices go up, potentially exacerbating\
+    \ price movements and increasi"
+- condition: control
+  confidence: 90
+  date: '2024-04-04'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-04'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$34.51 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-02-13'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-02-13'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$40.69 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying index increases, market makers will have to sell more\
+    \ of the index to remain delta n"
+- condition: control
+  confidence: 85
+  date: '2024-05-28'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-05-28'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$31.41B. Gamma Exposure is a second-order Greek in options trading that\
+    \ measures the rate of change of delta with respect to changes in the underlying\
+    \ asset's price. A negative GEX indicates that market makers are net short gamma.\
+    \ This means that as the price of the underlying asset increases, market makers\
+    \ will have to sell more of the ass"
+- condition: control
+  confidence: 90
+  date: '2024-01-22'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-22'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$28.47B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-07-12'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-12'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$27.88B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-07-02'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure.\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-02'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$28.15B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-07-16'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-16'
+  detected: true
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\n1. Net GEX: The Net Gamma Exposure (GEX) is -$28.57B. Gamma Exposure\
+    \ is a second-order Greek that measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying asset increases,\
+    \ market makers will have to sell more of the asset, and vice versa if the price\
+    \ decreases. This can le"
+- condition: control
+  confidence: 90
+  date: '2024-11-14'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-14'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$36.91B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-04-23'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-23'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$31.77B. Gamma Exposure is a second-order Greek that measures the rate of\
+    \ change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. This ca"
+- condition: control
+  confidence: 90
+  date: '2024-11-27'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-27'
+  detected: false
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\nThe Net GEX (Gamma Exposure) is -$38.88B. Gamma Exposure is a second-order\
+    \ Greek in options trading that measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying asset increases,\
+    \ market makers will have to sell more of the asset, and vice versa. This can\
+    \ lead to increased "
+- condition: control
+  confidence: 90
+  date: '2024-01-08'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are falling and sell when prices are rising to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-08'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$32.19 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-07-15'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-15'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$28.65B. Gamma Exposure is a second-order Greek that measures the rate of\
+    \ change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the index increases, market makers will have to sell more of the index\
+    \ to remain delta neutral, and vice v"
+- condition: control
+  confidence: 90
+  date: '2024-11-05'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-11-05'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$28.20 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, the delta decreases, and vice versa.\
+    \ In other words, market makers "
+- condition: control
+  confidence: 90
+  date: '2024-04-09'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-09'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$34.04B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-12-04'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-12-04'
+  detected: true
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\n1. Net GEX (Gamma Exposure): The Net GEX is -$35.24B. Gamma Exposure\
+    \ is a second-order Greek which measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying index increases,\
+    \ market makers will need to sell more of the underlying, and vice versa if the\
+    \ price decreases. This "
+- condition: control
+  confidence: 90
+  date: '2024-04-12'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-12'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$33.46B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying asset's price.\
+    \ A negative GEX indicates that market makers are net short gamma. This means\
+    \ that as the price of the underlying asset increases, market makers will have\
+    \ to sell more of the asset, and vice"
+- condition: control
+  confidence: 90
+  date: '2024-12-11'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-12-11'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$44.20B. Gamma Exposure is a second-order Greek that measures the rate of\
+    \ change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. This ca"
+- condition: control
+  confidence: 90
+  date: '2024-04-11'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-11'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$37.42 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying index increases, market makers will have to sell more\
+    \ of the underlying asset to rem"
+- condition: control
+  confidence: 90
+  date: '2024-07-23'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-23'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$28.76B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying asset's price.\
+    \ A negative GEX indicates that market makers are net short gamma. This means\
+    \ that as the price of the underlying asset increases, market makers will have\
+    \ to sell more of the asset, and vice"
+- condition: control
+  confidence: 90
+  date: '2024-12-09'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to sell the underlying\
+    \ asset (INDEX_1) as the price rises and buy as the price falls to hedge their\
+    \ negative gamma exposure.\",\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-12-09'
+  detected: false
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\n1. Net GEX (Gamma Exposure): The Net GEX is -$38.20B. Gamma Exposure\
+    \ is a second-order Greek which measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying index increases,\
+    \ market makers will need to sell more of the underlying asset to remain delta\
+    \ neutral, and vice versa"
+- condition: control
+  confidence: 85
+  date: '2024-01-29'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-29'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$29.96B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX suggests that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa if"
+- condition: control
+  confidence: 90
+  date: '2024-01-09'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Option buyers and\
+    \ sellers\",\n    \"what\": \"Market makers are forced to buy when prices are\
+    \ rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-09'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$35.61 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-06-26'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-06-26'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$30.51B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-03-18'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-03-18'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$29.90B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa i"
+- condition: control
+  confidence: 90
+  date: '2024-04-24'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Option buyers and\
+    \ sellers\",\n    \"what\": \"Market makers are forced to buy when prices are\
+    \ falling and sell when prices are rising to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-24'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$32.32B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying asset's price.\
+    \ A negative GEX indicates that market makers are net short gamma. This means\
+    \ that as the price of the underlying asset increases, market makers will have\
+    \ to sell more of the asset, and vice"
+- condition: control
+  confidence: 90
+  date: '2024-03-20'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-03-20'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$29.17B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-04-02'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-02'
+  detected: true
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\nThe Net GEX (Gamma Exposure) is -$34.43B. Gamma Exposure is a second-order\
+    \ Greek in options trading that measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying asset increases,\
+    \ market makers will have to sell more of the asset, and vice versa. This can\
+    \ lead to increased "
+- condition: control
+  confidence: 90
+  date: '2024-07-05'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-05'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$23.22B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 85
+  date: '2024-07-03'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 85\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-03'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$27.20B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-07-09'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-07-09'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$27.58B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying asset's price.\
+    \ A negative GEX indicates that market makers are net short gamma. This means\
+    \ that as the price of the underlying asset increases, market makers will have\
+    \ to sell more of the asset, and vice"
+- condition: control
+  confidence: 90
+  date: '2024-12-05'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-12-05'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure) is -$39.52B.\
+    \ Gamma Exposure is a second-order Greek in options trading that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-01-24'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-01-24'
+  detected: true
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$32.04 billion. Gamma Exposure is a second-order Greek that measures the\
+    \ rate of change of delta with respect to changes in the underlying price. A negative\
+    \ GEX indicates that market makers are net short gamma. This means that as the\
+    \ price of the underlying asset increases, market makers will have to sell more\
+    \ of the asset, and vice versa. "
+- condition: control
+  confidence: 90
+  date: '2024-04-01'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-04-01'
+  detected: true
+  response: "The given options market data provides information about a specific index,\
+    \ INDEX_1. \n\nThe Net GEX (Gamma Exposure) is -$32.91B. Gamma Exposure is a second-order\
+    \ Greek in options trading that measures the rate of change of delta with respect\
+    \ to changes in the underlying price. A negative GEX indicates that market makers\
+    \ are net short gamma. This means that as the price of the underlying asset increases,\
+    \ market makers will have to sell more of the asset, and vice versa. This can\
+    \ lead to increased "
+- condition: control
+  confidence: 90
+  date: '2024-09-13'
+  detected: true
+  response: "{\n    \"who\": \"Market makers\",\n    \"whom\": \"Institutional and\
+    \ retail investors\",\n    \"what\": \"Market makers are forced to buy when prices\
+    \ are rising and sell when prices are falling to hedge their negative gamma exposure\"\
+    ,\n    \"confidence\": 90\n}"
+- condition: treatment
+  confidence: null
+  date: '2024-09-13'
+  detected: false
+  response: "The given options market data provides information about a specific index\
+    \ (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX) for INDEX_1\
+    \ is -$29.15B. GEX is a measure of the overall exposure of options market makers\
+    \ to the underlying asset's price changes. A negative GEX, as in this case, suggests\
+    \ that market makers are net short gamma. This means that as the price of the\
+    \ underlying asset (INDEX_1) increases, market makers will have to sell more of\
+    \ it to remain delta neutral, an"
+test_metadata:
+  batch_id: batch_691f9468b10481909bff37b88156e78a
+  chi2: 22.347619047619048
+  control_detection_rate: 100.0
+  difference_pp: 38.46153846153846
+  issue: 'Issue #133 Phase 3 - CORRECTED'
+  p_value: 2.274949234774354e-06
+  test_date: '2025-11-20T17:25:07.760460'
+  total_dates: 52
+  treatment_detection_rate: 61.53846153846154

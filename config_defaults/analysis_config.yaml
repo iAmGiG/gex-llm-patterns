@@ -98,7 +98,7 @@ gex_calculation:
 llm_market_mechanics:
   autogen_client:
     # Model configuration
-    default_model: "gpt-4o"  # Default model for market mechanics
+    default_model: "o4-mini"  # Default model for market mechanics (Paper #2: Issue #89, #107, #108)
     default_temperature: 0.3  # Lower = more consistent (0.0-2.0)
     timeout_seconds: 30  # API timeout in seconds
     max_retries: 3  # Maximum retry attempts
@@ -115,7 +115,15 @@ llm_market_mechanics:
     confidence_default: 50  # Default if unparseable
 
   system_prompts:
-    # Market mechanics system prompt
+    # ========================================
+    # SYSTEM PROMPTS ORGANIZATION
+    # ========================================
+    # Paper #1: mechanics_analyst (single-day GEX detection)
+    # Paper #2 (archived): mechanics_analyst_5day_archived (5-day trajectories, abandoned Nov 5)
+    # Paper #2 (active): mechanics_analyst_regime (30-day regime detection)
+    # ========================================
+
+    # Market mechanics system prompt (Paper #1)
     mechanics_analyst: |
       You are a market mechanics analyst specializing in dealer positioning and forced hedging flows.
 
@@ -136,6 +144,83 @@ llm_market_mechanics:
       WHAT: [Specific forced action that will occur]
       MECHANICS: [Brief explanation of the causal chain]
       CONFIDENCE: [High/Medium/Low based on data clarity]
+
+    # ARCHIVED: 5-day trajectory prompt (Nov 4, 2025 - abandoned Nov 5, 2025)
+    # Used during 5-day sequential approach testing (Oct 31 - Nov 5, 2025)
+    # Replaced by 30-day regime detection (see mechanics_analyst_regime below)
+    mechanics_analyst_5day_archived: |
+      You are a market mechanics analyst specializing in dealer gamma exposure and hedging constraints.
+
+      Your task is to assess WHETHER dealer hedging constraints are present based on 5-day gamma trajectories.
+
+      PATTERN DEFINITIONS:
+
+      1. ACCUMULATION: Net GEX magnitude INCREASES over 5 days (dealers take on more gamma risk)
+         - Example: |GEX| grows from $13B → $17B (±20% or more)
+         - Mechanism: Option buyers force dealers to carry larger gamma positions
+         - Trajectory: Sustained upward bias in |GEX| with at most 1 counter-trend day
+
+      2. RELIEF: Net GEX magnitude DECREASES over 5 days (dealers shed gamma risk)
+         - Example: |GEX| shrinks from $17B → $12B (±20% or more)
+         - Mechanism: Options expire or get closed, reducing dealer hedging needs
+         - Trajectory: Sustained downward bias in |GEX| with at most 1 counter-trend day
+
+      3. REVERSAL: Net GEX CHANGES SIGN once and sustains new regime
+         - Example: +$15B → -$5B (dealers flip from long to short gamma)
+         - Mechanism: Underlying price crosses gamma flip point, forcing regime change
+         - Trajectory: ONE sign change that holds for at least 2 days in new regime
+         - REJECT: Multiple sign flips (e.g., +10 → -5 → +8 → -12) = random noise
+
+      4. PERSISTENT: Net GEX magnitude STABLE over 5 days (within ±20%)
+         - Example: $13B → $14B → $13.5B → $13B → $14B (oscillates but no trend)
+         - Mechanism: Balanced gamma positions, no directional pressure
+         - Trajectory: Stable magnitude with sign consistency or minimal variation
+
+      5. NONE: No clear trajectory (negligible GEX <$1B, or truly random noise)
+         - Random noise indicators: Multiple reversals in direction, wild swings, no sustained trend
+         - Negligible gamma: All 5 days below $1B threshold
+
+      DETECTION CRITERIA:
+
+      ✅ DETECT IF:
+      - Net DIRECTION over 5 days shows clear accumulation/relief/reversal/persistent
+      - Trajectory is SUSTAINED: same directional bias for 3+ of 5 days
+      - Day-to-day variation is NORMAL (±10-20% rebalancing noise is OK)
+      - For REVERSAL: only ONE sign flip with new regime sustained 2+ days
+
+      ❌ REJECT AS RANDOM NOISE IF:
+      - GEX magnitude too small (<$1B entire window) to constrain dealers
+      - Multiple direction changes: up-down-up-down with no net bias
+      - Sign flips 2+ times in 5 days (not a reversal, just noise)
+      - Large swings cancel out: T-4 to T+0 magnitude change <20% despite wild intra-period moves
+      - Endpoint comparison misleads: e.g., $2B → $6B looks like accumulation, but path is +18 → -8 → +7 → -19 → +6 (random)
+
+      IMPORTANT GUIDELINES:
+
+      - **5-day windows naturally show variation** - don't demand perfect smoothness
+      - Focus on TRAJECTORY CONSISTENCY, not just T-4 to T+0 endpoints
+      - Check the PATH: Does the series show sustained directional bias, or just random walk?
+      - GEX dynamics are INHERENTLY noisy, but NOT randomly reversing multiple times
+      - 1-2 counter-trend days OK, but 3+ reversals = reject as noise
+      - "Noisy" ≠ "random" - normal noise has a directional bias, random noise does not
+      - Confidence should reflect trajectory clarity, not smoothness
+
+      CONFIDENCE SCALE:
+      - 70-100: Clear sustained trajectory with at most 1 counter-trend day
+      - 40-70: Moderate trajectory, 2 counter-trend days but net direction evident
+      - 1-40: Weak signals, 3 counter-trend days, trajectory barely discernible
+      - 0: No trajectory (negligible GEX, or random noise with multiple reversals)
+
+      Format your response as JSON with fields: pattern_detected (boolean), trajectory_type, confidence (0-100), reasoning.
+
+    # 30-Day Regime Detection Prompt (Paper #2 - Nov 5, 2025 pivot)
+    # NOTE: Full prompt defined in docs/papers/paper2/prompts/regime_detection_v1.md
+    # This config will be updated when regime prompt is integrated into MechanicsPromptBuilder
+    mechanics_analyst_regime: |
+      Placeholder for 30-day regime detection prompt.
+      See: docs/papers/paper2/prompts/regime_detection_v1.md
+
+      Implementation pending: Integration with MechanicsPromptBuilder.build_regime_prompt()
 
   batch_processor:
     # Batch LLM processing configuration
@@ -233,3 +318,46 @@ strike_level_patterns:
       min_gamma_concentration: 0.15      # 15% gamma concentration
       require_gamma_walls: true          # Gamma resistance/support required
       base_confidence: 0.75               # Base confidence level
+
+# ==============================================================================
+# Paper #2 Regime Classification
+# Extracted from src/validation/regime_classifier.py (November 2025, Issue #149)
+# ==============================================================================
+
+regime_classification:
+  # Classification thresholds for 30-day regime windows
+  # Used by: RegimeClassifier, validate_regime_windows_batch.py
+  # Validated with: 1,418 windows across 2020-2025 (o4-mini model)
+
+  # Persistence threshold: Minimum fraction of days with same sign
+  # Example: 0.70 means 21+ out of 30 days must be same sign (positive or negative)
+  persistence_threshold: 0.70  # 70% of days (21/30) same sign
+
+  # Magnitude threshold: Minimum average GEX magnitude for persistent regime
+  # Example: 5000000000 means average absolute GEX must be ≥$5B across 30 days
+  magnitude_threshold: 5000000000  # $5B average GEX
+
+  # Stability threshold: Maximum sign flips allowed for persistent regime
+  # Example: 5 means ≤5 transitions between positive/negative GEX across 30 days
+  max_sign_flips: 5  # Max flips for persistent regime
+
+  # Low conviction threshold: Below this magnitude, regime is too weak even if persistent
+  # Example: 3000000000 means avg <$3B is rejected as "low conviction"
+  low_conviction_threshold: 3000000000  # $3B weak magnitude cutoff
+
+  # Window parameters
+  window_size: 30  # Days in regime window (fixed for Paper #2)
+
+  # Rationale (for documentation and sensitivity analysis)
+  rationale:
+    persistence: "70% ensures dominant regime (21/30 days). Lower thresholds (60%) would include transitional periods."
+    magnitude: "$5B threshold derived from Paper #1 detection rates. Below this, dealer constraints are insufficient to force directional flows."
+    sign_flips: "≤5 flips allows minor volatility while maintaining regime stability. >5 flips indicates transitional period."
+    low_conviction: "$3B floor prevents weak regimes from being classified as persistent, even with high sign persistence."
+
+  # Expected detection rates (empirical from 2020-2025 validation)
+  expected_detection_rates:
+    pre_0dte_era: 0.12   # 2020: 12.1% (low magnitude, mixed regimes)
+    post_0dte_stable: 1.0  # 2021-2023, 2025: 100% (high magnitude, persistent negative)
+    volatile_period: 0.81  # 2024: 81.2% (sign flip failures during Feb-Mar volatility)
+    overall_mean: 0.30_to_0.50  # Expected selectivity (not universal 98-100%)

@@ -9,7 +9,7 @@
 
 ## Intended Workflow (Your Vision)
 
-```
+```bash
 1. DATA_AGENT: Get data → Store in cache → Calculate GEX
 2. PATTERN_AGENT: Identify patterns → Analyze signals  
 3. BACKTEST_AGENT: Historical validation → Statistical analysis
@@ -82,21 +82,21 @@ Human/Claude → Direct script execution → Analysis → Results
 
 1. **Market Regime Classification**
 
-   ```
+   ```bash
    "Analyze: VIX at 15, Fed hawkish, earnings season starting, GEX negative.
    What market regime are we in and how should patterns be weighted?"
    ```
 
 2. **Pattern Context Enhancement**
 
-   ```
+   ```bash
    "GAMMA_TRAP detected at 75% confidence. Recent Fed speakers, Tesla earnings tomorrow, 
    OpEx Friday. Should we trade this pattern or wait?"
    ```
 
 3. **Multi-Factor Analysis**
 
-   ```
+   ```bash
    "Combine: GEX flip point at 4500, Fed stress index 0.3, VIX term structure inverted,
    news sentiment bearish. Generate trading recommendation."
    ```

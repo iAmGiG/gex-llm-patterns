@@ -19,32 +19,29 @@ Usage:
     python scripts/database/rebuild_gex_database.py --start-date 2024-01-01 --end-date 2024-12-31 --symbol SPY
 """
 
-import sys
-from pathlib import Path
-import logging
 import argparse
+import logging
 import shutil
-from datetime import datetime
 import sqlite3
+import sys
+from datetime import datetime
+from pathlib import Path
+
+from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
+from src.gex.gex_calculator import GEXCalculator
+from src.utils.date_utils import date_range_trading_days
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
-from src.cache.unified_cache import UnifiedCacheManager
-from src.gex.gex_calculator import GEXCalculator
-from src.utils.date_utils import date_range_trading_days
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 def backup_database(db_path: Path) -> Path:
-    """
-    Create timestamped backup of existing database.
+    """Create timestamped backup of existing database.
 
     Args:
         db_path: Path to database file
@@ -57,8 +54,8 @@ def backup_database(db_path: Path) -> Path:
         return None
 
     # Create backup with timestamp
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_dir = db_path.parent / 'backups'
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_dir = db_path.parent / "backups"
     backup_dir.mkdir(exist_ok=True)
 
     backup_path = backup_dir / f"{db_path.stem}_backup_{timestamp}{db_path.suffix}"
@@ -84,10 +81,8 @@ def backup_database(db_path: Path) -> Path:
         return None
 
 
-def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
-                     sample_dates: list) -> dict:
-    """
-    Validate rebuilt database against fresh calculations.
+def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager, sample_dates: list) -> dict:
+    """Validate rebuilt database against fresh calculations.
 
     Args:
         db_path: Path to rebuilt database
@@ -107,37 +102,26 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
     for date in sample_dates:
         # Get database value
         cursor = conn.execute(
-            "SELECT total_gex, spot_price FROM daily_gex_metrics WHERE date = ? AND symbol = 'SPY'",
-            (date,)
+            "SELECT total_gex, spot_price FROM daily_gex_metrics WHERE date = ? AND symbol = 'SPY'", (date,)
         )
         row = cursor.fetchone()
 
         if not row:
-            validation_results.append({
-                'date': date,
-                'status': 'MISSING',
-                'db_gex': None,
-                'fresh_gex': None
-            })
+            validation_results.append({"date": date, "status": "MISSING", "db_gex": None, "fresh_gex": None})
             continue
 
         db_gex = row[0]
         spot_price = row[1]
 
         # Get fresh calculation
-        options_data = cache_manager.get_options_data('SPY', date)
+        options_data = cache_manager.get_options_data("SPY", date)
         if options_data is None or options_data.empty:
-            validation_results.append({
-                'date': date,
-                'status': 'NO_OPTIONS_DATA',
-                'db_gex': db_gex,
-                'fresh_gex': None
-            })
+            validation_results.append({"date": date, "status": "NO_OPTIONS_DATA", "db_gex": db_gex, "fresh_gex": None})
             continue
 
         try:
             fresh_calc = gex_calc.calculate_gex_profile(options_data, spot_price)
-            fresh_gex = fresh_calc.get('net_gex', 0)
+            fresh_gex = fresh_calc.get("net_gex", 0)
 
             # Check match (within 1%)
             if abs(fresh_gex) > 0:
@@ -146,34 +130,31 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
             else:
                 match = abs(db_gex) < 1e6  # Both near zero
 
-            validation_results.append({
-                'date': date,
-                'status': 'MATCH' if match else 'MISMATCH',
-                'db_gex': db_gex,
-                'fresh_gex': fresh_gex,
-                'ratio': ratio if 'ratio' in locals() else None
-            })
+            validation_results.append(
+                {
+                    "date": date,
+                    "status": "MATCH" if match else "MISMATCH",
+                    "db_gex": db_gex,
+                    "fresh_gex": fresh_gex,
+                    "ratio": ratio if "ratio" in locals() else None,
+                }
+            )
 
         except Exception as e:
             logger.error(f"Validation error for {date}: {e}")
-            validation_results.append({
-                'date': date,
-                'status': 'ERROR',
-                'db_gex': db_gex,
-                'error': str(e)
-            })
+            validation_results.append({"date": date, "status": "ERROR", "db_gex": db_gex, "error": str(e)})
 
     conn.close()
 
     # Calculate stats
-    matches = sum(1 for r in validation_results if r['status'] == 'MATCH')
+    matches = sum(1 for r in validation_results if r["status"] == "MATCH")
     total = len(validation_results)
 
     report = {
-        'total_validated': total,
-        'matches': matches,
-        'match_rate': (matches / total * 100) if total > 0 else 0,
-        'results': validation_results
+        "total_validated": total,
+        "matches": matches,
+        "match_rate": (matches / total * 100) if total > 0 else 0,
+        "results": validation_results,
     }
 
     logger.info(f"  Validation: {matches}/{total} matches ({report['match_rate']:.1f}%)")
@@ -181,10 +162,8 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager,
     return report
 
 
-def rebuild_database(db_path: Path, start_date: str, end_date: str,
-                     symbol: str = 'SPY', force: bool = False):
-    """
-    Rebuild database with fresh GEX calculations.
+def rebuild_database(db_path: Path, start_date: str, end_date: str, symbol: str = "SPY", force: bool = False):
+    """Rebuild database with fresh GEX calculations.
 
     Args:
         db_path: Path to database file
@@ -201,7 +180,7 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
     if db_path.exists():
         if not force:
             response = input(f"\n⚠️  This will rebuild {db_path}. Continue? (yes/no): ")
-            if response.lower() != 'yes':
+            if response.lower() != "yes":
                 logger.info("Rebuild cancelled.")
                 return
 
@@ -217,10 +196,7 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
     # Initialize builder with current GEXCalculator
     logger.info(f"\nInitializing builder with current GEXCalculator...")
     cache_manager = UnifiedCacheManager()
-    builder = HistoricalGEXDatabaseBuilder(
-        database_path=str(db_path),
-        cache_manager=cache_manager
-    )
+    builder = HistoricalGEXDatabaseBuilder(database_path=str(db_path), cache_manager=cache_manager)
 
     # Get trading days in range
     trading_days = date_range_trading_days(start_date, end_date)
@@ -229,11 +205,7 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
     # Build database
     logger.info(f"\nStarting rebuild...")
     try:
-        builder.build_gex_database(
-            symbols=[symbol],
-            start_date=start_date,
-            end_date=end_date
-        )
+        builder.build_gex_database(symbols=[symbol], start_date=start_date, end_date=end_date)
         logger.info(f"✅ Database rebuild complete!")
 
     except Exception as e:
@@ -241,10 +213,10 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
         raise
 
     # Validate rebuild
-    sample_dates = trading_days[::max(1, len(trading_days) // 20)]  # Sample ~20 dates
+    sample_dates = trading_days[:: max(1, len(trading_days) // 20)]  # Sample ~20 dates
     validation = validate_rebuild(db_path, cache_manager, sample_dates)
 
-    if validation['match_rate'] >= 95:
+    if validation["match_rate"] >= 95:
         logger.info(f"\n✅ REBUILD SUCCESSFUL - {validation['match_rate']:.1f}% validation match")
     else:
         logger.warning(f"\n⚠️  REBUILD COMPLETED WITH WARNINGS - {validation['match_rate']:.1f}% validation match")
@@ -266,49 +238,19 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str,
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Rebuild GEX database with fresh calculations'
-    )
-    parser.add_argument(
-        '--start-date',
-        type=str,
-        default='2024-01-01',
-        help='Start date (YYYY-MM-DD)'
-    )
-    parser.add_argument(
-        '--end-date',
-        type=str,
-        default='2024-12-31',
-        help='End date (YYYY-MM-DD)'
-    )
-    parser.add_argument(
-        '--symbol',
-        type=str,
-        default='SPY',
-        help='Trading symbol (default: SPY)'
-    )
-    parser.add_argument(
-        '--database',
-        type=str,
-        default='.cache/consolidated_historical.db',
-        help='Database path'
-    )
-    parser.add_argument(
-        '--force',
-        action='store_true',
-        help='Skip confirmation prompt'
-    )
+    parser = argparse.ArgumentParser(description="Rebuild GEX database with fresh calculations")
+    parser.add_argument("--start-date", type=str, default="2024-01-01", help="Start date (YYYY-MM-DD)")
+    parser.add_argument("--end-date", type=str, default="2024-12-31", help="End date (YYYY-MM-DD)")
+    parser.add_argument("--symbol", type=str, default="SPY", help="Trading symbol (default: SPY)")
+    parser.add_argument("--database", type=str, default=".cache/consolidated_historical.db", help="Database path")
+    parser.add_argument("--force", action="store_true", help="Skip confirmation prompt")
 
     args = parser.parse_args()
 
     db_path = Path(args.database)
 
     rebuild_database(
-        db_path=db_path,
-        start_date=args.start_date,
-        end_date=args.end_date,
-        symbol=args.symbol,
-        force=args.force
+        db_path=db_path, start_date=args.start_date, end_date=args.end_date, symbol=args.symbol, force=args.force
     )
 
 

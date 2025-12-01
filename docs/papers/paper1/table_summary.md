@@ -21,6 +21,7 @@ This document consolidates all tables referenced in the paper for easy formattin
 | Event | "Fed meeting" | [removed] | Remove narrative context |
 
 **LaTeX Notes**:
+
 - Use `\texttt{}` for technical examples (dates, tickers)
 - Bold the "Purpose" column headers
 - Consider `tabularx` for better column width management
@@ -41,6 +42,7 @@ This document consolidates all tables referenced in the paper for easy formattin
 | **Average** | **71.5%** | **[68.1%, 74.9%]** | **91.2%** | **✅ MECHANICAL** |
 
 **LaTeX Notes**:
+
 - Bold the "Average" row
 - Use checkmark symbol: `\checkmark`
 - Right-align numerical columns
@@ -62,6 +64,7 @@ This document consolidates all tables referenced in the paper for easy formattin
 | **Average** | **100.0%** | **71.5%** | **-28.5%** | **92.2%** | **91.2%** |
 
 **LaTeX Notes**:
+
 - Use `$\Delta$` for delta symbol
 - Negative values in "Absolute Δ" column should use minus sign (not hyphen): `$-$30.6\%`
 - Bold the "Average" row
@@ -110,20 +113,24 @@ For IEEE two-column format, use these packages:
 ## IEEE Format Guidelines
 
 **Table Placement**:
+
 - Tables should appear at top or bottom of column (not mid-text)
 - Use `\begin{table}[t]` for top placement (preferred)
 - Use `\begin{table}[b]` for bottom placement
 
 **Caption Style**:
+
 - Caption above table (IEEE style)
 - Format: `\caption{Brief descriptive title}`
 - Full explanation in caption text below title
 
 **Font Size**:
+
 - Table content: `\small` or `\footnotesize` (9pt or 8pt)
 - Caption: `\normalsize` (10pt)
 
 **Column Width**:
+
 - IEEE two-column width: 3.5 inches (89mm)
 - Single column width for narrow tables: 3.5 inches
 - Full page width for wide tables: 7 inches (use `table*` environment)

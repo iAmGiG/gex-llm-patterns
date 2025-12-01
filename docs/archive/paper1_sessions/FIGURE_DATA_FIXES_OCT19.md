@@ -24,6 +24,7 @@
 ## Detailed Changes
 
 ### Figure 1: Pattern Detection Performance Metrics
+
 **File**: `figure6_pattern_performance_bars_yaml.png`
 **Script**: `scripts/visualization/generate_figure1_pattern_performance.py`
 
@@ -31,7 +32,8 @@
 **Root Cause**: Stats box was counting total tests instead of actual high-confidence detections
 
 **Fix Applied**:
-```
+
+```text
 Total tests: 726 (242 days × 3 patterns)
 Detected: 519 (71.5%)  ← CORRECTED from 726 (100%)
 Avg accuracy: 91.2%
@@ -39,6 +41,7 @@ Overall success: 65.2%
 ```
 
 **Data Source**:
+
 - Gamma Positioning: 168 high-conf detections (69.4% rate)
 - Stock Pinning: 163 high-conf detections (67.4% rate)
 - 0DTE Hedging: 188 high-conf detections (77.7% rate)
@@ -47,6 +50,7 @@ Overall success: 65.2%
 ---
 
 ### Figure 2: Impact of Prompt Bias on Detection Rates
+
 **File**: `figure7_detection_comparison_yaml.png`
 **Script**: `scripts/visualization/generate_figure2_prompt_bias.py`
 
@@ -54,22 +58,26 @@ Overall success: 65.2%
 **Root Cause**: Using Q3+Q4 average (92.2%) instead of Q3 value (100%)
 
 **Fix Applied**:
+
 - Gamma Positioning (Biased): 92% → **100%**
 - Stock Pinning (Biased): 100% (unchanged)
 - 0DTE Hedging (Biased): 100% (unchanged)
 
 **Delta Values Updated**:
+
 - Gamma: Δ=-30.6% (was Δ=-22.8%)
 - Stock: Δ=-32.6% (unchanged)
 - 0DTE: Δ=-22.3% (unchanged)
 
 **Data Source**:
+
 - Q3 2024: `gamma_positioning_SPY_2024Q3.yaml` (line 15: detection_rate_pct: 100.0)
 - Full 2024: `gamma_positioning_SPY_2024_unbiased.yaml` (line 16: detection_rate_pct: 69.42)
 
 ---
 
 ### Figure 3: Pattern Detection Validation Funnel
+
 **File**: `figure8_validation_funnel_yaml.png`
 **Script**: `scripts/visualization/generate_figure3_validation_funnel.py`
 
@@ -77,7 +85,8 @@ Overall success: 65.2%
 **Root Cause**: Minor rounding error in materialized predictions count
 
 **Fix Applied**:
-```
+
+```text
 Total Tests: 726
   ↓ 71.5% detection rate
 LLM Detection: 519 tests
@@ -88,6 +97,7 @@ Overall Success: 65.2% (473/726)
 ```
 
 **Calculation Verification**:
+
 - Gamma: 168 × 0.925 = 155.4 materialized
 - Stock: 163 × 0.904 = 147.4 materialized
 - 0DTE: 188 × 0.908 = 170.7 materialized
@@ -97,6 +107,7 @@ Overall Success: 65.2% (473/726)
 ---
 
 ### Figure 8: Distribution of Detection Confidence Scores
+
 **File**: `figure5_confidence_distribution.png`
 **Script**: `scripts/visualization/generate_figure8_confidence_distribution.py`
 
@@ -104,7 +115,8 @@ Overall Success: 65.2% (473/726)
 **Root Cause**: Confusing two different metrics (confidence threshold vs detection rate)
 
 **Fix Applied**:
-```
+
+```text
 Stats box now shows:
 - Gamma Positioning: 82.9% mean, 69.0% detected  ← CORRECTED
 - Stock Pinning: 83.2% mean, 66.9% detected     ← CORRECTED
@@ -112,11 +124,13 @@ Stats box now shows:
 ```
 
 **Clarification**:
+
 - **100% ≥60%**: All DETECTED patterns have confidence ≥60% (by definition)
 - **69.4% detection rate**: Only 69.4% of days result in high-confidence detections
 - These are two different metrics measuring different things
 
 **Data Source**:
+
 - Detection rates from YAML performance_metrics (lines 16)
 - Confidence distributions simulated based on mean confidence values
 
@@ -125,12 +139,14 @@ Stats box now shows:
 ## Verification Checklist
 
 ### Data Accuracy
+
 - ✅ All values match YAML validation files exactly
 - ✅ Math verified: 519/726 = 71.5%, 473/519 = 91.1%
 - ✅ Detection rates: 69.4%, 67.4%, 77.7% (from YAML)
 - ✅ Accuracy rates: 92.5%, 90.4%, 90.8% (from YAML)
 
 ### Visual Quality
+
 - ✅ All labels clearly readable
 - ✅ No overlapping text elements
 - ✅ Stats boxes positioned correctly
@@ -138,6 +154,7 @@ Stats box now shows:
 - ✅ Consistent styling across all figures
 
 ### File Management
+
 - ✅ All scripts saved in `scripts/visualization/`
 - ✅ All figures saved in `docs/papers/paper1/figures/`
 - ✅ Original filenames preserved for compatibility
@@ -172,6 +189,7 @@ Stats box now shows:
 ## Data Sources Referenced
 
 ### YAML Files Used:
+
 1. `reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml`
    - Line 16: detection_rate_pct: 69.42148760330579
    - Line 17: high_confidence_detections: 168
@@ -195,6 +213,7 @@ Stats box now shows:
 ## Outstanding Items (Optional Enhancements)
 
 ### Minor Adjustments (Not Critical)
+
 - ⏳ **Figure 4**: Consider making GPT-o3-mini box slightly larger (cosmetic)
 - ⏳ **Figure 6**: Consider adding accuracy line to Detection vs Profitability chart
 
@@ -211,6 +230,7 @@ These are suggested enhancements, not data errors. Current figures are publicati
 **Publication Ready**: ✅ All 8 figures ready for submission
 
 **Quality Level**: HIGHEST
+
 - Accurate data representation
 - Professional appearance
 - Scientifically rigorous
@@ -221,7 +241,8 @@ These are suggested enhancements, not data errors. Current figures are publicati
 ## File Modifications Summary
 
 ### Scripts Created (4 new files):
-```
+
+```text
 scripts/visualization/generate_figure1_pattern_performance.py
 scripts/visualization/generate_figure2_prompt_bias.py
 scripts/visualization/generate_figure3_validation_funnel.py
@@ -229,7 +250,8 @@ scripts/visualization/generate_figure8_confidence_distribution.py
 ```
 
 ### Figures Updated (4 files):
-```
+
+```text
 docs/papers/paper1/figures/figure6_pattern_performance_bars_yaml.png
 docs/papers/paper1/figures/figure7_detection_comparison_yaml.png
 docs/papers/paper1/figures/figure8_validation_funnel_yaml.png

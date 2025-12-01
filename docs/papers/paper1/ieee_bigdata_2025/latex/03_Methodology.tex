@@ -1,0 +1,143 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Research Questions}
+
+We investigate whether large language models can detect structural market patterns—specifically dealer hedging constraints—through pure reasoning about market mechanics rather than pattern matching against training data. This requires answering three fundamental questions:
+
+\textbf{RQ1: Pattern Detection.} Can LLMs identify dealer hedging patterns when all temporal context is removed through obfuscation?
+
+\textbf{RQ2: Causal Understanding.} Do detected patterns reflect genuine understanding of market mechanics (WHO forces WHOM to do WHAT) rather than statistical correlation?
+
+\textbf{RQ3: Robustness.} Does detection capability persist across different pattern framings and market regimes?
+
+These questions test whether transformer architectures develop emergent understanding of complex financial constraints during training, with implications for both AI capabilities and market analysis methodologies.
+
+\subsection{Obfuscation Testing Methodology}
+
+The core innovation of our methodology lies in obfuscation testing—systematically removing temporal and contextual information while preserving structural market mechanics. If LLMs truly understand market patterns, they should detect dealer constraints from pure structural relationships without temporal cues that might trigger memorized associations.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig1_obfuscation_example.png}
+\caption{Temporal obfuscation methodology. Left: Original data with dates, ticker symbols, and market context. Right: Obfuscated data preserving only structural quantitative relationships while removing all temporal and contextual information.}
+\label{fig:obfuscation}
+\end{figure}
+
+Figure~\ref{fig:obfuscation} illustrates this transformation process. The obfuscation protocol involves five key steps:
+
+\textbf{Temporal Obfuscation Protocol:}
+\begin{enumerate}
+\item Convert absolute dates (``2024-01-16'') to relative format (``Day T+0'')
+\item Replace ticker symbols (``SPY'') with generic identifiers (``INDEX\_1'')
+\item Remove market events (``Fed meeting'', ``earnings'')
+\item Strip volatility regime context (``VIX at 14'')
+\item Eliminate day-of-week patterns (``Monday'', ``OpEx Friday'')
+\end{enumerate}
+
+\textbf{Preserved Information:}
+\begin{itemize}
+\item Net gamma exposure values (\$GEX in billions)
+\item Directional gamma (calls vs. puts)
+\item Spot price and flip point levels
+\item Relative time progression (T+1, T+2)
+\item Concentration metrics (percentages)
+\end{itemize}
+
+This approach forces LLMs to identify patterns from quantitative relationships alone. A model memorizing ``January 2024 SPY negative gamma'' cannot succeed when presented with ``Day T+0 INDEX\_1 GEX: -\$32B''. Only genuine structural understanding enables pattern detection under these conditions.
+
+\subsection{Causal Framework: \texorpdfstring{WHO$\rightarrow$WHOM$\rightarrow$WHAT}{WHO→WHOM→WHAT}}
+
+Beyond detecting patterns, we require models to articulate causal mechanisms using a structured framework:
+
+\textbf{WHO:} The economic actor with structural constraints
+\begin{itemize}
+\item Example: ``Dealers with negative gamma exposure''
+\item Must identify the constrained party (not just ``the market'')
+\end{itemize}
+
+\textbf{WHOM:} The affected market participants
+\begin{itemize}
+\item Example: ``Directional traders and market makers''
+\item Must specify who faces impact from WHO's actions
+\end{itemize}
+
+\textbf{WHAT:} The forced action and mechanism
+\begin{itemize}
+\item Example: ``Must sell rallies and buy dips to maintain delta neutrality, amplifying volatility''
+\item Must explain both action and consequence
+\end{itemize}
+
+This framework prevents vague pattern claims (``bullish setup'') and requires specific mechanical understanding. The 91.2\% accuracy of predictions from detected patterns validates that this framework captures genuine market dynamics.
+
+\textbf{Causality Framework vs. Causal Testing.} Our WHO→WHOM→WHAT
+framework tests whether LLMs can identify established causal mechanisms
+from structural data, not whether those mechanisms exist. Prior work
+has demonstrated the causal link between dealer gamma positioning and
+market volatility through both theory \cite{frey1997market} and
+empirics \cite{ni2022}. We assume these causal relationships as given
+and test whether LLMs can detect them without temporal context.
+Validating the underlying causality through Granger tests or similar
+econometric methods, while valuable, lies outside our scope of
+evaluating LLM reasoning capabilities.
+To ensure this framework generalizes across different conceptual
+framings, we test three distinct narrative presentations of the
+same underlying dealer hedging mechanism.
+
+\subsection{Multi-Pattern Validation Design}
+
+To ensure robustness, we test three different narrative framings of the same underlying dealer constraint:
+
+\begin{table}[h]
+\centering
+\caption{Three Pattern Framings of Dealer Hedging Constraints}
+\label{tab:patterns}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Pattern & Framing & Detection & WHO & WHAT \\
+ & Type & Focus & (Actor) & (Mechanism) \\
+\midrule
+Gamma & Technical & Greek & Dealers with & Pro-cyclical \\
+Positioning &  & exposure & negative $\Gamma$ & hedging \\
+\midrule
+Stock & Behavioral & Strike & Market & Gravitational \\
+Pinning &  & magnetism & makers & convergence \\
+\midrule
+0DTE & Temporal & Expiration & Option & Rapid \\
+Hedging &  & dynamics & writers & rebalancing \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+All three patterns in Table~\ref{tab:patterns} reflect the same structural reality—dealers hedging option exposure—but use different conceptual lenses. Consistent detection across framings (averaging 71.5\%) validates genuine pattern understanding rather than keyword matching.
+
+\subsection{Validation Criteria}
+
+We establish three levels of validation with increasing stringency:
+
+\textbf{Level 1: Detection Rate}
+\begin{itemize}
+\item Threshold: Pattern identified in $\geq$60\% of test cases
+\item Rationale: Exceeds random chance (50\%) with statistical significance
+\item Result: 71.5\% average detection across patterns
+\end{itemize}
+
+\textbf{Level 2: Prediction Accuracy}
+\begin{itemize}
+\item Threshold: Forward market behavior matches prediction in $\geq$80\% of detections
+\item Rationale: Validates that detected patterns have predictive power
+\item Result: 91.2\% accuracy across all detections
+\end{itemize}
+
+\textbf{Level 3: Causal Attribution}
+\begin{itemize}
+\item Threshold: WHO$\rightarrow$WHOM$\rightarrow$WHAT correctly specified in $\geq$90\% of detections
+\item Rationale: Confirms mechanical understanding, not just pattern recognition
+\item Result: 100\% correct causal attribution for detected patterns
+\end{itemize}
+
+Our results exceed all thresholds, demonstrating both pattern recognition and mechanical understanding. The divergence between stable detection rates and declining economic profitability (Figure~\ref{fig:quarterly_stability} in Results) further validates that LLMs identify structural constraints rather than optimizing for profitable patterns.
+
+\textbf{Interpretability Considerations.} Our validation framework acknowledges the black-box nature of transformer models while providing multiple lines of evidence for genuine reasoning. We cannot trace internal attention mechanisms or explain why specific model parameters encode dealer constraints. Instead, we validate reasoning indirectly: obfuscation testing removes memorization pathways, the WHO→WHOM→WHAT framework requires explicit causal chains, materialization rates verify output accuracy, and statistical tests confirm predictive relationships. This approach shifts the interpretability burden from "explain internal representations" (intractable for 175B+ parameter models) to "validate reasoning through outputs" (empirically testable).

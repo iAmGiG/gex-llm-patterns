@@ -1,33 +1,29 @@
-"""
-Database Integrity Validation Script
+"""Database Integrity Validation Script.
 
-Compares database GEX values against fresh calculations to identify corruption.
-Checks all tables for data quality issues.
+Compares database GEX values against fresh calculations to identify corruption. Checks all tables for data quality
+issues.
 """
 
+import logging
 import sqlite3
 import sys
 from pathlib import Path
-import pandas as pd
-import logging
 
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import pandas as pd
 
 from src.cache.unified_cache import UnifiedCacheManager
 from src.gex.gex_calculator import GEXCalculator
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
-def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager,
-                      sample_size: int = 20):
-    """
-    Validate GEX data in database against fresh calculations.
+def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager, sample_size: int = 20):
+    """Validate GEX data in database against fresh calculations.
 
     Args:
         db_path: Path to database
@@ -55,74 +51,63 @@ def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager,
 
     results = []
     for _, row in db_samples.iterrows():
-        symbol = row['symbol']
-        date = row['date']
-        db_gex = row['total_gex']
-        spot_price = row['spot_price']
+        symbol = row["symbol"]
+        date = row["date"]
+        db_gex = row["total_gex"]
+        spot_price = row["spot_price"]
 
         # Get fresh options data
         options_data = cache_manager.get_options_data(symbol, date)
 
         if options_data is None or options_data.empty:
-            results.append({
-                'date': date,
-                'status': 'NO_DATA',
-                'db_gex': db_gex,
-                'fresh_gex': None,
-                'discrepancy': None
-            })
+            results.append(
+                {"date": date, "status": "NO_DATA", "db_gex": db_gex, "fresh_gex": None, "discrepancy": None}
+            )
             continue
 
         # Calculate fresh GEX
         try:
-            fresh_calc = gex_calc.calculate_gex_profile(
-                options_data,
-                spot_price if spot_price else None
-            )
-            fresh_gex = fresh_calc.get('net_gex', 0)
+            fresh_calc = gex_calc.calculate_gex_profile(options_data, spot_price if spot_price else None)
+            fresh_gex = fresh_calc.get("net_gex", 0)
 
             # Calculate discrepancy
             if db_gex and fresh_gex:
-                ratio = abs(fresh_gex / db_gex) if db_gex != 0 else float('inf')
+                ratio = abs(fresh_gex / db_gex) if db_gex != 0 else float("inf")
                 sign_match = (db_gex > 0) == (fresh_gex > 0)
 
-                status = 'OK' if (0.9 < ratio < 1.1 and sign_match) else 'CORRUPT'
+                status = "OK" if (0.9 < ratio < 1.1 and sign_match) else "CORRUPT"
             else:
                 ratio = None
-                status = 'MISSING'
+                status = "MISSING"
 
-            results.append({
-                'date': date,
-                'status': status,
-                'db_gex': db_gex,
-                'fresh_gex': fresh_gex,
-                'discrepancy_ratio': ratio,
-                'sign_match': sign_match if 'sign_match' in locals() else None
-            })
+            results.append(
+                {
+                    "date": date,
+                    "status": status,
+                    "db_gex": db_gex,
+                    "fresh_gex": fresh_gex,
+                    "discrepancy_ratio": ratio,
+                    "sign_match": sign_match if "sign_match" in locals() else None,
+                }
+            )
 
         except Exception as e:
             logger.error(f"Error calculating fresh GEX for {date}: {e}")
-            results.append({
-                'date': date,
-                'status': 'ERROR',
-                'db_gex': db_gex,
-                'fresh_gex': None,
-                'error': str(e)
-            })
+            results.append({"date": date, "status": "ERROR", "db_gex": db_gex, "fresh_gex": None, "error": str(e)})
 
     conn.close()
 
     # Generate report
     results_df = pd.DataFrame(results)
-    corrupt_count = len(results_df[results_df['status'] == 'CORRUPT'])
-    ok_count = len(results_df[results_df['status'] == 'OK'])
+    corrupt_count = len(results_df[results_df["status"] == "CORRUPT"])
+    ok_count = len(results_df[results_df["status"] == "OK"])
 
     report = {
-        'total_checked': len(results),
-        'corrupt': corrupt_count,
-        'ok': ok_count,
-        'corrupt_pct': (corrupt_count / len(results) * 100) if len(results) > 0 else 0,
-        'details': results_df
+        "total_checked": len(results),
+        "corrupt": corrupt_count,
+        "ok": ok_count,
+        "corrupt_pct": (corrupt_count / len(results) * 100) if len(results) > 0 else 0,
+        "details": results_df,
     }
 
     return report
@@ -145,10 +130,7 @@ def check_database_schema(db_path: str):
         cursor.execute(f"PRAGMA table_info({table})")
         columns = cursor.fetchall()
 
-        schema_info[table] = {
-            'row_count': row_count,
-            'columns': [col[1] for col in columns]
-        }
+        schema_info[table] = {"row_count": row_count, "columns": [col[1] for col in columns]}
 
     conn.close()
     return schema_info
@@ -183,18 +165,20 @@ if __name__ == "__main__":
     logger.info(f"  OK: {report['ok']}")
 
     # Show examples
-    if report['corrupt'] > 0:
+    if report["corrupt"] > 0:
         logger.info("\nExample Corruptions:")
-        corrupt_samples = report['details'][report['details']['status'] == 'CORRUPT'].head(5)
+        corrupt_samples = report["details"][report["details"]["status"] == "CORRUPT"].head(5)
         for _, row in corrupt_samples.iterrows():
-            logger.info(f"  {row['date']}: DB={row['db_gex']:,.0f} vs Fresh={row['fresh_gex']:,.0f} "
-                       f"(ratio={row['discrepancy_ratio']:.1f}x)")
+            logger.info(
+                f"  {row['date']}: DB={row['db_gex']:,.0f} vs Fresh={row['fresh_gex']:,.0f} "
+                f"(ratio={row['discrepancy_ratio']:.1f}x)"
+            )
 
     # Recommendation
-    if report['corrupt_pct'] > 50:
+    if report["corrupt_pct"] > 50:
         logger.warning("\n⚠️  DATABASE IS HEAVILY CORRUPTED")
         logger.warning("   Recommendation: Rebuild database from scratch")
-    elif report['corrupt_pct'] > 10:
+    elif report["corrupt_pct"] > 10:
         logger.warning("\n⚠️  DATABASE HAS SIGNIFICANT CORRUPTION")
         logger.warning("   Recommendation: Rebuild corrupted sections")
     else:

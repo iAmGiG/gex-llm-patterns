@@ -4,8 +4,8 @@ Fix Typing Issues - Remove complex parameter typing for computational effectiven
 Converts strict typing to relaxed typing for better research/development workflow.
 """
 
-import re
 import os
+import re
 
 
 def fix_file_typing(filepath):
@@ -14,50 +14,49 @@ def fix_file_typing(filepath):
     print(f"🔧 Fixing typing in {filepath}...")
 
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             content = f.read()
 
         original_content = content
 
         # Remove parameter type hints but keep defaults
         # Pattern: param: Type = default -> param=default
-        content = re.sub(
-            r'(\w+):\s*[A-Za-z_]\w*(?:\[[^\]]*\])?\s*(=)', r'\1\2', content)
+        content = re.sub(r"(\w+):\s*[A-Za-z_]\w*(?:\[[^\]]*\])?\s*(=)", r"\1\2", content)
 
         # Remove Optional parameter typing
-        content = re.sub(
-            r'(\w+):\s*Optional\[[^\]]+\]\s*(=)', r'\1\2', content)
+        content = re.sub(r"(\w+):\s*Optional\[[^\]]+\]\s*(=)", r"\1\2", content)
 
         # Remove Union parameter typing
-        content = re.sub(r'(\w+):\s*Union\[[^\]]+\]\s*(=)', r'\1\2', content)
+        content = re.sub(r"(\w+):\s*Union\[[^\]]+\]\s*(=)", r"\1\2", content)
 
         # Remove complex parameter typing without defaults
-        content = re.sub(
-            r'(\w+):\s*[A-Za-z_]\w*(?:\[[^\]]*\])?(?=\s*[,)])', r'\1', content)
+        content = re.sub(r"(\w+):\s*[A-Za-z_]\w*(?:\[[^\]]*\])?(?=\s*[,)])", r"\1", content)
 
         # Remove return type hints that use undefined types (but keep simple ones)
-        content = re.sub(r') -> Dict\[.*?\]:', r'):', content)
-        content = re.sub(r') -> List\[.*?\]:', r'):', content)
-        content = re.sub(r') -> Optional\[.*?\]:', r'):', content)
-        content = re.sub(r') -> Union\[.*?\]:', r'):', content)
+        content = re.sub(r") -> Dict\[.*?\]:", r"):", content)
+        content = re.sub(r") -> List\[.*?\]:", r"):", content)
+        content = re.sub(r") -> Optional\[.*?\]:", r"):", content)
+        content = re.sub(r") -> Union\[.*?\]:", r"):", content)
 
         # Clean up any unused typing imports
-        lines = content.split('\n')
+        lines = content.split("\n")
         new_lines = []
         for line in lines:
             # Skip lines that only import typing stuff we're not using
-            if (line.startswith('from typing import') or
-                    line.strip() == 'from typing import Optional, List, Dict, Any, Union, Tuple, Set'):
+            if (
+                line.startswith("from typing import")
+                or line.strip() == "from typing import Optional, List, Dict, Any, Union, Tuple, Set"
+            ):
                 # Check if any of these are used in return types or class definitions
-                if not any(x in content for x in ['-> str', '-> int', '-> bool', '-> float']):
+                if not any(x in content for x in ["-> str", "-> int", "-> bool", "-> float"]):
                     continue
             new_lines.append(line)
 
-        content = '\n'.join(new_lines)
+        content = "\n".join(new_lines)
 
         # Only write if there were changes
         if content != original_content:
-            with open(filepath, 'w') as f:
+            with open(filepath, "w") as f:
                 f.write(content)
             print(f"✅ Fixed {filepath}")
             return True
@@ -80,11 +79,11 @@ def main():
 
     # Files to fix
     files_to_fix = [
-        'src/data_sources/sample_data_loader.py',
-        'src/agents/data_retrieval_agent.py',
-        'src/gex/sample_data_gex.py',
-        'src/validation/options_data_validator.py',
-        'src/llm/autogen_gex_analyzer.py'
+        "src/data_sources/sample_data_loader.py",
+        "src/agents/data_retrieval_agent.py",
+        "src/gex/sample_data_gex.py",
+        "src/validation/options_data_validator.py",
+        "src/llm/autogen_gex_analyzer.py",
     ]
 
     fixed_count = 0
@@ -108,5 +107,5 @@ def main():
     print("• Computational effectiveness over strict typing")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

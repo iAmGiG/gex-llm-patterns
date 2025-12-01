@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""
+Issue #143: Figure 3 - The Raw Chain
+
+Bar chart showing Raw Chain (92.3%) outperforms GEX-assisted baseline (61.5%)
+by 30.8 percentage points.
+
+MC's Specification:
+"Figure 3: The Raw Chain (Bar chart: GEX-Assisted vs. Raw Chain)"
+
+This is the "Nuclear Option" - definitive proof the LLM performs
+structural analysis from first principles.
+"""
+
+import os
+
+os.environ["MPLBACKEND"] = "Agg"
+import matplotlib
+
+matplotlib.use("Agg")
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Paths
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
+
+
+def create_figure_3():
+    """Create the Raw Chain bar chart."""
+
+    # Data from Issue #143 results (verified)
+    methods = ["GEX-Assisted\nBaseline", "Raw Chain\n(No GEX)"]
+    detection_rates = [61.5, 92.3]  # Percentages
+    counts = ["8/13", "12/13"]  # Raw counts
+    colors = ["#6b7280", "#2563eb"]  # Gray for baseline, blue for raw chain
+
+    # Create figure
+    fig, ax = plt.subplots(figsize=(6, 5), dpi=300)
+
+    # Create bars
+    x = np.arange(len(methods))
+    bars = ax.bar(x, detection_rates, width=0.6, color=colors, edgecolor="white", linewidth=2)
+
+    # Add value labels on bars
+    for bar, rate, count in zip(bars, detection_rates, counts):
+        height = bar.get_height()
+        # Percentage label
+        ax.annotate(
+            f"{rate}%",
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 5),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            fontsize=16,
+            fontweight="bold",
+            color=bar.get_facecolor(),
+        )
+        # Count label
+        ax.annotate(
+            f"({count})",
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, -20),
+            textcoords="offset points",
+            ha="center",
+            va="top",
+            fontsize=11,
+            color="#4b5563",
+        )
+
+    # Add improvement annotation
+    # Arrow from baseline to raw chain
+    ax.annotate(
+        "",
+        xy=(1, 92.3),
+        xytext=(0, 61.5),
+        arrowprops=dict(arrowstyle="->", color="#059669", lw=2.5, connectionstyle="arc3,rad=0.2"),
+    )
+    ax.text(
+        0.5,
+        78,
+        "+30.8 pp",
+        ha="center",
+        fontsize=14,
+        color="#059669",
+        fontweight="bold",
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.9, edgecolor="#059669", linewidth=1.5),
+    )
+
+    # Labels
+    ax.set_ylabel("Detection Rate (%)", fontsize=12, fontweight="bold")
+    ax.set_xticks(x)
+    ax.set_xticklabels(methods, fontsize=11)
+    ax.set_title(
+        "Raw Chain Validation: LLM Outperforms GEX-Assisted Baseline\n"
+        "(Same 13 Test Dates, Identical Temporal Obfuscation)",
+        fontsize=11,
+        fontweight="bold",
+    )
+
+    # Y-axis limits
+    ax.set_ylim(0, 110)
+
+    # Add key finding box
+    textstr = "\n".join(
+        [
+            "Key Finding: Structural Analyst",
+            "─" * 28,
+            "Without ANY pre-calculated GEX,",
+            "the LLM achieves HIGHER detection",
+            "by performing gamma integration",
+            "from strike-level OI distribution.",
+            "",
+            "Net GEX is lossy compression.",
+        ]
+    )
+    props = dict(boxstyle="round", facecolor="#f0fdf4", alpha=0.95, edgecolor="#059669", linewidth=1.5)
+    ax.text(
+        0.98,
+        0.35,
+        textstr,
+        transform=ax.transAxes,
+        fontsize=9,
+        verticalalignment="top",
+        horizontalalignment="right",
+        bbox=props,
+        family="monospace",
+    )
+
+    # Grid
+    ax.grid(True, axis="y", alpha=0.3, linestyle="-", linewidth=0.5)
+    ax.set_axisbelow(True)
+
+    # Remove top/right spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+
+    # Save
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    # PNG
+    png_path = OUTPUT_DIR / "fig04_raw_chain.png"
+    plt.savefig(png_path, dpi=300, bbox_inches="tight", facecolor="white")
+    print(f"Saved: {png_path}")
+
+    # PDF for archive (not used in paper)
+    pdf_path = OUTPUT_DIR / "archive/fig04_raw_chain.pdf"
+    plt.savefig(pdf_path, bbox_inches="tight", facecolor="white")
+    print(f"Saved: {pdf_path}")
+
+    plt.close()
+
+    return png_path, pdf_path
+
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("Issue #143: Figure 3 - The Raw Chain")
+    print("=" * 60)
+
+    png_path, pdf_path = create_figure_3()
+
+    print("\n" + "=" * 60)
+    print("Figure 3 Generation Complete")
+    print("=" * 60)
+    print(f"\nKey Statistics:")
+    print(f"  - GEX-Assisted: 61.5% (8/13)")
+    print(f"  - Raw Chain: 92.3% (12/13)")
+    print(f"  - Improvement: +30.8 pp")
+    print(f"\nOutput files:")
+    print(f"  - {png_path}")
+    print(f"  - {pdf_path}")

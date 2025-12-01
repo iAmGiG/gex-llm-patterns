@@ -1,0 +1,37 @@
+\section{Background and Related Work}
+
+\subsection{Dealer Hedging and Market Microstructure}
+
+Market makers face regulatory requirements to maintain delta-neutral positions \cite{sec15c31}, creating systematic hedging flows when gamma exposure accumulates. \cite{frey1997market} formalized how dynamic hedging amplifies volatility through feedback effects, demonstrating how these patterns create predictable hedging dynamics.
+
+A critical market microstructure principle underlying our methodology is the dealer counterparty framework: market makers serve as counterparties to customer option positions, such that dealer gamma equals the negative of aggregate customer gamma. \cite{anderegg2022impact} establishes this relationship theoretically, showing that all option trades must be attributable to either market takers or market makers, with positions summing to zero. Empirically, \cite{dim2025zero} validates this framework by measuring market maker inventory directly from order flow, demonstrating that market maker gamma is systematically opposite to customer demand.
+
+Empirically, \cite{ni2005stock} documented stock price clustering on option expiration dates, providing evidence that dealer hedging creates measurable price effects. \cite{garleanu2009demand} developed a demand-based option pricing model showing how dealer constraints affect both option prices and underlying stock dynamics.
+
+\subsection{Gamma Exposure in Practice}
+Practitioner research has operationalized gamma exposure metrics through standardized calculations \cite{spotgamma2019,spotgamma2021}, with major investment banks publishing regular research on gamma hedging flows \cite{nomura2017}. The rise of zero-days-to-expiration (0DTE) options has intensified these effects \cite{cboe2023,jpmorgan2023}, making dealer hedging pattern detection increasingly important for understanding price dynamics.
+
+\subsection{GEX Limitations and Robustness}
+
+Practitioner gamma exposure (GEX) calculations assume aggregate customers are net short calls and net long puts, an assumption that generally holds for index options. Our methodology is robust to variations because validation occurs through forward-return materialization (91.2\% accuracy) rather than GEX precision. Dealers must hedge gamma exposure to maintain delta neutrality regardless of measurement methodology, so detected patterns reflect fundamental market mechanics rather than artifacts of any particular estimation formula.
+
+\subsection{Rationale for Gamma-Centric Analysis}
+\label{sec:gamma-focus}
+
+We deliberately constrain our analysis to gamma exposure rather than higher-order Greeks (vanna, charm, vomma) for methodological rigor. Unlike higher-order Greeks where institutional implementations vary significantly \cite{mixon2009}, gamma hedging represents a universal regulatory requirement binding all dealers. This universality enables objective validation: gamma effects manifest clearly in observable price action \cite{ni2022}, while vanna and charm effects entangle with confounding factors (correlation changes, term structure shifts) that obscure materialization testing. Testing LLM detection on higher-order Greeks risks overfitting to proprietary dealer models rather than identifying market-wide structural constraints. Our gamma-centric approach establishes baseline capability for detecting first-order dealer constraints before exploring complex higher-order effects in future work.
+
+\subsection{Large Language Models and Reasoning}
+
+Recent advances demonstrate LLMs exhibit emergent reasoning capabilities through chain-of-thought problem solving and zero-shot reasoning. The GPT-4 technical report \cite{openai2023gpt4} documents improved causal understanding, though distinguishing genuine reasoning from memorization remains challenging, motivating our obfuscation testing approach.
+
+\subsection{LLMs in Financial Markets}
+
+Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting \cite{lopez2023can,chen2023fingpt}. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
+
+\subsection{Validation Methodologies}
+
+No prior work has developed validation methods specifically for structural reasoning in financial markets. Our obfuscation testing fills this gap by removing memorizable context while preserving mechanical relationships.
+
+\subsection{Research Gap}
+
+While extensive literature exists on dealer hedging \cite{ni2005stock,garleanu2009demand} and LLM finance applications \cite{lopez2023can,chen2023fingpt}, no prior work has validated LLM structural reasoning through obfuscation testing or demonstrated pattern detection independent of profitability. Our work provides the first systematic framework for validating LLM structural reasoning in financial markets.
