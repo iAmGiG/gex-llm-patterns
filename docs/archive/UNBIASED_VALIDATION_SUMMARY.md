@@ -205,7 +205,7 @@ Methodology works across 3 different dealer constraint types with consistent det
 
 **Section 5 (Results)**: Lead with Table 1:
 
-```
+```text
 Table 1: Primary Results - Unbiased Prompt Detection
 
 | Pattern | Detection | 95% CI | Accuracy | Status |

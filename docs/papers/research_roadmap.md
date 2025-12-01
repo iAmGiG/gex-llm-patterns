@@ -64,7 +64,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 **GitHub Issues**: [#89 (30-Day Regime Detection)](https://github.com/iAmGiG/gex-llm-patterns/issues/89), [#107 (Validation Strategy)](https://github.com/iAmGiG/gex-llm-patterns/issues/107)
 
-**⚠️ STRATEGIC PIVOT (November 5, 2025)**
+### STRATEGIC PIVOT (November 5, 2025)
 
 **Original Plan**: 5-day trajectory analysis (accumulation/relief/reversal)
 

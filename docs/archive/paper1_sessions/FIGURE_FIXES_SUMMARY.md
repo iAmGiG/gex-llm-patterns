@@ -1,6 +1,6 @@
 # Figure Rebuild Summary - October 18, 2025
 
-**Chat B (Claude Code)**
+## Chat B (Claude Code)
 
 ## Critical Issue Discovered
 

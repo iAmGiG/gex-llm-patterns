@@ -33,7 +33,7 @@
 
 **Fix Applied**:
 
-```
+```text
 Total tests: 726 (242 days × 3 patterns)
 Detected: 519 (71.5%)  ← CORRECTED from 726 (100%)
 Avg accuracy: 91.2%
@@ -86,7 +86,7 @@ Overall success: 65.2%
 
 **Fix Applied**:
 
-```
+```text
 Total Tests: 726
   ↓ 71.5% detection rate
 LLM Detection: 519 tests
@@ -116,7 +116,7 @@ Overall Success: 65.2% (473/726)
 
 **Fix Applied**:
 
-```
+```text
 Stats box now shows:
 - Gamma Positioning: 82.9% mean, 69.0% detected  ← CORRECTED
 - Stock Pinning: 83.2% mean, 66.9% detected     ← CORRECTED
@@ -242,7 +242,7 @@ These are suggested enhancements, not data errors. Current figures are publicati
 
 ### Scripts Created (4 new files):
 
-```
+```text
 scripts/visualization/generate_figure1_pattern_performance.py
 scripts/visualization/generate_figure2_prompt_bias.py
 scripts/visualization/generate_figure3_validation_funnel.py
@@ -251,7 +251,7 @@ scripts/visualization/generate_figure8_confidence_distribution.py
 
 ### Figures Updated (4 files):
 
-```
+```text
 docs/papers/paper1/figures/figure6_pattern_performance_bars_yaml.png
 docs/papers/paper1/figures/figure7_detection_comparison_yaml.png
 docs/papers/paper1/figures/figure8_validation_funnel_yaml.png
