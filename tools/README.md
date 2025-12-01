@@ -7,23 +7,27 @@ Comprehensive Python code review tool for maintaining code quality, managing imp
 ### Features
 
 #### 🔍 Import Analysis
+
 - **Unused Import Detection**: Identifies and removes unused imports
 - **Import Organization**: Ensures imports are at the top of files
 - **Import Order**: Checks standard library → third-party → local import order
 
 #### 🔧 Code Quality Checks
+
 - **Linting Integration**: Runs flake8 if available
 - **GEX Standards**: Project-specific coding standards
 - **Docstring Validation**: Ensures modules have proper documentation
 - **TODO/FIXME Detection**: Identifies technical debt comments
 
 #### 💡 Automatic Fixes
+
 - **Import Cleanup**: Automatically removes unused imports
 - **Safe Operations**: Only modifies imports, preserves all other code
 
 ### Usage
 
 #### Basic Code Review
+
 ```bash
 # Review a single file
 python tools/code_reviewer.py src/tokenization/gex_tokenizer.py
@@ -33,6 +37,7 @@ python tools/code_reviewer.py src/tokenization/gex_tokenizer.py --fix-imports
 ```
 
 #### Example Output
+
 ```
 📋 Code Review Report: src/tokenization/gex_tokenizer.py
 ============================================================
@@ -83,18 +88,21 @@ The code reviewer can be integrated with VS Code through tasks or the terminal. 
 The code reviewer enforces specific standards for the GEX-LLM project:
 
 #### Import Organization
+
 1. **Built-in modules** (os, sys, datetime)
 2. **Standard library** (typing, logging, json)  
 3. **Third-party packages** (pandas, numpy, requests)
 4. **Local project modules** (tokenization, gex, agents)
 
 #### Code Quality Rules
+
 - ✅ Module docstrings required
 - ✅ Use logging instead of print() statements
 - ✅ Avoid hardcoded file paths
 - ✅ Mark TODO/FIXME comments for tracking
 
 #### Severity Levels
+
 - **🔴 Error**: Must be fixed (syntax errors, imports not at top)
 - **🟡 Warning**: Should be fixed (unused imports, hardcoded paths)
 - **🔵 Info**: Consider fixing (TODO comments, print statements)
@@ -102,11 +110,13 @@ The code reviewer enforces specific standards for the GEX-LLM project:
 ### Requirements
 
 #### Python Dependencies
+
 ```bash
 pip install ast  # Built-in
 ```
 
 #### Optional Linters (Enhanced Analysis)
+
 ```bash
 pip install flake8  # For advanced linting
 pip install pylint  # Additional static analysis
@@ -132,16 +142,19 @@ optional arguments:
 ### Integration Examples
 
 #### Review All Python Files
+
 ```bash
 find src/ -name "*.py" -exec python tools/code_reviewer.py {} \;
 ```
 
 #### Fix Imports in All Files
+
 ```bash
 find src/ -name "*.py" -exec python tools/code_reviewer.py {} --fix-imports \;
 ```
 
 #### Review Modified Files (Git)
+
 ```bash
 git diff --name-only --diff-filter=M | grep '\.py$' | xargs -I {} python tools/code_reviewer.py {}
 ```
@@ -159,6 +172,7 @@ The code reviewer is configured for the GEX-LLM project structure:
 The code reviewer is designed to be extensible:
 
 #### Add Custom Checks
+
 ```python
 def _check_custom_standard(self, tree: ast.AST, content: str, file_path: Path) -> List[CodeIssue]:
     """Add custom project-specific checks."""
@@ -168,6 +182,7 @@ def _check_custom_standard(self, tree: ast.AST, content: str, file_path: Path) -
 ```
 
 #### Add New Issue Types
+
 ```python
 @dataclass
 class CustomIssue:
@@ -188,6 +203,7 @@ class CustomIssue:
 ### Troubleshooting
 
 #### Common Issues
+
 - **flake8 not found**: Install with `pip install flake8`
 - **Syntax errors**: Fix Python syntax before running reviewer
 - **Permission errors**: Ensure write permissions for import fixing

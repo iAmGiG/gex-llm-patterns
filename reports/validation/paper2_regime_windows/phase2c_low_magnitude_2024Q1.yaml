@@ -1,0 +1,1345 @@
+validation_metadata:
+  batch_mode: true
+  batch_id: batch_691e897f249c8190b3d2dabda19a0dad
+  windows_tested: 54
+  timestamp: '2025-11-19T22:54:33.284330'
+  cost_savings_pct: 50
+  note: Results from OpenAI Batch API (50% cost reduction)
+  model_used: o4-mini
+  model_type: reasoning
+  model_family: openai
+  config_verified: true
+  comparable_to_paper1: true
+  temperature: null
+summary_statistics:
+  detection_rate_pct: 0.0
+  regimes_detected: 0
+  total_windows: 54
+  confidence_avg: 64.07407407407408
+windows:
+- window_id: window-2024-01-02
+  regime_type: transitional
+  regime_detected: false
+  confidence: 95
+  reasoning: 'Step 1: We observe 17 positive days vs. 13 negative days, yielding a
+    persistence of 56.7%, well below the 70% threshold. Step 2: The average |GEX|
+    is only $0.98B, far below the $5B required for a structural constraint. Step 3:
+    Sign flips are low (4), but this stability cannot offset the failures in persistence
+    and magnitude. Therefore, this window does not exhibit a persistent regime and
+    is classified as transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 0.98
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 95
+    reasoning: 'Step 1: We observe 17 positive days vs. 13 negative days, yielding
+      a persistence of 56.7%, well below the 70% threshold. Step 2: The average |GEX|
+      is only $0.98B, far below the $5B required for a structural constraint. Step
+      3: Sign flips are low (4), but this stability cannot offset the failures in
+      persistence and magnitude. Therefore, this window does not exhibit a persistent
+      regime and is classified as transitional.'
+- window_id: window-2024-01-03
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: 'Step 1: Only 17 of 30 days (56.7%) are positive, below the 70% persistence
+    threshold. Step 2: Average absolute GEX is ~1.01B, well under the $5B required
+    for conviction. Step 3: Sign flips are low (4), but failing both persistence and
+    magnitude criteria means dealers are not in a forced structural regime. Therefore
+    this window is transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.011
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 20
+    reasoning: 'Step 1: Only 17 of 30 days (56.7%) are positive, below the 70% persistence
+      threshold. Step 2: Average absolute GEX is ~1.01B, well under the $5B required
+      for conviction. Step 3: Sign flips are low (4), but failing both persistence
+      and magnitude criteria means dealers are not in a forced structural regime.
+      Therefore this window is transitional.'
+- window_id: window-2024-01-04
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: Only 17 out of 30 days are positive (56.7%), below the 70% threshold\u2192\
+    fails persistence. Step 2: Average GEX magnitude is ~$1.02B (<$5B)\u2192fails\
+    \ magnitude. Although sign flips are low (4\u22645), the window does not meet\
+    \ the persistence or magnitude criteria. Thus it is a transitional regime with\
+    \ no persistent dealer constraint."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.02
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 20
+    reasoning: "Step 1: Only 17 out of 30 days are positive (56.7%), below the 70%\
+      \ threshold\u2192fails persistence. Step 2: Average GEX magnitude is ~$1.02B\
+      \ (<$5B)\u2192fails magnitude. Although sign flips are low (4\u22645), the window\
+      \ does not meet the persistence or magnitude criteria. Thus it is a transitional\
+      \ regime with no persistent dealer constraint."
+- window_id: window-2024-01-05
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: 'Step 1: There are 17 positive days vs. 13 negative days, yielding only
+    56.7% persistence (<70% threshold). Step 2: The average absolute GEX magnitude
+    is about $1.09B (<$5B requirement). Step 3: Sign flips count is 4 (within limit),
+    but both persistence and magnitude criteria fail. Therefore this window does not
+    meet the criteria for a persistent regime and is classified as transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.09
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 20
+    reasoning: 'Step 1: There are 17 positive days vs. 13 negative days, yielding
+      only 56.7% persistence (<70% threshold). Step 2: The average absolute GEX magnitude
+      is about $1.09B (<$5B requirement). Step 3: Sign flips count is 4 (within limit),
+      but both persistence and magnitude criteria fail. Therefore this window does
+      not meet the criteria for a persistent regime and is classified as transitional.'
+- window_id: window-2024-01-08
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1 (Sign Persistence): 17 positive vs. 13 negative days \u2192 56.7%\
+    \ same\u2010sign, below the 70% threshold. Step 2 (Magnitude): average |GEX| \u2243\
+    \ $1.18 B, well under the $5 B minimum. Step 3 (Stability): only 4 sign flips\
+    \ (\u22645), but persistence and magnitude criteria both fail. Therefore this\
+    \ is not a persistent regime but a transitional period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.184
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 20
+    reasoning: "Step 1 (Sign Persistence): 17 positive vs. 13 negative days \u2192\
+      \ 56.7% same\u2010sign, below the 70% threshold. Step 2 (Magnitude): average\
+      \ |GEX| \u2243 $1.18 B, well under the $5 B minimum. Step 3 (Stability): only\
+      \ 4 sign flips (\u22645), but persistence and magnitude criteria both fail.\
+      \ Therefore this is not a persistent regime but a transitional period."
+- window_id: window-2024-01-09
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: Only 17/30 days (56.7%) are positive, below the 70% threshold.\
+    \ Step 2: The average absolute GEX is \u2243$1.29 B, well under the $5 B minimum.\
+    \ Step 3: There are 4 sign flips (\u22645), but since both persistence and magnitude\
+    \ criteria fail, this window lacks a dominant, structural constraint. Therefore\
+    \ it is a TRANSITIONAL regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.29
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 20
+    reasoning: "Step 1: Only 17/30 days (56.7%) are positive, below the 70% threshold.\
+      \ Step 2: The average absolute GEX is \u2243$1.29 B, well under the $5 B minimum.\
+      \ Step 3: There are 4 sign flips (\u22645), but since both persistence and magnitude\
+      \ criteria fail, this window lacks a dominant, structural constraint. Therefore\
+      \ it is a TRANSITIONAL regime."
+- window_id: window-2024-01-10
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 17/30 days positive \u2192 56.7% persistence (below 70% threshold).\
+    \ Step 2: average |GEX| \u2248 $1.4 B/day (well below $5 B threshold). Step 3:\
+    \ 4 sign flips (\u22645, so stable), but the series fails the persistence and\
+    \ magnitude criteria. Therefore this does not qualify as a persistent regime and\
+    \ is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.4
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 30
+    reasoning: "Step 1: 17/30 days positive \u2192 56.7% persistence (below 70% threshold).\
+      \ Step 2: average |GEX| \u2248 $1.4 B/day (well below $5 B threshold). Step\
+      \ 3: 4 sign flips (\u22645, so stable), but the series fails the persistence\
+      \ and magnitude criteria. Therefore this does not qualify as a persistent regime\
+      \ and is classified as transitional."
+- window_id: window-2024-01-11
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: We count 17 positive and 13 negative days \u2192 persistence\
+    \ = 17/30 = 56.7%, below the 70% threshold. Step 2: Average absolute GEX \u2248\
+    \ (sum of |GEX|)/30 = $1.51B, well under the $5B minimum. Step 3: There are 4\
+    \ sign flips (\u22645), so stability is fine. However, the period fails the persistence\
+    \ and magnitude criteria, so it is not a persistent regime. With mixed signs and\
+    \ low conviction in magnitude, we classify this as TRANSITIONAL."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.51
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 30
+    reasoning: "Step 1: We count 17 positive and 13 negative days \u2192 persistence\
+      \ = 17/30 = 56.7%, below the 70% threshold. Step 2: Average absolute GEX \u2248\
+      \ (sum of |GEX|)/30 = $1.51B, well under the $5B minimum. Step 3: There are\
+      \ 4 sign flips (\u22645), so stability is fine. However, the period fails the\
+      \ persistence and magnitude criteria, so it is not a persistent regime. With\
+      \ mixed signs and low conviction in magnitude, we classify this as TRANSITIONAL."
+- window_id: window-2024-01-12
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: 'Step 1: Only 17 of 30 days (56.7%) are positive, below the 70% persistence
+    threshold. Step 2: The average absolute GEX is roughly $1.60 B, well under the
+    $5 B minimum needed for conviction. Step 3: Sign flips are low (4), but since
+    both persistence and magnitude criteria fail, this period lacks a persistent directional
+    constraint and should be classified as a transitional regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.6
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 30
+    reasoning: 'Step 1: Only 17 of 30 days (56.7%) are positive, below the 70% persistence
+      threshold. Step 2: The average absolute GEX is roughly $1.60 B, well under the
+      $5 B minimum needed for conviction. Step 3: Sign flips are low (4), but since
+      both persistence and magnitude criteria fail, this period lacks a persistent
+      directional constraint and should be classified as a transitional regime.'
+- window_id: window-2024-01-15
+  regime_type: transitional
+  regime_detected: false
+  confidence: 95
+  reasoning: "Step 1: Sign Persistence \u2013 17 positive vs. 13 negative days gives\
+    \ a 56.7% persistence, below the 70% threshold. Step 2: Magnitude \u2013 average\
+    \ absolute GEX is ~1.58B, well below the 5B requirement for a structural constraint.\
+    \ Step 3: Stability \u2013 only 4 sign flips (\u22645), but since persistence\
+    \ and magnitude both fail, the window does not meet the criteria for a persistent\
+    \ regime. Therefore, this period is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.58
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 95
+    reasoning: "Step 1: Sign Persistence \u2013 17 positive vs. 13 negative days gives\
+      \ a 56.7% persistence, below the 70% threshold. Step 2: Magnitude \u2013 average\
+      \ absolute GEX is ~1.58B, well below the 5B requirement for a structural constraint.\
+      \ Step 3: Stability \u2013 only 4 sign flips (\u22645), but since persistence\
+      \ and magnitude both fail, the window does not meet the criteria for a persistent\
+      \ regime. Therefore, this period is classified as transitional."
+- window_id: window-2024-01-16
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: Only 17/30 days (56.7%) share the same sign, below the 70% threshold.\
+    \ Step 2: The average absolute GEX is \u2248$1.66B, well under the $5B minimum.\
+    \ Step 3: Although sign flips are low (4 \u22645), both persistence and magnitude\
+    \ criteria fail. Therefore this window does not exhibit a persistent gamma\u2010\
+    driven flow regime and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.66
+    sign_flips: 4
+    persistence_pct: 56.67
+    confidence: 30
+    reasoning: "Step 1: Only 17/30 days (56.7%) share the same sign, below the 70%\
+      \ threshold. Step 2: The average absolute GEX is \u2248$1.66B, well under the\
+      \ $5B minimum. Step 3: Although sign flips are low (4 \u22645), both persistence\
+      \ and magnitude criteria fail. Therefore this window does not exhibit a persistent\
+      \ gamma\u2010driven flow regime and is classified as transitional."
+- window_id: window-2024-01-17
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: We have 17 positive and 13 negative GEX days (56.7% dominant\
+    \ sign), below the 70% threshold \u2192 fails persistence. Step 2: Average absolute\
+    \ GEX is ~$1.76B, well under the $5B minimum \u2192 fails magnitude. Step 3: There\
+    \ are only 3 sign flips (\u22645), so stability would pass, but the earlier criteria\
+    \ have already failed. With persistence <70% and magnitude <5B, this window does\
+    \ not qualify as a persistent regime, so we classify it as TRANSITIONAL."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 17
+    negative_days: 13
+    avg_magnitude_billions: 1.76
+    sign_flips: 3
+    persistence_pct: 56.67
+    confidence: 30
+    reasoning: "Step 1: We have 17 positive and 13 negative GEX days (56.7% dominant\
+      \ sign), below the 70% threshold \u2192 fails persistence. Step 2: Average absolute\
+      \ GEX is ~$1.76B, well under the $5B minimum \u2192 fails magnitude. Step 3:\
+      \ There are only 3 sign flips (\u22645), so stability would pass, but the earlier\
+      \ criteria have already failed. With persistence <70% and magnitude <5B, this\
+      \ window does not qualify as a persistent regime, so we classify it as TRANSITIONAL."
+- window_id: window-2024-01-18
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: There are 18 positive days and 12 negative days \u2192 60% persistence,\
+    \ below the 70% threshold. Step 2: The average |GEX| is ~$1.89B, well under the\
+    \ $5B minimum required. Step 3: Sign flips are only 3 (\u22645), so it is stable,\
+    \ but the low persistence and weak magnitude fail the criteria for a persistent\
+    \ regime. Therefore this 30-day window is transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 18
+    negative_days: 12
+    avg_magnitude_billions: 1.89
+    sign_flips: 3
+    persistence_pct: 60
+    confidence: 20
+    reasoning: "Step 1: There are 18 positive days and 12 negative days \u2192 60%\
+      \ persistence, below the 70% threshold. Step 2: The average |GEX| is ~$1.89B,\
+      \ well under the $5B minimum required. Step 3: Sign flips are only 3 (\u2264\
+      5), so it is stable, but the low persistence and weak magnitude fail the criteria\
+      \ for a persistent regime. Therefore this 30-day window is transitional."
+- window_id: window-2024-01-19
+  regime_type: transitional
+  regime_detected: false
+  confidence: 40
+  reasoning: 'Step 1: There are 19 positive days and 11 negative days, giving a 63.3%
+    persistence in the positive sign, below the 70% threshold. Step 2: The average
+    absolute GEX is about $1.96 B, below the $5 B required for a strong structural
+    constraint. Step 3: Sign flips are only 3, indicating stability, but since both
+    persistence and magnitude criteria fail, we do not have a structural regime. Therefore
+    this 30-day window does not qualify as a persistent positive or negative regime
+    and is classified as transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 19
+    negative_days: 11
+    avg_magnitude_billions: 1.96
+    sign_flips: 3
+    persistence_pct: 63.33
+    confidence: 40
+    reasoning: 'Step 1: There are 19 positive days and 11 negative days, giving a
+      63.3% persistence in the positive sign, below the 70% threshold. Step 2: The
+      average absolute GEX is about $1.96 B, below the $5 B required for a strong
+      structural constraint. Step 3: Sign flips are only 3, indicating stability,
+      but since both persistence and magnitude criteria fail, we do not have a structural
+      regime. Therefore this 30-day window does not qualify as a persistent positive
+      or negative regime and is classified as transitional.'
+- window_id: window-2024-01-22
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: Only 20/30 days are positive (66.7%), below the 70% threshold.\
+    \ Step 2: The average GEX magnitude is ~2.03 B < 5 B, failing the magnitude criterion.\
+    \ Step 3: There are only 3 sign flips (\u22645), indicating stability, but persistence\
+    \ and magnitude both fail. Therefore this window does not meet the criteria for\
+    \ a persistent positive or negative regime and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 20
+    negative_days: 10
+    avg_magnitude_billions: 2.03
+    sign_flips: 3
+    persistence_pct: 66.67
+    confidence: 30
+    reasoning: "Step 1: Only 20/30 days are positive (66.7%), below the 70% threshold.\
+      \ Step 2: The average GEX magnitude is ~2.03 B < 5 B, failing the magnitude\
+      \ criterion. Step 3: There are only 3 sign flips (\u22645), indicating stability,\
+      \ but persistence and magnitude both fail. Therefore this window does not meet\
+      \ the criteria for a persistent positive or negative regime and is classified\
+      \ as transitional."
+- window_id: window-2024-01-23
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: Of 30 days, 21 are positive and 9 are negative, giving a 70%\
+    \ sign persistence (meets the 70% threshold). Step 2: The average absolute GEX\
+    \ is 2.11B, well below the 5B required for a true constraint. Step 3: There are\
+    \ only 3 sign flips (\u22645), so the series is stable in direction but magnitude\
+    \ is too weak. Because the magnitude criterion fails despite sign persistence\
+    \ and low flips, this is a low conviction period, not a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 2.11
+    sign_flips: 3
+    persistence_pct: 70
+    confidence: 90
+    reasoning: "Step 1: Of 30 days, 21 are positive and 9 are negative, giving a 70%\
+      \ sign persistence (meets the 70% threshold). Step 2: The average absolute GEX\
+      \ is 2.11B, well below the 5B required for a true constraint. Step 3: There\
+      \ are only 3 sign flips (\u22645), so the series is stable in direction but\
+      \ magnitude is too weak. Because the magnitude criterion fails despite sign\
+      \ persistence and low flips, this is a low conviction period, not a persistent\
+      \ regime."
+- window_id: window-2024-01-24
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 22 of 30 days are positive \u2192 73.3% persistence (>70%).\
+    \ Step 2: Average |GEX| = 65.66/30 \u2248 $2.19B (<$5B threshold) fails magnitude\
+    \ criterion. Step 3: Only 3 sign flips (\u22645), so stability is good. Because\
+    \ magnitude is too low to force structural dealer flows, this is a low-conviction\
+    \ period rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 2.19
+    sign_flips: 3
+    persistence_pct: 73.33
+    confidence: 30
+    reasoning: "Step 1: 22 of 30 days are positive \u2192 73.3% persistence (>70%).\
+      \ Step 2: Average |GEX| = 65.66/30 \u2248 $2.19B (<$5B threshold) fails magnitude\
+      \ criterion. Step 3: Only 3 sign flips (\u22645), so stability is good. Because\
+      \ magnitude is too low to force structural dealer flows, this is a low-conviction\
+      \ period rather than a persistent regime."
+- window_id: window-2024-01-25
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 40
+  reasoning: "Step 1: 23 out of 30 days (76.7%) are positive, so the sign persistence\
+    \ criterion (>70%) is met. Step 2: The average absolute GEX across all 30 days\
+    \ is \u2248$2.28B, which is well below the $5B threshold, so the magnitude criterion\
+    \ fails. Step 3: There are only 3 sign flips (\u22645), so stability is present.\
+    \ However, failing the magnitude requirement means dealers are not in a strong\
+    \ enough position to create forced directional flows. Therefore, this is classified\
+    \ as low_conviction rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 2.28
+    sign_flips: 3
+    persistence_pct: 76.67
+    confidence: 40
+    reasoning: "Step 1: 23 out of 30 days (76.7%) are positive, so the sign persistence\
+      \ criterion (>70%) is met. Step 2: The average absolute GEX across all 30 days\
+      \ is \u2248$2.28B, which is well below the $5B threshold, so the magnitude criterion\
+      \ fails. Step 3: There are only 3 sign flips (\u22645), so stability is present.\
+      \ However, failing the magnitude requirement means dealers are not in a strong\
+      \ enough position to create forced directional flows. Therefore, this is classified\
+      \ as low_conviction rather than a persistent regime."
+- window_id: window-2024-01-26
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 24 of 30 days (80%) are positive, exceeding the 70% persistence\
+    \ threshold. Step 2: The average absolute GEX is only ~$2.36 B, well below the\
+    \ $5 B required for a meaningful structural constraint. Step 3: There are just\
+    \ 3 sign flips, so stability alone would pass. However, the magnitude criterion\
+    \ fails, so despite strong sign persistence and low flips, dealers\u2019 net gamma\
+    \ exposures remain too small to force directional flows. This is therefore a low\
+    \ conviction regime, not a persistent one."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 24
+    negative_days: 6
+    avg_magnitude_billions: 2.36
+    sign_flips: 3
+    persistence_pct: 80
+    confidence: 90
+    reasoning: "Step 1: 24 of 30 days (80%) are positive, exceeding the 70% persistence\
+      \ threshold. Step 2: The average absolute GEX is only ~$2.36 B, well below the\
+      \ $5 B required for a meaningful structural constraint. Step 3: There are just\
+      \ 3 sign flips, so stability alone would pass. However, the magnitude criterion\
+      \ fails, so despite strong sign persistence and low flips, dealers\u2019 net\
+      \ gamma exposures remain too small to force directional flows. This is therefore\
+      \ a low conviction regime, not a persistent one."
+- window_id: window-2024-01-29
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 25 of 30 days are positive (83.3% persistence >70%), with only\
+    \ 3 sign flips (\u22645). Step 2: average absolute GEX is $2.45B, below the $5B\
+    \ threshold. Step 3: while sign persistence and stability criteria pass, the magnitude\
+    \ criterion fails. Therefore dealers are not under a strong structural gamma constraint,\
+    \ leading to a low-conviction regime rather than a persistent one."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 25
+    negative_days: 5
+    avg_magnitude_billions: 2.45
+    sign_flips: 3
+    persistence_pct: 83.33
+    confidence: 30
+    reasoning: "Step 1: 25 of 30 days are positive (83.3% persistence >70%), with\
+      \ only 3 sign flips (\u22645). Step 2: average absolute GEX is $2.45B, below\
+      \ the $5B threshold. Step 3: while sign persistence and stability criteria pass,\
+      \ the magnitude criterion fails. Therefore dealers are not under a strong structural\
+      \ gamma constraint, leading to a low-conviction regime rather than a persistent\
+      \ one."
+- window_id: window-2024-01-30
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 15
+  reasoning: "Step 1: 26 of 30 days are positive \u2192 86.7% persistence (>70%).\
+    \ Step 2: average |GEX| \u2248 $2.55B (<$5B threshold) \u2192 magnitude too weak.\
+    \ Step 3: only 3 sign flips (\u22645) shows stability. Although sign and stability\
+    \ criteria pass, the average magnitude is well below the $5B requirement, so dealers\
+    \ are not structurally forced into directional flows. This fails the magnitude\
+    \ criterion \u2192 low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 26
+    negative_days: 4
+    avg_magnitude_billions: 2.55
+    sign_flips: 3
+    persistence_pct: 86.67
+    confidence: 15
+    reasoning: "Step 1: 26 of 30 days are positive \u2192 86.7% persistence (>70%).\
+      \ Step 2: average |GEX| \u2248 $2.55B (<$5B threshold) \u2192 magnitude too\
+      \ weak. Step 3: only 3 sign flips (\u22645) shows stability. Although sign and\
+      \ stability criteria pass, the average magnitude is well below the $5B requirement,\
+      \ so dealers are not structurally forced into directional flows. This fails\
+      \ the magnitude criterion \u2192 low_conviction."
+- window_id: window-2024-01-31
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 27 out of 30 days are positive (90%), exceeding the 70% persistence\
+    \ threshold. Step 2: The average absolute GEX over 30 days is ~$2.62 B, which\
+    \ is well below the $5 B minimum needed for a structural constraint. Step 3: Sign\
+    \ flips are low (4 \u2264 5), indicating stability. However, despite strong sign\
+    \ persistence and stability, the magnitude criterion fails. Therefore, this window\
+    \ does not exhibit a persistent positive or negative regime; it is classified\
+    \ as low conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 27
+    negative_days: 3
+    avg_magnitude_billions: 2.62
+    sign_flips: 4
+    persistence_pct: 90
+    confidence: 90
+    reasoning: "Step 1: 27 out of 30 days are positive (90%), exceeding the 70% persistence\
+      \ threshold. Step 2: The average absolute GEX over 30 days is ~$2.62 B, which\
+      \ is well below the $5 B minimum needed for a structural constraint. Step 3:\
+      \ Sign flips are low (4 \u2264 5), indicating stability. However, despite strong\
+      \ sign persistence and stability, the magnitude criterion fails. Therefore,\
+      \ this window does not exhibit a persistent positive or negative regime; it\
+      \ is classified as low conviction."
+- window_id: window-2024-02-01
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 28 positive days vs. 2 negative => persistence 93.33% (>70%).\
+    \ Step 2: Average absolute GEX \u224881.58B/30 \u22482.72B (<5B threshold) fails\
+    \ magnitude criterion. Step 3: Only 2 sign flips (\u22645) so stability is high.\
+    \ Because magnitude is below the $5B cutoff, this is a low conviction period rather\
+    \ than a persistent positive regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 28
+    negative_days: 2
+    avg_magnitude_billions: 2.72
+    sign_flips: 2
+    persistence_pct: 93.33
+    confidence: 90
+    reasoning: "Step 1: 28 positive days vs. 2 negative => persistence 93.33% (>70%).\
+      \ Step 2: Average absolute GEX \u224881.58B/30 \u22482.72B (<5B threshold) fails\
+      \ magnitude criterion. Step 3: Only 2 sign flips (\u22645) so stability is high.\
+      \ Because magnitude is below the $5B cutoff, this is a low conviction period\
+      \ rather than a persistent positive regime."
+- window_id: window-2024-02-05
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 28 of 30 days are positive (93.33% persistence >70%), Step 2:\
+    \ average |GEX| \u22482.83B (<5B threshold) fails magnitude requirement, Step\
+    \ 3: only 1 sign flip (\u22645). Positive sign is persistent but magnitude is\
+    \ too weak to create structural forced flows, so this is a low_conviction period."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 28
+    negative_days: 2
+    avg_magnitude_billions: 2.83
+    sign_flips: 1
+    persistence_pct: 93.33
+    confidence: 90
+    reasoning: "Step 1: 28 of 30 days are positive (93.33% persistence >70%), Step\
+      \ 2: average |GEX| \u22482.83B (<5B threshold) fails magnitude requirement,\
+      \ Step 3: only 1 sign flip (\u22645). Positive sign is persistent but magnitude\
+      \ is too weak to create structural forced flows, so this is a low_conviction\
+      \ period."
+- window_id: window-2024-02-06
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 29 out of 30 days are positive (96.7% persistence >70%), Step\
+    \ 2: average absolute GEX = $2.78B (<$5B threshold), Step 3: only 1 sign flip\
+    \ (\u22645). Although sign persistence and stability pass, the average magnitude\
+    \ is well below the $5B requirement. This fails the magnitude criterion, so the\
+    \ period is classified as LOW_CONVICTION."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 29
+    negative_days: 1
+    avg_magnitude_billions: 2.78
+    sign_flips: 1
+    persistence_pct: 96.67
+    confidence: 30
+    reasoning: "Step 1: 29 out of 30 days are positive (96.7% persistence >70%), Step\
+      \ 2: average absolute GEX = $2.78B (<$5B threshold), Step 3: only 1 sign flip\
+      \ (\u22645). Although sign persistence and stability pass, the average magnitude\
+      \ is well below the $5B requirement. This fails the magnitude criterion, so\
+      \ the period is classified as LOW_CONVICTION."
+- window_id: window-2024-02-07
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: All 30 days show positive net GEX, giving 100% persistence (>70%).
+    Step 2: The average absolute GEX over the 30 days is about $3.07 B, which is below
+    the $5 B threshold for a meaningful structural constraint. Step 3: There are 0
+    sign flips, indicating perfect stability, but the magnitude criterion fails. Conclusion:
+    Although dealers have been consistently long gamma, the average exposure is too
+    small to force strong directional flows, so this is a low-conviction regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.07
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: 'Step 1: All 30 days show positive net GEX, giving 100% persistence
+      (>70%). Step 2: The average absolute GEX over the 30 days is about $3.07 B,
+      which is below the $5 B threshold for a meaningful structural constraint. Step
+      3: There are 0 sign flips, indicating perfect stability, but the magnitude criterion
+      fails. Conclusion: Although dealers have been consistently long gamma, the average
+      exposure is too small to force strong directional flows, so this is a low-conviction
+      regime.'
+- window_id: window-2024-02-08
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 out of 30 days (100% persistence) are positive net GEX,\
+    \ exceeding the 70% threshold. Step 2: The average daily GEX magnitude is only\
+    \ $3.19 B, well below the $5 B minimum needed to create a structural forced flow.\
+    \ Step 3: There are 0 sign flips, so stability is very high. However, because\
+    \ the magnitude criterion fails, dealers\u2019 gamma exposure is too small to\
+    \ generate a persistent forced directional flow. This meets the definition of\
+    \ a low-conviction regime rather than a true persistent positive regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.19
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 out of 30 days (100% persistence) are positive net\
+      \ GEX, exceeding the 70% threshold. Step 2: The average daily GEX magnitude\
+      \ is only $3.19 B, well below the $5 B minimum needed to create a structural\
+      \ forced flow. Step 3: There are 0 sign flips, so stability is very high. However,\
+      \ because the magnitude criterion fails, dealers\u2019 gamma exposure is too\
+      \ small to generate a persistent forced directional flow. This meets the definition\
+      \ of a low-conviction regime rather than a true persistent positive regime."
+- window_id: window-2024-02-12
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 35
+  reasoning: "Step 1: All 30 days show positive net GEX \u2192 100% persistence (>70%\
+    \ threshold met). Step 2: Average absolute GEX = 96.27 B / 30 \u2248 3.21 B, which\
+    \ is below the $5 B minimum needed for a strong, forced\u2010flow regime. Step\
+    \ 3: Sign flips = 0 (stable). Although persistence and stability criteria pass,\
+    \ the magnitude criterion fails. Therefore this period is classified as Low Conviction\
+    \ (insufficient GEX magnitude to induce a persistent dealer\u2010constraint regime)."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.21
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 35
+    reasoning: "Step 1: All 30 days show positive net GEX \u2192 100% persistence\
+      \ (>70% threshold met). Step 2: Average absolute GEX = 96.27 B / 30 \u2248 3.21\
+      \ B, which is below the $5 B minimum needed for a strong, forced\u2010flow regime.\
+      \ Step 3: Sign flips = 0 (stable). Although persistence and stability criteria\
+      \ pass, the magnitude criterion fails. Therefore this period is classified as\
+      \ Low Conviction (insufficient GEX magnitude to induce a persistent dealer\u2010\
+      constraint regime)."
+- window_id: window-2024-02-13
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive (30 positive / 0 negative), so persistence\
+    \ is 100%, well above the 70% threshold. Step 2: The average GEX magnitude is\
+    \ 96.82 B total / 30 \u2248 3.23 B, which is below the $5 B minimum required for\
+    \ a structural constraint. Step 3: There are 0 sign flips, indicating perfect\
+    \ stability. Criteria summary: persistence and stability criteria are met, but\
+    \ magnitude criterion fails (avg < $5 B), so this cannot be classified as a persistent\
+    \ regime. It therefore falls into the low_conviction category."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.2273333333333336
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive (30 positive / 0 negative), so persistence\
+      \ is 100%, well above the 70% threshold. Step 2: The average GEX magnitude is\
+      \ 96.82 B total / 30 \u2248 3.23 B, which is below the $5 B minimum required\
+      \ for a structural constraint. Step 3: There are 0 sign flips, indicating perfect\
+      \ stability. Criteria summary: persistence and stability criteria are met, but\
+      \ magnitude criterion fails (avg < $5 B), so this cannot be classified as a\
+      \ persistent regime. It therefore falls into the low_conviction category."
+- window_id: window-2024-02-14
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1 (Sign Persistence): All 30 days have positive GEX \u2192 100%\
+    \ persistence >70%. Step 2 (Magnitude): Average absolute GEX = 97.88/30 \u2248\
+    \ $3.26B, which is below the $5B threshold. Step 3 (Stability): Sign flips = 0\
+    \ \u22645. Although persistence and stability criteria are met, the magnitude\
+    \ criterion fails (avg < $5B), so this is a low-conviction period rather than\
+    \ a structural persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.26
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1 (Sign Persistence): All 30 days have positive GEX \u2192 100%\
+      \ persistence >70%. Step 2 (Magnitude): Average absolute GEX = 97.88/30 \u2248\
+      \ $3.26B, which is below the $5B threshold. Step 3 (Stability): Sign flips =\
+      \ 0 \u22645. Although persistence and stability criteria are met, the magnitude\
+      \ criterion fails (avg < $5B), so this is a low-conviction period rather than\
+      \ a structural persistent regime."
+- window_id: window-2024-02-15
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive GEX \u2192 persistence = 100% (meets\
+    \ >70%). Step 2: Average GEX \u2248 $3.32B (< $5B threshold) \u2192 fails magnitude\
+    \ criterion. Step 3: Sign flips = 0 (\u22645, stable). Because the magnitude criterion\
+    \ fails despite perfect sign persistence and stability, this is classified as\
+    \ low conviction (insufficient dealer constraint to force persistent flows)."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.32
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive GEX \u2192 persistence = 100% (meets\
+      \ >70%). Step 2: Average GEX \u2248 $3.32B (< $5B threshold) \u2192 fails magnitude\
+      \ criterion. Step 3: Sign flips = 0 (\u22645, stable). Because the magnitude\
+      \ criterion fails despite perfect sign persistence and stability, this is classified\
+      \ as low conviction (insufficient dealer constraint to force persistent flows)."
+- window_id: window-2024-02-20
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 30 out of 30 days are positive (100% persistence > 70%). Step\
+    \ 2: The average GEX magnitude is 3.34B, which is below the 5B threshold, failing\
+    \ the magnitude criterion. Step 3: There are 0 sign flips (\u22645), so stability\
+    \ is high, but the magnitude is insufficient to create a structural constraint.\
+    \ Therefore this is a low_conviction regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.34
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: "Step 1: 30 out of 30 days are positive (100% persistence > 70%). Step\
+      \ 2: The average GEX magnitude is 3.34B, which is below the 5B threshold, failing\
+      \ the magnitude criterion. Step 3: There are 0 sign flips (\u22645), so stability\
+      \ is high, but the magnitude is insufficient to create a structural constraint.\
+      \ Therefore this is a low_conviction regime."
+- window_id: window-2024-02-21
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+    \ >70% threshold). Step 2: Average absolute GEX \u2248 $3.37B, which is below\
+    \ the $5B minimum required for a persistent regime (fails magnitude criterion).\
+    \ Step 3: There are 0 sign flips (\u22645), indicating stability. Because the\
+    \ magnitude criterion is not met, this window is classified as LOW_CONVICTION\
+    \ rather than a persistent positive regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.37
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+      \ >70% threshold). Step 2: Average absolute GEX \u2248 $3.37B, which is below\
+      \ the $5B minimum required for a persistent regime (fails magnitude criterion).\
+      \ Step 3: There are 0 sign flips (\u22645), indicating stability. Because the\
+      \ magnitude criterion is not met, this window is classified as LOW_CONVICTION\
+      \ rather than a persistent positive regime."
+- window_id: window-2024-02-22
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: All 30 days show positive net GEX (100% persistence, above 70%).
+    Step 2: Average magnitude is only ~$3.40B, which is below the $5B threshold, failing
+    the magnitude criterion. Step 3: Sign flips are 0, indicating stability. Because
+    the magnitude is too low to force structural flows, this is classified as a low_conviction
+    regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.4
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: 'Step 1: All 30 days show positive net GEX (100% persistence, above
+      70%). Step 2: Average magnitude is only ~$3.40B, which is below the $5B threshold,
+      failing the magnitude criterion. Step 3: Sign flips are 0, indicating stability.
+      Because the magnitude is too low to force structural flows, this is classified
+      as a low_conviction regime.'
+- window_id: window-2024-02-26
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (>70%).\
+    \ Step 2: The average magnitude is 102.79/30 \u2248 $3.43B, which is below the\
+    \ $5B threshold, failing the magnitude criterion. Step 3: There are 0 sign flips\
+    \ (\u22645), so stability is high. Because the magnitude criterion fails, this\
+    \ does not qualify as a persistent regime and is classified as low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.43
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (>70%).\
+      \ Step 2: The average magnitude is 102.79/30 \u2248 $3.43B, which is below the\
+      \ $5B threshold, failing the magnitude criterion. Step 3: There are 0 sign flips\
+      \ (\u22645), so stability is high. Because the magnitude criterion fails, this\
+      \ does not qualify as a persistent regime and is classified as low_conviction."
+- window_id: window-2024-02-27
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 20
+  reasoning: 'Step 1: All 30 days are positive GEX, so persistence is 100% (>70%).
+    Step 2: The average magnitude is about $3.44B, which is below the $5B threshold,
+    so the magnitude criterion fails. Step 3: There are 0 sign flips, indicating high
+    stability. Despite perfect sign persistence and stability, the GEX magnitude is
+    too low to impose a structural dealer constraint, so this is classified as Low
+    Conviction.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.44
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 20
+    reasoning: 'Step 1: All 30 days are positive GEX, so persistence is 100% (>70%).
+      Step 2: The average magnitude is about $3.44B, which is below the $5B threshold,
+      so the magnitude criterion fails. Step 3: There are 0 sign flips, indicating
+      high stability. Despite perfect sign persistence and stability, the GEX magnitude
+      is too low to impose a structural dealer constraint, so this is classified as
+      Low Conviction.'
+- window_id: window-2024-02-28
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 85
+  reasoning: "Step 1: 30/30 days are positive GEX \u2192 100% persistence (>70%) so\
+    \ the sign is consistently positive. Step 2: Average GEX magnitude = $104.28B/30\
+    \ \u2248 $3.48B, which is below the $5B threshold \u2192 fails magnitude criterion.\
+    \ Step 3: Sign flips = 0 (\u22645), so stability is high. Because the magnitude\
+    \ is too low to impose structural dealer constraints, this is a LOW_CONVICTION\
+    \ regime and not a persistent positive regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.48
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 85
+    reasoning: "Step 1: 30/30 days are positive GEX \u2192 100% persistence (>70%)\
+      \ so the sign is consistently positive. Step 2: Average GEX magnitude = $104.28B/30\
+      \ \u2248 $3.48B, which is below the $5B threshold \u2192 fails magnitude criterion.\
+      \ Step 3: Sign flips = 0 (\u22645), so stability is high. Because the magnitude\
+      \ is too low to impose structural dealer constraints, this is a LOW_CONVICTION\
+      \ regime and not a persistent positive regime."
+- window_id: window-2024-02-29
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: All 30 days are positive \u2192 persistence 100% (>70%). Step\
+    \ 2: Average GEX = $104.10B/30 \u2248 $3.47B < $5B threshold \u2192 fails magnitude.\
+    \ Step 3: Sign flips = 0 \u22645 \u2192 passes stability. Because magnitude is\
+    \ too low, dealers\u2019 gamma exposure isn\u2019t large enough to force structural\
+    \ flows. Classification: low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.47
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 20
+    reasoning: "Step 1: All 30 days are positive \u2192 persistence 100% (>70%). Step\
+      \ 2: Average GEX = $104.10B/30 \u2248 $3.47B < $5B threshold \u2192 fails magnitude.\
+      \ Step 3: Sign flips = 0 \u22645 \u2192 passes stability. Because magnitude\
+      \ is too low, dealers\u2019 gamma exposure isn\u2019t large enough to force\
+      \ structural flows. Classification: low_conviction."
+- window_id: window-2024-03-04
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+    \ Step 2: Average GEX magnitude = (sum of |GEX|)/30 \u2248 $3.48B, which is below\
+    \ the $5B threshold \u2192 fails magnitude criterion. Step 3: Sign flips = 0 (\u2264\
+    5 flips) \u2192 stable. Because the magnitude criterion fails despite perfect\
+    \ sign persistence and stability, this is classified as low_conviction rather\
+    \ than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.48
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+      \ Step 2: Average GEX magnitude = (sum of |GEX|)/30 \u2248 $3.48B, which is\
+      \ below the $5B threshold \u2192 fails magnitude criterion. Step 3: Sign flips\
+      \ = 0 (\u22645 flips) \u2192 stable. Because the magnitude criterion fails despite\
+      \ perfect sign persistence and stability, this is classified as low_conviction\
+      \ rather than a persistent regime."
+- window_id: window-2024-03-05
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+    \ Step 2: Average absolute GEX = 107.93B/30 \u2248 3.598B, which is below the\
+    \ $5B threshold \u2192 fails magnitude criterion. Step 3: Sign flips = 0 (\u2264\
+    5). Although persistence and stability criteria pass, the magnitude criterion\
+    \ fails, so this is classified as low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.598
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+      \ Step 2: Average absolute GEX = 107.93B/30 \u2248 3.598B, which is below the\
+      \ $5B threshold \u2192 fails magnitude criterion. Step 3: Sign flips = 0 (\u2264\
+      5). Although persistence and stability criteria pass, the magnitude criterion\
+      \ fails, so this is classified as low_conviction."
+- window_id: window-2024-03-06
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 95
+  reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+    \ >70% threshold). Step 2: Average |GEX| = (sum of daily GEX \u2248 108.43 B)\
+    \ / 30 \u2248 3.61 B, which is below the $5 B minimum required. Step 3: Sign flips\
+    \ = 0 (\u22645). Because the magnitude criterion fails, dealers\u2019 gamma exposure\
+    \ is too small to force meaningful, structural flows \u2013 this is a low-conviction\
+    \ environment, not a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.61
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 95
+    reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+      \ >70% threshold). Step 2: Average |GEX| = (sum of daily GEX \u2248 108.43 B)\
+      \ / 30 \u2248 3.61 B, which is below the $5 B minimum required. Step 3: Sign\
+      \ flips = 0 (\u22645). Because the magnitude criterion fails, dealers\u2019\
+      \ gamma exposure is too small to force meaningful, structural flows \u2013 this\
+      \ is a low-conviction environment, not a persistent regime."
+- window_id: window-2024-03-07
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 80
+  reasoning: "Step 1 (Sign Persistence): All 30 days have positive net GEX, giving\
+    \ 100% persistence (>70% threshold). Step 2 (Magnitude Assessment): The average\
+    \ daily GEX magnitude is 109.42 B / 30 \u2248 3.65 B, which is below the $5 B\
+    \ threshold required for a persistent regime. Step 3 (Stability Check): There\
+    \ are 0 sign flips (\u22645), indicating high stability. However, because the\
+    \ average magnitude fails to meet the \u2265$5 B criterion, this period cannot\
+    \ be classified as a persistent regime and instead falls into the Low Conviction\
+    \ category."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.65
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 80
+    reasoning: "Step 1 (Sign Persistence): All 30 days have positive net GEX, giving\
+      \ 100% persistence (>70% threshold). Step 2 (Magnitude Assessment): The average\
+      \ daily GEX magnitude is 109.42 B / 30 \u2248 3.65 B, which is below the $5\
+      \ B threshold required for a persistent regime. Step 3 (Stability Check): There\
+      \ are 0 sign flips (\u22645), indicating high stability. However, because the\
+      \ average magnitude fails to meet the \u2265$5 B criterion, this period cannot\
+      \ be classified as a persistent regime and instead falls into the Low Conviction\
+      \ category."
+- window_id: window-2024-03-11
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 85
+  reasoning: 'Step 1: All 30 days are positive GEX, so persistence is 100% (>70%).
+    Step 2: The average GEX magnitude is approximately $3.64B, which is below the
+    $5B threshold. Step 3: There are 0 sign flips, so stability is high. Although
+    persistence and stability criteria are met, the average magnitude is too low to
+    force structural dealer constraints. Thus this is a low conviction period, not
+    a persistent regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.64
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 85
+    reasoning: 'Step 1: All 30 days are positive GEX, so persistence is 100% (>70%).
+      Step 2: The average GEX magnitude is approximately $3.64B, which is below the
+      $5B threshold. Step 3: There are 0 sign flips, so stability is high. Although
+      persistence and stability criteria are met, the average magnitude is too low
+      to force structural dealer constraints. Thus this is a low conviction period,
+      not a persistent regime.'
+- window_id: window-2024-03-12
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: All 30 days have positive GEX, so persistence is 100%, well
+    above the 70% threshold. Step 2: The average magnitude is approximately $3.69B,
+    which is below the required $5B, so the magnitude criterion fails. Step 3: There
+    are 0 sign flips, passing the stability check. Because the average GEX magnitude
+    is too low to force significant dealer rebalancing, this period does not meet
+    the threshold for a persistent regime and is classified as low_conviction.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.69
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: 'Step 1: All 30 days have positive GEX, so persistence is 100%, well
+      above the 70% threshold. Step 2: The average magnitude is approximately $3.69B,
+      which is below the required $5B, so the magnitude criterion fails. Step 3: There
+      are 0 sign flips, passing the stability check. Because the average GEX magnitude
+      is too low to force significant dealer rebalancing, this period does not meet
+      the threshold for a persistent regime and is classified as low_conviction.'
+- window_id: window-2024-03-13
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: All 30 days are positive GEX (100% persistence >70%). Step 2:
+    The average daily GEX magnitude is approximately $3.73B, which is below the $5B
+    threshold for a structural constraint. Step 3: There are 0 sign flips (stable),
+    but because the magnitude is too low, dealers are not sufficiently forced into
+    directional flows. Therefore this is a low_conviction scenario, not a persistent
+    regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.73
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: 'Step 1: All 30 days are positive GEX (100% persistence >70%). Step
+      2: The average daily GEX magnitude is approximately $3.73B, which is below the
+      $5B threshold for a structural constraint. Step 3: There are 0 sign flips (stable),
+      but because the magnitude is too low, dealers are not sufficiently forced into
+      directional flows. Therefore this is a low_conviction scenario, not a persistent
+      regime.'
+- window_id: window-2024-03-14
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+    \ >70%). Step 2: Average magnitude = (sum of 30 daily GEX) / 30 = 113.69/30 \u2248\
+    \ 3.79B, which is below the $5B threshold. Step 3: Sign flips = 0 (\u22645). While\
+    \ sign persistence and stability pass, magnitude fails the $5B criterion, so dealers\u2019\
+    \ gamma exposure is too small to generate a structural forced flow. Therefore\
+    \ this is a LOW_CONVICTION period rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.79
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive GEX \u2192 100% persistence (meets\
+      \ >70%). Step 2: Average magnitude = (sum of 30 daily GEX) / 30 = 113.69/30\
+      \ \u2248 3.79B, which is below the $5B threshold. Step 3: Sign flips = 0 (\u2264\
+      5). While sign persistence and stability pass, magnitude fails the $5B criterion,\
+      \ so dealers\u2019 gamma exposure is too small to generate a structural forced\
+      \ flow. Therefore this is a LOW_CONVICTION period rather than a persistent regime."
+- window_id: window-2024-03-15
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 of 30 days are positive \u2192 persistence = 100% (>70%).\
+    \ Step 2: Average |GEX| = 113.49 / 30 \u2248 3.78 B, which is below the $5 B threshold.\
+    \ Step 3: Sign flips = 0 (stable). Although sign persistence and stability criteria\
+    \ are met, the magnitude criterion fails (avg < 5 B), so dealers\u2019 gamma positions\
+    \ lack the conviction to force persistent flows. Therefore this period is classified\
+    \ as low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.783
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 of 30 days are positive \u2192 persistence = 100% (>70%).\
+      \ Step 2: Average |GEX| = 113.49 / 30 \u2248 3.78 B, which is below the $5 B\
+      \ threshold. Step 3: Sign flips = 0 (stable). Although sign persistence and\
+      \ stability criteria are met, the magnitude criterion fails (avg < 5 B), so\
+      \ dealers\u2019 gamma positions lack the conviction to force persistent flows.\
+      \ Therefore this period is classified as low_conviction."
+- window_id: window-2024-03-18
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 of 30 days are positive \u2192 100% persistence (meets\
+    \ >70%). Step 3: There are 0 sign flips (\u22645), indicating high stability.\
+    \ Step 2: The average GEX magnitude is only $3.77B (<$5B threshold), failing the\
+    \ magnitude criterion. Thus, despite perfect sign persistence and stability, the\
+    \ constraint is too weak for a structural forced-flow regime. This is classified\
+    \ as low_conviction."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.77
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: "Step 1: All 30 of 30 days are positive \u2192 100% persistence (meets\
+      \ >70%). Step 3: There are 0 sign flips (\u22645), indicating high stability.\
+      \ Step 2: The average GEX magnitude is only $3.77B (<$5B threshold), failing\
+      \ the magnitude criterion. Thus, despite perfect sign persistence and stability,\
+      \ the constraint is too weak for a structural forced-flow regime. This is classified\
+      \ as low_conviction."
+- window_id: window-2024-03-19
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: All 30/30 days (100%) have positive net GEX, exceeding the 70%
+    threshold. Step 2: The average GEX magnitude is approximately $3.77B, which is
+    below the required $5B threshold, failing the magnitude criterion. Step 3: There
+    are 0 sign flips, satisfying the stability requirement. Because the magnitude
+    criterion fails, this window is classified as low_conviction rather than a persistent
+    positive regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.77
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: 'Step 1: All 30/30 days (100%) have positive net GEX, exceeding the
+      70% threshold. Step 2: The average GEX magnitude is approximately $3.77B, which
+      is below the required $5B threshold, failing the magnitude criterion. Step 3:
+      There are 0 sign flips, satisfying the stability requirement. Because the magnitude
+      criterion fails, this window is classified as low_conviction rather than a persistent
+      positive regime.'
+- window_id: window-2024-03-20
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 50
+  reasoning: 'Step 1: All 30 days are positive net GEX, giving 100% persistence (>70%).
+    Step 2: The average GEX magnitude is ~$3.77B, which is below the $5B threshold,
+    failing the magnitude criterion. Step 3: There are 0 sign flips (stable), but
+    because the magnitude is too low to create meaningful dealer constraints, it does
+    not qualify as a persistent regime. Thus, this is classified as low_conviction.'
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.77
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 50
+    reasoning: 'Step 1: All 30 days are positive net GEX, giving 100% persistence
+      (>70%). Step 2: The average GEX magnitude is ~$3.77B, which is below the $5B
+      threshold, failing the magnitude criterion. Step 3: There are 0 sign flips (stable),
+      but because the magnitude is too low to create meaningful dealer constraints,
+      it does not qualify as a persistent regime. Thus, this is classified as low_conviction.'
+- window_id: window-2024-03-21
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 95
+  reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+    \ Step 2: Average GEX magnitude is about $3.75B, below the $5B threshold. Step\
+    \ 3: There are 0 sign flips (stable). While persistence and stability criteria\
+    \ pass for a positive regime, the magnitude is too low to force meaningful dealer\
+    \ gamma-driven flows. Therefore this is a low conviction period, not a persistent\
+    \ regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.75
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 95
+    reasoning: "Step 1: All 30 days have positive GEX \u2192 100% persistence (>70%).\
+      \ Step 2: Average GEX magnitude is about $3.75B, below the $5B threshold. Step\
+      \ 3: There are 0 sign flips (stable). While persistence and stability criteria\
+      \ pass for a positive regime, the magnitude is too low to force meaningful dealer\
+      \ gamma-driven flows. Therefore this is a low conviction period, not a persistent\
+      \ regime."
+- window_id: window-2024-03-25
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days are positive net GEX \u2192 100% persistence (meets\
+    \ >70%). Step 2: Average magnitude = (sum of |GEX| over 30 days) / 30 \u2248 $3.76B,\
+    \ which is below the $5B threshold. Step 3: Sign flips = 0 (stable). Although\
+    \ sign persistence and stability criteria pass, the average magnitude is too low\
+    \ to force meaningful dealer gamma constraints. Therefore this period is 'low_conviction'\
+    \ rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.76
+    sign_flips: 0
+    persistence_pct: 100.0
+    confidence: 90
+    reasoning: "Step 1: All 30 days are positive net GEX \u2192 100% persistence (meets\
+      \ >70%). Step 2: Average magnitude = (sum of |GEX| over 30 days) / 30 \u2248\
+      \ $3.76B, which is below the $5B threshold. Step 3: Sign flips = 0 (stable).\
+      \ Although sign persistence and stability criteria pass, the average magnitude\
+      \ is too low to force meaningful dealer gamma constraints. Therefore this period\
+      \ is 'low_conviction' rather than a persistent regime."
+- window_id: window-2024-03-26
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 60
+  reasoning: "Step 1: All 30 of 30 days are positive GEX \u2192 persistence 100% (>70%).\
+    \ Step 2: Average |GEX| \u2248 3.76B, which is below the $5B threshold \u2192\
+    \ fails magnitude criterion. Step 3: Sign flips = 0 (\u22645), so stability is\
+    \ strong. Because persistence and stability pass but magnitude is too low, this\
+    \ qualifies as a low\u2010conviction period rather than a persistent positive\
+    \ regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.76
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 60
+    reasoning: "Step 1: All 30 of 30 days are positive GEX \u2192 persistence 100%\
+      \ (>70%). Step 2: Average |GEX| \u2248 3.76B, which is below the $5B threshold\
+      \ \u2192 fails magnitude criterion. Step 3: Sign flips = 0 (\u22645), so stability\
+      \ is strong. Because persistence and stability pass but magnitude is too low,\
+      \ this qualifies as a low\u2010conviction period rather than a persistent positive\
+      \ regime."
+- window_id: window-2024-03-27
+  regime_type: low_conviction
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: All 30 days have positive net GEX \u2192 positive_days=30, negative_days=0,\
+    \ persistence_pct=100% (>70%). Step 2: Average |GEX|=(sum of 30 values \u2248\
+    112.93B)/30\u22483.76B, which is below the $5B threshold. Step 3: Sign flips=0\
+    \ (stable). Although sign persistence and stability criteria pass, the average\
+    \ magnitude criterion fails. Therefore, this is a low conviction period, not a\
+    \ persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: low_conviction
+    positive_days: 30
+    negative_days: 0
+    avg_magnitude_billions: 3.76
+    sign_flips: 0
+    persistence_pct: 100
+    confidence: 90
+    reasoning: "Step 1: All 30 days have positive net GEX \u2192 positive_days=30,\
+      \ negative_days=0, persistence_pct=100% (>70%). Step 2: Average |GEX|=(sum of\
+      \ 30 values \u2248112.93B)/30\u22483.76B, which is below the $5B threshold.\
+      \ Step 3: Sign flips=0 (stable). Although sign persistence and stability criteria\
+      \ pass, the average magnitude criterion fails. Therefore, this is a low conviction\
+      \ period, not a persistent regime."

@@ -1,0 +1,92 @@
+pattern_name: stock_pinning
+test_metadata:
+  symbol: SPY
+  start_date: '2024-04-01'
+  end_date: '2024-06-28'
+  test_period: 2024-04-01 to 2024-06-28
+  total_dates_requested: 61
+  total_dates_tested: 0
+  failed_fetches: 61
+  confidence_threshold: 60.0
+  obfuscation_enabled: true
+  test_date: '2025-10-16T11:35:02.743667'
+performance_metrics:
+  total_tested: 0
+  detection_rate_pct: 0
+  high_confidence_detections: 0
+  low_confidence_detections: 0
+  predictive_accuracy_pct: null
+  avg_forward_1d_return_pct: null
+  net_alpha_pct: null
+  passes_economic_threshold: null
+  is_validated: false
+obfuscation_test:
+  passed: false
+  success_rate: 0
+  sample_size: 0
+  required_success_rate: 60.0
+  required_sample_size: 30
+  verdict: INSUFFICIENT_SAMPLES - Need 30+, have 0
+detections: []
+failed_dates:
+- '2024-04-01'
+- '2024-04-02'
+- '2024-04-03'
+- '2024-04-04'
+- '2024-04-05'
+- '2024-04-08'
+- '2024-04-09'
+- '2024-04-10'
+- '2024-04-11'
+- '2024-04-12'
+- '2024-04-15'
+- '2024-04-16'
+- '2024-04-17'
+- '2024-04-18'
+- '2024-04-19'
+- '2024-04-22'
+- '2024-04-23'
+- '2024-04-24'
+- '2024-04-25'
+- '2024-04-26'
+- '2024-04-29'
+- '2024-04-30'
+- '2024-05-01'
+- '2024-05-02'
+- '2024-05-03'
+- '2024-05-06'
+- '2024-05-07'
+- '2024-05-08'
+- '2024-05-09'
+- '2024-05-10'
+- '2024-05-13'
+- '2024-05-14'
+- '2024-05-15'
+- '2024-05-16'
+- '2024-05-17'
+- '2024-05-20'
+- '2024-05-21'
+- '2024-05-22'
+- '2024-05-23'
+- '2024-05-24'
+- '2024-05-28'
+- '2024-05-29'
+- '2024-05-30'
+- '2024-05-31'
+- '2024-06-03'
+- '2024-06-05'
+- '2024-06-07'
+- '2024-06-10'
+- '2024-06-11'
+- '2024-06-12'
+- '2024-06-13'
+- '2024-06-14'
+- '2024-06-17'
+- '2024-06-18'
+- '2024-06-20'
+- '2024-06-21'
+- '2024-06-24'
+- '2024-06-25'
+- '2024-06-26'
+- '2024-06-27'
+- '2024-06-28'

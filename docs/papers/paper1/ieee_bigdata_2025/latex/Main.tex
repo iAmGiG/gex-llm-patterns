@@ -1,0 +1,66 @@
+\documentclass[conference]{IEEEtran}
+
+\input{00_Header}
+
+\begin{document}
+
+\title{Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing}
+
+\author{\IEEEauthorblockN{Christopher Regan}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Kennesaw State University}\\
+Marietta, GA, Cobb \\
+cregan1@kennesaw.edu}
+\and
+\IEEEauthorblockN{Ying Xie}
+\IEEEauthorblockA{Department of Information Technology\\
+Professor of Information Technology\\
+Kennesaw State University\\
+Marietta, GA\\
+yxie2@kennesaw.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+We introduce obfuscation testing, a novel methodology for validating whether large language models detect structural market patterns through causal reasoning rather than temporal association. Testing three dealer hedging constraint patterns (gamma positioning, stock pinning, 0DTE hedging) on 242 trading days (95.6\% coverage)  of S\&P 500 options data, we find LLMs achieve 71.5\% detection rate using unbiased prompts that provide only raw gamma exposure values without regime labels or temporal context. The WHO→WHOM→WHAT causal framework forces models to identify the economic actors (dealers), affected parties (directional traders), and structural mechanisms (forced hedging) underlying observed market dynamics. Critically, detection accuracy (91.2\%) remains stable even as economic profitability varies quarterly, demonstrating that models identify structural constraints rather than profitable patterns. When prompted with regime labels, detection increases to 100\%, but the 71.5\% unbiased rate validates genuine pattern recognition. Our findings suggest LLMs possess emergent capabilities for detecting complex financial mechanisms through pure structural reasoning, with implications for systematic strategy development, risk management, and our understanding of how transformer architectures process financial market dynamics.
+\end{abstract}
+
+\begin{IEEEkeywords}
+large language models, market microstructure, obfuscation testing, gamma exposure, structural reasoning, pattern detection, financial markets
+\end{IEEEkeywords}
+
+% \section{Introduction}
+% Your introduction here
+\input{01_Introduction}
+
+% \section{Background and Related Work}
+\input{02_Related_work}
+
+% \section{Methodology}
+% Methodology section
+\input{03_Methodology}
+
+% \section{Experimental Setup}
+% Your experimental setup
+\input{04_Experimental_setup}
+
+% \section{Results}
+% Results section
+\input{05_Results}
+
+% \section{Discussion}
+% Discussion
+\input{06_Discussion}
+
+% \section{Conclusion}
+% Conclusion
+\input{07_Conclusion}
+
+\section*{Acknowledgment}
+The authors thank the anonymous reviewers for their constructive feedback and acknowledge computational resources provided by CCSE at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We are especially grateful to Pablo Ordonez for suggesting the Granger causality tests that validated the predictive relationship between gamma exposure and forward volatility.
+
+\bibliographystyle{IEEEtranS}
+\bibliography{references}
+
+\end{document}

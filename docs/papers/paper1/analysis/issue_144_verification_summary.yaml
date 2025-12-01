@@ -1,0 +1,50 @@
+dataset_overview:
+  total_pattern_days: 726
+  detection_days: 519
+  non_detection_days: 207
+  baseline_sample_size: 100
+phase1_materialization_rates:
+  C1: 41.6%
+  C2: 99.4%
+  C3: 38.5%
+  C4: 21.6%
+phase2_baseline_comparison:
+  C1:
+    detection_rate: 41.6%
+    baseline_rate: 45.0%
+    lift: 0.92x
+    chi2: '0.267'
+    p_value: '0.605549'
+    significant: &id002 !!python/object/apply:numpy.core.multiarray.scalar
+    - &id001 !!python/object/apply:numpy.dtype
+      args:
+      - b1
+      - false
+      - true
+      state: !!python/tuple
+      - 3
+      - '|'
+      - null
+      - null
+      - null
+      - -1
+      - -1
+      - 0
+    - !!binary |
+      AA==
+  C4:
+    detection_rate: 21.6%
+    baseline_rate: 32.0%
+    lift: 0.67x
+    chi2: '4.533'
+    p_value: '0.033254'
+    significant: !!python/object/apply:numpy.core.multiarray.scalar
+    - *id001
+    - !!binary |
+      AQ==
+phase3_contingency_analysis:
+  chi2: '0.424'
+  p_value: '0.998642'
+  dof: 6
+  significant: *id002
+  verdict: Mechanism-specific NOT proven

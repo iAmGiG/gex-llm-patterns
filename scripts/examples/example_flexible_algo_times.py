@@ -6,9 +6,11 @@ Demonstrates the new parameterizable algo time system.
 
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.data.market_data_system import UnifiedDataSystem
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 
 def demonstrate_flexible_algo_times():
     """Show the new flexible algo time capabilities."""
@@ -38,7 +40,7 @@ def demonstrate_flexible_algo_times():
     print("-" * 40)
 
     # Use config name instead of raw time
-    gamma_time = system.get_algo_time_from_config('gamma_350pm')
+    gamma_time = system.get_algo_time_from_config("gamma_350pm")
     print(f"gamma_350pm resolves to: {gamma_time}")
 
     qqq_data = system.get_algo_time_data("2024-06-01", "2024-06-30", "QQQ", gamma_time)
@@ -86,6 +88,7 @@ def demonstrate_flexible_algo_times():
     print("✅ Weekday-specific filtering")
     print("✅ LLM tool integration")
     print("✅ Backward compatibility maintained")
+
 
 if __name__ == "__main__":
     demonstrate_flexible_algo_times()

@@ -1,29 +1,24 @@
-"""
-Batch LLM Processing System
-Implements Issue #70: Batch LLM API Optimization for continuous experiment framework.
+"""Batch LLM Processing System Implements Issue #70: Batch LLM API Optimization for continuous experiment framework.
 
 Reduces API calls by 5x through weekly batching while maintaining individual day analysis quality.
 """
 
-import logging
 import json
-from typing import Dict, List, Optional
+import logging
 from datetime import datetime
+from typing import Dict, List, Optional
+
 import pandas as pd
+
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 from src.utils.config_manager import get_config
-from src.utils.date_utils import (
-    parse_date_string,
-    date_range_trading_days,
-    now_iso
-)
+from src.utils.date_utils import date_range_trading_days, now_iso, parse_date_string
 
 logger = logging.getLogger(__name__)
 
 
 class BatchLLMProcessor:
-    """
-    Batch LLM processor for efficient options analysis.
+    """Batch LLM processor for efficient options analysis.
 
     Features:
     - Weekly batching (5 trading days per LLM call)
@@ -34,8 +29,7 @@ class BatchLLMProcessor:
     """
 
     def __init__(self, llm_provider, batch_size: int = None, max_retries: int = None):
-        """
-        Initialize batch processor.
+        """Initialize batch processor.
 
         Args:
             llm_provider: LLM client (O3-mini, GPT-4o, etc.)
@@ -45,10 +39,16 @@ class BatchLLMProcessor:
         config = get_config()
 
         self.llm = llm_provider
-        self.batch_size = batch_size if batch_size is not None else config.get(
-            'llm_market_mechanics.batch_processor.default_batch_size', 5)
-        self.max_retries = max_retries if max_retries is not None else config.get(
-            'llm_market_mechanics.batch_processor.max_retries', 3)
+        self.batch_size = (
+            batch_size
+            if batch_size is not None
+            else config.get("llm_market_mechanics.batch_processor.default_batch_size", 5)
+        )
+        self.max_retries = (
+            max_retries
+            if max_retries is not None
+            else config.get("llm_market_mechanics.batch_processor.max_retries", 3)
+        )
         self.prompt_builder = MechanicsPromptBuilder()
 
         # Batch processing state
@@ -56,13 +56,12 @@ class BatchLLMProcessor:
         self.batch_preparation_complete = False
         self.failed_batches = []
 
-        logger.info(
-            f"Initialized BatchLLMProcessor with batch_size={batch_size}")
+        logger.info(f"Initialized BatchLLMProcessor with batch_size={batch_size}")
 
-    def prepare_batch_analysis(self, start_date: str, end_date: str,
-                               symbol: str, market_data: Dict, gex_data: Dict) -> Dict:
-        """
-        Prepare batch analysis for entire date range.
+    def prepare_batch_analysis(
+        self, start_date: str, end_date: str, symbol: str, market_data: Dict, gex_data: Dict
+    ) -> Dict:
+        """Prepare batch analysis for entire date range.
 
         This is the main optimization: instead of 252 individual LLM calls per year,
         we make ~52 weekly batch calls.
@@ -77,35 +76,29 @@ class BatchLLMProcessor:
         Returns:
             Prepared batch analysis results
         """
-        logger.info(
-            f"Starting batch preparation for {symbol}: {start_date} to {end_date}")
+        logger.info(f"Starting batch preparation for {symbol}: {start_date} to {end_date}")
 
         # Generate weekly chunks
         weekly_chunks = self._generate_weekly_chunks(start_date, end_date)
-        logger.info(
-            f"Generated {len(weekly_chunks)} weekly chunks for processing")
+        logger.info(f"Generated {len(weekly_chunks)} weekly chunks for processing")
 
         # Process each week in batch
         total_batches = len(weekly_chunks)
         successful_batches = 0
 
         for i, week_chunk in enumerate(weekly_chunks):
-            logger.info(
-                f"Processing batch {i+1}/{total_batches}: {week_chunk[0]} to {week_chunk[-1]}")
+            logger.info(f"Processing batch {i+1}/{total_batches}: {week_chunk[0]} to {week_chunk[-1]}")
 
             try:
                 # Prepare weekly data
-                weekly_data = self._prepare_weekly_data(
-                    week_chunk, symbol, market_data, gex_data)
+                weekly_data = self._prepare_weekly_data(week_chunk, symbol, market_data, gex_data)
 
                 if not weekly_data:
-                    logger.warning(
-                        f"No data available for week chunk: {week_chunk}")
+                    logger.warning(f"No data available for week chunk: {week_chunk}")
                     continue
 
                 # Generate batch LLM analysis
-                batch_analysis = self._process_weekly_batch(
-                    weekly_data, week_chunk)
+                batch_analysis = self._process_weekly_batch(weekly_data, week_chunk)
 
                 if batch_analysis:
                     # Store individual day results
@@ -113,8 +106,7 @@ class BatchLLMProcessor:
                         self.prepared_analyses[date] = analysis
 
                     successful_batches += 1
-                    logger.info(
-                        f"Successfully processed batch {i+1}: {len(batch_analysis)} days analyzed")
+                    logger.info(f"Successfully processed batch {i+1}: {len(batch_analysis)} days analyzed")
                 else:
                     logger.warning(f"Failed to process batch {i+1}")
                     self.failed_batches.append(week_chunk)
@@ -126,27 +118,22 @@ class BatchLLMProcessor:
         # Mark preparation complete
         self.batch_preparation_complete = True
 
-        logger.info(
-            f"Batch preparation complete: {successful_batches}/{total_batches} successful")
-        logger.info(
-            f"Prepared analyses for {len(self.prepared_analyses)} trading days")
+        logger.info(f"Batch preparation complete: {successful_batches}/{total_batches} successful")
+        logger.info(f"Prepared analyses for {len(self.prepared_analyses)} trading days")
 
         if self.failed_batches:
-            logger.warning(
-                f"Failed batches: {len(self.failed_batches)} - will use individual fallback")
+            logger.warning(f"Failed batches: {len(self.failed_batches)} - will use individual fallback")
 
         return {
-            'total_batches': total_batches,
-            'successful_batches': successful_batches,
-            'prepared_days': len(self.prepared_analyses),
-            'failed_batches': len(self.failed_batches),
-            'batch_preparation_complete': self.batch_preparation_complete
+            "total_batches": total_batches,
+            "successful_batches": successful_batches,
+            "prepared_days": len(self.prepared_analyses),
+            "failed_batches": len(self.failed_batches),
+            "batch_preparation_complete": self.batch_preparation_complete,
         }
 
-    def get_day_analysis(self, date: str, market_data: Dict, gex_data: Dict,
-                         symbol: str = "SPY") -> Optional[Dict]:
-        """
-        Get analysis for specific day with 3-tier fallback.
+    def get_day_analysis(self, date: str, market_data: Dict, gex_data: Dict, symbol: str = "SPY") -> Optional[Dict]:
+        """Get analysis for specific day with 3-tier fallback.
 
         Tier 1: Batch prepared data (90%+ of cases)
         Tier 2: Individual LLM call (cache miss or batch failure)
@@ -167,11 +154,9 @@ class BatchLLMProcessor:
             return self.prepared_analyses[date]
 
         # Tier 2: Individual LLM call (fallback)
-        logger.info(
-            f"Batch data not available for {date}, using individual LLM call")
+        logger.info(f"Batch data not available for {date}, using individual LLM call")
         try:
-            individual_analysis = self._process_individual_day(
-                date, market_data, gex_data, symbol)
+            individual_analysis = self._process_individual_day(date, market_data, gex_data, symbol)
             if individual_analysis:
                 # Cache for future use
                 self.prepared_analyses[date] = individual_analysis
@@ -180,14 +165,13 @@ class BatchLLMProcessor:
             logger.error(f"Individual LLM call failed for {date}: {e}")
 
         # Tier 3: Neutral fallback (emergency)
-        logger.warning(
-            f"All LLM methods failed for {date}, using neutral fallback")
+        logger.warning(f"All LLM methods failed for {date}, using neutral fallback")
         return {
-            'signal_type': 'neutral',
-            'confidence': 0.0,
-            'reasoning': f"LLM analysis unavailable for {date} - batch and individual calls failed",
-            'analysis_method': 'fallback_neutral',
-            'metadata': {'date': date, 'symbol': symbol, 'fallback_reason': 'llm_failure'}
+            "signal_type": "neutral",
+            "confidence": 0.0,
+            "reasoning": f"LLM analysis unavailable for {date} - batch and individual calls failed",
+            "analysis_method": "fallback_neutral",
+            "metadata": {"date": date, "symbol": symbol, "fallback_reason": "llm_failure"},
         }
 
     def _generate_weekly_chunks(self, start_date: str, end_date: str) -> List[List[str]]:
@@ -200,25 +184,25 @@ class BatchLLMProcessor:
             # Use date_utils function for consistent trading day generation
             trading_days = date_range_trading_days(start_date, end_date)
         except Exception as e:
-            logger.error(
-                f"Date parsing failed for {start_date} to {end_date}: {e}")
+            logger.error(f"Date parsing failed for {start_date} to {end_date}: {e}")
             # Fallback to basic parsing
-            start = datetime.strptime(start_date, '%Y-%m-%d')
-            end = datetime.strptime(end_date, '%Y-%m-%d')
+            start = datetime.strptime(start_date, "%Y-%m-%d")
+            end = datetime.strptime(end_date, "%Y-%m-%d")
             business_days = pd.bdate_range(start=start, end=end)
-            trading_days = [day.strftime('%Y-%m-%d') for day in business_days]
+            trading_days = [day.strftime("%Y-%m-%d") for day in business_days]
 
         # Group into weekly chunks
         weekly_chunks = []
         for i in range(0, len(trading_days), self.batch_size):
-            chunk = trading_days[i:i + self.batch_size]
+            chunk = trading_days[i : i + self.batch_size]
             if chunk:  # Only add non-empty chunks
                 weekly_chunks.append(chunk)
 
         return weekly_chunks
 
-    def _prepare_weekly_data(self, week_chunk: List[str], symbol: str,
-                             market_data: Dict, gex_data: Dict) -> Optional[Dict]:
+    def _prepare_weekly_data(
+        self, week_chunk: List[str], symbol: str, market_data: Dict, gex_data: Dict
+    ) -> Optional[Dict]:
         """Prepare data for weekly batch processing."""
         weekly_data = {}
 
@@ -235,11 +219,7 @@ class BatchLLMProcessor:
                 logger.debug(f"No GEX data for {date}")
                 continue
 
-            weekly_data[date] = {
-                'market_data': day_market_data,
-                'gex_data': day_gex_data,
-                'symbol': symbol
-            }
+            weekly_data[date] = {"market_data": day_market_data, "gex_data": day_gex_data, "symbol": symbol}
 
         return weekly_data if weekly_data else None
 
@@ -250,8 +230,7 @@ class BatchLLMProcessor:
             batch_prompt = self._build_batch_prompt(weekly_data, week_chunk)
 
             # Generate LLM response
-            logger.debug(
-                f"Sending batch LLM request for {len(week_chunk)} days")
+            logger.debug(f"Sending batch LLM request for {len(week_chunk)} days")
             response = self.llm.generate(batch_prompt)
 
             if not response:
@@ -265,8 +244,7 @@ class BatchLLMProcessor:
                 logger.error("Failed to parse batch LLM response")
                 return None
 
-            logger.info(
-                f"Successfully parsed {len(parsed_analyses)} day analyses from batch")
+            logger.info(f"Successfully parsed {len(parsed_analyses)} day analyses from batch")
             return parsed_analyses
 
         except Exception as e:
@@ -278,7 +256,8 @@ class BatchLLMProcessor:
         prompt_parts = []
 
         # System prompt
-        prompt_parts.append("""You are an expert options trader analyzing GEX (Gamma Exposure) patterns for trading opportunities.
+        prompt_parts.append(
+            """You are an expert options trader analyzing GEX (Gamma Exposure) patterns for trading opportunities.
 
 Analyze the following multi-day trading sequence and provide WHO/WHOM/WHAT market mechanics analysis for each day.
 
@@ -300,7 +279,8 @@ IMPORTANT: Return your analysis as JSON with this exact structure:
     "whom": "whom they force",
     "what": "what action forced"
   }
-}""")
+}"""
+        )
 
         # Add weekly trading sequence
         prompt_parts.append("\n\nTRADING SEQUENCE ANALYSIS:")
@@ -310,8 +290,8 @@ IMPORTANT: Return your analysis as JSON with this exact structure:
                 continue
 
             day_data = weekly_data[date]
-            market = day_data['market_data']
-            gex = day_data['gex_data']
+            market = day_data["market_data"]
+            gex = day_data["gex_data"]
 
             # Format day information
             day_info = f"""
@@ -322,22 +302,23 @@ Day {i+1} ({date}):
 - Volume: {market.get('volume', 'N/A')}"""
 
             # Add options-specific data if available
-            if 'options_data' in gex:
-                options_info = gex['options_data']
+            if "options_data" in gex:
+                options_info = gex["options_data"]
                 if isinstance(options_info, dict) and options_info:
-                    total_volume = sum(
-                        opt.get('volume', 0) for opt in options_info.values() if isinstance(opt, dict))
+                    total_volume = sum(opt.get("volume", 0) for opt in options_info.values() if isinstance(opt, dict))
                     day_info += f"\n- Options Volume: {total_volume:,}"
 
             prompt_parts.append(day_info)
 
         # Add context and instructions
-        prompt_parts.append(f"""
+        prompt_parts.append(
+            f"""
 
 CONTEXT: This is a {len(week_chunk)}-day sequence showing market mechanics evolution.
 Consider day-to-day patterns and how dealer positioning changes affect subsequent days.
 
-Provide JSON analysis for each day focusing on actionable trading insights.""")
+Provide JSON analysis for each day focusing on actionable trading insights."""
+        )
 
         return "\n".join(prompt_parts)
 
@@ -363,22 +344,20 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
                     # Validate required fields
                     if self._validate_day_analysis(day_analysis):
                         cleaned_analyses[date] = {
-                            'signal_type': day_analysis.get('signal_type', 'neutral'),
-                            'confidence': float(day_analysis.get('confidence', 0.0)),
-                            'reasoning': day_analysis.get('reasoning', 'No reasoning provided'),
-                            'who': day_analysis.get('who', 'Unknown'),
-                            'whom': day_analysis.get('whom', 'Unknown'),
-                            'what': day_analysis.get('what', 'Unknown'),
-                            'analysis_method': 'batch_llm',
-                            'batch_date': now_iso(),
-                            'metadata': {'date': date, 'batch_size': len(week_chunk)}
+                            "signal_type": day_analysis.get("signal_type", "neutral"),
+                            "confidence": float(day_analysis.get("confidence", 0.0)),
+                            "reasoning": day_analysis.get("reasoning", "No reasoning provided"),
+                            "who": day_analysis.get("who", "Unknown"),
+                            "whom": day_analysis.get("whom", "Unknown"),
+                            "what": day_analysis.get("what", "Unknown"),
+                            "analysis_method": "batch_llm",
+                            "batch_date": now_iso(),
+                            "metadata": {"date": date, "batch_size": len(week_chunk)},
                         }
                     else:
-                        logger.warning(
-                            f"Invalid analysis structure for {date}")
+                        logger.warning(f"Invalid analysis structure for {date}")
                 else:
-                    logger.warning(
-                        f"Missing analysis for {date} in batch response")
+                    logger.warning(f"Missing analysis for {date} in batch response")
 
             return cleaned_analyses if cleaned_analyses else None
 
@@ -394,16 +373,15 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
         import re
 
         # Try to find JSON block (between { and })
-        json_pattern = r'\{.*\}'
+        json_pattern = r"\{.*\}"
         json_match = re.search(json_pattern, response, re.DOTALL)
 
         if json_match:
             return json_match.group(0)
 
         # Try markdown code block
-        code_block_pattern = r'```(?:json)?\s*(\{.*?\})\s*```'
-        code_match = re.search(
-            code_block_pattern, response, re.DOTALL | re.IGNORECASE)
+        code_block_pattern = r"```(?:json)?\s*(\{.*?\})\s*```"
+        code_match = re.search(code_block_pattern, response, re.DOTALL | re.IGNORECASE)
 
         if code_match:
             return code_match.group(1)
@@ -413,20 +391,20 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
 
     def _validate_day_analysis(self, analysis: Dict) -> bool:
         """Validate individual day analysis structure."""
-        required_fields = ['signal_type', 'confidence', 'reasoning']
+        required_fields = ["signal_type", "confidence", "reasoning"]
 
         for field in required_fields:
             if field not in analysis:
                 return False
 
         # Validate signal_type
-        valid_signals = ['long', 'short', 'neutral']
-        if analysis['signal_type'] not in valid_signals:
+        valid_signals = ["long", "short", "neutral"]
+        if analysis["signal_type"] not in valid_signals:
             return False
 
         # Validate confidence
         try:
-            confidence = float(analysis['confidence'])
+            confidence = float(analysis["confidence"])
             if not (0.0 <= confidence <= 1.0):
                 return False
         except (ValueError, TypeError):
@@ -434,16 +412,12 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
 
         return True
 
-    def _process_individual_day(self, date: str, market_data: Dict,
-                                gex_data: Dict, symbol: str) -> Optional[Dict]:
+    def _process_individual_day(self, date: str, market_data: Dict, gex_data: Dict, symbol: str) -> Optional[Dict]:
         """Fallback: process individual day with single LLM call."""
         try:
             # Build individual day prompt
             individual_prompt = self.prompt_builder.build_analysis_prompt(
-                market_data=market_data,
-                gex_data=gex_data,
-                symbol=symbol,
-                date=date
+                market_data=market_data, gex_data=gex_data, symbol=symbol, date=date
             )
 
             # Generate LLM response
@@ -456,9 +430,8 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
             analysis = self._parse_individual_response(response, date)
 
             if analysis:
-                analysis['analysis_method'] = 'individual_llm'
-                analysis['metadata'] = {'date': date,
-                                        'symbol': symbol, 'fallback': True}
+                analysis["analysis_method"] = "individual_llm"
+                analysis["metadata"] = {"date": date, "symbol": symbol, "fallback": True}
 
             return analysis
 
@@ -473,8 +446,7 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
             json_text = self._extract_json_from_response(response)
 
             if not json_text:
-                logger.warning(
-                    f"Could not extract JSON from individual response for {date}")
+                logger.warning(f"Could not extract JSON from individual response for {date}")
                 return self._create_fallback_analysis(date, "json_extraction_failed")
 
             # Parse JSON
@@ -483,7 +455,7 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
             # Handle both single analysis and date-keyed analysis
             if date in analysis:
                 day_analysis = analysis[date]
-            elif isinstance(analysis, dict) and 'signal_type' in analysis:
+            elif isinstance(analysis, dict) and "signal_type" in analysis:
                 day_analysis = analysis
             else:
                 logger.warning(f"Unexpected response format for {date}")
@@ -492,15 +464,15 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
             # Validate and clean up
             if self._validate_day_analysis(day_analysis):
                 return {
-                    'signal_type': day_analysis.get('signal_type', 'neutral'),
-                    'confidence': float(day_analysis.get('confidence', 0.0)),
-                    'reasoning': day_analysis.get('reasoning', 'No reasoning provided'),
-                    'who': day_analysis.get('who', 'Unknown'),
-                    'whom': day_analysis.get('whom', 'Unknown'),
-                    'what': day_analysis.get('what', 'Unknown'),
-                    'analysis_method': 'individual_llm',
-                    'response_timestamp': now_iso(),
-                    'metadata': {'date': date, 'parsing_method': 'individual'}
+                    "signal_type": day_analysis.get("signal_type", "neutral"),
+                    "confidence": float(day_analysis.get("confidence", 0.0)),
+                    "reasoning": day_analysis.get("reasoning", "No reasoning provided"),
+                    "who": day_analysis.get("who", "Unknown"),
+                    "whom": day_analysis.get("whom", "Unknown"),
+                    "what": day_analysis.get("what", "Unknown"),
+                    "analysis_method": "individual_llm",
+                    "response_timestamp": now_iso(),
+                    "metadata": {"date": date, "parsing_method": "individual"},
                 }
             else:
                 logger.warning(f"Invalid analysis structure for {date}")
@@ -516,21 +488,21 @@ Provide JSON analysis for each day focusing on actionable trading insights.""")
     def _create_fallback_analysis(self, date: str, reason: str) -> Dict:
         """Create fallback analysis when parsing fails."""
         return {
-            'signal_type': 'neutral',
-            'confidence': 0.0,
-            'reasoning': f"Individual analysis parsing failed for {date}: {reason}",
-            'analysis_method': 'individual_fallback',
-            'fallback_reason': reason,
-            'response_timestamp': now_iso(),
-            'metadata': {'date': date, 'fallback': True}
+            "signal_type": "neutral",
+            "confidence": 0.0,
+            "reasoning": f"Individual analysis parsing failed for {date}: {reason}",
+            "analysis_method": "individual_fallback",
+            "fallback_reason": reason,
+            "response_timestamp": now_iso(),
+            "metadata": {"date": date, "fallback": True},
         }
 
     def get_batch_statistics(self) -> Dict:
         """Get batch processing performance statistics."""
         return {
-            'batch_preparation_complete': self.batch_preparation_complete,
-            'prepared_analyses_count': len(self.prepared_analyses),
-            'failed_batches_count': len(self.failed_batches),
-            'batch_size': self.batch_size,
-            'api_call_reduction_pct': (1 - 1/self.batch_size) * 100 if self.batch_size > 1 else 0
+            "batch_preparation_complete": self.batch_preparation_complete,
+            "prepared_analyses_count": len(self.prepared_analyses),
+            "failed_batches_count": len(self.failed_batches),
+            "batch_size": self.batch_size,
+            "api_call_reduction_pct": (1 - 1 / self.batch_size) * 100 if self.batch_size > 1 else 0,
         }

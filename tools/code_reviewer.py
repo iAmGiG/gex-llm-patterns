@@ -4,12 +4,12 @@ Comprehensive code review tool for Python code quality, imports, and project sta
 """
 
 import ast
+import logging
 import re
 import subprocess
-from pathlib import Path
-from typing import List, Dict, Set, Tuple, Any
 from dataclasses import dataclass
-import logging
+from pathlib import Path
+from typing import Any, Dict, List, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ImportIssue:
     """Represents an import-related issue."""
+
     line_number: int
     issue_type: str  # 'unused', 'wrong_order', 'missing_from', etc.
     import_name: str
@@ -27,6 +28,7 @@ class ImportIssue:
 @dataclass
 class CodeIssue:
     """Represents a general code issue."""
+
     line_number: int
     issue_type: str
     message: str
@@ -45,14 +47,14 @@ class ImportAnalyzer(ast.NodeVisitor):
     def visit_Import(self, node: ast.Import):
         for alias in node.names:
             name = alias.asname if alias.asname else alias.name
-            self.imports.append((node.lineno, 'import', name))
+            self.imports.append((node.lineno, "import", name))
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
-        module = node.module or ''
+        module = node.module or ""
         for alias in node.names:
             name = alias.asname if alias.asname else alias.name
-            self.imports.append((node.lineno, 'from', f"{module}.{name}"))
+            self.imports.append((node.lineno, "from", f"{module}.{name}"))
             if module not in self.from_imports:
                 self.from_imports[module] = []
             self.from_imports[module].append(name)
@@ -78,37 +80,55 @@ class GEXCodeReviewer:
 
         # GEX project specific standards
         self.standard_imports_order = [
-            'builtins',      # Built-in modules
-            'standard',      # Standard library
-            'third_party',   # Third-party packages
-            'local'          # Local/project modules
+            "builtins",  # Built-in modules
+            "standard",  # Standard library
+            "third_party",  # Third-party packages
+            "local",  # Local/project modules
         ]
 
         self.common_third_party = {
-            'pandas', 'numpy', 'scipy', 'matplotlib', 'requests',
-            'typing', 'datetime', 'logging', 'json', 'os', 'sys',
-            'pathlib', 'dataclasses', 'enum', 'abc'
+            "pandas",
+            "numpy",
+            "scipy",
+            "matplotlib",
+            "requests",
+            "typing",
+            "datetime",
+            "logging",
+            "json",
+            "os",
+            "sys",
+            "pathlib",
+            "dataclasses",
+            "enum",
+            "abc",
         }
 
         self.project_modules = {
-            'tokenization', 'data_sources', 'validation', 'gex',
-            'agents', 'cache', 'tools', 'utils'
+            "tokenization",
+            "data_sources",
+            "validation",
+            "gex",
+            "agents",
+            "cache",
+            "tools",
+            "utils",
         }
 
         # Typing simplification for computational effectiveness
         self.typing_simplification_enabled = True
         self.complex_typing_patterns = [
             # param: Optional[Type] = default
-            r'(\w+):\s*Optional\[[^\]]+\]\s*(=)',
+            r"(\w+):\s*Optional\[[^\]]+\]\s*(=)",
             # param: Union[Type1, Type2] = default
-            r'(\w+):\s*Union\[[^\]]+\]\s*(=)',
+            r"(\w+):\s*Union\[[^\]]+\]\s*(=)",
             # param: List[Type] = default
-            r'(\w+):\s*List\[[^\]]*\]\s*(=)',
+            r"(\w+):\s*List\[[^\]]*\]\s*(=)",
             # param: Dict[K, V] = default
-            r'(\w+):\s*Dict\[[^\]]*\]\s*(=)',
-            r'(\w+):\s*Set\[[^\]]*\]\s*(=)',       # param: Set[Type] = default
+            r"(\w+):\s*Dict\[[^\]]*\]\s*(=)",
+            r"(\w+):\s*Set\[[^\]]*\]\s*(=)",  # param: Set[Type] = default
             # param: Tuple[Type, ...] = default
-            r'(\w+):\s*Tuple\[[^\]]*\]\s*(=)',
+            r"(\w+):\s*Tuple\[[^\]]*\]\s*(=)",
         ]
 
     def review_file(self, file_path: str) -> Dict[str, List]:
@@ -126,10 +146,10 @@ class GEXCodeReviewer:
         if not file_path.exists():
             return {"error": [f"File not found: {file_path}"]}
 
-        if file_path.suffix != '.py':
+        if file_path.suffix != ".py":
             return {"error": [f"Not a Python file: {file_path}"]}
 
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # Parse AST
@@ -138,12 +158,7 @@ class GEXCodeReviewer:
         except SyntaxError as e:
             return {"error": [f"Syntax error: {e}"]}
 
-        issues = {
-            "import_issues": [],
-            "code_issues": [],
-            "lint_issues": [],
-            "suggestions": []
-        }
+        issues = {"import_issues": [], "code_issues": [], "lint_issues": [], "suggestions": []}
 
         # Analyze imports
         import_issues = self._analyze_imports(tree, content, file_path)
@@ -169,30 +184,32 @@ class GEXCodeReviewer:
         analyzer.visit(tree)
 
         issues = []
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Find unused imports
         for line_no, import_type, import_name in analyzer.imports:
             # Extract the actual name that would be used
-            if import_type == 'import':
-                used_name = import_name.split('.')[0]
+            if import_type == "import":
+                used_name = import_name.split(".")[0]
             else:
-                used_name = import_name.split('.')[-1]
+                used_name = import_name.split(".")[-1]
 
-            if used_name not in analyzer.used_names and used_name != '*':
-                issues.append(ImportIssue(
-                    line_number=line_no,
-                    issue_type='unused_import',
-                    import_name=import_name,
-                    suggestion=f"Remove unused import: {import_name}",
-                    severity='warning'
-                ))
+            if used_name not in analyzer.used_names and used_name != "*":
+                issues.append(
+                    ImportIssue(
+                        line_number=line_no,
+                        issue_type="unused_import",
+                        import_name=import_name,
+                        suggestion=f"Remove unused import: {import_name}",
+                        severity="warning",
+                    )
+                )
 
         # Check import ordering
         import_lines = []
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
-            if stripped.startswith(('import ', 'from ')) and not stripped.startswith('#'):
+            if stripped.startswith(("import ", "from ")) and not stripped.startswith("#"):
                 import_lines.append((i, stripped))
 
         # Check if imports are at the top (after docstring and comments)
@@ -201,20 +218,22 @@ class GEXCodeReviewer:
             code_before_imports = False
 
             for i in range(1, first_import_line):
-                line = lines[i-1].strip()
-                if line and not line.startswith('#') and not line.startswith('"""') and not line.startswith("'''"):
-                    if not self._is_docstring_line(lines, i-1):
+                line = lines[i - 1].strip()
+                if line and not line.startswith("#") and not line.startswith('"""') and not line.startswith("'''"):
+                    if not self._is_docstring_line(lines, i - 1):
                         code_before_imports = True
                         break
 
             if code_before_imports:
-                issues.append(ImportIssue(
-                    line_number=first_import_line,
-                    issue_type='imports_not_at_top',
-                    import_name='',
-                    suggestion='Move all imports to the top of the file (after module docstring)',
-                    severity='error'
-                ))
+                issues.append(
+                    ImportIssue(
+                        line_number=first_import_line,
+                        issue_type="imports_not_at_top",
+                        import_name="",
+                        suggestion="Move all imports to the top of the file (after module docstring)",
+                        severity="error",
+                    )
+                )
 
         return issues
 
@@ -255,29 +274,28 @@ class GEXCodeReviewer:
         try:
             # Try flake8 first
             result = subprocess.run(
-                ['flake8', '--max-line-length=100', str(file_path)],
-                capture_output=True,
-                text=True,
-                timeout=30
+                ["flake8", "--max-line-length=100", str(file_path)], capture_output=True, text=True, timeout=30
             )
 
             if result.stdout:
-                for line in result.stdout.strip().split('\n'):
-                    if ':' in line:
-                        parts = line.split(':', 3)
+                for line in result.stdout.strip().split("\n"):
+                    if ":" in line:
+                        parts = line.split(":", 3)
                         if len(parts) >= 4:
                             try:
                                 line_no = int(parts[1])
                                 col_no = int(parts[2])
                                 message = parts[3].strip()
 
-                                issues.append(CodeIssue(
-                                    line_number=line_no,
-                                    issue_type='flake8',
-                                    message=message,
-                                    suggestion=f"Fix flake8 issue at line {line_no}, column {col_no}",
-                                    severity='warning'
-                                ))
+                                issues.append(
+                                    CodeIssue(
+                                        line_number=line_no,
+                                        issue_type="flake8",
+                                        message=message,
+                                        suggestion=f"Fix flake8 issue at line {line_no}, column {col_no}",
+                                        severity="warning",
+                                    )
+                                )
                             except ValueError:
                                 continue
 
@@ -290,59 +308,69 @@ class GEXCodeReviewer:
     def _check_gex_standards(self, tree: ast.AST, content: str, file_path: Path) -> List[CodeIssue]:
         """Check GEX project-specific coding standards."""
         issues = []
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Check for proper docstrings
         if not self._has_module_docstring(tree):
-            issues.append(CodeIssue(
-                line_number=1,
-                issue_type='missing_docstring',
-                message='Module missing docstring',
-                suggestion='Add a module-level docstring explaining the purpose',
-                severity='warning'
-            ))
+            issues.append(
+                CodeIssue(
+                    line_number=1,
+                    issue_type="missing_docstring",
+                    message="Module missing docstring",
+                    suggestion="Add a module-level docstring explaining the purpose",
+                    severity="warning",
+                )
+            )
 
         # Check for TODO comments
         for i, line in enumerate(lines, 1):
-            if 'TODO' in line.upper() or 'FIXME' in line.upper():
-                issues.append(CodeIssue(
-                    line_number=i,
-                    issue_type='todo_comment',
-                    message=f'TODO/FIXME comment found: {line.strip()}',
-                    suggestion='Address TODO/FIXME or create GitHub issue',
-                    severity='info'
-                ))
+            if "TODO" in line.upper() or "FIXME" in line.upper():
+                issues.append(
+                    CodeIssue(
+                        line_number=i,
+                        issue_type="todo_comment",
+                        message=f"TODO/FIXME comment found: {line.strip()}",
+                        suggestion="Address TODO/FIXME or create GitHub issue",
+                        severity="info",
+                    )
+                )
 
         # Check for hardcoded paths or credentials
         for i, line in enumerate(lines, 1):
-            if re.search(r'["\'][/\\].*[/\\].*["\']', line) and 'test' not in line.lower():
-                issues.append(CodeIssue(
-                    line_number=i,
-                    issue_type='hardcoded_path',
-                    message='Possible hardcoded path found',
-                    suggestion='Use pathlib.Path or os.path for cross-platform paths',
-                    severity='warning'
-                ))
+            if re.search(r'["\'][/\\].*[/\\].*["\']', line) and "test" not in line.lower():
+                issues.append(
+                    CodeIssue(
+                        line_number=i,
+                        issue_type="hardcoded_path",
+                        message="Possible hardcoded path found",
+                        suggestion="Use pathlib.Path or os.path for cross-platform paths",
+                        severity="warning",
+                    )
+                )
 
         # Check for proper logging instead of print
         for i, line in enumerate(lines, 1):
-            if 'print(' in line and 'test' not in file_path.name.lower():
-                issues.append(CodeIssue(
-                    line_number=i,
-                    issue_type='print_statement',
-                    message='print() statement found',
-                    suggestion='Use logging instead of print() for production code',
-                    severity='info'
-                ))
+            if "print(" in line and "test" not in file_path.name.lower():
+                issues.append(
+                    CodeIssue(
+                        line_number=i,
+                        issue_type="print_statement",
+                        message="print() statement found",
+                        suggestion="Use logging instead of print() for production code",
+                        severity="info",
+                    )
+                )
 
         return issues
 
     def _has_module_docstring(self, tree: ast.AST) -> bool:
         """Check if module has a docstring."""
-        if (tree.body and
-            isinstance(tree.body[0], ast.Expr) and
-            isinstance(tree.body[0].value, ast.Constant) and
-                isinstance(tree.body[0].value.value, str)):
+        if (
+            tree.body
+            and isinstance(tree.body[0], ast.Expr)
+            and isinstance(tree.body[0].value, ast.Constant)
+            and isinstance(tree.body[0].value.value, str)
+        ):
             return True
         return False
 
@@ -351,28 +379,25 @@ class GEXCodeReviewer:
         suggestions = []
 
         # Import-related suggestions
-        unused_imports = [issue for issue in issues['import_issues']
-                          if issue.issue_type == 'unused_import']
+        unused_imports = [issue for issue in issues["import_issues"] if issue.issue_type == "unused_import"]
         if unused_imports:
             imports_to_remove = [issue.import_name for issue in unused_imports]
             suggestions.append(
                 f"Remove {len(imports_to_remove)} unused imports: {', '.join(imports_to_remove[:3])}..."
-                if len(imports_to_remove) > 3 else f"Remove unused imports: {', '.join(imports_to_remove)}"
+                if len(imports_to_remove) > 3
+                else f"Remove unused imports: {', '.join(imports_to_remove)}"
             )
 
         # Code quality suggestions
-        if any(issue.issue_type == 'print_statement' for issue in issues['code_issues']):
-            suggestions.append(
-                "Replace print() statements with logging for better debugging")
+        if any(issue.issue_type == "print_statement" for issue in issues["code_issues"]):
+            suggestions.append("Replace print() statements with logging for better debugging")
 
-        if any(issue.issue_type == 'missing_docstring' for issue in issues['code_issues']):
-            suggestions.append(
-                "Add module docstring explaining the file's purpose")
+        if any(issue.issue_type == "missing_docstring" for issue in issues["code_issues"]):
+            suggestions.append("Add module docstring explaining the file's purpose")
 
         # Linting suggestions
-        if issues['lint_issues']:
-            suggestions.append(
-                f"Fix {len(issues['lint_issues'])} linting issues")
+        if issues["lint_issues"]:
+            suggestions.append(f"Fix {len(issues['lint_issues'])} linting issues")
 
         return suggestions
 
@@ -380,10 +405,10 @@ class GEXCodeReviewer:
         """Automatically fix import issues."""
         file_path = Path(file_path)
 
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        lines = content.split('\n')
+        lines = content.split("\n")
         tree = ast.parse(content)
 
         analyzer = ImportAnalyzer()
@@ -392,12 +417,12 @@ class GEXCodeReviewer:
         # Find unused imports
         unused_lines = set()
         for line_no, import_type, import_name in analyzer.imports:
-            if import_type == 'import':
-                used_name = import_name.split('.')[0]
+            if import_type == "import":
+                used_name = import_name.split(".")[0]
             else:
-                used_name = import_name.split('.')[-1]
+                used_name = import_name.split(".")[-1]
 
-            if used_name not in analyzer.used_names and used_name != '*':
+            if used_name not in analyzer.used_names and used_name != "*":
                 unused_lines.add(line_no - 1)  # Convert to 0-based
 
         # Remove unused import lines
@@ -410,13 +435,9 @@ class GEXCodeReviewer:
             else:
                 removed_count += 1
 
-        fixed_content = '\n'.join(fixed_lines)
+        fixed_content = "\n".join(fixed_lines)
 
-        return {
-            'fixed_content': fixed_content,
-            'removed_imports': removed_count,
-            'changes_made': removed_count > 0
-        }
+        return {"fixed_content": fixed_content, "removed_imports": removed_count, "changes_made": removed_count > 0}
 
     def simplify_typing(self, content: str) -> Tuple[str, int]:
         """
@@ -437,36 +458,36 @@ class GEXCodeReviewer:
             if matches:
                 changes_made += len(matches)
                 # Replace: param: ComplexType = default -> param=default
-                content = re.sub(pattern, r'\1\2', content)
+                content = re.sub(pattern, r"\1\2", content)
 
         # Remove simple parameter typing without defaults
         simple_patterns = [
-            r'(\w+):\s*str(?=\s*[,)])',      # param: str
-            r'(\w+):\s*int(?=\s*[,)])',      # param: int
-            r'(\w+):\s*bool(?=\s*[,)])',     # param: bool
-            r'(\w+):\s*float(?=\s*[,)])',    # param: float
+            r"(\w+):\s*str(?=\s*[,)])",  # param: str
+            r"(\w+):\s*int(?=\s*[,)])",  # param: int
+            r"(\w+):\s*bool(?=\s*[,)])",  # param: bool
+            r"(\w+):\s*float(?=\s*[,)])",  # param: float
         ]
 
         for pattern in simple_patterns:
             matches = re.findall(pattern, content)
             if matches:
                 changes_made += len(matches)
-                content = re.sub(pattern, r'\1', content)
+                content = re.sub(pattern, r"\1", content)
 
         # Remove complex return types as well
         return_type_patterns = [
-            r'-> Dict\[.*?\]:',      # -> Dict[str, Any]:
-            r'-> List\[.*?\]:',      # -> List[Something]:
-            r'-> Optional\[.*?\]:',  # -> Optional[Type]:
-            r'-> Union\[.*?\]:',     # -> Union[Type1, Type2]:
-            r'-> Set\[.*?\]:',       # -> Set[Type]:
-            r'-> Tuple\[.*?\]:',     # -> Tuple[Type, ...]:
-            r'-> Dict:',             # -> Dict: (without brackets)
-            r'-> List:',             # -> List: (without brackets)
-            r'-> Optional:',         # -> Optional: (without brackets)
-            r'-> Union:',            # -> Union: (without brackets)
-            r'-> Set:',              # -> Set: (without brackets)
-            r'-> Tuple:',            # -> Tuple: (without brackets)
+            r"-> Dict\[.*?\]:",  # -> Dict[str, Any]:
+            r"-> List\[.*?\]:",  # -> List[Something]:
+            r"-> Optional\[.*?\]:",  # -> Optional[Type]:
+            r"-> Union\[.*?\]:",  # -> Union[Type1, Type2]:
+            r"-> Set\[.*?\]:",  # -> Set[Type]:
+            r"-> Tuple\[.*?\]:",  # -> Tuple[Type, ...]:
+            r"-> Dict:",  # -> Dict: (without brackets)
+            r"-> List:",  # -> List: (without brackets)
+            r"-> Optional:",  # -> Optional: (without brackets)
+            r"-> Union:",  # -> Union: (without brackets)
+            r"-> Set:",  # -> Set: (without brackets)
+            r"-> Tuple:",  # -> Tuple: (without brackets)
         ]
 
         for pattern in return_type_patterns:
@@ -474,22 +495,19 @@ class GEXCodeReviewer:
             if matches:
                 changes_made += len(matches)
                 # Replace with simple colon
-                content = re.sub(pattern, ':', content)
+                content = re.sub(pattern, ":", content)
 
         # Remove unused typing imports if no complex types remain
         if changes_made > 0:
             # Check if typing imports are still needed
-            typing_usage = [
-                'Optional', 'Union', 'List', 'Dict', 'Set', 'Tuple', 'Any'
-            ]
+            typing_usage = ["Optional", "Union", "List", "Dict", "Set", "Tuple", "Any"]
 
-            still_used = any(f'-> {t}' in content or f': {t}' in content
-                             for t in typing_usage)
+            still_used = any(f"-> {t}" in content or f": {t}" in content for t in typing_usage)
 
             if not still_used:
                 # Remove typing imports
-                content = re.sub(r'from typing import.*\n', '', content)
-                content = re.sub(r'import typing.*\n', '', content)
+                content = re.sub(r"from typing import.*\n", "", content)
+                content = re.sub(r"import typing.*\n", "", content)
 
         return content, changes_made
 
@@ -498,7 +516,7 @@ class GEXCodeReviewer:
         file_path = Path(file_path)
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             original_content = content
@@ -509,46 +527,37 @@ class GEXCodeReviewer:
                 content, typing_changes = self.simplify_typing(content)
                 total_changes += typing_changes
                 if typing_changes > 0:
-                    print(
-                        f"🎯 Simplified {typing_changes} parameter type hints")
+                    print(f"🎯 Simplified {typing_changes} parameter type hints")
 
             # 2. Fix imports
             import_result = self.fix_imports_content(content)
-            if import_result['changes_made']:
-                content = import_result['fixed_content']
-                total_changes += import_result['removed_imports']
-                print(
-                    f"🗑️ Removed {import_result['removed_imports']} unused imports")
+            if import_result["changes_made"]:
+                content = import_result["fixed_content"]
+                total_changes += import_result["removed_imports"]
+                print(f"🗑️ Removed {import_result['removed_imports']} unused imports")
 
             # Write changes if any were made
             if total_changes > 0:
-                with open(file_path, 'w', encoding='utf-8') as f:
+                with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
 
                 return {
-                    'success': True,
-                    'total_changes': total_changes,
-                    'typing_simplified': typing_changes if self.typing_simplification_enabled else 0,
-                    'imports_removed': import_result['removed_imports'] if import_result['changes_made'] else 0,
-                    'message': f"Fixed {total_changes} issues"
+                    "success": True,
+                    "total_changes": total_changes,
+                    "typing_simplified": typing_changes if self.typing_simplification_enabled else 0,
+                    "imports_removed": import_result["removed_imports"] if import_result["changes_made"] else 0,
+                    "message": f"Fixed {total_changes} issues",
                 }
             else:
-                return {
-                    'success': True,
-                    'total_changes': 0,
-                    'message': "No issues found"
-                }
+                return {"success": True, "total_changes": 0, "message": "No issues found"}
 
         except Exception as e:
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     def fix_imports_content(self, content: str) -> Dict[str, Any]:
         """Fix imports for content string."""
         try:
-            lines = content.split('\n')
+            lines = content.split("\n")
             tree = ast.parse(content)
 
             analyzer = ImportAnalyzer()
@@ -557,12 +566,12 @@ class GEXCodeReviewer:
             # Find unused imports
             unused_lines = set()
             for line_no, import_type, import_name in analyzer.imports:
-                if import_type == 'import':
-                    used_name = import_name.split('.')[0]
+                if import_type == "import":
+                    used_name = import_name.split(".")[0]
                 else:
-                    used_name = import_name.split('.')[-1]
+                    used_name = import_name.split(".")[-1]
 
-                if used_name not in analyzer.used_names and used_name != '*':
+                if used_name not in analyzer.used_names and used_name != "*":
                     unused_lines.add(line_no - 1)  # Convert to 0-based
 
             # Remove unused import lines
@@ -575,19 +584,11 @@ class GEXCodeReviewer:
                 else:
                     removed_count += 1
 
-            fixed_content = '\n'.join(fixed_lines)
+            fixed_content = "\n".join(fixed_lines)
 
-            return {
-                'fixed_content': fixed_content,
-                'removed_imports': removed_count,
-                'changes_made': removed_count > 0
-            }
+            return {"fixed_content": fixed_content, "removed_imports": removed_count, "changes_made": removed_count > 0}
         except:
-            return {
-                'fixed_content': content,
-                'removed_imports': 0,
-                'changes_made': False
-            }
+            return {"fixed_content": content, "removed_imports": 0, "changes_made": False}
 
     def generate_report(self, file_path: str) -> str:
         """Generate a comprehensive review report."""
@@ -596,17 +597,10 @@ class GEXCodeReviewer:
         if "error" in issues:
             return f"❌ Error reviewing {file_path}:\n" + "\n".join(issues["error"])
 
-        report_lines = [
-            f"📋 Code Review Report: {file_path}",
-            "=" * 60
-        ]
+        report_lines = [f"📋 Code Review Report: {file_path}", "=" * 60]
 
         # Summary
-        total_issues = (
-            len(issues['import_issues']) +
-            len(issues['code_issues']) +
-            len(issues['lint_issues'])
-        )
+        total_issues = len(issues["import_issues"]) + len(issues["code_issues"]) + len(issues["lint_issues"])
 
         if total_issues == 0:
             report_lines.append("✅ No issues found! Code looks good.")
@@ -616,40 +610,34 @@ class GEXCodeReviewer:
         report_lines.append("")
 
         # Import issues
-        if issues['import_issues']:
+        if issues["import_issues"]:
             report_lines.append("🔍 Import Issues:")
-            for issue in issues['import_issues']:
-                severity_icon = {"error": "❌", "warning": "⚠️",
-                                 "info": "ℹ️"}[issue.severity]
-                report_lines.append(
-                    f"  {severity_icon} Line {issue.line_number}: {issue.suggestion}")
+            for issue in issues["import_issues"]:
+                severity_icon = {"error": "❌", "warning": "⚠️", "info": "ℹ️"}[issue.severity]
+                report_lines.append(f"  {severity_icon} Line {issue.line_number}: {issue.suggestion}")
             report_lines.append("")
 
         # Code issues
-        if issues['code_issues']:
+        if issues["code_issues"]:
             report_lines.append("🔧 Code Issues:")
-            for issue in issues['code_issues']:
-                severity_icon = {"error": "❌", "warning": "⚠️",
-                                 "info": "ℹ️"}[issue.severity]
-                report_lines.append(
-                    f"  {severity_icon} Line {issue.line_number}: {issue.message}")
+            for issue in issues["code_issues"]:
+                severity_icon = {"error": "❌", "warning": "⚠️", "info": "ℹ️"}[issue.severity]
+                report_lines.append(f"  {severity_icon} Line {issue.line_number}: {issue.message}")
             report_lines.append("")
 
         # Lint issues
-        if issues['lint_issues']:
+        if issues["lint_issues"]:
             report_lines.append("🔨 Lint Issues:")
-            for issue in issues['lint_issues'][:5]:  # Show first 5
-                report_lines.append(
-                    f"  ⚠️ Line {issue.line_number}: {issue.message}")
-            if len(issues['lint_issues']) > 5:
-                report_lines.append(
-                    f"  ... and {len(issues['lint_issues']) - 5} more")
+            for issue in issues["lint_issues"][:5]:  # Show first 5
+                report_lines.append(f"  ⚠️ Line {issue.line_number}: {issue.message}")
+            if len(issues["lint_issues"]) > 5:
+                report_lines.append(f"  ... and {len(issues['lint_issues']) - 5} more")
             report_lines.append("")
 
         # Suggestions
-        if issues['suggestions']:
+        if issues["suggestions"]:
             report_lines.append("💡 Suggestions:")
-            for suggestion in issues['suggestions']:
+            for suggestion in issues["suggestions"]:
                 report_lines.append(f"  • {suggestion}")
 
         return "\n".join(report_lines)
@@ -659,17 +647,12 @@ def main():
     """CLI interface for the code reviewer."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="GEX-LLM Code Review Agent - Computational Effectiveness Focus")
+    parser = argparse.ArgumentParser(description="GEX-LLM Code Review Agent - Computational Effectiveness Focus")
     parser.add_argument("file", help="Python file to review")
-    parser.add_argument("--fix", action="store_true",
-                        help="Automatically fix all issues (typing + imports)")
-    parser.add_argument("--fix-imports", action="store_true",
-                        help="Only fix import issues (legacy)")
-    parser.add_argument("--no-typing-simplification", action="store_true",
-                        help="Disable typing simplification")
-    parser.add_argument("--project-root", default=".",
-                        help="Project root directory")
+    parser.add_argument("--fix", action="store_true", help="Automatically fix all issues (typing + imports)")
+    parser.add_argument("--fix-imports", action="store_true", help="Only fix import issues (legacy)")
+    parser.add_argument("--no-typing-simplification", action="store_true", help="Disable typing simplification")
+    parser.add_argument("--project-root", default=".", help="Project root directory")
 
     args = parser.parse_args()
 
@@ -683,15 +666,13 @@ def main():
         # Use new comprehensive fix method
         result = reviewer.fix_all_issues(args.file)
 
-        if result['success']:
-            if result['total_changes'] > 0:
+        if result["success"]:
+            if result["total_changes"] > 0:
                 print(f"✅ Fixed {result['total_changes']} issues")
-                if result.get('typing_simplified', 0) > 0:
-                    print(
-                        f"   🎯 Simplified {result['typing_simplified']} parameter type hints")
-                if result.get('imports_removed', 0) > 0:
-                    print(
-                        f"   🗑️ Removed {result['imports_removed']} unused imports")
+                if result.get("typing_simplified", 0) > 0:
+                    print(f"   🎯 Simplified {result['typing_simplified']} parameter type hints")
+                if result.get("imports_removed", 0) > 0:
+                    print(f"   🗑️ Removed {result['imports_removed']} unused imports")
             else:
                 print("ℹ️ No issues found! Code looks good.")
         else:
@@ -700,10 +681,10 @@ def main():
     elif args.fix_imports:
         # Legacy import-only fixing
         result = reviewer.fix_imports(args.file)
-        if result['changes_made']:
+        if result["changes_made"]:
             print(f"✅ Fixed {result['removed_imports']} unused imports")
-            with open(args.file, 'w') as f:
-                f.write(result['fixed_content'])
+            with open(args.file, "w") as f:
+                f.write(result["fixed_content"])
         else:
             print("ℹ️ No import fixes needed")
     else:

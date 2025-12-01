@@ -1,0 +1,6 @@
+batch_file: /mnt/bst/yxie2/cregan1/gex-llm-patterns/docs/papers/paper1/analysis/batch_jobs/issue_146_rich_reasoning_20251122_200858.jsonl
+batch_id: batch_69225eb5dcf8819089fd632357069d60
+file_id: file-2ztmkkeCP32FwJvfHk9pgs
+model: gpt-4o-mini
+status: validating
+submitted_at: '2025-11-22T20:09:12.038625'

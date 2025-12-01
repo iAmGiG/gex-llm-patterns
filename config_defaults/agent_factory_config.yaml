@@ -1,0 +1,69 @@
+# Agent Factory Configuration
+# Issue #153: Factory pattern for agent creation
+# All agent creation goes through AgentFactory with these defaults
+
+# Base agent defaults (inherited by all agents unless overridden)
+base_agent:
+  default_model: "gpt-4o-mini"
+  default_temperature: 0.2
+  max_tokens: 4096
+  timeout_seconds: 120
+
+# Agent type-specific configurations
+factory:
+  data_collection:
+    name: "DataCollector"
+    description: "Collects SPY/SPX market data via Alpha Vantage API"
+    model_name: "gpt-4o-mini"
+    temperature: 0.2
+    tools:
+      - "fetch_options_data"
+      - "fetch_market_data"
+    extra:
+      rate_limit_enabled: true
+
+  gex_calculation:
+    name: "GEXCalculator"
+    description: "Calculates gamma exposure and related options metrics"
+    model_name: "gpt-4o-mini"
+    temperature: 0.2
+    tools:
+      - "calculate_gamma_exposure"
+      - "find_flip_points"
+      - "calculate_dealer_positioning"
+
+  pattern_analysis:
+    name: "PatternAnalyzer"
+    description: "Discovers patterns in GEX data using LLM analysis"
+    model_name: "gpt-4o"
+    temperature: 0.1
+    tools:
+      - "detect_patterns"
+      - "analyze_temporal_patterns"
+      - "identify_market_mechanics"
+
+  market_mechanics:
+    name: "MarketMechanics"
+    description: "Interprets WHO is forcing WHOM to do WHAT in market mechanics"
+    model_name: "gpt-4o-mini"
+    temperature: 0.2
+    extra:
+      symbol: "SPY"
+      use_pattern_library: true
+
+  data_retrieval:
+    name: "DataRetrieval"
+    description: "Production agent for retrieving and processing options data"
+    extra:
+      data_source: "production"
+      validate: true
+      enable_sample_fallback: true
+
+  validation:
+    name: "Validator"
+    description: "Agent for validating patterns and market mechanics interpretations"
+    model_name: "gpt-4o-mini"
+    temperature: 0.1
+    extra:
+      use_obfuscation: true
+      validation_mode: "strict"

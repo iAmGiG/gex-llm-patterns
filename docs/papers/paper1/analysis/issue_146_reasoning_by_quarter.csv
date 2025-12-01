@@ -1,0 +1,520 @@
+quarter,date,pattern,who,whom,what,confidence
+Q1,2024-01-02,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-03,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-04,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-10,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-11,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-16,gamma_positioning,Market makers,Options holders,Adjusting hedges due to Spot Price equaling Flip Point,80
+Q1,2024-01-17,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-18,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-19,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-22,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,85
+Q1,2024-01-23,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-24,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,85
+Q1,2024-01-25,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-26,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,80
+Q1,2024-01-29,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,85
+Q1,2024-01-30,gamma_positioning,Options market makers,Market participants,Forced to buy as spot price rises,85
+Q1,2024-01-31,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-01,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-05,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-06,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-07,gamma_positioning,Market makers,Market participants,Buying into upward movements,65
+Q1,2024-02-08,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-12,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-14,gamma_positioning,Market makers,Market participants,Buying into upward movements,65
+Q1,2024-02-15,gamma_positioning,Market makers,Market participants,Buying into upward movements,70
+Q1,2024-02-20,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-02-21,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-02-22,gamma_positioning,Options dealers,Market participants,Hedging activities,70
+Q1,2024-02-26,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-02-27,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-02-28,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-02-29,gamma_positioning,Options dealers,Market participants,Hedging activities,70
+Q1,2024-03-04,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-03-05,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-03-06,gamma_positioning,Options dealers,Market participants,Hedging activities,80
+Q1,2024-03-07,gamma_positioning,Options market makers,Market participants,Adjusting hedges by selling into declines,80
+Q1,2024-03-11,gamma_positioning,Options market makers,Market participants,Adjusting hedges by selling into declines,80
+Q1,2024-03-12,gamma_positioning,Options market makers,Market participants,Adjusting hedges by buying into rallies,75
+Q1,2024-03-13,gamma_positioning,Options market makers,Market participants,Adjusting hedges by selling into declines,80
+Q1,2024-03-14,gamma_positioning,Options market makers,Market participants,Adjusting hedges by selling into declines,80
+Q1,2024-03-15,gamma_positioning,Options market makers,Market participants,Adjusting hedges as flip point equals spot price,85
+Q1,2024-03-18,gamma_positioning,Options market makers,Market participants,Adjusting hedges as flip point equals spot price,85
+Q1,2024-03-19,gamma_positioning,Options market makers,Market participants,Adjusting hedges by buying into rallies,75
+Q1,2024-03-20,gamma_positioning,Options market makers,Market participants,Adjusting hedges as flip point equals spot price,85
+Q1,2024-03-21,gamma_positioning,Options market makers,Market participants,Adjusting hedges as flip point equals spot price,85
+Q1,2024-03-25,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q1,2024-03-26,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q1,2024-03-27,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q1,2024-01-02,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,80
+Q1,2024-01-03,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,80
+Q1,2024-01-04,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,85
+Q1,2024-01-10,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,80
+Q1,2024-01-11,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,85
+Q1,2024-01-16,stock_pinning,Options market makers,Market participants,Hedging by buying/selling the underlying asset,85
+Q1,2024-01-17,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,80
+Q1,2024-01-18,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,80
+Q1,2024-01-19,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,85
+Q1,2024-01-22,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,90
+Q1,2024-01-23,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,85
+Q1,2024-01-24,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,90
+Q1,2024-01-25,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,85
+Q1,2024-01-26,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,80
+Q1,2024-01-29,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,90
+Q1,2024-01-30,stock_pinning,Market makers,Hedgers,Adjust hedges due to negative GEX,85
+Q1,2024-02-20,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-02-21,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-02-22,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,85
+Q1,2024-02-26,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-02-27,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-02-28,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-03-04,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-03-05,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-03-06,stock_pinning,Options market makers,Market participants,Hedging by buying underlying assets,80
+Q1,2024-03-07,stock_pinning,Market makers,Investors,Potential hedging against downside risk,70
+Q1,2024-03-11,stock_pinning,Market makers,Investors,Potential hedging against downside risk,70
+Q1,2024-03-12,stock_pinning,Market makers,Investors,Potential hedging against downside risk,75
+Q1,2024-03-13,stock_pinning,Market makers,Investors,Potential hedging against downside risk,75
+Q1,2024-03-14,stock_pinning,Market makers,Investors,Potential hedging against downside risk,70
+Q1,2024-03-15,stock_pinning,Market makers,Investors,Potential position adjustment,80
+Q1,2024-03-18,stock_pinning,Market makers,Investors,Potential position adjustment,80
+Q1,2024-03-19,stock_pinning,Market makers,Investors,Potential hedging against downside risk,70
+Q1,2024-03-20,stock_pinning,Market makers,Investors,Potential position adjustment,80
+Q1,2024-03-21,stock_pinning,Market makers,Investors,Potential position adjustment,80
+Q1,2024-01-02,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-01-03,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-01-04,0dte_hedging,Market makers,Market participants,Hedging against downside risk,85
+Q1,2024-01-10,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-01-11,0dte_hedging,Market makers,Market participants,Hedging against downside risk,85
+Q1,2024-01-16,0dte_hedging,Market makers,Market participants,Hedging against downside risk,90
+Q1,2024-01-17,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-18,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-19,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-22,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,90
+Q1,2024-01-23,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-24,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,90
+Q1,2024-01-25,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-26,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,80
+Q1,2024-01-29,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,90
+Q1,2024-01-30,0dte_hedging,Market makers,Market participants,Hedging activities leading to increased volatility,90
+Q1,2024-01-31,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-01,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-05,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-06,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-07,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-08,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-12,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-13,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-14,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-15,0dte_hedging,Options market makers,Market participants,Adjusting hedges to maintain delta neutrality,80
+Q1,2024-02-20,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-02-21,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-02-22,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,75
+Q1,2024-02-26,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-02-27,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-02-28,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-03-04,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-03-05,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-03-06,0dte_hedging,Options dealers,Market participants,Hedging by buying into rising prices,80
+Q1,2024-03-07,0dte_hedging,Market makers,Market participants,Hedging against downside risk,70
+Q1,2024-03-11,0dte_hedging,Market makers,Market participants,Hedging against downside risk,70
+Q1,2024-03-12,0dte_hedging,Market makers,Market participants,Hedging against downside risk,75
+Q1,2024-03-13,0dte_hedging,Market makers,Market participants,Hedging against downside risk,75
+Q1,2024-03-14,0dte_hedging,Market makers,Market participants,Hedging against downside risk,70
+Q1,2024-03-15,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-03-18,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-03-19,0dte_hedging,Market makers,Market participants,Hedging against downside risk,70
+Q1,2024-03-20,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-03-21,0dte_hedging,Market makers,Market participants,Hedging against downside risk,80
+Q1,2024-03-25,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q1,2024-03-26,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q1,2024-03-27,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q2,2024-04-01,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-02,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-03,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-04,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-05,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,70
+Q2,2024-04-08,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-09,gamma_positioning,Options dealers,Market participants,Adjust hedges by buying/selling,80
+Q2,2024-04-11,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-15,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-16,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-17,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-18,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-19,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-22,gamma_positioning,Market makers,Traders,Stabilizing spot price at flip point,80
+Q2,2024-04-25,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-04-29,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-05-01,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-05-02,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-05-03,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-05-07,gamma_positioning,Market makers,Traders,Adjust positions,80
+Q2,2024-05-08,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-09,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-13,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-14,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-16,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-17,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-20,gamma_positioning,Market makers,Options traders,Stabilize market around flip point,80
+Q2,2024-05-22,gamma_positioning,Options dealers,Market participants,Selling into rallies,70
+Q2,2024-05-23,gamma_positioning,Options dealers,Market participants,Selling into rallies,70
+Q2,2024-05-29,gamma_positioning,Options dealers,Market participants,Selling into rallies,70
+Q2,2024-06-03,gamma_positioning,Options dealers,Market participants,Selling into rallies,70
+Q2,2024-04-11,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-15,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-16,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-17,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-18,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-19,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-22,stock_pinning,Market Makers,Traders,Align spot price with flip point,80
+Q2,2024-04-25,stock_pinning,Market makers,Traders,Adjusting hedging strategies,80
+Q2,2024-04-29,stock_pinning,Market makers,Traders,Adjusting hedging strategies,85
+Q2,2024-05-01,stock_pinning,Market makers,Traders,Adjusting hedging strategies,80
+Q2,2024-05-02,stock_pinning,Market makers,Traders,Adjusting hedging strategies,85
+Q2,2024-05-03,stock_pinning,Market makers,Traders,Adjusting hedging strategies,90
+Q2,2024-05-07,stock_pinning,Market makers,Traders,Adjusting hedging strategies,85
+Q2,2024-05-08,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-09,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-10,stock_pinning,Market makers,Options traders,Adjust hedging strategies,75
+Q2,2024-05-13,stock_pinning,Market makers,Options traders,Maintain hedging strategies,80
+Q2,2024-05-14,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-15,stock_pinning,Market makers,Options traders,Adjust hedging strategies,70
+Q2,2024-05-16,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-17,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-20,stock_pinning,Market makers,Options traders,Adjust hedging strategies,80
+Q2,2024-05-21,stock_pinning,Market makers,Options traders,Adjust hedging strategies,70
+Q2,2024-05-22,stock_pinning,Options market makers,Market participants,Adjusting hedges due to negative gamma exposure,80
+Q2,2024-05-23,stock_pinning,Options market makers,Market participants,Adjusting hedges due to negative gamma exposure,80
+Q2,2024-05-29,stock_pinning,Options market makers,Market participants,Adjusting hedges due to negative gamma exposure,80
+Q2,2024-06-03,stock_pinning,Options market makers,Market participants,Adjusting hedges due to negative gamma exposure,80
+Q2,2024-06-10,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,80
+Q2,2024-06-11,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,80
+Q2,2024-06-12,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-06-13,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-06-14,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,70
+Q2,2024-06-17,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-06-18,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-06-20,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,70
+Q2,2024-06-21,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-06-24,stock_pinning,Options dealers,Market participants,Hedging by buying into rising markets,75
+Q2,2024-04-01,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,75
+Q2,2024-04-02,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q2,2024-04-03,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q2,2024-04-04,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,85
+Q2,2024-04-05,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,70
+Q2,2024-04-08,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q2,2024-04-09,0dte_hedging,Options market makers,Market makers themselves,Hedging short gamma positions,80
+Q2,2024-04-11,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,80
+Q2,2024-04-15,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-16,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-17,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-18,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-19,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-22,0dte_hedging,Market makers,Options traders,Adjust positions to align Spot Price with Flip Point,75
+Q2,2024-04-25,0dte_hedging,Market Makers,Traders,Adjust positions,80
+Q2,2024-04-29,0dte_hedging,Market Makers,Traders,Adjust positions,85
+Q2,2024-05-01,0dte_hedging,Market Makers,Traders,Adjust positions,80
+Q2,2024-05-02,0dte_hedging,Market Makers,Traders,Adjust positions,85
+Q2,2024-05-03,0dte_hedging,Market Makers,Traders,Adjust positions,90
+Q2,2024-05-07,0dte_hedging,Market Makers,Traders,Adjust positions,90
+Q2,2024-05-08,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-09,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-13,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-14,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-16,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-17,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-20,0dte_hedging,Options dealers,Market participants,Adjust positions to manage negative gamma,80
+Q2,2024-05-22,0dte_hedging,Options dealers,Market participants,Dynamic hedging due to negative gamma,80
+Q2,2024-05-23,0dte_hedging,Options dealers,Market participants,Dynamic hedging due to negative gamma,80
+Q2,2024-05-29,0dte_hedging,Options dealers,Market participants,Dynamic hedging due to negative gamma,80
+Q2,2024-06-03,0dte_hedging,Options dealers,Market participants,Dynamic hedging due to negative gamma,80
+Q2,2024-06-10,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-11,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-12,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,75
+Q2,2024-06-13,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,85
+Q2,2024-06-14,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,75
+Q2,2024-06-17,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-18,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-20,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,85
+Q2,2024-06-21,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-24,0dte_hedging,Market makers,Options traders,Hedging against negative gamma exposure,80
+Q2,2024-06-25,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q2,2024-06-26,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q2,2024-06-27,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q2,2024-06-28,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-02,gamma_positioning,Options market dealers,Market participants,Adjusting positions as Spot Price equals Flip Point,80
+Q3,2024-07-03,gamma_positioning,Options market dealers,Market participants,Adjusting positions as Spot Price equals Flip Point,85
+Q3,2024-07-05,gamma_positioning,Options market dealers,Market participants,Adjusting positions as Spot Price equals Flip Point,90
+Q3,2024-07-08,gamma_positioning,Options market dealers,Market participants,Adjusting positions as Spot Price equals Flip Point,85
+Q3,2024-07-09,gamma_positioning,Options market dealers,Market participants,Adjusting positions as Spot Price equals Flip Point,85
+Q3,2024-07-11,gamma_positioning,Options market makers,Market participants,Adjust positions as spot price aligns with flip point,80
+Q3,2024-07-15,gamma_positioning,Options market makers,Market participants,Adjust positions as spot price aligns with flip point,80
+Q3,2024-07-18,gamma_positioning,Options market makers,Market participants,Adjust positions as spot price aligns with flip point,80
+Q3,2024-07-22,gamma_positioning,Options market makers,Market participants,Adjust positions as spot price aligns with flip point,80
+Q3,2024-07-24,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-07-25,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-08-01,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-08-02,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-08-05,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-08-06,gamma_positioning,Market makers,Market,Adjust hedging positions,80
+Q3,2024-08-07,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-08,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-09,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-14,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-15,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-16,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-20,gamma_positioning,Market makers,Market participants,Adjusting positions to hedge negative gamma exposure,80
+Q3,2024-08-22,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-08-26,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-08-27,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-08-28,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-08-29,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-08-30,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-09-03,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-09-04,gamma_positioning,Dealers,Market participants,Hedging at Flip Point,80
+Q3,2024-09-05,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-09,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-10,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-11,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-12,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-16,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-17,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-18,gamma_positioning,Market makers,Market participants,Hedging against negative GEX,80
+Q3,2024-09-19,gamma_positioning,Options market makers,Market participants,Stabilizing the spot price near the flip point,80
+Q3,2024-09-23,gamma_positioning,Options market makers,Market participants,Stabilizing the spot price near the flip point,80
+Q3,2024-09-24,gamma_positioning,Options market makers,Market participants,Stabilizing the spot price near the flip point,80
+Q3,2024-09-25,gamma_positioning,Options market makers,Market participants,Stabilizing the spot price near the flip point,80
+Q3,2024-09-26,gamma_positioning,Options market makers,Market participants,Stabilizing the spot price near the flip point,80
+Q3,2024-07-02,stock_pinning,Options market participants,Market makers,Adjust positions as Spot Price equals Flip Point,80
+Q3,2024-07-03,stock_pinning,Options market participants,Market makers,Adjust positions as Spot Price equals Flip Point,85
+Q3,2024-07-05,stock_pinning,Options market participants,Market makers,Adjust positions as Spot Price equals Flip Point,90
+Q3,2024-07-08,stock_pinning,Options market participants,Market makers,Adjust positions as Spot Price equals Flip Point,85
+Q3,2024-07-09,stock_pinning,Options market participants,Market makers,Adjust positions as Spot Price equals Flip Point,85
+Q3,2024-07-11,stock_pinning,Market makers,Traders,Adjust hedging strategies,90
+Q3,2024-07-15,stock_pinning,Market makers,Traders,Adjust hedging strategies,85
+Q3,2024-07-18,stock_pinning,Market makers,Traders,Adjust hedging strategies,90
+Q3,2024-07-22,stock_pinning,Market makers,Traders,Adjust hedging strategies,85
+Q3,2024-07-24,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-07-25,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-07-26,stock_pinning,Options market makers,Market participants,Forced to adjust hedges,70
+Q3,2024-07-29,stock_pinning,Options market makers,Market participants,Forced to adjust hedges,70
+Q3,2024-07-30,stock_pinning,Options market makers,Market participants,Forced to adjust hedges,70
+Q3,2024-07-31,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,70
+Q3,2024-08-01,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-08-02,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-08-05,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-08-06,stock_pinning,Options market makers,Market participants,Forced to hedge by buying/selling the underlying,80
+Q3,2024-08-07,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-08,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-09,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-14,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-15,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-16,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-20,stock_pinning,Options market makers,The broader market,Hedging against downside risk,80
+Q3,2024-08-22,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-08-26,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-08-27,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-08-28,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-08-29,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-08-30,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-09-03,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-09-04,stock_pinning,Options market makers,Spot price traders,Stabilization at Flip Point,80
+Q3,2024-09-05,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-09,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-10,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-11,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-12,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-16,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-17,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-18,stock_pinning,Market conditions,Market makers,Hedging positions,80
+Q3,2024-09-19,stock_pinning,Market makers,Traders,Adjusting hedges to maintain delta neutrality,80
+Q3,2024-09-23,stock_pinning,Market makers,Traders,Adjusting hedges to maintain delta neutrality,80
+Q3,2024-09-24,stock_pinning,Market makers,Traders,Adjusting hedges to maintain delta neutrality,80
+Q3,2024-09-25,stock_pinning,Market makers,Traders,Adjusting hedges to maintain delta neutrality,80
+Q3,2024-09-26,stock_pinning,Market makers,Traders,Adjusting hedges to maintain delta neutrality,80
+Q3,2024-07-01,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-02,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-03,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-05,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-08,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-09,0dte_hedging,Options market makers,Market participants,Market makers are likely buying the underlying asset,80
+Q3,2024-07-11,0dte_hedging,Dealers,Market participants,Stabilize the price,80
+Q3,2024-07-15,0dte_hedging,Dealers,Market participants,Stabilize the price,80
+Q3,2024-07-18,0dte_hedging,Dealers,Market participants,Stabilize the price,80
+Q3,2024-07-22,0dte_hedging,Dealers,Market participants,Stabilize the price,80
+Q3,2024-07-24,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-07-25,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-08-01,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-08-02,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-08-05,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-08-06,0dte_hedging,Options dealers,Market participants,Increased volatility due to hedging,80
+Q3,2024-08-07,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-08,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-09,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-12,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,70
+Q3,2024-08-13,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,70
+Q3,2024-08-14,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-15,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-16,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,75
+Q3,2024-08-19,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,70
+Q3,2024-08-20,0dte_hedging,Options dealers,Market participants,Adjust hedging positions,80
+Q3,2024-08-22,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-08-26,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-08-27,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-08-28,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-08-29,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-08-30,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-09-03,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-09-04,0dte_hedging,Options market makers,Spot market participants,Align Spot Price with Flip Point,80
+Q3,2024-09-05,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,90
+Q3,2024-09-06,0dte_hedging,Options market makers,Market participants,Market makers adjust hedges due to significant Flip Point change,80
+Q3,2024-09-09,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-10,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-11,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-12,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-13,0dte_hedging,Options market makers,Market participants,Market makers adjust hedges due to significant Flip Point change,80
+Q3,2024-09-16,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-17,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-18,0dte_hedging,Options market makers,Market participants,Market makers are forced to hedge by buying as prices rise,85
+Q3,2024-09-19,0dte_hedging,Market participants,Options market,Stabilizing Spot Price at Flip Point,80
+Q3,2024-09-23,0dte_hedging,Market participants,Options market,Stabilizing Spot Price at Flip Point,80
+Q3,2024-09-24,0dte_hedging,Market participants,Options market,Stabilizing Spot Price at Flip Point,80
+Q3,2024-09-25,0dte_hedging,Market participants,Options market,Stabilizing Spot Price at Flip Point,80
+Q3,2024-09-26,0dte_hedging,Market participants,Options market,Stabilizing Spot Price at Flip Point,80
+Q4,2024-10-03,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-04,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-07,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-08,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-09,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-11,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-16,gamma_positioning,Market makers,Traders,Maintain equilibrium at Flip Point,80
+Q4,2024-10-17,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-18,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,75
+Q4,2024-10-21,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-22,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-23,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-24,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-25,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-28,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-30,gamma_positioning,Options dealers,Market participants,Adjust hedging strategies,80
+Q4,2024-10-31,gamma_positioning,Market makers,Market participants,Hedging by buying as the market rises,80
+Q4,2024-11-01,gamma_positioning,Market makers,Market participants,Hedging by buying as the market rises,75
+Q4,2024-11-04,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-05,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-06,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-07,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-08,gamma_positioning,Market makers,Market participants,Hedging by buying as the market rises,75
+Q4,2024-11-12,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-13,gamma_positioning,Market makers,Market participants,Hedging at key level,85
+Q4,2024-11-19,gamma_positioning,Market participants,Traders,Align spot price with flip point,80
+Q4,2024-11-20,gamma_positioning,Market participants,Traders,Align spot price with flip point,80
+Q4,2024-11-21,gamma_positioning,Market participants,Traders,Align spot price with flip point,80
+Q4,2024-11-25,gamma_positioning,Market participants,Traders,Align spot price with flip point,80
+Q4,2024-11-26,gamma_positioning,Market participants,Traders,Align spot price with flip point,80
+Q4,2024-12-02,gamma_positioning,Options Market Makers,Market Participants,Adjust positions to maintain delta neutrality,80
+Q4,2024-12-03,gamma_positioning,Options Market Makers,Market Participants,Adjust positions to maintain delta neutrality,80
+Q4,2024-12-06,gamma_positioning,Options Market Makers,Market Participants,Adjust positions to maintain delta neutrality,80
+Q4,2024-12-12,gamma_positioning,Options Market Makers,Market Participants,Adjust positions to maintain delta neutrality,80
+Q4,2024-12-13,gamma_positioning,Market makers,Option holders,Hedging activities,80
+Q4,2024-12-16,gamma_positioning,Market makers,Option holders,Hedging activities,80
+Q4,2024-12-17,gamma_positioning,Market makers,Option holders,Hedging activities,75
+Q4,2024-12-18,gamma_positioning,Market makers,Option holders,Hedging activities,85
+Q4,2024-12-19,gamma_positioning,Market makers,Option holders,Hedging activities,75
+Q4,2024-12-20,gamma_positioning,Market makers,Option holders,Hedging activities,80
+Q4,2024-12-23,gamma_positioning,Market makers,Option holders,Hedging activities,85
+Q4,2024-12-24,gamma_positioning,Market makers,Option holders,Hedging activities,80
+Q4,2024-12-26,gamma_positioning,Market makers,Option holders,Hedging activities,85
+Q4,2024-12-27,gamma_positioning,Market makers,Option holders,Hedging activities,85
+Q4,2024-12-30,gamma_positioning,Market makers,The broader market,Market makers are likely selling into a declining market due to negative GEX,85
+Q4,2024-12-31,gamma_positioning,Market makers,The broader market,Market makers continue to sell into a declining market due to negative GEX,85
+Q4,2024-10-03,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-04,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-07,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-08,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-09,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-11,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-16,stock_pinning,Market makers,Option holders,Hedging activity,80
+Q4,2024-10-17,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,90
+Q4,2024-10-21,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-22,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-23,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-24,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-25,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-28,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-30,stock_pinning,Options market makers,Underlying asset market,Delta hedging by aligning Spot Price with Flip Point,85
+Q4,2024-10-31,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,80
+Q4,2024-11-01,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,75
+Q4,2024-11-04,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-05,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-06,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-07,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-12,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-13,stock_pinning,Market makers,Options holders,Adjusting positions to maintain delta neutrality,85
+Q4,2024-11-19,stock_pinning,Market makers,Traders,Adjust positions to align spot price with flip point,80
+Q4,2024-11-20,stock_pinning,Market makers,Traders,Adjust positions to align spot price with flip point,80
+Q4,2024-11-21,stock_pinning,Market makers,Traders,Adjust positions to align spot price with flip point,80
+Q4,2024-11-25,stock_pinning,Market makers,Traders,Adjust positions to align spot price with flip point,80
+Q4,2024-11-26,stock_pinning,Market makers,Traders,Adjust positions to align spot price with flip point,80
+Q4,2024-12-02,stock_pinning,Market Makers,Traders,Adjust positions to align with new flip point,80
+Q4,2024-12-03,stock_pinning,Market Makers,Traders,Adjust positions to align with new flip point,80
+Q4,2024-12-06,stock_pinning,Market Makers,Traders,Adjust positions to align with new flip point,80
+Q4,2024-12-12,stock_pinning,Market Makers,Traders,Adjust positions to align with new flip point,80
+Q4,2024-12-13,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-16,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-17,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-18,stock_pinning,Market makers,Market participants,Adjusting hedges by buying into dips,75
+Q4,2024-12-19,stock_pinning,Market makers,Market participants,Adjusting hedges by buying into dips,75
+Q4,2024-12-20,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-23,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-24,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-26,stock_pinning,Market makers,Market participants,Adjusting hedges by selling into rallies,80
+Q4,2024-12-27,stock_pinning,Market makers,Market participants,Adjusting hedges by buying into dips,75
+Q4,2024-12-30,stock_pinning,Market makers,The broader market,Adjust hedging strategies,80
+Q4,2024-12-31,stock_pinning,Market makers,The broader market,Adjust hedging strategies,75
+Q4,2024-10-03,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-04,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-07,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-08,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-09,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-11,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-16,0dte_hedging,Market makers,Traders,Adjust positions based on matching Spot Price and Flip Point,80
+Q4,2024-10-17,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,80
+Q4,2024-10-21,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-22,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-23,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-24,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-25,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-28,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-30,0dte_hedging,Options market makers,Spot market participants,Forcing spot price to align with flip point,85
+Q4,2024-10-31,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,80
+Q4,2024-11-01,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,80
+Q4,2024-11-04,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,85
+Q4,2024-11-05,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,85
+Q4,2024-11-06,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,90
+Q4,2024-11-07,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,90
+Q4,2024-11-08,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,85
+Q4,2024-11-11,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,90
+Q4,2024-11-12,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,95
+Q4,2024-11-13,0dte_hedging,Options market makers,Market participants,Hedging by selling into rising markets,95
+Q4,2024-11-19,0dte_hedging,Market makers,Traders,Maintain price at equilibrium,80
+Q4,2024-11-20,0dte_hedging,Market makers,Traders,Maintain price at equilibrium,80
+Q4,2024-11-21,0dte_hedging,Market makers,Traders,Maintain price at equilibrium,80
+Q4,2024-11-25,0dte_hedging,Market makers,Traders,Maintain price at equilibrium,80
+Q4,2024-11-26,0dte_hedging,Market makers,Traders,Maintain price at equilibrium,80
+Q4,2024-11-29,0dte_hedging,Market makers,Market participants,Adjusting hedging strategies,80
+Q4,2024-12-02,0dte_hedging,Market makers,Market participants,Adjusting hedging strategies,85
+Q4,2024-12-03,0dte_hedging,Market makers,Market participants,Adjusting hedging strategies,85
+Q4,2024-12-06,0dte_hedging,Market makers,Market participants,Adjusting hedging strategies,85
+Q4,2024-12-12,0dte_hedging,Market makers,Market participants,Adjusting hedging strategies,85
+Q4,2024-12-13,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,70
+Q4,2024-12-16,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,60
+Q4,2024-12-17,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,65
+Q4,2024-12-18,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,60
+Q4,2024-12-20,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,65
+Q4,2024-12-23,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,70
+Q4,2024-12-24,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,65
+Q4,2024-12-26,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,70
+Q4,2024-12-27,0dte_hedging,Market makers,Market participants,Hedging activities to manage negative GEX,70
+Q4,2024-12-30,0dte_hedging,Market makers,The broader market,Adjusting hedges dynamically,80
+Q4,2024-12-31,0dte_hedging,Market makers,The broader market,Adjusting hedges dynamically,80

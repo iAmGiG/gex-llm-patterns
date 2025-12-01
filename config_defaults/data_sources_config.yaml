@@ -1,0 +1,124 @@
+# Data Sources Configuration
+# API timeouts, rate limits, and data source settings
+# Extracted from hardcoded values in src/data_sources/ (Issue #151)
+
+# ==============================================================================
+# Polygon.io Client (src/data_sources/polygon_client.py)
+# ==============================================================================
+
+polygon_client:
+  # Rate limiting (free tier: 5 calls/minute)
+  requests_per_minute: 5
+  rate_limit_timeout: 60       # Seconds to track requests
+
+  # Request settings
+  request_timeout: 30          # HTTP request timeout (seconds)
+  status_check_timeout: 10     # Quick status check timeout
+
+  # Retry settings
+  max_retries: 3
+  retry_delay: 60              # Seconds to wait after rate limit hit
+
+# ==============================================================================
+# Alpha Vantage Client (src/data_sources/alpha_vantage_gex.py)
+# ==============================================================================
+
+alpha_vantage:
+  # Rate limiting (free tier: 25 calls/day, 5/minute)
+  calls_per_minute: 5
+  calls_per_day: 25
+
+  # Request settings
+  request_timeout: 30          # HTTP request timeout (seconds)
+
+  # Retry settings
+  max_retries: 3
+  retry_delay: 12              # Seconds between retries
+
+# ==============================================================================
+# Historical Collector (src/data_sources/historical_collector.py)
+# ==============================================================================
+
+historical_collector:
+  # Rate limiting (below 75/min API limit)
+  rate_limit_per_minute: 70
+  call_interval: 0.857         # Calculated: 60/70 seconds
+
+  # Batch settings
+  batch_size: 50               # Symbols per batch
+  max_concurrent: 4            # Max concurrent requests
+
+# ==============================================================================
+# Concurrent GEX Processor (src/cache/concurrent_gex_processor.py)
+# ==============================================================================
+
+concurrent_processor:
+  # Threading settings
+  max_workers: 4               # Maximum concurrent threads
+  future_timeout: 300          # 5 minute timeout per calculation
+
+  # Progress logging
+  log_interval: 10             # Log progress every N dates
+
+# ==============================================================================
+# Fed Data Integration (src/data_sources/fed_data_integration.py)
+# ==============================================================================
+
+fed_data:
+  # FOMC event settings
+  fomc:
+    days_near: 3               # Days considered "near" FOMC
+    days_far: 10               # Days considered "far" from FOMC
+    confidence_reduction: 0.8  # Reduce confidence by 20% during events
+
+  # Economic indicator weights
+  weights:
+    pin_risk_fomc_multiplier: 0.8  # Pin less reliable during events
+
+# ==============================================================================
+# Sequential GEX Fetcher (src/data_sources/sequential_gex_fetcher.py)
+# ==============================================================================
+
+sequential_fetcher:
+  # Accumulation detection thresholds
+  accumulation_threshold: 0.20  # 20% increase for accumulation pattern
+
+  # Cache settings
+  cache_duration_days: 7       # Days to cache sequential data
+
+# ==============================================================================
+# Cache Settings (shared across data sources)
+# ==============================================================================
+
+cache:
+  # General cache settings
+  cleanup_days: 30             # Days before cache cleanup
+  max_size_gb: 10              # Maximum cache size
+
+  # GEX cache specific
+  gex_cache:
+    ttl_days: 7                # Time to live for GEX calculations
+    compression: true          # Enable compression for storage
+
+  # Options cache
+  options_cache:
+    ttl_days: 1                # Options data expires daily
+    max_entries: 10000         # Maximum cached option chains
+
+# ==============================================================================
+# API Fallback Settings (AutoGen tools integration)
+# ==============================================================================
+
+api_fallback:
+  # Fallback order: cache -> API -> sample data
+  enabled: true
+  fallback_order:
+    - "cache"
+    - "polygon"
+    - "alpha_vantage"
+    - "sample_data"
+
+  # Sample data settings
+  sample_data:
+    enabled: true              # Allow fallback to sample data
+    warning_on_use: true       # Log warning when using sample data

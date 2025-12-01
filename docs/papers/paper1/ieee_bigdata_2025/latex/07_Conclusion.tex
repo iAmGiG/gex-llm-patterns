@@ -1,0 +1,16 @@
+\section{Conclusion}
+
+We introduce obfuscation testing, a novel methodology for validating whether large language models detect structural patterns through causal reasoning rather than temporal memorization. By stripping all temporal and identity context from financial data while preserving mechanical relationships, we create a rigorous test of LLM reasoning capabilities independent of training data leakage.
+
+Applied to dealer hedging constraints in options markets, LLMs achieve 71.5\% detection rate using unbiased prompts across 242 trading days in 2024 (95.6\% of trading days), significantly exceeding the 60\% mechanical threshold. Detection proves robust across three pattern framings (gamma positioning, stock pinning, 0DTE hedging), with 91.2\% of detected patterns materializing in observable market behavior. This validates genuine structural understanding rather than surface-level correlation.
+
+The divergence between stable detection capability and declining economic profitability provides compelling evidence for mechanism-based reasoning. Detection rates remain consistent across quarters (68\%-74\%), while net alpha declines from +21 bps to -1 bp, demonstrating that LLMs identify structural constraints independent of alpha-generating capacity. When provided regime labels, detection increases to 100\% while maintaining 91.2\% accuracy, quantifying the impact of contextual hints and validating our obfuscation approach.
+
+Statistical validation confirms the predictive relationship: gamma exposure Granger-causes forward volatility (p = 0.042 at 2-day lag), robust across six specifications. Our analysis reveals a structural market regime shift—all 242 tested days exhibited negative gamma exposure, driven by 0DTE options proliferation. The LLM's ability to detect constraints within this uniform environment, without regime variation to exploit, provides strong evidence for causal reasoning over pattern matching. The 2-day predictive lag aligns with dealer hedging dynamics, where constraints identified at day T manifest in observable volatility amplification by T+2 as rebalancing flows accumulate.
+
+The primary contribution is the validation methodology itself. Obfuscation testing provides a systematic framework for distinguishing AI reasoning from memorization, applicable beyond finance to any domain with structural constraints. The WHO→WHOM→WHAT causal framework proves effective for forcing explicit mechanical attribution, preventing vague pattern claims and requiring specific identification of economic actors, affected parties, and forced actions. As LLMs increasingly influence decision-making in regulated markets, rigorous validation of their capabilities becomes essential.
+
+Future work should validate detection across multiple asset classes, market regimes, and crisis periods. Intraday analysis could reveal microstructure patterns invisible at daily granularity, while ensemble methods across multiple LLMs could distinguish model-specific artifacts from robust pattern detection.
+
+\subsection{Code Availability}
+Our obfuscation testing pipeline and validation framework are publicly available at https://github.com/iAmGiG/gex-llm-patterns.

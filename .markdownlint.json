@@ -1,0 +1,22 @@
+{
+  "default": true,
+  "MD013": false,
+  "MD033": {
+    "allowed_elements": ["br", "details", "summary", "antml:thinking", "antml:invoke"]
+  },
+  "MD041": false,
+  "MD032": true,
+  "MD022": true,
+  "MD024": {
+    "siblings_only": true
+  },
+  "MD025": false,
+  "MD026": false,
+  "line-length": false,
+  "no-inline-html": {
+    "allowed_elements": ["br", "details", "summary"]
+  },
+  "no-duplicate-heading": {
+    "siblings_only": true
+  }
+}

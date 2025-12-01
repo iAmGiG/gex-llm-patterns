@@ -1,0 +1,154 @@
+analysis_date: '2025-11-22T19:09:36.769128'
+total_detections_by_quarter:
+  Q1: 131
+  Q2: 113
+  Q3: 139
+  Q4: 136
+keyword_frequency_analysis:
+  Q1:
+    total_detections: 131
+    amplification_keywords: 0
+    dampening_keywords: 1
+    hedging_keywords: 4
+    avg_confidence: 79.50381679389314
+  Q2:
+    total_detections: 113
+    amplification_keywords: 0
+    dampening_keywords: 0
+    hedging_keywords: 3
+    avg_confidence: 79.02654867256638
+  Q3:
+    total_detections: 139
+    amplification_keywords: 0
+    dampening_keywords: 1
+    hedging_keywords: 4
+    avg_confidence: 80.35971223021583
+  Q4:
+    total_detections: 136
+    amplification_keywords: 0
+    dampening_keywords: 1
+    hedging_keywords: 4
+    avg_confidence: 80.66176470588235
+sample_responses:
+  Q1:
+  - date: '2024-01-02'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-03'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-04'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-10'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-11'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-16'
+    pattern: gamma_positioning
+    what: Adjusting hedges due to Spot Price equaling Flip Point
+    confidence: 80
+  - date: '2024-01-17'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-18'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-19'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-22'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 85
+  - date: '2024-01-23'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-24'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 85
+  - date: '2024-01-25'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-26'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 80
+  - date: '2024-01-29'
+    pattern: gamma_positioning
+    what: Forced to buy as spot price rises
+    confidence: 85
+  Q4:
+  - date: '2024-10-03'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-04'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-07'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-08'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-09'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-11'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-16'
+    pattern: gamma_positioning
+    what: Maintain equilibrium at Flip Point
+    confidence: 80
+  - date: '2024-10-17'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-18'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 75
+  - date: '2024-10-21'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-22'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-23'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-24'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-25'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80
+  - date: '2024-10-28'
+    pattern: gamma_positioning
+    what: Adjust hedging strategies
+    confidence: 80

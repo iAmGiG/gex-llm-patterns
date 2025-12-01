@@ -4,7 +4,7 @@ Simple Unified Cache Manager - Real Data Only
 Structure:
 .cache/
 ├── market_data/SPY/     # Real stock data
-├── options/SPY/         # Real options data  
+├── options/SPY/         # Real options data
 ├── news/SPY/           # Real news data
 └── metadata/           # Cache stats
 
@@ -14,16 +14,12 @@ samples/                 # Synthetic data (separate)
 """
 
 import json
-from pathlib import Path
-import pandas as pd
 import logging
-from src.utils.date_utils import (
-    now_iso,
-    today_str,
-    get_datetime_now,
-    get_datetime_from_timestamp,
-    subtract_days
-)
+from pathlib import Path
+
+import pandas as pd
+
+from src.utils.date_utils import get_datetime_from_timestamp, get_datetime_now, now_iso, subtract_days, today_str
 
 
 class UnifiedCacheManager:
@@ -49,12 +45,11 @@ class UnifiedCacheManager:
     # === OPTIONS DATA ===
 
     def store_options_data(self, symbol, trading_date, df: pd.DataFrame) -> bool:
-        """
-        Store real options data.
+        """Store real options data.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
-            trading_date: Date in YYYY-MM-DD format  
+            trading_date: Date in YYYY-MM-DD format
             df: Options DataFrame
         """
         try:
@@ -65,8 +60,7 @@ class UnifiedCacheManager:
             file_path = symbol_dir / f"{trading_date}.pickle"
             df.to_pickle(file_path)
 
-            self.logger.info(
-                f"Stored {len(df)} {symbol} options contracts for {trading_date}")
+            self.logger.info(f"Stored {len(df)} {symbol} options contracts for {trading_date}")
             return True
 
         except Exception as e:
@@ -74,25 +68,21 @@ class UnifiedCacheManager:
             return False
 
     def get_options_data(self, symbol, trading_date):
-        """
-        Get real options data.
+        """Get real options data.
 
         Args:
-            symbol: Stock symbol  
+            symbol: Stock symbol
             trading_date: Date in YYYY-MM-DD format
         """
         try:
-            file_path = self.options_dir / \
-                symbol.upper() / f"{trading_date}.pickle"
+            file_path = self.options_dir / symbol.upper() / f"{trading_date}.pickle"
 
             if file_path.exists():
                 df = pd.read_pickle(file_path)
-                self.logger.info(
-                    f"Loaded {len(df)} {symbol} options contracts for {trading_date}")
+                self.logger.info(f"Loaded {len(df)} {symbol} options contracts for {trading_date}")
                 return df
 
-            self.logger.debug(
-                f"No {symbol} options data found for {trading_date}")
+            self.logger.debug(f"No {symbol} options data found for {trading_date}")
             return None
 
         except Exception as e:
@@ -102,8 +92,7 @@ class UnifiedCacheManager:
     # === MARKET DATA ===
 
     def store_market_data(self, symbol, df: pd.DataFrame, start_date: str = None, end_date: str = None) -> bool:
-        """
-        Store real market/stock data.
+        """Store real market/stock data.
 
         Args:
             symbol: Stock symbol
@@ -114,8 +103,8 @@ class UnifiedCacheManager:
         try:
             # Generate filename from data if dates not provided
             if not start_date or not end_date:
-                start_date = df.index.min().strftime('%Y-%m-%d')
-                end_date = df.index.max().strftime('%Y-%m-%d')
+                start_date = df.index.min().strftime("%Y-%m-%d")
+                end_date = df.index.max().strftime("%Y-%m-%d")
 
             # Path: .cache/market_data/SPY/2024-01-01_2024-12-31.pickle
             symbol_dir = self.market_data_dir / symbol.upper()
@@ -124,8 +113,7 @@ class UnifiedCacheManager:
             file_path = symbol_dir / f"{start_date}_{end_date}.pickle"
             df.to_pickle(file_path)
 
-            self.logger.info(
-                f"Stored {len(df)} {symbol} market records ({start_date} to {end_date})")
+            self.logger.info(f"Stored {len(df)} {symbol} market records ({start_date} to {end_date})")
             return True
 
         except Exception as e:
@@ -133,8 +121,7 @@ class UnifiedCacheManager:
             return False
 
     def get_market_data(self, symbol, start_date: str = None, end_date: str = None):
-        """
-        Get real market data.
+        """Get real market data.
 
         Args:
             symbol: Stock symbol
@@ -158,8 +145,7 @@ class UnifiedCacheManager:
                     df = df[df.index <= end_date]
 
                 if not df.empty:
-                    self.logger.info(
-                        f"Loaded {len(df)} {symbol} market records")
+                    self.logger.info(f"Loaded {len(df)} {symbol} market records")
                     return df
 
             return None
@@ -171,8 +157,7 @@ class UnifiedCacheManager:
     # === NEWS DATA ===
 
     def store_news_data(self, category, df: pd.DataFrame, date_range: str = None) -> bool:
-        """
-        Store real news data.
+        """Store real news data.
 
         Args:
             category: News category (SPY, general, earnings, etc.)
@@ -181,9 +166,9 @@ class UnifiedCacheManager:
         """
         try:
             # Generate date range if not provided
-            if not date_range and 'timestamp' in df.columns:
-                start = df['timestamp'].min().strftime('%Y-%m-%d')
-                end = df['timestamp'].max().strftime('%Y-%m-%d')
+            if not date_range and "timestamp" in df.columns:
+                start = df["timestamp"].min().strftime("%Y-%m-%d")
+                end = df["timestamp"].max().strftime("%Y-%m-%d")
                 date_range = f"{start}_{end}"
             elif not date_range:
                 date_range = today_str()
@@ -194,8 +179,8 @@ class UnifiedCacheManager:
 
             file_path = category_dir / f"{date_range}.json"
             # Convert DataFrame to JSON for news data
-            with open(file_path, 'w') as f:
-                json.dump(df.to_dict('records'), f, indent=2, default=str)
+            with open(file_path, "w") as f:
+                json.dump(df.to_dict("records"), f, indent=2, default=str)
 
             self.logger.info(f"Stored {len(df)} {category} news records")
             return True
@@ -205,8 +190,7 @@ class UnifiedCacheManager:
             return False
 
     def get_news_data(self, category, start_date: str = None, end_date: str = None):
-        """
-        Get real news data.
+        """Get real news data.
 
         Args:
             category: News category
@@ -221,22 +205,21 @@ class UnifiedCacheManager:
 
             # Find and load news files
             for file_path in category_dir.glob("*.json"):
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     data = json.load(f)
                 df = pd.DataFrame(data)
 
                 # Apply date filtering if specified and timestamp exists
-                if 'timestamp' in df.columns:
+                if "timestamp" in df.columns:
                     # Convert timestamp strings back to datetime
-                    df['timestamp'] = pd.to_datetime(df['timestamp'])
+                    df["timestamp"] = pd.to_datetime(df["timestamp"])
                     if start_date:
-                        df = df[df['timestamp'] >= start_date]
+                        df = df[df["timestamp"] >= start_date]
                     if end_date:
-                        df = df[df['timestamp'] <= end_date]
+                        df = df[df["timestamp"] <= end_date]
 
                 if not df.empty:
-                    self.logger.info(
-                        f"Loaded {len(df)} {category} news records")
+                    self.logger.info(f"Loaded {len(df)} {category} news records")
                     return df
 
             return None
@@ -249,35 +232,28 @@ class UnifiedCacheManager:
 
     def get_cache_summary(self) -> dict:
         """Get summary of cached data."""
-        summary = {
-            'market_data': {},
-            'options': {},
-            'news': {},
-            'total_files': 0,
-            'total_size_mb': 0.0
-        }
+        summary = {"market_data": {}, "options": {}, "news": {}, "total_files": 0, "total_size_mb": 0.0}
 
         try:
             # Count files in each category
             for category, directory in [
-                ('market_data', self.market_data_dir),
-                ('options', self.options_dir),
-                ('news', self.news_dir)
+                ("market_data", self.market_data_dir),
+                ("options", self.options_dir),
+                ("news", self.news_dir),
             ]:
                 if directory.exists():
                     for ticker_dir in directory.iterdir():
                         if ticker_dir.is_dir():
                             ticker = ticker_dir.name
-                            files = list(ticker_dir.glob('*.pickle'))
+                            files = list(ticker_dir.glob("*.pickle"))
 
                             if files:
                                 summary[category][ticker] = len(files)
-                                summary['total_files'] += len(files)
+                                summary["total_files"] += len(files)
 
                                 # Calculate size
                                 for file_path in files:
-                                    summary['total_size_mb'] += file_path.stat().st_size / \
-                                        (1024 * 1024)
+                                    summary["total_size_mb"] += file_path.stat().st_size / (1024 * 1024)
 
             return summary
 
@@ -287,7 +263,7 @@ class UnifiedCacheManager:
 
     def get_options_cache_summary(self) -> dict:
         """Get detailed options cache summary."""
-        summary = {'tickers': {}, 'total_contracts': 0}
+        summary = {"tickers": {}, "total_contracts": 0}
 
         try:
             if self.options_dir.exists():
@@ -297,7 +273,7 @@ class UnifiedCacheManager:
                         dates = []
                         total_contracts = 0
 
-                        for file_path in ticker_dir.glob('*.pickle'):
+                        for file_path in ticker_dir.glob("*.pickle"):
                             date = file_path.stem
                             dates.append(date)
 
@@ -308,12 +284,12 @@ class UnifiedCacheManager:
                                 pass
 
                         if dates:
-                            summary['tickers'][ticker] = {
-                                'dates': sorted(dates),
-                                'date_count': len(dates),
-                                'total_contracts': total_contracts
+                            summary["tickers"][ticker] = {
+                                "dates": sorted(dates),
+                                "date_count": len(dates),
+                                "total_contracts": total_contracts,
                             }
-                            summary['total_contracts'] += total_contracts
+                            summary["total_contracts"] += total_contracts
 
             return summary
 
@@ -327,7 +303,7 @@ class UnifiedCacheManager:
             cutoff_time = subtract_days(get_datetime_now(), older_than_days)
             cleaned = 0
 
-            for file_path in self.base_dir.rglob('*.pickle'):
+            for file_path in self.base_dir.rglob("*.pickle"):
                 if file_path.is_file():
                     file_time = get_datetime_from_timestamp(file_path.stat().st_mtime)
 
@@ -335,8 +311,7 @@ class UnifiedCacheManager:
                         file_path.unlink()
                         cleaned += 1
 
-            self.logger.info(
-                f"Cleaned {cleaned} cache files older than {older_than_days} days")
+            self.logger.info(f"Cleaned {cleaned} cache files older than {older_than_days} days")
             return cleaned
 
         except Exception as e:
@@ -350,16 +325,15 @@ class UnifiedCacheManager:
         """Lazy-loaded GEX cache manager."""
         if self._gex_cache is None:
             from src.cache.gex_cache_manager import GEXCacheManager
+
             self._gex_cache = GEXCacheManager(str(self.base_dir))
         return self._gex_cache
 
     def get_or_calculate_gex(self, symbol, trading_date) -> dict:
-        """
-        Get GEX from cache or calculate if missing.
-        Integration point for seamless GEX caching.
+        """Get GEX from cache or calculate if missing. Integration point for seamless GEX caching.
 
         Args:
-            symbol: Stock symbol (SPY, SPX, etc.) 
+            symbol: Stock symbol (SPY, SPX, etc.)
             trading_date: Trading date in YYYY-MM-DD format
 
         Returns:
@@ -376,58 +350,54 @@ class UnifiedCacheManager:
             options_data = self.get_options_data(symbol, trading_date)
 
             if options_data is None or options_data.empty:
-                self.logger.warning(
-                    f"No options data available for GEX calculation: {symbol} {trading_date}")
+                self.logger.warning(f"No options data available for GEX calculation: {symbol} {trading_date}")
                 return None
 
             # 3. Calculate GEX using live data engine
             from src.gex.live_gex_interface import LiveGEXInterface
+
             gex_interface = LiveGEXInterface()
 
             gex_results = gex_interface.calculate_gex_for_symbol(
                 symbol=symbol,
                 trading_date=trading_date,
                 spot_price=None,  # Auto-detect from data
-                options_data=options_data  # Pass the live cached data
+                options_data=options_data,  # Pass the live cached data
             )
 
-            if gex_results and gex_results.get('status') == 'success':
+            if gex_results and gex_results.get("status") == "success":
                 # Extract and enhance summary for caching
-                gex_summary = gex_results.get('metrics', {})
-                gex_summary.update({
-                    'symbol': symbol,
-                    'trading_date': trading_date,
-                    'calculation_timestamp': now_iso(),
-                    'calculation_metadata': {
-                        'options_contracts_processed': len(options_data),
-                        'calculation_method': 'unified_cache_auto_calculation',
-                        'calculation_duration_ms': gex_results.get('calculation_time_ms', 0)
+                gex_summary = gex_results.get("metrics", {})
+                gex_summary.update(
+                    {
+                        "symbol": symbol,
+                        "trading_date": trading_date,
+                        "calculation_timestamp": now_iso(),
+                        "calculation_metadata": {
+                            "options_contracts_processed": len(options_data),
+                            "calculation_method": "unified_cache_auto_calculation",
+                            "calculation_duration_ms": gex_results.get("calculation_time_ms", 0),
+                        },
                     }
-                })
-
-                # 4. Cache the results
-                success = self.gex_cache.store_gex_calculation(
-                    symbol, trading_date, gex_summary
                 )
 
+                # 4. Cache the results
+                success = self.gex_cache.store_gex_calculation(symbol, trading_date, gex_summary)
+
                 if success:
-                    self.logger.info(
-                        f"Calculated and cached GEX for {symbol} {trading_date}")
+                    self.logger.info(f"Calculated and cached GEX for {symbol} {trading_date}")
 
                 return gex_summary
             else:
-                self.logger.error(
-                    f"GEX calculation failed for {symbol} {trading_date}: {gex_results}")
+                self.logger.error(f"GEX calculation failed for {symbol} {trading_date}: {gex_results}")
                 return None
 
         except Exception as e:
-            self.logger.error(
-                f"GEX get_or_calculate failed for {symbol} {trading_date}: {e}")
+            self.logger.error(f"GEX get_or_calculate failed for {symbol} {trading_date}: {e}")
             return None
 
     def batch_get_gex(self, requests: list) -> dict:
-        """
-        Efficient batch GEX retrieval.
+        """Efficient batch GEX retrieval.
 
         Args:
             requests: List of (symbol, trading_date) tuples
@@ -448,10 +418,11 @@ class UnifiedCacheManager:
             return self.gex_cache.get_cache_stats()
         except Exception as e:
             self.logger.error(f"Failed to get GEX cache stats: {e}")
-            return {'error': str(e)}
+            return {"error": str(e)}
 
 
 # === SAMPLE DATA LOADER (for synthetic data) ===
+
 
 class SampleDataLoader:
     """Load synthetic data from samples/ directory."""
@@ -462,17 +433,16 @@ class SampleDataLoader:
     def get_sample_options(self, symbol, date):
         """Load synthetic options data."""
         try:
-            file_path = self.samples_dir / "options" / \
-                symbol.upper() / f"{date}.json"
+            file_path = self.samples_dir / "options" / symbol.upper() / f"{date}.json"
 
             if file_path.exists():
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     data = json.load(f)
 
                 df = pd.DataFrame(data)
 
                 # Convert datetime columns
-                datetime_cols = ['date', 'expiration', 'trading_date']
+                datetime_cols = ["date", "expiration", "trading_date"]
                 for col in datetime_cols:
                     if col in df.columns:
                         df[col] = pd.to_datetime(df[col])
@@ -495,17 +465,17 @@ class SampleDataLoader:
 
             # Find any stock file if date_range not specified
             for file_path in symbol_dir.glob("*.json"):
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     data = json.load(f)
 
-                if isinstance(data, dict) and 'dates' in data:
-                    df = pd.DataFrame(data['data'])
-                    df.index = pd.to_datetime(data['dates'])
+                if isinstance(data, dict) and "dates" in data:
+                    df = pd.DataFrame(data["data"])
+                    df.index = pd.to_datetime(data["dates"])
                 else:
                     df = pd.DataFrame(data)
-                    if 'Date' in df.columns:
-                        df.index = pd.to_datetime(df['Date'])
-                        df.drop('Date', axis=1, inplace=True)
+                    if "Date" in df.columns:
+                        df.index = pd.to_datetime(df["Date"])
+                        df.drop("Date", axis=1, inplace=True)
 
                 return df
 

@@ -1,0 +1,65 @@
+results:
+- control:
+    confidence: 90
+    detected: true
+    parse_success: true
+    reasoning: "Market makers \u2192 Institutional and retail investors \u2192 Market\
+      \ makers are forced to sell the underlying asset (INDEX_1) to hedge their negative\
+      \ gamma exposure"
+  date: '2024-01-02'
+  paper1_confidence: 80
+  treatment:
+    detected: false
+    mentions_constraint: false
+    mentions_dealers: true
+    mentions_gamma: true
+    mentions_hedging: false
+    reasoning: "The given options market data provides information about a specific\
+      \ index (INDEX_1) on a particular day (T+0). \n\n1. Net GEX (Gamma Exposure):\
+      \ The Net GEX is -$32.49B. Gamma Exposure (GEX) is a second-"
+- control:
+    confidence: 85
+    detected: true
+    parse_success: true
+    reasoning: "Market makers \u2192 Institutional and retail investors \u2192 Market\
+      \ makers are forced to buy when prices are rising and sell when prices are falling\
+      \ to hedge their negative gamma exposure"
+  date: '2024-07-02'
+  paper1_confidence: 80
+  treatment:
+    detected: false
+    mentions_constraint: false
+    mentions_dealers: true
+    mentions_gamma: true
+    mentions_hedging: false
+    reasoning: "The given options market data provides information about a specific\
+      \ index (INDEX_1) on a particular day (T+0). \n\nThe Net Gamma Exposure (GEX)\
+      \ for INDEX_1 is -$28.15B. GEX is a second-order Greek that "
+- control:
+    confidence: 90
+    detected: true
+    parse_success: true
+    reasoning: "Market makers \u2192 Institutional and retail investors \u2192 Market\
+      \ makers are forced to buy when prices are rising and sell when prices are falling\
+      \ to hedge their negative gamma exposure"
+  date: '2024-10-03'
+  paper1_confidence: 80
+  treatment:
+    detected: true
+    mentions_constraint: false
+    mentions_dealers: true
+    mentions_gamma: true
+    mentions_hedging: true
+    reasoning: "The given options market data provides information about a specific\
+      \ index (INDEX_1) on a particular day (T+0). \n\nThe Net GEX (Gamma Exposure)\
+      \ is -$30.20B. Gamma Exposure is a second-order Greek in opt"
+test_metadata:
+  control_detection_rate: 100.0
+  issue: 'Issue #133 - Narrative Removal Test'
+  phase: Phase 1 Pilot
+  test_date: '2025-11-20T15:47:27.628940'
+  test_dates:
+  - '2024-01-02'
+  - '2024-07-02'
+  - '2024-10-03'
+  treatment_detection_rate: 33.33333333333333

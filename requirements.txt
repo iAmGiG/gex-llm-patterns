@@ -1,0 +1,18 @@
+# GEX LLM Patterns - Project Dependencies
+# Install: pip install -r requirements.txt
+
+# Code Quality and Linting
+pre-commit>=3.5.0
+black>=24.3.0
+flake8>=7.0.0
+isort>=5.13.0
+docformatter>=1.7.5
+
+# Core Dependencies (add your existing packages here)
+# Example:
+# pyautogen>=0.2.0
+# openai>=1.0.0
+# pandas>=2.0.0
+# numpy>=1.24.0
+# pyyaml>=6.0.0
+# aiofiles>=23.0.0

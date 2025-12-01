@@ -1,0 +1,812 @@
+validation_metadata:
+  batch_mode: true
+  batch_id: batch_691e8aef15248190af275059cce82324
+  windows_tested: 32
+  timestamp: '2025-11-19T22:54:31.175110'
+  cost_savings_pct: 50
+  note: Results from OpenAI Batch API (50% cost reduction)
+  model_used: o4-mini
+  model_type: reasoning
+  model_family: openai
+  config_verified: true
+  comparable_to_paper1: true
+  temperature: null
+summary_statistics:
+  detection_rate_pct: 0.0
+  regimes_detected: 0
+  total_windows: 32
+  confidence_avg: 56.71875
+windows:
+- window_id: window-2024-02-01
+  regime_type: transitional
+  regime_detected: false
+  confidence: 80
+  reasoning: "Step 1 (Sign Persistence): 25 positive vs. 5 negative days \u2192 83.3%\
+    \ positive (>70%). Step 2 (Magnitude): average absolute GEX = $10.88B (> $5B).\
+    \ Step 3 (Stability): 7 sign flips (>5 threshold) \u2192 fails stability requirement.\
+    \ Although direction and magnitude criteria are met, frequent flips indicate the\
+    \ directional constraint is not stable. Therefore this is not a persistent regime\
+    \ but a transitional period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 25
+    negative_days: 5
+    avg_magnitude_billions: 10.88
+    sign_flips: 7
+    persistence_pct: 83.33
+    confidence: 80
+    reasoning: "Step 1 (Sign Persistence): 25 positive vs. 5 negative days \u2192\
+      \ 83.3% positive (>70%). Step 2 (Magnitude): average absolute GEX = $10.88B\
+      \ (> $5B). Step 3 (Stability): 7 sign flips (>5 threshold) \u2192 fails stability\
+      \ requirement. Although direction and magnitude criteria are met, frequent flips\
+      \ indicate the directional constraint is not stable. Therefore this is not a\
+      \ persistent regime but a transitional period."
+- window_id: window-2024-02-05
+  error: 'JSON parse error: Expecting value: line 9 column 20 (char 225)'
+  regime_detected: false
+- window_id: window-2024-02-06
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: We count 21 positive vs. 9 negative days \u2192 70% positive,\
+    \ just meeting the 70% threshold. Step 2: The average absolute GEX is ~11.83 B,\
+    \ well above the $5 B requirement. Step 3: However, there are 10 sign flips (days\
+    \ switching +/\u2212), exceeding the \u22645-flip stability criterion. Because\
+    \ the high flip count breaks the structural stability requirement, this window\
+    \ fails to qualify as a persistent regime and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 11.83
+    sign_flips: 10
+    persistence_pct: 70
+    confidence: 30
+    reasoning: "Step 1: We count 21 positive vs. 9 negative days \u2192 70% positive,\
+      \ just meeting the 70% threshold. Step 2: The average absolute GEX is ~11.83\
+      \ B, well above the $5 B requirement. Step 3: However, there are 10 sign flips\
+      \ (days switching +/\u2212), exceeding the \u22645-flip stability criterion.\
+      \ Because the high flip count breaks the structural stability requirement, this\
+      \ window fails to qualify as a persistent regime and is classified as transitional."
+- window_id: window-2024-02-07
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: 'Step 1: There are 22 positive and 8 negative days, so persistence is
+    22/30 = 73.33% (>70%). Step 2: The average absolute GEX is $12.27B (> $5B). Step
+    3: However, there are 12 sign flips (>5), well above the stability threshold.
+    Thus, although sign persistence and magnitude criteria pass, the excessive flips
+    mean there is no stable directional constraint. This window is transitional, not
+    a persistent regime.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 12.27
+    sign_flips: 12
+    persistence_pct: 73.33
+    confidence: 30
+    reasoning: 'Step 1: There are 22 positive and 8 negative days, so persistence
+      is 22/30 = 73.33% (>70%). Step 2: The average absolute GEX is $12.27B (> $5B).
+      Step 3: However, there are 12 sign flips (>5), well above the stability threshold.
+      Thus, although sign persistence and magnitude criteria pass, the excessive flips
+      mean there is no stable directional constraint. This window is transitional,
+      not a persistent regime.'
+- window_id: window-2024-02-08
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: Only 20/30 days (66.67%) are positive, below the 70% threshold.\
+    \ Step 2: Average |GEX| is ~12.74B, above 5B, so magnitude is strong. Step 3:\
+    \ There are 16 sign flips, well above the \u22645 allowed. Fails both the persistence\
+    \ and stability criteria, so this is not a persistent regime but a transitional\
+    \ period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 20
+    negative_days: 10
+    avg_magnitude_billions: 12.74
+    sign_flips: 16
+    persistence_pct: 66.67
+    confidence: 20
+    reasoning: "Step 1: Only 20/30 days (66.67%) are positive, below the 70% threshold.\
+      \ Step 2: Average |GEX| is ~12.74B, above 5B, so magnitude is strong. Step 3:\
+      \ There are 16 sign flips, well above the \u22645 allowed. Fails both the persistence\
+      \ and stability criteria, so this is not a persistent regime but a transitional\
+      \ period."
+- window_id: window-2024-02-12
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: There are 21 positive days and 9 negative days, giving a 70%\
+    \ persistence which meets the 70% threshold for a dominant sign. Step 2: The average\
+    \ absolute GEX magnitude is $12.84 B, well above the $5 B minimum. Step 3: However,\
+    \ there are 15 sign flips over 29 transitions, far exceeding the \u22645 flips\
+    \ requirement for stability. This high flip count means the directional constraint\
+    \ is not stable, so we must classify the period as transitional rather than a\
+    \ persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 12.84
+    sign_flips: 15
+    persistence_pct: 70
+    confidence: 30
+    reasoning: "Step 1: There are 21 positive days and 9 negative days, giving a 70%\
+      \ persistence which meets the 70% threshold for a dominant sign. Step 2: The\
+      \ average absolute GEX magnitude is $12.84 B, well above the $5 B minimum. Step\
+      \ 3: However, there are 15 sign flips over 29 transitions, far exceeding the\
+      \ \u22645 flips requirement for stability. This high flip count means the directional\
+      \ constraint is not stable, so we must classify the period as transitional rather\
+      \ than a persistent regime."
+- window_id: window-2024-02-13
+  regime_type: transitional
+  regime_detected: false
+  confidence: 85
+  reasoning: "Step 1 (Sign Persistence): 22 of 30 days are positive \u2192 73.3% persistence\
+    \ (>70% threshold). Step 2 (Magnitude): average |GEX| \u2243 $12.9 B (> $5 B threshold).\
+    \ Step 3 (Stability): 13 sign flips (>5 allowed). While there is clear positive\
+    \ bias and strong magnitude, the high frequency of sign reversals fails the stability\
+    \ criterion. Therefore, despite >70% positive days, this window does not form\
+    \ a structurally forced directional regime and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 12.91
+    sign_flips: 13
+    persistence_pct: 73.33
+    confidence: 85
+    reasoning: "Step 1 (Sign Persistence): 22 of 30 days are positive \u2192 73.3%\
+      \ persistence (>70% threshold). Step 2 (Magnitude): average |GEX| \u2243 $12.9\
+      \ B (> $5 B threshold). Step 3 (Stability): 13 sign flips (>5 allowed). While\
+      \ there is clear positive bias and strong magnitude, the high frequency of sign\
+      \ reversals fails the stability criterion. Therefore, despite >70% positive\
+      \ days, this window does not form a structurally forced directional regime and\
+      \ is classified as transitional."
+- window_id: window-2024-02-14
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: There are 23 positive days and 7 negative days (76.7% positive),\
+    \ so we clear the 70% persistence threshold for a positive bias. Step 2: The average\
+    \ absolute GEX over 30 days is about $13.06 B, well above the $5 B minimum. Step\
+    \ 3: However, there are 10 sign flips\u2014far exceeding the 5-flip limit for\
+    \ a stable regime. Despite strong persistence and magnitude, the high flip count\
+    \ indicates no continuous directional constraint. Therefore, this is not a persistent\
+    \ regime but a transitional period driven by alternating dealer gamma positions."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 13.06
+    sign_flips: 10
+    persistence_pct: 76.67
+    confidence: 90
+    reasoning: "Step 1: There are 23 positive days and 7 negative days (76.7% positive),\
+      \ so we clear the 70% persistence threshold for a positive bias. Step 2: The\
+      \ average absolute GEX over 30 days is about $13.06 B, well above the $5 B minimum.\
+      \ Step 3: However, there are 10 sign flips\u2014far exceeding the 5-flip limit\
+      \ for a stable regime. Despite strong persistence and magnitude, the high flip\
+      \ count indicates no continuous directional constraint. Therefore, this is not\
+      \ a persistent regime but a transitional period driven by alternating dealer\
+      \ gamma positions."
+- window_id: window-2024-02-15
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: Positive days = 22, Negative days = 8 \u2192 persistence = 22/30\
+    \ = 73.33%, above the 70% threshold. Step 2: Average |GEX| \u2248 $13.26B, well\
+    \ above the $5B minimum. Step 3: Sign flips = 12, which exceeds the \u22645 flips\
+    \ requirement. Although persistence and magnitude criteria pass, the high number\
+    \ of sign flips indicates instability, so this is not a persistent regime but\
+    \ a transitional period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 13.26
+    sign_flips: 12
+    persistence_pct: 73.33
+    confidence: 90
+    reasoning: "Step 1: Positive days = 22, Negative days = 8 \u2192 persistence =\
+      \ 22/30 = 73.33%, above the 70% threshold. Step 2: Average |GEX| \u2248 $13.26B,\
+      \ well above the $5B minimum. Step 3: Sign flips = 12, which exceeds the \u2264\
+      5 flips requirement. Although persistence and magnitude criteria pass, the high\
+      \ number of sign flips indicates instability, so this is not a persistent regime\
+      \ but a transitional period."
+- window_id: window-2024-02-20
+  regime_type: transitional
+  regime_detected: false
+  confidence: 40
+  reasoning: 'Step 1: There are 23 positive days vs 7 negative days (76.7% positive
+    > 70%). Step 2: The average absolute GEX is about $13.38B (> $5B). Step 3: However,
+    there are 8 sign flips (>5), so the directional constraint is not stable. Thus,
+    although magnitude and persistence criteria are met, the high flip count fails
+    the stability requirement, indicating a transitional regime rather than a persistent
+    one.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 13.38
+    sign_flips: 8
+    persistence_pct: 76.67
+    confidence: 40
+    reasoning: 'Step 1: There are 23 positive days vs 7 negative days (76.7% positive
+      > 70%). Step 2: The average absolute GEX is about $13.38B (> $5B). Step 3: However,
+      there are 8 sign flips (>5), so the directional constraint is not stable. Thus,
+      although magnitude and persistence criteria are met, the high flip count fails
+      the stability requirement, indicating a transitional regime rather than a persistent
+      one.'
+- window_id: window-2024-02-21
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: 'Step 1: 22 out of 30 days are positive (73.3% persistence >70%). Step
+    2: average |GEX| = $13.48 B (> $5 B). Both persistence and magnitude criteria
+    pass. Step 3: there are 13 sign flips (>>5 allowed), so the directional constraint
+    is not stable. Because the stability criterion fails, we reject a persistent regime
+    and classify this window as transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 13.48
+    sign_flips: 13
+    persistence_pct: 73.33
+    confidence: 90
+    reasoning: 'Step 1: 22 out of 30 days are positive (73.3% persistence >70%). Step
+      2: average |GEX| = $13.48 B (> $5 B). Both persistence and magnitude criteria
+      pass. Step 3: there are 13 sign flips (>>5 allowed), so the directional constraint
+      is not stable. Because the stability criterion fails, we reject a persistent
+      regime and classify this window as transitional.'
+- window_id: window-2024-02-22
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: 'Step 1: There are 23 positive GEX days and 7 negative days, giving 76.7%
+    persistence (>70% threshold). Step 2: The average absolute GEX is about $13.6B
+    (> $5B threshold). Step 3: However, there are 10 sign flips over 30 days (>5 allowed),
+    indicating an unstable directional constraint. Although sign persistence and magnitude
+    criteria pass, the high flip count violates the stability requirement, so this
+    is not a persistent regime but a transitional period.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 13.61
+    sign_flips: 10
+    persistence_pct: 76.67
+    confidence: 30
+    reasoning: 'Step 1: There are 23 positive GEX days and 7 negative days, giving
+      76.7% persistence (>70% threshold). Step 2: The average absolute GEX is about
+      $13.6B (> $5B threshold). Step 3: However, there are 10 sign flips over 30 days
+      (>5 allowed), indicating an unstable directional constraint. Although sign persistence
+      and magnitude criteria pass, the high flip count violates the stability requirement,
+      so this is not a persistent regime but a transitional period.'
+- window_id: window-2024-02-26
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: We observe 23 positive days out of 30 (76.7% persistence), which\
+    \ clears the 70% threshold for a positive-biased regime. Step 2: The average absolute\
+    \ GEX is $13.71 B, well above the $5 B minimum. Step 3: However, there are 9 sign\
+    \ flips over 30 days, exceeding the \u22645 flips requirement for a stable regime.\
+    \ Because the stability criterion fails\u2014despite strong persistence and magnitude\u2014\
+    the period does not form a structural persistent regime. We classify it as transitional\
+    \ due to the frequent sign reversals."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 13.707
+    sign_flips: 9
+    persistence_pct: 76.67
+    confidence: 30
+    reasoning: "Step 1: We observe 23 positive days out of 30 (76.7% persistence),\
+      \ which clears the 70% threshold for a positive-biased regime. Step 2: The average\
+      \ absolute GEX is $13.71 B, well above the $5 B minimum. Step 3: However, there\
+      \ are 9 sign flips over 30 days, exceeding the \u22645 flips requirement for\
+      \ a stable regime. Because the stability criterion fails\u2014despite strong\
+      \ persistence and magnitude\u2014the period does not form a structural persistent\
+      \ regime. We classify it as transitional due to the frequent sign reversals."
+- window_id: window-2024-02-27
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: 'Step 1: 22 positive days out of 30 = 73.33% (>70%), so positive persistence
+    criterion passes. Step 2: average |GEX| = 13.76B (>5B), so magnitude criterion
+    passes. Step 3: there are 14 sign flips (>5), so stability fails. Because the
+    sign flips are too frequent, despite strong persistence and magnitude, dealers
+    do not face a stable directional constraint. Therefore this period is not a persistent
+    regime but transitional.'
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 13.76
+    sign_flips: 14
+    persistence_pct: 73.33
+    confidence: 30
+    reasoning: 'Step 1: 22 positive days out of 30 = 73.33% (>70%), so positive persistence
+      criterion passes. Step 2: average |GEX| = 13.76B (>5B), so magnitude criterion
+      passes. Step 3: there are 14 sign flips (>5), so stability fails. Because the
+      sign flips are too frequent, despite strong persistence and magnitude, dealers
+      do not face a stable directional constraint. Therefore this period is not a
+      persistent regime but transitional.'
+- window_id: window-2024-02-28
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 22 of 30 days are positive (73.3% > 70%), so sign persistence\
+    \ passes. Step 2: The average absolute GEX is ~13.9 B > 5 B, so magnitude passes.\
+    \ Step 3: There are 10 sign flips (pos\u2194neg), exceeding the \u22645 threshold.\
+    \ Because stability fails despite strong persistence and magnitude, dealers are\
+    \ not in a structurally forced regime. This qualifies as a transitional period\
+    \ rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 13.91
+    sign_flips: 10
+    persistence_pct: 73.33
+    confidence: 30
+    reasoning: "Step 1: 22 of 30 days are positive (73.3% > 70%), so sign persistence\
+      \ passes. Step 2: The average absolute GEX is ~13.9 B > 5 B, so magnitude passes.\
+      \ Step 3: There are 10 sign flips (pos\u2194neg), exceeding the \u22645 threshold.\
+      \ Because stability fails despite strong persistence and magnitude, dealers\
+      \ are not in a structurally forced regime. This qualifies as a transitional\
+      \ period rather than a persistent regime."
+- window_id: window-2024-02-29
+  regime_type: transitional
+  regime_detected: false
+  confidence: 10
+  reasoning: "Step\u20091: We have 21 positive days and 9 negative days \u2192 70%\
+    \ persistence (meets the 21/30 threshold). Step\u20092: The average absolute GEX\
+    \ is ~13.88\u2009B (well above the $5\u2009B threshold). Step\u20093: There are\
+    \ 15 sign flips, far exceeding the \u22645 allowed for a stable regime. Because\
+    \ stability fails despite strong persistence and magnitude, this 30-day window\
+    \ does not constitute a persistent regime but rather a transitional one."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 13.88
+    sign_flips: 15
+    persistence_pct: 70.0
+    confidence: 10
+    reasoning: "Step\u20091: We have 21 positive days and 9 negative days \u2192 70%\
+      \ persistence (meets the 21/30 threshold). Step\u20092: The average absolute\
+      \ GEX is ~13.88\u2009B (well above the $5\u2009B threshold). Step\u20093: There\
+      \ are 15 sign flips, far exceeding the \u22645 allowed for a stable regime.\
+      \ Because stability fails despite strong persistence and magnitude, this 30-day\
+      \ window does not constitute a persistent regime but rather a transitional one."
+- window_id: window-2024-03-04
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: 22/30 days are positive \u2192 73.3% persistence (>70% threshold).\
+    \ Step 2: average |GEX| \u2248 $13.92 B (\u226B $5 B threshold). Step 3: there\
+    \ are 16 sign flips (> 5 allowed), so the directional constraint is unstable.\
+    \ Although persistence and magnitude criteria pass, the high number of flips fails\
+    \ the stability requirement \u2192 not a persistent regime, classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 13.9247
+    sign_flips: 16
+    persistence_pct: 73.3333
+    confidence: 30
+    reasoning: "Step 1: 22/30 days are positive \u2192 73.3% persistence (>70% threshold).\
+      \ Step 2: average |GEX| \u2248 $13.92 B (\u226B $5 B threshold). Step 3: there\
+      \ are 16 sign flips (> 5 allowed), so the directional constraint is unstable.\
+      \ Although persistence and magnitude criteria pass, the high number of flips\
+      \ fails the stability requirement \u2192 not a persistent regime, classified\
+      \ as transitional."
+- window_id: window-2024-03-05
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: There are 22 positive days and 8 negative days, so positive\
+    \ persistence is 22/30 \u2248 73.33%, which exceeds the 70% threshold. Step 2:\
+    \ The average absolute GEX over 30 days is ~14.39B, well above the 5B minimum.\
+    \ Step 3: However, there are 12 sign flips, which is far above the \u22645 allowed\
+    \ for a stable regime. Because the stability criterion fails despite strong persistence\
+    \ and magnitude, this period is not a persistent regime but a transitional one."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 14.39
+    sign_flips: 12
+    persistence_pct: 73.33
+    confidence: 30
+    reasoning: "Step 1: There are 22 positive days and 8 negative days, so positive\
+      \ persistence is 22/30 \u2248 73.33%, which exceeds the 70% threshold. Step\
+      \ 2: The average absolute GEX over 30 days is ~14.39B, well above the 5B minimum.\
+      \ Step 3: However, there are 12 sign flips, which is far above the \u22645 allowed\
+      \ for a stable regime. Because the stability criterion fails despite strong\
+      \ persistence and magnitude, this period is not a persistent regime but a transitional\
+      \ one."
+- window_id: window-2024-03-06
+  regime_type: transitional
+  regime_detected: false
+  confidence: 20
+  reasoning: "Step 1: Positive days = 22, negative days = 8, so positive persistence\
+    \ = 22/30 \u2248 73.33% (>70%). Step 2: Average absolute GEX = 433.71/30 \u2248\
+    \ 14.46B (>5B). Step 3: Sign flips = 14, which is well above the \u22645-day threshold\
+    \ for stability. Although persistence and magnitude pass, the high flip count\
+    \ indicates no stable directional constraint. Therefore this is not a persistent\
+    \ regime but a transitional period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 14.46
+    sign_flips: 14
+    persistence_pct: 73.33
+    confidence: 20
+    reasoning: "Step 1: Positive days = 22, negative days = 8, so positive persistence\
+      \ = 22/30 \u2248 73.33% (>70%). Step 2: Average absolute GEX = 433.71/30 \u2248\
+      \ 14.46B (>5B). Step 3: Sign flips = 14, which is well above the \u22645-day\
+      \ threshold for stability. Although persistence and magnitude pass, the high\
+      \ flip count indicates no stable directional constraint. Therefore this is not\
+      \ a persistent regime but a transitional period."
+- window_id: window-2024-03-07
+  regime_type: transitional
+  regime_detected: false
+  confidence: 30
+  reasoning: "Step 1: Only 20 out of 30 days are positive (66.7% < 70% threshold).\
+    \ Step 2: Average |GEX| \u2248 $14.59B (> $5B), so magnitude is strong. Step 3:\
+    \ There are 12 sign flips (> 5 allowed), indicating instability. Fails both the\
+    \ 70% persistence and \u22645 flips criteria, so this is not a persistent regime\
+    \ but rather a transitional period."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 20
+    negative_days: 10
+    avg_magnitude_billions: 14.59
+    sign_flips: 12
+    persistence_pct: 66.67
+    confidence: 30
+    reasoning: "Step 1: Only 20 out of 30 days are positive (66.7% < 70% threshold).\
+      \ Step 2: Average |GEX| \u2248 $14.59B (> $5B), so magnitude is strong. Step\
+      \ 3: There are 12 sign flips (> 5 allowed), indicating instability. Fails both\
+      \ the 70% persistence and \u22645 flips criteria, so this is not a persistent\
+      \ regime but rather a transitional period."
+- window_id: window-2024-03-11
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: We observe 22 positive days and 8 negative days \u2192 73.3%\
+    \ persistence (>70%). Step 2: The average absolute GEX is ~14.56B (>5B). Step\
+    \ 3: There are 11 sign flips (>5 allowed), indicating instability. Although sign\
+    \ persistence and magnitude criteria pass, the high count of flips breaches the\
+    \ stability requirement. Therefore, this does not qualify as a persistent regime\
+    \ and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 14.56
+    sign_flips: 11
+    persistence_pct: 73.33
+    confidence: 90
+    reasoning: "Step 1: We observe 22 positive days and 8 negative days \u2192 73.3%\
+      \ persistence (>70%). Step 2: The average absolute GEX is ~14.56B (>5B). Step\
+      \ 3: There are 11 sign flips (>5 allowed), indicating instability. Although\
+      \ sign persistence and magnitude criteria pass, the high count of flips breaches\
+      \ the stability requirement. Therefore, this does not qualify as a persistent\
+      \ regime and is classified as transitional."
+- window_id: window-2024-03-12
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: Positive days = 22, negative days = 8, so persistence = 22/30\
+    \ = 73.33%, which exceeds the 70% threshold. Step 2: Average absolute GEX = $442.53B/30\
+    \ \u2248 $14.75B, well above the $5B minimum. Step 3: Sign flips = 13, which is\
+    \ far above the \u22645 flips required for stability. Because the stability criterion\
+    \ fails, this window cannot be classified as a persistent regime despite strong\
+    \ persistence and magnitude. It is therefore labeled 'transitional.'"
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 14.75
+    sign_flips: 13
+    persistence_pct: 73.33
+    confidence: 90
+    reasoning: "Step 1: Positive days = 22, negative days = 8, so persistence = 22/30\
+      \ = 73.33%, which exceeds the 70% threshold. Step 2: Average absolute GEX =\
+      \ $442.53B/30 \u2248 $14.75B, well above the $5B minimum. Step 3: Sign flips\
+      \ = 13, which is far above the \u22645 flips required for stability. Because\
+      \ the stability criterion fails, this window cannot be classified as a persistent\
+      \ regime despite strong persistence and magnitude. It is therefore labeled 'transitional.'"
+- window_id: window-2024-03-13
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 22 positive vs 8 negative days \u2192 73.33% positive, above\
+    \ the 70% threshold. Step 2: average absolute GEX \u2248 $14.93B, well above the\
+    \ $5B minimum. Step 3: there are 13 sign flips, exceeding the \u22645 flips criterion.\
+    \ Although sign persistence and magnitude criteria pass, the high number of flips\
+    \ indicates instability. This fails the stability requirement for a persistent\
+    \ regime, so we classify the period as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 14.93
+    sign_flips: 13
+    persistence_pct: 73.33
+    confidence: 90
+    reasoning: "Step 1: 22 positive vs 8 negative days \u2192 73.33% positive, above\
+      \ the 70% threshold. Step 2: average absolute GEX \u2248 $14.93B, well above\
+      \ the $5B minimum. Step 3: there are 13 sign flips, exceeding the \u22645 flips\
+      \ criterion. Although sign persistence and magnitude criteria pass, the high\
+      \ number of flips indicates instability. This fails the stability requirement\
+      \ for a persistent regime, so we classify the period as transitional."
+- window_id: window-2024-03-14
+  regime_type: transitional
+  regime_detected: false
+  confidence: 85
+  reasoning: "Step 1: There are 22 positive days and 8 negative days, so persistence\
+    \ is 22/30 = 73.33%, which exceeds the 70% threshold. Step 2: The average absolute\
+    \ GEX is \u223C15.16B, well above the $5B minimum. Step 3: However, there are\
+    \ 10 sign flips over 30 days, exceeding the \u22645\u2010flip requirement. Because\
+    \ the sign flips are too frequent, the structural dealers\u2019 constraint is\
+    \ not stable. All other criteria pass, but the stability check fails, so this\
+    \ window does not constitute a persistent regime and is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 15.16
+    sign_flips: 10
+    persistence_pct: 73.33
+    confidence: 85
+    reasoning: "Step 1: There are 22 positive days and 8 negative days, so persistence\
+      \ is 22/30 = 73.33%, which exceeds the 70% threshold. Step 2: The average absolute\
+      \ GEX is \u223C15.16B, well above the $5B minimum. Step 3: However, there are\
+      \ 10 sign flips over 30 days, exceeding the \u22645\u2010flip requirement. Because\
+      \ the sign flips are too frequent, the structural dealers\u2019 constraint is\
+      \ not stable. All other criteria pass, but the stability check fails, so this\
+      \ window does not constitute a persistent regime and is classified as transitional."
+- window_id: window-2024-03-15
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: There are 21 positive days and 9 negative days, so persistence\
+    \ is exactly 70% (meets the \u226570% threshold). Step 2: The average absolute\
+    \ GEX is about $15.13B (> $5B), so magnitude is strong. Step 3: However, there\
+    \ are 14 sign flips over 30 days (\u226B5), indicating high instability. Because\
+    \ the stability criterion fails, this cannot be classified as a persistent regime\
+    \ and is instead labeled transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 15.13
+    sign_flips: 14
+    persistence_pct: 70
+    confidence: 90
+    reasoning: "Step 1: There are 21 positive days and 9 negative days, so persistence\
+      \ is exactly 70% (meets the \u226570% threshold). Step 2: The average absolute\
+      \ GEX is about $15.13B (> $5B), so magnitude is strong. Step 3: However, there\
+      \ are 14 sign flips over 30 days (\u226B5), indicating high instability. Because\
+      \ the stability criterion fails, this cannot be classified as a persistent regime\
+      \ and is instead labeled transitional."
+- window_id: window-2024-03-18
+  regime_type: transitional
+  regime_detected: false
+  confidence: 80
+  reasoning: "Step 1: We have 22 positive days and 8 negative days, so persistence\
+    \ is 22/30 \u2248 73.33%, which exceeds the 70% threshold for a dominant sign\
+    \ (positive). Step 2: The average |GEX| over 30 days is about $15.08B, well above\
+    \ the $5B minimum. Step 3: However, there are 14 sign flips (pos\u2192neg or neg\u2192\
+    pos), which far exceeds the \u22645 flips allowed for a stable regime. Because\
+    \ the stability criterion fails despite strong persistence and magnitude, we reject\
+    \ a persistent regime. This pattern of frequent flips indicates a transitional\
+    \ period rather than a structural dealer\u2010gamma constraint."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 22
+    negative_days: 8
+    avg_magnitude_billions: 15.08
+    sign_flips: 14
+    persistence_pct: 73.33
+    confidence: 80
+    reasoning: "Step 1: We have 22 positive days and 8 negative days, so persistence\
+      \ is 22/30 \u2248 73.33%, which exceeds the 70% threshold for a dominant sign\
+      \ (positive). Step 2: The average |GEX| over 30 days is about $15.08B, well\
+      \ above the $5B minimum. Step 3: However, there are 14 sign flips (pos\u2192\
+      neg or neg\u2192pos), which far exceeds the \u22645 flips allowed for a stable\
+      \ regime. Because the stability criterion fails despite strong persistence and\
+      \ magnitude, we reject a persistent regime. This pattern of frequent flips indicates\
+      \ a transitional period rather than a structural dealer\u2010gamma constraint."
+- window_id: window-2024-03-19
+  regime_type: transitional
+  regime_detected: false
+  confidence: 15
+  reasoning: "Step 1: There are 20 positive days and 10 negative days, so the dominant\
+    \ sign persistence is 20/30 = 66.67%, below the 70% threshold. Step 2: The average\
+    \ |GEX| is $15.09B, well above $5B, so magnitude is strong. Step 3: There are\
+    \ 12 sign flips, exceeding the \u22645 flips required for stability. Because persistence\
+    \ is below 70% and flips are too frequent, this window fails the persistence and\
+    \ stability criteria. Therefore it is classified as a TRANSITIONAL regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 20
+    negative_days: 10
+    avg_magnitude_billions: 15.09
+    sign_flips: 12
+    persistence_pct: 66.67
+    confidence: 15
+    reasoning: "Step 1: There are 20 positive days and 10 negative days, so the dominant\
+      \ sign persistence is 20/30 = 66.67%, below the 70% threshold. Step 2: The average\
+      \ |GEX| is $15.09B, well above $5B, so magnitude is strong. Step 3: There are\
+      \ 12 sign flips, exceeding the \u22645 flips required for stability. Because\
+      \ persistence is below 70% and flips are too frequent, this window fails the\
+      \ persistence and stability criteria. Therefore it is classified as a TRANSITIONAL\
+      \ regime."
+- window_id: window-2024-03-20
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 23 positive days and 7 negative days gives 76.67% persistence\
+    \ (>70%), signaling a dominant positive sign. Step 2: The average absolute GEX\
+    \ is ~$15.07B (> $5B), so magnitude is strong. Step 3: There are 13 sign flips,\
+    \ well above the \u22645 threshold for a stable directional constraint. Therefore,\
+    \ despite strong persistence and magnitude, the high flip count shows the dealer\
+    \ positioning is not structurally locked in one direction. We reject a persistent\
+    \ regime as transitional due to instability."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 15.07
+    sign_flips: 13
+    persistence_pct: 76.67
+    confidence: 90
+    reasoning: "Step 1: 23 positive days and 7 negative days gives 76.67% persistence\
+      \ (>70%), signaling a dominant positive sign. Step 2: The average absolute GEX\
+      \ is ~$15.07B (> $5B), so magnitude is strong. Step 3: There are 13 sign flips,\
+      \ well above the \u22645 threshold for a stable directional constraint. Therefore,\
+      \ despite strong persistence and magnitude, the high flip count shows the dealer\
+      \ positioning is not structurally locked in one direction. We reject a persistent\
+      \ regime as transitional due to instability."
+- window_id: window-2024-03-21
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: 21 of 30 days are positive GEX, giving exactly 70% persistence\
+    \ (meets the 21+ day threshold). Step 2: The average absolute GEX is ~$14.99B,\
+    \ well above the $5B minimum. Step 3: There are 13 sign flips over 29 transitions,\
+    \ far exceeding the \u22645-flip stability requirement. Because the stability\
+    \ criterion fails\u2014even though persistence and magnitude pass\u2014dealers\
+    \ are not in a structurally forced directional regime. This is thus classified\
+    \ as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 21
+    negative_days: 9
+    avg_magnitude_billions: 14.99
+    sign_flips: 13
+    persistence_pct: 70
+    confidence: 90
+    reasoning: "Step 1: 21 of 30 days are positive GEX, giving exactly 70% persistence\
+      \ (meets the 21+ day threshold). Step 2: The average absolute GEX is ~$14.99B,\
+      \ well above the $5B minimum. Step 3: There are 13 sign flips over 29 transitions,\
+      \ far exceeding the \u22645-flip stability requirement. Because the stability\
+      \ criterion fails\u2014even though persistence and magnitude pass\u2014dealers\
+      \ are not in a structurally forced directional regime. This is thus classified\
+      \ as transitional."
+- window_id: window-2024-03-25
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: Of 30 days, 20 are positive and 10 negative, so the dominant\
+    \ sign persistence is 20/30=66.7%, below the 70% threshold. Step 2: The average\
+    \ |GEX| is ~$15.02 B, well above $5 B, so magnitude is strong. Step 3: There are\
+    \ 12 sign flips, exceeding the \u22645 flips requirement for stability. Since\
+    \ sign persistence fails (and stability also fails), the window does not qualify\
+    \ as a persistent positive or negative regime. It is classified as transitional."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 20
+    negative_days: 10
+    avg_magnitude_billions: 15.02
+    sign_flips: 12
+    persistence_pct: 66.67
+    confidence: 90
+    reasoning: "Step 1: Of 30 days, 20 are positive and 10 negative, so the dominant\
+      \ sign persistence is 20/30=66.7%, below the 70% threshold. Step 2: The average\
+      \ |GEX| is ~$15.02 B, well above $5 B, so magnitude is strong. Step 3: There\
+      \ are 12 sign flips, exceeding the \u22645 flips requirement for stability.\
+      \ Since sign persistence fails (and stability also fails), the window does not\
+      \ qualify as a persistent positive or negative regime. It is classified as transitional."
+- window_id: window-2024-03-26
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: There are 23 positive days vs. 7 negative days, yielding 76.67%\
+    \ persistence (>70%). Step 2: The average |GEX| is 451.13/30 \u2248 $15.04 B (>\
+    \ $5 B), so magnitude is strong. Step 3: There are 8 sign flips, which exceeds\
+    \ the \u22645 flips threshold. Because the stability criterion fails, the window\
+    \ cannot be classified as a persistent regime. Therefore, this is a transitional\
+    \ period (frequent directional changes), not a persistent positive or negative\
+    \ regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 15.04
+    sign_flips: 8
+    persistence_pct: 76.67
+    confidence: 90
+    reasoning: "Step 1: There are 23 positive days vs. 7 negative days, yielding 76.67%\
+      \ persistence (>70%). Step 2: The average |GEX| is 451.13/30 \u2248 $15.04 B\
+      \ (> $5 B), so magnitude is strong. Step 3: There are 8 sign flips, which exceeds\
+      \ the \u22645 flips threshold. Because the stability criterion fails, the window\
+      \ cannot be classified as a persistent regime. Therefore, this is a transitional\
+      \ period (frequent directional changes), not a persistent positive or negative\
+      \ regime."
+- window_id: window-2024-03-27
+  regime_type: transitional
+  regime_detected: false
+  confidence: 90
+  reasoning: "Step 1: There are 23 positive\u2010GEX days vs. 7 negative days, so\
+    \ positive persistence is 76.7% (>70%). Step 2: The average absolute GEX is about\
+    \ $15.05 B (> $5 B). Step 3: However, there are 10 sign flips over 30 days (>5),\
+    \ so the directional constraint is not stable. Despite strong magnitude and directional\
+    \ tilt, the frequent sign changes fail the stability criterion, so this window\
+    \ is classified as transitional rather than a persistent regime."
+  raw_response:
+    regime_detected: false
+    regime_type: transitional
+    positive_days: 23
+    negative_days: 7
+    avg_magnitude_billions: 15.05
+    sign_flips: 10
+    persistence_pct: 76.67
+    confidence: 90
+    reasoning: "Step 1: There are 23 positive\u2010GEX days vs. 7 negative days, so\
+      \ positive persistence is 76.7% (>70%). Step 2: The average absolute GEX is\
+      \ about $15.05 B (> $5 B). Step 3: However, there are 10 sign flips over 30\
+      \ days (>5), so the directional constraint is not stable. Despite strong magnitude\
+      \ and directional tilt, the frequent sign changes fail the stability criterion,\
+      \ so this window is classified as transitional rather than a persistent regime."

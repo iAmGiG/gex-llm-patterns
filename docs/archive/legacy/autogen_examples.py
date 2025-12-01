@@ -9,10 +9,11 @@ import logging
 # Third-party imports
 from autogen_core.tools import FunctionTool
 
+from src.tools.data_sources.market.market_context_tool import market_context_tool
+
 # Project imports - only tools actually used
 from src.tools.data_sources.market.unified_market_tool import fetch_unified_market_data
 from src.tools.data_sources.market.vxx_volatility_tool import fetch_vxx_volatility_data
-from src.tools.data_sources.market.market_context_tool import market_context_tool
 from src.tools.data_sources.news.google_search_simple import google_search_smart_tool, set_news_governor
 from src.tools.data_sources.news.hierarchical_news_tool import fetch_hierarchical_news
 
@@ -37,7 +38,7 @@ ALL_AGENTS = [SENTIMENT_AGENT, TECH_AGENT, STRATEGY_AGENT]
 unified_market_tool = FunctionTool(
     func=fetch_unified_market_data,
     name="fetch_unified_market_data",
-    description="Fetch market data using unified cache system. Routes through cache adapter for consistent data management across Polygon and Alpha Vantage sources."
+    description="Fetch market data using unified cache system. Routes through cache adapter for consistent data management across Polygon and Alpha Vantage sources.",
 )
 unified_market_tool.agent_types = [TECH_AGENT]
 
@@ -48,7 +49,7 @@ unified_market_tool.agent_types = [TECH_AGENT]
 vxx_volatility_tool = FunctionTool(
     func=fetch_vxx_volatility_data,
     name="fetch_vxx_volatility_data",
-    description="Fetch VXX volatility data for market fear-based sentiment analysis. Returns VXX-based sentiment scores for V2 Market Fear sentiment agent."
+    description="Fetch VXX volatility data for market fear-based sentiment analysis. Returns VXX-based sentiment scores for V2 Market Fear sentiment agent.",
 )
 vxx_volatility_tool.agent_types = [SENTIMENT_AGENT]
 
@@ -59,7 +60,7 @@ vxx_volatility_tool.agent_types = [SENTIMENT_AGENT]
 hierarchical_news_tool = FunctionTool(
     func=fetch_hierarchical_news,
     name="fetch_hierarchical_news",
-    description="Fetch hierarchical adaptive news mix for V4 sentiment analysis. Provides balanced company-specific, sector ETF, and broad market news for intelligent sentiment reasoning."
+    description="Fetch hierarchical adaptive news mix for V4 sentiment analysis. Provides balanced company-specific, sector ETF, and broad market news for intelligent sentiment reasoning.",
 )
 hierarchical_news_tool.agent_types = [SENTIMENT_AGENT]
 
@@ -70,11 +71,11 @@ hierarchical_news_tool.agent_types = [SENTIMENT_AGENT]
 # SENTIMENT_AGENT tools - Multiple approaches for V0-V4 framework
 # V1: Google Search + smart sampling, V2: VXX volatility, V4: Hierarchical news
 _sentiment_tools_raw = [
-    google_search_smart_tool,   # V1: Google Custom Search API with smart sampling
-    vxx_volatility_tool,        # V2: VXX volatility data for market fear sentiment
+    google_search_smart_tool,  # V1: Google Custom Search API with smart sampling
+    vxx_volatility_tool,  # V2: VXX volatility data for market fear sentiment
     # V4: Hierarchical adaptive news (Direct + Sector + Market)
     hierarchical_news_tool,
-    market_context_tool,        # V4: SPY/QQQ market context for enhanced sentiment
+    market_context_tool,  # V4: SPY/QQQ market context for enhanced sentiment
 ]
 SENTIMENT_TOOLS = [tool for tool in _sentiment_tools_raw if tool is not None]
 
@@ -94,13 +95,7 @@ _strategy_tools_raw = [
 STRATEGY_TOOLS = [tool for tool in _strategy_tools_raw if tool is not None]
 
 # All tools combined (filter out None values from conditional imports)
-ALL_TOOLS = list(set(
-    tool for tool in (
-        SENTIMENT_TOOLS +
-        TECH_TOOLS +
-        STRATEGY_TOOLS
-    ) if tool is not None
-))
+ALL_TOOLS = list(set(tool for tool in (SENTIMENT_TOOLS + TECH_TOOLS + STRATEGY_TOOLS) if tool is not None))
 
 # Tool dispatcher dictionary for efficient lookup by name
 ALL_TOOLS_DICT = {tool.name: tool for tool in ALL_TOOLS if tool is not None}
@@ -133,6 +128,7 @@ def get_tools_for_agent(agent_type):
 ##################################
 # NewsGovernor Integration
 ##################################
+
 
 def enable_smart_news_sampling(governor=None):
     """

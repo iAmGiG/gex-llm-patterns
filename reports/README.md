@@ -26,17 +26,20 @@ reports/
 **Status:** 🔄 RE-VALIDATING - Database rebuilt with REAL prices (no more 450.0!)
 
 **Critical Fix Applied:**
+
 - **Problem**: Database stored obfuscated 450.0 prices → corrupt forward returns (42.77% Q3 max)
 - **Fix**: `historical_gex_builder.py` now uses put-call parity + API, refuses fake prices
 - **Impact**: All Q1-Q3 validation YAMLs deleted (corrupt), regenerating with corrected database
 
 **Validation Framework:**
+
 - **Obfuscation:** LLM receives "Day T+0" instead of real dates
 - **Pattern**: `dealer_gamma_hedging` (consolidated from 3 patterns)
 - **Test Period**: Q1-Q4 2024 (198 dates with real spot prices)
 - **Threshold:** ≥60% detection rate with ≥30 samples
 
 **Background Jobs Running:**
+
 - Q1 2024: Re-validation with corrected database
 - Q2 2024: Partial (Jun only, Apr-May missing from cache)
 - Q3 2024: Re-validation in progress
@@ -45,6 +48,7 @@ reports/
 ### 📚 **Archive** (`archive/`)
 
 Historical reports and deprecated analyses:
+
 - **`archived_experiments/`** - Evolution from aggregate to strike-level GEX analysis
 
 ### ⚠️ **Deprecated** (`validation/pattern_taxonomy_DEPRECATED_ISSUE81/`)
@@ -63,6 +67,7 @@ Previous validation results (obfuscation bug discovered Oct 7, 2025). See that d
 ## Data Quality Issues Resolved
 
 ❌ **Database Corruption (Fixed Oct 11, 2025)** - Hardcoded 450.0 obfuscation stored permanently
+
 - **Impact**: Q3 showed impossible 42.77% daily moves (SPY doesn't move that much!)
 - **Root Cause**: Storage layer violated separation of concerns (obfuscation should be analysis-only)
 - **Fix**: Database rebuilt with real prices using put-call parity estimation

@@ -3,8 +3,8 @@ Utility functions and classes for agents.
 Provides helper functions for data processing, query parsing, and other common tasks.
 """
 
-import os
 import json
+import os
 import re
 from collections import Counter
 
@@ -21,11 +21,10 @@ def load_agent_config(agent_key) -> dict:
     """
     try:
         # Get the project root directory (up two levels from this file)
-        config_dir = os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))))
-        config_file = os.path.join(config_dir, 'config', 'agent_prompts.json')
+        config_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        config_file = os.path.join(config_dir, "config", "agent_prompts.json")
 
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             all_configs = json.load(f)
 
         # Return the config for the requested agent, or an empty dict if not found
@@ -43,12 +42,10 @@ def load_market_sectors() -> dict:
     """
     try:
         # Get the project root directory
-        config_dir = os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))))
-        sectors_file = os.path.join(
-            config_dir, 'config', 'market_sectors.json')
+        config_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        sectors_file = os.path.join(config_dir, "config", "market_sectors.json")
 
-        with open(sectors_file, 'r') as f:
+        with open(sectors_file, "r") as f:
             return json.load(f)
     except Exception as e:
         print(f"Error loading market sectors: {e}")
@@ -89,18 +86,16 @@ class QueryParser:
         anchor = None
 
         # List of common financial terms and abbreviations that aren't tickers
-        common_terms = ["I", "A", "AI", "US", "ER", "GDP",
-                        "CPI", "IPO", "P/E", "EPS", "ROI", "YOY"]
+        common_terms = ["I", "A", "AI", "US", "ER", "GDP", "CPI", "IPO", "P/E", "EPS", "ROI", "YOY"]
 
         # List of common financial terms and abbreviations that aren't tickers
-        common_terms = ["I", "A", "AI", "US", "ER", "GDP",
-                        "CPI", "IPO", "P/E", "EPS", "ROI", "YOY"]
+        common_terms = ["I", "A", "AI", "US", "ER", "GDP", "CPI", "IPO", "P/E", "EPS", "ROI", "YOY"]
 
         # Extract ticker if present (uppercase 1-5 chars)
         words = message.split()
         for word in words:
             # Filter out punctuation from the word
-            clean_word = ''.join(c for c in word if c.isalnum())
+            clean_word = "".join(c for c in word if c.isalnum())
 
             # Skip common terms/acronyms that aren't tickers
             if clean_word.isupper() and 1 <= len(clean_word) <= 5 and clean_word not in common_terms:
@@ -135,8 +130,7 @@ class QueryParser:
                     if sector_name == "retail" and ("holiday season" in message_lower or "shopping" in message_lower):
                         priority += 15
 
-                    priority_matches.append(
-                        (sector_name, priority, sector_data))
+                    priority_matches.append((sector_name, priority, sector_data))
 
         # If we have matches, take the highest priority one
         if priority_matches:
@@ -159,8 +153,7 @@ class QueryParser:
                 # Check for related topics combined with sector context
                 if any(rel_topic in message_lower for rel_topic in related):
                     # Check if the sector itself is mentioned
-                    sector_terms = [sector_name.replace(
-                        "_", " "), "sector", "stocks", "industry"]
+                    sector_terms = [sector_name.replace("_", " "), "sector", "stocks", "industry"]
                     if any(term in message_lower for term in sector_terms):
                         sector = sector_name
                         topic = sector_name.replace("_", " ")
@@ -172,15 +165,13 @@ class QueryParser:
 
         # If no sector detected, try to extract topic from standard patterns
         if not topic:
-            topic_indicators = ["about", "on", "for",
-                                "around", "sentiment on", "sentiment around"]
+            topic_indicators = ["about", "on", "for", "around", "sentiment on", "sentiment around"]
             for indicator in topic_indicators:
                 if indicator in message_lower:
                     parts = message_lower.split(indicator)
                     if len(parts) > 1:
                         # Grab the part right after the indicator, clean it up
-                        topic_candidate = parts[1].strip().split("?")[
-                            0].split(".")[0]
+                        topic_candidate = parts[1].strip().split("?")[0].split(".")[0]
                         if not (ticker and ticker.lower() in topic_candidate):
                             topic = topic_candidate
                             break
@@ -221,29 +212,69 @@ class QueryParser:
                         start_date = "-1m"
 
         if not anchor:
-            match = re.search(
-                r"(?:from|since)\s+(earnings|fomc|year[_ ]?open)", message_lower
-            )
+            match = re.search(r"(?:from|since)\s+(earnings|fomc|year[_ ]?open)", message_lower)
             if match:
                 anchor = match.group(1).replace(" ", "_")
         if not anchor:
-            match = re.search(
-                r"(?:from|since)\s+(\d{4}-\d{2}-\d{2})", message_lower)
+            match = re.search(r"(?:from|since)\s+(\d{4}-\d{2}-\d{2})", message_lower)
             if match:
                 anchor = match.group(1)
 
         # For open-ended queries, extract topic using NLP techniques if needed
         if not topic and not ticker and len(message.split()) > 3:
             # Remove common stopwords and extract likely topic words
-            stopwords = ['the', 'and', 'to', 'of', 'on', 'in', 'for', 'is', 'are', 'what', 'how',
-                         'a', 'an', 'this', 'that', 'with', 'by', 'as', 'be', 'it', 'from',
-                         'might', 'affect', 'impact', 'recent', 'sentiment', 'market', 'understand',
-                         'analyze', 'need', 'their', 'behavior', 'reaction', 'perceived', 'future',
-                         'around', 'light', 'being', 'i', 'me', 'my', 'you', 'your']
+            stopwords = [
+                "the",
+                "and",
+                "to",
+                "of",
+                "on",
+                "in",
+                "for",
+                "is",
+                "are",
+                "what",
+                "how",
+                "a",
+                "an",
+                "this",
+                "that",
+                "with",
+                "by",
+                "as",
+                "be",
+                "it",
+                "from",
+                "might",
+                "affect",
+                "impact",
+                "recent",
+                "sentiment",
+                "market",
+                "understand",
+                "analyze",
+                "need",
+                "their",
+                "behavior",
+                "reaction",
+                "perceived",
+                "future",
+                "around",
+                "light",
+                "being",
+                "i",
+                "me",
+                "my",
+                "you",
+                "your",
+            ]
 
             # Clean up the message and extract potential topic words
-            clean_words = [word.lower() for word in re.findall(r'\b\w+\b', message_lower)
-                           if word.lower() not in stopwords and len(word) > 3]
+            clean_words = [
+                word.lower()
+                for word in re.findall(r"\b\w+\b", message_lower)
+                if word.lower() not in stopwords and len(word) > 3
+            ]
 
             # Use word frequency to identify potential topics
             word_counts = Counter(clean_words)
@@ -356,8 +387,7 @@ class DataProcessor:
             signals["headlines"] = ["No headline available"] * len(news_data)
 
         # Extract sentiment scores - handle different column names
-        sentiment_cols = ["Sentiment Score", "sentiment_score",
-                          "overall_sentiment_score", "score"]
+        sentiment_cols = ["Sentiment Score", "sentiment_score", "overall_sentiment_score", "score"]
         for col in sentiment_cols:
             if col in news_data.columns:
                 signals["average_sentiment"] = news_data[col].mean()
@@ -388,20 +418,19 @@ class DataProcessor:
         latest = market_data.iloc[0]
 
         # Basic price information
-        if 'close' in latest:
-            signals["latest_close"] = latest['close']
-        if 'low' in latest and 'high' in latest:
-            signals["range_low"] = latest['low']
-            signals["range_high"] = latest['high']
-        if 'volume' in latest:
-            signals["volume"] = latest['volume']
+        if "close" in latest:
+            signals["latest_close"] = latest["close"]
+        if "low" in latest and "high" in latest:
+            signals["range_low"] = latest["low"]
+            signals["range_high"] = latest["high"]
+        if "volume" in latest:
+            signals["volume"] = latest["volume"]
 
         # Calculate price change if we have enough data
-        if len(market_data) > 1 and 'close' in market_data.columns:
-            oldest_close = market_data.iloc[-1]['close']
-            newest_close = latest['close']
-            signals["price_change"] = (
-                (newest_close - oldest_close) / oldest_close) * 100
+        if len(market_data) > 1 and "close" in market_data.columns:
+            oldest_close = market_data.iloc[-1]["close"]
+            newest_close = latest["close"]
+            signals["price_change"] = ((newest_close - oldest_close) / oldest_close) * 100
             signals["start_price"] = oldest_close
             signals["end_price"] = newest_close
 
@@ -425,7 +454,7 @@ class DataProcessor:
                 "ticker": data.get("ticker"),
                 "topic": data.get("topic"),
                 "sector": data.get("sector"),
-                "date_range": f"{data.get('start_date')} to {data.get('end_date') or 'present'}"
+                "date_range": f"{data.get('start_date')} to {data.get('end_date') or 'present'}",
             }
         }
 
@@ -444,7 +473,7 @@ class DataProcessor:
                 "latest_price": data["market_data"].get("latest_close"),
                 "price_range": f"{data['market_data'].get('range_low')} - {data['market_data'].get('range_high')}",
                 "volume": data["market_data"].get("volume"),
-                "price_change": data["market_data"].get("price_change")
+                "price_change": data["market_data"].get("price_change"),
             }
 
         # Add sector context if available
@@ -453,7 +482,7 @@ class DataProcessor:
                 "name": data["sector"],
                 "etfs": data.get("etfs", []),
                 "blue_chips": data.get("blue_chips", []),
-                "leveraged_etfs": data.get("leveraged_etfs", [])
+                "leveraged_etfs": data.get("leveraged_etfs", []),
             }
 
         return formatted

@@ -1,0 +1,109 @@
+cv_auc_scores:
+- 0.5909090909090908
+- 0.7784090909090909
+- 0.6764705882352942
+- 0.7345679012345678
+- 0.6263736263736264
+cv_folds: 5
+defense_status: MINIMUM
+feature_coefficients:
+  activity_ratio: -0.21255703168357074
+  close_open_change: 0.23106116915990169
+  gex_oi: 0.6346107733237256
+  gex_sign: 0.0
+  gex_volume: -0.08767785808259393
+  intraday_range: 0.27377503713964296
+  spot_above_flip: 0.0
+  spot_price: -0.11141193732961784
+  total_gex: 0.26569596230546133
+  zero_gamma_proximity: 0.0
+feature_pvalues:
+  activity_ratio: 0.46910093363447847
+  close_open_change: 0.24043236196785012
+  gex_oi: 0.007504268220064481
+  gex_sign: 1.0
+  gex_volume: 0.6436917966683372
+  intraday_range: 0.20824286350564525
+  spot_above_flip: 1.0
+  spot_price: 0.5240003711300755
+  total_gex: 0.12164157604493196
+  zero_gamma_proximity: 1.0
+features_used:
+- total_gex
+- gex_sign
+- gex_oi
+- gex_volume
+- activity_ratio
+- zero_gamma_proximity
+- spot_above_flip
+- intraday_range
+- close_open_change
+- spot_price
+full_model_auc: 0.705603448275862
+llm_comparison:
+  high_confidence_materialization: 0.5099337748344371
+  llm_auc: 0.4875
+  low_confidence_materialization: 0.625
+  mean_confidence: 0.7949101796407182
+  n_samples: 167
+  std_confidence: 0.03981687393514884
+mean_cv_auc: 0.6813460595323341
+model_comparison:
+  delta: -0.19384605953233408
+  llm_auc: 0.4875
+  llm_outperforms: false
+  statistical_auc: 0.6813460595323341
+model_type: LogisticRegression
+n_features: 10
+n_samples: 167
+overnight_persistence:
+  chi2_pvalue: 0.9341216111070818
+  chi2_statistic: 0.006832733865866342
+  correlation_significant: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args:
+    - b1
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - '|'
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    AA==
+  gap_rate_difference: 0.01835915088927137
+  gex_gap_correlation: -0.0019358814321843408
+  gex_gap_pvalue: 0.9801911822679881
+  high_gex_gap_rate: 0.47619047619047616
+  low_gex_gap_rate: 0.4578313253012048
+  n_samples: 167
+  persistence_found: false
+std_cv_auc: 0.06852500334292767
+success_criteria:
+  achieved: 0.6813460595323341
+  minimum: 0.6
+  optimal: 0.75
+  significant_features: 1
+  strong: 0.7
+target: any_materialization
+top_features:
+- !!python/tuple
+  - gex_oi
+  - 0.6346107733237256
+- !!python/tuple
+  - intraday_range
+  - 0.27377503713964296
+- !!python/tuple
+  - total_gex
+  - 0.26569596230546133
+- !!python/tuple
+  - close_open_change
+  - 0.23106116915990169
+- !!python/tuple
+  - activity_ratio
+  - -0.21255703168357074

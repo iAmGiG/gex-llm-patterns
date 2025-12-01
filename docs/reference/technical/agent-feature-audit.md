@@ -1,4 +1,5 @@
 # MarketMechanicsAgent Feature Audit
+
 **Date**: October 7, 2025
 **File**: `src/agents/market_mechanics_agent.py` (2,210 lines)
 **Status**: All 48 methods are actively used
@@ -29,6 +30,7 @@ These are the primary methods called externally:
 ## Feature Categories
 
 ### 1. Data Fetching & Normalization (5 methods)
+
 - `_fetch_options_data()` - Get options chain data
 - `_fetch_gex_from_database()` - Database fallback for GEX
 - `_calculate_gex_metrics()` - Compute gamma exposure metrics
@@ -38,6 +40,7 @@ These are the primary methods called externally:
 **Status**: ✅ All actively used in data pipeline
 
 ### 2. Pattern Detection (10 methods)
+
 - `_detect_mechanics_patterns()` - Main pattern matcher using PatternLibrary
 - `_detect_strike_level_patterns()` - Strike-specific patterns
 - `_detect_compound_patterns()` - Multi-indicator patterns
@@ -53,6 +56,7 @@ These are the primary methods called externally:
 **Note**: Now integrated with `src/analysis/pattern_library.py` (15 patterns)
 
 ### 3. Market Context Analysis (9 methods)
+
 - `_build_market_context()` - Aggregate all context
 - `_describe_price_action()` - Price movement analysis
 - `_analyze_flow_patterns()` - Options flow direction
@@ -66,6 +70,7 @@ These are the primary methods called externally:
 **Status**: ✅ All used in context building
 
 ### 4. LLM Interaction (7 methods)
+
 - `_llm_interpret_mechanics()` - Main LLM interpretation
 - `_invoke_llm_safely()` - Safe LLM calls with fallback
 - `_build_mechanics_prompt()` - Construct WHO/WHOM/WHAT prompts
@@ -78,6 +83,7 @@ These are the primary methods called externally:
 **Note**: Obfuscation now integrated in `run_experiment()`
 
 ### 5. Experiment Framework (3 methods)
+
 - `_plan_experiment_tools()` - LLM plans what data to fetch
 - `_execute_tool_plan()` - Execute planned data fetches
 - `_analyze_experiment_results()` - LLM analyzes fetched data
@@ -85,12 +91,14 @@ These are the primary methods called externally:
 **Status**: ✅ All used in `run_experiment()` workflow
 
 ### 6. Trading Signal Generation (2 methods)
+
 - `_generate_trading_signal()` - Convert mechanics to signals
 - `_calculate_confidence()` - Signal confidence scoring
 
 **Status**: ✅ Used but could integrate with `src/analysis/actionable_patterns.py` more
 
 ### 7. Temporal Context (3 methods)
+
 - `_is_opex_week()` - Check if expiration week
 - `_days_to_next_fomc()` - Days to FOMC meeting
 - `_get_fed_context()` - Fed event context
@@ -98,6 +106,7 @@ These are the primary methods called externally:
 **Status**: ✅ Used in temporal context building
 
 ### 8. Utility & Configuration (6 methods)
+
 - `__init__()` - Initialization, now uses PatternLibrary
 - `_load_config()` - Load configuration
 - `_build_mechanics_dict_from_library()` - NEW: Convert PatternLibrary to mechanics dict
@@ -112,14 +121,17 @@ These are the primary methods called externally:
 ## Recent Improvements (Issue #81 Fix)
 
 ### 1. Obfuscation Support Added
+
 ```python
 def run_experiment(self, experiment_description: str, date: str, obfuscate: bool = False):
     """NEW: obfuscate parameter strips dates/tickers from LLM prompts"""
 ```
+
 - **Before**: LLM saw real dates/tickers
 - **After**: Obfuscates to "Day T+0" and "INDEX_1" when `obfuscate=True`
 
 ### 2. Pattern Library Integration
+
 ```python
 # BEFORE: 3 hardcoded patterns
 self.mechanics_patterns = {
@@ -133,10 +145,12 @@ self.mechanics_patterns = self._build_mechanics_dict_from_library()
 ```
 
 ### 3. Dead Code Removed
+
 - ❌ Removed: Commented vanna/charm estimation (lines 1095-1096)
 - ✅ Clean: No unused methods found
 
 ### 4. Thresholds Consolidated
+
 - **Before**: Hardcoded `-5e9` and `5e9` in multiple places
 - **After**: Uses `self.gex_thresholds.get('negative_high', -5e9)`
 
@@ -145,21 +159,26 @@ self.mechanics_patterns = self._build_mechanics_dict_from_library()
 ## Integration Points
 
 ### With Pattern Library (`src/analysis/pattern_library.py`)
+
 - ✅ `_build_mechanics_dict_from_library()` - Converts 15 patterns to mechanics dict
 - ⚠️ **Partial**: Agent uses patterns but not full `ActionablePatternDetector`
 
 ### With Data Obfuscation (`src/validation/data_obfuscation.py`)
+
 - ✅ `run_experiment(obfuscate=True)` - Full integration
 - ✅ `run_batch_experiments(use_obfuscation=True)` - Batch support
 
 ### With Actionable Patterns (`src/analysis/actionable_patterns.py`)
+
 - ⚠️ **Partial**: ActionablePatternDetector imported but not fully used
 - 💡 **Opportunity**: `_generate_trading_signal()` could delegate to ActionablePatternDetector
 
 ### With Cache System (`src/cache/unified_cache.py`)
+
 - ✅ Full integration via `_fetch_options_data()`
 
 ### With GEX Calculator (`src/calculation/gex_calculator.py`)
+
 - ✅ Used in `_calculate_gex_metrics()`
 
 ---
@@ -167,6 +186,7 @@ self.mechanics_patterns = self._build_mechanics_dict_from_library()
 ## Potential Optimizations
 
 ### 1. Consolidate Trading Signal Generation
+
 **Current**: Agent has `_generate_trading_signal()` method
 **Better**: Delegate to `ActionablePatternDetector` in `src/analysis/actionable_patterns.py`
 
@@ -183,10 +203,12 @@ signals = detector.generate_signals(
 ```
 
 ### 2. Separate Database Operations
+
 **Current**: `_populate_database_entry()` buried in agent
 **Better**: Move to dedicated database manager class
 
 ### 3. Extract Volatility Analysis
+
 **Current**: Vol surface/skew analysis in agent
 **Better**: Dedicated volatility analysis module
 
@@ -205,17 +227,20 @@ signals = detector.generate_signals(
 ## Recommendations
 
 ### Short Term (Keep Simple)
+
 - ✅ **Done**: Obfuscation parameter added
 - ✅ **Done**: Pattern library integrated
 - ✅ **Done**: Dead code removed
 - ✅ **Done**: Thresholds consolidated
 
 ### Medium Term (If Needed)
+
 - [ ] Delegate trading signals to `ActionablePatternDetector`
 - [ ] Extract database operations to separate manager
 - [ ] Consider splitting vol analysis to dedicated module
 
 ### Long Term (Only If Necessary)
+
 - [ ] Split into smaller specialized agents (pattern detection, signal generation, etc.)
 - [ ] Convert some methods to Autogen tools for multi-agent workflows
 
@@ -224,6 +249,7 @@ signals = detector.generate_signals(
 ## Conclusion
 
 **The agent is well-structured and all features are actively used.** The recent refactoring (Issue #81) successfully:
+
 1. Added obfuscation support without breaking existing functionality
 2. Integrated PatternLibrary to avoid duplication
 3. Cleaned up minor dead code

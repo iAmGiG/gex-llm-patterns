@@ -5,8 +5,9 @@ Usage: python tools/pickle_viewer.py path/to/file.pickle
 """
 
 import sys
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 
 def view_pickle(pickle_path, output_csv: bool = False):
@@ -18,7 +19,7 @@ def view_pickle(pickle_path, output_csv: bool = False):
         print(f"📊 Shape: {df.shape} (rows, columns)")
         print(f"📅 Index: {type(df.index).__name__}")
 
-        if hasattr(df.index, 'min') and hasattr(df.index, 'max'):
+        if hasattr(df.index, "min") and hasattr(df.index, "max"):
             print(f"🗓️  Date range: {df.index.min()} to {df.index.max()}")
 
         print(f"\n🏷️  Columns: {list(df.columns)}")
@@ -33,7 +34,7 @@ def view_pickle(pickle_path, output_csv: bool = False):
         print(df.describe())
 
         if output_csv:
-            csv_path = Path(pickle_path).with_suffix('.csv')
+            csv_path = Path(pickle_path).with_suffix(".csv")
             df.to_csv(csv_path)
             print(f"\n💾 Saved as CSV: {csv_path}")
 

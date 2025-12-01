@@ -5,12 +5,14 @@ Scripts for gathering, managing, and processing market data.
 ## Scripts
 
 ### `start_historical_collection.py`
+
 - **Purpose**: Starts historical options data collection process
 - **Usage**: `python scripts/data_collection/start_historical_collection.py`
 - **Features**: Command-line interface for collection parameters
 - **Dependencies**: Alpha Vantage API key, cache system
 
 ### `automation/` Directory
+
 Complete 24/7 automated data collection system:
 
 - `automated_data_collector.py` - Main persistent collection service
@@ -21,11 +23,13 @@ Complete 24/7 automated data collection system:
 ## Data Sources
 
 ### Alpha Vantage (Options)
+
 - **Rate Limit**: 25 calls per day (free tier)
 - **Coverage**: Historical options chains back to 2008
 - **Data**: Full Greeks, bid/ask, open interest, volume
 
 ### Polygon.io (Stocks)
+
 - **Rate Limit**: 7,200 calls per day (free tier)
 - **Coverage**: Daily OHLCV data for all US stocks
 - **Data**: Open, High, Low, Close, Volume
