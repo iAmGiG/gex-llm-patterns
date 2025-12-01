@@ -35,12 +35,14 @@ where:
 ### What It Measures
 
 **Net GEX captures**:
+
 - ✅ Total dealer hedging obligation (regulatory constraint)
 - ✅ Aggregate forced flow from ALL positions
 - ✅ Directional pressure (positive = dampen, negative = amplify)
 - ✅ Market-wide regime (what ALL dealers MUST do collectively)
 
 **Net GEX does NOT capture**:
+
 - ❌ Individual dealer strategies
 - ❌ Position construction methods
 - ❌ Which specific options created the exposure
@@ -54,6 +56,7 @@ where:
 If we tried to measure "iron condor GEX" or "straddle GEX":
 
 **Challenge 1: Unknown Dealer Positioning**
+
 ```
 We observe:
 - SPY 520C has 50,000 OI
@@ -71,6 +74,7 @@ We only see aggregate open interest per strike, not which contracts are paired.
 ```
 
 **Challenge 2: Regulatory Constraint is Aggregate**
+
 ```
 SEC Rule 15c3-1 (Net Capital Rule):
 - Dealers must maintain TOTAL net capital
@@ -81,6 +85,7 @@ Result: Dealers care about NET exposure, not strategy decomposition
 ```
 
 **Challenge 3: Hedging Pressure is Additive**
+
 ```
 If dealer is:
 - Short 1000 straddles (gamma = -500)
@@ -101,6 +106,7 @@ Individual strategies don't matter - NET is what determines action.
 **Irrelevant**: How they got there (iron condor vs naked call selling)
 
 **Analogy**:
+
 ```
 Studying Traffic Congestion:
 ✅ Measure: Total cars on road (creates congestion)
@@ -153,6 +159,7 @@ quantitative_evidence:
 We DO include call_gamma and put_gamma breakdown:
 
 **Use Case**: Understanding HOW net exposure formed
+
 ```yaml
 Example 1:
   net_gex: -$30B
@@ -174,11 +181,13 @@ Both have net_gex = -$30B, but mechanics differ slightly.
 ```
 
 **Why This Matters**:
+
 - Call-dominated: Upside hedging pressure stronger
 - Put-dominated: Downside hedging pressure stronger
 - LLM can use this nuance in reasoning
 
 **Why This Is NOT Strategy-Specific**:
+
 - We still don't know if calls came from straddles, naked, or spreads
 - We DO know call pressure vs put pressure
 - Distinction is: **component decomposition** (useful) ≠ **strategy identification** (impossible/irrelevant)
@@ -190,6 +199,7 @@ Both have net_gex = -$30B, but mechanics differ slightly.
 ### Metrics We Considered but Don't Use
 
 **1. Vanna (dGamma/dVol)**
+
 ```
 Why considered: Volatility exposure of gamma
 Why not used: Secondary effect, not primary constraint
@@ -197,6 +207,7 @@ Decision: Could add in Paper #2 (regime filters)
 ```
 
 **2. Charm (dGamma/dTime)**
+
 ```
 Why considered: Gamma decay over time
 Why not used: 0DTE already captured in pattern taxonomy
@@ -204,6 +215,7 @@ Decision: Implicitly captured by expiration dates
 ```
 
 **3. Strike-Level GEX**
+
 ```
 Why considered: Pinning at specific strikes
 Why not used: Already captured by gamma_concentration
@@ -211,6 +223,7 @@ Decision: Would create 100+ metrics per day (too granular)
 ```
 
 **4. Expiry-Level GEX**
+
 ```
 Why considered: 0DTE vs monthly exposure
 Why not used: Pattern taxonomy tests this separately (0dte_hedging pattern)
@@ -220,17 +233,20 @@ Decision: Addressed via pattern variation, not metric addition
 ### Why We Keep It Simple
 
 **Academic Rigor**:
+
 - Parsimony: Fewest metrics that explain phenomenon
 - Replicability: Standard metrics from practitioner literature
 - Interpretability: Clear economic meaning
 
 **Practical Constraints**:
+
 - LLM context limits: Can't feed 100 metrics per day
 - Data availability: Some metrics require order flow data (not public)
 - Calculation speed: More metrics = slower validation
 
 **Sufficient for Detection**:
 Our results show net_gex + decomposition + flip_level is ENOUGH:
+
 - 71.5% average detection (unbiased)
 - 91.2% average accuracy
 - No need to add complexity without evidence it helps
@@ -242,6 +258,7 @@ Our results show net_gex + decomposition + flip_level is ENOUGH:
 ### Q1: "Could dealers hide exposure through complex strategies?"
 
 **A**: They could try, but:
+
 1. Net GEX still captures AGGREGATE obligation (can't hide total)
 2. Regulatory reporting catches evasion (SEC Rule 15c3-1)
 3. Our validation shows pattern IS detectable (71.5% detection) → hiding isn't working
@@ -249,6 +266,7 @@ Our results show net_gex + decomposition + flip_level is ENOUGH:
 ### Q2: "What if iron condor GEX behaves differently than straddle GEX?"
 
 **A**: Possibly, but:
+
 1. We can't identify which is which from OI data
 2. Both produce net gamma exposure
 3. Both create hedging obligation
@@ -259,6 +277,7 @@ If we had order flow data (we don't), we COULD test this hypothesis. But for our
 ### Q3: "Why not use dealer-reported positioning (CFTC data)?"
 
 **A**: Great idea, but:
+
 1. CFTC data is delayed (weekly)
 2. Only available for futures (not individual stock options)
 3. Our method works real-time with public options data
@@ -269,10 +288,12 @@ Future work could validate our inferred dealer positions against CFTC reports.
 ### Q4: "Do market makers use different strategies than dealers?"
 
 **A**: Yes, terminology:
+
 - **Market Makers**: Provide liquidity, mandatory delta-neutral hedging
 - **Dealers**: May take directional bets, exploit MM forced flows
 
 **For our research**:
+
 - We detect MARKET MAKER constraints (the forced hedging)
 - Dealers exploit these constraints (benefit from pattern knowledge)
 - Our "dealer hedging constraint" = Market maker regulatory obligation
@@ -359,15 +380,18 @@ detection rates.
 ## References
 
 **Regulatory Framework**:
+
 - SEC Rule 15c3-1: Net Capital Rule (aggregate risk measurement)
 - FINRA Rule 4210: Margin Requirements for Market Makers
 
 **Practitioner Literature**:
+
 - SpotGamma (2019): Gamma Exposure and Market Dynamics
 - SqueezeMetrics (2020): Dark Index and Dealer Positioning
 - Nomura (2017): Equity Derivatives Strategy - Gamma Hedging Flows
 
 **Academic**:
+
 - Ni, Pearson, Poteshman (2005): Stock Price Clustering on Option Expiration Dates
 - Coval & Stafford (2007): Asset Fire Sales in Equity Markets
 

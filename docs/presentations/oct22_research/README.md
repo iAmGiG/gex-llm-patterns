@@ -38,6 +38,7 @@ oct22_research/
 ## Selected Tool: Graphviz
 
 **Rationale**:
+
 - Excellent output quality (publication-ready)
 - Fast generation (< 1 second per diagram)
 - Simple code (easy to iterate)
@@ -49,14 +50,17 @@ oct22_research/
 ## Recommended Presentation Flow
 
 ### Option A: Concise (3 slides)
+
 1. System Overview: `system_flow_compact.png`
 2. Novel Methodology: `methodology_overview.png`
 3. Results: `pattern_taxonomy.png`
 
 ### Option B: Detailed (5 slides)
+
 Add: `causal_framework.png` + results table
 
 ### Option C: PhD Defense (6+ slides)
+
 All diagrams with example walkthrough
 
 **Full Guide**: See `PRESENTATION_SUMMARY.md`
@@ -64,12 +68,15 @@ All diagrams with example walkthrough
 ## Files & Documentation
 
 ### Diagrams
+
 Location: `diagrams/`
+
 - All PNG files (300 DPI, slide-ready)
 - Generation scripts (`generate_*.py`)
 - `DIAGRAM_OPTIONS.md` - Comparison guide
 
 ### Documentation
+
 - `PRESENTATION_SUMMARY.md` - Complete presentation guide
 - `TECHNICAL_DETAILS.md` - Accurate system specifications
 - `tool_tests/TOOL_COMPARISON.md` - Tool evaluation

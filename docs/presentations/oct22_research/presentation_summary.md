@@ -57,11 +57,13 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
 **Main Message**: Transformers were designed for language translation (pattern contextualization), but we show they excel at detecting **causal constraints** when properly constrained.
 
 **Example from validation** (Jan 2, 2024):
+
 - **Input**: Obfuscated GEX data only (Day T+0, INDEX_1, -$32.49B net GEX)
 - **LLM Output**: WHO (Market Makers) forces WHOM (Market Participants) to do WHAT (forced hedging)
 - **Verification**: SPY forward returns matched predicted mechanism (-0.86% move, dealers amplified)
 
 **Key Points**:
+
 - Not prediction (not forecasting -0.86% return)
 - Mechanistic reasoning (identifying structural constraint)
 - Verified by outcomes (92.5% accuracy - predictions materialize)
@@ -69,12 +71,14 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
 ### Slide: Accuracy ≠ Profitability Divergence
 
 **Data** (gamma_positioning quarterly results, biased prompts):
+
 - Q1 2024: 84.9% accuracy, +20.8 bps net alpha
 - Q2 2024: 91.7% accuracy, +1.6 bps net alpha
 - Q3 2024: 96.9% accuracy, +4.6 bps net alpha
 - Q4 2024: 96.8% accuracy, -0.7 bps net alpha
 
 **Interpretation**:
+
 - Accuracy IMPROVES while profitability DECLINES
 - Proves methodology measures understanding, not trading edge
 - Not overfitting (both would decline)
@@ -85,6 +89,7 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
 ## Speaker Notes Highlights
 
 ### On "Confidence" scores:
+
 - **Question**: "How can you trust LLM confidence when it's stochastic?"
 - **Answer**:
   - Confidence is LLM self-assessment (0-100 text output), not mathematically derived probability
@@ -93,6 +98,7 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
   - Confidence is heuristic signal strength, not prediction probability
 
 ### On "Pattern" definition:
+
 - **Question**: "What exactly is a pattern? How do you define it?"
 - **Answer**:
   - Pattern = Causal mechanism description in prompt (WHO forces WHOM to do WHAT)
@@ -101,6 +107,7 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
   - Context-dependent: Same GEX value might indicate pattern in low-vol but not high-vol regime
 
 ### On outcome verification:
+
 - **Question**: "What does 'prediction materialized' mean?"
 - **Answer**:
   - LLM predicts mechanism: "Dealers forced to hedge by buying dips/selling rallies"
@@ -115,6 +122,7 @@ All figures optimized for symposium presentation (1920x1080, 120 DPI, high contr
 **Figures**: `docs/presentations/oct22_research/diagrams/pres##_*.png`
 **Scripts**: `docs/presentations/oct22_research/diagrams/scripts/pres##_*.py`
 **Documentation**:
+
 - `presentation_summary.md` (this file)
 - `technical_details.md` (system specifications)
 - `diagram_options.md` (figure selection guide)
