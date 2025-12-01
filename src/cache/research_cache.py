@@ -1,5 +1,4 @@
-"""
-Production Research Cache for Academic Paper Reproducibility.
+"""Production Research Cache for Academic Paper Reproducibility.
 
 Two-tier architecture:
 - Tier 1 (Hot): SQLite for fast lookups during research workflows
@@ -29,8 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResearchCache:
-    """
-    Production-grade cache for academic research workflows.
+    """Production-grade cache for academic research workflows.
 
     Features:
     - SQLite-based hot cache for fast lookups (<100ms)
@@ -57,8 +55,7 @@ class ResearchCache:
     """
 
     def __init__(self, db_path: str = ".cache/research_cache.db"):
-        """
-        Initialize research cache.
+        """Initialize research cache.
 
         Args:
             db_path: Path to SQLite database file
@@ -424,8 +421,7 @@ class ResearchCache:
     def get_market_data(
         self, symbol: str, start_date: str, end_date: str, source: str = None
     ) -> Optional[pd.DataFrame]:
-        """
-        Get cached market data for date range.
+        """Get cached market data for date range.
 
         Args:
             symbol: Ticker symbol (e.g., "SPY")
@@ -470,8 +466,7 @@ class ResearchCache:
             return None
 
     def set_market_data(self, symbol: str, data: pd.DataFrame, source: str, ttl_hours: int = None):
-        """
-        Cache market data with smart expiration.
+        """Cache market data with smart expiration.
 
         Args:
             symbol: Ticker symbol
@@ -548,8 +543,7 @@ class ResearchCache:
     # ================================================================
 
     def get_gex_summary(self, symbol: str, trading_date: str) -> Optional[Dict[str, Any]]:
-        """
-        Get GEX summary for a specific date.
+        """Get GEX summary for a specific date.
 
         Args:
             symbol: Ticker symbol
@@ -579,8 +573,7 @@ class ResearchCache:
             return None
 
     def get_gex_range(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
-        """
-        Get GEX summaries for date range.
+        """Get GEX summaries for date range.
 
         Args:
             symbol: Ticker symbol
@@ -617,8 +610,7 @@ class ResearchCache:
             return pd.DataFrame()
 
     def set_gex_summary(self, symbol: str, trading_date: str, gex_data: Dict[str, Any], strike_df: pd.DataFrame = None):
-        """
-        Store GEX calculation with optional strike-level detail.
+        """Store GEX calculation with optional strike-level detail.
 
         Args:
             symbol: Ticker symbol
@@ -689,8 +681,7 @@ class ResearchCache:
         min_confidence: int = None,
         experiment_run_id: str = None,
     ) -> pd.DataFrame:
-        """
-        Query LLM detections with flexible filtering.
+        """Query LLM detections with flexible filtering.
 
         Args:
             symbol: Filter by symbol
@@ -759,8 +750,7 @@ class ResearchCache:
         processing_duration_ms: int = None,
         token_count: int = None,
     ):
-        """
-        Record a single LLM detection result.
+        """Record a single LLM detection result.
 
         Args:
             symbol: Ticker symbol
@@ -833,8 +823,7 @@ class ResearchCache:
         materialized: bool = None,
         outcome_type: str = None,
     ):
-        """
-        Record validation results for a detection.
+        """Record validation results for a detection.
 
         Args:
             detection_id: ID of the detection being validated
@@ -875,8 +864,7 @@ class ResearchCache:
             self.logger.error(f"Error recording validation: {e}")
 
     def get_validation_results(self, detection_ids: List[int] = None, outcome_type: str = None) -> pd.DataFrame:
-        """
-        Get validation results with optional filtering.
+        """Get validation results with optional filtering.
 
         Args:
             detection_ids: Filter by specific detection IDs
@@ -927,8 +915,7 @@ class ResearchCache:
         prompt_version: str = None,
         paper_version: str = None,
     ) -> str:
-        """
-        Record a new experiment run with full configuration.
+        """Record a new experiment run with full configuration.
 
         Args:
             run_id: Unique identifier for this run
@@ -1000,8 +987,7 @@ class ResearchCache:
             return run_id
 
     def get_experiment_run(self, run_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Get experiment run by ID for reproducibility.
+        """Get experiment run by ID for reproducibility.
 
         Args:
             run_id: The experiment run ID
@@ -1031,8 +1017,7 @@ class ResearchCache:
     def update_experiment_results(
         self, run_id: str, total_tests: int, total_detections: int, detection_rate: float, overall_accuracy: float
     ):
-        """
-        Update experiment run with final results.
+        """Update experiment run with final results.
 
         Args:
             run_id: The experiment run ID
@@ -1071,8 +1056,7 @@ class ResearchCache:
         symbol_mapping: Dict[str, str] = None,
         used_in_papers: List[str] = None,
     ):
-        """
-        Record obfuscation mapping for audit trail.
+        """Record obfuscation mapping for audit trail.
 
         Args:
             obfuscation_id: Unique identifier
@@ -1106,8 +1090,7 @@ class ResearchCache:
             self.logger.error(f"Error recording obfuscation: {e}")
 
     def get_obfuscation(self, obfuscation_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Get obfuscation mapping by ID.
+        """Get obfuscation mapping by ID.
 
         Args:
             obfuscation_id: The obfuscation ID
@@ -1138,8 +1121,7 @@ class ResearchCache:
     # ================================================================
 
     def get_pattern(self, pattern_id: str, version: str = None) -> Optional[Dict[str, Any]]:
-        """
-        Get pattern definition by ID.
+        """Get pattern definition by ID.
 
         Args:
             pattern_id: Pattern identifier
@@ -1192,8 +1174,7 @@ class ResearchCache:
         min_confidence: int = 60,
         used_in_papers: List[str] = None,
     ):
-        """
-        Add or update pattern in library.
+        """Add or update pattern in library.
 
         Args:
             pattern_id: Pattern identifier
@@ -1241,8 +1222,7 @@ class ResearchCache:
     # ================================================================
 
     def get_detection_stats(self, symbol: str = None, pattern_id: str = None, llm_model: str = None) -> Dict[str, Any]:
-        """
-        Get aggregated detection statistics.
+        """Get aggregated detection statistics.
 
         Args:
             symbol: Filter by symbol
@@ -1325,8 +1305,7 @@ class ResearchCache:
             return {}
 
     def get_cache_stats(self) -> Dict[str, Any]:
-        """
-        Get overall cache statistics.
+        """Get overall cache statistics.
 
         Returns:
             Dict with cache metrics
@@ -1363,11 +1342,9 @@ class ResearchCache:
     # ================================================================
 
     def _calculate_expiration(self, date_str: str) -> datetime:
-        """
-        Calculate smart expiration based on data recency.
+        """Calculate smart expiration based on data recency.
 
-        Historical data (>2 days old): 10 years
-        Recent data (<=2 days): 24 hours
+        Historical data (>2 days old): 10 years Recent data (<=2 days): 24 hours
         """
         try:
             data_date = parse_date_string(date_str)
@@ -1382,8 +1359,7 @@ class ResearchCache:
             return get_datetime_now() + timedelta(hours=24)
 
     def cleanup_expired(self) -> int:
-        """
-        Remove expired cache entries.
+        """Remove expired cache entries.
 
         Returns:
             Number of rows deleted

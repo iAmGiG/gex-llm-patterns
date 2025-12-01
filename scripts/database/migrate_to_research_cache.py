@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Migrate existing GEX cache data to new ResearchCache schema.
+"""Migrate existing GEX cache data to new ResearchCache schema.
 
 This script migrates data from:
 - GEXCacheManager (SQLite index + JSON/Parquet files)
