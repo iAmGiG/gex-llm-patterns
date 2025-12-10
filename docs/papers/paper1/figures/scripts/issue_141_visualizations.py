@@ -159,7 +159,8 @@ def create_concentration_distribution(df, output_path):
     detected = df[df["detected"] == True]["gex_concentration"].dropna()
     not_detected = df[df["detected"] == False]["gex_concentration"].dropna()
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    # Wider figure to give more space for x-axis label
+    fig, ax = plt.subplots(figsize=(12, 6))
 
     # Create histograms
     bins = np.linspace(-0.90, -0.80, 30)
@@ -211,8 +212,8 @@ def create_concentration_distribution(df, output_path):
         bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
     )
 
-    ax.set_xlabel("GEX Concentration (Gini Coefficient)", fontsize=12, fontweight="bold")
-    ax.set_ylabel("Frequency", fontsize=12, fontweight="bold")
+    ax.set_xlabel("GEX Concentration (Gini Coefficient)", fontsize=12, fontweight="bold", labelpad=10)
+    ax.set_ylabel("Frequency", fontsize=12, fontweight="bold", labelpad=10)
     ax.set_title(
         "GEX Concentration Distribution\n(Detection vs Non-Detection Days)",
         fontsize=13,
@@ -222,12 +223,12 @@ def create_concentration_distribution(df, output_path):
     ax.legend(loc="upper right", fontsize=9, frameon=True)
     # Grid removed for cleaner bar chart appearance
 
-    # Add interpretation text - moved lower with more padding
+    # Add interpretation text - positioned below x-axis label with sufficient clearance
     ax.text(
         0.5,
-        -0.18,
+        -0.22,
         "Interpretation: Non-detection days have MORE FRAGMENTED gamma (lower Gini)\n"
-        + "→ Proves LLM requires concentrated signals, not just presence of negative GEX",
+        + "-> Proves LLM requires concentrated signals, not just presence of negative GEX",
         transform=ax.transAxes,
         fontsize=9,
         ha="center",
@@ -235,8 +236,8 @@ def create_concentration_distribution(df, output_path):
         bbox=dict(boxstyle="round,pad=0.5", facecolor="lightblue", alpha=0.3),
     )
 
-    # Increase bottom margin for interpretation text
-    plt.tight_layout(rect=[0, 0.08, 1, 1])
+    # Increase bottom margin for interpretation text (larger margin to fit both x-label and interpretation)
+    plt.tight_layout(rect=[0, 0.12, 1, 1])
     plt.savefig(output_path, bbox_inches="tight", dpi=300)
     print(f"  Saved: {output_path}")
     plt.close()
