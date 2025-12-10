@@ -214,28 +214,29 @@ def create_concentration_distribution(df, output_path):
     ax.set_xlabel("GEX Concentration (Gini Coefficient)", fontsize=12, fontweight="bold")
     ax.set_ylabel("Frequency", fontsize=12, fontweight="bold")
     ax.set_title(
-        "Issue #141: GEX Concentration Distribution\n(Detection vs Non-Detection Days)",
+        "GEX Concentration Distribution\n(Detection vs Non-Detection Days)",
         fontsize=13,
         fontweight="bold",
         pad=15,
     )
     ax.legend(loc="upper right", fontsize=9, frameon=True)
-    ax.grid(True, alpha=0.3, linestyle="--")
+    # Grid removed for cleaner bar chart appearance
 
-    # Add interpretation text
+    # Add interpretation text - moved lower with more padding
     ax.text(
         0.5,
-        -0.15,
+        -0.18,
         "Interpretation: Non-detection days have MORE FRAGMENTED gamma (lower Gini)\n"
         + "→ Proves LLM requires concentrated signals, not just presence of negative GEX",
         transform=ax.transAxes,
         fontsize=9,
         ha="center",
         style="italic",
-        bbox=dict(boxstyle="round", facecolor="lightblue", alpha=0.3),
+        bbox=dict(boxstyle="round,pad=0.5", facecolor="lightblue", alpha=0.3),
     )
 
-    plt.tight_layout()
+    # Increase bottom margin for interpretation text
+    plt.tight_layout(rect=[0, 0.08, 1, 1])
     plt.savefig(output_path, bbox_inches="tight", dpi=300)
     print(f"  Saved: {output_path}")
     plt.close()

@@ -17,11 +17,11 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
-# IEEE two-column format
+# JFDS single-column format (larger for readability)
 plt.rcParams.update(
     {
-        "font.size": 8,
-        "axes.labelsize": 9,
+        "font.size": 11,
+        "axes.labelsize": 12,
         "font.family": "serif",
         "font.serif": ["Times New Roman", "DejaVu Serif"],
     }
@@ -33,7 +33,7 @@ OUTPUT_DIR = Path(__file__).parent
 def create_figure():
     """Create system architecture flowchart."""
 
-    fig, ax = plt.subplots(figsize=(7.5, 3.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=300)
     ax.set_xlim(0, 10)
     ax.set_ylim(1.5, 8)
     ax.axis("off")
@@ -70,9 +70,9 @@ def create_figure():
         x, y, w, h = pos
         box = FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05", edgecolor="black", facecolor=color, linewidth=1.5)
         ax.add_patch(box)
-        ax.text(x + w / 2, y + h / 2 + 0.15, title, ha="center", va="center", fontweight="bold", fontsize=9)
+        ax.text(x + w / 2, y + h / 2 + 0.15, title, ha="center", va="center", fontweight="bold", fontsize=12)
         if subtitle:
-            ax.text(x + w / 2, y + h / 2 - 0.15, subtitle, ha="center", va="center", fontsize=7, style="italic")
+            ax.text(x + w / 2, y + h / 2 - 0.15, subtitle, ha="center", va="center", fontsize=10, style="italic")
 
     # Draw components
     draw_box(components["options_data"], color_data, "Options Data", "Raw SPY chain")
@@ -89,7 +89,7 @@ def create_figure():
             (x, y), w, h, boxstyle="round,pad=0.03", edgecolor="gray", facecolor=color, linewidth=0.8, linestyle="--"
         )
         ax.add_patch(box)
-        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", fontsize=6.5, family="monospace")
+        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", fontsize=9, family="monospace")
 
     # Output examples
     draw_output(outputs["opts_out"], "Strike: 480\nOI: 12,500\nIV: 14.2%")
@@ -158,7 +158,7 @@ def create_figure():
     draw_arrow(components["outcome_calc"], components["stat_validator"])
 
     # Add title
-    ax.text(5, 7.7, "Pattern Validation Pipeline Architecture", ha="center", fontsize=12, fontweight="bold")
+    ax.text(5, 7.7, "Pattern Validation Pipeline Architecture", ha="center", fontsize=16, fontweight="bold")
 
     # Add legend for colors
     legend_y = 0.8
@@ -168,7 +168,7 @@ def create_figure():
         mpatches.Rectangle((0, 0), 1, 1, fc=color_llm, ec="black", label="LLM Analysis"),
         mpatches.Rectangle((0, 0), 1, 1, fc=color_output, ec="black", label="Validation"),
     ]
-    ax.legend(handles=legend_elements, loc="lower center", ncol=4, frameon=True, fontsize=7)
+    ax.legend(handles=legend_elements, loc="lower center", ncol=4, frameon=True, fontsize=10)
 
     # Add note about obfuscation (moved down to accommodate new spacing)
     ax.text(
@@ -176,7 +176,7 @@ def create_figure():
         2.5,
         'Obfuscation prevents training data leakage: dates → "Day T+N", tickers → "INDEX_1"',
         ha="center",
-        fontsize=7,
+        fontsize=10,
         style="italic",
         color="#666666",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="gray", alpha=0.7),
@@ -196,11 +196,11 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     output_file = OUTPUT_DIR / "../fig03_validation_pipeline.png"
     fig.savefig(output_file, dpi=300, bbox_inches="tight")
-    print(f"✅ Saved: {output_file}")
+    print(f"Saved: {output_file}")
 
     plt.close()
 
-    print("✅ Figure 1 complete!")
+    print("Figure 3 complete!")
     print("Shows complete validation pipeline from raw data to statistical results")
 
 
