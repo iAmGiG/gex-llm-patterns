@@ -7,9 +7,14 @@
 
 \input{00_Header}
 
+% JFDS: Page style and spacing (PM-Research requirements)
+\pagestyle{plain} % Page numbers bottom center
+\setlength{\parskip}{12pt} % 12pt before paragraphs
+\setlength{\parindent}{0pt} % No paragraph indentation (using spacing instead)
+
 \begin{document}
 
-\title{Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing}
+\title{Signal Recovery from Raw Options Chains: Evidence that Standard GEX Metrics Discard Structural Information}
 
 % JFDS: Converted from IEEE author format to standard LaTeX
 \author{
@@ -25,61 +30,29 @@ Ying Xie\thanks{Department of Information Technology, Kennesaw State University,
 % =============================================================================
 % JFDS ABSTRACT (~160 words, non-technical, no citations)
 % =============================================================================
-% Can AI systems genuinely understand market mechanics, or do they merely recall
-% patterns from training data? We introduce obfuscation testing---a methodology
-% that strips all temporal and contextual information from market data, forcing
-% models to reason from pure structural relationships. Testing large language
-% models on options market data with anonymized dates and tickers, we find they
-% detect dealer hedging constraints with 71.5\% accuracy and 91.2\% of predictions
-% materialize in subsequent price movements. A critical validation: when given
-% only raw options chain data without pre-calculated metrics, detection improves
-% to 92.3\%, proving the AI reconstructs complex gamma dynamics independently
-% rather than matching patterns. Notably, detection capability remains stable
-% (68--74\%) even as trading profitability collapses to zero, demonstrating these
-% models identify structural mechanisms without generating alpha. Our findings
-% establish rigorous validation standards for AI deployment in financial analysis
-% while highlighting the distinction between pattern recognition and actionable
-% trading intelligence.
-% =============================================================================
+\begin{abstract}
+Standard gamma exposure metrics compress rich options chain data into scalar values, potentially discarding valuable structural signal. We demonstrate that large language models processing raw strike-level data achieve 92.3\% detection of dealer hedging constraints---outperforming the same models given pre-calculated Net GEX by 30.8 percentage points. This finding establishes that unstructured feature extraction recovers signal lost in parametric compression. Using obfuscation testing---stripping all temporal context while preserving structural relationships---we validate genuine pattern detection rather than training data memorization. Across 242 trading days, 91.2\% of detected patterns materialize in subsequent price movements. Critically, detection capability remains stable (68--74\%) while trading profitability collapses to zero, establishing these signals as risk management indicators rather than alpha generators. Detection days exhibit 33\% lower range expansion than baseline, proving the model identifies volatility suppression mechanisms. Our methodology provides rigorous validation standards for deploying AI-based structural analysis in financial risk systems.
+\end{abstract}
 
 % =============================================================================
 % JFDS HIGHLIGHTS (3 bullets, <=40 words each)
 % =============================================================================
-% 1. We introduce obfuscation testing, a methodology for validating whether AI
-%    systems genuinely understand market mechanics or merely recall memorized
-%    patterns from training data. (26 words)
-%
-% 2. Large language models achieve 91.2\% accuracy predicting when detected
-%    dealer hedging patterns materialize in subsequent market movements,
-%    demonstrating genuine structural understanding. (22 words)
-%
-% 3. Detection capability remains stable as trading alpha collapses to zero,
-%    proving AI identifies market mechanisms independently from profit
-%    potential---critical for deployment decisions. (24 words)
-% =============================================================================
-
-% =============================================================================
-% JFDS JEL CODES
-% =============================================================================
-% G12 - Asset Pricing; Trading Volume; Bond Interest Rates
-% G14 - Information and Market Efficiency; Event Studies
-% C45 - Neural Networks and Related Topics
-% C55 - Large Data Sets: Modeling and Analysis
-% =============================================================================
-
-% =============================================================================
-% CURRENT ABSTRACT (IEEE conference version)
-% TODO: Replace with JFDS abstract above for final submission
-% =============================================================================
-\begin{abstract}
-We present obfuscation testing, a validation methodology for distinguishing genuine structural reasoning from temporal pattern matching in large language models applied to financial markets. Our approach tests whether LLMs detect dealer hedging constraints—emergent coordination patterns arising from countless decentralized dealer decisions responding to local gamma exposure constraints—when all temporal and contextual information is removed. Evaluating three manifestations of dealer hedging (gamma positioning, stock pinning, 0DTE hedging) across 242 trading days (95.6\% coverage) of S\&P 500 options data, we achieve 71.5\% detection accuracy using unbiased prompts. Critically, a raw chain validation removing all pre-calculated metrics achieves 92.3\% detection—outperforming the GEX-assisted baseline by 30.8 percentage points on identical dates, proving the LLM reconstructs dealer gamma constraints from strike-level open interest rather than pattern-matching on metric labels. The WHO→WHOM→WHAT causal framework requires models to articulate economic actors (dealers), affected parties (traders), and forced mechanisms (pro-cyclical hedging) underlying observed dynamics.
-
-Five independent tests validate genuine structural reasoning. First, prediction materialization rate (91.2\%) remains consistently high while economic profitability collapses quarterly (Sharpe 1.8 → 0.1), demonstrating models identify structural constraints independent of alpha generation. Second, non-detection days exhibit significantly fragmented gamma distribution (p < 0.0001, Cohen's d = 0.68), proving the model requires concentrated signals rather than universally predicting volatility. Third, detection days show 33\% lower intraday range expansion than materialization days (p = 0.03), confirming the LLM detects volatility \textit{suppression} rather than chasing high-volatility outcomes (inverse p-hacking). Fourth, statistical baseline achieves AUC = 0.681 predicting T+1 outcomes from EOD features, validating end-of-day structural snapshots. Fifth, raw chain superiority (92.3\% vs. 61.5\%) establishes the LLM as a structural analyst performing gamma integration independently. When provided regime labels, detection reaches 100\%, quantifying prompt bias effects. Our results establish that transformer architectures develop emergent understanding of complex coordination patterns, with implications for AI validation methodology, systematic strategy development, and trustworthy deployment of AI in financial markets.
-\end{abstract}
-
-% JFDS: Converted from IEEEkeywords to standard format
 \medskip
-\noindent\textbf{Keywords:} large language models, market microstructure, obfuscation testing, gamma exposure, structural reasoning, emergent order, dispersed knowledge
+\noindent\textbf{Highlights:}
+\begin{itemize}
+    \item Raw options chain data yields 30.8 percentage points higher detection than pre-calculated Net GEX, demonstrating that standard parametric features discard structural signal recoverable through unstructured processing.
+    \item Obfuscation testing---removing all temporal context---validates genuine structural pattern detection versus training data memorization, achieving 91.2\% materialization accuracy across 242 trading days.
+    \item Stable detection (68--74\%) despite zero trading alpha establishes dealer hedging signals as risk management indicators rather than alpha generators, with detected days showing 33\% lower volatility.
+\end{itemize}
+
+% =============================================================================
+% JFDS KEYWORDS AND JEL CODES
+% =============================================================================
+\medskip
+\noindent\textbf{Keywords:} gamma exposure, dealer hedging, market microstructure, feature extraction, signal compression, obfuscation testing, risk management, large language models
+
+\medskip
+\noindent\textbf{JEL Classification:} G12 (Asset Pricing), G14 (Information and Market Efficiency), C45 (Neural Networks), C55 (Large Data Sets)
 
 % \section{Introduction}
 % Your introduction here

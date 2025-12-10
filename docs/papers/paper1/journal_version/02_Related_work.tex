@@ -34,17 +34,11 @@ We deliberately constrain our analysis to gamma exposure rather than incorporati
 
 This methodological choice strengthens our contribution: we test whether LLMs detect universal structural patterns, not whether they can mimic proprietary trading models. Future work may explore higher-order effects, but only after establishing this fundamental capability.
 
-\subsection{Large Language Models and Reasoning}
+\subsection{LLMs as Unstructured Data Processors}
 
-Recent advances in LLMs have demonstrated emergent reasoning capabilities beyond simple pattern matching. \citet{brown2020language} showed that GPT-3 exhibits few-shot learning, adapting to new tasks with minimal examples. \citet{wei2022chain} introduced chain-of-thought prompting, enabling LLMs to solve complex problems through step-by-step reasoning. \citet{kojima2022large} further demonstrated that LLMs can be zero-shot reasoners, solving problems without task-specific training.
+We position large language models not as ``reasoning engines'' but as unstructured feature extractors capable of processing high-dimensional tabular text that resists traditional parametric modeling. Prior financial LLM research has focused on sentiment analysis and forecasting \citep{lopez2023can,wu2023bloomberggpt,chen2023fingpt}—tasks where text is the native input format. Our contribution differs: we test whether LLMs can extract structural signal from options chain data presented as formatted text, recovering information that scalar metrics (Net GEX) discard through parametric compression.
 
-The GPT-4 technical report \citep{openai2023gpt4} documents significant improvements in reasoning, including the ability to understand causal relationships and constraints. However, distinguishing true reasoning from memorization remains challenging. \citet{marcus2019rebooting} argues that current AI systems often rely on statistical correlations rather than genuine understanding, motivating our obfuscation testing approach.
-
-\subsection{LLMs in Financial Markets}
-
-Applications of LLMs to finance have primarily focused on sentiment analysis and forecasting. \citet{lopez2023can} tested ChatGPT's ability to predict stock returns from news headlines, finding moderate predictive power. \citet{wu2023bloomberggpt} developed BloombergGPT, a finance-specific LLM trained on financial documents, while \citet{chen2023fingpt} created FinGPT as an open-source alternative.
-
-These approaches differ fundamentally from our work. Rather than predicting prices or extracting sentiment, we test whether LLMs can identify structural constraints that force specific market behaviors. Our obfuscation methodology ensures the LLM cannot rely on memorized associations between dates, tickers, and outcomes.
+This framing draws on established LLM capabilities. \citet{wei2022chain} demonstrated that chain-of-thought prompting enables complex multi-step reasoning, while \citet{kojima2022large} showed zero-shot reasoning without task-specific training. However, \citet{marcus2019rebooting} argues that distinguishing true reasoning from memorization remains challenging—motivating our obfuscation testing approach that strips temporal context to prevent training data recall. The critical validation question is not whether LLMs ``understand'' markets philosophically, but whether they extract actionable features from unstructured data more effectively than parametric alternatives.
 
 \subsection{Validation Methodologies}
 
@@ -56,8 +50,8 @@ Our obfuscation testing fills this gap by removing all memorizable context while
 
 While extensive literature exists on dealer hedging mechanics \citep{ni2005stock,garleanu2009demand} and LLM applications in finance \citep{lopez2023can,chen2023fingpt}, no prior work has:
 \begin{enumerate}
-    \item tested whether LLMs can detect structural market constraints,
-    \item validated this detection through obfuscation testing, or
-    \item demonstrated that pattern detection persists independent of profitability.
+    \item demonstrated that unstructured feature extraction (raw options chains) outperforms parametric compression (Net GEX) for structural pattern detection,
+    \item validated detection through obfuscation testing that eliminates training data contamination, or
+    \item established that detected patterns function as risk management signals orthogonal to trading alpha.
 \end{enumerate}
-Our work addresses these gaps, providing the first systematic framework for validating LLM structural reasoning in financial markets.
+Our work addresses these gaps, providing rigorous methodology for validating structural pattern detection from high-dimensional financial data.
