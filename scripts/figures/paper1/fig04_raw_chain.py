@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Issue #143: Figure 3 - The Raw Chain
+Paper 1 Figure Generation: Raw Chain Validation (fig04)
 
 Bar chart showing Raw Chain (92.3%) outperforms GEX-assisted baseline (61.5%)
 by 30.8 percentage points.
 
-MC's Specification:
-"Figure 3: The Raw Chain (Bar chart: GEX-Assisted vs. Raw Chain)"
+Output: fig04_raw_chain.png
 
 This is the "Nuclear Option" - definitive proof the LLM performs
-structural analysis from first principles.
+structural analysis from first principles without pre-calculated GEX.
 """
 
 import os
@@ -35,7 +34,7 @@ OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
 def create_figure_3():
     """Create the Raw Chain bar chart."""
 
-    # Data from Issue #143 results (verified)
+    # Data from validated results
     methods = ["GEX-Assisted\nBaseline", "Raw Chain\n(No GEX)"]
     detection_rates = [61.5, 92.3]  # Percentages
     counts = ["8/13", "12/13"]  # Raw counts
@@ -166,7 +165,7 @@ def create_figure_3():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("Issue #143: Figure 3 - The Raw Chain")
+    print("Paper 1 Figure 4: Raw Chain Validation")
     print("=" * 60)
 
     png_path, pdf_path = create_figure_3()
