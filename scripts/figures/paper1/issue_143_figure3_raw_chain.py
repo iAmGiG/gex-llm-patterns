@@ -64,7 +64,7 @@ def create_figure_3():
             fontweight="bold",
             color=bar.get_facecolor(),
         )
-        # Count label
+        # Count label - white text for visibility on colored bars
         ax.annotate(
             f"({count})",
             xy=(bar.get_x() + bar.get_width() / 2, height),
@@ -73,7 +73,8 @@ def create_figure_3():
             ha="center",
             va="top",
             fontsize=11,
-            color="#4b5563",
+            fontweight="bold",
+            color="white",
         )
 
     # Add improvement arrow back
