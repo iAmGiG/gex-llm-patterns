@@ -22,6 +22,54 @@ yxie2@kennesaw.edu}
 
 \maketitle
 
+% =============================================================================
+% JFDS ABSTRACT (~160 words, non-technical, no citations)
+% =============================================================================
+% Can AI systems genuinely understand market mechanics, or do they merely recall
+% patterns from training data? We introduce obfuscation testing---a methodology
+% that strips all temporal and contextual information from market data, forcing
+% models to reason from pure structural relationships. Testing large language
+% models on options market data with anonymized dates and tickers, we find they
+% detect dealer hedging constraints with 71.5\% accuracy and 91.2\% of predictions
+% materialize in subsequent price movements. A critical validation: when given
+% only raw options chain data without pre-calculated metrics, detection improves
+% to 92.3\%, proving the AI reconstructs complex gamma dynamics independently
+% rather than matching patterns. Notably, detection capability remains stable
+% (68--74\%) even as trading profitability collapses to zero, demonstrating these
+% models identify structural mechanisms without generating alpha. Our findings
+% establish rigorous validation standards for AI deployment in financial analysis
+% while highlighting the distinction between pattern recognition and actionable
+% trading intelligence.
+% =============================================================================
+
+% =============================================================================
+% JFDS HIGHLIGHTS (3 bullets, <=40 words each)
+% =============================================================================
+% 1. We introduce obfuscation testing, a methodology for validating whether AI
+%    systems genuinely understand market mechanics or merely recall memorized
+%    patterns from training data. (26 words)
+%
+% 2. Large language models achieve 91.2\% accuracy predicting when detected
+%    dealer hedging patterns materialize in subsequent market movements,
+%    demonstrating genuine structural understanding. (22 words)
+%
+% 3. Detection capability remains stable as trading alpha collapses to zero,
+%    proving AI identifies market mechanisms independently from profit
+%    potential---critical for deployment decisions. (24 words)
+% =============================================================================
+
+% =============================================================================
+% JFDS JEL CODES
+% =============================================================================
+% G12 - Asset Pricing; Trading Volume; Bond Interest Rates
+% G14 - Information and Market Efficiency; Event Studies
+% C45 - Neural Networks and Related Topics
+% C55 - Large Data Sets: Modeling and Analysis
+% =============================================================================
+
+% =============================================================================
+% IEEE CONFERENCE ABSTRACT (current version - to be replaced for JFDS)
+% =============================================================================
 \begin{abstract}
 We present obfuscation testing, a validation methodology for distinguishing genuine structural reasoning from temporal pattern matching in large language models applied to financial markets. Our approach tests whether LLMs detect dealer hedging constraints—emergent coordination patterns arising from countless decentralized dealer decisions responding to local gamma exposure constraints—when all temporal and contextual information is removed. Evaluating three manifestations of dealer hedging (gamma positioning, stock pinning, 0DTE hedging) across 242 trading days (95.6\% coverage) of S\&P 500 options data, we achieve 71.5\% detection accuracy using unbiased prompts. Critically, a raw chain validation removing all pre-calculated metrics achieves 92.3\% detection—outperforming the GEX-assisted baseline by 30.8 percentage points on identical dates, proving the LLM reconstructs dealer gamma constraints from strike-level open interest rather than pattern-matching on metric labels. The WHO→WHOM→WHAT causal framework requires models to articulate economic actors (dealers), affected parties (traders), and forced mechanisms (pro-cyclical hedging) underlying observed dynamics.
 
