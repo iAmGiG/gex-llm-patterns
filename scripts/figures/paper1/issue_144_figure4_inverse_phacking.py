@@ -157,23 +157,25 @@ def create_figure_4():
     ax.axvline(x=det_mean, color="#2563eb", linestyle=":", linewidth=2, alpha=0.8)
     ax.axvline(x=base_mean, color="#dc2626", linestyle=":", linewidth=2, alpha=0.8)
 
-    # Annotations
+    # Annotations - positioned to avoid collision with vertical lines
     ax.annotate(
         f"Detection Mean: {det_mean:.2f}",
         xy=(det_mean, ax.get_ylim()[1] * 0.95),
-        xytext=(det_mean - 0.3, ax.get_ylim()[1] * 0.85),
+        xytext=(det_mean - 0.45, ax.get_ylim()[1] * 0.85),  # Moved further left
         fontsize=10,
         color="#2563eb",
         arrowprops=dict(arrowstyle="->", color="#2563eb", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="none", alpha=0.8),
     )
 
     ax.annotate(
         f"Baseline Mean: {base_mean:.2f}",
         xy=(base_mean, ax.get_ylim()[1] * 0.9),
-        xytext=(base_mean + 0.15, ax.get_ylim()[1] * 0.75),
+        xytext=(base_mean + 0.25, ax.get_ylim()[1] * 0.75),  # Moved further right
         fontsize=10,
         color="#dc2626",
         arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="none", alpha=0.8),
     )
 
     # Key finding box

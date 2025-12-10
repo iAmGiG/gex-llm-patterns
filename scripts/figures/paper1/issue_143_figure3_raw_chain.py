@@ -23,6 +23,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Reset to default style to avoid any inherited styling
+plt.style.use("default")
+plt.rcdefaults()
+
 # Paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
@@ -37,12 +41,13 @@ def create_figure_3():
     counts = ["8/13", "12/13"]  # Raw counts
     colors = ["#6b7280", "#2563eb"]  # Gray for baseline, blue for raw chain
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(6, 5), dpi=300)
+    # Create figure with explicit white background
+    fig, ax = plt.subplots(figsize=(6, 5), dpi=300, facecolor="white")
+    ax.set_facecolor("white")
 
-    # Create bars
+    # Create bars - SIMPLE VERSION
     x = np.arange(len(methods))
-    bars = ax.bar(x, detection_rates, width=0.6, color=colors, edgecolor="white", linewidth=2)
+    bars = ax.bar(x, detection_rates, width=0.6, color=colors)
 
     # Add value labels on bars
     for bar, rate, count in zip(bars, detection_rates, counts):
@@ -71,8 +76,7 @@ def create_figure_3():
             color="#4b5563",
         )
 
-    # Add improvement annotation
-    # Arrow from baseline to raw chain
+    # Add improvement arrow back
     ax.annotate(
         "",
         xy=(1, 92.3),
@@ -101,8 +105,9 @@ def create_figure_3():
         fontweight="bold",
     )
 
-    # Y-axis limits
+    # Axis limits
     ax.set_ylim(0, 110)
+    ax.set_xlim(-0.5, 1.5)
 
     # Add key finding box
     textstr = "\n".join(
