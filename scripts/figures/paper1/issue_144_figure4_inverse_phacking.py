@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Issue #144: Figure 4 - The Inverse P-Hacking
+Paper 1 Figure Generation: Inverse P-Hacking Analysis (fig12)
 
 Generates density plot showing detection days have LOWER range expansion
 than random baseline days, proving the LLM detects volatility SUPPRESSION,
 not chasing.
+
+Output: fig12_inverse_phacking.png
 
 Key Result:
 - Detection days: 21.6% range expansion
 - Baseline days: 32.0% range expansion
 - Lift: 0.67x (p=0.033)
 
-MC's Specification:
-"Figure 4: The Inverse P-Hacking (Density plot of Intraday Range:
-Detection Days vs. Random Baseline). Visualizing the shift to the left
-(lower volatility) is powerful."
+This is a key robustness check - if the LLM were simply detecting high-volatility
+days, it would be trivial. Instead, it detects volatility SUPPRESSION.
 """
 
 import os
@@ -250,7 +250,7 @@ def create_bar_chart_version():
 
     fig, ax = plt.subplots(figsize=(6, 5), dpi=300)
 
-    # Data (from verified Issue #144 results)
+    # Data (from verified analysis results)
     categories = ["Detection Days\n(n=519)", "Random Baseline\n(n=100)"]
     rates = [21.6, 32.0]  # C4 range expansion rates
     colors = ["#2563eb", "#dc2626"]
@@ -311,7 +311,7 @@ def create_bar_chart_version():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("Issue #144: Figure 4 - The Inverse P-Hacking")
+    print("Paper 1 Figure 12: Inverse P-Hacking Analysis")
     print("=" * 60)
 
     # Create density plot
