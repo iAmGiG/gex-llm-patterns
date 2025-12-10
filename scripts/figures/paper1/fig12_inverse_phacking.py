@@ -157,11 +157,11 @@ def create_figure_4():
     ax.axvline(x=det_mean, color="#2563eb", linestyle=":", linewidth=2, alpha=0.8)
     ax.axvline(x=base_mean, color="#dc2626", linestyle=":", linewidth=2, alpha=0.8)
 
-    # Annotations - positioned to avoid collision with vertical lines
+    # Annotations - positioned lower to avoid collision with legend and key finding box
     ax.annotate(
         f"Detection Mean: {det_mean:.2f}",
-        xy=(det_mean, ax.get_ylim()[1] * 0.95),
-        xytext=(det_mean - 0.45, ax.get_ylim()[1] * 0.85),  # Moved further left
+        xy=(det_mean, ax.get_ylim()[1] * 0.55),
+        xytext=(det_mean - 0.35, ax.get_ylim()[1] * 0.45),
         fontsize=10,
         color="#2563eb",
         arrowprops=dict(arrowstyle="->", color="#2563eb", lw=1.5),
@@ -170,8 +170,8 @@ def create_figure_4():
 
     ax.annotate(
         f"Baseline Mean: {base_mean:.2f}",
-        xy=(base_mean, ax.get_ylim()[1] * 0.9),
-        xytext=(base_mean + 0.25, ax.get_ylim()[1] * 0.75),  # Moved further right
+        xy=(base_mean, ax.get_ylim()[1] * 0.50),
+        xytext=(base_mean + 0.20, ax.get_ylim()[1] * 0.40),
         fontsize=10,
         color="#dc2626",
         arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.5),
@@ -208,7 +208,7 @@ def create_figure_4():
     ax.set_xlabel("Intraday Range Expansion (Ratio to 5-Day Average)", fontsize=12)
     ax.set_ylabel("Density", fontsize=12)
     ax.set_title(
-        "Figure 4: Detection Days Show LOWER Range Expansion Than Baseline\n"
+        "Detection Days Show LOWER Range Expansion Than Baseline\n"
         "(Proof Against P-Hacking: LLM Detects Suppression, Not Amplification)",
         fontsize=11,
         fontweight="bold",
