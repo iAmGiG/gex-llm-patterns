@@ -25,64 +25,29 @@ Ying Xie\thanks{Department of Information Technology, Kennesaw State University,
 % =============================================================================
 % JFDS ABSTRACT (~160 words, non-technical, no citations)
 % =============================================================================
-% Standard gamma exposure metrics compress rich options chain data into scalar
-% values, potentially discarding valuable structural signal. We demonstrate that
-% large language models processing raw strike-level data achieve 92.3\% detection
-% of dealer hedging constraints---outperforming the same models given pre-calculated
-% Net GEX by 30.8 percentage points. This finding establishes that unstructured
-% feature extraction recovers signal lost in parametric compression. Using
-% obfuscation testing---stripping all temporal context while preserving structural
-% relationships---we validate genuine pattern detection rather than training data
-% memorization. Across 242 trading days, 91.2\% of detected patterns materialize
-% in subsequent price movements. Critically, detection capability remains stable
-% (68--74\%) while trading profitability collapses to zero, establishing these
-% signals as risk management indicators rather than alpha generators. Detection
-% days exhibit 33\% lower range expansion than baseline, proving the model
-% identifies volatility suppression mechanisms. Our methodology provides rigorous
-% validation standards for deploying AI-based structural analysis in financial
-% risk systems.
-% =============================================================================
+\begin{abstract}
+Standard gamma exposure metrics compress rich options chain data into scalar values, potentially discarding valuable structural signal. We demonstrate that large language models processing raw strike-level data achieve 92.3\% detection of dealer hedging constraints---outperforming the same models given pre-calculated Net GEX by 30.8 percentage points. This finding establishes that unstructured feature extraction recovers signal lost in parametric compression. Using obfuscation testing---stripping all temporal context while preserving structural relationships---we validate genuine pattern detection rather than training data memorization. Across 242 trading days, 91.2\% of detected patterns materialize in subsequent price movements. Critically, detection capability remains stable (68--74\%) while trading profitability collapses to zero, establishing these signals as risk management indicators rather than alpha generators. Detection days exhibit 33\% lower range expansion than baseline, proving the model identifies volatility suppression mechanisms. Our methodology provides rigorous validation standards for deploying AI-based structural analysis in financial risk systems.
+\end{abstract}
 
 % =============================================================================
 % JFDS HIGHLIGHTS (3 bullets, <=40 words each)
 % =============================================================================
-% 1. Raw options chain data yields 30.8 percentage points higher detection than
-%    pre-calculated Net GEX, demonstrating that standard parametric features
-%    discard structural signal recoverable through unstructured processing. (28 words)
-%
-% 2. Obfuscation testing---removing all temporal context---validates genuine
-%    structural pattern detection versus training data memorization, achieving
-%    91.2\% materialization accuracy across 242 trading days. (24 words)
-%
-% 3. Stable detection (68--74\%) despite zero trading alpha establishes dealer
-%    hedging signals as risk management indicators rather than alpha generators,
-%    with detected days showing 33\% lower volatility. (28 words)
-% =============================================================================
+\medskip
+\noindent\textbf{Highlights:}
+\begin{itemize}
+    \item Raw options chain data yields 30.8 percentage points higher detection than pre-calculated Net GEX, demonstrating that standard parametric features discard structural signal recoverable through unstructured processing.
+    \item Obfuscation testing---removing all temporal context---validates genuine structural pattern detection versus training data memorization, achieving 91.2\% materialization accuracy across 242 trading days.
+    \item Stable detection (68--74\%) despite zero trading alpha establishes dealer hedging signals as risk management indicators rather than alpha generators, with detected days showing 33\% lower volatility.
+\end{itemize}
 
 % =============================================================================
-% JFDS JEL CODES
+% JFDS KEYWORDS AND JEL CODES
 % =============================================================================
-% G12 - Asset Pricing; Trading Volume; Bond Interest Rates
-% G14 - Information and Market Efficiency; Event Studies
-% C45 - Neural Networks and Related Topics
-% C55 - Large Data Sets: Modeling and Analysis
-% =============================================================================
-
-% =============================================================================
-% CURRENT ABSTRACT (IEEE conference version)
-% TODO: Replace with JFDS abstract above for final submission
-% =============================================================================
-\begin{abstract}
-Standard gamma exposure (GEX) metrics compress rich options chain data into scalar values, potentially discarding structural signal critical for detecting dealer hedging constraints. We demonstrate that large language models processing raw strike-level data—open interest, implied volatility, and bid-ask spreads per strike—achieve 92.3\% detection of dealer hedging patterns, outperforming identical models given pre-calculated Net GEX by 30.8 percentage points. This finding establishes that unstructured feature extraction recovers signal lost in parametric compression of the options surface.
-
-We validate detection quality through obfuscation testing, a methodology that strips all temporal context (dates, tickers, market events) while preserving structural relationships. Across 242 trading days of S\&P 500 options data, 91.2\% of detected patterns materialize in subsequent price movements. The WHO→WHOM→WHAT causal framework requires articulation of economic actors (dealers), affected parties (traders), and forced mechanisms (pro-cyclical hedging), ensuring detected patterns reflect genuine market microstructure rather than statistical artifacts.
-
-Five validation tests establish signal integrity. First, detection capability remains stable (68--74\% quarterly) while trading profitability collapses (Sharpe 1.8 → 0.1), establishing these as risk management signals rather than alpha generators. Second, non-detection days exhibit significantly fragmented gamma distribution (p < 0.0001, Cohen's d = 0.68), proving sensitivity to signal concentration rather than base-rate guessing. Third, detection days show 33\% lower intraday range expansion than baseline (p = 0.03), confirming identification of volatility \textit{suppression} mechanisms—inverse p-hacking that cannot result from fishing for high-volatility outcomes. Fourth, statistical baseline achieves AUC = 0.681 predicting T+1 outcomes from end-of-day features, validating latent information content. Fifth, raw chain superiority establishes that standard industry metrics (Net GEX) represent lossy compression of actionable structural information. Our methodology provides rigorous validation standards for deploying AI-based structural analysis in financial risk systems.
-\end{abstract}
-
-% JFDS: Converted from IEEEkeywords to standard format
 \medskip
 \noindent\textbf{Keywords:} gamma exposure, dealer hedging, market microstructure, feature extraction, signal compression, obfuscation testing, risk management, large language models
+
+\medskip
+\noindent\textbf{JEL Classification:} G12 (Asset Pricing), G14 (Information and Market Efficiency), C45 (Neural Networks), C55 (Large Data Sets)
 
 % \section{Introduction}
 % Your introduction here
