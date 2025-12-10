@@ -230,19 +230,13 @@ def create_figure_4():
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # PNG (for paper)
     png_path = OUTPUT_DIR / "fig12_inverse_phacking.png"
     plt.savefig(png_path, dpi=300, bbox_inches="tight", facecolor="white")
     print(f"\nSaved: {png_path}")
 
-    # PDF (for archive)
-    pdf_path = OUTPUT_DIR / "archive/fig12_inverse_phacking.pdf"
-    plt.savefig(pdf_path, bbox_inches="tight", facecolor="white")
-    print(f"Saved: {pdf_path}")
-
     plt.close()
 
-    return png_path, pdf_path
+    return png_path
 
 
 def create_bar_chart_version():
@@ -315,15 +309,14 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Create density plot
-    png_path, pdf_path = create_figure_4()
+    png_path = create_figure_4()
 
-    # Create bar chart version (simpler)
+    # Create bar chart version (simpler, archived)
     bar_path = create_bar_chart_version()
 
     print("\n" + "=" * 60)
-    print("Figure 4 Generation Complete")
+    print("Figure 12 Generation Complete")
     print("=" * 60)
     print(f"\nOutput files:")
     print(f"  - {png_path} (density plot)")
-    print(f"  - {pdf_path} (density plot PDF)")
     print(f"  - {bar_path} (bar chart version)")
