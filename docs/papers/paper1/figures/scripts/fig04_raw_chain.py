@@ -148,19 +148,13 @@ def create_figure_3():
     # Save
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # PNG
     png_path = OUTPUT_DIR / "fig04_raw_chain.png"
     plt.savefig(png_path, dpi=300, bbox_inches="tight", facecolor="white")
     print(f"Saved: {png_path}")
 
-    # PDF for archive (not used in paper)
-    pdf_path = OUTPUT_DIR / "archive/fig04_raw_chain.pdf"
-    plt.savefig(pdf_path, bbox_inches="tight", facecolor="white")
-    print(f"Saved: {pdf_path}")
-
     plt.close()
 
-    return png_path, pdf_path
+    return png_path
 
 
 if __name__ == "__main__":
@@ -168,15 +162,13 @@ if __name__ == "__main__":
     print("Paper 1 Figure 4: Raw Chain Validation")
     print("=" * 60)
 
-    png_path, pdf_path = create_figure_3()
+    png_path = create_figure_3()
 
     print("\n" + "=" * 60)
-    print("Figure 3 Generation Complete")
+    print("Figure 4 Generation Complete")
     print("=" * 60)
     print(f"\nKey Statistics:")
     print(f"  - GEX-Assisted: 61.5% (8/13)")
     print(f"  - Raw Chain: 92.3% (12/13)")
     print(f"  - Improvement: +30.8 pp")
-    print(f"\nOutput files:")
-    print(f"  - {png_path}")
-    print(f"  - {pdf_path}")
+    print(f"\nOutput: {png_path}")
