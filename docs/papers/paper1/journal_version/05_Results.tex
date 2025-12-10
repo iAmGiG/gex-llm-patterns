@@ -26,12 +26,12 @@ Stock Pinning & 67.4\% & 100\% & 90.4\% & 242 \\
 
 Exhibit~\ref{ex:performance_matrix-jv} visualizes these results, showing that all patterns exceed the 60\% mechanical threshold. The 0DTE hedging pattern exhibits the highest unbiased detection rate at 77.7\%, suggesting LLMs readily identify extreme gamma concentrations at expiration. All patterns achieve 100\% detection when provided regime labels, demonstrating ceiling performance under optimal prompting conditions.
 
-\begin{figure*}[!tb]
+\begin{figure}[!tb]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/fig05_performance_matrix.png}
 \caption{Pattern detection performance metrics using unbiased prompts. All three patterns exceed the 60\% mechanical threshold with detection rates averaging 71.5\% and prediction accuracy averaging 90.8\% across 242 trading days.}
 \label{ex:performance_matrix-jv}
-\end{figure*}
+\end{figure}
 % JFDS: Rename to "Exhibit 8" in final version
 
 Exhibit~\ref{ex:bias_comparison-jv} directly compares biased versus unbiased detection rates, revealing a 28.5 percentage point average gap. This quantifies the impact of leading information on detection sensitivity while validating that patterns remain detectable without hints.
@@ -203,7 +203,7 @@ Positive (> +\$2B) & 0 & 0.0\% \\
 \end{tabular}
 \end{table}
 
-This persistent negative gamma regime, driven by explosive growth in zero-days-to-expiration (0DTE) options \cite{cboe2023,jpmorgan2023}, represents a structural shift from historical market dynamics where positive and negative gamma regimes alternated \cite{ni2005stock,garleanu2009demand}. The single-regime environment provides a particularly rigorous test of LLM structural reasoning: unlike traditional pattern recognition that exploits regime variation, our model must identify the underlying constraint mechanism within a uniform environment.
+This persistent negative gamma regime, driven by explosive growth in zero-days-to-expiration (0DTE) options \citep{cboe2023,jpmorgan2023}, represents a structural shift from historical market dynamics where positive and negative gamma regimes alternated \citep{ni2005stock,garleanu2009demand}. The single-regime environment provides a particularly rigorous test of LLM structural reasoning: unlike traditional pattern recognition that exploits regime variation, our model must identify the underlying constraint mechanism within a uniform environment.
 
 The 69.4\% detection rate across 242 structurally identical days, combined with significant Granger causality (Exhibit~\ref{ex:granger-jv}), validates that LLMs recognize forced hedging constraints through mechanism-based reasoning rather than memorizing regime-switching patterns. The divergence between stable detection capability and declining economic profitability (Exhibit~\ref{ex:quarterly_stability-jv}) further confirms identification of structural mechanics independent of trading value.
 
@@ -211,12 +211,12 @@ The 69.4\% detection rate across 242 structurally identical days, combined with 
 
 To address potential concerns that the 30.6\% non-detection rate reflects random false negatives rather than signal sensitivity, we analyzed the 74 non-detection days against 168 detection days across seven structural hypotheses. Exhibit~\ref{ex:gex_concentration-jv} presents the key finding: non-detection days exhibit significantly more fragmented gamma distribution (Gini coefficient: -0.866 vs -0.853, p < 0.0001, Cohen's d = 0.68), indicating dispersed hedging pressure across strikes.
 
-\begin{figure*}[!htbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{../figures/fig10_gex_concentration.png}
 \caption{GEX concentration distribution comparing detection versus non-detection days. Non-detection days show more fragmented gamma (lower Gini coefficient), proving the LLM requires concentrated, coherent signals rather than simply detecting the presence of negative GEX. Statistical test: t = 4.71, p < 0.0001, Cohen's d = 0.68 (medium effect).}
 \label{ex:gex_concentration-jv}
-\end{figure*}
+\end{figure}
 % JFDS: Rename to "Exhibit 17" in final version
 
 Exhibit~\ref{ex:nondetection-jv} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
@@ -251,12 +251,12 @@ These findings validate that the LLM exhibits sensitivity to signal \emph{clarit
 
 Exhibit~\ref{ex:detection_calendar-jv} visualizes the temporal distribution of non-detection days throughout 2024, confirming non-random clustering during periods of dispersed gamma positioning.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=0.9\textwidth]{../figures/fig11_detection_calendar.png}
 \caption{Calendar heatmap of detection status across 2024. Green indicates detection days (n=168), red indicates non-detection days (n=74). Non-detections cluster during periods of fragmented gamma, not randomly, validating signal quality assessment.}
 \label{ex:detection_calendar-jv}
-\end{figure*}
+\end{figure}
 % JFDS: Rename to "Exhibit 19" in final version
 
 \subsubsection{Materialization Specificity (P-Hacking Defense)}

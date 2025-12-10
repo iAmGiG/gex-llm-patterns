@@ -1,4 +1,9 @@
-\documentclass[conference]{IEEEtran}
+% JFDS: Changed from IEEEtran (conference) to article format
+% PM-Research requirements: 12pt, single column, 8.5x11", 1" margins
+\documentclass[12pt,letterpaper]{article}
+
+% JFDS: Page geometry (PM-Research requirement)
+\usepackage[margin=1in]{geometry}
 
 \input{00_Header}
 
@@ -6,19 +11,14 @@
 
 \title{Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing}
 
-\author{\IEEEauthorblockN{Christopher Regan}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
-\textit{Kennesaw State University}\\
-Marietta, GA, Cobb \\
-cregan1@kennesaw.edu}
+% JFDS: Converted from IEEE author format to standard LaTeX
+\author{
+Christopher Regan\thanks{Department of Computer Science, Kennesaw State University, Marietta, GA. Email: cregan1@kennesaw.edu}
 \and
-\IEEEauthorblockN{Ying Xie}
-\IEEEauthorblockA{Department of Information Technology\\
-Professor of Information Technology\\
-Kennesaw State University\\
-Marietta, GA\\
-yxie2@kennesaw.edu}
+Ying Xie\thanks{Department of Information Technology, Kennesaw State University, Marietta, GA. Email: yxie2@kennesaw.edu}
 }
+
+\date{} % No date for journal submission
 
 \maketitle
 
@@ -68,7 +68,8 @@ yxie2@kennesaw.edu}
 % =============================================================================
 
 % =============================================================================
-% IEEE CONFERENCE ABSTRACT (current version - to be replaced for JFDS)
+% CURRENT ABSTRACT (IEEE conference version)
+% TODO: Replace with JFDS abstract above for final submission
 % =============================================================================
 \begin{abstract}
 We present obfuscation testing, a validation methodology for distinguishing genuine structural reasoning from temporal pattern matching in large language models applied to financial markets. Our approach tests whether LLMs detect dealer hedging constraints—emergent coordination patterns arising from countless decentralized dealer decisions responding to local gamma exposure constraints—when all temporal and contextual information is removed. Evaluating three manifestations of dealer hedging (gamma positioning, stock pinning, 0DTE hedging) across 242 trading days (95.6\% coverage) of S\&P 500 options data, we achieve 71.5\% detection accuracy using unbiased prompts. Critically, a raw chain validation removing all pre-calculated metrics achieves 92.3\% detection—outperforming the GEX-assisted baseline by 30.8 percentage points on identical dates, proving the LLM reconstructs dealer gamma constraints from strike-level open interest rather than pattern-matching on metric labels. The WHO→WHOM→WHAT causal framework requires models to articulate economic actors (dealers), affected parties (traders), and forced mechanisms (pro-cyclical hedging) underlying observed dynamics.
@@ -76,9 +77,9 @@ We present obfuscation testing, a validation methodology for distinguishing genu
 Five independent tests validate genuine structural reasoning. First, prediction materialization rate (91.2\%) remains consistently high while economic profitability collapses quarterly (Sharpe 1.8 → 0.1), demonstrating models identify structural constraints independent of alpha generation. Second, non-detection days exhibit significantly fragmented gamma distribution (p < 0.0001, Cohen's d = 0.68), proving the model requires concentrated signals rather than universally predicting volatility. Third, detection days show 33\% lower intraday range expansion than materialization days (p = 0.03), confirming the LLM detects volatility \textit{suppression} rather than chasing high-volatility outcomes (inverse p-hacking). Fourth, statistical baseline achieves AUC = 0.681 predicting T+1 outcomes from EOD features, validating end-of-day structural snapshots. Fifth, raw chain superiority (92.3\% vs. 61.5\%) establishes the LLM as a structural analyst performing gamma integration independently. When provided regime labels, detection reaches 100\%, quantifying prompt bias effects. Our results establish that transformer architectures develop emergent understanding of complex coordination patterns, with implications for AI validation methodology, systematic strategy development, and trustworthy deployment of AI in financial markets.
 \end{abstract}
 
-\begin{IEEEkeywords}
-large language models, market microstructure, obfuscation testing, gamma exposure, structural reasoning, emergent order, dispersed knowledge
-\end{IEEEkeywords}
+% JFDS: Converted from IEEEkeywords to standard format
+\medskip
+\noindent\textbf{Keywords:} large language models, market microstructure, obfuscation testing, gamma exposure, structural reasoning, emergent order, dispersed knowledge
 
 % \section{Introduction}
 % Your introduction here
@@ -115,7 +116,9 @@ The authors thank the anonymous reviewers for their constructive feedback. We ac
 The authors are especially grateful to Pablo Ordonez for suggesting the Granger causality tests that led to discovering both significant predictive relationships and the structural regime shift in 2024 options markets.
 We thank Alpha Vantage for academic API access to market data. We are grateful to Anthropic for Claude and Claude Code, which facilitated development and testing, and to OpenAI for API access. We also thank the open-source Python scientific computing ecosystem for essential libraries.
 
-\bibliographystyle{IEEEtran}
+% JFDS: Chicago Author-Date style (PM-Research requirement)
+% Changed from IEEEtran (numerical) to apalike (Author-Date)
+\bibliographystyle{apalike}
 \bibliography{references}
 
 \end{document}
