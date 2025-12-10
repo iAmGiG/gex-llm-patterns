@@ -25,14 +25,15 @@ We test three manifestations of dealer hedging constraints, each representing di
 
 \textbf{Pattern 3: 0DTE Hedging.} Same-day expiration options create extreme gamma concentration, forcing rapid dealer rehedging \cite{cboe2023,jpmorgan2023}. Detection criteria: Expiration = 0 days, net GEX magnitude $>$ \$3B, and gamma concentration $>$ 75\%.
 
-Figure~\ref{fig:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
+Exhibit~\ref{ex:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{../figures/fig02_gex_profile.png}
 \caption{Representative gamma exposure profile showing negative net GEX of -\$32.5B. Red bars indicate dealer short gamma positions requiring pro-cyclical hedging (selling rallies, buying dips) that amplifies price movements.}
-\label{fig:gex_profile-jv}
+\label{ex:gex_profile-jv}
 \end{figure*}
+% JFDS: Rename to "Exhibit 3" in final version
 
 \subsection{Prompt Template Configurations}
 
@@ -42,18 +43,19 @@ We employ two prompt templates to test detection robustness:
 
 \textbf{Biased Template (Sensitivity).} Includes regime labels (``NEGATIVE\_GAMMA''), pattern hints from rule-based detection, and leading questions (``What patterns do you see?''). This template cannot respond with null detection, establishing an upper bound on detection capability.
 
-Both templates implement complete temporal obfuscation as demonstrated in Figure~\ref{fig:obfuscation-jv}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
+Both templates implement complete temporal obfuscation as demonstrated in Exhibit~\ref{ex:obfuscation-jv}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
 
 \subsection{Validation Pipeline}
 
-Figure~\ref{fig:pipeline-jv} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
+Exhibit~\ref{ex:pipeline-jv} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
 
 \begin{figure*}[!tb]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/fig03_validation_pipeline.png}
 \caption{Five-component validation pipeline architecture transforming raw options data through GEX calculation, temporal obfuscation, LLM analysis, outcome verification, and statistical validation.}
-\label{fig:pipeline-jv}
+\label{ex:pipeline-jv}
 \end{figure*}
+% JFDS: Rename to "Exhibit 4" in final version
 
 \textbf{Component 1: GEX Calculator.} Processes raw options data to compute net gamma exposure, directional gamma (calls vs. puts), flip point, and concentration metrics. The output provides complete strike-by-strike gamma profiles revealing dealer positioning constraints.
 
@@ -91,7 +93,7 @@ Our null hypothesis assumes 50\% random detection; actual detection must signifi
 \begin{equation}
 \text{Accuracy} = \frac{\text{Materialized Predictions}}{\text{Total Detections}} \times 100\%
 \end{equation}
-Materialization criteria vary by pattern type (detailed in Table~\ref{tab:materialization-jv}) but generally require observed volatility amplification or directional follow-through matching predictions.
+Materialization criteria vary by pattern type (detailed in Exhibit~\ref{ex:materialization-jv}) but generally require observed volatility amplification or directional follow-through matching predictions.
 
 \medskip
 \textbf{Economic Alpha.} Net return after transaction costs:

@@ -21,10 +21,11 @@ The core innovation of our methodology lies in obfuscation testing—systematica
 \centering
 \includegraphics[width=\columnwidth]{../figures/fig01_obfuscation_example.png}
 \caption{Temporal obfuscation methodology. Left: Original data with dates, ticker symbols, and market context. Right: Obfuscated data preserving only structural quantitative relationships while removing all temporal and contextual information.}
-\label{fig:obfuscation-jv}
+\label{ex:obfuscation-jv}
 \end{figure}
+% JFDS: Rename to "Exhibit 1" in final version
 
-Figure~\ref{fig:obfuscation-jv} illustrates this transformation process. The obfuscation protocol involves five key steps:
+Exhibit~\ref{ex:obfuscation-jv} illustrates this transformation process. The obfuscation protocol involves five key steps:
 
 \textbf{Temporal Obfuscation Protocol:}
 \begin{enumerate}
@@ -91,7 +92,8 @@ To ensure robustness, we test three different narrative framings of the same und
 \begin{table}[h]
 \centering
 \caption{Three Pattern Framings of Dealer Hedging Constraints}
-\label{tab:patterns-jv}
+\label{ex:patterns-jv}
+% JFDS: Rename to "Exhibit 2" in final version
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{@{}lcccc@{}}
 \toprule
@@ -111,7 +113,7 @@ Hedging &  & dynamics & writers & rebalancing \\
 }
 \end{table}
 
-All three patterns in Table~\ref{tab:patterns-jv} reflect the same structural reality—dealers hedging option exposure—but use different conceptual lenses. Consistent detection across framings (averaging 71.5\%) validates genuine pattern understanding rather than keyword matching.
+All three patterns in Exhibit~\ref{ex:patterns-jv} reflect the same structural reality—dealers hedging option exposure—but use different conceptual lenses. Consistent detection across framings (averaging 71.5\%) validates genuine pattern understanding rather than keyword matching.
 
 \subsection{Validation Criteria}
 
@@ -138,4 +140,4 @@ We establish three levels of validation with increasing stringency:
 \item Result: 100\% correct causal attribution for detected patterns
 \end{itemize}
 
-Our results exceed all thresholds, demonstrating both pattern recognition and mechanical understanding. The divergence between stable detection rates and declining economic profitability (Figure~\ref{fig:quarterly_stability-jv} in Results) further validates that LLMs identify structural constraints rather than optimizing for profitable patterns.
+Our results exceed all thresholds, demonstrating both pattern recognition and mechanical understanding. The divergence between stable detection rates and declining economic profitability (Exhibit~\ref{ex:quarterly_stability-jv} in Results) further validates that LLMs identify structural constraints rather than optimizing for profitable patterns.
