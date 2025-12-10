@@ -177,7 +177,7 @@
 
 ```text
 docs/papers/paper1/journal_version/
-├── Main.tex
+├── Regan_ObfuscationTesting.tex (main document)
 ├── 00_Header.tex
 ├── 01_Introduction.tex
 ├── 02_Related_work.tex
@@ -188,7 +188,7 @@ docs/papers/paper1/journal_version/
 ├── 06_Discussion.tex (JFDS enhancements)
 ├── 07_Conclusion.tex
 ├── references.bib
-└── Main.pdf (19 pages)
+└── Regan_ObfuscationTesting.pdf (38 pages)
 ```
 
 ### Figures
