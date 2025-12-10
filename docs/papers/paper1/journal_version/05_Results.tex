@@ -131,7 +131,7 @@ Exhibit~\ref{ex:validation_funnel-jv} presents the validation funnel from detect
 \end{figure}
 % JFDS: Rename to "Exhibit 13" in final version
 
-Exhibit~\ref{ex:materialization-jv} details how detected patterns translate into observable market behavior. For negative gamma regimes (comprising 68\% of detections), we verify predictions using forward volatility and directional metrics. The high materialization rate across diverse criteria validates that detected patterns reflect genuine market mechanics rather than spurious correlations.
+Exhibit~\ref{ex:materialization-jv} details how detected patterns translate into observable market behavior. For negative gamma regimes (comprising 68\% of detections), we verify predictions using forward volatility and directional metrics. Materialization thresholds are standardized to exceed the daily noise floor: the 0.3\% volatility threshold represents approximately $0.5\sigma$ of SPY's 2024 average daily move (0.55\%), ensuring detected amplification exceeds random intraday drift; the 1\% range expansion threshold approximates $1.5\times$ the standard daily range in low-volatility regimes. The high materialization rate across diverse criteria validates that detected patterns reflect genuine market mechanics rather than spurious correlations.
 
 \begin{table}[!htbp]
 \centering
@@ -143,10 +143,10 @@ Exhibit~\ref{ex:materialization-jv} details how detected patterns translate into
 \toprule
 Prediction Type & Materialization Criteria & Success Rate \\
 \midrule
-Volatility Amplification & T+1 move >0.3\% & 89.2\% \\
+Volatility Amplification & T+1 move >0.3\% ($\approx 0.5\sigma$) & 89.2\% \\
 Directional Follow-through & T+1 direction matches & 85.7\% \\
 Strike Convergence & Price within 0.5\% of strike & 93.4\% \\
-0DTE Range Expansion & Intraday range >1\% & 91.1\% \\
+0DTE Range Expansion & Intraday range >1\% ($\approx 1.5\times$ ADR) & 91.1\% \\
 \midrule
 \textbf{Overall} & Any criteria met & \textbf{91.2\%} \\
 \bottomrule
