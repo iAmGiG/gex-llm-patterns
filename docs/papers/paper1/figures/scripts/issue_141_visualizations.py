@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 """
-Issue #141: Non-Detection Day Visualizations
-Paper #1 Journal Version - Signal Sensitivity Proof
+Paper 1 Figure Generation: Signal Sensitivity Visualizations
 
-Generates 3 key figures for journal paper:
-1. Calendar heatmap of detection/non-detection days across 2024
-2. GEX concentration distribution comparison (histogram)
-3. Multi-factor scatter plots (4-panel analysis)
+Generates figures for JFDS journal submission:
+- fig10_gex_concentration.png: GEX concentration distribution (Detection vs Non-Detection)
+- fig11_detection_calendar.png: Calendar heatmap of detection days across 2024
+- archive/issue_141_multifactor_analysis.png: Multi-factor scatter plots (archived)
 
-Author: Research Team
-Date: 2025-11-22
-GitHub Issue: https://github.com/iAmGiG/gex-llm-patterns/issues/141
+Key Finding: Detection days have HIGHER GEX concentration (Gini coefficient)
+than non-detection days, proving LLM requires concentrated signals.
 """
 
 import calendar
@@ -131,7 +129,7 @@ def create_calendar_heatmap(df, output_path):
         ax.spines["left"].set_visible(False)
 
     # Add legend
-    fig.suptitle("Issue #141: Detection Status Calendar 2024", fontsize=14, fontweight="bold", y=0.98)
+    fig.suptitle("Detection Status Calendar 2024", fontsize=14, fontweight="bold", y=0.98)
 
     detection_patch = mpatches.Patch(color="#2ecc71", label="Detection (n=168)", alpha=0.8)
     non_detection_patch = mpatches.Patch(color="#e74c3c", label="Non-Detection (n=74)", alpha=0.8)
@@ -372,7 +370,7 @@ def create_multifactor_scatter(df, output_path):
     ax4.grid(True, alpha=0.3)
 
     fig.suptitle(
-        "Issue #141: Multi-Factor Analysis\nDetection vs Non-Detection Day Characteristics",
+        "Multi-Factor Analysis\nDetection vs Non-Detection Day Characteristics",
         fontsize=14,
         fontweight="bold",
         y=0.98,
@@ -384,10 +382,10 @@ def create_multifactor_scatter(df, output_path):
 
 
 def main():
-    """Generate all visualizations for Issue #141."""
+    """Generate all visualizations for Paper 1 signal sensitivity analysis."""
 
     print("=" * 80)
-    print("Issue #141: Visualization Generation")
+    print("Paper 1: Signal Sensitivity Visualization Generation")
     print("Paper #1 Journal Version - Signal Sensitivity Proof")
     print("=" * 80)
     print()
