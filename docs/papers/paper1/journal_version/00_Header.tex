@@ -25,12 +25,22 @@
 \usepackage{newtxtext}  % Times New Roman text font
 \usepackage{newtxmath}  % Times New Roman math font
 \usepackage{microtype} % Better typography
-\usepackage{hyperref}
+\usepackage[pdfpagelabels=false]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
 \usepackage{array}
 \usepackage{adjustbox}
 \usepackage{float}
 % \usepackage[font=footnotesize,labelfont=bf]{caption}
 % \captionsetup{compatibility=false}
+
+% JFDS: Rename "Figure" to "Exhibit" and "Table" to "Exhibit" per PM-Research style
+\renewcommand{\figurename}{Exhibit}
+\renewcommand{\tablename}{Exhibit}
 
 \setlength{\tabcolsep}{5pt} % default is 6pt
 % % Adjust header height to avoid fancyhdr warning
