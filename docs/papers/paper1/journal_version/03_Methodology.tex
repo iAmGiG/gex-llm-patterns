@@ -71,6 +71,8 @@ Beyond detecting patterns, we require models to articulate causal mechanisms usi
 
 This framework prevents vague pattern claims (``bullish setup'') and requires specific mechanical understanding. The 91.2\% accuracy of predictions from detected patterns validates that this framework captures genuine market dynamics.
 
+\textbf{Framework Rationale.} We derive this structure from the agent-based nature of market microstructure theory \citep{grossman1988liquidity,garleanu2009demand}, which models volatility not as a random process but as the result of specific intermediaries (WHO) interacting with order flow (WHOM) under binding regulatory constraints. By forcing the LLM to explicate this agent-action sequence, we implement a structured form of Chain-of-Thought prompting \citep{wei2022chain}, ensuring the model derives the outcome (WHAT) from the mechanical constraint rather than recalling a historical correlation. This agent-centric decomposition maps directly onto how market microstructure literature describes dealer hedging flows.
+
 \textbf{Causality Framework vs. Causal Testing.} Our WHO→WHOM→WHAT
 framework tests whether LLMs can identify established causal mechanisms
 from structural data, not whether those mechanisms exist. Prior work
