@@ -13,26 +13,28 @@ We analyze S\&P 500 ETF (SPY) options data covering 2024 from January 2 to Decem
 \text{GEX} = \sum_{i} \Gamma_i \times \text{OI}_i \times 100 \times S^2
 \end{equation}
 
-where $\Gamma_i$ is the gamma at strike $i$, $\text{OI}_i$ is open interest, the factor of 100 converts contracts to shares, and $S^2$ scales gamma to dollar exposure. Call gamma enters positively, while put gamma enters negatively. Following market microstructure theory \cite{anderegg2022impact}, dealers serve as counterparties to customer option positions, so negative net GEX indicates dealers are short gamma, requiring pro-cyclical hedging that amplifies price movements \cite{spotgamma2019,spotgamma2021,nomura2017}. This counterparty relationship is empirically validated by market maker inventory studies \cite{dim2025zero}.
+where $\Gamma_i$ is the gamma at strike $i$, $\text{OI}_i$ is open interest, the factor of 100 converts contracts to shares, and $S^2$ scales gamma to dollar exposure. Call gamma enters positively, while put gamma enters negatively. Following market microstructure theory \citep{anderegg2022impact}, dealers serve as counterparties to customer option positions, so negative net GEX indicates dealers are short gamma, requiring pro-cyclical hedging that amplifies price movements \citep{spotgamma2019,spotgamma2021,nomura2017}. This counterparty relationship is empirically validated by market maker inventory studies \citep{dim2025zero}.
 
 \textbf{GEX Methodology and Limitations.} This calculation assumes aggregate customers are net sellers of calls and net buyers of puts—a standard simplification in options market microstructure. While this assumption generally holds for broad index options where hedging demand dominates, actual dealer gamma inferred from order flow can diverge during periods of speculative positioning. Critically, our LLM detection approach is robust to GEX variations because patterns are validated through forward returns (91.2\% materialization rate), indicating that detected dealer hedging signals persist regardless of GEX formula accuracy. Whether gamma is measured directly from order flow or inferred from open interest, the underlying mechanism (dealers hedging to maintain delta neutrality) remains constant.
 
 We test three manifestations of dealer hedging constraints, each representing different narrative framings of the same underlying structural mechanism:
 
-\textbf{Pattern 1: Gamma Positioning.} When dealers hold net negative gamma exposure (typically below -\$2B for SPY), they must hedge delta changes pro-cyclically—selling into rallies and buying into declines \cite{garleanu2009demand,nomura2017}. Detection criteria: Net GEX $<$ -\$2B, spot price within 2\% of flip point, and call gamma concentration $>$ 70\%.
+\textbf{Pattern 1: Gamma Positioning.} When dealers hold net negative gamma exposure (typically below -\$2B for SPY), they must hedge delta changes pro-cyclically—selling into rallies and buying into declines \citep{garleanu2009demand,nomura2017}. Detection criteria: Net GEX $<$ -\$2B, spot price within 2\% of flip point, and call gamma concentration $>$ 70\%.
 
-\textbf{Pattern 2: Stock Pinning.} Heavy open interest concentration at specific strikes creates gravitational price effects as dealers adjust hedges \cite{ni2005stock}. Detection criteria: OI concentration $>$ 80\% at strike, spot within 1\% of strike, and days to expiration $<$ 5.
+\textbf{Pattern 2: Stock Pinning.} Heavy open interest concentration at specific strikes creates gravitational price effects as dealers adjust hedges \citep{ni2005stock}. Detection criteria: OI concentration $>$ 80\% at strike, spot within 1\% of strike, and days to expiration $<$ 5.
 
-\textbf{Pattern 3: 0DTE Hedging.} Same-day expiration options create extreme gamma concentration, forcing rapid dealer rehedging \cite{cboe2023,jpmorgan2023}. Detection criteria: Expiration = 0 days, net GEX magnitude $>$ \$3B, and gamma concentration $>$ 75\%.
+\textbf{Pattern 3: 0DTE Hedging.} Same-day expiration options create extreme gamma concentration, forcing rapid dealer rehedging \citep{cboe2023,jpmorgan2023}. Detection criteria: Expiration = 0 days, net GEX magnitude $>$ \$3B, and gamma concentration $>$ 75\%.
 
-Figure~\ref{fig:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
+Exhibit~\ref{ex:gex_profile-jv} illustrates a typical negative gamma regime where dealers face structural hedging constraints. Each pattern employs the WHO$\rightarrow$WHOM$\rightarrow$WHAT framework to identify causal actors (dealers), affected parties (directional traders), and forced actions (hedging flows).
 
-\begin{figure*}[!htbp]
+% JFDS: Changed from figure* (two-column) to figure (single-column)
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{../figures/fig02_gex_profile.png}
 \caption{Representative gamma exposure profile showing negative net GEX of -\$32.5B. Red bars indicate dealer short gamma positions requiring pro-cyclical hedging (selling rallies, buying dips) that amplifies price movements.}
-\label{fig:gex_profile-jv}
-\end{figure*}
+\label{ex:gex_profile-jv}
+\end{figure}
+% JFDS: Rename to "Exhibit 3" in final version
 
 \subsection{Prompt Template Configurations}
 
@@ -42,18 +44,20 @@ We employ two prompt templates to test detection robustness:
 
 \textbf{Biased Template (Sensitivity).} Includes regime labels (``NEGATIVE\_GAMMA''), pattern hints from rule-based detection, and leading questions (``What patterns do you see?''). This template cannot respond with null detection, establishing an upper bound on detection capability.
 
-Both templates implement complete temporal obfuscation as demonstrated in Figure~\ref{fig:obfuscation-jv}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
+Both templates implement complete temporal obfuscation as demonstrated in Exhibit~\ref{ex:obfuscation-jv}, converting dates to ``Day T+N'' format and tickers to generic identifiers (``INDEX\_1''), ensuring pattern detection relies solely on structural reasoning rather than temporal association.
 
 \subsection{Validation Pipeline}
 
-Figure~\ref{fig:pipeline-jv} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
+Exhibit~\ref{ex:pipeline-jv} illustrates our five-component validation pipeline that transforms raw options data into validated pattern detections. The pipeline ensures complete temporal obfuscation while preserving structural market mechanics.
 
-\begin{figure*}[!tb]
+% JFDS: Changed from figure* (two-column) to figure (single-column)
+\begin{figure}[!tb]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/fig03_validation_pipeline.png}
 \caption{Five-component validation pipeline architecture transforming raw options data through GEX calculation, temporal obfuscation, LLM analysis, outcome verification, and statistical validation.}
-\label{fig:pipeline-jv}
-\end{figure*}
+\label{ex:pipeline-jv}
+\end{figure}
+% JFDS: Rename to "Exhibit 4" in final version
 
 \textbf{Component 1: GEX Calculator.} Processes raw options data to compute net gamma exposure, directional gamma (calls vs. puts), flip point, and concentration metrics. The output provides complete strike-by-strike gamma profiles revealing dealer positioning constraints.
 
@@ -91,7 +95,7 @@ Our null hypothesis assumes 50\% random detection; actual detection must signifi
 \begin{equation}
 \text{Accuracy} = \frac{\text{Materialized Predictions}}{\text{Total Detections}} \times 100\%
 \end{equation}
-Materialization criteria vary by pattern type (detailed in Table~\ref{tab:materialization-jv}) but generally require observed volatility amplification or directional follow-through matching predictions.
+Materialization criteria vary by pattern type (detailed in Exhibit~\ref{ex:materialization-jv}) but generally require observed volatility amplification or directional follow-through matching predictions.
 
 \medskip
 \textbf{Economic Alpha.} Net return after transaction costs:
