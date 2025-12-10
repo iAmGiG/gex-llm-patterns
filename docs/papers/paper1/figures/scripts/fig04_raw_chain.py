@@ -26,9 +26,9 @@ import numpy as np
 plt.style.use("default")
 plt.rcdefaults()
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
+# Paths - script is in docs/papers/paper1/figures/scripts/
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent.parent
+OUTPUT_DIR = Path(__file__).parent.parent  # docs/papers/paper1/figures/
 
 
 def create_figure_3():

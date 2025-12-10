@@ -224,7 +224,7 @@ def create_concentration_distribution(df, output_path):
     # Add interpretation text - positioned below x-axis label with clear separation
     ax.text(
         0.5,
-        -0.21,
+        -0.25,
         "Interpretation: Non-detection days have MORE FRAGMENTED gamma (lower Gini)\n"
         + "-> Proves LLM requires concentrated signals, not just presence of negative GEX",
         transform=ax.transAxes,
@@ -407,8 +407,8 @@ def main():
     print()
 
     # Figure 11: Calendar Heatmap
-    calendar_path = output_dir / "fig11_detection_calendar.png"
-    create_calendar_heatmap(df, calendar_path)
+    # calendar_path = output_dir / "fig11_detection_calendar.png"
+    # create_calendar_heatmap(df, calendar_path)
 
     # Figure 10: Concentration Distribution
     concentration_path = output_dir / "fig10_gex_concentration.png"
@@ -424,7 +424,7 @@ def main():
     print("=" * 80)
     print()
     print("Figures created:")
-    print(f"  1. {calendar_path}")
+    # print(f"  1. {calendar_path}")
     print(f"  2. {concentration_path}")
     print(f"  3. {scatter_path}")
     print()
