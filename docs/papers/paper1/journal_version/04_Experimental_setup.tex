@@ -17,7 +17,7 @@ where $\Gamma_i$ is the gamma at strike $i$, $\text{OI}_i$ is open interest, the
 
 \textbf{GEX Methodology and Limitations.} This calculation assumes aggregate customers are net sellers of calls and net buyers of puts—a standard simplification in options market microstructure. While this assumption generally holds for broad index options where hedging demand dominates, actual dealer gamma inferred from order flow can diverge during periods of speculative positioning. Critically, our LLM detection approach is robust to GEX variations because patterns are validated through forward returns (91.2\% materialization rate), indicating that detected dealer hedging signals persist regardless of GEX formula accuracy. Whether gamma is measured directly from order flow or inferred from open interest, the underlying mechanism (dealers hedging to maintain delta neutrality) remains constant.
 
-We test three manifestations of dealer hedging constraints, each representing different narrative framings of the same underlying structural mechanism:
+We test three manifestations of dealer hedging constraints, each representing different narrative framings of the same underlying structural mechanism. We selected these patterns to span the complete temporal spectrum of dealer constraints: positional (Gamma Positioning captures aggregate exposure), behavioral (Stock Pinning captures strike-level magnetism), and temporal (0DTE Hedging captures expiration-driven dynamics).
 
 \textbf{Pattern 1: Gamma Positioning.} When dealers hold net negative gamma exposure (typically below -\$2B for SPY), they must hedge delta changes pro-cyclically—selling into rallies and buying into declines \citep{garleanu2009demand,nomura2017}. Detection criteria: Net GEX $<$ -\$2B, spot price within 2\% of flip point, and call gamma concentration $>$ 70\%.
 
@@ -63,7 +63,7 @@ Exhibit~\ref{ex:pipeline-jv} illustrates our five-component validation pipeline 
 
 \textbf{Component 2: Data Obfuscator.} Strips all temporal and contextual information, converting dates to relative format and removing ticker identifiers. This ensures LLM detection relies purely on structural patterns rather than memorized associations.
 
-\textbf{Component 3: LLM Agent.} Implements structured output schema to extract WHO (causal actor), WHOM (affected party), WHAT (forced action), confidence (0-100), and time horizon. Processes batches of 10 dates per API call for efficiency while maintaining obfuscation integrity.
+\textbf{Component 3: LLM Agent.} Implements structured output schema to extract WHO (causal actor), WHOM (affected party), WHAT (forced action), confidence (0-100), and time horizon. We utilize OpenAI's o3-mini and o4-mini models to balance reasoning capability with the cost-efficiency required for high-volume batch processing ($\sim$726 pattern tests at $\sim$\$0.01 per validation). Processes batches of 10 dates per API call for efficiency while maintaining obfuscation integrity.
 
 \textbf{Component 4: Outcome Calculator.} Verifies predictions using T+1 and T+3 forward returns, realized volatility, and maximum gain/drawdown metrics. Materialization criteria vary by pattern type but generally require observed market behavior matching predicted mechanics.
 
