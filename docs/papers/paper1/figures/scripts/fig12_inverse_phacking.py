@@ -33,10 +33,10 @@ import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-DATA_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "analysis"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper1" / "figures"
+# Paths - script is in docs/papers/paper1/figures/scripts/
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent.parent
+DATA_DIR = Path(__file__).parent.parent.parent / "analysis"  # docs/papers/paper1/analysis/
+OUTPUT_DIR = Path(__file__).parent.parent  # docs/papers/paper1/figures/
 
 
 def load_data():
