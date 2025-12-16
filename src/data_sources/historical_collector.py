@@ -370,18 +370,37 @@ class HistoricalOptionsCollector:
         start_date: str,
         end_date: str,
         skip_existing: bool = True,
+        parallel: bool = True,
     ) -> Dict:
         """Collect historical data for multiple symbols.
+
+        Supports both sequential and parallel collection modes:
+        - Sequential: One symbol at a time (slower but simpler)
+        - Parallel: Interleaves API calls across symbols (faster, uses quota efficiently)
 
         Args:
             symbols: List of symbols to collect (e.g., ["SPY", "QQQ", "IWM"])
             start_date: Start date YYYY-MM-DD
             end_date: End date YYYY-MM-DD
             skip_existing: Skip dates that already have data
+            parallel: Use parallel collection (interleaved API calls) - faster
 
         Returns:
             Complete collection summary
         """
+        if parallel:
+            return await self._collect_multi_symbol_parallel(symbols, start_date, end_date, skip_existing)
+        else:
+            return await self._collect_multi_symbol_sequential(symbols, start_date, end_date, skip_existing)
+
+    async def _collect_multi_symbol_sequential(
+        self,
+        symbols: List[str],
+        start_date: str,
+        end_date: str,
+        skip_existing: bool = True,
+    ) -> Dict:
+        """Collect symbols sequentially (one at a time)."""
         overall_summary = {
             "symbols": symbols,
             "start_date": start_date,
@@ -392,6 +411,7 @@ class HistoricalOptionsCollector:
             "total_api_calls": 0,
             "total_successful": 0,
             "total_failed": 0,
+            "mode": "sequential",
         }
 
         for symbol in symbols:
@@ -416,24 +436,199 @@ class HistoricalOptionsCollector:
             overall_summary["total_successful"] += self.stats["successful_calls"]
             overall_summary["total_failed"] += self.stats["failed_calls"]
 
-        overall_summary["collection_end"] = now_iso()
+        return self._finalize_collection_summary(overall_summary)
+
+    async def _collect_multi_symbol_parallel(
+        self,
+        symbols: List[str],
+        start_date: str,
+        end_date: str,
+        skip_existing: bool = True,
+    ) -> Dict:
+        """Collect symbols in parallel using interleaved API calls.
+
+        This mode is much faster because it shares the 900 calls/min quota across
+        multiple symbols, avoiding the sequential bottleneck.
+
+        Example:
+            SPY 2024-01-01 → QQQ 2024-01-01 → IWM 2024-01-01 → SPY 2024-01-02 → ...
+            (Instead of: SPY 2024-01-01 to 2024-10-16 → then QQQ → then IWM)
+        """
+        overall_summary = {
+            "symbols": symbols,
+            "start_date": start_date,
+            "end_date": end_date,
+            "storage_backend": "sqlite" if self.use_sqlite else "pickle",
+            "collection_start": now_iso(),
+            "symbol_summaries": {
+                sym: {
+                    "symbol": sym,
+                    "total_dates": 0,
+                    "to_collect": 0,
+                    "completed_dates": 0,
+                    "failed_dates": 0,
+                    "skipped_dates": 0,
+                }
+                for sym in symbols
+            },
+            "total_api_calls": 0,
+            "total_successful": 0,
+            "total_failed": 0,
+            "mode": "parallel",
+        }
+
+        # Initialize symbol iterators with remaining dates
+        symbol_iterators = {}
+        for symbol in symbols:
+            if skip_existing:
+                remaining = self._get_missing_dates(symbol, start_date, end_date)
+                total = len(self.get_trading_dates(start_date, end_date))
+            else:
+                remaining = self.get_trading_dates(start_date, end_date)
+                total = len(remaining)
+
+            symbol_iterators[symbol] = {
+                "dates": iter(remaining),
+                "remaining": remaining,
+                "total": total,
+                "completed": 0,
+                "failed": 0,
+                "skipped": 0,
+            }
+
+            self.logger.info(f"[{symbol}] Found {total} trading dates, {len(remaining)} need collection")
+            overall_summary["symbol_summaries"][symbol]["total_dates"] = total
+            overall_summary["symbol_summaries"][symbol]["to_collect"] = len(remaining)
+
+        # Interleave collection across symbols
+        active_tasks = {}
+
+        for symbol in symbols:
+            try:
+                trade_date = next(symbol_iterators[symbol]["dates"])
+                active_tasks[symbol] = {
+                    "trade_date": trade_date,
+                    "index": symbol_iterators[symbol]["skipped"] + symbol_iterators[symbol]["completed"] + 1,
+                }
+            except StopIteration:
+                pass
+
+        self.logger.info(f"\n{'='*60}")
+        self.logger.info(f"Starting parallel collection for {len(symbols)} symbols")
+        self.logger.info(f"{'='*60}\n")
+
+        call_count = 0
+
+        while active_tasks:
+            # Process next symbol in rotation
+            for symbol in list(active_tasks.keys()):
+                if symbol not in active_tasks:
+                    continue
+
+                task = active_tasks[symbol]
+                trade_date = task["trade_date"]
+
+                try:
+                    # Rate limiting
+                    if self.stats["last_call_time"]:
+                        elapsed = time.time() - self.stats["last_call_time"]
+                        if elapsed < self.call_interval:
+                            await asyncio.sleep(self.call_interval - elapsed)
+
+                    # Double-check cache
+                    if skip_existing and self._has_cached_data(symbol, trade_date):
+                        self.logger.debug(f"[{symbol}] Already have {trade_date}")
+                        overall_summary["symbol_summaries"][symbol]["skipped_dates"] += 1
+                    else:
+                        # Fetch and store
+                        self.logger.info(
+                            f"[{symbol}] Fetching {trade_date} ({task['index']}/{symbol_iterators[symbol]['total']})"
+                        )
+
+                        self.stats["last_call_time"] = time.time()
+                        options_data = self.client.fetch_historical_options(
+                            symbol, trade_date, cache_result=not self.use_sqlite
+                        )
+                        self.stats["total_calls"] += 1
+                        call_count += 1
+
+                        is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
+
+                        if is_valid:
+                            stored = self._store_data(symbol, trade_date, options_data)
+                            if stored:
+                                self.stats["successful_calls"] += 1
+                                overall_summary["symbol_summaries"][symbol]["completed_dates"] += 1
+                                self.logger.info(f"[{symbol}] Stored {len(options_data)} options for {trade_date}")
+                            else:
+                                self.stats["failed_calls"] += 1
+                                overall_summary["symbol_summaries"][symbol]["failed_dates"] += 1
+                        else:
+                            self.stats["failed_calls"] += 1
+                            overall_summary["symbol_summaries"][symbol]["failed_dates"] += 1
+                            self.logger.warning(f"[{symbol}] Invalid data for {trade_date}: {reason}")
+
+                    # Log progress every 10 calls across all symbols
+                    if call_count % 10 == 0:
+                        self._log_parallel_status(symbol_iterators)
+                        if self.use_sqlite:
+                            stats = self.db.get_database_stats()
+                            self.logger.info(
+                                f"Database: {stats.get('total_options_records', 0):,} records, {stats.get('db_size_mb', 0):.2f} MB\n"
+                            )
+
+                except Exception as e:
+                    self.logger.error(f"[{symbol}] Error on {trade_date}: {e}")
+                    overall_summary["symbol_summaries"][symbol]["failed_dates"] += 1
+
+                # Load next date for this symbol
+                try:
+                    next_date = next(symbol_iterators[symbol]["dates"])
+                    task["trade_date"] = next_date
+                    task["index"] += 1
+                except StopIteration:
+                    del active_tasks[symbol]
+                    self.logger.info(f"\n[{symbol}] Collection complete!\n")
+
+        overall_summary["total_api_calls"] = self.stats["total_calls"]
+        overall_summary["total_successful"] = self.stats["successful_calls"]
+        overall_summary["total_failed"] = self.stats["failed_calls"]
+
+        return self._finalize_collection_summary(overall_summary)
+
+    def _log_parallel_status(self, symbol_iterators: Dict):
+        """Log status for parallel collection."""
+        self.logger.info("\n--- Parallel Collection Status ---")
+        for sym, info in symbol_iterators.items():
+            completed = info["completed"] if "completed" in info else 0
+            total = info["total"]
+            pct = (completed / total * 100) if total > 0 else 0
+            self.logger.info(f"  {sym}: {completed}/{total} ({pct:.1f}%)")
+        self.logger.info(
+            f"API Stats: {self.stats['total_calls']} total calls, {self.stats['cached_hits']} cache hits\n"
+        )
+
+    def _finalize_collection_summary(self, summary: Dict) -> Dict:
+        """Finalize collection summary with database stats."""
+        summary["collection_end"] = now_iso()
 
         # Add final storage statistics
         if self.use_sqlite:
-            overall_summary["final_db_stats"] = self.db.get_database_stats()
+            summary["final_db_stats"] = self.db.get_database_stats()
         else:
-            overall_summary["final_cache_stats"] = self._get_legacy_cache_info()
+            summary["final_cache_stats"] = self._get_legacy_cache_info()
 
         # Log final status
         self.logger.info(f"\n{'='*60}")
         self.logger.info("COLLECTION COMPLETE")
         self.logger.info(f"{'='*60}")
-        self.logger.info(f"Total API calls: {overall_summary['total_api_calls']}")
-        self.logger.info(f"Successful: {overall_summary['total_successful']}")
-        self.logger.info(f"Failed: {overall_summary['total_failed']}")
+        self.logger.info(f"Mode: {summary.get('mode', 'sequential')}")
+        self.logger.info(f"Total API calls: {summary['total_api_calls']}")
+        self.logger.info(f"Successful: {summary['total_successful']}")
+        self.logger.info(f"Failed: {summary['total_failed']}")
 
         if self.use_sqlite:
-            stats = overall_summary["final_db_stats"]
+            stats = summary["final_db_stats"]
             self.logger.info(f"Database: {stats.get('total_options_records', 0):,} records")
             self.logger.info(f"Database size: {stats.get('db_size_mb', 0):.2f} MB")
 
@@ -441,10 +636,10 @@ class HistoricalOptionsCollector:
         summary_path = (self.db.db_path.parent if self.use_sqlite else self.cache.base_dir) / "collection_summary.json"
 
         with open(summary_path, "w") as f:
-            json.dump(overall_summary, f, indent=2, default=str)
+            json.dump(summary, f, indent=2, default=str)
 
         self.logger.info(f"Summary saved to {summary_path}")
-        return overall_summary
+        return summary
 
     def _get_legacy_cache_info(self) -> Dict:
         """Get storage info for legacy pickle cache."""
