@@ -66,7 +66,7 @@ import pandas as pd
 from autogen_core.tools import FunctionTool
 
 # Project imports - only tools actually used
-from src.cache import UnifiedCacheManager
+from src.cache import SQLiteOptionsManager, UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
@@ -88,7 +88,9 @@ ANALYSIS_AGENT = "analysis"
 ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 
 # Initialize shared components
-cache_manager = UnifiedCacheManager()
+# SQLite is primary storage (Issue #147), UnifiedCacheManager is legacy fallback
+sqlite_options = SQLiteOptionsManager(db_path=".cache/options_historical.db")
+cache_manager = UnifiedCacheManager()  # Legacy fallback
 alpha_vantage_client = AlphaVantageGEXClient()
 live_gex = LiveGEXInterface()
 validator = OptionsDataValidator()
@@ -99,12 +101,17 @@ validator = OptionsDataValidator()
 
 
 def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache: bool = True):
-    """Fetch options data from cache or API.
+    """Fetch options data from SQLite database, legacy cache, or API.
+
+    Data source priority:
+    1. SQLite database (options_historical.db) - Primary (Issue #147)
+    2. Legacy pickle cache (UnifiedCacheManager) - Fallback
+    3. Alpha Vantage API - Live fetch and store in SQLite
 
     Args:
         symbol: Stock symbol (SPY, SPX, etc.)
         trading_date: Date in YYYY-MM-DD format (defaults to latest)
-        use_cache: Whether to check cache first
+        use_cache: Whether to check cache/database first
 
     Returns:
         Dictionary with options DataFrame and metadata
@@ -122,30 +129,43 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
                 "message": f"Invalid trading date: {trading_date}. Must be a past/current business day.",
             }
 
-        # Check cache first
         if use_cache:
-            cached_data = cache_manager.get_options_data(symbol, trading_date)
-            if cached_data is not None:
-                logger.info(f"Cache hit for {symbol} options on {trading_date}")
-                # Filter out zero volume/OI strikes
-                filtered_data = filter_options_data(cached_data)
+            # 1. Check SQLite database first (primary storage)
+            sqlite_data = sqlite_options.get_options_chain(symbol, trading_date)
+            if sqlite_data is not None and not sqlite_data.empty:
+                logger.info(f"SQLite hit for {symbol} options on {trading_date}")
+                filtered_data = filter_options_data(sqlite_data)
                 return {
                     "status": "success",
-                    "source": "cache",
+                    "source": "sqlite",
                     "data": filtered_data,
                     "symbol": symbol,
                     "date": trading_date,
                 }
 
-        # Try Alpha Vantage API
+            # 2. Check legacy pickle cache (fallback)
+            cached_data = cache_manager.get_options_data(symbol, trading_date)
+            if cached_data is not None and not cached_data.empty:
+                logger.info(f"Legacy cache hit for {symbol} options on {trading_date}")
+                # Migrate to SQLite for future use
+                sqlite_options.store_options_chain(symbol, trading_date, cached_data)
+                filtered_data = filter_options_data(cached_data)
+                return {
+                    "status": "success",
+                    "source": "legacy_cache",
+                    "data": filtered_data,
+                    "symbol": symbol,
+                    "date": trading_date,
+                }
+
+        # 3. Try Alpha Vantage API
         logger.info(f"Fetching {symbol} options from Alpha Vantage")
         api_data = alpha_vantage_client.fetch_historical_options(symbol, trading_date)
 
         if api_data is not None and not api_data.empty:
-            # Filter out zero volume/OI strikes
+            # Store in SQLite (primary) - no longer storing in pickle
+            sqlite_options.store_options_chain(symbol, trading_date, api_data)
             filtered_data = filter_options_data(api_data)
-            # Cache the original data, return filtered
-            cache_manager.store_options_data(symbol, trading_date, api_data)
             return {
                 "status": "success",
                 "source": "alpha_vantage",
@@ -154,9 +174,9 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
                 "date": trading_date,
             }
 
-        # No fallback to sample data - return error
-        logger.error(f"No live options data available for {symbol} on {trading_date}")
-        return {"status": "error", "message": f"No live options data available for {symbol} on {trading_date}"}
+        # No data available
+        logger.error(f"No options data available for {symbol} on {trading_date}")
+        return {"status": "error", "message": f"No options data available for {symbol} on {trading_date}"}
 
     except Exception as e:
         logger.error(f"Error fetching options data: {e}")

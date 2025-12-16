@@ -2,6 +2,8 @@
 
 Tools for analyzing options chain data with focus on patterns like Short Put Arbitrage and other institutional flow
 behaviors.
+
+Issue #180: Updated to use SQLiteOptionsManager for options data.
 """
 
 import logging
@@ -264,13 +266,11 @@ def test_with_alpha_vantage_demo():
     print("Testing Options Chain Analyzer with Alpha Vantage demo data...")
 
     try:
-        # Use the updated Alpha Vantage client
-        from src.cache.unified_cache import UnifiedCacheManager
+        # Use the updated Alpha Vantage client (Issue #180: Skip cache, fetch live only)
         from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
-        # Initialize client with cache
-        cache = UnifiedCacheManager()
-        client = AlphaVantageGEXClient(cache_manager=cache)
+        # Initialize client without cache (demo fetches live data)
+        client = AlphaVantageGEXClient(cache_manager=None)
 
         # Test the new fetch_historical_options method
         print("Fetching IBM options data...")

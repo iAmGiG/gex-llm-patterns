@@ -9,6 +9,8 @@ Production-ready version with:
 - Memory monitoring
 - Connection pooling
 
+Issue #180: Migrated to SQLiteOptionsManager for options data.
+
 Builds comprehensive historical GEX database by combining:
 1. Historical options data collection
 2. GEX calculations for each trading day
@@ -32,6 +34,7 @@ import numpy as np
 import pandas as pd
 import psutil
 
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.fed_data_integration import FedDataIntegration
 from src.data_sources.historical_collector import HistoricalOptionsCollector
@@ -71,16 +74,20 @@ class HistoricalGEXDatabaseBuilder:
     - Connection pooling for database efficiency
     """
 
-    def __init__(self, database_path=None, cache_manager=None):
+    def __init__(self, database_path=None, cache_manager=None, sqlite_options_manager=None):
         """Initialize enhanced GEX database builder.
 
         Args:
             database_path: Path to SQLite database file
-            cache_manager: UnifiedCacheManager instance
+            cache_manager: Legacy UnifiedCacheManager (deprecated for options)
+            sqlite_options_manager: SQLiteOptionsManager for options data (preferred)
         """
         self.cache = cache_manager or UnifiedCacheManager()
         self.collector = HistoricalOptionsCollector(cache_manager=self.cache)
         self.gex_calc = GEXCalculator()
+
+        # Issue #180: Use SQLiteOptionsManager as primary options data source
+        self.sqlite_options = sqlite_options_manager or SQLiteOptionsManager()
 
         # Initialize Fed integration if available
         try:
@@ -1108,8 +1115,8 @@ class HistoricalGEXDatabaseBuilder:
 
                         self.logger.info(f"Processing {symbol} {trade_date} ({i+1}/{len(trading_dates)})")
 
-                        # Get options data
-                        options_data = self.cache.get_options_data(symbol, trade_date)
+                        # Get options data from SQLite (Issue #180)
+                        options_data = self.sqlite_options.get_options_chain(symbol, trade_date)
 
                         if options_data is None or options_data.empty:
                             self.logger.warning(f"No options data available for {symbol} {trade_date}")

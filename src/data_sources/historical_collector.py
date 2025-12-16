@@ -1,7 +1,10 @@
 """Historical Options Data Collection Service.
 
-Systematically collects historical options chains from Alpha Vantage API with rate limiting, progress tracking, and
-resume capability.
+Systematically collects historical options chains from Alpha Vantage API
+with SQLite storage, rate limiting, progress tracking, and resume capability.
+
+Issue #147: Store raw options data in database
+Issue #179: Paper 3 multi-symbol data collection
 """
 
 import asyncio
@@ -11,14 +14,13 @@ import logging
 import os
 import sys
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import pandas as pd
 
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-
-# Use date_utils for standardized datetime operations
 from src.utils.date_utils import now_iso, today_str
 
 # Add project root to path for imports
@@ -29,30 +31,52 @@ class HistoricalOptionsCollector:
     """Service to systematically collect historical options data.
 
     Features:
-    - Rate-limited API calls (75/min for Entry Premium)
-    - Progress tracking and resume capability
+    - SQLite storage (primary) with pickle fallback
+    - Rate-limited API calls (1000/min for Premium, 75/min for standard)
+    - Progress tracking in database with resume capability
     - Error handling and retry logic
-    - Multiple symbol support (SPY, SPX, QQQ)
-    - Data quality validation
+    - Multiple symbol support (SPY, QQQ, IWM)
+    - Data quality validation and scoring
+
+    Example:
+        >>> collector = HistoricalOptionsCollector()
+        >>> await collector.collect_symbol_historical("SPY", "2020-01-01", "2024-12-16")
     """
 
-    def __init__(self, cache_manager=None, rate_limit_per_minute=70):
+    def __init__(
+        self,
+        db_path: str = ".cache/options_historical.db",
+        use_sqlite: bool = True,
+        rate_limit_per_minute: int = 900,  # Buffer below 1000 premium limit
+    ):
         """Initialize historical data collector.
 
         Args:
-            cache_manager: UnifiedCacheManager instance
-            rate_limit_per_minute: API calls per minute (buffer below 75 limit)
+            db_path: Path to SQLite database (when use_sqlite=True)
+            use_sqlite: Use SQLite storage (True) or legacy pickle (False)
+            rate_limit_per_minute: API calls per minute (900 for premium buffer)
         """
-        self.cache = cache_manager or UnifiedCacheManager()
-        self.client = AlphaVantageGEXClient(cache_manager=self.cache)
+        self.use_sqlite = use_sqlite
         self.rate_limit = rate_limit_per_minute
-        self.call_interval = 60.0 / rate_limit_per_minute  # Seconds between calls
+        self.call_interval = 60.0 / rate_limit_per_minute
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-        # Progress tracking
-        self.progress_file = self.cache.base_dir / "collection_progress.json"
+        # Initialize storage backend
+        if use_sqlite:
+            self.db = SQLiteOptionsManager(db_path=db_path)
+            self.cache = None  # Lazy load if needed
+            self.logger.info(f"Using SQLite storage: {db_path}")
+        else:
+            self.cache = UnifiedCacheManager()
+            self.db = None
+            self.logger.info("Using legacy pickle storage")
+
+        # Initialize API client (shares cache if using pickle)
+        self.client = AlphaVantageGEXClient(cache_manager=self.cache if not use_sqlite else None)
+
+        # Collection statistics
         self.stats = {
             "total_calls": 0,
             "successful_calls": 0,
@@ -62,8 +86,8 @@ class HistoricalOptionsCollector:
             "last_call_time": None,
         }
 
-    def get_trading_dates(self, start_date, end_date):
-        """Generate list of trading dates between start and end dates.
+    def get_trading_dates(self, start_date: str, end_date: str) -> List[str]:
+        """Generate list of trading dates (weekdays) between start and end dates.
 
         Args:
             start_date: Start date in YYYY-MM-DD format
@@ -86,26 +110,7 @@ class HistoricalOptionsCollector:
 
         return trading_dates
 
-    def load_progress(self):
-        """Load collection progress from file."""
-        if self.progress_file.exists():
-            try:
-                with open(self.progress_file, "r") as f:
-                    return json.load(f)
-            except Exception as e:
-                self.logger.warning(f"Could not load progress file: {e}")
-
-        return {"completed_dates": [], "failed_dates": [], "current_symbol": None, "symbols_completed": []}
-
-    def save_progress(self, progress: Dict):
-        """Save collection progress to file."""
-        try:
-            with open(self.progress_file, "w") as f:
-                json.dump(progress, f, indent=2)
-        except Exception as e:
-            self.logger.error(f"Could not save progress: {e}")
-
-    def validate_options_data(self, data: pd.DataFrame, symbol, date):
+    def validate_options_data(self, data: pd.DataFrame, symbol: str, date: str) -> tuple:
         """Validate collected options data quality.
 
         Args:
@@ -116,17 +121,25 @@ class HistoricalOptionsCollector:
         Returns:
             (is_valid, reason) tuple
         """
-        if data.empty:
+        if data is None or data.empty:
             return False, "Empty DataFrame"
 
-        required_columns = ["strike", "expiration", "bid", "ask", "type", "open_interest"]
-        missing_cols = [col for col in required_columns if col not in data.columns]
-        if missing_cols:
-            return False, f"Missing columns: {missing_cols}"
+        # Check for required columns (flexible naming)
+        required_cols_options = [
+            ["strike"],
+            ["expiration"],
+            ["bid", "ask"],
+            ["type", "option_type"],
+            ["open_interest"],
+        ]
 
-        # Check for reasonable number of strikes
+        for col_options in required_cols_options:
+            if not any(col in data.columns for col in col_options):
+                return False, f"Missing one of columns: {col_options}"
+
+        # Check for reasonable number of contracts
         if len(data) < 10:
-            return False, f"Too few strikes: {len(data)}"
+            return False, f"Too few contracts: {len(data)}"
 
         # Check for reasonable strike range
         strikes = data["strike"].values
@@ -137,37 +150,127 @@ class HistoricalOptionsCollector:
 
         return True, "Valid"
 
-    async def collect_symbol_historical(self, symbol, start_date, end_date):
+    def _has_cached_data(self, symbol: str, trading_date: str) -> bool:
+        """Check if data already exists in storage.
+
+        Args:
+            symbol: Stock symbol
+            trading_date: Trading date
+
+        Returns:
+            True if data exists
+        """
+        if self.use_sqlite:
+            return self.db.has_options_data(symbol, trading_date)
+        else:
+            cached = self.cache.get_options_data(symbol, trading_date)
+            return cached is not None and not cached.empty
+
+    def _store_data(self, symbol: str, trading_date: str, data: pd.DataFrame) -> bool:
+        """Store options data in the appropriate backend.
+
+        Args:
+            symbol: Stock symbol
+            trading_date: Trading date
+            data: Options DataFrame
+
+        Returns:
+            True if stored successfully
+        """
+        if self.use_sqlite:
+            count = self.db.store_options_chain(symbol, trading_date, data)
+            return count > 0
+        else:
+            return self.cache.store_options_data(symbol, trading_date, data)
+
+    def _get_missing_dates(self, symbol: str, start_date: str, end_date: str) -> List[str]:
+        """Get dates that still need collection.
+
+        Args:
+            symbol: Stock symbol
+            start_date: Start date
+            end_date: End date
+
+        Returns:
+            List of missing trading dates
+        """
+        if self.use_sqlite:
+            return self.db.get_missing_dates(symbol, start_date, end_date)
+        else:
+            # Legacy: use JSON progress file
+            all_dates = self.get_trading_dates(start_date, end_date)
+            progress = self._load_legacy_progress()
+            completed = set(progress.get("completed_dates", []))
+            return [d for d in all_dates if d not in completed]
+
+    def _load_legacy_progress(self) -> Dict:
+        """Load progress from legacy JSON file."""
+        if self.cache is None:
+            return {"completed_dates": [], "failed_dates": []}
+
+        progress_file = self.cache.base_dir / "collection_progress.json"
+        if progress_file.exists():
+            try:
+                with open(progress_file, "r") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"completed_dates": [], "failed_dates": []}
+
+    def _save_legacy_progress(self, progress: Dict):
+        """Save progress to legacy JSON file."""
+        if self.cache is None:
+            return
+
+        progress_file = self.cache.base_dir / "collection_progress.json"
+        try:
+            with open(progress_file, "w") as f:
+                json.dump(progress, f, indent=2)
+        except Exception as e:
+            self.logger.error(f"Could not save progress: {e}")
+
+    async def collect_symbol_historical(
+        self,
+        symbol: str,
+        start_date: str,
+        end_date: str,
+        skip_existing: bool = True,
+    ) -> Dict:
         """Collect historical options data for a single symbol.
 
         Args:
-            symbol: Symbol to collect (SPY, SPX, QQQ)
+            symbol: Symbol to collect (SPY, QQQ, IWM)
             start_date: Start date YYYY-MM-DD
             end_date: End date YYYY-MM-DD
+            skip_existing: Skip dates that already have data
 
         Returns:
             Collection summary dictionary
         """
         self.logger.info(f"Starting historical collection for {symbol}: {start_date} to {end_date}")
 
-        trading_dates = self.get_trading_dates(start_date, end_date)
-        progress = self.load_progress()
+        # Get dates that need collection
+        if skip_existing:
+            remaining_dates = self._get_missing_dates(symbol, start_date, end_date)
+            total_dates = len(self.get_trading_dates(start_date, end_date))
+        else:
+            remaining_dates = self.get_trading_dates(start_date, end_date)
+            total_dates = len(remaining_dates)
 
-        # Filter out already completed dates
-        remaining_dates = [d for d in trading_dates if d not in progress.get("completed_dates", [])]
-
-        self.logger.info(f"Found {len(trading_dates)} trading dates, {len(remaining_dates)} remaining")
+        self.logger.info(f"Found {total_dates} trading dates, {len(remaining_dates)} need collection")
 
         summary = {
             "symbol": symbol,
-            "total_dates": len(trading_dates),
+            "total_dates": total_dates,
+            "to_collect": len(remaining_dates),
             "completed_dates": 0,
             "failed_dates": 0,
-            "skipped_dates": 0,
+            "skipped_dates": total_dates - len(remaining_dates),
             "start_time": now_iso(),
         }
 
         self.stats["start_time"] = now_iso()
+        legacy_progress = self._load_legacy_progress() if not self.use_sqlite else None
 
         for i, trade_date in enumerate(remaining_dates):
             try:
@@ -176,132 +279,105 @@ class HistoricalOptionsCollector:
                     elapsed = time.time() - self.stats["last_call_time"]
                     if elapsed < self.call_interval:
                         wait_time = self.call_interval - elapsed
-                        self.logger.info(f"Rate limiting: waiting {wait_time:.1f}s")
                         await asyncio.sleep(wait_time)
 
-                # Check if we already have cached options data
-                cached_data = self.cache.get_options_data(symbol, trade_date)
-
-                if cached_data is not None and not cached_data.empty:
-                    self.logger.info(
-                        f"Using cached options data for {symbol} {trade_date} ({len(cached_data)} options)"
-                    )
+                # Double-check cache (in case of concurrent collection)
+                if skip_existing and self._has_cached_data(symbol, trade_date):
+                    self.logger.debug(f"Already have data for {symbol} {trade_date}")
                     self.stats["cached_hits"] += 1
                     summary["skipped_dates"] += 1
+                    continue
 
-                    # Still validate cached data quality
-                    is_valid, reason = self.validate_options_data(cached_data, symbol, trade_date)
-                    if not is_valid:
-                        self.logger.warning(f"Cached data quality issue for {trade_date}: {reason}")
+                # Make API call
+                self.logger.info(f"Fetching {symbol} options for {trade_date} " f"({i+1}/{len(remaining_dates)})")
 
-                else:
-                    # Make API call
-                    self.logger.info(f"Fetching {symbol} options for {trade_date} ({i+1}/{len(remaining_dates)})")
+                self.stats["last_call_time"] = time.time()
+                # Skip legacy cache since we handle SQLite storage ourselves
+                options_data = self.client.fetch_historical_options(
+                    symbol, trade_date, cache_result=not self.use_sqlite
+                )
+                self.stats["total_calls"] += 1
 
-                    self.stats["last_call_time"] = time.time()
-                    options_data = self.client.fetch_historical_options(symbol, trade_date)
-                    self.stats["total_calls"] += 1
+                # Validate data quality
+                is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
 
-                    # Validate data quality
-                    is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
+                if is_valid:
+                    # Store data
+                    stored = self._store_data(symbol, trade_date, options_data)
 
-                    if is_valid:
-                        # Store in cache using proper method
-                        cache_stored = self.cache.store_options_data(symbol, trade_date, options_data)
+                    if stored:
+                        self.stats["successful_calls"] += 1
+                        summary["completed_dates"] += 1
+                        self.logger.info(f"Stored {len(options_data)} options for {symbol} {trade_date}")
 
-                        if cache_stored:
-                            self.stats["successful_calls"] += 1
-                            summary["completed_dates"] += 1
-                            progress["completed_dates"].append(trade_date)
-                            self.logger.info(
-                                f"✅ Successfully collected and cached {len(options_data)} options for {trade_date}"
-                            )
-                        else:
-                            self.logger.warning(f"⚠️ Data collected but cache storage failed for {trade_date}")
-                            self.stats["successful_calls"] += 1
-                            summary["completed_dates"] += 1
-                            progress["completed_dates"].append(trade_date)
+                        # Update legacy progress if using pickle
+                        if legacy_progress is not None:
+                            legacy_progress["completed_dates"].append(trade_date)
                     else:
+                        self.logger.warning(f"Storage failed for {symbol} {trade_date}")
                         self.stats["failed_calls"] += 1
                         summary["failed_dates"] += 1
-                        progress["failed_dates"].append(trade_date)
-                        self.logger.warning(f"❌ Invalid data for {trade_date}: {reason}")
+                else:
+                    self.stats["failed_calls"] += 1
+                    summary["failed_dates"] += 1
+                    self.logger.warning(f"Invalid data for {symbol} {trade_date}: {reason}")
 
-                # Save progress every 10 successful calls
-                if (summary["completed_dates"] + summary["skipped_dates"]) % 10 == 0:
-                    progress["current_symbol"] = symbol
-                    self.save_progress(progress)
-                    self.log_status(summary)
+                    if legacy_progress is not None:
+                        legacy_progress["failed_dates"].append(trade_date)
+
+                # Log progress periodically
+                if (i + 1) % 10 == 0:
+                    self._log_status(summary)
+                    if legacy_progress is not None:
+                        self._save_legacy_progress(legacy_progress)
 
             except Exception as e:
                 self.logger.error(f"Error collecting {symbol} {trade_date}: {e}")
                 summary["failed_dates"] += 1
-                progress["failed_dates"].append(trade_date)
+                if legacy_progress is not None:
+                    legacy_progress["failed_dates"].append(trade_date)
 
         # Final progress save
-        progress["symbols_completed"].append(symbol)
-        progress["current_symbol"] = None
-        self.save_progress(progress)
+        if legacy_progress is not None:
+            legacy_progress["symbols_completed"] = legacy_progress.get("symbols_completed", []) + [symbol]
+            self._save_legacy_progress(legacy_progress)
 
         summary["end_time"] = now_iso()
         self.logger.info(f"Completed {symbol}: {summary}")
 
         return summary
 
-    def log_status(self, summary: Dict):
-        """Log current collection status with cache statistics."""
+    def _log_status(self, summary: Dict):
+        """Log current collection status."""
         total_processed = summary["completed_dates"] + summary["skipped_dates"] + summary["failed_dates"]
-        success_rate = (summary["completed_dates"] / total_processed * 100) if total_processed > 0 else 0
-        cache_hit_rate = (self.stats["cached_hits"] / total_processed * 100) if total_processed > 0 else 0
+        success_rate = (summary["completed_dates"] / max(1, summary["to_collect"])) * 100
 
         self.logger.info(
-            f"Progress: {total_processed}/{summary['total_dates']} dates " f"({success_rate:.1f}% success rate)"
+            f"Progress: {total_processed}/{summary['total_dates']} dates " f"({success_rate:.1f}% new data collected)"
         )
-        self.logger.info(
-            f"API Stats: {self.stats['total_calls']} calls, "
-            f"{self.stats['cached_hits']} cache hits ({cache_hit_rate:.1f}% cache hit rate)"
-        )
+        self.logger.info(f"API Stats: {self.stats['total_calls']} calls, " f"{self.stats['cached_hits']} cache hits")
 
-        # Get cache statistics
-        cache_summary = self.cache.get_options_cache_summary()
-        if cache_summary:
-            total_cached_options = sum(cache_summary.get("options_count_by_symbol", {}).values())
+        # Show database stats if using SQLite
+        if self.use_sqlite:
+            stats = self.db.get_database_stats()
             self.logger.info(
-                f"Cache: {len(cache_summary.get('cached_dates', []))} dates, "
-                f"{total_cached_options:,} total options cached"
+                f"Database: {stats.get('total_options_records', 0):,} records, " f"{stats.get('db_size_mb', 0):.2f} MB"
             )
 
-    def get_cache_storage_info(self):
-        """Get detailed cache storage information."""
-        cache_summary = self.cache.get_options_cache_summary()
-
-        # Calculate storage estimates
-        cache_dir = self.cache.base_dir / "options"
-        total_size = 0
-        file_count = 0
-
-        if cache_dir.exists():
-            for file_path in cache_dir.rglob("*.pkl"):
-                try:
-                    total_size += file_path.stat().st_size
-                    file_count += 1
-                except OSError:
-                    pass
-
-        return {
-            "cache_summary": cache_summary,
-            "storage_mb": total_size / (1024 * 1024),
-            "file_count": file_count,
-            "avg_file_size_kb": (total_size / file_count / 1024) if file_count > 0 else 0,
-        }
-
-    async def collect_multi_symbol_historical(self, symbols: List[str], start_date, end_date):
+    async def collect_multi_symbol_historical(
+        self,
+        symbols: List[str],
+        start_date: str,
+        end_date: str,
+        skip_existing: bool = True,
+    ) -> Dict:
         """Collect historical data for multiple symbols.
 
         Args:
-            symbols: List of symbols to collect
+            symbols: List of symbols to collect (e.g., ["SPY", "QQQ", "IWM"])
             start_date: Start date YYYY-MM-DD
             end_date: End date YYYY-MM-DD
+            skip_existing: Skip dates that already have data
 
         Returns:
             Complete collection summary
@@ -310,6 +386,7 @@ class HistoricalOptionsCollector:
             "symbols": symbols,
             "start_date": start_date,
             "end_date": end_date,
+            "storage_backend": "sqlite" if self.use_sqlite else "pickle",
             "collection_start": now_iso(),
             "symbol_summaries": {},
             "total_api_calls": 0,
@@ -318,62 +395,142 @@ class HistoricalOptionsCollector:
         }
 
         for symbol in symbols:
-            self.logger.info(f"\n{'='*50}")
+            self.logger.info(f"\n{'='*60}")
             self.logger.info(f"Starting collection for {symbol}")
-            self.logger.info(f"{'='*50}")
+            self.logger.info(f"{'='*60}")
 
-            symbol_summary = await self.collect_symbol_historical(symbol, start_date, end_date)
+            # Reset stats for each symbol
+            self.stats = {
+                "total_calls": 0,
+                "successful_calls": 0,
+                "failed_calls": 0,
+                "cached_hits": 0,
+                "start_time": None,
+                "last_call_time": None,
+            }
+
+            symbol_summary = await self.collect_symbol_historical(symbol, start_date, end_date, skip_existing)
+
             overall_summary["symbol_summaries"][symbol] = symbol_summary
             overall_summary["total_api_calls"] += self.stats["total_calls"]
             overall_summary["total_successful"] += self.stats["successful_calls"]
             overall_summary["total_failed"] += self.stats["failed_calls"]
 
-            # Reset stats for next symbol
-            self.stats = {k: 0 for k in self.stats if k.endswith("_calls")}
-
         overall_summary["collection_end"] = now_iso()
 
-        # Add final cache statistics
-        cache_info = self.get_cache_storage_info()
-        overall_summary["final_cache_stats"] = cache_info
+        # Add final storage statistics
+        if self.use_sqlite:
+            overall_summary["final_db_stats"] = self.db.get_database_stats()
+        else:
+            overall_summary["final_cache_stats"] = self._get_legacy_cache_info()
 
-        # Log final cache status
-        self.logger.info(f"Final cache statistics:")
-        self.logger.info(f"  Storage: {cache_info['storage_mb']:.1f} MB in {cache_info['file_count']} files")
-        self.logger.info(f"  Average file size: {cache_info['avg_file_size_kb']:.1f} KB")
-        if cache_info["cache_summary"]:
-            total_options = sum(cache_info["cache_summary"].get("options_count_by_symbol", {}).values())
-            self.logger.info(f"  Total options cached: {total_options:,}")
+        # Log final status
+        self.logger.info(f"\n{'='*60}")
+        self.logger.info("COLLECTION COMPLETE")
+        self.logger.info(f"{'='*60}")
+        self.logger.info(f"Total API calls: {overall_summary['total_api_calls']}")
+        self.logger.info(f"Successful: {overall_summary['total_successful']}")
+        self.logger.info(f"Failed: {overall_summary['total_failed']}")
 
-        # Save final summary
-        summary_file = self.cache.base_dir / "historical_collection_summary.json"
-        with open(summary_file, "w") as f:
-            json.dump(overall_summary, f, indent=2)
+        if self.use_sqlite:
+            stats = overall_summary["final_db_stats"]
+            self.logger.info(f"Database: {stats.get('total_options_records', 0):,} records")
+            self.logger.info(f"Database size: {stats.get('db_size_mb', 0):.2f} MB")
 
-        self.logger.info(f"Collection complete! Summary saved to {summary_file}")
+        # Save summary
+        summary_path = (self.db.db_path.parent if self.use_sqlite else self.cache.base_dir) / "collection_summary.json"
+
+        with open(summary_path, "w") as f:
+            json.dump(overall_summary, f, indent=2, default=str)
+
+        self.logger.info(f"Summary saved to {summary_path}")
         return overall_summary
+
+    def _get_legacy_cache_info(self) -> Dict:
+        """Get storage info for legacy pickle cache."""
+        if self.cache is None:
+            return {}
+
+        cache_dir = self.cache.base_dir / "options"
+        total_size = 0
+        file_count = 0
+
+        if cache_dir.exists():
+            for file_path in cache_dir.rglob("*.pickle"):
+                try:
+                    total_size += file_path.stat().st_size
+                    file_count += 1
+                except OSError:
+                    pass
+
+        return {
+            "storage_mb": total_size / (1024 * 1024),
+            "file_count": file_count,
+            "avg_file_size_kb": (total_size / file_count / 1024) if file_count > 0 else 0,
+        }
+
+    def get_collection_status(self, symbol: str = None) -> Dict:
+        """Get current collection status and statistics.
+
+        Args:
+            symbol: Filter by symbol (None for all)
+
+        Returns:
+            Status dictionary with progress and statistics
+        """
+        if self.use_sqlite:
+            stats = self.db.get_database_stats()
+            progress = self.db.get_collection_progress(symbol)
+
+            return {
+                "storage": "sqlite",
+                "database_stats": stats,
+                "progress_summary": (
+                    {
+                        "completed": len(progress[progress["status"] == "completed"]),
+                        "failed": len(progress[progress["status"] == "failed"]),
+                        "pending": len(progress[progress["status"] == "pending"]),
+                    }
+                    if not progress.empty
+                    else {}
+                ),
+            }
+        else:
+            return {
+                "storage": "pickle",
+                "cache_stats": self._get_legacy_cache_info(),
+                "progress": self._load_legacy_progress(),
+            }
 
 
 async def main():
-    """Example usage of the historical collector."""
+    """Example usage of the historical collector with SQLite backend."""
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler("historical_collection.log"), logging.StreamHandler()],
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler("historical_collection.log"),
+            logging.StreamHandler(),
+        ],
     )
 
-    collector = HistoricalOptionsCollector()
+    # Initialize collector with SQLite backend (recommended)
+    collector = HistoricalOptionsCollector(
+        db_path=".cache/options_historical.db",
+        use_sqlite=True,
+        rate_limit_per_minute=900,  # Premium tier buffer
+    )
 
-    # Start with recent data (last 30 days) for testing
+    # Collect data for Paper 3 research
+    symbols = ["SPY", "QQQ", "IWM"]
+    start_date = "2020-01-01"
     end_date = today_str()
-    start_date = (datetime.date.today() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
-
-    # Start with SPY only for initial testing
-    symbols = ["SPY"]
 
     summary = await collector.collect_multi_symbol_historical(symbols, start_date, end_date)
-    print(f"Collection completed: {summary}")
+
+    print(f"\nCollection completed!")
+    print(f"Total records: {summary.get('final_db_stats', {}).get('total_options_records', 'N/A')}")
 
 
 if __name__ == "__main__":

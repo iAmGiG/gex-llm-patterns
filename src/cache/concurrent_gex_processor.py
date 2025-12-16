@@ -1,5 +1,8 @@
 """Concurrent GEX Processing System High-performance concurrent processing for multi-symbol, multi-date GEX
-calculations."""
+calculations.
+
+Issue #180: Migrated to SQLiteOptionsManager for options data.
+"""
 
 import datetime
 import logging
@@ -13,6 +16,7 @@ from src.utils.config_manager import get_config
 from src.utils.date_utils import now_iso
 
 from .gex_cache_manager import GEXCacheManager
+from .sqlite_options_manager import SQLiteOptionsManager
 from .unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)
@@ -45,12 +49,13 @@ class ConcurrentGEXProcessor:
     - Progress tracking and error handling
     """
 
-    def __init__(self, max_workers: Optional[int] = None, unified_cache_manager=None):
+    def __init__(self, max_workers: Optional[int] = None, unified_cache_manager=None, sqlite_options_manager=None):
         """Initialize concurrent processor.
 
         Args:
             max_workers: Maximum concurrent threads (auto-calculated if None, or from config)
-            unified_cache_manager: Existing cache manager (optional)
+            unified_cache_manager: Legacy cache manager (deprecated for options)
+            sqlite_options_manager: SQLiteOptionsManager for options data (preferred)
         """
         # Load configuration from centralized config system
         config = get_config()
@@ -70,7 +75,10 @@ class ConcurrentGEXProcessor:
 
         self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
 
-        # Use provided cache manager or create new one
+        # Issue #180: Use SQLiteOptionsManager as primary options data source
+        self.sqlite_options = sqlite_options_manager or SQLiteOptionsManager()
+
+        # Legacy cache manager (still used for GEX cache)
         if unified_cache_manager:
             self.cache_manager = unified_cache_manager
             self.gex_cache = (
@@ -269,6 +277,7 @@ class ConcurrentGEXProcessor:
         """Process GEX for single symbol/date combination.
 
         Internal method used by concurrent processing.
+        Issue #180: Now uses SQLiteOptionsManager as primary options source.
         """
         try:
             # Check cache first (unless forcing recalculation)
@@ -277,8 +286,8 @@ class ConcurrentGEXProcessor:
                 if cached_gex:
                     return {"status": "success", "cache_hit": True, "data": cached_gex}
 
-            # Get options data
-            options_data = self.cache_manager.get_options_data(symbol, trading_date)
+            # Get options data from SQLite (Issue #180)
+            options_data = self.sqlite_options.get_options_chain(symbol, trading_date)
 
             if options_data is None or options_data.empty:
                 logger.warning(f"No options data available for {symbol} {trading_date}")

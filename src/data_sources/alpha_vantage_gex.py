@@ -15,7 +15,6 @@ import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
-
 from src.cache import UnifiedCacheManager
 from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
@@ -94,13 +93,14 @@ class AlphaVantageGEXClient:
         self.call_timestamps.append(now)
         return True
 
-    def fetch_historical_options(self, symbol, date=None, datatype="json"):
+    def fetch_historical_options(self, symbol, date=None, datatype="json", cache_result=True):
         """Fetch full historical options chain for a specific trading date.
 
         Args:
             symbol: Underlying symbol (SPY, SPX, IBM, etc.)
             date: Trading date (YYYY-MM-DD). If None, uses previous trading day
             datatype: Response format ('json' or 'csv')
+            cache_result: Whether to cache result (False when caller handles storage)
 
         Returns:
             DataFrame with complete options chain for the trading date
@@ -169,8 +169,8 @@ class AlphaVantageGEXClient:
                 self.logger.warning(f"No options data returned for {symbol}" + (f" on {date}" if date else ""))
                 return df
 
-            # Cache the processed data (only for specific dates)
-            if date:
+            # Cache the processed data (only for specific dates, if requested)
+            if date and cache_result:
                 self.cache.store_options_data(symbol, date, df)
 
             self.logger.info(f"Successfully fetched {len(df)} option contracts")
