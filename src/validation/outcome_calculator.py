@@ -1,6 +1,7 @@
 """
 Outcome Calculator - Validates pattern predictions with forward-looking metrics
 Issue #80: Enhanced output structure for backtesting validation
+Issue #180: Migrated to SQLiteOptionsManager for options data
 
 Measures the market's subsequent behavior to validate pattern predictions.
 """
@@ -12,6 +13,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +29,15 @@ class OutcomeCalculator:
     4. Prediction materialization (did expected outcome occur?)
     """
 
-    def __init__(self, cache_manager=None):
+    def __init__(self, cache_manager=None, sqlite_options_manager=None):
         """
         Args:
-            cache_manager: UnifiedCacheManager instance for accessing historical data
+            cache_manager: Legacy UnifiedCacheManager (deprecated for options)
+            sqlite_options_manager: SQLiteOptionsManager for options data (preferred)
         """
         self.cache = cache_manager
+        # Use provided SQLiteOptionsManager or create one
+        self.sqlite_options = sqlite_options_manager or SQLiteOptionsManager()
 
     def calculate_forward_returns(self, symbol: str, date_str: str, horizons: List[int] = [1, 3]) -> Dict[str, float]:
         """Calculate forward returns for given horizons.
@@ -365,22 +371,23 @@ class OutcomeCalculator:
         return detection
 
     def _get_close_price(self, symbol: str, date_str: str) -> Optional[float]:
-        """Get closing price for a given date from cache."""
-        if self.cache is None:
-            return None
+        """Get closing price for a given date from database/cache.
 
+        Issue #180: Now uses SQLiteOptionsManager as primary source.
+        """
         try:
-            # Try to get from options data
-            options_data = self.cache.get_options_data(symbol, date_str)
+            # Method 1: Query SQLiteOptionsManager for underlying_price (PREFERRED)
+            # This is the new primary source after Issue #147 migration
+            options_data = self.sqlite_options.get_options_chain(symbol, date_str)
             if options_data is not None and not options_data.empty:
-                # Method 1: Check for explicit spot/underlying price columns
-                if "spot_price" in options_data.columns:
-                    return float(options_data["spot_price"].iloc[0])
-                elif "underlying_price" in options_data.columns:
-                    return float(options_data["underlying_price"].iloc[0])
+                # Check for explicit underlying price columns
+                if "underlying_price" in options_data.columns:
+                    price = options_data["underlying_price"].iloc[0]
+                    if price and not pd.isna(price):
+                        logger.debug(f"Retrieved underlying price {price:.2f} from SQLite for {date_str}")
+                        return float(price)
 
-            # Method 2: Query database for spot_price (PREFERRED - moved before deep ITM inference)
-            # Database was rebuilt Oct 11, 2025 with correct prices
+            # Method 2: Query GEX database for spot_price (historical data)
             try:
                 import sqlite3
 
@@ -396,17 +403,17 @@ class OutcomeCalculator:
 
                     if result and result[0]:
                         spot_price = float(result[0])
-                        logger.debug(f"Retrieved spot price {spot_price:.2f} from database for {date_str}")
+                        logger.debug(f"Retrieved spot price {spot_price:.2f} from GEX database for {date_str}")
                         return spot_price
             except Exception as db_error:
-                logger.warning(f"Database lookup failed: {db_error}")
+                logger.warning(f"GEX database lookup failed: {db_error}")
 
-            # Method 3: Infer from deep ITM call options (FALLBACK - less reliable than database)
+            # Method 3: Infer from deep ITM call options (FALLBACK)
             # Find calls with delta ≈ 1.0 (deep ITM) - their strike + price ≈ underlying
             if options_data is not None and not options_data.empty:
-                if "delta" in options_data.columns and "type" in options_data.columns:
+                if "delta" in options_data.columns and "option_type" in options_data.columns:
                     deep_itm_calls = options_data[
-                        (options_data["type"] == "call")
+                        (options_data["option_type"] == "call")
                         & (options_data["delta"] > 0.99)
                         & (options_data["delta"] <= 1.0)
                     ]
@@ -419,7 +426,6 @@ class OutcomeCalculator:
                         return float(underlying)
 
             # Method 4: Last resort - use median strike (UNRELIABLE for returns!)
-            # WARNING: This is NOT representative of actual underlying price
             if options_data is not None and not options_data.empty and "strike" in options_data.columns:
                 strikes = options_data["strike"].unique()
                 median_strike = float(pd.Series(strikes).median())

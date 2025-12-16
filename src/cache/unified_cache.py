@@ -42,49 +42,62 @@ class UnifiedCacheManager:
         # Initialize GEX cache manager (lazy loading)
         self._gex_cache = None
 
-    # === OPTIONS DATA ===
+        # Initialize SQLite options manager (lazy loading) for backward compat
+        self._sqlite_options = None
+
+    @property
+    def sqlite_options(self):
+        """Lazy-loaded SQLiteOptionsManager for options data."""
+        if self._sqlite_options is None:
+            from src.cache.sqlite_options_manager import SQLiteOptionsManager
+
+            self._sqlite_options = SQLiteOptionsManager()
+        return self._sqlite_options
+
+    # === OPTIONS DATA (Issue #180: Now delegates to SQLiteOptionsManager) ===
 
     def store_options_data(self, symbol, trading_date, df: pd.DataFrame) -> bool:
-        """Store real options data.
+        """Store options data via SQLiteOptionsManager.
+
+        Issue #180: Now delegates to SQLiteOptionsManager instead of pickle.
+        Maintained for backward compatibility - prefer using SQLiteOptionsManager directly.
 
         Args:
             symbol: Stock symbol (SPY, SPX, etc.)
             trading_date: Date in YYYY-MM-DD format
             df: Options DataFrame
+
+        Returns:
+            True if stored successfully
         """
         try:
-            # Path: .cache/options/SPY/2024-08-01.pickle
-            symbol_dir = self.options_dir / symbol.upper()
-            symbol_dir.mkdir(exist_ok=True)
-
-            file_path = symbol_dir / f"{trading_date}.pickle"
-            df.to_pickle(file_path)
-
-            self.logger.info(f"Stored {len(df)} {symbol} options contracts for {trading_date}")
-            return True
-
+            records = self.sqlite_options.store_options_chain(symbol, trading_date, df)
+            self.logger.info(f"Stored {records} {symbol} options contracts for {trading_date} via SQLite")
+            return records > 0
         except Exception as e:
             self.logger.error(f"Failed to store {symbol} options: {e}")
             return False
 
     def get_options_data(self, symbol, trading_date):
-        """Get real options data.
+        """Get options data from SQLiteOptionsManager.
+
+        Issue #180: Now delegates to SQLiteOptionsManager instead of pickle.
+        Maintained for backward compatibility - prefer using SQLiteOptionsManager directly.
 
         Args:
             symbol: Stock symbol
             trading_date: Date in YYYY-MM-DD format
+
+        Returns:
+            DataFrame with options data or None
         """
         try:
-            file_path = self.options_dir / symbol.upper() / f"{trading_date}.pickle"
-
-            if file_path.exists():
-                df = pd.read_pickle(file_path)
-                self.logger.info(f"Loaded {len(df)} {symbol} options contracts for {trading_date}")
+            df = self.sqlite_options.get_options_chain(symbol, trading_date)
+            if df is not None and not df.empty:
+                self.logger.info(f"Loaded {len(df)} {symbol} options contracts for {trading_date} from SQLite")
                 return df
-
             self.logger.debug(f"No {symbol} options data found for {trading_date}")
             return None
-
         except Exception as e:
             self.logger.error(f"Failed to load {symbol} options: {e}")
             return None
