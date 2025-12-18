@@ -15,7 +15,7 @@ import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
-from src.cache import UnifiedCacheManager
+from src.cache import SQLiteOptionsManager, UnifiedCacheManager
 from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
 
@@ -55,7 +55,9 @@ class AlphaVantageGEXClient:
         self.base_url = "https://www.alphavantage.co/query"
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Initialize unified cache (critical for premium tier)
+        # Initialize SQLite options manager (Issue #180: primary storage)
+        self.sqlite_options = SQLiteOptionsManager()
+        # Legacy cache for non-options data (market data)
         self.cache = cache_manager or UnifiedCacheManager()
 
         # Load request timeout from config
@@ -118,11 +120,11 @@ class AlphaVantageGEXClient:
         cache_date = date or "latest"
         cache_key = f"options_{symbol}_{cache_date}"
 
-        # Check cache first (critical for rate limits)
+        # Check SQLite first (Issue #180: primary storage, critical for rate limits)
         if date:  # Only cache specific dates, not 'latest'
-            cached_data = self.cache.get_options_data(symbol, date)
-            if cached_data is not None:
-                self.logger.info(f"Using cached options data for {symbol} {date}")
+            cached_data = self.sqlite_options.get_options_chain(symbol, date)
+            if cached_data is not None and not cached_data.empty:
+                self.logger.info(f"Using SQLite options data for {symbol} {date}")
                 return cached_data
 
         try:
@@ -169,9 +171,9 @@ class AlphaVantageGEXClient:
                 self.logger.warning(f"No options data returned for {symbol}" + (f" on {date}" if date else ""))
                 return df
 
-            # Cache the processed data (only for specific dates, if requested)
+            # Store in SQLite (Issue #180: primary storage, only for specific dates)
             if date and cache_result:
-                self.cache.store_options_data(symbol, date, df)
+                self.sqlite_options.store_options_chain(symbol, date, df)
 
             self.logger.info(f"Successfully fetched {len(df)} option contracts")
             return df

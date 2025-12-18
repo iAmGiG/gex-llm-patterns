@@ -27,7 +27,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from src.cache.unified_cache import UnifiedCacheManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 from src.gex.gex_calculator import GEXCalculator
 from src.utils.date_utils import date_range_trading_days
@@ -81,12 +81,14 @@ def backup_database(db_path: Path) -> Path:
         return None
 
 
-def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager, sample_dates: list) -> dict:
+def validate_rebuild(db_path: Path, sqlite_options: SQLiteOptionsManager, sample_dates: list) -> dict:
     """Validate rebuilt database against fresh calculations.
+
+    Issue #180: Now uses SQLiteOptionsManager directly.
 
     Args:
         db_path: Path to rebuilt database
-        cache_manager: Cache manager for fresh calculations
+        sqlite_options: SQLiteOptionsManager for fresh calculations
         sample_dates: List of dates to validate
 
     Returns:
@@ -113,8 +115,8 @@ def validate_rebuild(db_path: Path, cache_manager: UnifiedCacheManager, sample_d
         db_gex = row[0]
         spot_price = row[1]
 
-        # Get fresh calculation
-        options_data = cache_manager.get_options_data("SPY", date)
+        # Issue #180: Get fresh calculation from SQLite
+        options_data = sqlite_options.get_options_chain("SPY", date)
         if options_data is None or options_data.empty:
             validation_results.append({"date": date, "status": "NO_OPTIONS_DATA", "db_gex": db_gex, "fresh_gex": None})
             continue
@@ -193,10 +195,10 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str, symbol: str 
         db_path.unlink()
         logger.info(f"Removed old database")
 
-    # Initialize builder with current GEXCalculator
+    # Initialize builder with current GEXCalculator (Issue #180: use SQLite)
     logger.info(f"\nInitializing builder with current GEXCalculator...")
-    cache_manager = UnifiedCacheManager()
-    builder = HistoricalGEXDatabaseBuilder(database_path=str(db_path), cache_manager=cache_manager)
+    sqlite_options = SQLiteOptionsManager()
+    builder = HistoricalGEXDatabaseBuilder(database_path=str(db_path), sqlite_options_manager=sqlite_options)
 
     # Get trading days in range
     trading_days = date_range_trading_days(start_date, end_date)
@@ -206,15 +208,15 @@ def rebuild_database(db_path: Path, start_date: str, end_date: str, symbol: str 
     logger.info(f"\nStarting rebuild...")
     try:
         builder.build_gex_database(symbols=[symbol], start_date=start_date, end_date=end_date)
-        logger.info(f"✅ Database rebuild complete!")
+        logger.info(f"Rebuild complete!")
 
     except Exception as e:
-        logger.error(f"❌ Rebuild failed: {e}")
+        logger.error(f"Rebuild failed: {e}")
         raise
 
-    # Validate rebuild
+    # Validate rebuild (Issue #180: use SQLiteOptionsManager)
     sample_dates = trading_days[:: max(1, len(trading_days) // 20)]  # Sample ~20 dates
-    validation = validate_rebuild(db_path, cache_manager, sample_dates)
+    validation = validate_rebuild(db_path, sqlite_options, sample_dates)
 
     if validation["match_rate"] >= 95:
         logger.info(f"\n✅ REBUILD SUCCESSFUL - {validation['match_rate']:.1f}% validation match")

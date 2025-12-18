@@ -88,9 +88,10 @@ ANALYSIS_AGENT = "analysis"
 ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 
 # Initialize shared components
-# SQLite is primary storage (Issue #147), UnifiedCacheManager is legacy fallback
+# Issue #180: SQLite is primary/only storage for options data
+# UnifiedCacheManager is used for market data and GEX calculations (not options)
 sqlite_options = SQLiteOptionsManager(db_path=".cache/options_historical.db")
-cache_manager = UnifiedCacheManager()  # Legacy fallback
+cache_manager = UnifiedCacheManager()  # For market data and GEX (not options)
 alpha_vantage_client = AlphaVantageGEXClient()
 live_gex = LiveGEXInterface()
 validator = OptionsDataValidator()
@@ -101,12 +102,11 @@ validator = OptionsDataValidator()
 
 
 def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache: bool = True):
-    """Fetch options data from SQLite database, legacy cache, or API.
+    """Fetch options data from SQLite database or API.
 
-    Data source priority:
-    1. SQLite database (options_historical.db) - Primary (Issue #147)
-    2. Legacy pickle cache (UnifiedCacheManager) - Fallback
-    3. Alpha Vantage API - Live fetch and store in SQLite
+    Data source priority (Issue #180: SQLite is now primary and only storage):
+    1. SQLite database (options_historical.db) - Primary storage
+    2. Alpha Vantage API - Live fetch and store in SQLite
 
     Args:
         symbol: Stock symbol (SPY, SPX, etc.)
@@ -143,22 +143,9 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
                     "date": trading_date,
                 }
 
-            # 2. Check legacy pickle cache (fallback)
-            cached_data = cache_manager.get_options_data(symbol, trading_date)
-            if cached_data is not None and not cached_data.empty:
-                logger.info(f"Legacy cache hit for {symbol} options on {trading_date}")
-                # Migrate to SQLite for future use
-                sqlite_options.store_options_chain(symbol, trading_date, cached_data)
-                filtered_data = filter_options_data(cached_data)
-                return {
-                    "status": "success",
-                    "source": "legacy_cache",
-                    "data": filtered_data,
-                    "symbol": symbol,
-                    "date": trading_date,
-                }
+            # Issue #180: Legacy pickle fallback removed - SQLite is now primary and only storage
 
-        # 3. Try Alpha Vantage API
+        # 2. Try Alpha Vantage API
         logger.info(f"Fetching {symbol} options from Alpha Vantage")
         api_data = alpha_vantage_client.fetch_historical_options(symbol, trading_date)
 

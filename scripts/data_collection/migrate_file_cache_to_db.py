@@ -2,7 +2,10 @@
 """
 Migrate File Cache to Database - Issue #147
 
-Backfills raw_options_chain table from existing file cache.
+Backfills raw_options_chain table from existing file cache (pickle files).
+
+Note: Issue #180 removed the get_options_data() wrapper from UnifiedCacheManager.
+This script now reads pickle files directly.
 
 Usage:
     python scripts/data_collection/migrate_file_cache_to_db.py --symbol SPY --dry-run
@@ -15,12 +18,12 @@ import sqlite3
 import sys
 from pathlib import Path
 
+import pandas as pd
 from tqdm import tqdm
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -44,8 +47,10 @@ def migrate_file_cache_to_database(
     if db_path is None:
         db_path = Path(".cache/consolidated_historical.db")
 
-    # Initialize managers
-    cache = UnifiedCacheManager()
+    # Options pickle cache directory
+    options_cache_dir = Path(".cache/options")
+
+    # Initialize builder
     builder = HistoricalGEXDatabaseBuilder(database_path=str(db_path))
 
     # Scan file cache for all trading days
@@ -85,10 +90,15 @@ def migrate_file_cache_to_database(
                 skip_count += 1
                 continue
 
-            # Load raw options from file cache
+            # Load raw options from file cache (pickle files)
             try:
-                # Get options data from cache
-                options_df = cache.get_options_data(symbol, trading_date)
+                # Issue #180: Read pickle file directly (wrapper method removed)
+                pickle_path = options_cache_dir / symbol.upper() / f"{trading_date}.pickle"
+                if not pickle_path.exists():
+                    logger.warning(f"No pickle file for {trading_date}: {pickle_path}")
+                    error_count += 1
+                    continue
+                options_df = pd.read_pickle(pickle_path)
 
                 if options_df is None or options_df.empty:
                     logger.warning(f"Empty options data for {trading_date}")
