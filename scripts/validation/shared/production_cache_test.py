@@ -10,15 +10,13 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from agents.market_mechanics_agent import MarketMechanicsAgent
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
+from src.tools.autogen_tools import calculate_gamma_exposure, fetch_options_data
+from src.utils.date_utils import is_valid_trading_date
 from src.utils.unified_reports_manager import reports_manager
-from tools.autogen_tools import calculate_gamma_exposure, fetch_options_data
-from utils.date_utils import is_valid_trading_date
-
-# Add both src and root paths for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 
 logger = logging.getLogger(__name__)
 

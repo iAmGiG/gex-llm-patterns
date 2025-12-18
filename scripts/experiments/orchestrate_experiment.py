@@ -6,12 +6,10 @@ import logging
 import sys
 from pathlib import Path
 
-from agents.market_mechanics_agent import MarketMechanicsAgent
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Add both src and root paths for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
 
 logger = logging.getLogger(__name__)
 

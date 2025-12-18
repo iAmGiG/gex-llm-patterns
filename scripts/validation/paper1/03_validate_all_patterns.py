@@ -27,7 +27,7 @@ def run_pattern_validation(
 
     cmd = [
         "python",
-        "scripts/validation/validate_pattern_taxonomy.py",
+        "scripts/validation/paper1/02_validate_pattern_taxonomy.py",
         "--pattern",
         pattern,
         "--symbol",

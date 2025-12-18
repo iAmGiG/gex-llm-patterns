@@ -91,7 +91,8 @@ class HistoricalOptionsCollector:
         # RAM buffer for async batch writes (decouples API calls from DB I/O)
         # Each options chain DataFrame is ~1-10MB average
         # With 64GB RAM and 15% target (~9.6GB), we can buffer ~1000-2000 items
-        self._write_buffer: queue.Queue[Tuple[str, str, pd.DataFrame]] = queue.Queue()
+        # Tuple: (symbol, trading_date, data, underlying_price)
+        self._write_buffer: queue.Queue[Tuple[str, str, pd.DataFrame, Optional[float]]] = queue.Queue()
         self._buffer_size = 0  # Track approximate buffer size
         self._max_buffer_size = 1000  # ~1-10GB RAM buffer before backpressure
         self._write_thread: Optional[threading.Thread] = None
@@ -179,24 +180,27 @@ class HistoricalOptionsCollector:
             cached = self.cache.get_options_data(symbol, trading_date)
             return cached is not None and not cached.empty
 
-    def _store_data(self, symbol: str, trading_date: str, data: pd.DataFrame) -> bool:
+    def _store_data(self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None) -> bool:
         """Store options data in the appropriate backend.
 
         Args:
             symbol: Stock symbol
             trading_date: Trading date
             data: Options DataFrame
+            underlying_price: Underlying stock price for the trading date
 
         Returns:
             True if stored successfully
         """
         if self.use_sqlite:
-            count = self.db.store_options_chain(symbol, trading_date, data)
+            count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
             return count > 0
         else:
             return self.cache.store_options_data(symbol, trading_date, data)
 
-    def _store_data_buffered(self, symbol: str, trading_date: str, data: pd.DataFrame) -> bool:
+    def _store_data_buffered(
+        self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None
+    ) -> bool:
         """Buffer options data for async batch write (decouples API from DB I/O).
 
         Instead of blocking on SQLite writes, this queues data in RAM and a
@@ -210,6 +214,7 @@ class HistoricalOptionsCollector:
             symbol: Stock symbol
             trading_date: Trading date
             data: Options DataFrame
+            underlying_price: Underlying stock price for the trading date
 
         Returns:
             True (data queued successfully)
@@ -226,9 +231,9 @@ class HistoricalOptionsCollector:
             self.logger.debug(f"Buffer full ({self._pending_writes}/{self._max_buffer_size}), waiting for writes...")
             time.sleep(0.1)
 
-        # Queue the data for async write
+        # Queue the data for async write (include underlying_price in tuple)
         with self._buffer_lock:
-            self._write_buffer.put((symbol, trading_date, data))
+            self._write_buffer.put((symbol, trading_date, data, underlying_price))
             self._pending_writes += 1
             self._buffer_size += 1
 
@@ -260,9 +265,11 @@ class HistoricalOptionsCollector:
 
                 # Process batch
                 if batch:
-                    for symbol, trading_date, data in batch:
+                    for symbol, trading_date, data, underlying_price in batch:
                         try:
-                            count = self.db.store_options_chain(symbol, trading_date, data)
+                            count = self.db.store_options_chain(
+                                symbol, trading_date, data, underlying_price=underlying_price
+                            )
                             if count > 0:
                                 writes_completed += 1
                                 with self._buffer_lock:
@@ -437,13 +444,19 @@ class HistoricalOptionsCollector:
                 is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
 
                 if is_valid:
-                    # Store data
-                    stored = self._store_data(symbol, trade_date, options_data)
+                    # Fetch underlying price for this date
+                    underlying_price = self.client.fetch_underlying_price(symbol, trade_date)
+
+                    # Store data with underlying price
+                    stored = self._store_data(symbol, trade_date, options_data, underlying_price=underlying_price)
 
                     if stored:
                         self.stats["successful_calls"] += 1
                         summary["completed_dates"] += 1
-                        self.logger.info(f"Stored {len(options_data)} options for {symbol} {trade_date}")
+                        price_str = f"${underlying_price:.2f}" if underlying_price else "N/A"
+                        self.logger.info(
+                            f"Stored {len(options_data)} options for {symbol} {trade_date} (price: {price_str})"
+                        )
 
                         # Update legacy progress if using pickle
                         if legacy_progress is not None:
@@ -695,11 +708,19 @@ class HistoricalOptionsCollector:
                         is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
 
                         if is_valid:
-                            stored = self._store_data(symbol, trade_date, options_data)
+                            # Fetch underlying price for this date
+                            underlying_price = self.client.fetch_underlying_price(symbol, trade_date)
+
+                            stored = self._store_data(
+                                symbol, trade_date, options_data, underlying_price=underlying_price
+                            )
                             if stored:
                                 self.stats["successful_calls"] += 1
                                 overall_summary["symbol_summaries"][symbol]["completed_dates"] += 1
-                                self.logger.info(f"[{symbol}] Stored {len(options_data)} options for {trade_date}")
+                                price_str = f"${underlying_price:.2f}" if underlying_price else "N/A"
+                                self.logger.info(
+                                    f"[{symbol}] Stored {len(options_data)} options for {trade_date} (price: {price_str})"
+                                )
                             else:
                                 self.stats["failed_calls"] += 1
                                 overall_summary["symbol_summaries"][symbol]["failed_dates"] += 1
@@ -857,13 +878,19 @@ class HistoricalOptionsCollector:
                         is_valid, reason = self.validate_options_data(options_data, symbol, trade_date)
 
                         if is_valid:
+                            # Fetch underlying price for this date
+                            underlying_price = self.client.fetch_underlying_price(symbol, trade_date)
+
                             # Queue for async write - NO BLOCKING on DB!
-                            self._store_data_buffered(symbol, trade_date, options_data)
+                            self._store_data_buffered(
+                                symbol, trade_date, options_data, underlying_price=underlying_price
+                            )
                             self.stats["successful_calls"] += 1
                             overall_summary["symbol_summaries"][symbol]["completed_dates"] += 1
+                            price_str = f"${underlying_price:.2f}" if underlying_price else "N/A"
                             self.logger.info(
                                 f"[{symbol}] Queued {len(options_data)} options for {trade_date} "
-                                f"(buffer: {self._pending_writes} pending)"
+                                f"(price: {price_str}, buffer: {self._pending_writes} pending)"
                             )
                         else:
                             self.stats["failed_calls"] += 1
