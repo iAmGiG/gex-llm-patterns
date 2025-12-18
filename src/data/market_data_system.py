@@ -24,6 +24,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 
 from src.cache.intraday_cache import IntradayCacheManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,8 @@ class UnifiedDataSystem:
             db_path: Path to SQLite database
         """
         self.db_path = Path(db_path)
-        self.cache_manager = UnifiedCacheManager()
+        self.sqlite_options = SQLiteOptionsManager()  # Issue #180: Primary options storage
+        self.cache_manager = UnifiedCacheManager()  # For non-options data (market data)
         self.intraday_cache = IntradayCacheManager()
 
         # Performance tracking
@@ -134,8 +136,8 @@ class UnifiedDataSystem:
             logger.debug(f"Database hit: {symbol} daily options for {date}")
             return data
 
-        # Tier 2: Cache
-        cache_data = self.cache_manager.get_options_data(symbol, date)
+        # Tier 2: SQLite options manager (Issue #180: primary options storage)
+        cache_data = self.sqlite_options.get_options_chain(symbol, date)
         data = self._convert_cache_result(cache_data)
         if data:
             self.tier_stats["daily_tier2_hits"] += 1

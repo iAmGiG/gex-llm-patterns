@@ -177,8 +177,9 @@ class HistoricalOptionsCollector:
         if self.use_sqlite:
             return self.db.has_options_data(symbol, trading_date)
         else:
-            cached = self.cache.get_options_data(symbol, trading_date)
-            return cached is not None and not cached.empty
+            # Issue #180: Legacy pickle mode removed - use SQLite
+            self.logger.warning("Legacy pickle mode disabled (Issue #180). Falling back to SQLite.")
+            return self.db.has_options_data(symbol, trading_date) if self.db else False
 
     def _store_data(self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None) -> bool:
         """Store options data in the appropriate backend.
@@ -196,7 +197,12 @@ class HistoricalOptionsCollector:
             count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
             return count > 0
         else:
-            return self.cache.store_options_data(symbol, trading_date, data)
+            # Issue #180: Legacy pickle mode removed - use SQLite
+            self.logger.warning("Legacy pickle mode disabled (Issue #180). Falling back to SQLite.")
+            if self.db:
+                count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
+                return count > 0
+            return False
 
     def _store_data_buffered(
         self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None
@@ -220,8 +226,12 @@ class HistoricalOptionsCollector:
             True (data queued successfully)
         """
         if not self.use_sqlite:
-            # Fall back to synchronous for legacy pickle
-            return self.cache.store_options_data(symbol, trading_date, data)
+            # Issue #180: Legacy pickle mode removed - use SQLite synchronously
+            self.logger.warning("Legacy pickle mode disabled (Issue #180). Using SQLite.")
+            if self.db:
+                count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
+                return count > 0
+            return False
 
         # Start background write thread if not running
         self._ensure_write_thread_running()

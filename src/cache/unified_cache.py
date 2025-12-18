@@ -42,65 +42,21 @@ class UnifiedCacheManager:
         # Initialize GEX cache manager (lazy loading)
         self._gex_cache = None
 
-        # Initialize SQLite options manager (lazy loading) for backward compat
+        # SQLite options manager for get_or_calculate_gex internal use
         self._sqlite_options = None
 
     @property
     def sqlite_options(self):
-        """Lazy-loaded SQLiteOptionsManager for options data."""
+        """Lazy-loaded SQLiteOptionsManager for internal GEX calculations only.
+
+        Note: For options data access, use SQLiteOptionsManager directly.
+        Issue #180: Deprecated wrapper methods removed.
+        """
         if self._sqlite_options is None:
             from src.cache.sqlite_options_manager import SQLiteOptionsManager
 
             self._sqlite_options = SQLiteOptionsManager()
         return self._sqlite_options
-
-    # === OPTIONS DATA (Issue #180: Now delegates to SQLiteOptionsManager) ===
-
-    def store_options_data(self, symbol, trading_date, df: pd.DataFrame) -> bool:
-        """Store options data via SQLiteOptionsManager.
-
-        Issue #180: Now delegates to SQLiteOptionsManager instead of pickle.
-        Maintained for backward compatibility - prefer using SQLiteOptionsManager directly.
-
-        Args:
-            symbol: Stock symbol (SPY, SPX, etc.)
-            trading_date: Date in YYYY-MM-DD format
-            df: Options DataFrame
-
-        Returns:
-            True if stored successfully
-        """
-        try:
-            records = self.sqlite_options.store_options_chain(symbol, trading_date, df)
-            self.logger.info(f"Stored {records} {symbol} options contracts for {trading_date} via SQLite")
-            return records > 0
-        except Exception as e:
-            self.logger.error(f"Failed to store {symbol} options: {e}")
-            return False
-
-    def get_options_data(self, symbol, trading_date):
-        """Get options data from SQLiteOptionsManager.
-
-        Issue #180: Now delegates to SQLiteOptionsManager instead of pickle.
-        Maintained for backward compatibility - prefer using SQLiteOptionsManager directly.
-
-        Args:
-            symbol: Stock symbol
-            trading_date: Date in YYYY-MM-DD format
-
-        Returns:
-            DataFrame with options data or None
-        """
-        try:
-            df = self.sqlite_options.get_options_chain(symbol, trading_date)
-            if df is not None and not df.empty:
-                self.logger.info(f"Loaded {len(df)} {symbol} options contracts for {trading_date} from SQLite")
-                return df
-            self.logger.debug(f"No {symbol} options data found for {trading_date}")
-            return None
-        except Exception as e:
-            self.logger.error(f"Failed to load {symbol} options: {e}")
-            return None
 
     # === MARKET DATA ===
 
@@ -359,8 +315,8 @@ class UnifiedCacheManager:
                 self.logger.debug(f"GEX cache hit for {symbol} {trading_date}")
                 return cached_gex
 
-            # 2. Get options data (from existing cache)
-            options_data = self.get_options_data(symbol, trading_date)
+            # 2. Get options data (Issue #180: directly from SQLite)
+            options_data = self.sqlite_options.get_options_chain(symbol, trading_date)
 
             if options_data is None or options_data.empty:
                 self.logger.warning(f"No options data available for GEX calculation: {symbol} {trading_date}")
