@@ -270,8 +270,10 @@ class AlphaVantageGEXClient:
             df = df[(df.index >= processed_start) & (df.index <= processed_end)]
             df = df.sort_index(ascending=False)
 
-            # Localize timezone
-            df = localize_df(df, get_default_timezone())
+            # Localize timezone - Alpha Vantage dates are already in ET, not UTC
+            # Do NOT use localize_df as it treats dates as UTC first, which shifts dates by one day
+            if df.index.tz is None:
+                df.index = df.index.tz_localize(get_default_timezone())
 
             # Cache for future use (critical for rate limits)
             self.cache.store_market_data(symbol, df, processed_start, processed_end)
@@ -422,3 +424,43 @@ class AlphaVantageGEXClient:
             "calls_remaining": max(0, self.calls_per_minute - recent_calls),
             "reset_time": now + datetime.timedelta(minutes=1) if recent_calls > 0 else now,
         }
+
+    def fetch_underlying_price(self, symbol: str, date: str) -> float:
+        """Fetch the closing price for a specific date.
+
+        Uses cached data when available to avoid extra API calls.
+
+        Args:
+            symbol: Stock symbol (SPY, QQQ, TQQQ, etc.)
+            date: Date in YYYY-MM-DD format
+
+        Returns:
+            Closing price as float, or None if not available
+        """
+        try:
+            # Try to get from cache first (no API call)
+            cached_data = self.cache.get_market_data(symbol, date, date)
+            if cached_data is not None and not cached_data.empty:
+                # Find the exact date in the cached data
+                if hasattr(cached_data.index, "strftime"):
+                    date_str = pd.to_datetime(date).strftime("%Y-%m-%d")
+                    for idx in cached_data.index:
+                        if idx.strftime("%Y-%m-%d") == date_str:
+                            return float(cached_data.loc[idx, "close"])
+                elif date in cached_data.index:
+                    return float(cached_data.loc[date, "close"])
+
+            # Fetch from API - use a small range to get the specific date
+            # This makes one API call but gets cached for future use
+            df = self.fetch_underlying_data(symbol, date, date)
+
+            if df is not None and not df.empty:
+                # Return the close price
+                if "close" in df.columns:
+                    return float(df["close"].iloc[0])
+
+            return None
+
+        except Exception as e:
+            self.logger.warning(f"Could not fetch underlying price for {symbol} on {date}: {e}")
+            return None

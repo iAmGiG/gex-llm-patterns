@@ -6,11 +6,10 @@ import logging
 import sys
 from pathlib import Path
 
-from analysis.baseline_comparison import BaselineComparison
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Add src path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+from src.analysis.baseline_comparison import BaselineComparison
 
 logger = logging.getLogger(__name__)
 

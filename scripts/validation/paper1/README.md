@@ -2,22 +2,79 @@
 
 **Paper Title**: "LLM-Based Detection of Dealer Gamma Constraints: Obfuscation Testing Methodology"
 
-**Status**: ✅ Paper submitted (October 26, 2025), under revision (November 10, 2025)
+**Status**: Paper submitted (October 26, 2025), under revision (November 10, 2025)
 
 ---
 
-## Scripts
+## Scripts (Workflow Order)
 
-### `validate_pattern_taxonomy.py`
+Scripts are numbered by execution order in the validation workflow.
 
-**Purpose**: Single-pattern validation using obfuscation testing methodology
+### Data Validation
 
-**Usage**:
+| Script | Purpose |
+|--------|---------|
+| `01_validate_raw_options_chain.py` | Validate raw options chain data quality |
+
+### Pattern Detection
+
+| Script | Purpose |
+|--------|---------|
+| `02_validate_pattern_taxonomy.py` | Single-pattern obfuscation testing (primary) |
+| `03_validate_all_patterns.py` | Batch validation across multiple patterns |
+| `04_validate_patterns_legacy.py` | Legacy validation (deprecated) |
+
+### Materialization Analysis
+
+| Script | Purpose |
+|--------|---------|
+| `05_calculate_materialization_criteria.py` | Calculate pattern materialization criteria |
+| `06_baseline_materialization_analysis.py` | Baseline comparison analysis |
+| `07_build_contingency_matrix.py` | Build detection contingency matrix |
+| `08_calculate_flip_points.py` | Calculate GEX flip points |
+| `09_verify_materialization.py` | Verify materialization results |
+
+### Non-Detection Analysis
+
+| Script | Purpose |
+|--------|---------|
+| `10_analyze_non_detections.py` | Analyze why certain patterns weren't detected |
+
+### Narrative Framework Testing
+
+| Script | Purpose |
+|--------|---------|
+| `11_narrative_test_pilot.py` | Pilot test for WHO-WHOM-WHAT framework necessity |
+| `12_narrative_test_batch.py` | Batch narrative framework testing |
+| `13_narrative_test_analysis.py` | Analyze narrative test results |
+
+### Reasoning Extraction
+
+| Script | Purpose |
+|--------|---------|
+| `14_batch_llm_reasoning.py` | Batch extract LLM reasoning |
+| `15_extract_quarterly_reasoning.py` | Extract reasoning by quarter |
+
+### Latent Information Analysis
+
+| Script | Purpose |
+|--------|---------|
+| `16_analyze_eod_latent_information.py` | Analyze end-of-day latent information |
+
+### Figure Generation
+
+| Script | Purpose |
+|--------|---------|
+| `17_regenerate_validation_figures.py` | Regenerate validation figures for paper |
+
+---
+
+## Usage Examples
+
+**Single pattern validation:**
 
 ```bash
-export PYTHONPATH=/mnt/bst/yxie2/cregan1/gex-llm-patterns:$PYTHONPATH
-
-python scripts/validation/paper1/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
   --start-date 2024-01-02 \
@@ -26,49 +83,15 @@ python scripts/validation/paper1/validate_pattern_taxonomy.py \
   --with-outcomes
 ```
 
-**Key Features**:
-
-- Obfuscation testing (strips dates/tickers to prevent LLM memorization)
-- Outcome calculation (forward returns, realized volatility)
-- Pattern detection with WHO→WHOM→WHAT framework
-- YAML output with comprehensive metrics
-
-**Output**: `reports/validation/pattern_taxonomy/{pattern}_{symbol}_{quarter}.yaml`
-
----
-
-### `validate_all_patterns.py`
-
-**Purpose**: Batch validation across multiple patterns
-
-**Usage**:
+**Batch validation:**
 
 ```bash
-python scripts/validation/paper1/validate_all_patterns.py \
+python scripts/validation/paper1/03_validate_all_patterns.py \
   --patterns stock_pinning 0dte_hedging gamma_positioning \
   --start-date 2024-01-02 \
   --end-date 2024-03-29 \
   --skip-completed
 ```
-
-**Key Features**:
-
-- Validates multiple patterns in sequence
-- Skips already-completed pattern-quarter combinations
-- Tracks progress across multi-pattern runs
-- Comprehensive error handling and logging
-
-**Output**: Multiple YAML files (one per pattern)
-
----
-
-### `validate_patterns.py`
-
-**Purpose**: Legacy validation script (pre-Issue #79 refactor)
-
-**Status**: ⚠️ DEPRECATED - Use `validate_pattern_taxonomy.py` instead
-
-**Note**: Retained for historical reference but not actively maintained
 
 ---
 
@@ -80,9 +103,7 @@ python scripts/validation/paper1/validate_all_patterns.py \
 | stock_pinning | 100% (53/53) | 100% (64/64) | 100% (64/64) | 90.3% |
 | 0dte_hedging | 100% (53/53) | 100% (64/64) | 100% (64/64) | 90.5% |
 
-**Total**: 181 trading days validated across 3 patterns (543 pattern-day combinations)
-
-**Key Finding**: Detection remains 100% even as profitability declines Q1→Q4, proving LLM detects market structure (not profits)
+**Key Finding**: Detection remains 100% even as profitability declines Q1-Q4, proving LLM detects market structure (not profits)
 
 ---
 
@@ -91,7 +112,6 @@ python scripts/validation/paper1/validate_all_patterns.py \
 - **Validation results**: `reports/validation/pattern_taxonomy/`
 - **Paper LaTeX source**: `docs/papers/paper1/Main.tex`
 - **Dissertation archive**: `docs/dissertation/paper1_llm_pattern_detection/`
-- **GitHub Issues**: #79 (validation), #80 (outcomes), #81 (obfuscation fix)
 
 ---
 

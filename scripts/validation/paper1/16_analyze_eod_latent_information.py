@@ -32,17 +32,14 @@ import pandas as pd
 import yaml
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 class EODFeatureExtractor:
     """Extract EOD GEX features from consolidated database."""
 
-    def __init__(self, db_path: str = '.cache/consolidated_historical.db'):
+    def __init__(self, db_path: str = ".cache/consolidated_historical.db"):
         """Initialize database connection."""
         self.db_path = db_path
         self.conn = None
@@ -78,7 +75,8 @@ class EODFeatureExtractor:
 
         try:
             # Query daily_gex_metrics table
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT
                     date,
                     total_gex,
@@ -95,25 +93,27 @@ class EODFeatureExtractor:
                 FROM daily_gex_metrics
                 WHERE date = ? AND symbol = 'SPY'
                 LIMIT 1
-            """, (date,))
+            """,
+                (date,),
+            )
 
             row = cursor.fetchone()
             if not row:
                 return None
 
             return {
-                'date': row[0],
-                'total_gex': float(row[1]) if row[1] else 0.0,
-                'gex_oi': float(row[2]) if row[2] else 0.0,
-                'gex_volume': float(row[3]) if row[3] else 0.0,
-                'activity_ratio': float(row[4]) if row[4] else 0.0,
-                'economic_regime': row[5],
-                'gamma_flip_point': float(row[6]) if row[6] else 0.0,
-                'spot_price': float(row[7]) if row[7] else 0.0,
-                'open': float(row[8]) if row[8] else 0.0,
-                'high': float(row[9]) if row[9] else 0.0,
-                'low': float(row[10]) if row[10] else 0.0,
-                'close': float(row[11]) if row[11] else 0.0
+                "date": row[0],
+                "total_gex": float(row[1]) if row[1] else 0.0,
+                "gex_oi": float(row[2]) if row[2] else 0.0,
+                "gex_volume": float(row[3]) if row[3] else 0.0,
+                "activity_ratio": float(row[4]) if row[4] else 0.0,
+                "economic_regime": row[5],
+                "gamma_flip_point": float(row[6]) if row[6] else 0.0,
+                "spot_price": float(row[7]) if row[7] else 0.0,
+                "open": float(row[8]) if row[8] else 0.0,
+                "high": float(row[9]) if row[9] else 0.0,
+                "low": float(row[10]) if row[10] else 0.0,
+                "close": float(row[11]) if row[11] else 0.0,
             }
 
         except Exception as e:
@@ -156,7 +156,7 @@ class EODFeatureExtractor:
         Returns:
             Dictionary with calculated features
         """
-        total_gex = gex_data['total_gex']
+        total_gex = gex_data["total_gex"]
 
         # Feature 1: Total GEX magnitude
         total_gex_mag = abs(total_gex)
@@ -165,49 +165,49 @@ class EODFeatureExtractor:
         gex_sign = 1 if total_gex < 0 else 0
 
         # Feature 3: GEX OI ratio (gamma exposure relative to open interest)
-        gex_oi = gex_data['gex_oi']
+        gex_oi = gex_data["gex_oi"]
 
         # Feature 4: GEX volume ratio (gamma exposure relative to daily volume)
-        gex_volume = gex_data['gex_volume']
+        gex_volume = gex_data["gex_volume"]
 
         # Feature 5: Activity ratio (concentration metric)
-        activity_ratio = gex_data['activity_ratio']
+        activity_ratio = gex_data["activity_ratio"]
 
         # Feature 6-7: Flip point proximity
-        spot = gex_data['spot_price']
-        flip = gex_data['gamma_flip_point']
+        spot = gex_data["spot_price"]
+        flip = gex_data["gamma_flip_point"]
         zero_gamma_proximity = abs(spot - flip) / spot if spot > 0 else 0.0
         spot_above_flip = 1 if spot > flip else 0
 
         # Feature 8-10: OHLC-based features
-        open_p = gex_data['open']
-        high_p = gex_data['high']
-        low_p = gex_data['low']
-        close_p = gex_data['close']
+        open_p = gex_data["open"]
+        high_p = gex_data["high"]
+        low_p = gex_data["low"]
+        close_p = gex_data["close"]
 
         intraday_range = (high_p - low_p) / open_p if open_p > 0 else 0.0
         close_open_change = (close_p - open_p) / open_p if open_p > 0 else 0.0
 
         return {
-            'date': gex_data['date'],
-            'total_gex': total_gex_mag,
-            'gex_sign': gex_sign,
-            'gex_oi': gex_oi,
-            'gex_volume': gex_volume,
-            'activity_ratio': activity_ratio,
-            'zero_gamma_proximity': zero_gamma_proximity,
-            'spot_above_flip': spot_above_flip,
-            'intraday_range': intraday_range,
-            'close_open_change': close_open_change,
-            'spot_price': spot,
-            'economic_regime': gex_data['economic_regime']
+            "date": gex_data["date"],
+            "total_gex": total_gex_mag,
+            "gex_sign": gex_sign,
+            "gex_oi": gex_oi,
+            "gex_volume": gex_volume,
+            "activity_ratio": activity_ratio,
+            "zero_gamma_proximity": zero_gamma_proximity,
+            "spot_above_flip": spot_above_flip,
+            "intraday_range": intraday_range,
+            "close_open_change": close_open_change,
+            "spot_price": spot,
+            "economic_regime": gex_data["economic_regime"],
         }
 
 
 class NextDayOutcomeCalculator:
     """Calculate next-day outcome targets from OHLCV data."""
 
-    def __init__(self, db_path: str = '.cache/consolidated_historical.db'):
+    def __init__(self, db_path: str = ".cache/consolidated_historical.db"):
         """Initialize database connection."""
         self.db_path = db_path
         self.conn = None
@@ -227,7 +227,7 @@ class NextDayOutcomeCalculator:
             self.conn.close()
             logger.info("Database connection closed")
 
-    def get_ohlcv(self, date: str, symbol: str = 'SPY') -> Optional[Dict]:
+    def get_ohlcv(self, date: str, symbol: str = "SPY") -> Optional[Dict]:
         """Fetch OHLCV data for a specific date.
 
         Args:
@@ -244,7 +244,8 @@ class NextDayOutcomeCalculator:
 
         try:
             # OHLCV is stored in daily_gex_metrics table
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT
                     date,
                     open,
@@ -255,19 +256,21 @@ class NextDayOutcomeCalculator:
                 FROM daily_gex_metrics
                 WHERE date = ? AND symbol = ?
                 LIMIT 1
-            """, (date, symbol))
+            """,
+                (date, symbol),
+            )
 
             row = cursor.fetchone()
             if not row:
                 return None
 
             return {
-                'date': row[0],
-                'open': float(row[1]),
-                'high': float(row[2]),
-                'low': float(row[3]),
-                'close': float(row[4]),
-                'volume': float(row[5])
+                "date": row[0],
+                "open": float(row[1]),
+                "high": float(row[2]),
+                "low": float(row[3]),
+                "close": float(row[4]),
+                "volume": float(row[5]),
             }
 
         except Exception as e:
@@ -287,11 +290,13 @@ class NextDayOutcomeCalculator:
 
         # Get list of all trading dates for lookups
         cursor = self.conn.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT DISTINCT date FROM daily_gex_metrics
             WHERE symbol = 'SPY'
             ORDER BY date
-        """)
+        """
+        )
         all_dates = sorted([row[0] for row in cursor.fetchall()])
         date_to_idx = {d: i for i, d in enumerate(all_dates)}
 
@@ -320,7 +325,7 @@ class NextDayOutcomeCalculator:
                 continue
 
             outcomes = self._calculate_materialization_flags(eod_data, next_data)
-            outcomes['date'] = eod_date
+            outcomes["date"] = eod_date
             outcomes_list.append(outcomes)
 
         df = pd.DataFrame(outcomes_list)
@@ -338,14 +343,14 @@ class NextDayOutcomeCalculator:
             Dictionary with binary flags
         """
         # T+0 metrics
-        close_t0 = eod_data['close']
+        close_t0 = eod_data["close"]
 
         # T+1 metrics
-        open_t1 = next_data['open']
-        high_t1 = next_data['high']
-        low_t1 = next_data['low']
-        close_t1 = next_data['close']
-        volume_t1 = next_data['volume']
+        open_t1 = next_data["open"]
+        high_t1 = next_data["high"]
+        low_t1 = next_data["low"]
+        close_t1 = next_data["close"]
+        volume_t1 = next_data["volume"]
 
         # Calculate derived metrics
         # 1. Return
@@ -362,26 +367,24 @@ class NextDayOutcomeCalculator:
         realized_vol_t1 = abs_return_t1  # Simplified for daily data
 
         return {
-            'high_volatility': 1 if realized_vol_t1 > 0.012 else 0,  # >1.2% move
-            'range_expansion': 1 if range_t1 > 0.015 else 0,  # >1.5% range
-            'directional_move': 1 if abs_return_t1 > 0.005 else 0,  # >0.5% absolute
-            'gap_move': 1 if gap_t1 > 0.003 else 0,  # >0.3% gap
-            'any_materialization': 1 if (realized_vol_t1 > 0.012 or
-                                          range_t1 > 0.015 or
-                                          abs_return_t1 > 0.005) else 0,
+            "high_volatility": 1 if realized_vol_t1 > 0.012 else 0,  # >1.2% move
+            "range_expansion": 1 if range_t1 > 0.015 else 0,  # >1.5% range
+            "directional_move": 1 if abs_return_t1 > 0.005 else 0,  # >0.5% absolute
+            "gap_move": 1 if gap_t1 > 0.003 else 0,  # >0.3% gap
+            "any_materialization": 1 if (realized_vol_t1 > 0.012 or range_t1 > 0.015 or abs_return_t1 > 0.005) else 0,
             # Continuous targets
-            'return_pct': return_t1 * 100,
-            'abs_return_pct': abs_return_t1 * 100,
-            'range_pct': range_t1 * 100,
-            'gap_pct': gap_t1 * 100,
-            'volume': volume_t1
+            "return_pct": return_t1 * 100,
+            "abs_return_pct": abs_return_t1 * 100,
+            "range_pct": range_t1 * 100,
+            "gap_pct": gap_t1 * 100,
+            "volume": volume_t1,
         }
 
 
 class EODPredictiveAnalysis:
     """Main analysis orchestrator."""
 
-    def __init__(self, output_dir: str = 'docs/papers/paper1/analysis'):
+    def __init__(self, output_dir: str = "docs/papers/paper1/analysis"):
         """Initialize analysis."""
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -396,31 +399,34 @@ class EODPredictiveAnalysis:
         dates = set()
 
         # Look for pattern validation YAML files
-        pattern_dir = Path('reports/validation/paper1_pattern_taxonomy')
+        pattern_dir = Path("reports/validation/paper1_pattern_taxonomy")
         if not pattern_dir.exists():
             logger.error(f"Pattern validation directory not found: {pattern_dir}")
             return []
 
         # Load gamma_positioning detections from 2024 (unbiased + biased)
         import glob
-        yaml_files = glob.glob(str(pattern_dir / '*gamma_positioning*SPY*2024*.yaml'))
+
+        yaml_files = glob.glob(str(pattern_dir / "*gamma_positioning*SPY*2024*.yaml"))
 
         logger.info(f"Found {len(yaml_files)} pattern YAML files")
 
         for yaml_file in yaml_files:
             try:
-                with open(yaml_file, 'r') as f:
+                with open(yaml_file, "r") as f:
                     data = yaml.safe_load(f)
 
-                if not data or 'detections' not in data:
+                if not data or "detections" not in data:
                     continue
 
-                for detection in data['detections']:
-                    if detection.get('detected', False):
-                        date = detection.get('date')
+                for detection in data["detections"]:
+                    if detection.get("detected", False):
+                        date = detection.get("date")
                         if date:
                             dates.add(date)
-                logger.info(f"  Loaded {sum(1 for d in data.get('detections', []) if d.get('detected'))} detections from {Path(yaml_file).name}")
+                logger.info(
+                    f"  Loaded {sum(1 for d in data.get('detections', []) if d.get('detected'))} detections from {Path(yaml_file).name}"
+                )
 
             except Exception as e:
                 logger.warning(f"Failed to load {yaml_file}: {e}")
@@ -446,7 +452,7 @@ class EODPredictiveAnalysis:
         feature_extractor.connect()
         try:
             eod_features = feature_extractor.extract_features(detection_dates)
-            output_file = self.output_dir / 'issue_145_eod_features_2024.csv'
+            output_file = self.output_dir / "issue_145_eod_features_2024.csv"
             eod_features.to_csv(output_file, index=False)
             logger.info(f"Saved EOD features to {output_file}")
         finally:
@@ -458,9 +464,9 @@ class EODPredictiveAnalysis:
         outcome_calculator.connect()
         try:
             # Use dates that have valid EOD features
-            valid_dates = eod_features['date'].tolist()
+            valid_dates = eod_features["date"].tolist()
             outcomes = outcome_calculator.calculate_outcomes(valid_dates)
-            output_file = self.output_dir / 'issue_145_next_day_outcomes_2024.csv'
+            output_file = self.output_dir / "issue_145_next_day_outcomes_2024.csv"
             outcomes.to_csv(output_file, index=False)
             logger.info(f"Saved next-day outcomes to {output_file}")
         finally:
@@ -484,14 +490,14 @@ class EODPredictiveAnalysis:
         results = logistic_results.copy() if logistic_results else {}
 
         if persistence_results:
-            results['overnight_persistence'] = persistence_results
+            results["overnight_persistence"] = persistence_results
         if llm_results:
-            results['llm_comparison'] = llm_results
+            results["llm_comparison"] = llm_results
 
             # Calculate performance delta
             if logistic_results:
-                stat_auc = logistic_results.get('mean_cv_auc', 0)
-                llm_auc = llm_results.get('llm_auc', 0)
+                stat_auc = logistic_results.get("mean_cv_auc", 0)
+                llm_auc = llm_results.get("llm_auc", 0)
                 delta = llm_auc - stat_auc
 
                 logger.info(f"\n=== Model Comparison Summary ===")
@@ -504,18 +510,19 @@ class EODPredictiveAnalysis:
                 else:
                     logger.info(">> Statistical model outperforms LLM (LLM adds interpretability) <<")
 
-                results['model_comparison'] = {
-                    'statistical_auc': float(stat_auc),
-                    'llm_auc': float(llm_auc),
-                    'delta': float(delta),
-                    'llm_outperforms': llm_auc > stat_auc
+                results["model_comparison"] = {
+                    "statistical_auc": float(stat_auc),
+                    "llm_auc": float(llm_auc),
+                    "delta": float(delta),
+                    "llm_outperforms": llm_auc > stat_auc,
                 }
 
         if results:
             # Save results
-            results_file = self.output_dir / 'issue_145_logistic_regression_results.yaml'
+            results_file = self.output_dir / "issue_145_logistic_regression_results.yaml"
             import yaml
-            with open(results_file, 'w') as f:
+
+            with open(results_file, "w") as f:
                 yaml.dump(results, f, default_flow_style=False)
             logger.info(f"Saved results to {results_file}")
 
@@ -532,8 +539,7 @@ class EODPredictiveAnalysis:
 
         if len(outcomes) > 0:
             logger.info(f"\nOutcome materialization rates:")
-            for col in ['any_materialization', 'high_volatility', 'range_expansion',
-                       'directional_move', 'gap_move']:
+            for col in ["any_materialization", "high_volatility", "range_expansion", "directional_move", "gap_move"]:
                 if col in outcomes.columns:
                     rate = outcomes[col].mean() * 100
                     logger.info(f"  {col}: {rate:.1f}%")
@@ -558,13 +564,22 @@ class EODPredictiveAnalysis:
             return None
 
         # Merge features and outcomes on date
-        merged = features.merge(outcomes, on='date', how='inner')
+        merged = features.merge(outcomes, on="date", how="inner")
         logger.info(f"Merged dataset: {len(merged)} rows")
 
         # Feature columns (exclude date and target-related columns)
-        feature_cols = ['total_gex', 'gex_sign', 'gex_oi', 'gex_volume',
-                       'activity_ratio', 'zero_gamma_proximity', 'spot_above_flip',
-                       'intraday_range', 'close_open_change', 'spot_price']
+        feature_cols = [
+            "total_gex",
+            "gex_sign",
+            "gex_oi",
+            "gex_volume",
+            "activity_ratio",
+            "zero_gamma_proximity",
+            "spot_above_flip",
+            "intraday_range",
+            "close_open_change",
+            "spot_price",
+        ]
 
         # Check which columns exist
         available_features = [c for c in feature_cols if c in merged.columns]
@@ -572,7 +587,7 @@ class EODPredictiveAnalysis:
 
         # Prepare data
         X = merged[available_features].copy()
-        y = merged['any_materialization'].copy()
+        y = merged["any_materialization"].copy()
 
         # Handle missing values
         X = X.fillna(0)
@@ -585,13 +600,7 @@ class EODPredictiveAnalysis:
         tscv = TimeSeriesSplit(n_splits=5)
 
         # Train model
-        model = LogisticRegression(
-            penalty='l2',
-            C=1.0,
-            solver='lbfgs',
-            max_iter=1000,
-            random_state=42
-        )
+        model = LogisticRegression(penalty="l2", C=1.0, solver="lbfgs", max_iter=1000, random_state=42)
 
         # Cross-validated AUC scores
         auc_scores = []
@@ -649,31 +658,30 @@ class EODPredictiveAnalysis:
         p_values = self._calculate_feature_pvalues(X, y, available_features)
 
         return {
-            'model_type': 'LogisticRegression',
-            'n_samples': len(merged),
-            'n_features': len(available_features),
-            'features_used': available_features,
-            'target': 'any_materialization',
-            'cv_folds': 5,
-            'cv_auc_scores': [float(s) for s in auc_scores],
-            'mean_cv_auc': float(mean_auc),
-            'std_cv_auc': float(std_auc),
-            'full_model_auc': float(full_auc),
-            'feature_coefficients': coef_dict,
-            'feature_pvalues': p_values,
-            'top_features': [(f, float(c)) for f, c in sorted_coef[:5]],
-            'defense_status': defense_status,
-            'success_criteria': {
-                'minimum': 0.60,
-                'strong': 0.70,
-                'optimal': 0.75,
-                'achieved': float(mean_auc),
-                'significant_features': sum(1 for p in p_values.values() if p < 0.05) if p_values else 0
-            }
+            "model_type": "LogisticRegression",
+            "n_samples": len(merged),
+            "n_features": len(available_features),
+            "features_used": available_features,
+            "target": "any_materialization",
+            "cv_folds": 5,
+            "cv_auc_scores": [float(s) for s in auc_scores],
+            "mean_cv_auc": float(mean_auc),
+            "std_cv_auc": float(std_auc),
+            "full_model_auc": float(full_auc),
+            "feature_coefficients": coef_dict,
+            "feature_pvalues": p_values,
+            "top_features": [(f, float(c)) for f, c in sorted_coef[:5]],
+            "defense_status": defense_status,
+            "success_criteria": {
+                "minimum": 0.60,
+                "strong": 0.70,
+                "optimal": 0.75,
+                "achieved": float(mean_auc),
+                "significant_features": sum(1 for p in p_values.values() if p < 0.05) if p_values else 0,
+            },
         }
 
-    def _calculate_feature_pvalues(self, X: pd.DataFrame, y: pd.Series,
-                                   feature_names: List[str]) -> Dict[str, float]:
+    def _calculate_feature_pvalues(self, X: pd.DataFrame, y: pd.Series, feature_names: List[str]) -> Dict[str, float]:
         """Calculate p-values for each feature using statsmodels logistic regression.
 
         Args:
@@ -751,28 +759,29 @@ class EODPredictiveAnalysis:
         """
         confidence_scores = {}
 
-        pattern_dir = Path('reports/validation/paper1_pattern_taxonomy')
+        pattern_dir = Path("reports/validation/paper1_pattern_taxonomy")
         if not pattern_dir.exists():
             logger.warning(f"Pattern directory not found: {pattern_dir}")
             return confidence_scores
 
         # Load from unbiased gamma_positioning detections
         import glob
-        yaml_files = glob.glob(str(pattern_dir / '*gamma_positioning*SPY*2024*unbiased*.yaml'))
+
+        yaml_files = glob.glob(str(pattern_dir / "*gamma_positioning*SPY*2024*unbiased*.yaml"))
 
         for yaml_file in yaml_files:
             try:
-                with open(yaml_file, 'r') as f:
+                with open(yaml_file, "r") as f:
                     data = yaml.safe_load(f)
 
-                if not data or 'detections' not in data:
+                if not data or "detections" not in data:
                     continue
 
-                for detection in data['detections']:
-                    if detection.get('detected', False):
-                        date = detection.get('date')
-                        narrative = detection.get('narrative', {})
-                        confidence = narrative.get('confidence', 0)
+                for detection in data["detections"]:
+                    if detection.get("detected", False):
+                        date = detection.get("date")
+                        narrative = detection.get("narrative", {})
+                        confidence = narrative.get("confidence", 0)
 
                         if date and confidence:
                             # Convert 0-100 scale to 0-1
@@ -804,10 +813,10 @@ class EODPredictiveAnalysis:
 
         # Merge with outcomes
         outcomes_with_llm = outcomes.copy()
-        outcomes_with_llm['llm_confidence'] = outcomes_with_llm['date'].map(confidence_scores)
+        outcomes_with_llm["llm_confidence"] = outcomes_with_llm["date"].map(confidence_scores)
 
         # Filter to dates with both outcomes and LLM scores
-        valid_mask = outcomes_with_llm['llm_confidence'].notna() & outcomes_with_llm['any_materialization'].notna()
+        valid_mask = outcomes_with_llm["llm_confidence"].notna() & outcomes_with_llm["any_materialization"].notna()
         valid_data = outcomes_with_llm[valid_mask]
 
         if len(valid_data) < 30:
@@ -818,8 +827,9 @@ class EODPredictiveAnalysis:
 
         # Calculate LLM AUC
         from sklearn.metrics import roc_auc_score
-        y_true = valid_data['any_materialization'].astype(int)
-        y_score = valid_data['llm_confidence']
+
+        y_true = valid_data["any_materialization"].astype(int)
+        y_score = valid_data["llm_confidence"]
 
         try:
             llm_auc = roc_auc_score(y_true, y_score)
@@ -834,27 +844,30 @@ class EODPredictiveAnalysis:
         logger.info(f"Std LLM Confidence: {y_score.std():.3f}")
 
         # Analyze high vs low confidence
-        high_conf = valid_data[valid_data['llm_confidence'] >= 0.75]
-        low_conf = valid_data[valid_data['llm_confidence'] < 0.75]
+        high_conf = valid_data[valid_data["llm_confidence"] >= 0.75]
+        low_conf = valid_data[valid_data["llm_confidence"] < 0.75]
 
         if len(high_conf) > 0 and len(low_conf) > 0:
-            high_rate = high_conf['any_materialization'].mean()
-            low_rate = low_conf['any_materialization'].mean()
+            high_rate = high_conf["any_materialization"].mean()
+            low_rate = low_conf["any_materialization"].mean()
             logger.info(f"\nMaterialization by LLM Confidence:")
             logger.info(f"  High confidence (>=75): {high_rate:.1%} ({len(high_conf)} days)")
             logger.info(f"  Low confidence (<75): {low_rate:.1%} ({len(low_conf)} days)")
 
         return {
-            'llm_auc': float(llm_auc),
-            'n_samples': len(valid_data),
-            'mean_confidence': float(y_score.mean()),
-            'std_confidence': float(y_score.std()),
-            'high_confidence_materialization': float(high_conf['any_materialization'].mean()) if len(high_conf) > 0 else None,
-            'low_confidence_materialization': float(low_conf['any_materialization'].mean()) if len(low_conf) > 0 else None
+            "llm_auc": float(llm_auc),
+            "n_samples": len(valid_data),
+            "mean_confidence": float(y_score.mean()),
+            "std_confidence": float(y_score.std()),
+            "high_confidence_materialization": (
+                float(high_conf["any_materialization"].mean()) if len(high_conf) > 0 else None
+            ),
+            "low_confidence_materialization": (
+                float(low_conf["any_materialization"].mean()) if len(low_conf) > 0 else None
+            ),
         }
 
-    def _analyze_overnight_persistence(self, features: pd.DataFrame,
-                                       outcomes: pd.DataFrame) -> Dict:
+    def _analyze_overnight_persistence(self, features: pd.DataFrame, outcomes: pd.DataFrame) -> Dict:
         """
         Analyze overnight constraint persistence: EOD GEX → T+1 opening gap.
 
@@ -871,7 +884,7 @@ class EODPredictiveAnalysis:
         logger.info("=== Phase 7: Overnight Constraint Persistence ===")
 
         # Merge datasets
-        merged = pd.merge(features, outcomes, on='date', how='inner')
+        merged = pd.merge(features, outcomes, on="date", how="inner")
 
         if len(merged) < 30:
             logger.warning(f"Insufficient data for persistence analysis ({len(merged)} samples)")
@@ -879,10 +892,10 @@ class EODPredictiveAnalysis:
 
         # Calculate overnight gap (T+1 open vs T close)
         # Gap is already captured in close_open_change but let's use gap_move outcome
-        gap_column = 'gap_return' if 'gap_return' in merged.columns else None
+        gap_column = "gap_return" if "gap_return" in merged.columns else None
 
         # Use total_gex magnitude (absolute value)
-        merged['gex_magnitude'] = merged['total_gex'].abs()
+        merged["gex_magnitude"] = merged["total_gex"].abs()
 
         # Use gap_move as binary indicator and gap_return if available
         from scipy import stats
@@ -890,9 +903,9 @@ class EODPredictiveAnalysis:
         results = {}
 
         # 1. Correlation: GEX magnitude vs gap probability
-        if 'gap_move' in merged.columns:
-            gex_mag = merged['gex_magnitude']
-            gap_flag = merged['gap_move'].astype(int)
+        if "gap_move" in merged.columns:
+            gex_mag = merged["gex_magnitude"]
+            gap_flag = merged["gap_move"].astype(int)
 
             # Point-biserial correlation (continuous vs binary)
             corr, p_value = stats.pointbiserialr(gap_flag, gex_mag)
@@ -901,18 +914,18 @@ class EODPredictiveAnalysis:
             logger.info(f"  Point-biserial correlation: r = {corr:.4f}")
             logger.info(f"  P-value: {p_value:.4f}")
 
-            results['gex_gap_correlation'] = float(corr)
-            results['gex_gap_pvalue'] = float(p_value)
-            results['correlation_significant'] = p_value < 0.05
+            results["gex_gap_correlation"] = float(corr)
+            results["gex_gap_pvalue"] = float(p_value)
+            results["correlation_significant"] = p_value < 0.05
 
         # 2. Regime analysis: High vs Low GEX days
-        gex_median = merged['gex_magnitude'].median()
-        high_gex = merged[merged['gex_magnitude'] >= gex_median]
-        low_gex = merged[merged['gex_magnitude'] < gex_median]
+        gex_median = merged["gex_magnitude"].median()
+        high_gex = merged[merged["gex_magnitude"] >= gex_median]
+        low_gex = merged[merged["gex_magnitude"] < gex_median]
 
-        if 'gap_move' in merged.columns:
-            high_gap_rate = high_gex['gap_move'].mean()
-            low_gap_rate = low_gex['gap_move'].mean()
+        if "gap_move" in merged.columns:
+            high_gap_rate = high_gex["gap_move"].mean()
+            low_gap_rate = low_gex["gap_move"].mean()
 
             logger.info(f"\nGap Move Rates by GEX Regime:")
             logger.info(f"  High GEX (>= median): {high_gap_rate:.1%} ({len(high_gex)} days)")
@@ -920,10 +933,7 @@ class EODPredictiveAnalysis:
             logger.info(f"  Difference: {(high_gap_rate - low_gap_rate):.1%}")
 
             # Chi-squared test for independence
-            contingency = pd.crosstab(
-                merged['gex_magnitude'] >= gex_median,
-                merged['gap_move']
-            )
+            contingency = pd.crosstab(merged["gex_magnitude"] >= gex_median, merged["gap_move"])
             chi2, p_chi, dof, expected = stats.chi2_contingency(contingency)
 
             logger.info(f"\nChi-squared test for independence:")
@@ -931,32 +941,32 @@ class EODPredictiveAnalysis:
             logger.info(f"  P-value: {p_chi:.4f}")
             logger.info(f"  DOF: {dof}")
 
-            results['high_gex_gap_rate'] = float(high_gap_rate)
-            results['low_gex_gap_rate'] = float(low_gap_rate)
-            results['gap_rate_difference'] = float(high_gap_rate - low_gap_rate)
-            results['chi2_statistic'] = float(chi2)
-            results['chi2_pvalue'] = float(p_chi)
+            results["high_gex_gap_rate"] = float(high_gap_rate)
+            results["low_gex_gap_rate"] = float(low_gap_rate)
+            results["gap_rate_difference"] = float(high_gap_rate - low_gap_rate)
+            results["chi2_statistic"] = float(chi2)
+            results["chi2_pvalue"] = float(p_chi)
 
         # 3. Directional analysis: GEX sign vs next-day direction
-        if 'directional_move' in merged.columns and 'next_day_return' in merged.columns:
+        if "directional_move" in merged.columns and "next_day_return" in merged.columns:
             # Check if negative GEX (amplification) leads to larger moves
-            neg_gex = merged[merged['gex_sign'] == 1]  # gex_sign=1 means negative GEX
+            neg_gex = merged[merged["gex_sign"] == 1]  # gex_sign=1 means negative GEX
             if len(neg_gex) > 0:
-                direction_rate = neg_gex['directional_move'].mean()
-                avg_return_mag = neg_gex['next_day_return'].abs().mean()
+                direction_rate = neg_gex["directional_move"].mean()
+                avg_return_mag = neg_gex["next_day_return"].abs().mean()
 
                 logger.info(f"\nNegative GEX Days (n={len(neg_gex)}):")
                 logger.info(f"  Directional move rate: {direction_rate:.1%}")
                 logger.info(f"  Avg absolute return: {avg_return_mag:.4f}")
 
-                results['negative_gex_directional_rate'] = float(direction_rate)
-                results['negative_gex_avg_return'] = float(avg_return_mag)
+                results["negative_gex_directional_rate"] = float(direction_rate)
+                results["negative_gex_avg_return"] = float(avg_return_mag)
 
         # Overall verdict
         persistence_found = (
-            results.get('correlation_significant', False) or
-            results.get('chi2_pvalue', 1.0) < 0.05 or
-            results.get('gap_rate_difference', 0) > 0.10
+            results.get("correlation_significant", False)
+            or results.get("chi2_pvalue", 1.0) < 0.05
+            or results.get("gap_rate_difference", 0) > 0.10
         )
 
         logger.info(f"\n=== Overnight Persistence Verdict ===")
@@ -965,13 +975,14 @@ class EODPredictiveAnalysis:
         else:
             logger.info(">> Weak overnight persistence (constraints may be contemporaneous) <<")
 
-        results['persistence_found'] = persistence_found
-        results['n_samples'] = len(merged)
+        results["persistence_found"] = persistence_found
+        results["n_samples"] = len(merged)
 
         return results
 
-    def _generate_figures(self, features: pd.DataFrame, outcomes: pd.DataFrame,
-                          logistic_results: Dict, llm_results: Dict) -> None:
+    def _generate_figures(
+        self, features: pd.DataFrame, outcomes: pd.DataFrame, logistic_results: Dict, llm_results: Dict
+    ) -> None:
         """Generate publication-quality figures for Issue #145 analysis.
 
         Figures generated:
@@ -986,11 +997,12 @@ class EODPredictiveAnalysis:
             llm_results: Results from LLM comparison
         """
         import matplotlib
-        matplotlib.use('Agg')
+
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
         logger.info("=== Phase 8: Generating Figures ===")
-        figures_dir = Path('docs/papers/paper1/figures')
+        figures_dir = Path("docs/papers/paper1/figures")
         figures_dir.mkdir(parents=True, exist_ok=True)
 
         # Figure 1: Feature Importance Bar Chart
@@ -1010,15 +1022,16 @@ class EODPredictiveAnalysis:
     def _generate_feature_importance_figure(self, results: Dict, output_dir: Path) -> None:
         """Generate feature importance bar chart."""
         import matplotlib
-        matplotlib.use('Agg')
+
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
-        if not results or 'feature_coefficients' not in results:
+        if not results or "feature_coefficients" not in results:
             logger.warning("No feature coefficients for figure generation")
             return
 
-        coefficients = results['feature_coefficients']
-        p_values = results.get('feature_pvalues', {})
+        coefficients = results["feature_coefficients"]
+        p_values = results.get("feature_pvalues", {})
 
         # Sort by absolute coefficient magnitude
         sorted_feats = sorted(coefficients.items(), key=lambda x: abs(x[1]), reverse=True)
@@ -1038,106 +1051,130 @@ class EODPredictiveAnalysis:
         for f in features:
             p = p_values.get(f, 1.0)
             if p < 0.01:
-                colors.append('#2E7D32')  # Dark green for highly significant
+                colors.append("#2E7D32")  # Dark green for highly significant
             elif p < 0.05:
-                colors.append('#4CAF50')  # Green for significant
+                colors.append("#4CAF50")  # Green for significant
             elif p < 0.10:
-                colors.append('#FFA726')  # Orange for marginal
+                colors.append("#FFA726")  # Orange for marginal
             else:
-                colors.append('#9E9E9E')  # Gray for non-significant
+                colors.append("#9E9E9E")  # Gray for non-significant
 
         fig, ax = plt.subplots(figsize=(10, 6))
 
-        bars = ax.barh(features, coefs, color=colors, edgecolor='black', linewidth=0.5)
+        bars = ax.barh(features, coefs, color=colors, edgecolor="black", linewidth=0.5)
 
-        ax.set_xlabel('Logistic Regression Coefficient', fontsize=12)
-        ax.set_ylabel('Feature', fontsize=12)
-        ax.set_title('EOD GEX Feature Importance for T+1 Materialization Prediction', fontsize=14)
-        ax.axvline(x=0, color='black', linewidth=0.8, linestyle='-')
+        ax.set_xlabel("Logistic Regression Coefficient", fontsize=12)
+        ax.set_ylabel("Feature", fontsize=12)
+        ax.set_title("EOD GEX Feature Importance for T+1 Materialization Prediction", fontsize=14)
+        ax.axvline(x=0, color="black", linewidth=0.8, linestyle="-")
 
         # Add significance legend
         from matplotlib.patches import Patch
+
         legend_elements = [
-            Patch(facecolor='#2E7D32', label='p < 0.01 ***'),
-            Patch(facecolor='#4CAF50', label='p < 0.05 **'),
-            Patch(facecolor='#FFA726', label='p < 0.10 *'),
-            Patch(facecolor='#9E9E9E', label='p ≥ 0.10')
+            Patch(facecolor="#2E7D32", label="p < 0.01 ***"),
+            Patch(facecolor="#4CAF50", label="p < 0.05 **"),
+            Patch(facecolor="#FFA726", label="p < 0.10 *"),
+            Patch(facecolor="#9E9E9E", label="p ≥ 0.10"),
         ]
-        ax.legend(handles=legend_elements, loc='lower right', fontsize=9)
+        ax.legend(handles=legend_elements, loc="lower right", fontsize=9)
 
         plt.tight_layout()
-        output_path = output_dir / 'issue_145_feature_importance.png'
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        output_path = output_dir / "issue_145_feature_importance.png"
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
         plt.close()
 
         logger.info(f"  Saved: {output_path}")
 
-    def _generate_model_comparison_figure(self, logistic_results: Dict,
-                                          llm_results: Dict, output_dir: Path) -> None:
+    def _generate_model_comparison_figure(self, logistic_results: Dict, llm_results: Dict, output_dir: Path) -> None:
         """Generate model comparison bar chart."""
         import matplotlib
-        matplotlib.use('Agg')
+
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
-        stat_auc = logistic_results.get('mean_cv_auc', 0)
-        llm_auc = llm_results.get('llm_auc', 0) if llm_results else 0
+        stat_auc = logistic_results.get("mean_cv_auc", 0)
+        llm_auc = llm_results.get("llm_auc", 0) if llm_results else 0
 
-        models = ['Statistical Model\n(Logistic Regression)', 'LLM Confidence\n(Detection Score)', 'Random Baseline']
+        models = ["Statistical Model\n(Logistic Regression)", "LLM Confidence\n(Detection Score)", "Random Baseline"]
         aucs = [stat_auc, llm_auc, 0.5]
-        colors = ['#1976D2', '#FF5722', '#9E9E9E']
+        colors = ["#1976D2", "#FF5722", "#9E9E9E"]
 
         fig, ax = plt.subplots(figsize=(8, 5))
 
-        bars = ax.bar(models, aucs, color=colors, edgecolor='black', linewidth=0.8)
+        bars = ax.bar(models, aucs, color=colors, edgecolor="black", linewidth=0.8)
 
         # Add value labels
         for bar, auc in zip(bars, aucs):
             height = bar.get_height()
-            ax.annotate(f'{auc:.3f}',
-                       xy=(bar.get_x() + bar.get_width() / 2, height),
-                       xytext=(0, 3),
-                       textcoords="offset points",
-                       ha='center', va='bottom', fontsize=11, fontweight='bold')
+            ax.annotate(
+                f"{auc:.3f}",
+                xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3),
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+                fontsize=11,
+                fontweight="bold",
+            )
 
-        ax.set_ylabel('AUC-ROC Score', fontsize=12)
-        ax.set_title('Model Comparison: EOD GEX → T+1 Materialization Prediction', fontsize=14)
+        ax.set_ylabel("AUC-ROC Score", fontsize=12)
+        ax.set_title("Model Comparison: EOD GEX → T+1 Materialization Prediction", fontsize=14)
         ax.set_ylim(0, 1.0)
-        ax.axhline(y=0.5, color='gray', linestyle='--', linewidth=0.8, label='Random chance')
+        ax.axhline(y=0.5, color="gray", linestyle="--", linewidth=0.8, label="Random chance")
 
         # Add interpretation annotation
         if stat_auc > llm_auc:
             delta = stat_auc - llm_auc
-            ax.text(0.5, 0.95, f'Statistical model outperforms LLM by {delta:.3f}',
-                   transform=ax.transAxes, ha='center', va='top',
-                   fontsize=10, style='italic')
+            ax.text(
+                0.5,
+                0.95,
+                f"Statistical model outperforms LLM by {delta:.3f}",
+                transform=ax.transAxes,
+                ha="center",
+                va="top",
+                fontsize=10,
+                style="italic",
+            )
 
         plt.tight_layout()
-        output_path = output_dir / 'issue_145_model_comparison.png'
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        output_path = output_dir / "issue_145_model_comparison.png"
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
         plt.close()
 
         logger.info(f"  Saved: {output_path}")
 
-    def _generate_roc_curve(self, features: pd.DataFrame, outcomes: pd.DataFrame,
-                            logistic_results: Dict, output_dir: Path) -> None:
+    def _generate_roc_curve(
+        self, features: pd.DataFrame, outcomes: pd.DataFrame, logistic_results: Dict, output_dir: Path
+    ) -> None:
         """Generate ROC curve for statistical model."""
         import matplotlib
-        matplotlib.use('Agg')
+
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         from sklearn.linear_model import LogisticRegression
         from sklearn.metrics import auc, roc_curve
         from sklearn.preprocessing import StandardScaler
 
         # Merge and prepare data
-        merged = pd.merge(features, outcomes, on='date', how='inner')
+        merged = pd.merge(features, outcomes, on="date", how="inner")
 
-        feature_cols = ['total_gex', 'gex_sign', 'gex_oi', 'gex_volume', 'activity_ratio',
-                       'zero_gamma_proximity', 'spot_above_flip', 'intraday_range',
-                       'close_open_change', 'spot_price']
+        feature_cols = [
+            "total_gex",
+            "gex_sign",
+            "gex_oi",
+            "gex_volume",
+            "activity_ratio",
+            "zero_gamma_proximity",
+            "spot_above_flip",
+            "intraday_range",
+            "close_open_change",
+            "spot_price",
+        ]
 
         available = [c for c in feature_cols if c in merged.columns]
         X = merged[available].values
-        y = merged['any_materialization'].astype(int).values
+        y = merged["any_materialization"].astype(int).values
 
         # Scale and fit
         scaler = StandardScaler()
@@ -1156,24 +1193,22 @@ class EODPredictiveAnalysis:
         # Plot
         fig, ax = plt.subplots(figsize=(8, 6))
 
-        ax.plot(fpr, tpr, color='#1976D2', lw=2,
-                label=f'Statistical Model (AUC = {roc_auc:.3f})')
-        ax.plot([0, 1], [0, 1], color='gray', lw=1.5, linestyle='--',
-                label='Random Chance (AUC = 0.500)')
+        ax.plot(fpr, tpr, color="#1976D2", lw=2, label=f"Statistical Model (AUC = {roc_auc:.3f})")
+        ax.plot([0, 1], [0, 1], color="gray", lw=1.5, linestyle="--", label="Random Chance (AUC = 0.500)")
 
-        ax.fill_between(fpr, tpr, alpha=0.2, color='#1976D2')
+        ax.fill_between(fpr, tpr, alpha=0.2, color="#1976D2")
 
         ax.set_xlim([0.0, 1.0])
         ax.set_ylim([0.0, 1.05])
-        ax.set_xlabel('False Positive Rate', fontsize=12)
-        ax.set_ylabel('True Positive Rate', fontsize=12)
-        ax.set_title('ROC Curve: EOD GEX Features → T+1 Materialization', fontsize=14)
-        ax.legend(loc='lower right', fontsize=10)
+        ax.set_xlabel("False Positive Rate", fontsize=12)
+        ax.set_ylabel("True Positive Rate", fontsize=12)
+        ax.set_title("ROC Curve: EOD GEX Features → T+1 Materialization", fontsize=14)
+        ax.legend(loc="lower right", fontsize=10)
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
-        output_path = output_dir / 'issue_145_roc_curve.png'
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        output_path = output_dir / "issue_145_roc_curve.png"
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
         plt.close()
 
         logger.info(f"  Saved: {output_path}")
@@ -1191,5 +1226,5 @@ def main():
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     exit(main())

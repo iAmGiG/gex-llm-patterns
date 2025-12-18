@@ -229,11 +229,14 @@ gex-llm-patterns/
 │       ├── config_manager.py             # Configuration system
 │       └── reports_manager.py            # YAML report generation
 ├── scripts/
-│   ├── validation/                # Validation pipeline
-│   │   ├── validate_pattern_taxonomy.py  # Full validation framework
-│   │   └── validate_patterns.py          # Pattern library testing
+│   ├── validation/                # Validation pipeline (26 scripts)
+│   │   ├── paper1/                       # Paper #1 validation (17 scripts, 01-17)
+│   │   ├── paper2/                       # Paper #2 validation (7 scripts, 01-07)
+│   │   └── shared/                       # Cross-paper utilities
 │   ├── database/                  # Database management
 │   │   └── rebuild_gex_database.py       # Historical GEX builder
+│   ├── experiments/               # Experiment orchestration
+│   │   └── checkpoint_manager.py         # Resumable backtesting
 │   └── analysis/                  # Analysis tools
 │       └── gamma_pinning_validator.py    # Pattern-specific validation
 ├── docs/
@@ -290,7 +293,7 @@ outcome = calculate_outcome(date="2024-01-05", horizon=1)
 
 ```bash
 # Validate pattern across full quarter with obfuscation
-python scripts/validation/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
   --start-date 2024-01-02 \
@@ -366,18 +369,24 @@ prompt = library.generate_llm_prompt(
 
 ```bash
 # Test single pattern (local development)
-python scripts/validation/validate_patterns.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
   --date 2024-01-05
 
 # Full quarter validation (requires HPCC or extensive local cache)
-python scripts/validation/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
   --start-date 2024-01-02 \
   --end-date 2024-03-29 \
   --with-outcomes
+
+# Batch validation across multiple patterns
+python scripts/validation/paper1/03_validate_all_patterns.py \
+  --patterns gamma_positioning stock_pinning 0dte_hedging \
+  --start-date 2024-01-02 \
+  --end-date 2024-03-29
 ```
 
 ## Documentation

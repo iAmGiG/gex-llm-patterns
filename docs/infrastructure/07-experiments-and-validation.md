@@ -91,7 +91,7 @@ Implement a production-ready continuous experiment system based on the RH2MAS re
 ### Core Files to Implement
 
 ```bash
-scripts/runs/
+scripts/experiments/
 ├── gex_continuous_backtest.py          # Main orchestrator
 ├── checkpoint_manager.py               # State persistence
 └── gex_metrics_collector.py            # GEX performance tracking
@@ -114,13 +114,13 @@ src/analysis/
 
 ```bash
 # Run single strategy version
-python scripts/runs/gex_continuous_backtest.py --version V2 --symbol SPY --year 2024
+python scripts/experiments/gex_continuous_backtest.py --version V2 --symbol SPY --year 2024
 
 # Run all versions sequentially
-python scripts/runs/gex_continuous_backtest.py --all-versions --symbol SPY --year 2024
+python scripts/experiments/gex_continuous_backtest.py --all-versions --symbol SPY --year 2024
 
 # Check status across all experiments
-python scripts/runs/gex_continuous_backtest.py --status
+python scripts/experiments/gex_continuous_backtest.py --status
 
 # Advanced GEX analysis
 python scripts/analysis/generate_gex_results_summary.py --advanced --strike-level
@@ -128,7 +128,7 @@ python scripts/analysis/generate_gex_results_summary.py --advanced --strike-leve
 
 ## Data Flow Architecture
 
-```
+```text
 Options Data (Database/Cache/API) → GEXCalculator → Strike-Level GEX
                                                           ↓
 Strategy-Specific Data:
