@@ -1,0 +1,428 @@
+metadata:
+  run_date: '2025-12-18T21:24:53.365971'
+  period: 2020-01-02 to 2024-12-01
+  symbols_tested: 8
+  initial_capital: 100000
+  strategy_win_counts:
+    momentum_20d: 3
+    momentum_50d: 1
+    rsi_mean_revert: 3
+    buy_and_hold: 1
+results:
+  SPY:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: momentum_20d
+    strategies:
+      buy_and_hold:
+        total_return: -20.4782
+        sharpe_ratio: -1.779
+        max_drawdown: -34.1047
+        win_rate: 45.0
+        volatility: 68.0878
+        num_trades: 1
+        sortino_ratio: -2.5242
+        calmar_ratio: -2.2398
+        profit_factor: inf
+      macd_crossover:
+        total_return: -1.3227
+        sharpe_ratio: -0.6524
+        max_drawdown: -2.9804
+        win_rate: 2.5
+        volatility: 11.8147
+        num_trades: 1
+        sortino_ratio: -0.3262
+        calmar_ratio: -2.6998
+        profit_factor: inf
+      rsi_mean_revert:
+        total_return: -16.9462
+        sharpe_ratio: -1.4196
+        max_drawdown: -28.7381
+        win_rate: 25.0
+        volatility: 66.7539
+        num_trades: 3
+        sortino_ratio: -1.8495
+        calmar_ratio: -2.3995
+        profit_factor: inf
+      momentum_20d:
+        total_return: 0.0
+        sharpe_ratio: 0
+        max_drawdown: 0.0
+        win_rate: 0.0
+        volatility: 0.0
+        num_trades: 0
+      momentum_50d:
+        total_return: 0.0
+        sharpe_ratio: 0
+        max_drawdown: 0.0
+        win_rate: 0.0
+        volatility: 0.0
+        num_trades: 0
+  QQQ:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: momentum_50d
+    strategies:
+      buy_and_hold:
+        total_return: -14.3827
+        sharpe_ratio: -1.0981
+        max_drawdown: -28.5594
+        win_rate: 50.0
+        volatility: 68.0876
+        num_trades: 1
+        sortino_ratio: -1.534
+        calmar_ratio: -2.1849
+        profit_factor: inf
+      macd_crossover:
+        total_return: -0.7842
+        sharpe_ratio: -0.3215
+        max_drawdown: -3.4418
+        win_rate: 2.5
+        volatility: 12.9059
+        num_trades: 1
+        sortino_ratio: -0.146
+        calmar_ratio: -1.406
+        profit_factor: inf
+      rsi_mean_revert:
+        total_return: -7.0114
+        sharpe_ratio: -0.3983
+        max_drawdown: -21.7587
+        win_rate: 25.0
+        volatility: 64.0509
+        num_trades: 4
+        sortino_ratio: -0.4687
+        calmar_ratio: -1.6887
+        profit_factor: inf
+      momentum_20d:
+        total_return: -1.9253
+        sharpe_ratio: -2.5992
+        max_drawdown: -1.9253
+        win_rate: 2.5
+        volatility: 4.6695
+        num_trades: 4
+        sortino_ratio: -0.8673
+        calmar_ratio: -5.9873
+        profit_factor: 0.0
+      momentum_50d:
+        total_return: 0.0
+        sharpe_ratio: 0
+        max_drawdown: 0.0
+        win_rate: 0.0
+        volatility: 0.0
+        num_trades: 0
+  IWM:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: momentum_20d
+    strategies:
+      buy_and_hold:
+        total_return: -29.4871
+        sharpe_ratio: -2.6991
+        max_drawdown: -40.821
+        win_rate: 45.0
+        volatility: 71.6407
+        num_trades: 1
+        sortino_ratio: -3.2947
+        calmar_ratio: -2.1785
+        profit_factor: inf
+      macd_crossover:
+        total_return: -2.016
+        sharpe_ratio: -1.1275
+        max_drawdown: -3.6425
+        win_rate: 2.5
+        volatility: 10.8598
+        num_trades: 1
+        sortino_ratio: -0.3916
+        calmar_ratio: -3.3059
+        profit_factor: inf
+      rsi_mean_revert:
+        total_return: -25.281
+        sharpe_ratio: -2.2486
+        max_drawdown: -34.7857
+        win_rate: 25.0
+        volatility: 70.299
+        num_trades: 20
+        sortino_ratio: -2.424
+        calmar_ratio: -2.4164
+        profit_factor: inf
+      momentum_20d:
+        total_return: 0.0
+        sharpe_ratio: 0
+        max_drawdown: 0.0
+        win_rate: 0.0
+        volatility: 0.0
+        num_trades: 0
+      momentum_50d:
+        total_return: 0.0
+        sharpe_ratio: 0
+        max_drawdown: 0.0
+        win_rate: 0.0
+        volatility: 0.0
+        num_trades: 0
+  TQQQ:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: momentum_20d
+    strategies:
+      buy_and_hold:
+        total_return: -12.059
+        sharpe_ratio: 0.426
+        max_drawdown: -91.8367
+        win_rate: 55.74
+        volatility: 82.8573
+        num_trades: 1
+        sortino_ratio: 0.4781
+        calmar_ratio: -0.0281
+        profit_factor: inf
+      macd_crossover:
+        total_return: 5.6875
+        sharpe_ratio: 0.312
+        max_drawdown: -74.745
+        win_rate: 29.29
+        volatility: 53.2931
+        num_trades: 92
+        sortino_ratio: 0.2731
+        calmar_ratio: 0.0152
+        profit_factor: 1.0221
+      rsi_mean_revert:
+        total_return: 98.7167
+        sharpe_ratio: 0.5386
+        max_drawdown: -64.376
+        win_rate: 37.86
+        volatility: 58.4888
+        num_trades: 243
+        sortino_ratio: 0.4938
+        calmar_ratio: 0.2334
+        profit_factor: 7.0021
+      momentum_20d:
+        total_return: 234.0225
+        sharpe_ratio: 0.7754
+        max_drawdown: -61.651
+        win_rate: 37.54
+        volatility: 48.6931
+        num_trades: 259
+        sortino_ratio: 0.6991
+        calmar_ratio: 0.4522
+        profit_factor: 0.5842
+      momentum_50d:
+        total_return: 100.8108
+        sharpe_ratio: 0.5645
+        max_drawdown: -70.1477
+        win_rate: 36.41
+        volatility: 47.7915
+        num_trades: 171
+        sortino_ratio: 0.4889
+        calmar_ratio: 0.2177
+        profit_factor: 0.7146
+  SQQQ:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: rsi_mean_revert
+    strategies:
+      buy_and_hold:
+        total_return: 52.9218
+        sharpe_ratio: 0.5708
+        max_drawdown: -89.938
+        win_rate: 43.77
+        volatility: 322.4719
+        num_trades: 1
+        sortino_ratio: 3.6551
+        calmar_ratio: 0.1006
+        profit_factor: inf
+      macd_crossover:
+        total_return: 964.3206
+        sharpe_ratio: 0.6669
+        max_drawdown: -76.0443
+        win_rate: 22.9
+        volatility: 319.04
+        num_trades: 80
+        sortino_ratio: 3.9414
+        calmar_ratio: 0.8148
+        profit_factor: 1.9864
+      rsi_mean_revert:
+        total_return: 1792.9234
+        sharpe_ratio: 0.6841
+        max_drawdown: -73.2055
+        win_rate: 36.89
+        volatility: 316.4749
+        num_trades: 265
+        sortino_ratio: 6.333
+        calmar_ratio: 1.1219
+        profit_factor: 36.1173
+      momentum_20d:
+        total_return: 63.3962
+        sharpe_ratio: 0.3951
+        max_drawdown: -66.9585
+        win_rate: 17.56
+        volatility: 205.5328
+        num_trades: 229
+        sortino_ratio: 1.3247
+        calmar_ratio: 0.1572
+        profit_factor: 0.657
+      momentum_50d:
+        total_return: -46.9288
+        sharpe_ratio: 0.2702
+        max_drawdown: -85.4906
+        win_rate: 14.4
+        volatility: 204.0102
+        num_trades: 172
+        sortino_ratio: 0.9206
+        calmar_ratio: -0.1417
+        profit_factor: 0.3681
+  SOXL:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: rsi_mean_revert
+    strategies:
+      buy_and_hold:
+        total_return: -90.3893
+        sharpe_ratio: 0.4345
+        max_drawdown: -99.0082
+        win_rate: 51.29
+        volatility: 117.3833
+        num_trades: 1
+        sortino_ratio: 0.5376
+        calmar_ratio: -0.3835
+        profit_factor: inf
+      macd_crossover:
+        total_return: 40.4857
+        sharpe_ratio: 0.4653
+        max_drawdown: -73.9462
+        win_rate: 26.62
+        volatility: 74.7603
+        num_trades: 82
+        sortino_ratio: 0.5272
+        calmar_ratio: 0.0971
+        profit_factor: 1.0764
+      rsi_mean_revert:
+        total_return: 165.8318
+        sharpe_ratio: 0.6589
+        max_drawdown: -80.8725
+        win_rate: 38.83
+        volatility: 82.3759
+        num_trades: 195
+        sortino_ratio: 0.7034
+        calmar_ratio: 0.2728
+        profit_factor: inf
+      momentum_20d:
+        total_return: -85.6305
+        sharpe_ratio: 0.0669
+        max_drawdown: -96.4256
+        win_rate: 30.34
+        volatility: 78.508
+        num_trades: 276
+        sortino_ratio: 0.0605
+        calmar_ratio: -0.3388
+        profit_factor: 0.2549
+      momentum_50d:
+        total_return: -69.8474
+        sharpe_ratio: 0.4483
+        max_drawdown: -96.8908
+        win_rate: 28.72
+        volatility: 77.6516
+        num_trades: 147
+        sortino_ratio: 0.3664
+        calmar_ratio: -0.2238
+        profit_factor: 0.4918
+  SOXS:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: buy_and_hold
+    strategies:
+      buy_and_hold:
+        total_return: 19.535
+        sharpe_ratio: 0.6707
+        max_drawdown: -96.4522
+        win_rate: 47.33
+        volatility: 752.8083
+        num_trades: 1
+        sortino_ratio: 6.8394
+        calmar_ratio: 0.0385
+        profit_factor: inf
+      macd_crossover:
+        total_return: 286.6457
+        sharpe_ratio: 0.5827
+        max_drawdown: -91.6081
+        win_rate: 25.32
+        volatility: 635.2448
+        num_trades: 83
+        sortino_ratio: 4.9437
+        calmar_ratio: 0.3466
+        profit_factor: 1.3479
+      rsi_mean_revert:
+        total_return: 799.942
+        sharpe_ratio: 0.6594
+        max_drawdown: -89.2384
+        win_rate: 38.59
+        volatility: 671.5322
+        num_trades: 215
+        sortino_ratio: 7.3399
+        calmar_ratio: 0.6333
+        profit_factor: 256.4528
+      momentum_20d:
+        total_return: -35.0909
+        sharpe_ratio: 0.3808
+        max_drawdown: -95.2995
+        win_rate: 17.56
+        volatility: 429.9967
+        num_trades: 239
+        sortino_ratio: 2.0514
+        calmar_ratio: -0.0885
+        profit_factor: 0.1386
+      momentum_50d:
+        total_return: -90.2248
+        sharpe_ratio: -0.3465
+        max_drawdown: -93.5751
+        win_rate: 15.05
+        volatility: 68.5445
+        num_trades: 110
+        sortino_ratio: -0.2954
+        calmar_ratio: -0.4035
+        profit_factor: 0.0607
+  UVXY:
+    period: 2020-01-02 to 2024-12-01
+    best_strategy: rsi_mean_revert
+    strategies:
+      buy_and_hold:
+        total_return: 59.0441
+        sharpe_ratio: 0.6392
+        max_drawdown: -98.2103
+        win_rate: 38.43
+        volatility: 600.1659
+        num_trades: 1
+        sortino_ratio: 7.1417
+        calmar_ratio: 0.1011
+        profit_factor: inf
+      macd_crossover:
+        total_return: -90.8391
+        sharpe_ratio: 0.1559
+        max_drawdown: -97.8429
+        win_rate: 17.07
+        volatility: 193.696
+        num_trades: 84
+        sortino_ratio: 0.4954
+        calmar_ratio: -0.3942
+        profit_factor: 0.2485
+      rsi_mean_revert:
+        total_return: 913.3451
+        sharpe_ratio: 0.6584
+        max_drawdown: -87.4817
+        win_rate: 33.66
+        volatility: 594.5703
+        num_trades: 192
+        sortino_ratio: 9.1489
+        calmar_ratio: 0.6898
+        profit_factor: 179.9703
+      momentum_20d:
+        total_return: -88.7303
+        sharpe_ratio: 0.1826
+        max_drawdown: -99.6009
+        win_rate: 13.59
+        volatility: 194.4603
+        num_trades: 250
+        sortino_ratio: 0.5068
+        calmar_ratio: -0.3607
+        profit_factor: 0.7166
+      momentum_50d:
+        total_return: -99.4193
+        sharpe_ratio: -1.1241
+        max_drawdown: -99.6995
+        win_rate: 10.68
+        volatility: 71.7656
+        num_trades: 106
+        sortino_ratio: -1.1255
+        calmar_ratio: -0.6519
+        profit_factor: 0.0

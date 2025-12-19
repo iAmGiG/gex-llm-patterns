@@ -1,0 +1,561 @@
+metadata:
+  run_date: '2025-12-18T21:24:46.649854'
+  symbols:
+  - SPY
+  - QQQ
+  - IWM
+  initial_capital: 100000
+regime_insights:
+  covid_crash:
+    avg_strategy_returns:
+      buy_and_hold: -21.45
+      macd: -1.37
+      rsi: -16.41
+      momentum: -0.64
+    best_overall: momentum
+  recovery_2020:
+    avg_strategy_returns:
+      buy_and_hold: 69.26
+      macd: 14.01
+      rsi: 16.37
+      momentum: 21.4
+    best_overall: buy_and_hold
+  bull_2021:
+    avg_strategy_returns:
+      buy_and_hold: 24.12
+      macd: 9.0
+      rsi: 8.09
+      momentum: 3.52
+    best_overall: buy_and_hold
+  bear_2022:
+    avg_strategy_returns:
+      buy_and_hold: -25.42
+      macd: -2.4
+      rsi: -7.02
+      momentum: -11.29
+    best_overall: macd
+  mixed_2023:
+    avg_strategy_returns:
+      buy_and_hold: 31.8
+      macd: 13.47
+      rsi: 6.75
+      momentum: 15.21
+    best_overall: buy_and_hold
+  bull_2024:
+    avg_strategy_returns:
+      buy_and_hold: 25.11
+      macd: 2.85
+      rsi: 10.81
+      momentum: 5.7
+    best_overall: buy_and_hold
+detailed_results:
+  covid_crash:
+    period: 2020-02-01 to 2020-03-31
+    description: COVID-19 market crash
+    symbols:
+      SPY:
+        best_strategy: momentum
+        strategies:
+          buy_and_hold:
+            total_return: -20.4782
+            sharpe_ratio: -1.779
+            max_drawdown: -34.1047
+            win_rate: 45.0
+            num_trades: 1
+          macd:
+            total_return: -1.3227
+            sharpe_ratio: -0.6524
+            max_drawdown: -2.9804
+            win_rate: 2.5
+            num_trades: 1
+          rsi:
+            total_return: -16.9462
+            sharpe_ratio: -1.4196
+            max_drawdown: -28.7381
+            win_rate: 25.0
+            num_trades: 3
+          momentum:
+            total_return: 0.0
+            sharpe_ratio: 0
+            max_drawdown: 0.0
+            win_rate: 0.0
+            num_trades: 0
+      QQQ:
+        best_strategy: macd
+        strategies:
+          buy_and_hold:
+            total_return: -14.3827
+            sharpe_ratio: -1.0981
+            max_drawdown: -28.5594
+            win_rate: 50.0
+            num_trades: 1
+          macd:
+            total_return: -0.7842
+            sharpe_ratio: -0.3215
+            max_drawdown: -3.4418
+            win_rate: 2.5
+            num_trades: 1
+          rsi:
+            total_return: -7.0114
+            sharpe_ratio: -0.3983
+            max_drawdown: -21.7587
+            win_rate: 25.0
+            num_trades: 4
+          momentum:
+            total_return: -1.9253
+            sharpe_ratio: -2.5992
+            max_drawdown: -1.9253
+            win_rate: 2.5
+            num_trades: 4
+      IWM:
+        best_strategy: momentum
+        strategies:
+          buy_and_hold:
+            total_return: -29.4871
+            sharpe_ratio: -2.6991
+            max_drawdown: -40.821
+            win_rate: 45.0
+            num_trades: 1
+          macd:
+            total_return: -2.016
+            sharpe_ratio: -1.1275
+            max_drawdown: -3.6425
+            win_rate: 2.5
+            num_trades: 1
+          rsi:
+            total_return: -25.281
+            sharpe_ratio: -2.2486
+            max_drawdown: -34.7857
+            win_rate: 25.0
+            num_trades: 20
+          momentum:
+            total_return: 0.0
+            sharpe_ratio: 0
+            max_drawdown: 0.0
+            win_rate: 0.0
+            num_trades: 0
+  recovery_2020:
+    period: 2020-04-01 to 2020-12-31
+    description: Post-COVID recovery rally
+    symbols:
+      SPY:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 51.888
+            sharpe_ratio: 2.6573
+            max_drawdown: -9.8015
+            win_rate: 60.53
+            num_trades: 1
+          macd:
+            total_return: 12.3257
+            sharpe_ratio: 1.3425
+            max_drawdown: -7.522
+            win_rate: 26.32
+            num_trades: 12
+          rsi:
+            total_return: 15.5969
+            sharpe_ratio: 3.2081
+            max_drawdown: -1.0891
+            win_rate: 20.0
+            num_trades: 12
+          momentum:
+            total_return: 16.202
+            sharpe_ratio: 1.4271
+            max_drawdown: -8.0246
+            win_rate: 51.05
+            num_trades: 152
+      QQQ:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 72.0868
+            sharpe_ratio: 2.9179
+            max_drawdown: -12.7494
+            win_rate: 65.26
+            num_trades: 1
+          macd:
+            total_return: 0.5134
+            sharpe_ratio: 0.1195
+            max_drawdown: -8.9905
+            win_rate: 25.26
+            num_trades: 20
+          rsi:
+            total_return: 16.9017
+            sharpe_ratio: 2.368
+            max_drawdown: -3.7035
+            win_rate: 23.68
+            num_trades: 19
+          momentum:
+            total_return: 29.8425
+            sharpe_ratio: 1.9129
+            max_drawdown: -12.4979
+            win_rate: 55.79
+            num_trades: 105
+      IWM:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 83.8091
+            sharpe_ratio: 2.7312
+            max_drawdown: -11.797
+            win_rate: 57.89
+            num_trades: 1
+          macd:
+            total_return: 29.1962
+            sharpe_ratio: 2.0589
+            max_drawdown: -11.924
+            win_rate: 26.32
+            num_trades: 12
+          rsi:
+            total_return: 16.6045
+            sharpe_ratio: 3.8094
+            max_drawdown: -0.875
+            win_rate: 17.89
+            num_trades: 31
+          momentum:
+            total_return: 18.1577
+            sharpe_ratio: 1.1255
+            max_drawdown: -14.2206
+            win_rate: 47.37
+            num_trades: 91
+  bull_2021:
+    period: 2021-01-01 to 2021-12-31
+    description: 2021 bull market
+    symbols:
+      SPY:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 28.787
+            sharpe_ratio: 2.0126
+            max_drawdown: -5.4172
+            win_rate: 58.17
+            num_trades: 1
+          macd:
+            total_return: 9.2994
+            sharpe_ratio: 1.4365
+            max_drawdown: -4.4325
+            win_rate: 26.29
+            num_trades: 23
+          rsi:
+            total_return: 4.1492
+            sharpe_ratio: 1.0134
+            max_drawdown: -3.3102
+            win_rate: 7.57
+            num_trades: 10
+          momentum:
+            total_return: 8.5344
+            sharpe_ratio: 1.0297
+            max_drawdown: -4.8983
+            win_rate: 52.19
+            num_trades: 232
+      QQQ:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 28.6229
+            sharpe_ratio: 1.4803
+            max_drawdown: -10.8515
+            win_rate: 56.97
+            num_trades: 1
+          macd:
+            total_return: 22.0054
+            sharpe_ratio: 2.3193
+            max_drawdown: -3.2836
+            win_rate: 27.09
+            num_trades: 11
+          rsi:
+            total_return: 15.2231
+            sharpe_ratio: 1.3901
+            max_drawdown: -6.5801
+            win_rate: 25.9
+            num_trades: 45
+          momentum:
+            total_return: 12.3711
+            sharpe_ratio: 1.1912
+            max_drawdown: -7.9914
+            win_rate: 48.61
+            num_trades: 213
+      IWM:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 14.9583
+            sharpe_ratio: 0.7463
+            max_drawdown: -12.5495
+            win_rate: 51.0
+            num_trades: 1
+          macd:
+            total_return: -4.2913
+            sharpe_ratio: -0.3978
+            max_drawdown: -11.3987
+            win_rate: 18.33
+            num_trades: 23
+          rsi:
+            total_return: 4.8876
+            sharpe_ratio: 0.4886
+            max_drawdown: -5.9877
+            win_rate: 23.11
+            num_trades: 14
+          momentum:
+            total_return: -10.3586
+            sharpe_ratio: -0.8006
+            max_drawdown: -20.3728
+            win_rate: 35.86
+            num_trades: 174
+  bear_2022:
+    period: 2022-01-01 to 2022-12-31
+    description: 2022 bear market / rate hikes
+    symbols:
+      SPY:
+        best_strategy: macd
+        strategies:
+          buy_and_hold:
+            total_return: -19.946
+            sharpe_ratio: -0.8009
+            max_drawdown: -25.3356
+            win_rate: 42.8
+            num_trades: 1
+          macd:
+            total_return: 2.0031
+            sharpe_ratio: 0.2058
+            max_drawdown: -12.7801
+            win_rate: 20.0
+            num_trades: 12
+          rsi:
+            total_return: -1.6711
+            sharpe_ratio: 0.0257
+            max_drawdown: -16.703
+            win_rate: 39.6
+            num_trades: 49
+          momentum:
+            total_return: -9.9073
+            sharpe_ratio: -0.7727
+            max_drawdown: -10.9987
+            win_rate: 27.2
+            num_trades: 153
+      QQQ:
+        best_strategy: macd
+        strategies:
+          buy_and_hold:
+            total_return: -33.7092
+            sharpe_ratio: -1.1261
+            max_drawdown: -34.396
+            win_rate: 44.0
+            num_trades: 1
+          macd:
+            total_return: -9.3716
+            sharpe_ratio: -0.4361
+            max_drawdown: -16.6599
+            win_rate: 18.4
+            num_trades: 14
+          rsi:
+            total_return: -10.0617
+            sharpe_ratio: -0.244
+            max_drawdown: -20.7306
+            win_rate: 42.0
+            num_trades: 42
+          momentum:
+            total_return: -12.4339
+            sharpe_ratio: -0.7544
+            max_drawdown: -14.0669
+            win_rate: 22.8
+            num_trades: 99
+      IWM:
+        best_strategy: macd
+        strategies:
+          buy_and_hold:
+            total_return: -22.6184
+            sharpe_ratio: -0.7773
+            max_drawdown: -27.1491
+            win_rate: 48.4
+            num_trades: 1
+          macd:
+            total_return: 0.1621
+            sharpe_ratio: 0.0987
+            max_drawdown: -14.0851
+            win_rate: 22.8
+            num_trades: 12
+          rsi:
+            total_return: -9.3377
+            sharpe_ratio: -0.2969
+            max_drawdown: -23.1052
+            win_rate: 45.2
+            num_trades: 39
+          momentum:
+            total_return: -11.5168
+            sharpe_ratio: -0.7438
+            max_drawdown: -15.3287
+            win_rate: 30.0
+            num_trades: 131
+  mixed_2023:
+    period: 2023-01-01 to 2023-12-31
+    description: 2023 mixed market
+    symbols:
+      SPY:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 24.8106
+            sharpe_ratio: 1.7651
+            max_drawdown: -10.2907
+            win_rate: 56.22
+            num_trades: 1
+          macd:
+            total_return: 6.7962
+            sharpe_ratio: 0.9426
+            max_drawdown: -6.088
+            win_rate: 26.91
+            num_trades: 18
+          rsi:
+            total_return: 8.3354
+            sharpe_ratio: 1.0242
+            max_drawdown: -7.2553
+            win_rate: 30.92
+            num_trades: 34
+          momentum:
+            total_return: 12.4673
+            sharpe_ratio: 1.4262
+            max_drawdown: -5.7923
+            win_rate: 49.8
+            num_trades: 231
+      QQQ:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 54.8368
+            sharpe_ratio: 2.5657
+            max_drawdown: -10.9089
+            win_rate: 56.63
+            num_trades: 1
+          macd:
+            total_return: 19.5334
+            sharpe_ratio: 1.8653
+            max_drawdown: -6.3638
+            win_rate: 24.5
+            num_trades: 14
+          rsi:
+            total_return: 10.6542
+            sharpe_ratio: 1.2285
+            max_drawdown: -7.4192
+            win_rate: 15.26
+            num_trades: 15
+          momentum:
+            total_return: 26.1674
+            sharpe_ratio: 1.845
+            max_drawdown: -6.7512
+            win_rate: 49.8
+            num_trades: 202
+      IWM:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 15.7464
+            sharpe_ratio: 0.8344
+            max_drawdown: -18.3685
+            win_rate: 52.61
+            num_trades: 1
+          macd:
+            total_return: 14.0664
+            sharpe_ratio: 0.9885
+            max_drawdown: -11.1831
+            win_rate: 22.89
+            num_trades: 13
+          rsi:
+            total_return: 1.272
+            sharpe_ratio: 0.1594
+            max_drawdown: -15.0065
+            win_rate: 39.76
+            num_trades: 32
+          momentum:
+            total_return: 6.9949
+            sharpe_ratio: 0.5645
+            max_drawdown: -12.8014
+            win_rate: 40.16
+            num_trades: 164
+  bull_2024:
+    period: 2024-01-01 to 2024-11-30
+    description: 2024 bull market
+    symbols:
+      SPY:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 27.482
+            sharpe_ratio: 2.2004
+            max_drawdown: -8.4056
+            win_rate: 60.0
+            num_trades: 1
+          macd:
+            total_return: 5.1835
+            sharpe_ratio: 0.8932
+            max_drawdown: -2.7674
+            win_rate: 26.09
+            num_trades: 23
+          rsi:
+            total_return: 11.7444
+            sharpe_ratio: 2.5587
+            max_drawdown: -1.8634
+            win_rate: 11.74
+            num_trades: 13
+          momentum:
+            total_return: 12.1572
+            sharpe_ratio: 1.4381
+            max_drawdown: -4.5374
+            win_rate: 52.61
+            num_trades: 207
+      QQQ:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 26.6136
+            sharpe_ratio: 1.5421
+            max_drawdown: -13.5577
+            win_rate: 60.0
+            num_trades: 1
+          macd:
+            total_return: 1.5909
+            sharpe_ratio: 0.2323
+            max_drawdown: -7.1112
+            win_rate: 21.74
+            num_trades: 22
+          rsi:
+            total_return: 9.0919
+            sharpe_ratio: 1.1434
+            max_drawdown: -7.6321
+            win_rate: 18.7
+            num_trades: 22
+          momentum:
+            total_return: 7.816
+            sharpe_ratio: 0.7369
+            max_drawdown: -5.7645
+            win_rate: 48.26
+            num_trades: 195
+      IWM:
+        best_strategy: buy_and_hold
+        strategies:
+          buy_and_hold:
+            total_return: 21.2229
+            sharpe_ratio: 1.1139
+            max_drawdown: -10.0712
+            win_rate: 53.48
+            num_trades: 1
+          macd:
+            total_return: 1.7669
+            sharpe_ratio: 0.2151
+            max_drawdown: -9.6074
+            win_rate: 20.0
+            num_trades: 15
+          rsi:
+            total_return: 11.5928
+            sharpe_ratio: 2.2211
+            max_drawdown: -2.02
+            win_rate: 35.22
+            num_trades: 24
+          momentum:
+            total_return: -2.8701
+            sharpe_ratio: -0.123
+            max_drawdown: -12.4772
+            win_rate: 44.78
+            num_trades: 177
