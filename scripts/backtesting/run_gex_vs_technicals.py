@@ -9,6 +9,7 @@ Stores results in YAML format for research notes.
 
 import logging
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
@@ -51,17 +52,37 @@ logger = logging.getLogger(__name__)
 # Symbols with deep options data (1400+ days)
 SYMBOLS = ["SPY", "QQQ", "TQQQ", "SQQQ", "SOXL", "IWM"]
 
-# Test period (where we have options data)
-START_DATE = "2024-01-02"
-END_DATE = "2024-11-30"
+# Full test period (2020-2025 - full options data range)
+START_DATE = "2020-01-02"
+END_DATE = "2025-12-01"
 INITIAL_CAPITAL = 100000
+
+# Market regimes for detailed analysis
+REGIMES = {
+    "covid_crash": ("2020-02-01", "2020-03-31"),
+    "recovery_2020": ("2020-04-01", "2020-12-31"),
+    "bull_2021": ("2021-01-01", "2021-12-31"),
+    "bear_2022": ("2022-01-01", "2022-12-31"),
+    "mixed_2023": ("2023-01-01", "2023-12-31"),
+    "bull_2024": ("2024-01-01", "2024-11-30"),
+}
 
 # Output path
 OUTPUT_DIR = Path(__file__).parent.parent.parent / "reports" / "backtesting_research"
 
 
-def run_comparison(symbol: str, engine: BacktestEngine) -> dict:
-    """Run GEX and technical strategies for comparison."""
+def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, end_date: str = None) -> dict:
+    """Run GEX and technical strategies for comparison.
+
+    Args:
+        symbol: Stock symbol
+        engine: BacktestEngine instance
+        start_date: Start date (defaults to global START_DATE)
+        end_date: End date (defaults to global END_DATE)
+    """
+    start_date = start_date or START_DATE
+    end_date = end_date or END_DATE
+
     # Technical strategies
     technical_strategies = {
         "buy_and_hold": BuyAndHoldStrategy(),
@@ -85,8 +106,8 @@ def run_comparison(symbol: str, engine: BacktestEngine) -> dict:
             result = engine.run(
                 signal_generator=strategy.generate_signal,
                 symbol=symbol,
-                start_date=START_DATE,
-                end_date=END_DATE,
+                start_date=start_date,
+                end_date=end_date,
             )
 
             results["technical"][name] = {
@@ -106,8 +127,8 @@ def run_comparison(symbol: str, engine: BacktestEngine) -> dict:
         result = engine.run(
             signal_generator=gex_signal.generate_signal,
             symbol=symbol,
-            start_date=START_DATE,
-            end_date=END_DATE,
+            start_date=start_date,
+            end_date=end_date,
         )
 
         results["gex"]["gex_pattern"] = {
@@ -172,81 +193,160 @@ def find_best_technical(results: dict) -> tuple:
     return best_name, best_metrics
 
 
-def main():
-    """Run GEX vs Technicals comparison."""
-    logger.info("=" * 70)
-    logger.info("GEX PATTERN vs TECHNICAL STRATEGIES COMPARISON")
-    logger.info(f"Period: {START_DATE} to {END_DATE}")
-    logger.info(f"Symbols: {SYMBOLS}")
-    logger.info("=" * 70)
+def run_single_symbol(args):
+    """Run comparison for a single symbol (for parallel execution)."""
+    symbol, start_date, end_date = args
+    try:
+        engine = BacktestEngine(initial_capital=INITIAL_CAPITAL)
+        comparison = run_comparison(symbol, engine, start_date, end_date)
 
-    engine = BacktestEngine(initial_capital=INITIAL_CAPITAL)
-    all_results = {}
+        # Find best technical strategy
+        best_tech_name, best_tech_metrics = find_best_technical(comparison["technical"])
+
+        # Calculate improvement
+        gex_result = comparison["gex"].get("gex_pattern", {})
+        improvement = calculate_improvement(gex_result, best_tech_metrics)
+
+        # Determine winner
+        gex_sharpe = gex_result.get("sharpe_ratio", 0) if "error" not in gex_result else 0
+        tech_sharpe = best_tech_metrics.get("sharpe_ratio", 0) if best_tech_metrics else 0
+        winner = "GEX" if gex_sharpe > tech_sharpe else "TECHNICAL"
+
+        return {
+            "symbol": symbol,
+            "winner": winner,
+            "best_technical": best_tech_name,
+            "gex_sharpe": gex_sharpe,
+            "tech_sharpe": tech_sharpe,
+            "gex_improvement_pct": improvement,
+            "gex_trades": gex_result.get("num_trades", 0),
+            "results": comparison,
+            "error": None,
+        }
+    except Exception as e:
+        return {"symbol": symbol, "error": str(e)}
+
+
+def run_period_analysis_parallel(start_date: str, end_date: str, period_name: str, max_workers: int = 4):
+    """Run analysis for a specific period across all symbols IN PARALLEL."""
+    results = {}
     summary = []
 
-    for symbol in SYMBOLS:
-        logger.info(f"\nTesting {symbol}...")
-        try:
-            results = run_comparison(symbol, engine)
+    # Create work items
+    work_items = [(symbol, start_date, end_date) for symbol in SYMBOLS]
 
-            # Find best technical strategy
-            best_tech_name, best_tech_metrics = find_best_technical(results["technical"])
+    # Run in parallel
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(run_single_symbol, item): item[0] for item in work_items}
 
-            # Calculate improvement
-            gex_result = results["gex"].get("gex_pattern", {})
-            improvement = calculate_improvement(gex_result, best_tech_metrics)
+        for future in as_completed(futures):
+            symbol = futures[future]
+            try:
+                result = future.result()
+                if result.get("error"):
+                    logger.warning(f"  {symbol} failed: {result['error']}")
+                    results[symbol] = {"error": result["error"]}
+                else:
+                    results[symbol] = result
+                    summary.append(
+                        {
+                            "symbol": symbol,
+                            "winner": result["winner"],
+                            "gex_sharpe": result["gex_sharpe"],
+                            "tech_sharpe": result["tech_sharpe"],
+                            "improvement": result["gex_improvement_pct"],
+                        }
+                    )
+            except Exception as e:
+                logger.warning(f"  {symbol} failed in {period_name}: {e}")
+                results[symbol] = {"error": str(e)}
 
-            # Determine winner
-            gex_sharpe = gex_result.get("sharpe_ratio", 0) if "error" not in gex_result else 0
-            tech_sharpe = best_tech_metrics.get("sharpe_ratio", 0) if best_tech_metrics else 0
-            winner = "GEX" if gex_sharpe > tech_sharpe else "TECHNICAL"
-
-            all_results[symbol] = {
-                "period": f"{START_DATE} to {END_DATE}",
-                "winner": winner,
-                "best_technical": best_tech_name,
-                "gex_improvement_pct": improvement,
-                "results": results,
-            }
-
-            summary.append(
-                {
-                    "symbol": symbol,
-                    "winner": winner,
-                    "gex_sharpe": gex_sharpe,
-                    "tech_sharpe": tech_sharpe,
-                    "improvement": improvement,
-                }
-            )
-
-            logger.info(f"  Winner: {winner}")
-            logger.info(f"  GEX Sharpe: {gex_sharpe:.3f}")
-            logger.info(f"  Best Tech ({best_tech_name}): {tech_sharpe:.3f}")
-
-        except Exception as e:
-            logger.error(f"  Failed: {e}")
-            all_results[symbol] = {"error": str(e)}
-
-    # Calculate overall statistics
+    # Calculate stats
     gex_wins = sum(1 for s in summary if s["winner"] == "GEX")
     tech_wins = sum(1 for s in summary if s["winner"] == "TECHNICAL")
     avg_improvement = sum(s["improvement"] for s in summary) / len(summary) if summary else 0
+
+    return {
+        "period": f"{start_date} to {end_date}",
+        "gex_wins": gex_wins,
+        "technical_wins": tech_wins,
+        "avg_improvement_pct": round(avg_improvement, 2),
+        "symbol_results": results,
+        "summary": summary,
+    }
+
+
+def main():
+    """Run GEX vs Technicals comparison across full period and regimes."""
+    import multiprocessing
+
+    max_workers = min(6, multiprocessing.cpu_count())
+
+    logger.info("=" * 70)
+    logger.info("GEX PATTERN vs TECHNICAL STRATEGIES COMPARISON (PARALLEL)")
+    logger.info(f"Full Period: {START_DATE} to {END_DATE}")
+    logger.info(f"Regimes: {list(REGIMES.keys())}")
+    logger.info(f"Symbols: {SYMBOLS}")
+    logger.info(f"Workers: {max_workers}")
+    logger.info("=" * 70)
+
+    # Run full period analysis in parallel
+    logger.info("\n" + "=" * 50)
+    logger.info("FULL PERIOD ANALYSIS (parallel)")
+    logger.info("=" * 50)
+    full_period = run_period_analysis_parallel(START_DATE, END_DATE, "full_period", max_workers)
+    logger.info(f"Full Period: GEX wins {full_period['gex_wins']}, Tech wins {full_period['technical_wins']}")
+
+    # Run regime-specific analysis in parallel
+    regime_results = {}
+    logger.info("\n" + "=" * 50)
+    logger.info("REGIME-SPECIFIC ANALYSIS (parallel)")
+    logger.info("=" * 50)
+
+    for regime_name, (start, end) in REGIMES.items():
+        logger.info(f"\n{regime_name} ({start} to {end})...")
+        regime_results[regime_name] = run_period_analysis_parallel(start, end, regime_name, max_workers)
+        logger.info(
+            f"  GEX wins: {regime_results[regime_name]['gex_wins']}, "
+            f"Tech wins: {regime_results[regime_name]['technical_wins']}"
+        )
+
+    # Identify best regimes for GEX
+    regime_gex_performance = []
+    for regime_name, data in regime_results.items():
+        gex_win_rate = data["gex_wins"] / len(SYMBOLS) if SYMBOLS else 0
+        regime_gex_performance.append(
+            {
+                "regime": regime_name,
+                "gex_win_rate": gex_win_rate,
+                "gex_wins": data["gex_wins"],
+                "avg_improvement": data["avg_improvement_pct"],
+            }
+        )
+
+    regime_gex_performance.sort(key=lambda x: x["gex_win_rate"], reverse=True)
 
     # Compile final output
     output = {
         "metadata": {
             "run_date": datetime.now().isoformat(),
-            "period": f"{START_DATE} to {END_DATE}",
+            "full_period": f"{START_DATE} to {END_DATE}",
+            "regimes_tested": list(REGIMES.keys()),
             "symbols": SYMBOLS,
             "initial_capital": INITIAL_CAPITAL,
         },
-        "summary": {
-            "gex_wins": gex_wins,
-            "technical_wins": tech_wins,
-            "avg_improvement_pct": round(avg_improvement, 2),
-            "symbol_results": summary,
+        "full_period_summary": {
+            "gex_wins": full_period["gex_wins"],
+            "technical_wins": full_period["technical_wins"],
+            "avg_improvement_pct": full_period["avg_improvement_pct"],
+            "symbol_summary": full_period["summary"],
         },
-        "detailed_results": all_results,
+        "regime_analysis": {
+            "best_regimes_for_gex": regime_gex_performance[:3],
+            "worst_regimes_for_gex": regime_gex_performance[-3:],
+            "detailed_by_regime": regime_results,
+        },
+        "full_period_detailed": full_period["symbol_results"],
     }
 
     # Save to YAML
@@ -262,12 +362,28 @@ def main():
     print("\n" + "=" * 70)
     print("GEX vs TECHNICALS SUMMARY")
     print("=" * 70)
-    print(f"GEX Wins: {gex_wins}")
-    print(f"Technical Wins: {tech_wins}")
-    print(f"Average GEX Improvement: {avg_improvement:.2f}%")
-    print("\nPer-Symbol Results:")
-    for s in summary:
+
+    print(f"\nFULL PERIOD ({START_DATE} to {END_DATE}):")
+    print(f"  GEX Wins: {full_period['gex_wins']}")
+    print(f"  Technical Wins: {full_period['technical_wins']}")
+    print(f"  Average GEX Improvement: {full_period['avg_improvement_pct']:.2f}%")
+
+    print("\nPer-Symbol Results (Full Period):")
+    for s in full_period["summary"]:
         print(f"  {s['symbol']}: {s['winner']} (GEX: {s['gex_sharpe']:.3f}, Tech: {s['tech_sharpe']:.3f})")
+
+    print("\n" + "-" * 70)
+    print("REGIME ANALYSIS:")
+    print("-" * 70)
+    for regime_name, data in regime_results.items():
+        print(
+            f"  {regime_name}: GEX {data['gex_wins']}/{len(SYMBOLS)}, "
+            f"Improvement: {data['avg_improvement_pct']:.1f}%"
+        )
+
+    print("\nBest Regimes for GEX:")
+    for r in regime_gex_performance[:3]:
+        print(f"  {r['regime']}: {r['gex_wins']}/{len(SYMBOLS)} wins, " f"avg improvement: {r['avg_improvement']:.1f}%")
 
     return 0
 
