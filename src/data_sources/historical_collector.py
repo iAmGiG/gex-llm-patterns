@@ -1,10 +1,9 @@
 """Historical Options Data Collection Service.
 
-Systematically collects historical options chains from Alpha Vantage API
-with SQLite storage, rate limiting, progress tracking, and resume capability.
+Systematically collects historical options chains from Alpha Vantage API with SQLite storage, rate limiting, progress
+tracking, and resume capability.
 
-Issue #147: Store raw options data in database
-Issue #179: Paper 3 multi-symbol data collection
+Issue #147: Store raw options data in database Issue #179: Paper 3 multi-symbol data collection
 """
 
 import asyncio

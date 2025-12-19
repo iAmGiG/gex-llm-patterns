@@ -267,8 +267,7 @@ def bulk_insert_results(db_path: Path, results: pd.DataFrame, batch_size: int, l
 
 
 def calculate_gex_vectorized(df: pd.DataFrame, config: Dict, logger: logging.Logger) -> pd.DataFrame:
-    """
-    Calculate GEX metrics using vectorized pandas operations.
+    """Calculate GEX metrics using vectorized pandas operations.
 
     This is the core calculation - processes entire symbol data at once.
     """
@@ -474,7 +473,10 @@ def calculate_gex_vectorized(df: pd.DataFrame, config: Dict, logger: logging.Log
 
 
 def process_symbol(symbol: str, db_path: Path, config: Dict, logger: logging.Logger) -> Tuple[str, int, int]:
-    """Process a single symbol. Returns (symbol, new_count, skip_count)."""
+    """Process a single symbol.
+
+    Returns (symbol, new_count, skip_count).
+    """
     logger.info(f"Processing {symbol}...")
 
     # Get already processed dates

@@ -1,5 +1,4 @@
-"""
-Volatility Spillover Analysis (#497)
+"""Volatility Spillover Analysis (#497)
 
 Extends cross-asset correlation to answer:
 1. Does VXX/UVXY GEX lead equity regime changes? (Granger causality)
@@ -54,8 +53,7 @@ def load_gex_data(conn: sqlite3.Connection) -> pd.DataFrame:
 
 
 def granger_causality_test(df: pd.DataFrame, cause_symbol: str, effect_symbol: str, max_lag: int = 5) -> dict:
-    """
-    Test if cause_symbol GEX Granger-causes effect_symbol regime changes.
+    """Test if cause_symbol GEX Granger-causes effect_symbol regime changes.
 
     Uses simple F-test approach:
     - H0: Lagged cause doesn't improve prediction of effect
@@ -152,9 +150,7 @@ def analyze_regime_transitions(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
 
 
 def find_leading_indicators(df: pd.DataFrame, target_symbol: str, candidate_symbols: list, lookback: int = 5) -> dict:
-    """
-    Find which symbols' GEX changes precede target regime transitions.
-    """
+    """Find which symbols' GEX changes precede target regime transitions."""
     # Get target transitions
     transitions = analyze_regime_transitions(df, target_symbol)
 
