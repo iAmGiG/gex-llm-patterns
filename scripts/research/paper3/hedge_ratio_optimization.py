@@ -627,7 +627,7 @@ if __name__ == "__main__":
     # Save report
     report_path = Path("docs/08_research/03_gex_research/hedge_ratio_optimization.md")
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(report)
+    report_path.write_text(report, encoding="utf-8")
     print(f"\n[OK] Report saved: {report_path}")
 
     # Summary

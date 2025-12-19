@@ -43,7 +43,7 @@ from src.utils.date_utils import get_datetime_now, now_iso, now_timestamp
 
 DEFAULT_CONFIG = {
     "database": {
-        "path": ".cache/gex_research.db",
+        "path": ".cache/options_historical.db",
         "journal_mode": "WAL",
         "cache_size_mb": 100,
         "mmap_size_mb": 1024,
