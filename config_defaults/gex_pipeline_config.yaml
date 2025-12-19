@@ -1,0 +1,87 @@
+# GEX Calculation Pipeline Configuration
+# Issue #501 - Big Data GEX Pipeline
+
+database:
+  path: ".cache/gex_research.db"
+  # SQLite optimizations
+  journal_mode: "WAL"
+  cache_size_mb: 100
+  mmap_size_mb: 1024
+  synchronous: "OFF"  # Faster writes, use NORMAL for safety
+
+processing:
+  # Chunk size for reading from database
+  read_chunk_size: 100000
+  # Batch size for inserts
+  write_batch_size: 1000
+  # Number of Dask workers (0 = auto based on CPU)
+  num_workers: 0
+  # Memory limit per worker
+  memory_limit_per_worker: "2GB"
+  # Scheduler: "synchronous" for debugging, "threads" or "processes" for parallel
+  scheduler: "processes"
+
+logging:
+  # Log file location
+  log_dir: "logs/gex_pipeline"
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+  # Rotate logs
+  max_log_size_mb: 50
+  backup_count: 5
+
+validation:
+  # Minimum contracts per day to be valid
+  min_contracts: 50
+  # Minimum open interest
+  min_open_interest: 100
+  # Maximum allowed gamma (filter outliers)
+  max_gamma: 1.0
+
+output:
+  # Generate reports
+  generate_reports: true
+  report_dir: "docs/08_research/03_gex_research/reports"
+  # Checkpoint frequency (save progress every N symbols)
+  checkpoint_frequency: 5
+
+asset_classes:
+  equity:
+    - SPY
+    - QQQ
+    - IWM
+    - DIA
+    - VTI
+    - AAPL
+    - MSFT
+    - TSLA
+    - TQQQ
+    - SQQQ
+    - UPRO
+    - SPXU
+    - SPXL
+    - SPXS
+    - SOXL
+    - SOXS
+    - TNA
+    - TZA
+    - TECL
+    - TECS
+    - FAS
+    - FAZ
+    - LABU
+    - LABD
+    - NUGT
+    - DUST
+  volatility:
+    - UVXY
+    - VXX
+  commodity:
+    - GLD
+    - SLV
+  bond:
+    - TLT
+    - IEF
+    - LQD
+  real_estate:
+    - IYR
