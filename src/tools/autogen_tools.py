@@ -89,12 +89,16 @@ ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 
 # Initialize shared components
 # Issue #180: SQLite is primary/only storage for options data
+# Issue #16: Validation enabled at ingress by default
 # UnifiedCacheManager is used for market data and GEX calculations (not options)
-sqlite_options = SQLiteOptionsManager(db_path=".cache/options_historical.db")
+sqlite_options = SQLiteOptionsManager(
+    db_path=".cache/options_historical.db",
+    enable_validation=True,  # Issue #16: Quality validation at ingress
+)
 cache_manager = UnifiedCacheManager()  # For market data and GEX (not options)
 alpha_vantage_client = AlphaVantageGEXClient()
 live_gex = LiveGEXInterface()
-validator = OptionsDataValidator()
+validator = OptionsDataValidator()  # Used for GEX calculation data cleaning (different from ingress validation)
 
 ##################################
 # Data Retrieval Tools
