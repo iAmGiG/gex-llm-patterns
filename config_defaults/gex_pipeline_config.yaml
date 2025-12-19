@@ -2,7 +2,7 @@
 # Issue #501 - Big Data GEX Pipeline
 
 database:
-  path: ".cache/gex_research.db"
+  path: ".cache/options_historical.db"
   # SQLite optimizations
   journal_mode: "WAL"
   cache_size_mb: 100
