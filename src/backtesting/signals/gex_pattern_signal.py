@@ -107,21 +107,41 @@ class GEXPatternSignal:
             if spot_price is None:
                 return None
 
-            # Calculate GEX
-            gex_result = self.gex_calculator.calculate(options_df, spot_price)
+            # Rename option_type to type for GEX calculator compatibility
+            if "option_type" in options_df.columns and "type" not in options_df.columns:
+                options_df = options_df.rename(columns={"option_type": "type"})
 
-            if gex_result is None:
+            # Calculate GEX using the correct method
+            gex_result = self.gex_calculator.calculate_gex_profile(options_df, spot_price)
+
+            if gex_result is None or gex_result.get("net_gex", 0) == 0:
                 return None
+
+            # Extract key levels for put/call walls
+            key_levels = gex_result.get("key_levels", [])
+            max_gamma_strike = key_levels[0]["strike"] if key_levels else None
+
+            # Find put wall (highest negative GEX) and call wall (highest positive GEX)
+            strike_gex = gex_result.get("strike_gex")
+            put_wall = None
+            call_wall = None
+            if strike_gex is not None and not strike_gex.empty:
+                negative_gex = strike_gex[strike_gex["total_gex"] < 0]
+                positive_gex = strike_gex[strike_gex["total_gex"] > 0]
+                if not negative_gex.empty:
+                    put_wall = negative_gex.loc[negative_gex["total_gex"].idxmin(), "strike"]
+                if not positive_gex.empty:
+                    call_wall = positive_gex.loc[positive_gex["total_gex"].idxmax(), "strike"]
 
             return {
                 "net_gex": gex_result.get("net_gex", 0),
-                "call_gex": gex_result.get("call_gex", 0),
-                "put_gex": gex_result.get("put_gex", 0),
-                "gex_by_strike": gex_result.get("gex_by_strike", {}),
+                "call_gex": gex_result.get("gex_range", (0, 0))[1],  # Max positive
+                "put_gex": gex_result.get("gex_range", (0, 0))[0],  # Min negative
+                "gex_by_strike": strike_gex.to_dict("records") if strike_gex is not None else [],
                 "spot_price": spot_price,
-                "max_gamma_strike": gex_result.get("max_gamma_strike"),
-                "put_wall": gex_result.get("put_wall"),
-                "call_wall": gex_result.get("call_wall"),
+                "max_gamma_strike": max_gamma_strike,
+                "put_wall": put_wall,
+                "call_wall": call_wall,
             }
 
         except Exception as e:

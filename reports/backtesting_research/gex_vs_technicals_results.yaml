@@ -1,5 +1,5 @@
 metadata:
-  run_date: '2025-12-18T21:25:46.491885'
+  run_date: '2025-12-18T21:47:28.458203'
   period: 2024-01-02 to 2024-11-30
   symbols:
   - SPY
@@ -12,18 +12,18 @@ metadata:
 summary:
   gex_wins: 0
   technical_wins: 6
-  avg_improvement_pct: -100.0
+  avg_improvement_pct: -107.02
   symbol_results:
   - symbol: SPY
     winner: TECHNICAL
-    gex_sharpe: 0
+    gex_sharpe: 1.8765
     tech_sharpe: 2.5587
-    improvement: -100.0
+    improvement: -26.66
   - symbol: QQQ
     winner: TECHNICAL
-    gex_sharpe: 0
+    gex_sharpe: -0.1306
     tech_sharpe: 1.5421
-    improvement: -100.0
+    improvement: -108.47
   - symbol: TQQQ
     winner: TECHNICAL
     gex_sharpe: 0
@@ -31,9 +31,9 @@ summary:
     improvement: -100.0
   - symbol: SQQQ
     winner: TECHNICAL
-    gex_sharpe: 0
+    gex_sharpe: -1.3017
     tech_sharpe: 1.0184
-    improvement: -100.0
+    improvement: -227.82
   - symbol: SOXL
     winner: TECHNICAL
     gex_sharpe: 0
@@ -41,15 +41,15 @@ summary:
     improvement: -100.0
   - symbol: IWM
     winner: TECHNICAL
-    gex_sharpe: 0
+    gex_sharpe: 0.4624
     tech_sharpe: 2.2211
-    improvement: -100.0
+    improvement: -79.18
 detailed_results:
   SPY:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
     best_technical: rsi
-    gex_improvement_pct: -100.0
+    gex_improvement_pct: -26.66
     results:
       technical:
         buy_and_hold:
@@ -78,16 +78,19 @@ detailed_results:
           num_trades: 207
       gex:
         gex_pattern:
-          total_return: 0.0
-          sharpe_ratio: 0
-          max_drawdown: 0.0
-          win_rate: 0.0
-          num_trades: 0
+          total_return: 21.5725
+          sharpe_ratio: 1.8765
+          max_drawdown: -8.4064
+          win_rate: 51.3
+          num_trades: 12
+          sortino_ratio: 2.3171
+          calmar_ratio: 2.8389
+          profit_factor: 12.936
   QQQ:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
     best_technical: buy_and_hold
-    gex_improvement_pct: -100.0
+    gex_improvement_pct: -108.47
     results:
       technical:
         buy_and_hold:
@@ -116,11 +119,14 @@ detailed_results:
           num_trades: 195
       gex:
         gex_pattern:
-          total_return: 0.0
-          sharpe_ratio: 0
-          max_drawdown: 0.0
-          win_rate: 0.0
-          num_trades: 0
+          total_return: -2.3711
+          sharpe_ratio: -0.1306
+          max_drawdown: -15.2626
+          win_rate: 22.61
+          num_trades: 28
+          sortino_ratio: -0.1261
+          calmar_ratio: -0.17
+          profit_factor: 0.8331
   TQQQ:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
@@ -163,7 +169,7 @@ detailed_results:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
     best_technical: rsi
-    gex_improvement_pct: -100.0
+    gex_improvement_pct: -227.82
     results:
       technical:
         buy_and_hold:
@@ -192,11 +198,14 @@ detailed_results:
           num_trades: 48
       gex:
         gex_pattern:
-          total_return: 0.0
-          sharpe_ratio: 0
-          max_drawdown: 0.0
-          win_rate: 0.0
-          num_trades: 0
+          total_return: -16.947
+          sharpe_ratio: -1.3017
+          max_drawdown: -17.5336
+          win_rate: 4.35
+          num_trades: 18
+          sortino_ratio: -0.6881
+          calmar_ratio: -1.0499
+          profit_factor: 0.3444
   SOXL:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
@@ -239,7 +248,7 @@ detailed_results:
     period: 2024-01-02 to 2024-11-30
     winner: TECHNICAL
     best_technical: rsi
-    gex_improvement_pct: -100.0
+    gex_improvement_pct: -79.18
     results:
       technical:
         buy_and_hold:
@@ -268,8 +277,11 @@ detailed_results:
           num_trades: 177
       gex:
         gex_pattern:
-          total_return: 0.0
-          sharpe_ratio: 0
-          max_drawdown: 0.0
-          win_rate: 0.0
-          num_trades: 0
+          total_return: 6.083
+          sharpe_ratio: 0.4624
+          max_drawdown: -11.7172
+          win_rate: 39.57
+          num_trades: 18
+          sortino_ratio: 0.6024
+          calmar_ratio: 0.5704
+          profit_factor: 1.8157
