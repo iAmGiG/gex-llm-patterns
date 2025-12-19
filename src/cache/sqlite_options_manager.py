@@ -10,6 +10,7 @@ Tables:
 
 Issue #147: Store raw options data in database
 Issue #179: Paper 3 multi-symbol data collection
+Issue #16: Options chain quality validation at ingress
 """
 
 import logging
@@ -21,6 +22,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 
 from src.utils.date_utils import now_iso
+from src.validation.options_chain_validator import OptionsChainValidator, ValidationResult, ValidationSeverity
 
 logger = logging.getLogger(__name__)
 
@@ -42,15 +44,24 @@ class SQLiteOptionsManager:
         >>> summary = manager.get_daily_summary("SPY", "2024-01-01", "2024-12-31")
     """
 
-    def __init__(self, db_path: str = ".cache/options_historical.db"):
+    def __init__(
+        self,
+        db_path: str = ".cache/options_historical.db",
+        validation_config: Dict = None,
+        enable_validation: bool = True,
+    ):
         """Initialize SQLite options manager.
 
         Args:
             db_path: Path to SQLite database file
+            validation_config: Optional config overrides for OptionsChainValidator
+            enable_validation: Enable/disable validation at ingress (default: True)
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._write_lock = threading.Lock()
+        self._enable_validation = enable_validation
+        self._validator = OptionsChainValidator(validation_config) if enable_validation else None
         self._init_database()
 
     def _init_database(self):
@@ -164,6 +175,7 @@ class SQLiteOptionsManager:
                     contracts_count INTEGER,
                     error_message TEXT,
                     api_call_made INTEGER DEFAULT 0,
+                    validation_quality_score REAL,  -- Issue #16: Quality score from validation
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(symbol, trading_date)
                 )
@@ -215,6 +227,14 @@ class SQLiteOptionsManager:
                 logger.info("Migrating: Adding asset_class column to options_daily_summary")
                 conn.execute("ALTER TABLE options_daily_summary ADD COLUMN asset_class TEXT DEFAULT 'equity'")
 
+            # Check if validation_quality_score column exists in collection_progress (Issue #16)
+            cursor = conn.execute("PRAGMA table_info(collection_progress)")
+            columns = {row[1] for row in cursor.fetchall()}
+
+            if "validation_quality_score" not in columns:
+                logger.info("Migrating: Adding validation_quality_score column to collection_progress")
+                conn.execute("ALTER TABLE collection_progress ADD COLUMN validation_quality_score REAL")
+
             conn.commit()
         except Exception as e:
             logger.warning(f"Migration check/apply failed (may be expected for new DB): {e}")
@@ -231,6 +251,7 @@ class SQLiteOptionsManager:
         underlying_price: float = None,
         asset_class: str = None,
         data_source: str = "alpha_vantage",
+        skip_validation: bool = False,
     ) -> int:
         """Store options chain data with batch insert.
 
@@ -241,6 +262,7 @@ class SQLiteOptionsManager:
             underlying_price: Spot price (auto-detected from df if not provided)
             asset_class: Asset class (auto-detected from symbol if not provided)
             data_source: Data source identifier
+            skip_validation: Skip validation for this call (default: False)
 
         Returns:
             Number of records inserted
@@ -255,6 +277,41 @@ class SQLiteOptionsManager:
         try:
             # Standardize column names
             df = self._standardize_columns(df.copy())
+
+            # === VALIDATION (Issue #16) ===
+            validation_result = None
+            if self._enable_validation and self._validator and not skip_validation:
+                df, validation_result = self._validator.validate_and_filter(df, symbol, trading_date)
+
+                # Log validation results
+                if validation_result:
+                    if validation_result.critical_count > 0:
+                        logger.warning(
+                            f"Validation {symbol} {trading_date}: "
+                            f"{validation_result.rejected_records} rejected, "
+                            f"{validation_result.warning_count} warnings, "
+                            f"quality={validation_result.quality_score:.3f}"
+                        )
+                    elif validation_result.warning_count > 0:
+                        logger.info(
+                            f"Validation {symbol} {trading_date}: "
+                            f"{validation_result.warning_count} warnings, "
+                            f"quality={validation_result.quality_score:.3f}"
+                        )
+
+                # Check if all records were rejected
+                if df.empty:
+                    logger.error(
+                        f"All records rejected for {symbol} {trading_date} - "
+                        f"validation failed with {validation_result.critical_count} critical issues"
+                    )
+                    self._update_progress(
+                        symbol,
+                        trading_date,
+                        "failed",
+                        error_message=f"Validation failed: {validation_result.critical_count} critical issues",
+                    )
+                    return 0
 
             # Auto-detect underlying price if not provided
             if underlying_price is None and "underlying_price" in df.columns:
@@ -301,10 +358,21 @@ class SQLiteOptionsManager:
             # Batch insert with thread safety
             inserted = self._batch_insert_options(records)
 
-            # Update collection progress
-            self._update_progress(symbol, trading_date, "completed", len(records))
+            # Update collection progress with validation info
+            quality_score = validation_result.quality_score if validation_result else 1.0
+            self._update_progress(
+                symbol, trading_date, "completed", len(records), validation_quality_score=quality_score
+            )
 
-            logger.info(f"Stored {inserted} options contracts for {symbol} {trading_date}")
+            # Enhanced logging with validation summary
+            if validation_result and validation_result.rejected_records > 0:
+                logger.info(
+                    f"Stored {inserted} options for {symbol} {trading_date} "
+                    f"(rejected {validation_result.rejected_records}, quality={quality_score:.3f})"
+                )
+            else:
+                logger.info(f"Stored {inserted} options contracts for {symbol} {trading_date}")
+
             return inserted
 
         except Exception as e:
@@ -582,6 +650,7 @@ class SQLiteOptionsManager:
         contracts_count: int = None,
         error_message: str = None,
         api_call_made: bool = False,
+        validation_quality_score: float = None,
     ):
         """Update collection progress tracking.
 
@@ -592,6 +661,7 @@ class SQLiteOptionsManager:
             contracts_count: Number of contracts collected
             error_message: Error message if failed
             api_call_made: Whether an API call was made
+            validation_quality_score: Quality score from validation (Issue #16)
         """
         try:
             with self._write_lock:
@@ -599,8 +669,8 @@ class SQLiteOptionsManager:
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO collection_progress
-                        (symbol, trading_date, status, contracts_count, error_message, api_call_made)
-                        VALUES (?, ?, ?, ?, ?, ?)
+                        (symbol, trading_date, status, contracts_count, error_message, api_call_made, validation_quality_score)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
                             symbol.upper(),
@@ -609,6 +679,7 @@ class SQLiteOptionsManager:
                             contracts_count,
                             error_message,
                             1 if api_call_made else 0,
+                            validation_quality_score,
                         ),
                     )
                     conn.commit()
