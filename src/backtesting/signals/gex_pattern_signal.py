@@ -107,9 +107,15 @@ class GEXPatternSignal:
             if spot_price is None:
                 return None
 
-            # Rename option_type to type for GEX calculator compatibility
+            # Rename columns for GEX calculator compatibility
             if "option_type" in options_df.columns and "type" not in options_df.columns:
                 options_df = options_df.rename(columns={"option_type": "type"})
+
+            # Add date column for proper DTE calculation (critical for historical backtesting)
+            if "trading_date" in options_df.columns and "date" not in options_df.columns:
+                options_df = options_df.rename(columns={"trading_date": "date"})
+            elif "date" not in options_df.columns:
+                options_df["date"] = pd.to_datetime(date)
 
             # Calculate GEX using the correct method
             gex_result = self.gex_calculator.calculate_gex_profile(options_df, spot_price)
