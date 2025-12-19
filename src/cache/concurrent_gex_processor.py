@@ -276,8 +276,8 @@ class ConcurrentGEXProcessor:
     def _process_single_date(self, symbol, trading_date, force_recalculate: bool = False):
         """Process GEX for single symbol/date combination.
 
-        Internal method used by concurrent processing.
-        Issue #180: Now uses SQLiteOptionsManager as primary options source.
+        Internal method used by concurrent processing. Issue #180: Now uses SQLiteOptionsManager as primary options
+        source.
         """
         try:
             # Check cache first (unless forcing recalculation)

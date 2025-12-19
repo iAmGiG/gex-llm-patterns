@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Issue #183: Options Data Quality Audit
+"""Issue #183: Options Data Quality Audit.
 
 Quick audit script to validate data quality of options records in SQLite database.
 Checks for violations that would indicate data corruption or bad source data.

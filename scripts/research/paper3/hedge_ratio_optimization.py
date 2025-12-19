@@ -1,5 +1,4 @@
-"""
-Hedge Ratio Optimization Analysis (#500)
+"""Hedge Ratio Optimization Analysis (#500)
 
 Determine optimal hedge ratios and allocations across GEX regimes.
 

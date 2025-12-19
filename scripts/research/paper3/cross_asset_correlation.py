@@ -1,5 +1,4 @@
-"""
-Cross-Asset Regime Correlation Analysis (#496)
+"""Cross-Asset Regime Correlation Analysis (#496)
 
 Analyze GEX regime correlations across asset classes:
 - Equities (SPY, QQQ, IWM)
