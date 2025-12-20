@@ -73,7 +73,7 @@ The 69.1 percentage point detection difference between 2020 and 2024 provides qu
 
 \vspace{0.2cm}
 
-This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2024 43\% volume). However, attributing causation requires isolating 0DTE effects from concurrent market changes. Three factors may contribute:
+This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2024 62\% volume)~\cite{cboe2024volume}. Academic research confirms these structural effects: Brogaard et al.~\cite{brogaard2023does} find that a one standard deviation increase in 0DTE trading leads to a 10.4\% increase in market volatility. However, attributing causation requires isolating 0DTE effects from concurrent market changes. Three factors may contribute:
 
 \vspace{0.2cm}
 
@@ -86,6 +86,14 @@ This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% vol
 \vspace{0.2cm}
 
 \noindent\textbf{Market structure modernization}: Growth in quantitative trading, increased options liquidity, and algorithmic market making may have independently increased positioning persistence. Disentangling these effects required testing intermediate years (2021-2023) to identify transition timing.
+
+\vspace{0.2cm}
+
+\noindent\textbf{External validation: OCC record volume}: The sharp 2020→2021 detection jump does not exist in a vacuum; it is corroborated by an unprecedented ``volume shock'' documented by the Options Clearing Corporation. In 2021, the OCC cleared a record 9.93 billion total contracts—a 32.2\% surge over the 2020 record of 7.52 billion~\cite{occ2022record}. Average daily cleared contract volume hit 39.4 million contracts, up 32.5\% year-over-year. At the smallest trade size (1 contract), activity grew nearly 6$\times$ compared to five years prior, reflecting the influx of retail and algorithmic participants~\cite{cboe2021retail}. Short-term contracts expiring within one day climbed to 21\% of 2021 flow, up from 16\% in 2020. This massive influx of contract liquidity explains why the market structure reached ``regime saturation'' so abruptly.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Structural infrastructure changes}: The timing aligns with deliberate market infrastructure modernization. In February 2021, Cboe activated its Automated Improvement Mechanism (AIM) for SPX options up to 10 contracts, explicitly targeting ``sophisticated retail investors seeking to trade smaller-sized orders''~\cite{cboe2021aim}. This infrastructure change—enabling electronic auctions for small SPX trades—preceded the formal expansion of daily SPXW expirations (2022) yet positioned the market to absorb the coming 0DTE wave. The structural shift we detect in 2021 thus reflects both organic volume growth and anticipatory positioning by market infrastructure providers.
 
 \vspace{0.2cm}
 
@@ -146,7 +154,29 @@ Three validation elements establish framework robustness:
 
 \vspace{0.2cm}
 
-\noindent\textbf{Consistent LLM reasoning}: Across 1,307 windows spanning two years (2020, 2024), three test types (real, synthetic, shuffled), and four phases, the LLM maintained 98\% mechanical accuracy. This consistency suggests structural reasoning rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome.
+\noindent\textbf{Consistent LLM reasoning}: Across 1,307 windows spanning two years (2020, 2024), three test types (real, synthetic, shuffled), and four phases, the LLM maintained 98\% mechanical accuracy. This consistency suggests structural reasoning rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome. McCoy et al.~\cite{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences than low-probability ones. Our obfuscation testing methodology—stripping temporal context and market identifiers—directly addresses this concern by forcing the model to reason from structural properties rather than pattern-match against high-probability training examples.
+
+\subsection{Sensitivity to GEX Formulation}
+
+\vspace{0.2cm}
+
+While various methodologies exist for quantifying dealer gamma exposure, we distinguish our absolute dollar-scaling approach from the normalized ratios frequently used by practitioners. Our framework utilizes the $S^2$ factor to convert raw gamma units into concrete dollar hedging pressure per 1\% move:
+
+\begin{equation}
+\text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
+\end{equation}
+
+\vspace{0.2cm}
+
+\noindent\textbf{The utility of absolute magnitude}: Retaining dollar-scaled magnitude is essential for obfuscation testing, as it provides the LLM with the necessary scale to judge ``economic significance.'' Without absolute magnitude, the model could not distinguish between ``Low Conviction'' transitional periods ($M < \$5$B) and ``Persistent'' regimes ($M \geq \$5$B), as normalization would flatten these values into identical relative ratios.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Comparison to practitioner approaches}: While practitioner trading models often normalize GEX by Open Interest to isolate directional tilt for alpha generation~\cite{anderegg2022impact,spotgamma2021}, we find that for the purpose of validating structural reasoning, preserving the ``size of the signal'' is critical for identifying the dealer constraints that characterize a genuine regime. Normalized formulations (e.g., $\text{GEX}_{\text{norm}} = \frac{\Gamma \times \text{OI}}{\text{Total OI}}$) may produce values between $-1.0$ and $+1.0$ that facilitate cross-asset comparison but eliminate the magnitude discrimination our framework requires.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Future validation}: A natural extension is the \textit{Formula Agreement Test}: running the detection pipeline with both absolute-scaled and normalized GEX formulations to measure regime classification agreement. High agreement ($>$90\%) would demonstrate calculation-independent findings; low agreement ($<$70\%) would indicate that LLM structural reasoning depends critically on absolute magnitude cues---a finding with implications for deploying LLMs across different financial data representations.
 
 \subsection{Regime Quality vs.\ Binary Classification}
 
@@ -200,7 +230,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 \begin{enumerate}
 \item \textbf{Intraday gamma explosion}: 0DTE options concentrate extreme gamma exposure during trading hours as contracts approach expiration, forcing dealers to hedge aggressively~\cite{dim2025zero}.
 
-\item \textbf{Incomplete unwinding}: Dealers cannot fully eliminate hedging positions by market close due to liquidity constraints, risk management limits, and transaction costs. Intraday hedging flows create directional inventory that persists into overnight positions.
+\item \textbf{Incomplete unwinding}: Dealers cannot fully eliminate hedging positions by market close due to liquidity constraints, risk management limits, and transaction costs~\cite{garleanu2013dynamic}. Intraday hedging flows create directional inventory that persists into overnight positions.
 
 \item \textbf{Residual positioning in EOD OI}: The EOD open interest we measure captures the ``net effect'' of intraday 0DTE hedging activity—the residual dealer positioning that could not be cleared before close.
 
@@ -209,7 +239,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \vspace{0.2cm}
 
-\noindent\textbf{EOD GEX as ``scar tissue''}: We measure not the 0DTE contracts themselves but the overnight positioning they force upon dealers. The persistent negative GEX regimes detected post-2021 represent the cumulative effect of daily 0DTE hedging pressure—effectively the structural ``scar tissue'' left by continuous intraday gamma battles. This indirect measurement is appropriate because our research question targets \textit{sustained market structure}, not transient intraday dynamics.
+\noindent\textbf{EOD GEX as ``scar tissue''}: We measure not the 0DTE contracts themselves but the overnight positioning they force upon dealers. This mechanism aligns with practitioner observations: Kolanovic~\cite{kolanovic2023volmageddon} noted that 0DTE options net-sold by investors force dealers into massive intraday gamma hedging, and if sellers cannot support these positions, it triggers ``forced covering'' and directional flows. The persistent negative GEX regimes detected post-2021 represent the cumulative effect of daily 0DTE hedging pressure—effectively the structural ``scar tissue'' left by continuous intraday gamma battles. This indirect measurement is appropriate because our research question targets \textit{sustained market structure}, not transient intraday dynamics.
 
 \vspace{0.2cm}
 
