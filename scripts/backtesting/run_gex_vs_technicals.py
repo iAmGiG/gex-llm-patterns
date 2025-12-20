@@ -41,6 +41,7 @@ from src.backtesting import BacktestEngine
 from src.backtesting.baselines import BuyAndHoldStrategy, MACDStrategy, MomentumStrategy, RSIStrategy
 from src.backtesting.enhanced_metrics import calculate_enhanced_metrics
 from src.backtesting.signals.gex_pattern_signal import GEXPatternSignal
+from src.backtesting.signals.gex_regime_signal import GEXRegimeSignal
 
 # Configure logging
 logging.basicConfig(
@@ -91,11 +92,19 @@ def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, 
         "momentum": MomentumStrategy(lookback=20),
     }
 
-    # GEX-based strategy
-    gex_signal = GEXPatternSignal(
+    # GEX-based strategies
+    # 1. Flip-based (original approach)
+    gex_flip_signal = GEXPatternSignal(
         db_path=".cache/options_historical.db",
         gex_flip_threshold=0.0,
         confidence_threshold=0.5,
+    )
+
+    # 2. Regime-based (AutoGen-Trader approach - uses pre-calculated regimes)
+    gex_regime_signal = GEXRegimeSignal(
+        use_precalculated=True,
+        transition_weight=1.0,
+        maintenance_weight=0.5,
     )
 
     results = {"technical": {}, "gex": {}}
@@ -121,17 +130,37 @@ def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, 
         except Exception as e:
             results["technical"][name] = {"error": str(e)}
 
-    # Run GEX strategy
+    # Run GEX flip-based strategy (original approach)
     try:
-        gex_signal.reset()
+        gex_flip_signal.reset()
         result = engine.run(
-            signal_generator=gex_signal.generate_signal,
+            signal_generator=gex_flip_signal.generate_signal,
             symbol=symbol,
             start_date=start_date,
             end_date=end_date,
         )
 
-        results["gex"]["gex_pattern"] = {
+        results["gex"]["gex_flip"] = {
+            "total_return": round(result.total_return, 4),
+            "sharpe_ratio": round(result.sharpe_ratio, 4),
+            "max_drawdown": round(result.max_drawdown, 4),
+            "win_rate": round(result.win_rate, 2),
+            "num_trades": result.num_trades,
+        }
+    except Exception as e:
+        results["gex"]["gex_flip"] = {"error": str(e)}
+
+    # Run GEX regime-based strategy (AutoGen-Trader approach)
+    try:
+        gex_regime_signal.reset()
+        result = engine.run(
+            signal_generator=gex_regime_signal.generate_signal,
+            symbol=symbol,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        results["gex"]["gex_regime"] = {
             "total_return": round(result.total_return, 4),
             "sharpe_ratio": round(result.sharpe_ratio, 4),
             "max_drawdown": round(result.max_drawdown, 4),
@@ -148,7 +177,7 @@ def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, 
                     max_drawdown=result.max_drawdown / 100 if result.max_drawdown != 0 else -0.01,
                     initial_capital=INITIAL_CAPITAL,
                 )
-                results["gex"]["gex_pattern"].update(
+                results["gex"]["gex_regime"].update(
                     {
                         "sortino_ratio": round(enhanced.sortino_ratio, 4),
                         "calmar_ratio": round(enhanced.calmar_ratio, 4),
@@ -159,9 +188,24 @@ def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, 
                 pass
 
     except Exception as e:
-        results["gex"]["gex_pattern"] = {"error": str(e)}
+        results["gex"]["gex_regime"] = {"error": str(e)}
 
     return results
+
+
+def find_best_gex(results: dict) -> tuple:
+    """Find best GEX strategy by Sharpe ratio."""
+    best_name = None
+    best_metrics = {}
+    best_sharpe = float("-inf")
+
+    for name, metrics in results.items():
+        if "error" not in metrics and metrics.get("sharpe_ratio", 0) > best_sharpe:
+            best_sharpe = metrics["sharpe_ratio"]
+            best_name = name
+            best_metrics = metrics
+
+    return best_name, best_metrics
 
 
 def calculate_improvement(gex_result: dict, best_technical: dict) -> float:
@@ -203,23 +247,32 @@ def run_single_symbol(args):
         # Find best technical strategy
         best_tech_name, best_tech_metrics = find_best_technical(comparison["technical"])
 
+        # Find best GEX strategy (regime-based vs flip-based)
+        best_gex_name, best_gex_metrics = find_best_gex(comparison["gex"])
+
         # Calculate improvement
-        gex_result = comparison["gex"].get("gex_pattern", {})
-        improvement = calculate_improvement(gex_result, best_tech_metrics)
+        improvement = calculate_improvement(best_gex_metrics, best_tech_metrics)
 
         # Determine winner
-        gex_sharpe = gex_result.get("sharpe_ratio", 0) if "error" not in gex_result else 0
+        gex_sharpe = best_gex_metrics.get("sharpe_ratio", 0) if best_gex_metrics else 0
         tech_sharpe = best_tech_metrics.get("sharpe_ratio", 0) if best_tech_metrics else 0
         winner = "GEX" if gex_sharpe > tech_sharpe else "TECHNICAL"
+
+        # Get both GEX strategy results for detailed comparison
+        gex_flip = comparison["gex"].get("gex_flip", {})
+        gex_regime = comparison["gex"].get("gex_regime", {})
 
         return {
             "symbol": symbol,
             "winner": winner,
             "best_technical": best_tech_name,
+            "best_gex": best_gex_name,
             "gex_sharpe": gex_sharpe,
             "tech_sharpe": tech_sharpe,
             "gex_improvement_pct": improvement,
-            "gex_trades": gex_result.get("num_trades", 0),
+            "gex_trades": best_gex_metrics.get("num_trades", 0),
+            "gex_flip_sharpe": gex_flip.get("sharpe_ratio", 0) if "error" not in gex_flip else 0,
+            "gex_regime_sharpe": gex_regime.get("sharpe_ratio", 0) if "error" not in gex_regime else 0,
             "results": comparison,
             "error": None,
         }
@@ -252,7 +305,10 @@ def run_period_analysis_parallel(start_date: str, end_date: str, period_name: st
                         {
                             "symbol": symbol,
                             "winner": result["winner"],
+                            "best_gex": result.get("best_gex", "unknown"),
                             "gex_sharpe": result["gex_sharpe"],
+                            "gex_flip_sharpe": result.get("gex_flip_sharpe", 0),
+                            "gex_regime_sharpe": result.get("gex_regime_sharpe", 0),
                             "tech_sharpe": result["tech_sharpe"],
                             "improvement": result["gex_improvement_pct"],
                         }
