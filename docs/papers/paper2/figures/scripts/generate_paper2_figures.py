@@ -3,6 +3,12 @@
 Paper #2: Persistent Regime Detection - Figure Generation
 Generates publication-quality figures for IEEE BigData 2025 Workshop
 
+WARNING (2025-12-27): Phase 4A (multi-year 2021-2023, 2025 validation) was PLANNED but
+NOT EXECUTED. The 100% detection rates for 2021-2023/2025 in this script are UNVALIDATED.
+Only 2020 (12.1%) and 2024 (81.2%) are supported by actual Phase 3/4 results.
+
+TODO: When Phase 4A is executed, regenerate all figures with validated data.
+
 Figures:
 1. Multi-Year Detection Rates (2020-2025 bar chart with transition annotation)
 2. 2020 vs 2024 Metrics Comparison (radar/spider chart)

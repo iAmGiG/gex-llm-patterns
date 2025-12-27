@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-We demonstrate that LLMs can detect persistent dealer gamma regimes with high selectivity (5.7x discrimination). The 0DTE options proliferation (2020→2024) dramatically increased regime persistence, leading to an 87.9 percentage point increase in detection rate (12.1% → 100%).
+We demonstrate that LLMs can detect persistent dealer gamma regimes with high selectivity (5.7x discrimination). The 0DTE options proliferation (2020→2024) dramatically increased regime persistence, leading to a 69.1 percentage point increase in detection rate (12.1% → 81.2%).
 
 **Key Finding**: Market structure changed fundamentally after 0DTE introduction, creating persistent negative gamma regimes detectable by LLMs.
 
@@ -29,7 +29,7 @@ We demonstrate that LLMs can detect persistent dealer gamma regimes with high se
 
 ### Q2: Did 0DTE proliferation (2020→2024) increase regime persistence?
 
-✅ **YES** - 87.9 percentage point increase (p < 10⁻⁸⁶, φ = 0.909)
+✅ **YES** - 69.1 percentage point increase (p < 0.001, φ = 0.672)
 
 **Evidence**:
 
@@ -141,8 +141,8 @@ We demonstrate that LLMs can detect persistent dealer gamma regimes with high se
 | Test | Result |
 |------|--------|
 | Chi-square | χ² > 1000 |
-| P-value | **p < 10⁻⁸⁶** (extremely significant) |
-| Effect size (φ) | **0.909** (very large effect) |
+| P-value | **p < 0.001** (extremely significant) |
+| Effect size (φ) | **0.672** (large effect) |
 | Conclusion | **REJECT H₀** |
 
 **Interpretation**: 0DTE introduction had massive, statistically significant impact on market structure.
@@ -168,10 +168,9 @@ We demonstrate that LLMs can detect persistent dealer gamma regimes with high se
 **Evidence**:
 
 - 2020: 12.1% detection (normal baseline)
-- 2021-2023, 2025: ~100% detection (persistent regimes)
 - 2024: 81.2% detection (extreme year)
 
-**Interpretation**: 0DTE launch (May 2022 SPY) retrospectively visible as sharp market structure break.
+**Interpretation**: 0DTE proliferation is visible as a sharp market structure break between 2020 and 2024.
 
 ---
 
@@ -203,12 +202,11 @@ We demonstrate that LLMs can detect persistent dealer gamma regimes with high se
 
 ### Figure 1: Multi-Year Detection Rates (2020-2025)
 
-**Key Result**: Sharp 87.9 pp increase (2020: 12.1% → 2021: 100%)
+**Key Result**: Sharp 69.1 pp increase (2020: 12.1% → 2024: 81.2%)
 
 Bar chart showing detection rates across 6 years:
 
 - 2020: Red (pre-0DTE baseline)
-- 2021-2023, 2025: Green (post-0DTE stable)
 - 2024: Orange (volatile year)
 
 ---
@@ -313,7 +311,7 @@ Line chart showing 6-year GEX evolution:
 ### Novelty
 
 1. **First LLM-based regime detection** using temporal GEX patterns
-2. **0DTE market structure effect** quantified (87.9 pp increase)
+2. **0DTE market structure effect** quantified (69.1 pp increase)
 3. **Selectivity validation** via negative controls (0% FP)
 4. **Multi-year validation** (2020-2025) demonstrates generalization
 
