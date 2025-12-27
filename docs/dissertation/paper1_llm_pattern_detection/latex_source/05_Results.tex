@@ -127,13 +127,14 @@ Table~\ref{tab:materialization} details how detected patterns translate into obs
 \toprule
 Prediction Type & Materialization Criteria & Success Rate \\
 \midrule
-Volatility Amplification & T+1 move >0.3\% & 89.2\% \\
-Directional Follow-through & T+1 direction matches & 85.7\% \\
-Strike Convergence & Price within 0.5\% of strike & 93.4\% \\
-0DTE Range Expansion & Intraday range >1\% & 91.1\% \\
+Volatility Amplification & T+1 move >0.3\% ($\approx 0.5\sigma$) & 41.6\% \\
+Directional Follow-through & T+1 direction matches & N/A$^\dagger$ \\
+Strike Convergence & Price within 0.5\% of strike & N/A \\
+0DTE Range Expansion & Intraday range >1\% ($\approx 1.5\times$ ADR) & 21.6\% \\
 \midrule
-\textbf{Overall} & Any criteria met & \textbf{91.2\%} \\
+\textbf{Overall} & Any criteria met (C1 $\cup$ C4) & \textbf{41.6\%} \\
 \bottomrule
+\multicolumn{3}{l}{\footnotesize $^\dagger$ C2 excluded: operationalization yields 99.4\% (too loose)}
 \end{tabular}
 \end{adjustbox}
 \end{table}

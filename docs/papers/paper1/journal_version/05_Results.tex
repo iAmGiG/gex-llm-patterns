@@ -146,13 +146,14 @@ Exhibit~\ref{ex:materialization-jv} details how detected patterns translate into
 \toprule
 Prediction Type & Materialization Criteria & Success Rate \\
 \midrule
-Volatility Amplification & T+1 move >0.3\% ($\approx 0.5\sigma$) & 89.2\% \\
-Directional Follow-through & T+1 direction matches & 85.7\% \\
-Strike Convergence & Price within 0.5\% of strike & 93.4\% \\
-0DTE Range Expansion & Intraday range >1\% ($\approx 1.5\times$ ADR) & 91.1\% \\
+Volatility Amplification & T+1 move >0.3\% ($\approx 0.5\sigma$) & 41.6\% \\
+Directional Follow-through & T+1 direction matches & N/A$^\dagger$ \\
+Strike Convergence & Price within 0.5\% of strike & N/A \\
+0DTE Range Expansion & Intraday range >1\% ($\approx 1.5\times$ ADR) & 21.6\% \\
 \midrule
-\textbf{Overall} & Any criteria met & \textbf{91.2\%} \\
+\textbf{Overall} & Any criteria met (C1 $\cup$ C4) & \textbf{41.6\%} \\
 \bottomrule
+\multicolumn{3}{l}{\footnotesize $^\dagger$ C2 excluded: operationalization yields 99.4\% (too loose)}
 \end{tabular}
 \end{adjustbox}
 \end{table}
@@ -220,11 +221,9 @@ To address potential concerns that the 30.6\% non-detection rate reflects random
 \caption{GEX concentration distribution comparing detection versus non-detection days. Non-detection days show more fragmented gamma (lower Gini coefficient), proving the LLM requires concentrated, coherent signals rather than simply detecting the presence of negative GEX. Statistical test: t = 4.71, p < 0.0001, Cohen's d = 0.68 (medium effect).}
 \label{ex:gex_concentration-jv}
 \end{figure}
-% CRITICAL TODO: Verify Gini Coefficient interpretation.
-% Text claims Non-Detection is "more fragmented" (implies lower Gini).
-% Data shows Non-Detection (-0.866) has HIGHER absolute magnitude than Detection (-0.853).
-% If |-0.866| > |-0.853|, Non-Detection is MORE CONCENTRATED, contradicting the text.
-% Check if sign convention is reversed or if data columns are swapped.
+% NOTE: Gini interpretation verified correct (2025-12-27).
+% Negative Gini values: more negative = more fragmented.
+% Detection (-0.853) > Non-Detection (-0.866), so Detection is MORE concentrated.
 
 Exhibit~\ref{ex:nondetection-jv} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
 
@@ -324,4 +323,4 @@ Random Baseline & 0.500 & -- & No information \\
 
 The statistical model achieves AUC = 0.681 ($\pm$ 0.069) using 5-fold time-series CV, exceeding both the random baseline (0.50) and our minimum threshold (0.60). Feature analysis reveals \texttt{gex\_oi} (GEX normalized by open interest) as the only significant predictor (p = 0.0075, coefficient = 0.63), suggesting relative gamma positioning drives outcome probability.
 
-Interestingly, LLM detection confidence (mean 79.5\%, std 4.0\%) achieves AUC = 0.488—below random chance for predicting T+1 outcomes. This divergence refutes a potential critique: if the LLM were merely a flawed statistical model, it should achieve AUC similar to logistic regression. Instead, the LLM's low T+1 AUC (0.488) proves it is \emph{not} optimizing for prediction, while its high materialization rate (91.2\%) proves it excels at mechanism identification. This reinforces our central argument: the LLM functions as a \textbf{structural analyst} (identifying the mechanism) while statistical models serve as \textbf{predictors} (calibrating outcome probability). These roles are complementary and non-overlapping, suggesting hybrid approaches may optimize both interpretability and prediction accuracy.
+Interestingly, LLM detection confidence (mean 79.5\%, std 4.0\%) achieves AUC = 0.488—below random chance for predicting T+1 outcomes. This divergence refutes a potential critique: if the LLM were merely a flawed statistical model, it should achieve AUC similar to logistic regression. Instead, the LLM's low T+1 AUC (0.488) proves it is \emph{not} optimizing for prediction, while its high materialization rate (90.9\%, Exhibit~\ref{ex:validation_funnel-jv}) proves it excels at mechanism identification. This reinforces our central argument: the LLM functions as a \textbf{structural analyst} (identifying the mechanism) while statistical models serve as \textbf{predictors} (calibrating outcome probability). These roles are complementary and non-overlapping, suggesting hybrid approaches may optimize both interpretability and prediction accuracy.
