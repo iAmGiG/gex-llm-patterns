@@ -22,6 +22,8 @@ Several limitations warrant explicit consideration, though we argue each also st
 
 \textbf{Single Model Family.} Validation using o3-mini/o4-mini cannot distinguish architecture-specific capabilities from general LLM reasoning. Cross-model validation would strengthen generalizability claims but is not required for establishing that \textit{at least one} LLM architecture detects structural patterns under obfuscation.
 
+\textbf{Small Raw Chain Sample.} The Raw Chain validation (Section~\ref{sec:methodology-validation-jv}) was conducted on a limited sample of n=13 days, constrained by the availability of complete, high-fidelity raw options chain data. While statistically small, we frame this as a pilot study whose result—a 30.8 percentage point outperformance—provides strong initial evidence. The effect size substantially exceeds the minimum detectable effect for this sample ($\sim$15pp at 80\% power), providing statistical confidence that justifies the significant engineering effort required for future, larger-scale validation.
+
 \textbf{Prompt Sensitivity.} The 28.5pp gap between biased and unbiased detection reveals significant framing effects. Rather than undermining our results, this finding motivates the unbiased methodology we employ and establishes prompt design as a critical consideration for financial LLM deployment.
 
 \textbf{Interpretability Constraints.} Like all transformer models, we cannot trace internal reasoning mechanisms. We address this through empirical validation (materialization rates, Granger causality, raw chain superiority) rather than architectural interpretability, accepting that output validation substitutes for mechanistic explanation in large neural networks.

@@ -6,7 +6,7 @@
 [![Research](https://img.shields.io/badge/Research-PhD%20Project-purple.svg)](docs/papers/research_roadmap.md)
 
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-71.5%25%20Unbiased-orange.svg)](docs/presentations/phd_symposium_2025.md)
-[![Accuracy](https://img.shields.io/badge/Predictive%20Accuracy-91.2%25-green.svg)](docs/presentations/phd_symposium_2025.md)
+[![Accuracy](https://img.shields.io/badge/Predictive%20Accuracy-90.9%25-green.svg)](docs/presentations/phd_symposium_2025.md)
 [![Documentation](https://img.shields.io/badge/docs-130%2B%20files-informational.svg)](docs/)
 
 [![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
@@ -42,7 +42,7 @@
 | Metric | Unbiased (Conservative) | Biased (Sensitive) |
 |--------|------------------------|-------------------|
 | **Detection Rate** | 71.5% | 100% |
-| **Predictive Accuracy** | 91.2% | 87-98% |
+| **Predictive Accuracy** | 90.9% | 87-98% |
 | **Test Coverage** | 242 days (2024) | 181 days (Q1,Q3,Q4) |
 | **Obfuscation** | Full (no dates/tickers) | Full (no dates/tickers) |
 | **Pattern Types** | 3 validated | 3 validated |
@@ -103,6 +103,7 @@ Future: Discovery & Applications [CONCEPTUAL]
 **Answer**: **YES** - Validated with two testing approaches:
 
 - **Conservative (Unbiased)**: 71.5% detection rate, 91.2% predictive accuracy across 242 trading days (full 2024, 96% coverage*) using fully obfuscated data with no regime labels
+- **Conservative (Unbiased)**: 71.5% detection rate, 90.9% predictive accuracy across 242 trading days (full 2024, 96% coverage*) using fully obfuscated data with no regime labels
 - **Sensitive (Biased)**: 100% detection rate, 87-98% predictive accuracy across 181 trading days (Q1+Q3+Q4**) using pattern-specific prompts with regime labels
 
 Both approaches prove LLM detects structural dealer constraints even when temporal context is removed.
@@ -186,7 +187,7 @@ Each pattern documented with:
 | Q2 2024 | 100% (61 days) | *Not tested* | 91.7% | +16 bps | Moderate profitability |
 | Q3 2024 | 100% (64 days) | 71.5% | 98.4% | +4 bps | Barely profitable |
 | Q4 2024 | 100% (64 days) | 71.5% | 98.4% | -1 bps | Unprofitable |
-| **Full 2024** | **100%** (181 days) | **71.5%** (242 days) | **91.2%** | **+22 bps** | **Average across year** |
+| **Full 2024** | **100%** (181 days) | **71.5%** (242 days) | **90.9%** | **+22 bps** | **Average across year** |
 
 **Significance**: Proves LLM detects **structural mechanics** (which remain constant at 71-100% depending on prompt) rather than fitting to profitable anomalies (which vary by regime from +70 to -1 bps).
 
@@ -417,7 +418,7 @@ Comprehensive documentation available in `docs/`:
 
 **Status**: Draft complete (10 pages, IEEE format), under advisor review ([Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88))
 
-**Key Results**: 71.5% unbiased detection rate and 91.2% predictive accuracy across 242 trading days (full 2024)
+**Key Results**: 71.5% unbiased detection rate and 90.9% predictive accuracy across 242 trading days (full 2024)
 
 ### Paper #2: Sequential GEX Analysis
 
