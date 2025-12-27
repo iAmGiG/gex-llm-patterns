@@ -284,6 +284,8 @@ docs/papers/paper1/ieee_bigdata_2025/latex/figures/
 
 # ArXiv upload folder (local only, flat structure for ArXiv rendering)
 docs/papers/paper1/arxiv_ieee_bigdata/
+# But track v2 errata folder for reproducibility
+!docs/papers/paper1/arxiv_ieee_bigdata/v2/
 
 # LaTeX build scripts (environment-specific, contain local paths)
 docs/papers/**/latex/*.bat
