@@ -720,6 +720,8 @@ def create_fig08_validation_pipeline():
     ax.set_ylim(0, 4)
     ax.axis("off")
 
+    # NOTE: Phase 4A (multi-year 2021-2023, 2025) was planned but NOT executed.
+    # Only Phases 1-4 have validated data (446 windows: 2020 + 2024).
     phases = [
         {"name": "Phase 1", "sub": "Baseline", "desc": "Q1 2024\nn = 52", "rate": "71.2%", "color": COLORS["neutral"]},
         {
@@ -731,13 +733,6 @@ def create_fig08_validation_pipeline():
         },
         {"name": "Phase 3", "sub": "Full Year", "desc": "2024\nn = 223", "rate": "81.2%", "color": COLORS["neutral"]},
         {"name": "Phase 4", "sub": "Pre-0DTE", "desc": "2020\nn = 223", "rate": "12.1%", "color": COLORS["negative"]},
-        {
-            "name": "Phase 4A",
-            "sub": "Multi-Year",
-            "desc": "2020-2025\nn = 1,418",
-            "rate": "73.8%",
-            "color": COLORS["positive"],
-        },
     ]
 
     box_w, box_h = 2.2, 2.0

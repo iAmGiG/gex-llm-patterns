@@ -5,7 +5,7 @@ Figure~\ref{fig:architecture} presents our system architecture, showing the comp
 \begin{figure*}[ht]
 \centering
 \includegraphics[width=\textwidth]{../figures/output/fig10_architecture.png}
-\caption{LLM Regime Detection System Architecture. The pipeline processes 1,475 trading days through five stages: data ingestion from Alpha Vantage API, GEX calculation with OI/Volume aggregation, temporal obfuscation to prevent memorization, 30-day window generation, and LLM analysis using OpenAI o4-mini via Batch API.}
+\caption{LLM Regime Detection System Architecture. The pipeline processes trading days through five stages: data ingestion from Alpha Vantage API, GEX calculation with OI/Volume aggregation, temporal obfuscation to prevent memorization, 30-day window generation, and LLM analysis using OpenAI o4-mini via Batch API.}
 \label{fig:architecture}
 \end{figure*}
 
@@ -93,7 +93,7 @@ The LLM receives 30 consecutive GEX values with no contextual information, forci
 
 \subsection{Multi-Phase Validation Strategy}
 
-To ensure methodological rigor and avoid false positives, we implemented a comprehensive validation protocol spanning six years (2020-2025):
+To ensure methodological rigor and avoid false positives, we implemented a comprehensive validation protocol spanning two critical years (2020 pre-0DTE, 2024 post-0DTE):
 
 \vspace{0.2cm}
 
@@ -130,12 +130,6 @@ If Phase 1-2 pass, validate across full 2024 year (all 252 trading days). This t
 \subsubsection{Phase 4: 2020 Comparison (223 windows)}
 
 Test pre-0DTE era (2020) to validate the hypothesis that 0DTE proliferation increased regime persistence. Expected: Lower detection rate in 2020 vs 2024, establishing baseline for normal market fragmentation.
-
-\vspace{0.2cm}
-
-\subsubsection{Phase 4A: Multi-Year Expansion (1,418 windows)}
-
-Extend validation to all years 2020-2025 (6 full years, 1,418 total windows) to identify precise timing of structural transition. This phase isolates whether regime persistence increased gradually (2020$\rightarrow$2024) or sharply at specific year (e.g., 2020$\rightarrow$2021), strengthening causal attribution to 0DTE proliferation beyond temporal coincidence.
 
 \subsection{LLM Detection Pipeline}
 
@@ -181,4 +175,4 @@ We assess framework performance through three primary metrics:
 \Delta_{\text{period}} = \text{DR}_{\text{year}_2} - \text{DR}_{\text{year}_1}
 \end{equation}
 
-A large positive $\Delta_{\text{period}}$ (e.g., $>$50 percentage points) indicates fundamental market structure shift. We test this across multiple year pairs (2020 vs 2021, 2020 vs 2024) to isolate transition timing and distinguish sharp transitions from gradual evolution.
+A large positive $\Delta_{\text{period}}$ (e.g., $>$50 percentage points) indicates fundamental market structure shift. We test this between 2020 (pre-0DTE) and 2024 (post-0DTE) to quantify the market structure difference between eras.

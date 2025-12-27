@@ -629,7 +629,8 @@ def create_figure_8():
         (width // 2, 35), "Multi-Phase Validation Pipeline", fill=COLORS["black"], font=fonts["subtitle"], anchor="mm"
     )
 
-    # Phases with real data from Phase 4A
+    # NOTE: Phase 4A (multi-year 2021-2023, 2025) was planned but NOT executed.
+    # Only Phases 1-4 have validated data (446 windows: 2020 + 2024).
     phases = [
         {
             "name": "Phase 1",
@@ -662,14 +663,6 @@ def create_figure_8():
             "windows": "223",
             "detection": "12.1%",
             "color": COLORS["rejected"],
-        },
-        {
-            "name": "Phase 4A",
-            "subtitle": "Multi-Year",
-            "desc": "2020-2025",
-            "windows": "1,418",
-            "detection": "73.8%",
-            "color": COLORS["success"],
         },
     ]
 
