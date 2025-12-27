@@ -25,13 +25,16 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# Define project root relative to this script
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
 
 class RawChainExtractor:
     """Extract raw option chain data from database WITHOUT GEX calculations."""
 
-    def __init__(self, db_path: str = "/mnt/bst/yxie2/cregan1/gex-llm-patterns/.cache/consolidated_historical.db"):
+    def __init__(self, db_path: Optional[str] = None):
         """Initialize database connection."""
-        self.db_path = db_path
+        self.db_path = db_path or str(PROJECT_ROOT / ".cache" / "consolidated_historical.db")
         self.conn = None
 
     def connect(self):
@@ -337,9 +340,9 @@ class RawChainResponseParser:
 class RawChainValidator:
     """Main validation orchestrator for raw chain analysis."""
 
-    def __init__(self, output_dir: str = "docs/papers/paper1/analysis"):
+    def __init__(self, output_dir: str = "reports/validation/paper1_raw_chain"):
         """Initialize validator."""
-        self.output_dir = Path(output_dir)
+        self.output_dir = PROJECT_ROOT / output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         self.extractor = RawChainExtractor()
@@ -350,6 +353,9 @@ class RawChainValidator:
         """
         Get test sample dates: high-detection and low-detection from baseline.
 
+        Note: Paper Section 4.2 reports results for n=13 dates (subset).
+        Default of 50 (25+25) provides larger sample for robustness testing.
+
         Args:
             n_high: Number of high-detection days to include
             n_low: Number of low-detection days to include
@@ -358,9 +364,14 @@ class RawChainValidator:
             Tuple of (high_detection_dates, low_detection_dates)
         """
         # Load baseline detection results
-        baseline_path = Path(
-            "/mnt/bst/yxie2/cregan1/gex-llm-patterns/reports/validation/paper1_pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml"
-        )
+        # Try standard path first, then paper1 specific path
+        baseline_path = PROJECT_ROOT / "reports/validation/pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml"
+
+        if not baseline_path.exists():
+            # Fallback to paper1 specific folder if it exists
+            baseline_path = (
+                PROJECT_ROOT / "reports/validation/paper1_pattern_taxonomy/gamma_positioning_SPY_2024_unbiased.yaml"
+            )
 
         if not baseline_path.exists():
             logger.error(f"Baseline file not found: {baseline_path}")
@@ -466,7 +477,7 @@ class RawChainBatchValidator:
 
     def __init__(self, output_dir: str = "reports/validation/paper1_raw_chain"):
         """Initialize batch validator."""
-        self.output_dir = Path(output_dir)
+        self.output_dir = PROJECT_ROOT / output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         self.validator = RawChainValidator()
@@ -480,7 +491,7 @@ class RawChainBatchValidator:
         """Load OpenAI API key from config."""
         import os
 
-        config_path = Path("/mnt/bst/yxie2/cregan1/gex-llm-patterns/config/config.json")
+        config_path = PROJECT_ROOT / "config" / "config.json"
         if config_path.exists():
             with open(config_path, "r") as f:
                 config = json.load(f)
@@ -764,7 +775,7 @@ def main():
         detected = sum(1 for r in results if r.get("detected", False))
         logger.info(f"\n=== Results Summary ===")
         logger.info(f"Total: {len(results)}")
-        logger.info(f"Detected: {detected} ({100*detected/len(results):.1f}%)")
+        logger.info(f"Detected: {detected} ({100 * detected / len(results):.1f}%)")
         logger.info(f"Not detected: {len(results) - detected}")
 
     return 0
