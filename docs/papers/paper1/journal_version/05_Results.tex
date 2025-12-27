@@ -138,6 +138,9 @@ Exhibit~\ref{ex:materialization-jv} details how detected patterns translate into
 \caption{Prediction Materialization Criteria and Results}
 \label{ex:materialization-jv}
 % JFDS: Rename to "Exhibit 14" in final version
+% TODO: Harmonize Accuracy metric. Exhibit 13 uses Pooled Accuracy (472/519 = 90.9%),
+% while this table and Exhibit 7 use Mean Accuracy ((92.5+90.4+90.8)/3 = 91.2%).
+% Suggest using Pooled Accuracy (90.9%) consistently for aggregate stats.
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{>{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{4.2cm} c}
 \toprule
@@ -217,6 +220,11 @@ To address potential concerns that the 30.6\% non-detection rate reflects random
 \caption{GEX concentration distribution comparing detection versus non-detection days. Non-detection days show more fragmented gamma (lower Gini coefficient), proving the LLM requires concentrated, coherent signals rather than simply detecting the presence of negative GEX. Statistical test: t = 4.71, p < 0.0001, Cohen's d = 0.68 (medium effect).}
 \label{ex:gex_concentration-jv}
 \end{figure}
+% CRITICAL TODO: Verify Gini Coefficient interpretation.
+% Text claims Non-Detection is "more fragmented" (implies lower Gini).
+% Data shows Non-Detection (-0.866) has HIGHER absolute magnitude than Detection (-0.853).
+% If |-0.866| > |-0.853|, Non-Detection is MORE CONCENTRATED, contradicting the text.
+% Check if sign convention is reversed or if data columns are swapped.
 
 Exhibit~\ref{ex:nondetection-jv} summarizes the statistical comparison across all tested factors. Three characteristics emerge as significant discriminators:
 

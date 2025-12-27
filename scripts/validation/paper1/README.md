@@ -61,6 +61,12 @@ Scripts are numbered by execution order in the validation workflow.
 |--------|---------|
 | `16_analyze_eod_latent_information.py` | Analyze end-of-day latent information |
 
+### Methodology Validation (Journal Version)
+
+| Script | Purpose |
+|--------|---------|
+| `18_validate_raw_chain_inference.py` | **[MISSING]** Raw chain vs GEX-assisted validation (Section 4.2) |
+
 ### Figure Generation
 
 | Script | Purpose |
