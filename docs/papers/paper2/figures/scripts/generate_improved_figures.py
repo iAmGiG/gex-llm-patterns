@@ -3,6 +3,13 @@
 Paper #2: Improved Figure Generation
 Addresses all quality issues and follows Paper 1 naming convention (fig##_descriptor.png)
 
+WARNING (2025-12-27): Phase 4A (multi-year 2021-2023, 2025 validation) was PLANNED but
+NOT EXECUTED. The 100% detection rates for 2021-2023/2025 in this script are UNVALIDATED.
+Only 2020 (12.1%) and 2024 (81.2%) are supported by actual Phase 3/4 results.
+
+TODO: When Phase 4A is executed, regenerate all figures with validated data.
+      Until then, figures showing 2021-2023/2025 data should be considered placeholders.
+
 Issues Fixed:
 - Figure 1: Legend moved from bad top-right position
 - Figure 3: Legend moved to bottom-left (was covering bars)

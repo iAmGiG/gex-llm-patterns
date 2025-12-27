@@ -34,7 +34,8 @@ We employ a multi-phase validation protocol across 6 years (2020-2025):
 
 \textbf{Phase 4} (2020 Comparison): Test pre-0DTE era (2020, 0DTE $<$5\% volume) vs post-0DTE era (2024, 0DTE 43\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
 
-\textbf{Phase 4A} (Multi-Year 2020-2025): Extend validation to all years 2020-2025 (1,418 windows total) to identify when the structural transition occurred. Hypothesis: Sharp transition (not gradual evolution) at specific year isolates 0DTE causal mechanism.
+% NOTE: Phase 4A (multi-year 2021-2023, 2025) was planned but not executed.
+% All claims below are based on validated Phases 1-4 only (446 windows: 2020 + 2024).
 
 \subsection{Key Contributions}
 
@@ -42,28 +43,26 @@ This work advances LLM-based financial analysis through five contributions:
 
 \begin{enumerate}
 \item \textbf{Temporal Extension}: First application of obfuscation testing to multi-day regimes (30-day windows vs single-day snapshots)
-\item \textbf{Selectivity Validation}: Demonstrates framework discriminates persistent regimes (100\% in 2021-2023) from fragmented markets (12.1\% in 2020), achieving 8.3x separation
-\item \textbf{0DTE Transition Timing}: Identifies sharp 2020→2021 structural market shift (12.1\% → 100\% detection), isolating 0DTE causal mechanism through multi-year validation
-\item \textbf{Sustained Regime Evidence}: Documents persistent 100\% detection across 2021-2023 and 2025 (972/972 windows), confirming permanent market structure change, not temporary anomaly
-\item \textbf{Negative Controls}: Comprehensive validation through 809 synthetic windows establishing $<$10\% false positive rate on transitional/low-magnitude scenarios
+\item \textbf{Selectivity Validation}: Demonstrates framework discriminates persistent regimes (2024: 81.2\%) from fragmented markets (2020: 12.1\%), achieving 5.7x separation
+\item \textbf{0DTE Market Structure Effect}: Quantifies 69.1 percentage point detection increase between pre-0DTE (2020) and post-0DTE (2024) eras, with large effect size ($\phi$ = 0.672)
+\item \textbf{Structural Regime Evidence}: Documents persistent negative gamma regimes in 2024 (81.2\% of windows) vs transitional fragmentation in 2020 (87.9\% rejected)
+\item \textbf{Negative Controls}: Comprehensive validation through synthetic windows establishing $<$10\% false positive rate on transitional/low-magnitude scenarios
 \end{enumerate}
 
 \subsection{Main Findings}
 
-Multi-year validation (1,418 windows across 2020-2025, \$11.26 cost) reveals:
+Four-phase validation (446 windows across 2020 and 2024, \$0.67 cost) reveals:
 
 \begin{itemize}
-\item \textbf{Sharp 2020→2021 structural transition}: Detection jumped from 12.1\% (2020) to 100\% (2021), representing 8.3x increase (87.9 pp difference, p $<$ 10$^{-86}$, $\phi$ = 0.909). GEX magnitude increased 58\% (\$17.3B → \$27.2B) with 100\% negative days achieved.
+\item \textbf{Large 2020→2024 structural difference}: Detection increased from 12.1\% (2020) to 81.2\% (2024), representing 5.7x increase (69.1 pp difference, p $<$ 0.001, $\phi$ = 0.672). This large effect size indicates fundamental market structure change between pre-0DTE and post-0DTE eras.
 
-\item \textbf{Sustained post-2021 equilibrium}: Years 2021, 2022, 2023, 2025 all achieved 100\% detection (972/972 windows, p $<$ 10$^{-292}$), demonstrating permanent structural regime change, not temporary anomaly.
+\item \textbf{Framework selectivity validated}: Discriminates persistent regimes (2024: 81.2\%) from fragmented markets (2020: 12.1\%). The 2020 baseline correctly rejected 87.9\% of windows as transitional, while 2024 correctly identified sustained dealer constraints.
 
-\item \textbf{Framework selectivity validated}: Discriminates persistent regimes (2021-2023, 2025: 100\%) from normal markets (2020: 12.1\%) and correctly identifies transitional volatility (2024: 81.2\% with sign flip failures during Feb-Mar).
+\item \textbf{Negative controls passed}: 0\% false positives on transitional/low-magnitude tests, confirming framework enforces all three regime criteria (persistence, magnitude, stability).
 
-\item \textbf{Negative controls passed}: 0\% false positives on transitional/low-magnitude tests (809 synthetic windows), confirming framework enforces all three regime criteria.
-
-\item \textbf{0DTE causal attribution}: Sharp transition timing (2020→2021), sustained stability (2021-2023), and temporal coincidence with 0DTE proliferation (2020 $<$5\% → 2024 43\%) strongly support causal relationship between 0DTE options and structural market shift.
+\item \textbf{0DTE hypothesis supported}: The 69.1 percentage point detection difference temporally coincides with 0DTE proliferation (2020 $<$5\% volume → 2024 43\% volume), supporting the hypothesis that 0DTE options create persistent dealer gamma regimes.
 \end{itemize}
 
 \subsection{Paper Organization}
 
-Section~2 reviews related work on gamma exposure dynamics, regime detection, and LLM temporal reasoning. Section~3 presents the 30-day regime detection framework and obfuscation protocol. Section~4 describes experimental setup including datasets, LLM configuration, and validation phases. Section~5 reports results from all five validation phases (Q1 2024 baseline, negative controls, full 2024, 2020 comparison, multi-year 2020-2025). Section~6 discusses implications for LLM structural reasoning, market microstructure evolution, and methodology robustness. Section~7 concludes and outlines future research directions.
+Section~2 reviews related work on gamma exposure dynamics, regime detection, and LLM temporal reasoning. Section~3 presents the 30-day regime detection framework and obfuscation protocol. Section~4 describes experimental setup including datasets, LLM configuration, and validation phases. Section~5 reports results from four validation phases (Q1 2024 baseline, negative controls, full 2024, 2020 comparison). Section~6 discusses implications for LLM structural reasoning, market microstructure evolution, and methodology robustness. Section~7 concludes and outlines future research directions.
