@@ -18,6 +18,7 @@ import yaml
 
 from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.validation.data_obfuscation import DataObfuscator
 from src.validation.outcome_calculator import OutcomeCalculator
@@ -67,7 +68,7 @@ class PatternTaxonomyValidator:
     def __init__(self, symbol: str = "SPY", calculate_outcomes: bool = True):
         self.symbol = symbol
         # Issue #180: SQLite is primary options storage
-        self.sqlite_options = SQLiteOptionsManager()
+        self.db = PostgreSQLOptionsManager()
         self.cache = UnifiedCacheManager()  # For non-options data
         self.taxonomy = PatternTaxonomy()
         self.obfuscator = DataObfuscator()
@@ -182,7 +183,7 @@ class PatternTaxonomyValidator:
         for date_str in dates:
             try:
                 # Issue #180: Check SQLite for options data
-                options_data = self.sqlite_options.get_options_chain(self.symbol, date_str)
+                options_data = self.db.get_options_chain(self.symbol, date_str)
                 if options_data is not None and not options_data.empty:
                     available.append(date_str)
                 else:

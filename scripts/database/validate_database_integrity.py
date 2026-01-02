@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.options_db_manager import SQLiteOptionsManager
 from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.gex.gex_calculator import GEXCalculator
 
@@ -24,14 +24,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-def validate_gex_data(db_path: str, sqlite_options: SQLiteOptionsManager, sample_size: int = 20):
+def validate_gex_data(db_path: str, options_db: PostgreSQLOptionsManager, sample_size: int = 20):
     """Validate GEX data in database against fresh calculations.
 
-    Issue #180: Now uses SQLiteOptionsManager directly.
+    Uses PostgreSQL by default (migrated from SQLite).
 
     Args:
         db_path: Path to database
-        sqlite_options: SQLiteOptionsManager for fetching options data
+        options_db: PostgreSQLOptionsManager for fetching options data
         sample_size: Number of random dates to check
 
     Returns:
@@ -61,7 +61,7 @@ def validate_gex_data(db_path: str, sqlite_options: SQLiteOptionsManager, sample
         spot_price = row["spot_price"]
 
         # Issue #180: Get fresh options data from SQLite
-        options_data = sqlite_options.get_options_chain(symbol, date)
+        options_data = options_db.get_options_chain(symbol, date)
 
         if options_data is None or options_data.empty:
             results.append(
@@ -158,10 +158,10 @@ if __name__ == "__main__":
     for table, info in schema.items():
         logger.info(f"  {table}: {info['row_count']} rows")
 
-    # Validate GEX data (Issue #180: use SQLiteOptionsManager)
+    # Validate GEX data (use PostgreSQL by default)
     logger.info("\n2. Validating GEX calculations...")
-    sqlite_options = SQLiteOptionsManager()
-    report = validate_gex_data(DB_PATH, sqlite_options, sample_size=20)
+    options_db = PostgreSQLOptionsManager()
+    report = validate_gex_data(DB_PATH, options_db, sample_size=20)
 
     logger.info(f"\nValidation Results:")
     logger.info(f"  Total checked: {report['total_checked']}")
