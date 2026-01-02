@@ -9,12 +9,14 @@ Architecture:
 
 from .concurrent_gex_processor import ConcurrentGEXProcessor
 from .gex_cache_manager import GEXCacheManager
+from .postgresql_options_manager import PostgreSQLOptionsManager
 from .research_cache import ResearchCache
 from .sqlite_options_manager import SQLiteOptionsManager
 from .unified_cache import SampleDataLoader, UnifiedCacheManager
 
 __all__ = [
-    "SQLiteOptionsManager",  # Primary for options data (Issue #147)
+    "PostgreSQLOptionsManager",  # Primary for options data (migrated from SQLite)
+    "SQLiteOptionsManager",  # Legacy - migrated to PostgreSQL
     "ResearchCache",  # Recommended for research workflows
     "UnifiedCacheManager",  # Legacy - being retired for options
     "SampleDataLoader",

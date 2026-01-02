@@ -58,7 +58,8 @@ class MarketMechanicsAgent:
         self.strike_pattern_config = self.config.get("strike_level_patterns", {})
         self.prompt_templates = self._load_prompt_templates()
         self.cache = UnifiedCacheManager()
-        self.sqlite_options = SQLiteOptionsManager()  # Issue #180: Direct SQLite access
+        # Use PostgreSQL by default (migrated from SQLite)
+        self.db = PostgreSQLOptionsManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
         self.prompt_builder = MechanicsPromptBuilder()
@@ -1073,7 +1074,7 @@ Respond with JSON:
 
         if not AUTOGEN_TOOLS_AVAILABLE:
             # Fallback to direct SQLite access
-            return self.sqlite_options.get_options_chain(self.symbol, date_str)
+            return self.db.get_options_chain(self.symbol, date_str)
 
         # Use autogen tool which handles cache → API → sample data fallback
         try:
@@ -1085,14 +1086,14 @@ Respond with JSON:
             else:
                 logger.error(f"AutoGen fetch failed: {result.get('message', 'Unknown error')}")
                 # Fallback to direct SQLite access
-                return self.sqlite_options.get_options_chain(self.symbol, date_str)
+                return self.db.get_options_chain(self.symbol, date_str)
 
         except (ConnectionError, TimeoutError) as e:
             logger.warning(f"AutoGen API connection issue: {e}, falling back to SQLite")
-            return self.sqlite_options.get_options_chain(self.symbol, date_str)
+            return self.db.get_options_chain(self.symbol, date_str)
         except Exception as e:
             logger.error(f"AutoGen tools error: {e}, falling back to SQLite")
-            return self.sqlite_options.get_options_chain(self.symbol, date_str)
+            return self.db.get_options_chain(self.symbol, date_str)
 
     def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
         """Fetch GEX data from database, calculate and populate if missing.
