@@ -143,6 +143,19 @@ class PostgreSQLOptionsManager:
             self.logger.error(f"Error storing options chain for {symbol} {trading_date}: {e}")
             return False
 
+    def has_options_data(self, symbol: str, trading_date: str) -> bool:
+        """Check if options data exists for symbol and date"""
+        try:
+            cursor = self.conn.cursor()
+            query = "SELECT 1 FROM options_chains_partitioned WHERE symbol = %s AND trading_date = %s LIMIT 1"
+            cursor.execute(query, (symbol, trading_date))
+            exists = cursor.fetchone() is not None
+            cursor.close()
+            return exists
+        except Exception as e:
+            # Don't log every check as error, just return False
+            return False
+
     def retrieve_options_chain(
         self,
         symbol: str,
@@ -174,6 +187,25 @@ class PostgreSQLOptionsManager:
         except Exception as e:
             self.logger.error(f"Error retrieving options chain: {e}")
             return None
+
+    def get_missing_dates(self, symbol: str, start_date: str, end_date: str) -> List[str]:
+        """Get list of dates that are missing from the database"""
+        try:
+            # Generate expected trading dates (weekdays)
+            start = pd.Timestamp(start_date)
+            end = pd.Timestamp(end_date)
+            expected_dates = [d.strftime('%Y-%m-%d') for d in pd.bdate_range(start, end)]
+
+            # Get existing dates
+            query = "SELECT DISTINCT trading_date::text FROM options_chains_partitioned WHERE symbol = %s AND trading_date >= %s AND trading_date <= %s"
+            df = pd.read_sql_query(query, self.conn, params=(symbol, start_date, end_date))
+            existing_dates = set(df['trading_date'].values) if not df.empty else set()
+
+            return [d for d in expected_dates if d not in existing_dates]
+        except Exception as e:
+            self.logger.error(f"Error getting missing dates: {e}")
+            # Return all dates on error to be safe (will re-check individually)
+            return [d.strftime('%Y-%m-%d') for d in pd.bdate_range(pd.Timestamp(start_date), pd.Timestamp(end_date))]
 
     def update_progress(
         self,
@@ -216,6 +248,18 @@ class PostgreSQLOptionsManager:
             self.logger.error(f"Error updating progress: {e}")
             return False
 
+    def get_collection_progress(self, symbol: Optional[str] = None) -> pd.DataFrame:
+        """Get collection progress as DataFrame"""
+        try:
+            query = "SELECT * FROM collection_progress"
+            params = ()
+            if symbol:
+                query += " WHERE symbol = %s"
+                params = (symbol,)
+            return pd.read_sql_query(query, self.conn, params=params)
+        except Exception:
+            return pd.DataFrame()
+
     def get_collection_status(self, symbol: Optional[str] = None) -> Dict:
         """Get collection status statistics
 
@@ -250,6 +294,26 @@ class PostgreSQLOptionsManager:
 
         except Exception as e:
             self.logger.error(f"Error getting collection status: {e}")
+            return {}
+
+    def get_database_stats(self) -> Dict:
+        """Get database statistics"""
+        try:
+            cursor = self.conn.cursor()
+            # Estimate row count from metadata (fast)
+            cursor.execute("SELECT reltuples::bigint FROM pg_class WHERE relname = 'options_chains_partitioned'")
+            res = cursor.fetchone()
+            count = res[0] if res else 0
+
+            cursor.execute("SELECT pg_database_size(%s)", (self.database,))
+            size = cursor.fetchone()[0]
+            cursor.close()
+
+            return {
+                "total_options_records": int(count) if count else 0,
+                "db_size_mb": size / (1024 * 1024) if size else 0
+            }
+        except Exception:
             return {}
 
     def close(self):
