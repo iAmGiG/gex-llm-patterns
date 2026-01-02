@@ -6,6 +6,7 @@ Maintains same interface as SQLiteOptionsManager for drop-in replacement.
 
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -42,6 +43,9 @@ class PostgreSQLOptionsManager:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
+        # Compatibility property for code expecting db_path
+        self.db_path = Path(".cache")  # Use .cache directory for summary files
+
         # Initialize connection
         self._connect()
 
@@ -68,6 +72,7 @@ class PostgreSQLOptionsManager:
         options_df: pd.DataFrame,
         asset_class: str = "equity",
         data_source: str = "alpha_vantage",
+        underlying_price: float = None,
     ) -> bool:
         """Store options chain in PostgreSQL
 

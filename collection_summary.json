@@ -1,0 +1,28 @@
+{
+  "symbols": [
+    "GOOGL"
+  ],
+  "start_date": "2025-11-21",
+  "end_date": "2025-11-21",
+  "storage_backend": "database",
+  "collection_start": "2026-01-02T19:19:19.732880",
+  "symbol_summaries": {
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "total_dates": 1,
+      "to_collect": 1,
+      "completed_dates": 1,
+      "failed_dates": 0,
+      "skipped_dates": 0
+    }
+  },
+  "total_api_calls": 1,
+  "total_successful": 1,
+  "total_failed": 0,
+  "mode": "parallel",
+  "collection_end": "2026-01-02T19:19:20.898386",
+  "final_db_stats": {
+    "total_options_records": 0,
+    "db_size_mb": 4679.435240745544
+  }
+}
