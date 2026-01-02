@@ -12,6 +12,7 @@ This implementation can use:
 """
 
 import logging
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any, Dict, Optional

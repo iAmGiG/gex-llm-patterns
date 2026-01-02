@@ -6,6 +6,7 @@ Tests baseline strategies on SPY 2024 data.
 """
 
 import logging
+import os
 import sys
 import time
 from pathlib import Path

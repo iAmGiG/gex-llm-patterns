@@ -20,6 +20,7 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from src.utils.date_utils import now_iso, today_str
@@ -47,7 +48,12 @@ class HistoricalOptionsCollector:
     def __init__(
         self,
         db_path: str = ".cache/options_historical.db",
-        use_sqlite: bool = True,
+        use_sqlite: bool = False,  # Default to PostgreSQL
+        use_postgresql: bool = True,  # New parameter
+        pg_host: str = "localhost",
+        pg_port: int = 5432,
+        pg_user: str = "cregan1",
+        pg_database: str = "gex_options",
         rate_limit_per_minute: int = 900,  # Buffer below 1000 premium limit
     ):
         """Initialize historical data collector.
@@ -65,7 +71,16 @@ class HistoricalOptionsCollector:
         self.logger.setLevel(logging.INFO)
 
         # Initialize storage backend
-        if use_sqlite:
+        if use_postgresql:
+            self.db = PostgreSQLOptionsManager(
+                host=pg_host,
+                port=pg_port,
+                user=pg_user,
+                database=pg_database
+            )
+            self.cache = None
+            self.logger.info(f"Using PostgreSQL storage: {pg_user}@{pg_host}:{pg_port}/{pg_database}")
+        elif use_sqlite:
             self.db = SQLiteOptionsManager(db_path=db_path)
             self.cache = None  # Lazy load if needed
             self.logger.info(f"Using SQLite storage: {db_path}")

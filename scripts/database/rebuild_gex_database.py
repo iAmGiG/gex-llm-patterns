@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import os
 import logging
 import shutil
 import sqlite3
@@ -28,6 +29,7 @@ from datetime import datetime
 from pathlib import Path
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 from src.gex.gex_calculator import GEXCalculator
 from src.utils.date_utils import date_range_trading_days

@@ -16,6 +16,7 @@ Supports:
 """
 
 import json
+import os
 import logging
 import sqlite3
 from pathlib import Path
@@ -25,6 +26,7 @@ import pandas as pd
 
 from src.cache.intraday_cache import IntradayCacheManager
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)

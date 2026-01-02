@@ -12,6 +12,7 @@ Data: Cross-asset GEX database (2020 has best multi-asset coverage)
 """
 
 import sqlite3
+import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 

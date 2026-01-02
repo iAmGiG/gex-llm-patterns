@@ -23,6 +23,7 @@ Date: November 25, 2025
 """
 
 import sqlite3
+import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path

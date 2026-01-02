@@ -13,6 +13,7 @@ Research questions:
 """
 
 import sqlite3
+import os
 import sys
 from pathlib import Path
 from typing import Dict, List

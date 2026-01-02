@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import os
 import logging
 import sqlite3
 import sys

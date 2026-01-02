@@ -5,6 +5,7 @@ issues.
 """
 
 import logging
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -12,6 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.gex.gex_calculator import GEXCalculator
 
 # Add project root to path

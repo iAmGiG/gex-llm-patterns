@@ -2,6 +2,7 @@
 """Quick script to check database status."""
 
 import sqlite3
+import os
 import sys
 
 dbs = [".cache/consolidated_historical.db", ".cache/options_historical.db"]

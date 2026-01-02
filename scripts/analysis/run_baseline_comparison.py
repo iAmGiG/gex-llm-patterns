@@ -2,6 +2,7 @@
 """Run Baseline Comparison for Issue #58 Compares LLM-filtered dealer gamma hedging strategy against naive baselines."""
 
 import argparse
+import os
 import logging
 import sys
 from pathlib import Path

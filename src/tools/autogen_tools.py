@@ -12,6 +12,7 @@ Organized by agent type for clean tool assignment and efficient agent workflows.
 
 # Standard library imports
 import logging
+import os
 
 import pandas as pd
 
@@ -92,7 +93,7 @@ ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 # Issue #16: Validation enabled at ingress by default
 # UnifiedCacheManager is used for market data and GEX calculations (not options)
 sqlite_options = SQLiteOptionsManager(
-    db_path=".cache/options_historical.db",
+    # db_path=".cache/options_historical.db"  # Migrated to PostgreSQL,
     enable_validation=True,  # Issue #16: Quality validation at ingress
 )
 cache_manager = UnifiedCacheManager()  # For market data and GEX (not options)
