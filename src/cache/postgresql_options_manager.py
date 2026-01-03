@@ -99,13 +99,48 @@ class PostgreSQLOptionsManager:
                 # Prepare batch insert data
                 records = []
                 for _, row in options_df.iterrows():
+                    # Extract base values
+                    strike = float(row.get('strike', 0))
+                    option_type = row.get('option_type', 'call')
+                    expiration = row.get('expiration', trading_date)
+                    underlying = float(row.get('underlying_price', underlying_price or 0)) if pd.notna(row.get('underlying_price', underlying_price)) else None
+                    option_price = float(row.get('mark', row.get('last', 0))) if pd.notna(row.get('mark', row.get('last'))) else None
+
+                    # Calculate in_the_money
+                    in_the_money = None
+                    if underlying and strike:
+                        in_the_money = (strike < underlying) if option_type == 'call' else (strike > underlying)
+
+                    # Calculate intrinsic_value
+                    intrinsic_value = None
+                    if underlying and strike:
+                        if option_type == 'call':
+                            intrinsic_value = max(0, underlying - strike)
+                        else:  # put
+                            intrinsic_value = max(0, strike - underlying)
+
+                    # Calculate extrinsic_value (time value)
+                    extrinsic_value = None
+                    if option_price is not None and intrinsic_value is not None:
+                        extrinsic_value = max(0, option_price - intrinsic_value)
+
+                    # Calculate days_to_expiration
+                    days_to_expiration = None
+                    if expiration:
+                        try:
+                            exp_date = pd.to_datetime(expiration)
+                            trade_date = pd.to_datetime(trading_date)
+                            days_to_expiration = (exp_date - trade_date).days
+                        except:
+                            pass
+
                     records.append((
                         symbol,
                         asset_class,
                         trading_date,
-                        float(row.get('strike', 0)),
-                        row.get('option_type', 'call'),
-                        row.get('expiration', trading_date),
+                        strike,
+                        option_type,
+                        expiration,
                         float(row.get('bid', 0)) if pd.notna(row.get('bid')) else None,
                         float(row.get('ask', 0)) if pd.notna(row.get('ask')) else None,
                         float(row.get('last', 0)) if pd.notna(row.get('last')) else None,
@@ -120,11 +155,15 @@ class PostgreSQLOptionsManager:
                         float(row.get('vega', 0)) if pd.notna(row.get('vega')) else None,
                         float(row.get('rho', 0)) if pd.notna(row.get('rho')) else None,
                         float(row.get('implied_volatility', 0)) if pd.notna(row.get('implied_volatility')) else None,
-                        float(row.get('underlying_price', 0)) if pd.notna(row.get('underlying_price')) else None,
+                        underlying,
                         float(row.get('mid_price', 0)) if pd.notna(row.get('mid_price')) else None,
                         float(row.get('bid_ask_spread', 0)) if pd.notna(row.get('bid_ask_spread')) else None,
                         data_source,
                         1.0,  # data_quality_score
+                        in_the_money,
+                        intrinsic_value,
+                        extrinsic_value,
+                        days_to_expiration,
                     ))
 
                 # Bulk insert with conflict handling
@@ -135,7 +174,8 @@ class PostgreSQLOptionsManager:
                         volume, open_interest,
                         delta, gamma, theta, vega, rho, implied_volatility,
                         underlying_price, mid_price, bid_ask_spread,
-                        data_source, data_quality_score
+                        data_source, data_quality_score,
+                        in_the_money, intrinsic_value, extrinsic_value, days_to_expiration
                     ) VALUES %s
                     ON CONFLICT (symbol, trading_date, strike, option_type, expiration) DO NOTHING
                 """

@@ -1,28 +1,91 @@
 {
   "symbols": [
-    "GOOGL"
+    "FAS",
+    "FAZ",
+    "LABU",
+    "LABD",
+    "TECL",
+    "TECS",
+    "NUGT",
+    "DUST"
   ],
-  "start_date": "2025-11-21",
-  "end_date": "2025-11-21",
+  "start_date": "2020-01-02",
+  "end_date": "2025-11-20",
   "storage_backend": "database",
-  "collection_start": "2026-01-02T19:19:19.732880",
+  "collection_start": "2026-01-02T19:20:02.230917",
   "symbol_summaries": {
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "total_dates": 1,
-      "to_collect": 1,
-      "completed_dates": 1,
-      "failed_dates": 0,
+    "FAS": {
+      "symbol": "FAS",
+      "total_dates": 1536,
+      "to_collect": 1349,
+      "completed_dates": 1293,
+      "failed_dates": 56,
+      "skipped_dates": 0
+    },
+    "FAZ": {
+      "symbol": "FAZ",
+      "total_dates": 1536,
+      "to_collect": 1349,
+      "completed_dates": 1291,
+      "failed_dates": 58,
+      "skipped_dates": 0
+    },
+    "LABU": {
+      "symbol": "LABU",
+      "total_dates": 1536,
+      "to_collect": 1349,
+      "completed_dates": 1292,
+      "failed_dates": 57,
+      "skipped_dates": 0
+    },
+    "LABD": {
+      "symbol": "LABD",
+      "total_dates": 1536,
+      "to_collect": 1350,
+      "completed_dates": 1291,
+      "failed_dates": 59,
+      "skipped_dates": 0
+    },
+    "TECL": {
+      "symbol": "TECL",
+      "total_dates": 1536,
+      "to_collect": 1350,
+      "completed_dates": 1293,
+      "failed_dates": 57,
+      "skipped_dates": 0
+    },
+    "TECS": {
+      "symbol": "TECS",
+      "total_dates": 1536,
+      "to_collect": 1352,
+      "completed_dates": 1292,
+      "failed_dates": 60,
+      "skipped_dates": 0
+    },
+    "NUGT": {
+      "symbol": "NUGT",
+      "total_dates": 1536,
+      "to_collect": 1351,
+      "completed_dates": 1293,
+      "failed_dates": 58,
+      "skipped_dates": 0
+    },
+    "DUST": {
+      "symbol": "DUST",
+      "total_dates": 1536,
+      "to_collect": 1351,
+      "completed_dates": 1293,
+      "failed_dates": 58,
       "skipped_dates": 0
     }
   },
-  "total_api_calls": 1,
-  "total_successful": 1,
-  "total_failed": 0,
+  "total_api_calls": 10801,
+  "total_successful": 10338,
+  "total_failed": 463,
   "mode": "parallel",
-  "collection_end": "2026-01-02T19:19:20.898386",
+  "collection_end": "2026-01-03T01:21:53.770666",
   "final_db_stats": {
     "total_options_records": 0,
-    "db_size_mb": 4679.435240745544
+    "db_size_mb": 17025.153990745544
   }
 }
