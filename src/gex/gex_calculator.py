@@ -127,7 +127,10 @@ class GEXCalculator:
         )
 
         # Add contract type weighting (calls are positive customer exposure)
-        gex_data["weighted_gex"] = gex_data["dealer_gex"] * np.where(gex_data["type"] == "call", 1, -1)
+        # Convention: Calls contribute positive GEX, Puts contribute negative GEX.
+        # Since dealer_gex is negative, we multiply calls by -1 to make them positive,
+        # and puts by 1 to keep them negative.
+        gex_data["weighted_gex"] = gex_data["dealer_gex"] * np.where(gex_data["type"] == "call", -1, 1)
 
         return gex_data
 
@@ -340,8 +343,8 @@ class GEXCalculator:
             activity_ratio = abs(gex_volume / gex_oi) if gex_oi != 0 else 0.0
 
             logger.info(
-                f"Dual GEX calculated: GEX_OI=${gex_oi/1e9:.2f}B, "
-                f"GEX_Volume=${gex_volume/1e9:.2f}B, "
+                f"Dual GEX calculated: GEX_OI=${gex_oi / 1e9:.2f}B, "
+                f"GEX_Volume=${gex_volume / 1e9:.2f}B, "
                 f"Activity Ratio={activity_ratio:.2f}"
             )
         else:
@@ -394,4 +397,106 @@ class GEXCalculator:
             "market_impact": market_impact,
             "normalized_gex": normalized_gex,
             "raw_gex": net_gex,
+        }
+
+    def calculate_net_gex_from_raw(
+        self,
+        contracts: list,
+        open_interest_multiplier: int = 100,
+    ) -> Dict[str, Any]:
+        """Calculate net GEX from raw contract data using a standard practitioner convention.
+
+        This function implements the common GEX convention where:
+        - Call options contribute POSITIVE GEX.
+        - Put options contribute NEGATIVE GEX.
+        - Net GEX is the sum of Call GEX and Put GEX.
+
+        This convention is used to model dealer hedging flows, where a large positive
+        Net GEX implies a volatility-dampening environment (dealers sell into strength)
+        and a large negative Net GEX implies a volatility-amplifying environment
+        (dealers sell into weakness).
+
+        Formula: GEX_per_contract = gamma * OI * 100 * (spot_price^2) * 0.01
+
+        Args:
+            contracts: List of dicts with keys:
+                - option_type: 'call' or 'put'
+                - gamma: Pre-computed gamma value
+                - open_interest: Contract open interest
+                - underlying_price: Spot price of underlying
+            open_interest_multiplier: Contract size (default 100 shares/contract)
+
+        Returns:
+            Dict with:
+                - net_gex: Total net GEX in USD
+                - call_gex: GEX contribution from calls (positive)
+                - put_gex: GEX contribution from puts (negative)
+                - underlying_price: Price used for calculation
+                - contract_count: Number of contracts processed
+        """
+        if not contracts:
+            return {
+                "net_gex": 0.0,
+                "call_gex": 0.0,
+                "put_gex": 0.0,
+                "underlying_price": None,
+                "contract_count": 0,
+            }
+
+        call_gex = 0.0
+        put_gex = 0.0
+        underlying_price = None
+        contract_count = 0
+
+        for contract in contracts:
+            option_type = contract.get("option_type", "").lower()
+            gamma = contract.get("gamma", 0)
+            oi = contract.get("open_interest", 0)
+            price = contract.get("underlying_price", 0)
+
+            # Skip invalid contracts
+            if gamma is None or oi is None or oi <= 0 or price is None or price <= 0:
+                continue
+
+            if underlying_price is None:
+                underlying_price = price
+
+            # GEX formula: gamma * OI * S^2 * 0.01 * multiplier
+            # Matches calculate_dealer_gamma_exposure() final weighted_gex sign convention:
+            #   dealer_gex = -1 * OI * gamma * S^2 * 0.01 * 100  (negative)
+            #   weighted_gex = dealer_gex * (-1 if call else +1)
+            #   Result: CALLS → POSITIVE, PUTS → NEGATIVE
+            contract_gex = (
+                gamma
+                * oi
+                * open_interest_multiplier
+                * price
+                * price
+                * self.percentage_move_multiplier
+            )
+
+            # Apply dealer positioning sign convention (matches calculate_dealer_gamma_exposure):
+            # Calls contribute POSITIVE to net GEX (dampening effect)
+            # Puts contribute NEGATIVE to net GEX (amplifying effect)
+            if option_type == "call":
+                call_gex += contract_gex  # calls: positive contribution
+            else:
+                put_gex -= contract_gex   # puts: negative contribution
+
+            contract_count += 1
+
+        net_gex = call_gex + put_gex
+
+        logger.debug(
+            f"Raw GEX calculation: {contract_count} contracts, "
+            f"call_gex=${call_gex / 1e9:.2f}B, put_gex=${put_gex / 1e9:.2f}B, "
+            f"net_gex=${net_gex / 1e9:.2f}B"
+        )
+
+        return {
+            "net_gex": net_gex,
+            "call_gex": call_gex,
+            "put_gex": put_gex,
+            "underlying_price": underlying_price,
+            "contract_count": contract_count,
         }
