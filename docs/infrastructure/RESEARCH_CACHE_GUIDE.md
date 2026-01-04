@@ -3,6 +3,7 @@
 ## Overview
 
 ResearchCache provides a structured way to store and query:
+
 - LLM detection results with chain-of-thought
 - Validation outcomes
 - Experiment runs with git versioning
@@ -97,16 +98,19 @@ with open('reports/validation/result.yaml', 'w') as f:
 ## Database Schema
 
 ### llm_detections
+
 - Stores pattern detection results
 - Links to validation_results via foreign key
 - Includes chain-of-thought reasoning
 
 ### experiment_runs
+
 - Tracks all experiment runs
 - Stores git commit hash for reproducibility
 - Links to detections via metadata
 
 ### validation_results
+
 - Stores outcome verification (T+1, T+3, T+5 returns)
 - Links to detections
 
@@ -121,10 +125,12 @@ with open('reports/validation/result.yaml', 'w') as f:
 ## Troubleshooting
 
 **Database locked?**
+
 - ResearchCache uses threading.Lock() for safety
 - Wait a few seconds and retry
 
 **Missing detections?**
+
 - Check date format: "YYYY-MM-DD"
 - Verify pattern_id matches exactly
 - Use cache.get_detections() with no filters to see all
@@ -132,6 +138,7 @@ with open('reports/validation/result.yaml', 'w') as f:
 ## For Papers 3-5
 
 ResearchCache is designed to scale across all papers:
+
 - Paper 3: Multi-symbol detections
 - Paper 4: Graph neural network results
 - Paper 5: Real-time detection tracking
