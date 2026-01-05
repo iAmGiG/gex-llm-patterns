@@ -216,6 +216,21 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \noindent\textbf{EOD GEX as ``scar tissue''}: We measure not the 0DTE contracts themselves but the overnight positioning they force upon dealers. This mechanism aligns with practitioner observations: Kolanovic~\cite{kolanovic2023volmageddon} noted that 0DTE options net-sold by investors force dealers into massive intraday gamma hedging, and if sellers cannot support these positions, it triggers ``forced covering'' and directional flows. The persistent negative GEX regimes detected post-2021 represent the cumulative effect of daily 0DTE hedging pressure—effectively the structural ``scar tissue'' left by continuous intraday gamma battles. This indirect measurement is appropriate because our research question targets \textit{sustained market structure}, not transient intraday dynamics.
 
+\vspace{0.3cm}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/output/fig11_scar_tissue.png}
+\caption{\textbf{Scar Tissue Mechanism: How Intraday 0DTE Trading Creates Overnight Positioning.}
+The diagram illustrates the causal chain from 0DTE intraday trading to the EOD open interest we measure.
+During trading hours, 0DTE options expiring that day create extreme gamma exposure that forces dealers to hedge aggressively.
+This intraday hedging pressure amplifies price volatility. At market close, dealers cannot fully unwind these hedging positions due to liquidity constraints and risk management limits.
+The residual positioning that persists into the overnight period—the ``scar tissue''—is captured in our end-of-day open interest measurements.
+When 0DTE trading is sustained across daily cycles, dealers face persistent hedging pressure that manifests as the structural dealer gamma regimes we detect.
+}
+\label{fig:scar-tissue}
+\end{figure}
+
 \vspace{0.2cm}
 
 \noindent\textbf{Validation through temporal aggregation}: Three factors support the validity of OI-based measurement for detecting 0DTE structural effects:
