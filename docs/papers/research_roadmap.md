@@ -136,6 +136,14 @@ This document outlines the multi-paper research trajectory for validating LLM un
 - `docs/papers/paper2/results/phase1_results.md` - Phase 1 detailed results
 - `docs/papers/paper2/execution_plan.md` - Current work and next steps
 
+**Section VI.K Added (December 2025)**:
+
+- "Sensitivity to GEX Formulation" subsection added to Discussion
+- Explains absolute dollar-scaling (S²) vs practitioner normalized approaches
+- Justifies why magnitude preservation is essential for obfuscation testing
+- Introduces Formula Agreement Test as future validation (Issue #186)
+- Cross-project coordination: AutoTrader-AgentEdge Issue #502
+
 **5-Day Work Value**: Valuable negative result (98-100% detection too universal), documented in archived sessions
 
 ---

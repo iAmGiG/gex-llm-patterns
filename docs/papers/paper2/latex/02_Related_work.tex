@@ -28,7 +28,7 @@ Yet LLM financial reasoning faces two critical challenges. First, \textit{tempor
 
 Our companion paper~\cite{regan2025obfuscation} introduced obfuscation testing for validating LLM structural reasoning. By replacing calendar dates with relative labels ("Day T+0") and removing event context, we force LLMs to reason from market mechanics rather than memorized associations. This prior work demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy.
 
-This paper extends obfuscation testing to \textbf{temporal domains} (30-day regimes vs single-day snapshots). The key methodological challenge is ensuring selectivity: detecting universal patterns (present in all markets) proves only pattern matching, while discriminating persistent regimes from transitional periods validates structural reasoning. Our four-phase validation strategy specifically addresses this challenge through negative controls and pre/post-0DTE comparison.
+This paper extends obfuscation testing to \textbf{temporal domains} (30-day regimes vs single-day snapshots). The key methodological challenge is ensuring selectivity: detecting universal patterns (present in all markets) proves only pattern matching, while discriminating persistent regimes from transitional periods validates structural reasoning. Our five-phase validation strategy specifically addresses this challenge through negative controls, pre/post-0DTE comparison, and multi-year temporal analysis (2020-2025).
 
 \subsection{Gap in Literature}
 

@@ -1,0 +1,91 @@
+{
+  "symbols": [
+    "UPRO",
+    "SPXU",
+    "SPXL",
+    "TNA",
+    "TZA",
+    "IEF",
+    "LQD",
+    "SLV"
+  ],
+  "start_date": "2020-01-02",
+  "end_date": "2025-12-31",
+  "storage_backend": "database",
+  "collection_start": "2026-01-03T01:38:18.023928",
+  "symbol_summaries": {
+    "UPRO": {
+      "symbol": "UPRO",
+      "total_dates": 1565,
+      "to_collect": 1467,
+      "completed_dates": 1409,
+      "failed_dates": 58,
+      "skipped_dates": 0
+    },
+    "SPXU": {
+      "symbol": "SPXU",
+      "total_dates": 1565,
+      "to_collect": 1465,
+      "completed_dates": 1402,
+      "failed_dates": 63,
+      "skipped_dates": 0
+    },
+    "SPXL": {
+      "symbol": "SPXL",
+      "total_dates": 1565,
+      "to_collect": 1464,
+      "completed_dates": 1406,
+      "failed_dates": 58,
+      "skipped_dates": 0
+    },
+    "TNA": {
+      "symbol": "TNA",
+      "total_dates": 1565,
+      "to_collect": 1468,
+      "completed_dates": 2,
+      "failed_dates": 58,
+      "skipped_dates": 1408
+    },
+    "TZA": {
+      "symbol": "TZA",
+      "total_dates": 1565,
+      "to_collect": 1471,
+      "completed_dates": 1409,
+      "failed_dates": 62,
+      "skipped_dates": 0
+    },
+    "IEF": {
+      "symbol": "IEF",
+      "total_dates": 1565,
+      "to_collect": 1531,
+      "completed_dates": 0,
+      "failed_dates": 58,
+      "skipped_dates": 1473
+    },
+    "LQD": {
+      "symbol": "LQD",
+      "total_dates": 1565,
+      "to_collect": 1532,
+      "completed_dates": 2,
+      "failed_dates": 58,
+      "skipped_dates": 1472
+    },
+    "SLV": {
+      "symbol": "SLV",
+      "total_dates": 1565,
+      "to_collect": 1532,
+      "completed_dates": 1,
+      "failed_dates": 58,
+      "skipped_dates": 1473
+    }
+  },
+  "total_api_calls": 6104,
+  "total_successful": 5631,
+  "total_failed": 473,
+  "mode": "parallel",
+  "collection_end": "2026-01-03T05:02:59.014876",
+  "final_db_stats": {
+    "total_options_records": 0,
+    "db_size_mb": 21069.396178245544
+  }
+}

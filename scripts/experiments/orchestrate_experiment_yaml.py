@@ -7,16 +7,14 @@ import logging
 import sys
 from pathlib import Path
 
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 import yaml
 
-from agents.market_mechanics_agent import MarketMechanicsAgent
+from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.utils.unified_reports_manager import yaml_reports
 from src.validation.data_obfuscation import DataObfuscator
-
-# Add both src and root paths for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 
 logger = logging.getLogger(__name__)
 

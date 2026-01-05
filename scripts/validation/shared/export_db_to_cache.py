@@ -8,6 +8,7 @@ Issue: #111 (Test 4)
 """
 
 import logging
+import os
 import sqlite3
 import sys
 from pathlib import Path

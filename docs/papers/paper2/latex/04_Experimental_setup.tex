@@ -84,7 +84,7 @@ Transform each window before LLM submission:
 \textbf{Batch Processing}:
 \begin{itemize}
 \item Method: OpenAI Batch API (asynchronous processing)
-\item Cost savings: 50\% vs synchronous API (\$0.075 vs \$0.15 per 1M input tokens)
+% \item Cost savings: 50\% vs synchronous API (\$0.075 vs \$0.15 per 1M input tokens) % Omitted - not tracking cost
 \item Processing time: 6-23 minutes per batch (223 windows)
 \item Reliability: 100\% completion rate (no timeouts or rate limits)
 \end{itemize}
@@ -148,10 +148,6 @@ Our multi-phase validation strategy tests both framework selectivity and market 
 \vspace{0.2cm}
 
 \noindent\textbf{Phase 4 - 2020 Comparison} (223 windows): Test pre-0DTE era (2020, 0DTE $<$5\% volume) versus post-0DTE era (2024, 0DTE 43\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Phase 4A - Multi-Year Expansion} (972 windows): Extend validation to years 2021-2023 and 2025 for total coverage of 1,418 windows across 6 years (2020-2025). Purpose: Identify precise timing of structural transition. Hypothesis: Sharp 2020$\rightarrow$2021 transition (not gradual 2020$\rightarrow$2024 evolution) isolates 0DTE causal mechanism.
 
 \subsection{Quality Control}
 

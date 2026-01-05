@@ -9,6 +9,8 @@ import logging
 import sys
 from pathlib import Path
 
+from cache.sqlite_options_manager import SQLiteOptionsManager
+from cache.postgresql_options_manager import PostgreSQLOptionsManager
 from cache.unified_cache import UnifiedCacheManager
 from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
@@ -52,12 +54,13 @@ class DataRetrievalAgent:
 
         # Initialize data providers based on source
         if data_source == "production":
-            # Production: Cache → Alpha Vantage → Sample fallback
+            # Use PostgreSQL by default (migrated from SQLite)
+            self.db = PostgreSQLOptionsManager()
             self.cache_manager = UnifiedCacheManager(base_dir=str(self.cache_dir))
             self.alpha_vantage_client = AlphaVantageGEXClient(self.cache_manager)
             # LiveGEXInterface removed - use direct calculation instead
-            self.provider = None  # Will use cache_manager + alpha_vantage_client
-            logger.info("Initialized production data retrieval with cache + Alpha Vantage Premium")
+            self.provider = None  # Will use db + alpha_vantage_client
+            logger.info("Initialized production data retrieval with PostgreSQL + Alpha Vantage Premium")
 
         elif data_source == "sample":
             # Sample mode no longer supported - must use real data
@@ -268,26 +271,29 @@ class DataRetrievalAgent:
         return df
 
     def _fetch_via_production_flow(self, symbol, date):
-        """Fetch via the production flow: Cache → API → Sample."""
+        """Fetch via the production flow: SQLite → API.
+
+        Issue #180: Now uses SQLiteOptionsManager as primary storage.
+        """
         # Default to today if no date specified
         if not date:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
 
-        # Step 1: Check cache first
-        if self.cache_manager:
-            cached_data = self.cache_manager.get_options_data(symbol, date)
+        # Step 1: Check SQLite first (Issue #180: primary storage)
+        if self.db:
+            cached_data = self.db.get_options_chain(symbol, date)
             if cached_data is not None and not cached_data.empty:
-                logger.info(f"Cache hit for {symbol} options on {date}")
-                return {"status": "success", "source": "cache", "data": cached_data}
+                logger.info(f"SQLite hit for {symbol} options on {date}")
+                return {"status": "success", "source": "sqlite", "data": cached_data}
 
         # Step 2: Try Alpha Vantage API
         if self.alpha_vantage_client:
             try:
                 api_data = self.alpha_vantage_client.fetch_historical_options(symbol, date)
                 if api_data is not None and not api_data.empty:
-                    # Cache the data
-                    if self.cache_manager:
-                        self.cache_manager.store_options_data(symbol, date, api_data)
+                    # Store in SQLite (Issue #180)
+                    if self.db:
+                        self.db.store_options_chain(symbol, date, api_data)
                     return {"status": "success", "source": "alpha_vantage", "data": api_data}
             except Exception as e:
                 logger.warning(f"Alpha Vantage API failed: {e}")
@@ -407,7 +413,7 @@ class DataRetrievalAgent:
 
     def _get_recent_cached_dates(self, symbol, days_back=30):
         """Get list of dates with cached data for symbol."""
-        if not self.cache_manager:
+        if not self.db:
             return []
 
         recent_dates = []
@@ -418,7 +424,8 @@ class DataRetrievalAgent:
         while current_date <= end_date:
             date_str = current_date.strftime("%Y-%m-%d")
             try:
-                cached_data = self.cache_manager.get_options_data(symbol, date_str)
+                # Issue #180: Use SQLite for options data
+                cached_data = self.db.get_options_chain(symbol, date_str)
                 if cached_data is not None and not cached_data.empty:
                     recent_dates.append(date_str)
             except Exception:

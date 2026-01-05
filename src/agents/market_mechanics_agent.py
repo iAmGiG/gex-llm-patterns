@@ -6,6 +6,7 @@ Core hypothesis: LLM identifies WHO is forcing WHOM to do WHAT in market mechani
 """
 
 import datetime
+import os
 import logging
 import sqlite3
 from pathlib import Path
@@ -16,6 +17,8 @@ import pandas as pd
 import yaml
 
 from src.analysis.actionable_patterns import ActionablePatternDetector
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
 from src.gex.gex_calculator import GEXCalculator
@@ -55,6 +58,8 @@ class MarketMechanicsAgent:
         self.strike_pattern_config = self.config.get("strike_level_patterns", {})
         self.prompt_templates = self._load_prompt_templates()
         self.cache = UnifiedCacheManager()
+        # Use PostgreSQL by default (migrated from SQLite)
+        self.db = PostgreSQLOptionsManager()
         self.pattern_detector = EnhancedPatternDetector()
         self.gex_calculator = GEXCalculator()
         self.prompt_builder = MechanicsPromptBuilder()
@@ -1061,14 +1066,15 @@ Respond with JSON:
             return self._empty_analysis()
 
     def _fetch_options_data(self, date) -> Optional[pd.DataFrame]:
-        """Fetch options data using autogen_tools for better caching."""
-        if not AUTOGEN_TOOLS_AVAILABLE:
-            # Fallback to direct cache access
-            _, date_str = self._normalize_date(date)
-            return self.cache.get_options_data(self.symbol, date_str)
+        """Fetch options data using autogen_tools for better caching.
 
-        # Convert date to string format
+        Issue #180: Now uses SQLiteOptionsManager directly for fallback.
+        """
         _, date_str = self._normalize_date(date)
+
+        if not AUTOGEN_TOOLS_AVAILABLE:
+            # Fallback to direct SQLite access
+            return self.db.get_options_chain(self.symbol, date_str)
 
         # Use autogen tool which handles cache → API → sample data fallback
         try:
@@ -1079,15 +1085,15 @@ Respond with JSON:
                 return result["data"]
             else:
                 logger.error(f"AutoGen fetch failed: {result.get('message', 'Unknown error')}")
-                # Fallback to direct cache access
-                return self.cache.get_options_data(self.symbol, date_str)
+                # Fallback to direct SQLite access
+                return self.db.get_options_chain(self.symbol, date_str)
 
         except (ConnectionError, TimeoutError) as e:
-            logger.warning(f"AutoGen API connection issue: {e}, falling back to cache")
-            return self.cache.get_options_data(self.symbol, date_str)
+            logger.warning(f"AutoGen API connection issue: {e}, falling back to SQLite")
+            return self.db.get_options_chain(self.symbol, date_str)
         except Exception as e:
-            logger.error(f"AutoGen tools error: {e}, falling back to cache")
-            return self.cache.get_options_data(self.symbol, date_str)
+            logger.error(f"AutoGen tools error: {e}, falling back to SQLite")
+            return self.db.get_options_chain(self.symbol, date_str)
 
     def _fetch_gex_from_database(self, date_str: str) -> Optional[Dict]:
         """Fetch GEX data from database, calculate and populate if missing.

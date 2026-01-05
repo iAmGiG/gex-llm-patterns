@@ -122,3 +122,43 @@ api_fallback:
   sample_data:
     enabled: true              # Allow fallback to sample data
     warning_on_use: true       # Log warning when using sample data
+
+# ==============================================================================
+# Options Chain Validation (Issue #16)
+# ==============================================================================
+
+validation:
+  # Master switch for validation at database ingress
+  enabled: true
+
+  # Critical thresholds (100% compliance required, records rejected if violated)
+  critical:
+    bid_ask_tolerance: 0.0     # bid must be <= ask
+    call_delta_min: 0.0        # Call delta must be >= 0
+    call_delta_max: 1.0        # Call delta must be <= 1
+    put_delta_min: -1.0        # Put delta must be >= -1
+    put_delta_max: 0.0         # Put delta must be <= 0
+    gamma_min: 0.0             # Gamma must be non-negative
+    strike_min: 0.0            # Strike must be positive
+    oi_min: 0                  # Open interest must be non-negative
+
+  # Warning thresholds (flagged but stored if violated)
+  warning:
+    iv_min: 0.01               # Minimum IV (1%)
+    iv_max: 5.0                # Maximum IV (500%)
+    theta_max: 0.0             # Theta should be negative for long options
+    threshold_pct: 5.0         # >5% violations triggers warning
+
+  # Quality scoring weights (must sum to 1.0)
+  quality_weights:
+    greeks_coverage: 0.30      # 30% weight for complete Greeks
+    pricing_coverage: 0.20     # 20% weight for bid/ask presence
+    iv_quality: 0.20           # 20% weight for IV in reasonable range
+    no_critical_issues: 0.30   # 30% weight for no critical violations
+
+  # Behavior settings
+  behavior:
+    reject_on_critical: true   # Reject entire chain if critical issues found
+    min_quality_score: 0.5     # Minimum quality score to accept (0.0-1.0)
+    log_warnings: true         # Log warning-level issues
+    store_validation_score: true  # Store quality score in progress table

@@ -2,7 +2,7 @@
 
 \subsection{LLM Temporal Reasoning at 30-Day Scales}
 
-Four-phase validation demonstrates that LLMs can identify persistent dealer gamma regimes from 30-day GEX sequences without temporal context. The 69.1 percentage point discrimination between 2024 (81.2\% detection) and 2020 (12.1\% detection) establishes that the framework detects \textit{structural persistence}, not universal patterns.
+Five-phase validation demonstrates that LLMs can identify persistent dealer gamma regimes from 30-day GEX sequences without temporal context. The 69.1 percentage point discrimination between 2024 (81.2\% detection) and 2020 (12.1\% detection) establishes that the framework detects \textit{structural persistence}, not universal patterns.
 
 This selectivity contrasts sharply with earlier 5-day trajectory testing, which achieved 98-100\% detection across all market conditions. The 5-day approach detected daily hedging flows—mechanics present in all markets since Black-Scholes (1973)—rather than persistent regimes. The shift to 30-day windows with strict persistence criteria ($\geq$70\% same-sign dominance, $\geq$\$5B magnitude, $\leq$5 flips) transformed the task from universal pattern matching to selective regime identification.
 
@@ -54,7 +54,7 @@ A critical methodological concern is whether the 2020→2024 detection increase 
 
 \vspace{0.2cm}
 
-\noindent\textbf{Mixed causation conclusion}: This analysis demonstrates transparency regarding methodological concerns while strengthening the structural shift thesis. Price inflation is a legitimate factor (34\%), but market microstructure evolution dominates (66\%). The 2:1 structural-to-price ratio supports our core finding: the 2020→2021 transition reflects fundamental market restructuring, not threshold artifacts from asset appreciation.
+\noindent\textbf{Mixed causation conclusion}: This analysis demonstrates transparency regarding methodological concerns while strengthening the structural shift thesis. Price inflation is a legitimate factor (34\%), but market microstructure evolution dominates (66\%). The 2:1 structural-to-price ratio supports our core finding: the 2023→2024 transition (confirmed by Phase 4A multi-year validation) reflects fundamental market restructuring, not threshold artifacts from asset appreciation.
 
 \subsection{Market Structure Evolution: 0DTE Era}
 
@@ -73,7 +73,7 @@ The 69.1 percentage point detection difference between 2020 and 2024 provides qu
 
 \vspace{0.2cm}
 
-This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2024 43\% volume). However, attributing causation requires isolating 0DTE effects from concurrent market changes. Three factors may contribute:
+This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2024 62\% volume)~\cite{cboe2024volume}. Academic research confirms these structural effects: Brogaard et al.~\cite{brogaard2023does} find that a one standard deviation increase in 0DTE trading leads to a 10.4\% increase in market volatility. However, attributing causation requires isolating 0DTE effects from concurrent market changes. Three factors may contribute:
 
 \vspace{0.2cm}
 
@@ -85,54 +85,37 @@ This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% vol
 
 \vspace{0.2cm}
 
-\noindent\textbf{Market structure modernization}: Growth in quantitative trading, increased options liquidity, and algorithmic market making may have independently increased positioning persistence. Disentangling these effects required testing intermediate years (2021-2023) to identify transition timing.
+\noindent\textbf{Market structure modernization}: Growth in quantitative trading, increased options liquidity, and algorithmic market making may have independently increased positioning persistence. Phase 4A multi-year validation (2021-2023) successfully identified gradual 0DTE adoption culminating in late 2023 structural transition, disentangling the timing of market evolution from concurrent factors.
 
 \vspace{0.2cm}
 
-\noindent\textbf{Multi-year validation confirms sharp 2020→2021 transition}: Phase 4A tested 1,418 windows across all six years (2020-2025), isolating the precise timing of structural market shift. Results revealed a \textit{sharp} 2020→2021 transition (12.1\% → 100\% detection, 87.9 pp increase), not gradual evolution. Four findings strengthen causal attribution to 0DTE proliferation:
+\noindent\textbf{External validation: OCC record volume}: The structural shift between 2020 and 2024 does not exist in a vacuum; it is corroborated by an unprecedented ``volume shock'' documented by the Options Clearing Corporation. In 2021, the OCC cleared a record 9.93 billion total contracts—a 32.2\% surge over the 2020 record of 7.52 billion~\cite{occ2022record}. Average daily cleared contract volume hit 39.4 million contracts, up 32.5\% year-over-year. At the smallest trade size (1 contract), activity grew nearly 6$\times$ compared to five years prior, reflecting the influx of retail and algorithmic participants~\cite{cboe2021retail}. Short-term contracts expiring within one day climbed to 21\% of 2021 flow, up from 16\% in 2020. This massive influx of contract liquidity explains the market structure saturation we observe in 2024.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Structural infrastructure changes}: The timing aligns with deliberate market infrastructure modernization. In February 2021, Cboe activated its Automated Improvement Mechanism (AIM) for SPX options up to 10 contracts, explicitly targeting ``sophisticated retail investors seeking to trade smaller-sized orders''~\cite{cboe2021aim}. This infrastructure change—enabling electronic auctions for small SPX trades—preceded the formal expansion of daily SPXW expirations (2022) yet positioned the market to absorb the coming 0DTE wave. The structural shift we detect thus reflects both organic volume growth and anticipatory positioning by market infrastructure providers.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 4A multi-year validation (Section 5.7) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior.
+
+\subsection{Framework Selectivity Validation}
+
+\vspace{0.2cm}
+
+The 5.7x detection difference between 2024 (81.2\%) and 2020 (12.1\%) validates framework selectivity. Two pieces of evidence support this interpretation:
 
 \vspace{0.1cm}
 
 \begin{enumerate}
-\item \textbf{Immediate transition}: 2021 achieved 100\% detection immediately (250/250 windows), with no ramp-up period
-\item \textbf{Sustained stability}: 2021-2023 maintained identical 100\% detection (751/751 windows), indicating permanent structural equilibrium
-\item \textbf{GEX magnitude shift}: Average GEX increased 58\% from 2020 (\$17.3B) to 2021 (\$27.2B), with negative GEX dominance (99.2\% → 100\% negative days)
-\item \textbf{2025 return to stability}: After 2024 volatility (81.2\% detection), 2025 restored 100\% detection (221/221 windows), confirming post-2021 equilibrium remains intact
-\end{enumerate}
+\item \textbf{Pre-0DTE baseline validates selectivity}: 2020 achieved only 12.1\% detection despite 83.3\% persistence, demonstrating the framework correctly rejects near-threshold cases when magnitude (\$2.85B $<$ \$5B) fails criterion enforcement.
 
-\vspace{0.1cm}
-
-The sharp 2020→2021 transition—combined with sustained 100\% detection across 2021-2023 and 2025 (972/972 windows, p $<$ 10\textsuperscript{-292})—strengthens causal attribution to 0DTE proliferation beyond temporal coincidence. While 0DTE options launched on SPY in May 2022, the 2021 transition likely reflects early adoption and anticipatory dealer positioning as options markets prepared for daily expiration cycles.
-
-\subsection{Regime Saturation: A Feature, Not a Bug}
-
-\vspace{0.2cm}
-
-The sustained 100\% detection across 2021-2023 and 2025 (972/972 windows) warrants explicit discussion. In social science and financial econometrics, ``100\%'' often signals measurement error or tautological criteria. We address this concern directly.
-
-\vspace{0.2cm}
-
-\noindent\textbf{The saturation phenomenon}: Post-2021, the options market entered a \textit{permanent regime state}. What was exceptional in 2020 (12.1\% detection) became the structural baseline. Our framework's 100\% detection reflects genuine market transformation, not loose criteria. Four pieces of evidence support this interpretation:
-
-\vspace{0.1cm}
-
-\begin{enumerate}
-\item \textbf{Pre-transition baseline validates selectivity}: 2020 achieved only 12.1\% detection despite 83.3\% persistence, demonstrating the framework correctly rejects near-threshold cases when magnitude (\$2.85B $<$ \$5B) fails criterion enforcement.
-
-\item \textbf{2024 volatility discrimination}: The framework detected 81.2\% of 2024 windows, correctly rejecting 42 windows (18.8\%) that exhibited 6-10 sign flips during February-March volatility. This demonstrates continued discriminatory power even within the post-transition regime era.
-
-\item \textbf{Regime intensity variance within 100\% years}: While all 972 windows (2021-2023, 2025) satisfied binary detection criteria, internal metrics varied substantially. Average GEX magnitude ranged \$20.1B (2022) to \$30.4B (2025), and individual windows showed 70-100\% persistence ranges. Detection saturation does not imply uniform market conditions—it reflects that all conditions exceed minimum structural thresholds.
-
-\item \textbf{The research contribution is transition identification}: Our framework's value lies not in detecting individual regimes within saturated periods but in identifying \textit{when} market structure shifted. The 2020→2021 transition (12.1\% → 100\%, p $<$ 10\textsuperscript{-86}) documents the precise timing of structural change—a finding impossible without cross-period comparison.
+\item \textbf{2024 volatility discrimination}: The framework detected 81.2\% of 2024 windows, correctly rejecting 42 windows (18.8\%) that exhibited 6-10 sign flips during February-March volatility. This demonstrates discriminatory power within the post-0DTE era.
 \end{enumerate}
 
 \vspace{0.2cm}
 
-\noindent\textbf{Reframing 100\% detection}: Rather than ``our model achieves 100\% accuracy,'' the accurate interpretation is ``post-2021 markets exist in a continuous regime state, and our framework reveals this structural shift by contrasting it with pre-transition fragmentation.'' The 100\% detection rate is a \textit{measurement of market structure}, not a claim about model perfection.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Implications for regime theory}: The saturation phenomenon suggests regime persistence—previously an exceptional market state—has become the new normal in 0DTE-dominated markets. Future work may require tiered classifications (moderate/strong/extreme regimes) to discriminate intensity within the post-2021 era, but the binary pre/post-2021 distinction documented here establishes the foundational structural shift.
+\noindent\textbf{Implications for regime theory}: The 69.1 percentage point difference suggests regime persistence—previously an exceptional market state in 2020—became substantially more common in post-0DTE markets. Phase 4A results (Section 5.7) identify the precise timing of structural transition as late 2023, coinciding with the explosion in 0DTE volumes.
 
 \subsection{Methodology Robustness}
 
@@ -142,11 +125,33 @@ Three validation elements establish framework robustness:
 
 \vspace{0.2cm}
 
-\noindent\textbf{Negative controls passed}: Phase 2 achieved 0\% false positives on transitional (7-10 flips) and low-magnitude ($<$\$5B) synthetic windows, demonstrating the framework correctly enforces regime criteria. The 12.1\% false positive rate on 2020 shuffled data (Phase 2a) further confirms the model discriminates temporal structure from statistical properties—randomizing day order destroys regime persistence, and detection rate drops accordingly.
+\noindent\textbf{Negative controls passed}: Phase 2 achieved 0\% false positives on transitional (7-10 flips) and low-magnitude ($<$\$5B) synthetic windows, demonstrating the framework correctly enforces regime criteria. The 12.1\% false positive rate on 2020 shuffled data further confirms the model discriminates temporal structure from statistical properties—randomizing day order destroys regime persistence, and detection rate drops accordingly.
 
 \vspace{0.2cm}
 
-\noindent\textbf{Consistent LLM reasoning}: Across 1,307 windows spanning two years (2020, 2024), three test types (real, synthetic, shuffled), and four phases, the LLM maintained 98\% mechanical accuracy. This consistency suggests structural reasoning rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome.
+\noindent\textbf{Consistent LLM reasoning}: Across 1,858 windows spanning six years (2020-2025) and five phases, the LLM maintained 98\% mechanical accuracy. This consistency suggests structural reasoning rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome. McCoy et al.~\cite{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences than low-probability ones. Our obfuscation testing methodology—stripping temporal context and market identifiers—directly addresses this concern by forcing the model to reason from structural properties rather than pattern-match against high-probability training examples.
+
+\subsection{Sensitivity to GEX Formulation}
+
+\vspace{0.2cm}
+
+While various methodologies exist for quantifying dealer gamma exposure, we distinguish our absolute dollar-scaling approach from the normalized ratios frequently used by practitioners. Our framework utilizes the $S^2$ factor to convert raw gamma units into concrete dollar hedging pressure per 1\% move:
+
+\begin{equation}
+\text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
+\end{equation}
+
+\vspace{0.2cm}
+
+\noindent\textbf{The utility of absolute magnitude}: Retaining dollar-scaled magnitude is essential for obfuscation testing, as it provides the LLM with the necessary scale to judge ``economic significance.'' Without absolute magnitude, the model could not distinguish between ``Low Conviction'' transitional periods ($M < \$5$B) and ``Persistent'' regimes ($M \geq \$5$B), as normalization would flatten these values into identical relative ratios.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Comparison to practitioner approaches}: While practitioner trading models often normalize GEX by Open Interest to isolate directional tilt for alpha generation~\cite{anderegg2022impact,spotgamma2021}, we find that for the purpose of validating structural reasoning, preserving the ``size of the signal'' is critical for identifying the dealer constraints that characterize a genuine regime. Normalized formulations (e.g., $\text{GEX}_{\text{norm}} = \frac{\Gamma \times \text{OI}}{\text{Total OI}}$) may produce values between $-1.0$ and $+1.0$ that facilitate cross-asset comparison but eliminate the magnitude discrimination our framework requires.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Future validation}: A natural extension is the \textit{Formula Agreement Test}: running the detection pipeline with both absolute-scaled and normalized GEX formulations to measure regime classification agreement. High agreement ($>$90\%) would demonstrate calculation-independent findings; low agreement ($<$70\%) would indicate that LLM structural reasoning depends critically on absolute magnitude cues---a finding with implications for deploying LLMs across different financial data representations.
 
 \subsection{Regime Quality vs.\ Binary Classification}
 
@@ -200,7 +205,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 \begin{enumerate}
 \item \textbf{Intraday gamma explosion}: 0DTE options concentrate extreme gamma exposure during trading hours as contracts approach expiration, forcing dealers to hedge aggressively~\cite{dim2025zero}.
 
-\item \textbf{Incomplete unwinding}: Dealers cannot fully eliminate hedging positions by market close due to liquidity constraints, risk management limits, and transaction costs. Intraday hedging flows create directional inventory that persists into overnight positions.
+\item \textbf{Incomplete unwinding}: Dealers cannot fully eliminate hedging positions by market close due to liquidity constraints, risk management limits, and transaction costs~\cite{garleanu2013dynamic}. Intraday hedging flows create directional inventory that persists into overnight positions.
 
 \item \textbf{Residual positioning in EOD OI}: The EOD open interest we measure captures the ``net effect'' of intraday 0DTE hedging activity—the residual dealer positioning that could not be cleared before close.
 
@@ -209,7 +214,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \vspace{0.2cm}
 
-\noindent\textbf{EOD GEX as ``scar tissue''}: We measure not the 0DTE contracts themselves but the overnight positioning they force upon dealers. The persistent negative GEX regimes detected post-2021 represent the cumulative effect of daily 0DTE hedging pressure—effectively the structural ``scar tissue'' left by continuous intraday gamma battles. This indirect measurement is appropriate because our research question targets \textit{sustained market structure}, not transient intraday dynamics.
+\noindent\textbf{EOD GEX as ``scar tissue''}: We measure not the 0DTE contracts themselves but the overnight positioning they force upon dealers. This mechanism aligns with practitioner observations: Kolanovic~\cite{kolanovic2023volmageddon} noted that 0DTE options net-sold by investors force dealers into massive intraday gamma hedging, and if sellers cannot support these positions, it triggers ``forced covering'' and directional flows. The persistent negative GEX regimes detected post-2021 represent the cumulative effect of daily 0DTE hedging pressure—effectively the structural ``scar tissue'' left by continuous intraday gamma battles. This indirect measurement is appropriate because our research question targets \textit{sustained market structure}, not transient intraday dynamics.
 
 \vspace{0.2cm}
 
@@ -222,12 +227,12 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \item \textbf{Negative controls validate causal inference}: Phase 2 achieved 0\% false positives on transitional/low-magnitude tests and 5x discrimination on 2020 shuffled data, demonstrating the framework detects genuine structural persistence, not measurement artifacts.
 
-\item \textbf{Cross-period discrimination}: The sharp 2020→2021 transition (12.1\% → 100\% detection) temporally aligns with 0DTE proliferation onset, providing circumstantial evidence that EOD measurements successfully capture 0DTE structural effects.
+\item \textbf{Cross-period discrimination}: The large 2020→2024 detection difference (12.1\% → 81.2\%) temporally aligns with 0DTE proliferation, providing circumstantial evidence that EOD measurements successfully capture 0DTE structural effects.
 \end{enumerate}
 
 \vspace{0.2cm}
 
-\noindent\textbf{Limitations and transparency}: We acknowledge this measurement approach is indirect—we infer 0DTE impact through EOD positioning rather than observing intraday flow directly. Future work incorporating high-frequency options flow data (GEX\textunderscore VOL) may refine causal attribution. However, our core finding—that post-2021 markets exhibit persistent dealer gamma regimes absent in 2020—holds regardless of whether this structural shift stems from 0DTE activity, concurrent market structure changes, or their interaction. The measurement validates \textit{that} market structure shifted; attributing causality to 0DTE specifically requires the additional temporal evidence we provide (sharp 2020→2021 transition coinciding with early 0DTE adoption).
+\noindent\textbf{Limitations and transparency}: We acknowledge this measurement approach is indirect—we infer 0DTE impact through EOD positioning rather than observing intraday flow directly. Future work incorporating high-frequency options flow data (GEX\textunderscore VOL) may refine causal attribution. However, our core finding—that post-2023 markets exhibit persistent dealer gamma regimes with gradual buildup from 2021-2023—holds regardless of whether this structural shift stems from 0DTE activity, concurrent market structure changes, or their interaction. The measurement validates \textit{that} market structure shifted; attributing causality to 0DTE specifically is supported by Phase 4A temporal evidence (gradual detection increase tracking 0DTE market penetration: 3.7\% in 2021 → 100\% in 2024).
 
 \subsection{Implications for LLM Financial Analysis}
 
@@ -247,10 +252,8 @@ Four limitations motivate future research:
 
 \textbf{Single asset (SPY)}: Testing focused on S\&P 500 index options. Future work will extend to individual equities (AAPL, MSFT, NVDA, TSLA) to test cross-asset generalization and identify asset-specific vs market-wide regime characteristics.
 
-\textbf{Multi-year validation completed}: Phase 4A extended validation to all six years (2020-2025, 1,418 windows), identifying a sharp 2020→2021 structural transition (12.1\% → 100\% detection). However, longer-term historical analysis (15+ years pre-2020) could reveal whether similar regime transitions occurred during earlier options market innovations, providing additional context for the 0DTE effect. Testing periods such as 2008-2010 (financial crisis), 2016-2018 (VIX ETF proliferation), and 2005-2007 (pre-crisis baseline) may identify whether regime persistence correlates with credit cycles or market microstructure evolution beyond 0DTE proliferation.
+\textbf{Historical scope}: Phase 4A validation covers 2020-2025 (six years, 1,412 windows), establishing gradual 0DTE adoption timing. Future work extending to pre-2020 periods (2008-2010 financial crisis, 2016-2018 VIX ETF proliferation, 2005-2007 pre-crisis baseline) would contextualize whether similar regime transitions occurred during earlier options market innovations.
 
-\textbf{OI-based GEX measurement}: Volume-based GEX may better capture 0DTE intraday dynamics. Future work incorporating options flow data will test whether regime detection improves with alternative measurement approaches.
+\textbf{Framework-dependent reasoning}: Future ablation studies will investigate whether LLMs need the WHO→WHOM→WHAT causal framework or can detect constraints from data alone. This will clarify the role of prompt structure in enabling structural reasoning.
 
-\textbf{Framework-dependent reasoning}: Issue \#133 (narrative removal test) investigates whether LLMs need the WHO→WHOM→WHAT causal framework or can detect constraints from data alone. This ablation study will clarify the role of prompt structure in enabling structural reasoning.
-
-Despite these limitations, five-phase validation across 1,418 windows (2020-2025) with comprehensive negative controls establishes that LLMs can identify persistent dealer gamma regimes through structural reasoning. The sharp 2020→2021 transition and sustained 100\% detection across four non-consecutive years (2021-2023, 2025) provide strong evidence of 0DTE-driven market structure change, extending obfuscation testing methodology to multi-year temporal domains.
+Despite these limitations, five-phase validation across 1,858 windows (2020-2025, six years) with comprehensive negative controls establishes that LLMs can identify persistent dealer gamma regimes through structural reasoning. The gradual detection pattern (3.7\% → 32.4\% → 20.2\% → 100\%) combined with 360\% GEX magnitude growth provides strong evidence of market structure evolution tracking 0DTE adoption, extending obfuscation testing methodology to multi-year temporal domains.

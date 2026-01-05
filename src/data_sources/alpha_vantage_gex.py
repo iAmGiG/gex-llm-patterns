@@ -16,7 +16,7 @@ import requests
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
 
-from src.cache import UnifiedCacheManager
+from src.cache import SQLiteOptionsManager, UnifiedCacheManager
 from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
 
@@ -31,7 +31,15 @@ class AlphaVantageGEXClient:
     - Intelligent caching for historical data
     """
 
-    def __init__(self, cache_manager=None):
+    def __init__(self, cache_manager=None, options_manager=None):
+        """Initialize Alpha Vantage client.
+
+        Args:
+            cache_manager: Optional cache manager for market data (default: UnifiedCacheManager)
+            options_manager: Optional options storage manager (default: SQLiteOptionsManager)
+                           Can be SQLiteOptionsManager or PostgreSQLOptionsManager for
+                           consistent data source across the application.
+        """
         # Load configuration from centralized config system
         config = get_config()
 
@@ -56,7 +64,12 @@ class AlphaVantageGEXClient:
         self.base_url = "https://www.alphavantage.co/query"
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Initialize unified cache (critical for premium tier)
+        # Options storage manager via dependency injection (Issue #169 architectural fix)
+        # Accepts SQLiteOptionsManager or PostgreSQLOptionsManager for consistent data source
+        self.options_manager = options_manager or SQLiteOptionsManager()
+        # Backward compatibility alias
+        self.sqlite_options = self.options_manager
+        # Legacy cache for non-options data (market data)
         self.cache = cache_manager or UnifiedCacheManager()
 
         # Load request timeout from config
@@ -94,13 +107,14 @@ class AlphaVantageGEXClient:
         self.call_timestamps.append(now)
         return True
 
-    def fetch_historical_options(self, symbol, date=None, datatype="json"):
+    def fetch_historical_options(self, symbol, date=None, datatype="json", cache_result=True):
         """Fetch full historical options chain for a specific trading date.
 
         Args:
             symbol: Underlying symbol (SPY, SPX, IBM, etc.)
             date: Trading date (YYYY-MM-DD). If None, uses previous trading day
             datatype: Response format ('json' or 'csv')
+            cache_result: Whether to cache result (False when caller handles storage)
 
         Returns:
             DataFrame with complete options chain for the trading date
@@ -118,11 +132,11 @@ class AlphaVantageGEXClient:
         cache_date = date or "latest"
         cache_key = f"options_{symbol}_{cache_date}"
 
-        # Check cache first (critical for rate limits)
+        # Check SQLite first (Issue #180: primary storage, critical for rate limits)
         if date:  # Only cache specific dates, not 'latest'
-            cached_data = self.cache.get_options_data(symbol, date)
-            if cached_data is not None:
-                self.logger.info(f"Using cached options data for {symbol} {date}")
+            cached_data = self.sqlite_options.get_options_chain(symbol, date)
+            if cached_data is not None and not cached_data.empty:
+                self.logger.info(f"Using SQLite options data for {symbol} {date}")
                 return cached_data
 
         try:
@@ -169,9 +183,9 @@ class AlphaVantageGEXClient:
                 self.logger.warning(f"No options data returned for {symbol}" + (f" on {date}" if date else ""))
                 return df
 
-            # Cache the processed data (only for specific dates)
-            if date:
-                self.cache.store_options_data(symbol, date, df)
+            # Store in SQLite (Issue #180: primary storage, only for specific dates)
+            if date and cache_result:
+                self.sqlite_options.store_options_chain(symbol, date, df)
 
             self.logger.info(f"Successfully fetched {len(df)} option contracts")
             return df
@@ -270,8 +284,10 @@ class AlphaVantageGEXClient:
             df = df[(df.index >= processed_start) & (df.index <= processed_end)]
             df = df.sort_index(ascending=False)
 
-            # Localize timezone
-            df = localize_df(df, get_default_timezone())
+            # Localize timezone - Alpha Vantage dates are already in ET, not UTC
+            # Do NOT use localize_df as it treats dates as UTC first, which shifts dates by one day
+            if df.index.tz is None:
+                df.index = df.index.tz_localize(get_default_timezone())
 
             # Cache for future use (critical for rate limits)
             self.cache.store_market_data(symbol, df, processed_start, processed_end)
@@ -422,3 +438,43 @@ class AlphaVantageGEXClient:
             "calls_remaining": max(0, self.calls_per_minute - recent_calls),
             "reset_time": now + datetime.timedelta(minutes=1) if recent_calls > 0 else now,
         }
+
+    def fetch_underlying_price(self, symbol: str, date: str) -> float:
+        """Fetch the closing price for a specific date.
+
+        Uses cached data when available to avoid extra API calls.
+
+        Args:
+            symbol: Stock symbol (SPY, QQQ, TQQQ, etc.)
+            date: Date in YYYY-MM-DD format
+
+        Returns:
+            Closing price as float, or None if not available
+        """
+        try:
+            # Try to get from cache first (no API call)
+            cached_data = self.cache.get_market_data(symbol, date, date)
+            if cached_data is not None and not cached_data.empty:
+                # Find the exact date in the cached data
+                if hasattr(cached_data.index, "strftime"):
+                    date_str = pd.to_datetime(date).strftime("%Y-%m-%d")
+                    for idx in cached_data.index:
+                        if idx.strftime("%Y-%m-%d") == date_str:
+                            return float(cached_data.loc[idx, "close"])
+                elif date in cached_data.index:
+                    return float(cached_data.loc[date, "close"])
+
+            # Fetch from API - use a small range to get the specific date
+            # This makes one API call but gets cached for future use
+            df = self.fetch_underlying_data(symbol, date, date)
+
+            if df is not None and not df.empty:
+                # Return the close price
+                if "close" in df.columns:
+                    return float(df["close"].iloc[0])
+
+            return None
+
+        except Exception as e:
+            self.logger.warning(f"Could not fetch underlying price for {symbol} on {date}: {e}")
+            return None

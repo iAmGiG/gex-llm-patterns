@@ -12,7 +12,7 @@ The GEX-LLM Pattern Analysis system uses a multi-layer cache system optimized fo
 
 #### 1. UnifiedCacheManager (`src/cache/unified_cache.py`)
 
-**Primary cache interface for live market data storage**
+Primary cache interface for live market data storage.
 
 **Purpose**: Stores real market data in pickle format with lazy directory creation
 **Base Directory**: `.cache/`
@@ -44,7 +44,7 @@ cache = UnifiedCacheManager()
 
 #### 2. GEXCacheManager (`src/cache/gex_cache_manager.py`)
 
-**SQLite-based storage for GEX calculations and pattern analysis**
+SQLite-based storage for GEX calculations and pattern analysis.
 
 **Purpose**: Pre-computed gamma exposure storage with parquet/pickle optimization
 **Database**: `.cache/consolidated_historical.db`
@@ -73,7 +73,7 @@ CREATE TABLE historical_pattern_performance (
 
 #### 3. IntradayCacheManager (`src/cache/intraday_cache.py`)
 
-**Timestamp-based storage for intraday analysis**
+Timestamp-based storage for intraday analysis.
 
 **Purpose**: 10-minute interval storage for gamma pinning validation
 **Structure** (created on-demand):
@@ -98,7 +98,7 @@ CREATE TABLE historical_pattern_performance (
 
 #### 4. ConcurrentGEXProcessor (`src/cache/concurrent_gex_processor.py`)
 
-**High-performance parallel processing for multi-symbol GEX calculations**
+High-performance parallel processing for multi-symbol GEX calculations.
 
 **Purpose**: Concurrent processing with ThreadPoolExecutor
 **Features**:
@@ -117,9 +117,11 @@ CREATE TABLE historical_pattern_performance (
 # 1. Fetch from API/source
 options_data = fetch_options_data("SPY", "2024-08-01")
 
-# 2. Store in cache
-cache.store_options_data("SPY", "2024-08-01", options_data)
-# Creates: .cache/options/SPY/2024-08-01.pickle
+# 2. Store in SQLite (Issue #180: primary options storage)
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
+sqlite_options = SQLiteOptionsManager()
+sqlite_options.store_options_chain("SPY", "2024-08-01", options_data)
+# Stores in: .cache/consolidated_historical.db
 
 # 3. Calculate GEX
 gex_data = calculate_gamma_exposure(options_data)
@@ -236,30 +238,32 @@ cache_settings:
 
 ### Best Practices
 
-#### 1. Use Lazy Loading
+#### 1. Use SQLite for Options Data (Issue #180)
 
 ```python
-# Good - only creates directories when storing data
-cache = UnifiedCacheManager()
-cache.store_options_data("SPY", "2024-08-01", df)
-
-# Avoid - don't pre-create unused directories
+# Primary storage - use SQLiteOptionsManager directly
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
+sqlite_options = SQLiteOptionsManager()
+sqlite_options.store_options_chain("SPY", "2024-08-01", df)
 ```
 
 #### 2. Check Cache Before API Calls
 
 ```python
-# Always check cache first
-cached_data = cache.get_options_data("SPY", "2024-08-01")
-if cached_data is None:
+# Always check SQLite first (Issue #180: primary options storage)
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
+sqlite_options = SQLiteOptionsManager()
+cached_data = sqlite_options.get_options_chain("SPY", "2024-08-01")
+if cached_data is None or cached_data.empty:
     # Only fetch from API if not cached
     fresh_data = api.fetch_options("SPY", "2024-08-01")
-    cache.store_options_data("SPY", "2024-08-01", fresh_data)
+    sqlite_options.store_options_chain("SPY", "2024-08-01", fresh_data)
 ```
 
 #### 3. Use Appropriate Cache Layer
 
-- **UnifiedCacheManager**: Live market data (options, stocks, news)
+- **SQLiteOptionsManager**: Options chain data (primary storage - Issue #180)
+- **UnifiedCacheManager**: Market data (stocks, news) - NOT for options
 - **GEXCacheManager**: Computed GEX results and pattern analysis
 - **IntradayCacheManager**: Timestamp-specific data for gamma pinning
 

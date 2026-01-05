@@ -7,14 +7,14 @@ Shows what we're collecting and how it enables GEX analysis.
 import sys
 from pathlib import Path
 
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
 import pandas as pd
 
-from cache.unified_cache import UnifiedCacheManager
-from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-
-# Add src to path
-project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root / "src"))
+from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 
 def explain_options_data():

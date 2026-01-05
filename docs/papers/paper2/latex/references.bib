@@ -355,6 +355,121 @@
 }
 
 %% ============================================================================
+%% 0DTE VOLUME AND MARKET STRUCTURE DATA
+%% ============================================================================
+
+%% OCC Record Volume (2021) - Corroborates 2020→2021 transition timing
+@misc{occ2022record,
+  author = {{Options Clearing Corporation}},
+  title = {{OCC} Clears Record-Setting 9.93 Billion Total Contracts in 2021},
+  year = {2022},
+  month = {January},
+  howpublished = {Press Release},
+  url = {https://www.theocc.com/Newsroom/Press-Releases/2022/01-04-OCC-Clears-Record-Setting-9-93-Billion-Total},
+  note = {32.0\% increase over 2020 record of 7.52 billion contracts}
+}
+
+%% Brogaard et al. (2023) - Academic evidence on 0DTE volatility impact
+@article{brogaard2023does,
+  author = {Brogaard, Jonathan and Han, Jaehee and Won, Peter Y.},
+  title = {Does {0DTE} Options Trading Increase Volatility?},
+  journal = {SSRN Working Paper},
+  year = {2023},
+  url = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4426358},
+  note = {1 SD increase in 0DTE trading → 10.40\% volatility increase}
+}
+
+%% CBOE 0DTE Volume Data (2024)
+@misc{cboe2024volume,
+  author = {{CBOE Global Markets}},
+  title = {{SPX} {0DTE} Options Jump to Record 62\% Share in August},
+  year = {2024},
+  howpublished = {CBOE Insights},
+  url = {https://www.cboe.com/insights/posts/spx-0-dte-options-jump-to-record-62-share-in-august/},
+  note = {0DTE share rose from 5\% (2016) to 43\% (2023) to 62\% (2024)}
+}
+
+%% CBOE Retail Flow Analysis (2021) - 1-lot trade growth
+@misc{cboe2021retail,
+  author = {{CBOE Global Markets}},
+  title = {Option Flow 2021 -- Retail Rising},
+  year = {2021},
+  howpublished = {CBOE Insights},
+  url = {https://www.cboe.com/insights/posts/option-flow-2021-retail-rising/},
+  note = {1-lot trades grew 6x vs 5 years prior; 0DTE share 21\% (2021) vs 16\% (2020)}
+}
+
+%% CBOE AIM Activation for SPX (February 2021)
+@misc{cboe2021aim,
+  author = {{CBOE Global Markets}},
+  title = {Cboe to Enable Electronic Auction Mechanism for {S\&P} 500 Index Options Products},
+  year = {2021},
+  month = {February},
+  howpublished = {Press Release},
+  url = {https://www.prnewswire.com/news-releases/cboe-to-enable-electronic-auction-mechanism-for-sp-500-index-options-products-beginning-february-22-301229181.html},
+  note = {AIM activated February 22, 2021 for SPX orders up to 10 contracts}
+}
+
+%% Albers (2023/2025) - VIX1D and 0DTE forecasting
+@article{albers2025vix1d,
+  author = {Albers, Stefan},
+  title = {A New Star Is Born: Does the {VIX1D} Render Common Volatility Forecasting Models for the {US} Equity Market Obsolete?},
+  journal = {Journal of Futures Markets},
+  year = {2025},
+  publisher = {Wiley},
+  doi = {10.1002/fut.70023},
+  url = {https://onlinelibrary.wiley.com/doi/10.1002/fut.70023},
+  note = {Originally SSRN Working Paper 4505785 (2023); VIX1D captures 0DTE information}
+}
+
+%% Kolanovic (2023) - JPMorgan "Volmageddon 2.0" warning
+@misc{kolanovic2023volmageddon,
+  author = {Kolanovic, Marko},
+  title = {Rise of Near-Term Options Trading Carries Risk of {V}olmageddon 2.0},
+  year = {2023},
+  month = {February},
+  howpublished = {J.P. Morgan Equity Derivatives Strategy},
+  url = {https://www.bloomberg.com/news/articles/2023-02-15/jpmorgan-strategist-kolanovic-warns-of-volmageddon-2-0-risk-in-options-market},
+  note = {Daily 0DTE notional value approximately \$1 trillion; forced covering risk of \$30B}
+}
+
+%% ============================================================================
+%% LLM REASONING VALIDATION
+%% ============================================================================
+
+%% McCoy et al. (2023) - Embers of Autoregression (justifies obfuscation testing)
+@article{mccoy2023embers,
+  author = {McCoy, R. Thomas and Yao, Shunyu and Friedman, Dan and Hardy, Matthew and Griffiths, Thomas L.},
+  title = {Embers of Autoregression: Understanding Large Language Models Through the Problem They are Trained to Solve},
+  journal = {Proceedings of the National Academy of Sciences},
+  year = {2024},
+  volume = {121},
+  number = {41},
+  pages = {e2322420121},
+  doi = {10.1073/pnas.2322420121},
+  url = {https://arxiv.org/abs/2309.13638},
+  note = {Originally arXiv:2309.13638 (2023); LLMs influenced by training probability, not abstract reasoning}
+}
+
+%% ============================================================================
+%% QUANTITATIVE FINANCE - THEORETICAL FOUNDATIONS
+%% ============================================================================
+
+%% Garleanu & Pedersen (2013) - Theoretical backing for incomplete unwinding
+@article{garleanu2013dynamic,
+  author = {G\^{a}rleanu, Nicolae and Pedersen, Lasse Heje},
+  title = {Dynamic Trading with Predictable Returns and Transaction Costs},
+  journal = {The Journal of Finance},
+  year = {2013},
+  volume = {68},
+  number = {6},
+  pages = {2309--2340},
+  doi = {10.1111/jofi.12080},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12080},
+  note = {Optimal portfolio rebalancing under transaction cost constraints}
+}
+
+%% ============================================================================
 %% PRACTITIONER SOURCES (Mention but do not cite formally)
 %% ============================================================================
 

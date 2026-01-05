@@ -120,6 +120,9 @@ ipython_config.py
 # Cache directory (contains backtest results and market data)
 .cache/
 
+# PostgreSQL database (local instance)
+.postgres/
+
 # Sample data (Alpha Vantage examples - keep local only)
 sample_data/
 
@@ -281,6 +284,11 @@ config/config.json
 
 # IEEE Big Data 2025 figures (managed in Overleaf, local copies not needed)
 docs/papers/paper1/ieee_bigdata_2025/latex/figures/
+
+# ArXiv upload folder (local only, flat structure for ArXiv rendering)
+docs/papers/paper1/arxiv_ieee_bigdata/
+# But track v2 errata folder for reproducibility
+!docs/papers/paper1/arxiv_ieee_bigdata/v2/
 
 # LaTeX build scripts (environment-specific, contain local paths)
 docs/papers/**/latex/*.bat

@@ -2,8 +2,12 @@
 
 **Research Question**: Can LLMs identify persistent market regimes from 30-day GEX sequences without temporal context?
 
-**Status**: Phase 4 COMPLETE ✅ (0DTE Hypothesis Confirmed), Ready for Paper Writing
-**Last Updated**: November 20, 2025
+**Status**: Phases 1-4 COMPLETE ✅ (0DTE Hypothesis Confirmed), Paper Writing In Progress
+**Last Updated**: December 27, 2025
+
+> **⚠️ IMPORTANT**: Phase 4A (multi-year 2021-2023, 2025 validation) was **planned but NOT executed**.
+> All validated data covers only 2020 and 2024 (446 windows total). See Issue #190 for future work.
+
 **Branch**: `paper2-sequential-gex`
 
 ---
@@ -30,11 +34,12 @@
 
 **[roadmap.md](roadmap.md)** (15 min) - Issue tracking and dependencies
 
-### Current Work (Issue #140 - Multi-Year Expansion)
+### Future Work (Issue #190 - Multi-Year Validation)
 
-**[infrastructure/phase2_inf-status.md](infrastructure/phase2_inf-status.md)** (3 min) - **CURRENT STATUS** + next steps
-**[planning/phase2-5_roadmap.md](planning/phase2-5_roadmap.md)** (10 min) - Full 6-year expansion plan
-**[infrastructure/phase2_inf-plan.md](infrastructure/phase2_inf-plan.md)** (15 min) - Detailed collection plan
+> **Note**: Issue #140 was closed with invalid/hallucinated Phase 4A data. Issue #190 tracks the real future work.
+
+**[infrastructure/phase2_inf-status.md](infrastructure/phase2_inf-status.md)** (3 min) - Infrastructure status
+**[planning/phase2-5_roadmap.md](planning/phase2-5_roadmap.md)** (10 min) - Original 6-year expansion plan (NOT executed)
 
 ### Other Resources
 
@@ -45,7 +50,7 @@
 - **extensions/** - Completed side studies (issue###_ext-*.md)
   - [issue138_ext-impl.md](extensions/issue138_ext-impl.md) - Dual GEX implementation
   - [issue138_ext-integration.md](extensions/issue138_ext-integration.md) - Dual GEX database integration
-  - [issue133_ext-ablation.md](extensions/issue133_ext-ablation.md) - Framework necessity testing
+  - [issue191_ext-ablation.md](extensions/issue191_ext-ablation.md) - Framework necessity testing
 - **infrastructure/** - Multi-year build (phase#_inf-*.md)
   - [phase2_inf-status.md](infrastructure/phase2_inf-status.md) - Current status
   - [phase2_inf-plan.md](infrastructure/phase2_inf-plan.md) - Collection plan
@@ -241,27 +246,36 @@ A 30-day window qualifies as a **persistent regime** if it meets ALL three crite
 
 ---
 
-### Other Extensions (Backlog)
+### Future Work Tracking (New Issues Created Dec 2025)
 
-**Multi-Pattern Interference** (Issue #131)
+> Previous issues (#140, #133) were closed with invalid data. New clean tracking issues:
 
-- Can LLMs detect multiple regimes simultaneously?
-- Requires Phase 3 baseline
+**Multi-Year Validation** (Issue #190) - HIGH PRIORITY
 
-**Alternative Obfuscation** (Issue #133)
+- Execute Phase 4A: 2021, 2022, 2023, 2025 validation
+- Determine timing of regime shift (gradual vs sharp 2020→2021)
+- ~800 windows, ~$7 estimated cost
 
-- Robustness testing (reverse chronological, percentage changes, z-scores)
-- Requires Phase 3 baseline
+**Ablation Study** (Issue #191) - MEDIUM PRIORITY
 
-**Multi-Ticker** (Issue #87)
+- Narrative vs. Data-Only Detection
+- Tests necessity of WHO→WHOM→WHAT framework
+- Requires balanced sample (50 detected + 50 rejected)
+
+**JSON Parsing Robustness** (Issue #192) - LOW PRIORITY
+
+- Fix 1.3% parse error rate from Phase 4
+- Implement robust JSON extraction utility
+
+**Database Synchronization** (Issue #193) - LOW PRIORITY
+
+- Sync 2020 data from file cache to database
+- Enable unified data access for future validation
+
+**Multi-Ticker** (Issue #87) - DEFERRED
 
 - Generalization to QQQ, IWM, XLE
 - Dissertation Paper #4
-
-**Multi-Year** (Issue #105)
-
-- 2020-2024 comparison (overlaps with Phase 4)
-- 0DTE hypothesis test
 
 ---
 
@@ -432,17 +446,16 @@ docs/papers/paper2/
 
 ## What's Next?
 
-**Immediate**: ✅ **PAPER WRITING** - All validation complete
-**Timeline**: Draft Paper #2 (10-12 pages IEEE format)
+**Current**: 📝 **PAPER WRITING IN PROGRESS** - LaTeX sections complete, figures regenerated
 **Content**:
 
 - Methodology: 30-day regime detection + obfuscation
-- Validation: 4-phase framework (1,307 windows)
-- Results: 12.1% (2020) vs 81.2% (2024)
-- Discussion: 0DTE proliferation thesis
+- Validation: 4-phase framework (446 windows across 2020 + 2024)
+- Results: 12.1% (2020) vs 81.2% (2024), 69.1pp difference
+- Discussion: 0DTE proliferation thesis, price normalization controls
 
-**Optional Extensions** (for revisions if requested):
+**Future Work** (tracked in Issues #190-193):
 
-- 2023 transition year (0DTE growth period)
-- 2025 current year (sustained extreme confirmation)
-- Phase 1.5 Dual GEX (profitability variance explanation)
+- Multi-year validation (2021-2023, 2025) - Issue #190
+- Ablation study (narrative necessity) - Issue #191
+- Infrastructure improvements - Issues #192, #193

@@ -1,0 +1,97 @@
+% JFDS: Changed from IEEEtran (conference) to article format
+% PM-Research requirements: 12pt, single column, 8.5x11", 1" margins
+\documentclass[12pt,letterpaper]{article}
+
+% JFDS: Page geometry (PM-Research requirement)
+\usepackage[margin=1in]{geometry}
+
+\input{00_Header}
+
+% JFDS: Page style and spacing (PM-Research requirements)
+\pagestyle{plain} % Page numbers bottom center
+\setlength{\parskip}{12pt} % 12pt before paragraphs
+\setlength{\parindent}{0pt} % No paragraph indentation (using spacing instead)
+
+\begin{document}
+
+\title{Signal Recovery from Raw Options Chains: Evidence that Standard GEX Metrics Discard Structural Information}
+
+% JFDS: Converted from IEEE author format to standard LaTeX
+\author{
+Christopher Regan\thanks{Department of Computer Science, Kennesaw State University, Marietta, GA. Email: cregan1@kennesaw.edu}
+\and
+Ying Xie\thanks{Department of Information Technology, Kennesaw State University, Marietta, GA. Email: yxie2@kennesaw.edu}
+}
+
+\date{} % No date for journal submission
+
+\maketitle
+
+% =============================================================================
+% JFDS ABSTRACT (~160 words, non-technical, no citations)
+% =============================================================================
+\begin{abstract}
+Standard gamma exposure metrics compress rich options chain data into scalar values, potentially discarding valuable structural signal. We demonstrate that large language models processing raw strike-level data achieve 92.3\% detection of dealer hedging constraints---outperforming the same models given pre-calculated Net GEX by 30.8 percentage points. This finding establishes that unstructured feature extraction recovers signal lost in parametric compression. Using obfuscation testing---stripping all temporal context while preserving structural relationships---we validate genuine pattern detection rather than training data memorization. Across 242 trading days, 91.2\% of detected patterns materialize in subsequent price movements. Critically, detection capability remains stable (68--74\%) while trading profitability collapses to zero, establishing these signals as risk management indicators rather than alpha generators. Detection days exhibit 33\% lower range expansion than baseline, proving the model identifies volatility suppression mechanisms. Our methodology provides rigorous validation standards for deploying AI-based structural analysis in financial risk systems.
+\end{abstract}
+
+% =============================================================================
+% JFDS HIGHLIGHTS (3 bullets, <=40 words each)
+% =============================================================================
+\medskip
+\noindent\textbf{Highlights:}
+\begin{itemize}
+    \item Raw options chain data yields 30.8 percentage points higher detection than pre-calculated Net GEX, demonstrating that standard parametric features discard structural signal recoverable through unstructured processing.
+    \item Obfuscation testing---removing all temporal context---validates genuine structural pattern detection versus training data memorization, achieving 91.2\% materialization accuracy across 242 trading days.
+    \item Stable detection (68--74\%) despite zero trading alpha establishes dealer hedging signals as risk management indicators rather than alpha generators, with detected days showing 33\% lower volatility.
+\end{itemize}
+
+% =============================================================================
+% JFDS KEYWORDS AND JEL CODES
+% =============================================================================
+\medskip
+\noindent\textbf{Keywords:} gamma exposure, dealer hedging, market microstructure, feature extraction, signal compression, obfuscation testing, risk management, large language models
+
+\medskip
+\noindent\textbf{JEL Classification:} G12 (Asset Pricing), G14 (Information and Market Efficiency), C45 (Neural Networks), C55 (Large Data Sets)
+
+% \section{Introduction}
+% Your introduction here
+\input{01_Introduction}
+
+% \section{Background and Related Work}
+\input{02_Related_work}
+
+% \section{Methodology}
+% Methodology section
+\input{03_Methodology}
+
+% \section{Experimental Setup}
+% Your experimental setup
+\input{04_Experimental_setup}
+
+% Methodology Validation Subsection
+\input{04B_Methodology_Validation}
+
+% \section{Results}
+% Results section
+\input{05_Results}
+
+% \section{Discussion}
+% Discussion
+\input{06_Discussion}
+
+% \section{Conclusion}
+% Conclusion
+\input{07_Conclusion}
+
+\section*{Acknowledgment}
+The authors thank the anonymous reviewers for their constructive feedback. We acknowledge the computational resources provided by the College of Computing and Software Engineering (CCSE) at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation.
+The authors are especially grateful to Pablo Ordonez for suggesting the Granger causality tests that led to discovering both significant predictive relationships and the structural regime shift in 2024 options markets.
+We thank Alpha Vantage for academic API access to market data. We are grateful to Anthropic for Claude and Claude Code, which facilitated development and testing, and to OpenAI for API access. We also thank the open-source Python scientific computing ecosystem for essential libraries.
+
+% JFDS: Chicago Author-Date style (PM-Research requirement)
+% Changed from IEEEtran (numerical) to apalike (Author-Date)
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}

@@ -2,63 +2,87 @@
 
 ## Overview
 
-The GEX-LLM Pattern Analysis system uses a 2-tier data system optimized for PhD research, supporting both historical backtesting and live experimental validation with cost control and obfuscation capabilities.
+The GEX-LLM Pattern Analysis system uses a **3-tier data architecture** optimized for PhD research, supporting both historical backtesting and live experimental validation with cost control and obfuscation capabilities.
+
+**Architecture Update (January 2026)**: System migrated from SQLite to PostgreSQL for production data storage, with new ResearchCache layer for experiment tracking and reproducibility.
 
 ---
 
 ## Part 1: Data Architecture
 
-### 2-Tier Data System
+### 3-Tier Data System
 
 #### Architecture
 
 ```bash
-Request → Tier 1 (Database) → Tier 2 (Cache) → AutoGen Tools → API → Warning
+Request → Tier 1 (PostgreSQL) → Tier 2 (ResearchCache) → Tier 3 (File Cache) → AutoGen Tools → API
 ```
 
 #### Components
 
-**Tier 1: Database Direct Access**
+**Tier 1: PostgreSQL Production Database**
 
-- **Purpose**: Fastest data access for repeated PhD experiments
-- **Implementation**: Direct SQLite queries via `MarketMechanicsAgent`
-- **Storage**: SQLite at `.cache/consolidated_historical.db`
-- **Performance**: ~3-7 seconds vs 10+ minutes for API calls
+- **Purpose**: Scalable raw options data storage for Papers 2-5
+- **Implementation**: PostgreSQL 18.1 on HPCC cluster
+- **Database**: `gex_options` (20.58 GB, 81.8M contracts)
+- **Performance**: Thread-safe, supports 100+ concurrent writers
+- **Tables**: `options_chains_partitioned` (yearly partitions 2020-2025)
+- **Coverage**: 50 symbols, 6 years (2020-2025), 1,507 trading days
+- **Schema**: 31 fields per contract (27 original + 4 calculated)
+- **Status**: Deployed January 2-4, 2026 (Issues #194, #179, #183, #193)
+
+**Tier 2: ResearchCache (SQLite)**
+
+- **Purpose**: Research metadata layer for experiment tracking and reproducibility
+- **Implementation**: SQLite at `.cache/research_cache.db`
+- **Performance**: Fast queries for analysis and paper writing
+- **Tables**: `llm_detections`, `validation_results`, `experiment_runs`, `pattern_library`, `obfuscation_mappings`, `market_data`, `options_chain`, `gex_summary`
+- **Use Cases**: Store LLM detection results with chain-of-thought, track validation outcomes, link experiments to git commits
+- **Status**: Deployed January 4, 2026 (Issue #169)
+- **Documentation**: See `docs/infrastructure/RESEARCH_CACHE_GUIDE.md`
+
+**Tier 3: Legacy SQLite (Deprecated)**
+
+- **Previous Implementation**: SQLite at `.cache/consolidated_historical.db`
+- **Status**: Being phased out in favor of PostgreSQL + ResearchCache
 - **Tables**: `daily_gex_metrics`, `intraday_gex_metrics`, `strike_gex_details`
+- **Migration**: Complete for Papers 2-5 (January 2026)
 
-**Tier 2: Cache Fallback**
+**Tier 4: File Cache (Legacy)**
 
-- **Purpose**: Secondary storage for recently accessed data
+- **Purpose**: Secondary storage for recently accessed data (legacy system)
 - **Implementation**: `src/cache/unified_cache.py`
 - **Storage**: In-memory + file-based caching with pickle serialization
 - **TTL**: 24 hours for market data, 10 years for historical options
-- **Auto-promotion**: Cache hits automatically stored in database
+- **Status**: Still used for non-PostgreSQL data sources
 
-**Tier 3: AutoGen Tools Integration**
+**Tier 5: AutoGen Tools Integration**
 
 - **Purpose**: Intelligent data fetching with multiple source fallbacks
 - **Implementation**: `src/tools/autogen_tools.py`
 - **Functions**: `fetch_options_data()`, `calculate_gamma_exposure()`, `fetch_market_data()`
 - **Features**: Cache-aware, API routing, cost optimization
 
-**Tier 4: Direct API Access**
+**Tier 6: Direct API Access**
 
 - **Purpose**: Last resort for missing data
-- **Primary API**: Alpha Vantage (options chain data, 75 calls/minute)
+- **Primary API**: Alpha Vantage (options chain data, 75 calls/minute premium, 1000 calls/minute with PREMO key)
 - **Secondary API**: Polygon.io (stock prices only, used for specific test cases, 5 calls/minute)
 - **Rate Limiting**: Enforced per provider specifications
 - **Error Handling**: Graceful degradation with warnings
 - **Configuration**: API keys stored in `config/config.json` (not tracked in git)
 
-### Data Flow
+### Data Flow (Updated January 2026)
 
-1. **Experiment Request**: `MarketMechanicsAgent.run_experiment()` needs data for analysis
-2. **Database First**: Check SQLite for existing GEX calculations (fastest path)
-3. **Cache Check**: If not in database, check unified cache for options/market data
-4. **AutoGen Tools**: If cache miss, use intelligent fetching with source routing
-5. **Direct API**: Last resort with rate limiting and error handling
-6. **Data Obfuscation**: Apply date/ticker anonymization for LLM analysis
-7. **Storage Promotion**: Store results in database for future experiments
+1. **Experiment Request**: `MarketMechanicsAgent.run_experiment()` or batch validation needs data
+2. **PostgreSQL First**: Check PostgreSQL for raw options data (fastest path for Papers 2-5)
+3. **ResearchCache Check**: Query ResearchCache for previous LLM detections and experiment results
+4. **Legacy SQLite**: Fall back to old SQLite database for historical experiments
+5. **File Cache**: Check unified cache for recently accessed data not yet in database
+6. **AutoGen Tools**: If cache miss, use intelligent fetching with source routing
+7. **Direct API**: Last resort with rate limiting and error handling
+8. **Data Obfuscation**: Apply date/ticker anonymization for LLM analysis
+9. **Storage Promotion**: Store results in PostgreSQL (raw data) and ResearchCache (experiment metadata)
 
 ### Performance Characteristics
 
