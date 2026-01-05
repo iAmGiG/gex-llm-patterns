@@ -40,17 +40,7 @@ S = \text{count}(\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)) \
 \item \textbf{Low Conviction}: Meets persistence/stability but $M < \$5$B
 \end{itemize}
 
-\subsubsection{Threshold Selection Rationale}
-
-The three regime criteria were derived through a principled process that avoids circular fitting to the target year:
-
-\textbf{Persistence Threshold (≥70\%)}: This criterion reflects the statistical distinction between structural dominance and random fluctuation. In random 30-day sequences with equal probability of positive/negative days, binomial theory predicts maximum same-sign dominance of approximately 50\% with standard deviation $\sigma \approx 9\%$. The 70\% threshold represents $\approx 2.2\sigma$ above random expectation, consistent with standard statistical regime detection methodologies~\cite{hamilton1989new}. This threshold is \textit{independent of 0DTE proliferation} and reflects fundamental dealer microstructure constraints.
-
-\textbf{Magnitude Threshold ($\geq\$5$B)}: Rather than fitting to 2024 medians (\$13.95B), this threshold was selected based on established dealer risk management practices documented in financial microstructure literature~\cite{baltussen2021hedging}. The \$5B level represents a critical notional threshold above which gamma hedging creates material price impact in S\&P 500 index options. This threshold captures economically significant dealer positioning that constrains market dynamics, distinguishing structural regimes from routine intraday flows. The magnitude criterion is robust across market regimes and years, not calibrated to 2024 specifically.
-
-\textbf{Stability Threshold (≤5 flips)}: A maximum of 5 sign reversals in 30 days constrains regime direction volatility to approximately 17\% intra-period changes. This conservative threshold allows normal market noise while rejecting regimes exhibiting frequent reversals. Mathematically, if persistence ≥ 70\%, the theoretical maximum flips is $\leq 10$ (10 days in minority sign, creating at most 10 flips). Setting the criterion at 5 flips ensures additional sign consistency beyond the persistence threshold.
-
-\textbf{Validation Against Circular Reasoning}: The Section 6.2 Price Normalization analysis provides post-hoc evidence that these thresholds are not over-fit to 2024. Even after adjusting 2020 GEX magnitudes for inflation (×2.3 price appreciation), the 2024 data exceeds all three criteria simultaneously, confirming the shift is structural rather than threshold-driven. If the thresholds were arbitrarily selected to make 2024 pass, adjusting 2020 data for inflation would not be sufficient to demonstrate the robustness of the distinction. The negative controls (Phase 2) further validate threshold appropriateness: synthetic shuffled/transitional windows achieve <10\% false positives, demonstrating the thresholds function as intended across multiple regime types and years.
+These thresholds were derived from principled criteria to isolate structurally significant positioning from background noise. The \$5B magnitude threshold reflects dealer risk management practices from financial microstructure literature, while 70\% persistence ensures detected regimes exhibit directional bias significantly exceeding random binomial variation ($\approx 2.2\sigma$ above chance).
 
 \begin{figure}[ht]
 \centering
@@ -119,7 +109,7 @@ Validate framework discrimination using three synthetic tests:
 
 \vspace{0.1cm}
 
-\noindent\textbf{Phase 2a - Shuffle Test} (404 windows): Randomize day order within real 30-day sequences to destroy temporal structure while preserving statistical properties. Expected: $<$20\% false positive rate in mixed-sign regimes; higher FP rates in saturated regimes (>95\% persistence) are consistent with structural coherence rather than temporal sequencing, as extreme dominance is robust to day reordering.
+\noindent\textbf{Phase 2a - Shuffle Test} (404 windows): Randomize day order within real 30-day sequences to destroy temporal structure while preserving statistical properties. Expected: $<$20\% false positive rate.
 
 \vspace{0.1cm}
 
