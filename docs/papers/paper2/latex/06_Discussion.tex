@@ -97,6 +97,18 @@ This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% vol
 
 \vspace{0.2cm}
 
+\noindent\textbf{Interest rate environment as potential confounder}: A significant concurrent macroeconomic change from 2020 to 2024 is the Federal Funds rate, which increased from 0.25\% (2020) to 5.5\% (2024 peak). This may have influenced dealer positioning through multiple channels:
+
+\begin{enumerate}
+\item \textbf{Carrying costs}: Higher rates increase the cost of funding multi-day hedging positions. Dealers may hold positions longer (more persistent) rather than rolling frequently, changing temporal positioning structure.
+\item \textbf{Rho sensitivity}: Rising rates increase option Rho (interest rate sensitivity), making long-dated options more expensive to hedge. This may drive dealers toward shorter-duration instruments, including 0DTE contracts.
+\item \textbf{Spread dynamics}: Higher rates compressed credit spreads, potentially forcing dealers to accept more directional positioning in equity index options to maintain profitability.
+\end{enumerate}
+
+However, interest rate changes are a \textit{secular} factor (monotonic increase from 2020-2023), whereas our Phase 4A detection pattern is non-monotonic (3.7\% → 32.4\% → 20.2\% → 100\%). The 2023→2024 transition in regime detection (20.2\% → 100\%) coincides with Fed terminal rate plateau (December 2023) rather than continuing rate increases. This temporal mismatch argues against interest rates as the primary driver, though they likely contributed as a secondary factor. Our framework documents \textit{that} market structure shifted; the relative contribution of 0DTE vs. interest rates vs. other concurrent factors requires natural experiment or causal inference methods beyond the scope of observational data.
+
+\vspace{0.2cm}
+
 \noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 4A multi-year validation (Section 5.7) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior. Figure \ref{fig:phase4a_progression} illustrates this temporal evolution.
 
 \begin{figure}[h!]
@@ -229,6 +241,30 @@ When 0DTE trading is sustained across daily cycles, dealers face persistent hedg
 \vspace{0.2cm}
 
 \noindent\textbf{Limitations and transparency}: We acknowledge this measurement approach is indirect—we infer 0DTE impact through EOD positioning rather than observing intraday flow directly. Future work incorporating high-frequency options flow data (GEX\textunderscore VOL) may refine causal attribution. While observational data cannot strictly prove causality, the convergence of temporal timing (2023→2024 structural transition), mechanism (gamma concentration from 0DTE proliferation), and regime permanence (sustained 100\% detection through 2024-2025) provides the strongest possible evidence short of a natural experiment. Our core finding—that post-2023 markets exhibit persistent dealer gamma regimes with gradual buildup from 2021-2023—holds regardless of whether this structural shift stems from 0DTE activity, concurrent market structure changes, or their interaction. The measurement validates \textit{that} market structure shifted; the temporal coincidence with 0DTE market penetration (3.7\% detection in 2021 → 100\% in 2024) strongly implicates 0DTE as the primary driver.
+
+\subsection{Beyond Threshold Crossing: Where LLM Reasoning Exceeds Mechanical Classification}
+
+A critical objection to our methodology merits explicit address: ``Why use an LLM if regime classification reduces to three arithmetic thresholds? A Python script can evaluate persistence $\geq$ 70\%, magnitude $\geq$ \$5B, and flips $\leq$ 5 with perfect accuracy and zero cost.''
+
+This objection is partially valid. Our regime classification framework is indeed primarily threshold-driven. However, the LLM contributes value in three dimensions:
+
+\textbf{Dimension 1: Borderline Case Confidence}: The LLM's confidence score (0-100) provides granular discrimination in cases near criterion boundaries. Consider a regime with persistence = 69.8\% (just below the 70\% threshold) but magnitude = \$12B and flips = 4:
+
+\begin{itemize}
+\item \textit{Python script outcome}: Transitional (persistence criterion failed)
+\item \textit{LLM confidence distribution}: Mean confidence 42\% (±18), suggesting marginal status
+\item \textit{LLM reasoning}: ``Economic significance apparent despite persistence criterion narrowly missed; recommend human review''
+\end{itemize}
+
+Conversely, when persistence = 70.1\% with the same magnitude and flips, LLM confidence rises to mean 84\% (±12), recognizing threshold-crossing. The confidence quantification enables practitioners to distinguish ``ambiguous rejections'' (high magnitude despite low persistence) from ``unambiguous rejections'' (low persistence with low magnitude).
+
+We validated this through our ablation study (Section 5.9): LLM confidence correlates with regime quality metrics (r = +0.501 with persistence, r = -0.549 with stability), suggesting the model is not simply parroting the three criteria but assessing regime strength holistically.
+
+\textbf{Dimension 2: Criterion Violation Detection}: A secondary test examined whether the LLM ever violated its stated criteria (e.g., classifying a window as regime despite persistence < 70\%). Across all 1,858 windows, zero criterion violations occurred; the LLM perfectly respects the hard thresholds. This validates the mechanical accuracy (98\% criterion citation in Section 5.9) and confirms the model is not arbitrarily overriding rules.
+
+\textbf{Dimension 3: Interpretability at Scale}: Where the LLM's primary contribution lies is \textit{interpretability}. The three thresholds could be computed algorithmically, but explaining \textit{why} a regime should be detected benefits from language-based reasoning. Practitioners can audit the specific regime properties the LLM identified, enabling confidence in downstream risk management decisions. This distinction matters in regulatory contexts (explainability requirements) and in building institutional trust in algorithmic systems.
+
+\textbf{Honest Assessment}: If the research objective were \textit{purely} regime detection accuracy, a Python script would be superior (lower cost, deterministic, auditable in source code). Our contribution is demonstrating that LLMs can perform such structured reasoning reliably, and that their confidence quantification and linguistic output enable scalable application to financial decision-making. The LLM is not better than the threshold rule; it is an operationally feasible, explainable implementation of the rule that can scale to large portfolios with institutional confidence.
 
 \subsection{Implications for LLM Financial Analysis}
 
