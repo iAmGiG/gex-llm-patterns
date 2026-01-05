@@ -1,0 +1,3215 @@
+experiment: ablation_narrative_vs_data_only
+issue: '#191'
+model: o4-mini
+sample_size: 84
+balanced: true
+results:
+  control:
+    prompt_type: narrative
+    metrics:
+      total: 80
+      correct: 80
+      accuracy: 1.0
+      precision: 1.0
+      recall: 1.0
+      f1_score: 1.0
+      true_positives: 39
+      false_positives: 0
+      true_negatives: 41
+      false_negatives: 0
+    results:
+    - window_id: window-2024-05-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.0097
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: 'Step 1: All 30 days have negative net GEX (0 positive, 30 negative),
+          giving 100% persistence (>70% threshold). Step 2: The average absolute GEX
+          over 30 days is approximately $31.0B, well above the $5B minimum, with no
+          extreme outliers distorting the mean. Step 3: There are 0 sign flips across
+          the window (stable negative sign). All three criteria (persistence, magnitude,
+          stability) are met. With 100% negative days, avg magnitude >$10B, and 0
+          flips, this is a classic PERSISTENT NEGATIVE REGIME.'
+    - window_id: window-2024-12-19
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 35.91
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1 (Sign Persistence): 0 positive days, 30 negative days \u2192\
+          \ 100% negative persistence (>70%). Step 2 (Magnitude): Average absolute\
+          \ GEX = $35.91B (\u226B $5B threshold). Step 3 (Stability): 0 sign flips\
+          \ (\u22645). All criteria for a persistent regime are met and negative GEX\
+          \ dominates, indicating dealers are structurally short gamma and forced\
+          \ to buy into strength and sell into weakness. Confidence is very high given\
+          \ 100% persistence, extremely large avg magnitude, and zero flips."
+    - window_id: window-2024-07-03
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.5297
+        sign_flips: 4
+        persistence_pct: 93.3333
+        confidence: 85
+        reasoning: "Step 1 (Sign Persistence): 28 out of 30 days (93.3%) are negative,\
+          \ exceeding the 70% threshold. Step 2 (Magnitude): The average absolute\
+          \ GEX is $28.53 B, well above the $5 B minimum. Step 3 (Stability): There\
+          \ are only 4 sign flips (\u22645). All three criteria pass for a persistent\
+          \ regime with dominant negative gamma. Therefore, this qualifies as a PERSISTENT\
+          \ NEGATIVE regime (dealers are structurally short gamma, forced to buy into\
+          \ strength)."
+    - window_id: window-2024-03-04
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.2
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 30
+        reasoning: "Step 1: Negative days dominate with 25/30 \u2192 83.33% persistence\
+          \ (>70%). Step 2: Average |GEX| = $31.2 B (\u226B$5 B), so magnitude is\
+          \ strong. Step 3: There are 10 sign flips (>5 threshold), indicating unstable\
+          \ directional constraint. Because the stability criterion fails, this does\
+          \ not qualify as a persistent regime."
+    - window_id: window-2024-04-24
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.98
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: 'Step 1: 28 of 30 days (93.33%) are negative, exceeding the 70%
+          threshold. Step 2: The average absolute GEX is ~$32.98 B, well above the
+          $5 B minimum. Step 3: There are only 4 sign flips (<5), indicating a stable
+          directional constraint. All criteria for a persistent regime pass, and negative
+          days dominate, so this is classified as a Persistent Negative Regime.'
+    - window_id: window-2024-05-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.74
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1 (Sign Persistence): All 30 days exhibit negative net GEX,\
+          \ yielding 100% persistence (<-70% threshold is easily met). Step 2 (Magnitude):\
+          \ The average absolute GEX over 30 days is approximately $31.74B, well above\
+          \ the $5B minimum. No extreme outlier distortion is present\u2014values\
+          \ range from $25B to $39B. Step 3 (Stability): There are 0 sign flips (no\
+          \ switches from negative to positive), satisfying the \u22645 flips requirement.\
+          \ Because all three criteria (persistence, magnitude, stability) pass and\
+          \ negative days dominate, this qualifies as a PERSISTENT NEGATIVE regime\
+          \ with very high confidence."
+    - window_id: window-2024-04-05
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.41
+        sign_flips: 9
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: 25/30 days are negative \u2192 83.33% persistence (meets\
+          \ >70%). Step 2: average |GEX| \u2248 31.41B (\u226B5B, passes magnitude).\
+          \ Step 3: 9 sign flips (\u226B5 allowed), fails stability. All three criteria\
+          \ must pass for a persistent regime; high flip count breaks structural constraint.\
+          \ Therefore, despite strong negative bias and large magnitudes, the frequent\
+          \ sign reversals mean dealers aren\u2019t subject to a stable forced flow.\
+          \ Regime is transitional."
+    - window_id: window-2024-08-20
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.709
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1 (Sign Persistence): All 30 out of 30 days (100%) have negative\
+          \ net GEX, exceeding the 70% threshold for a dominant negative regime. Step\
+          \ 2 (Magnitude Assessment): The average absolute GEX over 30 days is approximately\
+          \ $27.71 B, well above the $5 B minimum, with no extreme outliers. Step\
+          \ 3 (Stability Check): There are 0 sign flips (negative \u2192 positive\
+          \ or vice versa), fully within the \u22645 flips requirement. Since all\
+          \ criteria for a Persistent Negative Regime are met (high persistence, strong\
+          \ magnitude, high stability), we classify this window as a persistent negative\
+          \ dealer gamma regime with very high confidence."
+    - window_id: window-2024-11-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.57
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (0 positive, 30 negative),\
+          \ giving 100% persistence (>70%). Step 2: The average absolute GEX over\
+          \ 30 days is ~31.6 B (>5 B), indicating a strong constraint. Step 3: There\
+          \ are 0 sign flips (\u22645), demonstrating high stability. All criteria\
+          \ for a persistent regime are met and negative days dominate, so this is\
+          \ classified as a persistent_negative regime with very high confidence."
+    - window_id: window-2024-12-27
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 36.705
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (0 positive, 30 negative),\
+          \ giving 100% persistence (>70% threshold). Step 2: The average absolute\
+          \ GEX is \u2248$36.7 B, well above the $5 B minimum. Step 3: There are 0\
+          \ sign flips, satisfying the \u22645 flips stability requirement. Given\
+          \ these metrics, dealers have been structurally short gamma, forcing them\
+          \ to buy into rallies and sell into declines. This meets all criteria for\
+          \ a Persistent Negative Regime with very high confidence."
+    - window_id: window-2024-02-14
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.99
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1 (Sign Persistence): 28 out of 30 days (93.3%) have negative\
+          \ GEX, which exceeds the 70% threshold. Step 2 (Magnitude): The average\
+          \ absolute GEX is approximately $33.0 B, well above the $5 B minimum. There\
+          \ are two moderate positive outliers (+12.31 B, +13.07 B) but they do not\
+          \ materially lower the overall average. Step 3 (Stability): GEX flips sign\
+          \ only 4 times (\u22645), indicating a stable directional constraint. All\
+          \ criteria for a persistent regime pass, and negative GEX dominates, so\
+          \ we classify this as a persistent negative regime."
+    - window_id: window-2024-04-15
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 20
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.69
+        sign_flips: 6
+        persistence_pct: 90
+        confidence: 20
+        reasoning: "Step 1: Negative days dominate (27/30 = 90% persistence) >70%.\
+          \ Step 2: Average |GEX| \u2248 $32.7 B \u2265 $5 B. Step 3: Sign flips =\
+          \ 6 > 5 threshold. Although persistence and magnitude criteria pass, the\
+          \ dealer gamma sign flips too frequently for a stable regime. Therefore\
+          \ we reject a persistent regime (classified as transitional)."
+    - window_id: window-2024-09-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 100
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 29.33
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 100
+        reasoning: "Step 1 (Sign Persistence): All 30 days have negative GEX (0 positive,\
+          \ 30 negative), giving a 100% persistence of negative sign (>70% threshold).\
+          \ Step 2 (Magnitude Assessment): The average absolute GEX is ~29.33B, well\
+          \ above the $5B requirement. No extreme outliers distort this average\u2014\
+          values consistently range in the high 20s to mid-30s billions. Step 3 (Stability\
+          \ Check): There are 0 sign flips across the window (all days remain negative),\
+          \ satisfying the \u22645 flips criterion. Since all three criteria (persistence,\
+          \ magnitude, stability) are met and the data are uniformly negative, this\
+          \ is classified as a PERSISTENT NEGATIVE regime with very high confidence."
+    - window_id: window-2024-04-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 33.08
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: 'Step 1: There are 28 negative days and 2 positive days (93.3%
+          negative), exceeding the 70% threshold. Step 2: The average absolute GEX
+          over 30 days is $33.08B, well above the $5B minimum. Step 3: There are only
+          4 sign flips, under the 5-flip limit. All three criteria (persistence, magnitude,
+          stability) pass for a negative regime, so we classify this as a Persistent
+          Negative Regime with high confidence.'
+    - window_id: window-2024-04-25
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.81
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Sign Persistence \u2013 28 of 30 days (~93.33%) show negative\
+          \ GEX, exceeding the 70% threshold. Step 2: Magnitude Assessment \u2013\
+          \ The average absolute GEX is \u2248$32.81B, well above the $5B minimum.\
+          \ Step 3: Stability Check \u2013 Only 4 sign flips over 30 days, below the\
+          \ 5\u2010flip limit. All three criteria (persistence >70%, avg magnitude\
+          \ \u2265$5B, \u22645 flips) are met with a dominant negative bias. Therefore,\
+          \ this is a PERSISTENT NEGATIVE regime."
+    - window_id: window-2024-09-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 28.4
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (0 positive, 30 negative),\
+          \ giving 100% persistence (>70% threshold). Step 2: The average absolute\
+          \ GEX over the period is approximately $28.4 B, well above the $5 B minimum.\
+          \ Step 3: There are 0 sign flips across the 30 days (\u22645 allowed). All\
+          \ criteria pass for a persistent regime with a dominant negative gamma position,\
+          \ so this qualifies as a persistent negative regime with very high confidence."
+    - window_id: window-2024-04-09
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.09
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 40
+        reasoning: "Step 1 (Sign Persistence): 26 of 30 days are negative \u2192 86.7%\
+          \ persistence (>70%).\nStep 2 (Magnitude): Average |GEX| = (sum of all absolute\
+          \ GEX values)/30 \u2248 $32.09B (\u226B$5B threshold).\nStep 3 (Stability):\
+          \ There are 8 sign flips (whenever GEX switches \xB1), exceeding the \u2264\
+          5 flips requirement.\nBecause the stability criterion fails (too many flips),\
+          \ we cannot classify this as a persistent regime despite strong negative\
+          \ bias and large magnitude. The period is therefore Transitional (non-persistent)\
+          \ due to excessive sign changes."
+    - window_id: window-2024-06-04
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 1
+        negative_days: 29
+        avg_magnitude_billions: 29.74
+        sign_flips: 1
+        persistence_pct: 96.67
+        confidence: 95
+        reasoning: "Step 1: 29 of 30 days are negative (96.7% persistence >70%). Step\
+          \ 2: Average |GEX| = $29.74B (> $5B threshold). Step 3: Only 1 sign flip\
+          \ (\u22645 flips). All criteria pass for a persistent negative regime: dealers\
+          \ are short gamma, forced into amplifying flows."
+    - window_id: window-2024-12-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 35.74
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1: All 30 days are negative GEX (0 positive, 30 negative),\
+          \ giving 100% sign persistence (>70% threshold). Step 2: The average absolute\
+          \ GEX is 35.74 B (sum of |GEX| \u2248 1,072.33 B / 30), well above the $5\
+          \ B minimum. Step 3: There are 0 sign flips over the 30-day window (\u2264\
+          5 allowed), indicating a very stable directional constraint. Because all\
+          \ three criteria (persistence, magnitude, stability) are met with strong\
+          \ metrics, this is classified as a persistent negative regime with very\
+          \ high confidence."
+    - window_id: window-2024-03-21
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 75
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.8
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 75
+        reasoning: "Step 1: 25 of 30 days (83.33%) are negative, satisfying the >70%\
+          \ persistence test. Step 2: The average absolute GEX is $31.8 B, well above\
+          \ the $5 B threshold. Step 3: However, there are 10 sign flips (>>5), failing\
+          \ the stability criterion. Thus, despite strong persistence and magnitude,\
+          \ the high number of sign changes means dealers are not in a stable structural\
+          \ constraint\u2014classify as transitional."
+    - window_id: window-2024-11-06
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.25
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 of 30 days show negative net GEX \u2192 100% persistence\
+          \ (threshold 70%+). Step 2: The average absolute GEX is \u2248$31.25B (>\
+          \ $5B threshold), indicating a strong dealer positioning constraint. Step\
+          \ 3: There are 0 sign flips over 30 days (\u22645 allowed), showing a stable\
+          \ directional regime. All criteria for a PERSISTENT NEGATIVE regime are\
+          \ met, so we detect a true persistent negative gamma regime with very high\
+          \ confidence."
+    - window_id: window-2024-02-22
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 60
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.52
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 60
+        reasoning: "Step 1: There are 27 negative days and 3 positive days \u2192\
+          \ 27/30 = 90% negative persistence (>70%). Step 2: The average absolute\
+          \ GEX is 32.52B (>5B), so magnitude is more than sufficient. Step 3: However,\
+          \ there are 6 sign flips, which exceeds the \u22645\u2010flip stability\
+          \ threshold. Although sign persistence and magnitude pass, the stability\
+          \ criterion fails by one flip. Therefore, this window does not meet all\
+          \ criteria for a persistent negative regime and is classified as transitional."
+    - window_id: window-2024-12-13
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 34.69
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (0 positive, 30 negative),\
+          \ giving 100% persistence (>70%). Step 2: The average absolute GEX magnitude\
+          \ is about $34.69B, well above the $5B threshold. Step 3: There are 0 sign\
+          \ flips (all days negative), which is \u22645. All criteria for a persistent\
+          \ regime are met, with negative GEX dominating, indicating a Persistent\
+          \ Negative Regime where dealers are short gamma and forced to buy into strength\
+          \ and sell into weakness."
+    - window_id: window-2024-03-07
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.7
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: Negative net GEX dominates with 25/30 days = 83.3% (>70%),\
+          \ so if stability held it would point to a persistent negative regime. Step\
+          \ 2: The average absolute GEX is ~31.7 B (>5 B), satisfying the magnitude\
+          \ criterion. Step 3: There are 10 sign flips (pos\u2194neg) over 29 transitions,\
+          \ which exceeds the \u22645 flips threshold for stability. Because the forced\u2010\
+          flow constraint is not stable (too many sign changes), we must reject a\
+          \ persistent regime and label this window as transitional."
+    - window_id: window-2024-04-18
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.81
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 90
+        reasoning: "Step 1: 27/30 days (90%) are negative, exceeding the 70% threshold\
+          \ \u2013 indicates a dominant negative sign. Step 2: Average absolute GEX\
+          \ \u2248 $32.8 B, well above the $5 B minimum \u2013 magnitude criterion\
+          \ met. Step 3: There are 6 sign flips (>5 allowed), breaching the stability\
+          \ requirement. Because the stability check fails, the window cannot be classified\
+          \ as a persistent negative regime despite strong sign persistence and magnitude.\
+          \ Thus it is labeled 'transitional.'"
+    - window_id: window-2024-03-28
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 45
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 30.81
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 45
+        reasoning: "Step 1: Negative net GEX on 24 of 30 days (80% persistence, >70%\
+          \ threshold). Step 2: Average absolute GEX \u2248$30.8B, well above the\
+          \ $5B minimum. Step 3: There are 11 sign flips (>5 allowed), indicating\
+          \ instability. Although sign persistence and magnitude criteria are met,\
+          \ the excessive flips violate the stability requirement. Therefore, this\
+          \ window is not a persistent regime but transitional."
+    - window_id: window-2024-02-23
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.82
+        sign_flips: 7
+        persistence_pct: 86.67
+        confidence: 40
+        reasoning: "Step 1 (Sign Persistence): 26 of 30 days (~86.7%) are negative,\
+          \ exceeding the 70% threshold for a negative regime. Step 2 (Magnitude):\
+          \ The average absolute GEX over 30 days is about $31.82 B, well above the\
+          \ $5 B minimum. Step 3 (Stability): There are 7 sign flips (neg\u2192pos\
+          \ or pos\u2192neg), which exceeds the maximum of 5 flips required. Because\
+          \ the stability criterion fails, this window does not qualify as a persistent\
+          \ regime despite strong negative bias and magnitude. Thus, we classify it\
+          \ as transitional."
+    - window_id: window-2024-02-27
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.91
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 40
+        reasoning: "Step 1: Negative days = 26, positive days = 4 \u2192 persistence\
+          \ = 86.7% (meets >70%). Step 2: Average |GEX| \u2248 $31.9B (well above\
+          \ $5B threshold). Step 3: Sign flips = 8 (>5 allowed), indicating instability.\
+          \ Although persistence and magnitude criteria pass, the high number of flips\
+          \ violates the stability requirement for a persistent regime. Therefore,\
+          \ we classify this window as transitional."
+    - window_id: window-2024-03-27
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.8
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: Negative GEX dominates with 25/30 days = 83.33% persistence\
+          \ (>70%). Step 2: Average |GEX| \u2248 $31.8B (> $5B), so magnitude is strong.\
+          \ Step 3: There are 10 sign flips (>>5 threshold), failing the stability\
+          \ criterion. Although persistence and magnitude pass, the high flip count\
+          \ indicates no stable forced flow constraint. Hence this is not a persistent\
+          \ regime but a transitional one."
+    - window_id: window-2024-04-11
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.05
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "Step 1 (Sign Persistence): 26 of 30 days are negative \u2192 86.7%\
+          \ negative days (>70% threshold) so a dominant negative sign. Step 2 (Magnitude):\
+          \ Average |GEX| \u2248 $32.05B (> $5B threshold), so magnitude is very strong.\
+          \ Step 3 (Stability): There are 8 sign flips (>5 allowed), violating stability.\
+          \ Because the only failed criterion is excess sign flips, the window does\
+          \ not qualify as a persistent negative regime. The frequent sign reversals\
+          \ despite strong, dominant negative GEX point to a transitional period rather\
+          \ than a true persistent constraint regime."
+    - window_id: window-2024-03-20
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.79
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 40
+        reasoning: "Step 1: Negative GEX dominates with 25/30 days (83.33% >70%).\
+          \ Step 2: Average |GEX| \u2248$31.79 B (> $5 B). Step 3: There are 10 sign\
+          \ flips (\u226B5), exceeding the stability threshold. Despite strong sign\
+          \ persistence and magnitude, the high flip count indicates an unstable flow\
+          \ constraint. Therefore this is not a persistent regime but a transitional\
+          \ period due to frequent sign reversals."
+    - window_id: window-2024-04-17
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 60
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.76
+        sign_flips: 6
+        persistence_pct: 90
+        confidence: 60
+        reasoning: "Step 1: 27 of 30 days are negative (90% persistence, >70% threshold).\
+          \ Step 2: average |GEX| \u2248982.75/30 \u224832.76B (>5B threshold). Step\
+          \ 3: there are 6 sign flips (T-27, T-26, T-17, T-16, T-13, T-12), which\
+          \ exceeds the \u22645 flips stability criterion. Although the window is\
+          \ heavily skewed negative with strong magnitude, it fails the stability\
+          \ check, so we reject a persistent regime and classify as transitional."
+    - window_id: window-2024-12-10
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 33.47
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 out of 30 days are negative GEX (100% persistence\
+          \ >70%). Step 2: The average absolute GEX over 30 days is approximately\
+          \ $33.47B (> $5B threshold, and well above $10B). Step 3: There are 0 sign\
+          \ flips (\u22665 flips). Since negative days dominate, magnitude is large,\
+          \ and the series is extremely stable, this meets all criteria for a persistent\
+          \ negative gamma regime with very high confidence."
+    - window_id: window-2024-06-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.41
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Of 30 days, 28 are negative and 2 are positive \u2192\
+          \ 93.3% negative days (>70% threshold). Step 2: Average |GEX| = 852.32/30\
+          \ \u2248 $28.41B (> $5B threshold). Step 3: There are 4 sign flips (from\
+          \ \u2013 to + on T-15, + to \u2013 on T-14, \u2013 to + on T-13, + to \u2013\
+          \ on T-12) which is \u22645. All criteria for a Persistent Negative Regime\
+          \ are met: high persistence, large magnitude, and stable directional constraint.\
+          \ Confidence is high (85) given 28 negative days, very large average magnitude,\
+          \ and only 4 flips."
+    - window_id: window-2024-04-12
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.88
+        sign_flips: 7
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "Step 1: 26 of 30 days are negative \u2192 persistence = 86.67%\
+          \ (>70%). Step 2: average |GEX| \u2248 31.88B (>5B). Step 3: sign flips\
+          \ = 7 (>5 allowed). Although negative persistence and magnitude criteria\
+          \ are strongly met, the stability criterion fails (too many sign flips),\
+          \ so this does not qualify as a PERSISTENT NEGATIVE regime. We classify\
+          \ it as transitional."
+    - window_id: window-2024-04-03
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.39
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 30
+        reasoning: "Step 1: Negative GEX dominates with 25/30 days \u2192 83.33% (\u2265\
+          70%), so a negative regime could be possible. Step 2: Average absolute GEX\
+          \ = 941.62B/30 \u2248 31.39B (\u226B5B), so magnitude is strong. Step 3:\
+          \ There are 10 sign flips (>5 allowed), so the directional constraint is\
+          \ not stable. Because stability fails, we reject a persistent negative regime\
+          \ and classify this window as transitional."
+    - window_id: window-2024-03-01
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 30.93
+        sign_flips: 9
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: Negative days = 25, positive days = 5 \u2192 persistence\
+          \ = 25/30 = 83.33%, which clears the 70% threshold for a negative\u2010\
+          dominant period. Step 2: Average absolute GEX = (\u03A3|GEX|)/30 \u2248\
+          \ 30.93B, well above the $5B minimum. Step 3: Sign flips count = 9, which\
+          \ exceeds the \u22645 flips requirement. Because the stability criterion\
+          \ fails (too many sign flips), we cannot call this a persistent regime.\
+          \ The excessive flips indicate shifting dealer constraints rather than a\
+          \ stable forced flow environment, so we classify it as a transitional regime."
+    - window_id: window-2024-12-05
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 32.82
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days have negative GEX, so negative_days=30, persistence=100%\
+          \ (>70%). Step 2: Average absolute GEX = (sum of |net GEX| over 30 days)\
+          \ / 30 \u2248 $32.82B, well above the $5B threshold. Step 3: Sign flips\
+          \ = 0 (no positive days), which is \u22645. All criteria for a persistent\
+          \ negative regime are met: high persistence, strong magnitude, and stable\
+          \ sign. Dealers are structurally short gamma, forcing them to buy into rallies\
+          \ and sell into declines, creating amplifying flows."
+    - window_id: window-2024-08-16
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.8577
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (30 negative, 0 positive),\
+          \ yielding 100% persistence (>70%). Step 2: The average absolute GEX is\
+          \ approximately $27.86B, well above the $5B threshold. Step 3: There are\
+          \ 0 sign flips across the 30-day window (\u22645). All criteria for a Persistent\
+          \ Negative Regime are met: dealers are short gamma and structurally forced\
+          \ to buy into strength and sell into weakness, creating momentum flows.\
+          \ High persistence, large magnitude, and zero flips give very high confidence."
+    - window_id: window-2024-07-10
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 88
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 27.785
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 88
+        reasoning: "Step 1: Sign Persistence \u2013 28 out of 30 days (93.33%) are\
+          \ negative, exceeding the 70% threshold. Step 2: Magnitude \u2013 The average\
+          \ absolute GEX over 30 days is $27.785B, well above the $5B minimum (no\
+          \ distortion by outliers since most values are large). Step 3: Stability\
+          \ \u2013 There are only 4 sign flips (\u22645). All three criteria pass\
+          \ for a persistent regime. Since negative days dominate, this fits a Persistent\
+          \ Negative Regime (dealers short gamma, forced to buy into strength and\
+          \ sell into weakness)."
+    - window_id: window-2024-03-11
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.06
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 90
+        reasoning: "Step 1: 24/30 days are negative \u2192 80% persistence (>70%).\
+          \ Step 2: average |GEX| \u2248 $31.06 B (> $5 B). Both persistence and magnitude\
+          \ criteria pass for a negative regime. Step 3: but there are 12 sign flips\
+          \ (> 5 allowed), indicating unstable daily shifts. Because the stability\
+          \ criterion fails, we reject a persistent regime and classify this window\
+          \ as transitional."
+    - window_id: window-2024-02-20
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 60
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.56
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 60
+        reasoning: "Step 1 (Sign Persistence): 27 of 30 days are negative \u2192 90%\
+          \ persistence (>70%). Step 2 (Magnitude): average absolute GEX \u2248 $32.56B\
+          \ (> $5B). Step 3 (Stability): there are 6 sign flips (>5 flip threshold).\
+          \ Because the stability criterion fails (flips = 6), this does not qualify\
+          \ as a persistent negative regime despite strong persistence and magnitude.\
+          \ Therefore we classify it as transitional (no persistent constraint)."
+    - window_id: window-2024-02-29
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.87
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 90
+        reasoning: "Step 1: There are 26 negative-GEX days and 4 positive-GEX days,\
+          \ so negative persistence is 26/30 = 86.7%, above the 70% threshold. Step\
+          \ 2: The average absolute GEX is 956.23/30 \u2248 31.87 B, well above the\
+          \ $5 B minimum. Step 3: However, there are 8 sign flips (changes from +\
+          \ to \u2013 or \u2013 to +), exceeding the maximum of 5 allowed for a stable\
+          \ regime. Thus, although sign persistence and magnitude criteria are met,\
+          \ the instability in daily sign changes fails the stability check, so this\
+          \ is not a persistent regime but a transitional period."
+    - window_id: window-2024-04-02
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.35
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 30
+        reasoning: "Step 1: 25 of 30 days (\u224883.3%) are negative, exceeding the\
+          \ 70% persistence threshold. Step 2: The average |GEX| is ~31.35B (\u226B\
+          5B), so magnitude is strong. Step 3: There are 10 sign flips (\u226B5 allowed),\
+          \ failing the stability criterion. Despite strong negative persistence and\
+          \ high magnitude, the frequent flips indicate no stable directional constraint.\
+          \ Therefore, this window does not meet the full criteria for a persistent\
+          \ regime and is classified as transitional."
+    - window_id: window-2024-07-05
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.31
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Negative net GEX on 28 out of 30 days (93.3% persistence\
+          \ > 70%). Step 2: The average absolute GEX magnitude is approximately $28.31\
+          \ B (\u226B $5 B threshold). Step 3: There are only 4 sign flips (neg\u2192\
+          pos or pos\u2192neg), which is \u2264 5. All three criteria for a Persistent\
+          \ Negative Regime are met: dealers are structurally short gamma, forced\
+          \ to buy into strength and sell into weakness, creating momentum flows."
+    - window_id: window-2024-03-12
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.24
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 90
+        reasoning: "Step 1: Negative GEX dominates with 24/30 days \u2192 80% persistence\
+          \ (>70%). Step 2: Average |GEX| \u2248 $31.24B (> $5B). Step 3: Sign flips\
+          \ count = 12 (>5), failing the stability criterion. Although direction and\
+          \ magnitude criteria pass for a persistent negative regime, the frequent\
+          \ sign flips indicate no stable structural constraint, so we classify this\
+          \ window as transitional."
+    - window_id: window-2024-03-19
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 32.02
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1 (Sign Persistence): 25 of 30 days (83.3%) are negative\
+          \ \u2192 passes the 70% threshold for a negative bias. Step 2 (Magnitude):\
+          \ average absolute GEX \u2248 $32.02B \u2192 well above the $5B threshold.\
+          \ Step 3 (Stability): 10 sign flips exceed the \u22645 allowed for a persistent\
+          \ regime. Although the bias and magnitude criteria pass, the high frequency\
+          \ of sign changes fails the stability requirement, so this is not a persistent\
+          \ regime."
+    - window_id: window-2024-03-13
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.48
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 90
+        reasoning: "Step 1: Negative dominates with 24/30 days (80%), exceeding the\
+          \ 70% threshold. Step 2: The average absolute GEX is $31.48B, well above\
+          \ the $5B minimum. Step 3: There are 12 sign flips, which exceeds the \u2264\
+          5\u2010flip stability requirement. Although persistence and magnitude pass\
+          \ for a negative bias, the excessive sign flips undermine a stable constraint.\
+          \ Therefore, this period does not meet all criteria for a persistent negative\
+          \ regime and is classified as transitional."
+    - window_id: window-2024-03-05
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.51
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 40
+        reasoning: "Step 1: Negative days dominate with 25/30 days = 83.33% persistence\
+          \ (>70%). Step 2: The average |GEX| is ~31.51B (>>5B), so magnitude is strong.\
+          \ Step 3: There are 10 sign flips (>5 limit), indicating low stability.\
+          \ Although persistence and magnitude criteria pass, the high frequency of\
+          \ term\u2010to\u2010term sign changes fails the stability requirement. Hence\
+          \ the 30-day window is not a persistent regime but transitional."
+    - window_id: window-2024-11-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.58
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1: All 30 out of 30 days (100%) show negative net GEX, well\
+          \ above the 70% threshold. Step 2: The average absolute GEX over the period\
+          \ is $31.58 B, far exceeding the $5 B minimum, indicating a strong dealer\
+          \ short\u2010gamma position. Step 3: There are zero sign flips, satisfying\
+          \ the \u22645 flips stability criterion. With 100% negative persistence,\
+          \ >$5 B average magnitude, and 0 flips, this meets all requirements for\
+          \ a PERSISTENT NEGATIVE REGIME (dealers are structurally short gamma and\
+          \ forced to buy into strength and sell into weakness)."
+    - window_id: window-2024-04-01
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 30.61
+        sign_flips: 11
+        persistence_pct: 80
+        confidence: 40
+        reasoning: "Step 1: 24 negative days out of 30 \u2192 80% persistence (>70%),\
+          \ so a negative bias is present. Step 2: average |GEX| \u2248 $30.61B (>\
+          \ $5B), so magnitude is sufficient. Step 3: there are 11 sign flips (>5),\
+          \ failing the stability criterion. Despite strong persistence and magnitude,\
+          \ excessive flips indicate no enduring structural constraint. Therefore,\
+          \ this window is transitional, not a persistent regime."
+    - window_id: window-2024-05-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 32.13
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days are negative net GEX (0 positive, 30 negative)\
+          \ \u2192 100% negative persistence, above the 70% threshold. Step 2: The\
+          \ average absolute GEX over 30 days is approximately $32.13B, well above\
+          \ the $5B requirement. Step 3: There are 0 sign flips (never switches to\
+          \ positive), meeting the \u22645 flips stability criterion. All three criteria\
+          \ (persistence, magnitude, stability) are satisfied, indicating a persistent\
+          \ negative regime where dealers are structurally short gamma and forced\
+          \ to buy into strength and sell into weakness."
+    - window_id: window-2024-02-28
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.889333333333333
+        sign_flips: 8
+        persistence_pct: 86.66666666666667
+        confidence: 85
+        reasoning: 'Step 1: Negative GEX dominates with 26/30 days (86.7%), exceeding
+          the 70% threshold. Step 2: The average absolute GEX is ~31.9 B, well above
+          the $5 B minimum. Step 3: There are 8 sign flips (>5 allowed), so the series
+          is not stable. Although persistence and magnitude criteria pass, the excessive
+          flips fail the stability requirement, ruling out a persistent regime.'
+    - window_id: window-2024-03-25
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.77
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 30
+        reasoning: "Step 1: Negative GEX dominates with 25/30 days (83.33% persistence\
+          \ >70%). Step 2: Average |GEX|\u2248$31.77B (> $5B). Step 3: There are 10\
+          \ sign flips (>5 allowed). Although persistence and magnitude criteria pass\
+          \ for a persistent negative regime, the instability (10 flips) breaches\
+          \ the stability threshold. Therefore this window is not a persistent regime\
+          \ but transitional."
+    - window_id: window-2024-07-08
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.18
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Sign Persistence: 28/30 days (93.33%) are negative GEX,\
+          \ exceeding the 70% threshold. Step 2: Magnitude: The average absolute GEX\
+          \ is ~28.18B, well above the $5B minimum, with no outlier distortion. Step\
+          \ 3: Stability: There are only 4 sign flips (\u22645), indicating a stable\
+          \ directional bias. All criteria for a persistent regime pass, and negative\
+          \ days dominate, so this is classified as a persistent_negative regime."
+    - window_id: window-2024-03-06
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 20
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.66
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 20
+        reasoning: "Step 1: 25/30 days (83.33%) are negative, passing the >70% persistence\
+          \ threshold. Step 2: The average |GEX| is ~31.66B, well above the $5B minimum.\
+          \ Step 3: There are 10 sign flips, exceeding the \u22645 flips allowed for\
+          \ a stable regime. Although negative persistence and magnitude criteria\
+          \ pass, the stability criterion fails, so this cannot be classified as a\
+          \ persistent negative regime. Thus it is Transitional."
+    - window_id: window-2024-03-26
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.93
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 95
+        reasoning: "Step 1: There are 25 negative days and 5 positive days, so persistence\
+          \ is 25/30 = 83.3%, exceeding the 70% threshold for a negative regime. Step\
+          \ 2: The average absolute GEX magnitude is 31.93B, well above the $5B requirement.\
+          \ Step 3: However, there are 10 sign flips over 29 transitions, which exceeds\
+          \ the \u22645 flips threshold for a stable regime. Because stability fails,\
+          \ we cannot call this a persistent negative regime\u2014despite strong persistence\
+          \ and magnitude, the frequent flips indicate it is transitional."
+    - window_id: window-2024-05-16
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.97
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days are negative net GEX (0 positive, 30 negative),\
+          \ giving 100% persistence (>70%). Step 2: Average absolute GEX is $959.15B/30\
+          \ \u2248 $31.97B, well above the $5B threshold. Step 3: There are 0 sign\
+          \ flips across the window (\u22645 required). All criteria for a persistent\
+          \ regime pass and negative dominates, so this is classified as a persistent\
+          \ negative regime with very high confidence."
+    - window_id: window-2024-09-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 28.1
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days show negative net GEX (0 positive, 30 negative),\
+          \ yielding 100% same-sign persistence (>70% threshold). Step 2: The average\
+          \ absolute GEX is $842.86B/30 \u2248 $28.10B, well above the $5B minimum.\
+          \ Step 3: There are 0 sign flips (\u22645 allowed), indicating high stability.\
+          \ With 30/30 negative days, avg magnitude \u2248 $28B, and zero flips, this\
+          \ meets all criteria for a Persistent Negative Regime with very high confidence."
+    - window_id: window-2024-04-08
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.15
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 90
+        reasoning: 'Step 1: There are 26 negative days and 4 positive days, so negative
+          persistence is 86.67% (>70%). Step 2: The average absolute GEX is ~32.15
+          B (>5 B). Step 3: There are 8 sign flips (>5), failing the stability criterion.
+          Despite strong persistence and magnitude, the excessive flips prevent a
+          persistent regime. Therefore this window is classified as transitional.'
+    - window_id: window-2024-04-16
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 60
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.81
+        sign_flips: 6
+        persistence_pct: 90
+        confidence: 60
+        reasoning: "Step 1: There are 27 negative days and 3 positive days, so negative\
+          \ persistence is 27/30 = 90%, exceeding the 70% threshold. Step 2: The average\
+          \ absolute GEX is \u2248$32.81 B, well above the $5 B threshold. Step 3:\
+          \ There are 6 sign flips (negative\u2192positive\u2192negative transitions\
+          \ at days T-26, T-16, T-12), which exceeds the \u22645 flips requirement\
+          \ for a stable regime. Although sign and magnitude criteria pass, the stability\
+          \ criterion fails by one flip. Therefore we reject a persistent regime and\
+          \ classify this period as transitional."
+    - window_id: window-2024-03-14
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.61
+        sign_flips: 12
+        persistence_pct: 80
+        confidence: 90
+        reasoning: "Step 1: 24 of 30 days are negative (80% persistence >70%), so\
+          \ negative sign dominates. Step 2: average |GEX| \u2248 $31.61B (> $5B),\
+          \ so magnitude criterion is satisfied. Step 3: there are 12 sign flips over\
+          \ 30 days (>5 allowed), so the directional constraint is unstable. Although\
+          \ persistence and magnitude pass, the high flip count violates the stability\
+          \ requirement. Therefore, this period is not a persistent regime but transitional."
+    - window_id: window-2024-08-19
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.77
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days have negative net GEX, yielding 100% persistence\
+          \ (>70% threshold). Step 2: The average absolute GEX over 30 days is $27.77\
+          \ B (> $5 B threshold), indicating strong dealer constraint. Step 3: There\
+          \ are 0 sign flips (\u22645 threshold), signifying a stable directional\
+          \ regime. All criteria for a PERSISTENT NEGATIVE REGIME are met."
+    - window_id: window-2024-10-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.16
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: 'Step 1: All 30 days have negative net GEX (0 positive, 30 negative),
+          giving 100% persistence (>=70%). Step 2: The average absolute GEX is 31.16B
+          (>>5B threshold), indicating a strong magnitude. Step 3: There are 0 sign
+          flips (<=5), showing high stability. All three criteria (persistence, magnitude,
+          stability) are met with negative dominance, so this is classified as a Persistent
+          Negative regime with very high confidence.'
+    - window_id: window-2024-06-10
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.73
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: There are 28 negative days and 2 positive days, so negative\
+          \ persistence is 28/30 = 93.33%, exceeding the 70% threshold. Step 2: The\
+          \ average |GEX| is 861.93B/30 \u2248 28.73B, well above the $5B minimum.\
+          \ Step 3: There are 4 sign flips (\u22645), indicating a stable directional\
+          \ bias. All criteria for a Persistent Negative Regime (>70% same sign, avg\
+          \ magnitude \u22655B, \u22645 flips) are met."
+    - window_id: window-2024-11-21
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.74
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1 (Sign Persistence): All 30 days show negative net GEX,\
+          \ so negative_days=30, persistence_pct=30/30*100=100%, comfortably above\
+          \ the 70% threshold. Step 2 (Magnitude): The average absolute GEX over 30\
+          \ days is approximately (952.16B/30)=31.74B, well above the $5B minimum,\
+          \ indicating a strong dealer constraint. No extreme outliers distort this\
+          \ since values are consistently in the $27\u201337B range. Step 3 (Stability):\
+          \ There are zero sign flips\u2014GEX never crosses into positive territory\u2014\
+          well under the \u22645 flips requirement. All criteria for a persistent\
+          \ regime pass, and with dealers short gamma they must buy into strength\
+          \ and sell into weakness, creating an amplifying/momentum flow. Accordingly,\
+          \ this is classified as a persistent negative regime with very high confidence."
+    - window_id: window-2024-04-10
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 40
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.02
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 40
+        reasoning: "Step 1: Negative GEX dominates (26/30 days), persistence = 86.67%\
+          \ > 70%. Step 2: Average |GEX| \u2248 32.02 B > 5 B. Step 3: Sign flips\
+          \ = 8 > 5, failing the stability criterion. Although sign and magnitude\
+          \ criteria pass, the high flip count indicates no stable directional constraint,\
+          \ so this is not a persistent regime (classified as transitional)."
+    - window_id: window-2024-03-15
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.515333333333334
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 30
+        reasoning: 'Step 1: There are 6 positive days and 24 negative days, so 80%
+          of days are negative (>=70% threshold). Step 2: The average absolute GEX
+          is ~31.52B (>5B threshold). Step 3: However, there are 11 sign flips (>5
+          allowed), indicating an unstable directional constraint. Because the stability
+          criterion fails despite meeting persistence and magnitude, this cannot be
+          classified as a persistent regime and is therefore labeled ''transitional.'''
+    - window_id: window-2024-04-04
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.29
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: 25 out of 30 days (83.3%) are negative GEX, exceeding\
+          \ the 70% threshold for a potential persistent negative regime. Step 2:\
+          \ The average absolute GEX over 30 days is ~$31.3B, well above the $5B minimum\
+          \ magnitude required. Step 3: However, there are 10 sign flips (pos\u2192\
+          neg or neg\u2192pos) across the window, exceeding the stability threshold\
+          \ of \u22645 flips. Because the stability criterion fails, we must reject\
+          \ classification as a persistent regime. This pattern of frequent directional\
+          \ reversals indicates a transitional regime rather than a structural dealer\
+          \ gamma constraint."
+    - window_id: window-2024-03-08
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 30
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.015
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 30
+        reasoning: "Step 1: There are 24 negative days and 6 positive days (80% negative),\
+          \ so the 70% persistence threshold is met for a negative bias. Step 2: The\
+          \ average absolute GEX is ~31.0B\u2009$, well above the $5B threshold. Step\
+          \ 3: However, there are 11 sign flips (>5 allowed), indicating frequent\
+          \ daily shifts and no stable directional constraint. Thus, despite strong\
+          \ persistence and magnitude, the high flip count fails the stability criterion,\
+          \ so this is a transitional regime."
+    - window_id: window-2024-03-18
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 32.126
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 90
+        reasoning: "Step 1: Negative GEX dominates with 25/30 days (83.33% > 70%).\
+          \ Step 2: Average absolute GEX is ~$32.13B (\u226B $5B), so magnitude is\
+          \ strong. Step 3: However, there are 10 sign\u2010flips over 30 days (\u226B\
+          \ 5 flips allowed), failing the stability criterion. Despite strong persistence\
+          \ and magnitude, the high number of flips means no stable directional constraint.\
+          \ Classification: transitional (fails stability)."
+    - window_id: window-2024-02-26
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.8
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 90
+        reasoning: "Step 1: Negative days dominate at 26/30 (86.7% > 70%). Step 2:\
+          \ Average |GEX| \u2248 $31.8B > $5B. Step 3: Sign flips = 8, which exceeds\
+          \ the \u22645 stability threshold. Although magnitude and persistence criteria\
+          \ pass, the high number of flips indicates the dealers\u2019 net gamma position\
+          \ is not stably constrained in one direction. Therefore this period is not\
+          \ a persistent regime but a transitional one."
+    - window_id: window-2024-07-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 29.0
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1 (Sign Persistence): All 30 days have negative net GEX \u2192\
+          \ 100% negative days, exceeding the 70% threshold. Step 2 (Magnitude): The\
+          \ average absolute GEX is ~29 B, well above the $5 B threshold and without\
+          \ extreme outliers. Step 3 (Stability): There are 0 sign flips (\u22645\
+          \ allowed). All criteria (persistence, magnitude, stability) are met with\
+          \ dealers structurally short gamma, forcing them to buy into strength and\
+          \ sell into weakness, consistent with a persistent negative regime."
+    - window_id: window-2024-10-31
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.5323
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: 'Step 1: All 30 days have negative net GEX, so 100% negative days
+          (>>70% threshold). Step 2: Average absolute GEX is ~31.53 B (>5 B requirement).
+          Step 3: Zero sign flips across the window (<=5 threshold). All criteria
+          for a persistent negative regime are met: dealers are structurally short
+          gamma, forced to buy into strength and sell into weakness.'
+    - window_id: window-2024-12-09
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 33.14
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: All 30 days are negative GEX \u2192 negative_days=30,\
+          \ positive_days=0, persistence=100% (>70%). Step 2: Average absolute GEX\
+          \ = (sum of |net GEX| over 30 days) / 30 \u2248 $33.14B (> $5B). No extreme\
+          \ outliers distort this; values range 27.8\u201340.13. Step 3: Sign flips\
+          \ = 0 (never switched to positive), well under \u22645. All criteria met\
+          \ for a persistent negative regime: >70% same sign, strong magnitude, and\
+          \ high stability. Therefore, dealers are structurally short gamma, forced\
+          \ to buy into strength and sell into weakness, creating amplifying momentum\
+          \ flows."
+    - window_id: window-2024-03-22
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: narrative
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.03
+        sign_flips: 10
+        persistence_pct: 80.0
+        confidence: 90
+        reasoning: "Step 1: There are 24 negative days and 6 positive days \u21D2\
+          \ 80% negative persistence (>70%). Step 2: Average |GEX| \u2248 $31.03 B\
+          \ (> $5 B). Step 3: Sign flips = 10 (>5), violating stability. Although\
+          \ magnitude and persistence meet the negative\u2010regime thresholds, the\
+          \ high flip count indicates frequent reversals, so the period is not a structural\
+          \ regime but transitional."
+    - window_id: window-2024-08-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.59
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "Step 1: All 30 out of 30 days show negative GEX (100% persistence\
+          \ >70%). Step 2: The average absolute GEX over 30 days is ~27.59B, well\
+          \ above the $5B threshold. Step 3: There are 0 sign flips (always negative),\
+          \ meeting the \u22645 flips criterion. All three requirements for a persistent\
+          \ negative regime are satisfied, so we detect a persistent negative gamma\
+          \ regime with very high confidence."
+    - window_id: window-2024-07-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 27.58
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Sign persistence: 28/30 days are negative (93.3%), well\
+          \ above the 70% threshold. Step 2: Magnitude: average |GEX| \u2248$27.6B,\
+          \ far exceeding the $5B minimum. Step 3: Stability: only 4 sign flips over\
+          \ 30 days, below the maximum of 5. All three criteria pass for a persistent\
+          \ regime, and negative days dominate, so this is classified as a persistent_negative\
+          \ regime. Confidence is high (85) given very strong persistence and magnitude,\
+          \ with moderate stability."
+    - window_id: window-2024-06-11
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 85
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.63
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 85
+        reasoning: "Step 1: Sign Persistence \u2013 28 of 30 days (~93.3%) are negative,\
+          \ well above the 70% threshold for a dominant sign. Step 2: Magnitude Assessment\
+          \ \u2013 The average |GEX| is 28.63B, far exceeding the $5B requirement\
+          \ and with no extreme outliers distorting the mean. Step 3: Stability Check\
+          \ \u2013 There are only 4 sign flips (T-6\u2192T-5, T-5\u2192T-4, T-4\u2192\
+          T-3, T-3\u2192T-2), which is \u22645. All three criteria (persistence, magnitude,\
+          \ stability) pass, indicating a structural dealer short-gamma constraint.\
+          \ Therefore this is classified as a persistent negative regime with high\
+          \ confidence."
+    - window_id: window-2024-05-21
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: narrative
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.35
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Step 1: Sign Persistence: 0 positive days, 30 negative days \u2192\
+          \ 100% negative persistence (>=70%). Step 2: Magnitude Assessment: average\
+          \ |GEX| = 31.35B (>5B, strongly above threshold). No extreme single-day\
+          \ outlier drives this \u2013 values are consistently in the 25\u201338B\
+          \ range. Step 3: Stability Check: 0 sign flips over 30 days (<=5). All three\
+          \ criteria are met for a persistent regime. Since the dominant sign is negative,\
+          \ this is classified as a PERSISTENT_NEGATIVE regime with very high confidence."
+  treatment:
+    prompt_type: data_only
+    metrics:
+      total: 81
+      correct: 81
+      accuracy: 1.0
+      precision: 1.0
+      recall: 1.0
+      f1_score: 1.0
+      true_positives: 39
+      false_positives: 0
+      true_negatives: 42
+      false_negatives: 0
+    results:
+    - window_id: window-2024-05-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.01
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "All 30 days show negative GEX (100% persistence), average absolute\
+          \ GEX \u224831B (>5B), and there are 0 sign flips, satisfying all criteria\
+          \ for a persistent negative regime."
+    - window_id: window-2024-12-19
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 35.91
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days are negative (100% persistence), average absolute GEX
+          (~$35.9B) far exceeds $5B, and there are zero sign flips, satisfying all
+          criteria for a persistent negative regime.
+    - window_id: window-2024-07-03
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.53
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: 28 out of 30 days (~93%) are negative, average absolute GEX is
+          ~$28.5B and there are only 4 sign flips, satisfying all persistence, magnitude
+          and stability criteria.
+    - window_id: window-2024-03-04
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.2
+        sign_flips: 9
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Although the window is dominated by negative GEX (>83%) and average\
+          \ absolute GEX is well above $5B, there are 9 sign flips\u2014exceeding\
+          \ the \u22645 threshold\u2014so it fails the stability criterion."
+    - window_id: window-2024-04-24
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.98
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: Over 90% of days show negative GEX, average absolute exposure is
+          ~$33B (> $5B), and only 4 sign flips (<5), satisfying all criteria for a
+          persistent negative regime.
+    - window_id: window-2024-05-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.74
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 90
+        reasoning: All 30 days are negative (100% persistence), average absolute GEX
+          is ~31.7B (>5B), and there are no sign flips, satisfying all criteria for
+          a persistent negative regime.
+    - window_id: window-2024-04-05
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.41
+        sign_flips: 9
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Although the window shows a strong negative bias (83% negative\
+          \ days) and high average magnitude (~$31B), the 9 sign flips exceed the\
+          \ \u22645 stability criterion, so it\u2019s not a persistent regime."
+    - window_id: window-2024-08-20
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.71
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: Every day in the 30-day window is negative (100% persistence),
+          average absolute GEX (~$27.7B) far exceeds $5B, and there are zero sign
+          flips.
+    - window_id: window-2024-11-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.57
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Every day in the 30-day window is negative (100% persistence),\
+          \ the average absolute GEX is \u2248$31.6B (\u226B$5B), and there are zero\
+          \ sign flips, satisfying all criteria for a persistent negative regime."
+    - window_id: window-2024-12-27
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 36.7
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days show negative GEX, no sign flips, and the average absolute
+          exposure (~$36.7B) far exceeds $5B.
+    - window_id: window-2024-02-14
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.99
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: "93% of days are negative (>70%), average absolute GEX is ~33B\
+          \ (>5B), and only 4 sign flips (\u22645) over the 30-day window."
+    - window_id: window-2024-04-15
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.69
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 85
+        reasoning: "While 90% of days are negative and average magnitude (~$32.7B)\
+          \ well exceeds $5B, there are 6 sign flips\u2014one more than the \u2264\
+          5 allowed\u2014so it fails the stability criterion."
+    - window_id: window-2024-09-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 29.33
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days exhibit negative GEX with no sign flips and an average
+          absolute exposure (~$29.3 B) well above the $5 B threshold, satisfying persistence,
+          magnitude, and stability criteria.
+    - window_id: window-2024-04-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 33.07
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: "28 of 30 days negative (93%), avg |GEX| ~33 B (>5 B), only 4 sign\
+          \ flips (\u22645) \u2013 meets all criteria for a persistent negative regime."
+    - window_id: window-2024-04-25
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 32.81
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: Over 93% of days are negative, average magnitude is high (~$32.8B),
+          and there are only 4 sign flips, satisfying all criteria for a persistent
+          negative regime.
+    - window_id: window-2024-09-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 28.4
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days are negative with zero sign flips and an average absolute
+          exposure well above $5B, satisfying persistence, magnitude, and stability
+          criteria.
+    - window_id: window-2024-04-09
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.09
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "Negative GEX dominates (86.7% of days) with a high average magnitude\
+          \ (~$32B), but 8 sign flips exceed the \u22645-flip stability criterion,\
+          \ so it is transitional rather than a persistent regime."
+    - window_id: window-2024-12-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 35.74
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "Every one of the 30 days is negative (100% persistence), the average\
+          \ absolute GEX (~$35.7 B) far exceeds the $5 B threshold, and there are\
+          \ zero sign flips\u2014firmly a persistent negative regime."
+    - window_id: window-2024-03-21
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.8
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "While negative GEX dominates (83%) and average magnitude is large\
+          \ (\u2248$31.8B), the series flips sign 10 times\u2014exceeding the \u2264\
+          5-flip stability threshold\u2014so it is not a persistent regime."
+    - window_id: window-2024-11-06
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.25
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 90
+        reasoning: "All 30 days are negative (>70%), average absolute GEX ~31.25B\
+          \ (\u226B5B), and there are no sign flips, meeting all persistence criteria."
+    - window_id: window-2024-02-21
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.7
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 80
+        reasoning: Strong negative bias and high magnitude but fails stability (6
+          flips >5), so not a persistent regime.
+    - window_id: window-2024-02-22
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.52
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 80
+        reasoning: "Although 90% of days are negative and the average absolute GEX\
+          \ (~$32.5 B) far exceeds $5 B, there are 6 sign\u2010flips (above the \u2264\
+          5 threshold), so it does not qualify as a persistent regime."
+    - window_id: window-2024-12-13
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 34.69
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 90
+        reasoning: "All 30 days are negative (100% persistence), average absolute\
+          \ GEX is ~34.7\u2009B (\u226B5\u2009B), and there are zero sign flips, satisfying\
+          \ the criteria for a persistent negative regime."
+    - window_id: window-2024-03-07
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.7
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Negative GEX dominates (>70%) with avg abs\u2009\u2248\u2009$31.7B,\
+          \ but 10 sign flips exceed the \u22645 stability criterion."
+    - window_id: window-2024-04-18
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.81
+        sign_flips: 6
+        persistence_pct: 90
+        confidence: 80
+        reasoning: "Although 90% of days are negative and the average absolute GEX\
+          \ (~$32.8 B) is well above $5 B, there are 6 sign flips\u2014exceeding the\
+          \ stability threshold of 5\u2014so no persistent regime is detected."
+    - window_id: window-2024-03-28
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 30.81
+        sign_flips: 11
+        persistence_pct: 80
+        confidence: 80
+        reasoning: Although there is a strong negative bias (80% negative days) and
+          the average absolute GEX (~$30.8B) far exceeds $5B, the series flips sign
+          11 times (>5), failing the stability criterion.
+    - window_id: window-2024-02-23
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.82
+        sign_flips: 7
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "Despite a clear negative bias (87% of days) and high average magnitude,\
+          \ the 7 sign flips exceed the \u22645 threshold, so this is not a stable\
+          \ persistent regime."
+    - window_id: window-2024-02-27
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.91
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "GEX is heavily negative on most days with high average magnitude,\
+          \ but eight sign flips exceed the \u22645 stability threshold, so it is\
+          \ not a persistent regime."
+    - window_id: window-2024-03-27
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 65
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.8
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 65
+        reasoning: "Although negative GEX dominates (83%) with a strong average magnitude\
+          \ (~$32B), the high number of sign flips (10) breaches the \u22645\u2010\
+          flip stability criterion, so it is not a persistent regime."
+    - window_id: window-2024-04-11
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.05
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 90
+        reasoning: Negative days dominate (87%) with a high average magnitude, but
+          the 8 sign flips exceed the stability threshold of 5, so it fails the persistent
+          regime test.
+    - window_id: window-2024-03-20
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 75
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.79
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 75
+        reasoning: Although negative GEX dominates (>70%) and magnitude is large,
+          there are 10 sign flips (>5), so it fails the stability criterion.
+    - window_id: window-2024-04-17
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.76
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 90
+        reasoning: "Negative GEX dominates (90% of days) and average magnitude is\
+          \ strong, but the series has 6 sign flips, exceeding the \u22645\u2010flip\
+          \ stability threshold."
+    - window_id: window-2024-12-10
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 33.47
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "All 30 days are negative (100% persistence), average absolute\
+          \ GEX \u2248\u2009$33.5\u2009B (\u226B\u2009$5\u2009B), and there are zero\
+          \ sign flips, meeting all criteria for a persistent negative regime."
+    - window_id: window-2024-06-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.41
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: "28 of 30 days are negative (93.3%), average absolute GEX \u2248\
+          28.4 B, just 4 sign flips \u2013 all criteria met for a persistent negative\
+          \ regime."
+    - window_id: window-2024-04-12
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.88
+        sign_flips: 7
+        persistence_pct: 86.67
+        confidence: 90
+        reasoning: "Negative GEX dominates (26/30 days, 86.7%) and avg |GEX| is high\
+          \ (~$31.9 B), but with 7 sign flips (above the \u22645 threshold), it fails\
+          \ the stability criterion for a persistent regime."
+    - window_id: window-2024-04-03
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.39
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: Negative GEX dominates (83% of days) and average magnitude is large,
+          but with 10 sign flips (>5) the window fails the stability criterion, indicating
+          a transitional regime.
+    - window_id: window-2024-03-01
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 30.93
+        sign_flips: 9
+        persistence_pct: 83.33
+        confidence: 80
+        reasoning: "Negative GEX dominates (83% of days) with high magnitude (~$31\
+          \ B), but 9 sign flips exceed the \u22645 threshold, so the window is not\
+          \ a stable persistent regime."
+    - window_id: window-2024-12-05
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 32.82
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: All 30 days are negative (100% persistence), average absolute GEX
+          ~32.8B >5B, and there are zero sign flips, indicating a stable persistent
+          negative regime.
+    - window_id: window-2024-08-16
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.86
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "100% of days are negative, average absolute GEX is ~27.9 B (\u226B\
+          5 B), and there are zero sign flips, meeting all persistence criteria."
+    - window_id: window-2024-07-10
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 27.79
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: Over 93% of days are negative with an average absolute GEX of ~27.8
+          B and only 4 sign flips, satisfying all persistence criteria.
+    - window_id: window-2024-03-11
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.06
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 85
+        reasoning: "While the window is dominated by negative GEX (80% of days) and\
+          \ average magnitude is well above $5B, the high number of sign flips (12)\
+          \ exceeds the \u22645 threshold, so it does not qualify as a persistent\
+          \ regime."
+    - window_id: window-2024-02-20
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.56
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 85
+        reasoning: "Although 90% of days are negative and average |GEX| \u2248 $32.6B\
+          \ exceed $5B, there are 6 sign flips (over the 5-flip limit), so it fails\
+          \ the stability criterion."
+    - window_id: window-2024-02-29
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.87
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 85
+        reasoning: Although negative GEX dominates (~87% of days) and the average
+          magnitude (~$32B) far exceeds $5B, there are 8 sign flips (>5), so the window
+          fails the stability criterion.
+    - window_id: window-2024-04-02
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.35
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Though 83% of days are negative and average GEX (31.35B) far exceeds\
+          \ $5B, the window has 10 sign flips (>\u20055 allowed), failing the stability\
+          \ criterion and thus no persistent regime is detected."
+    - window_id: window-2024-07-05
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 92
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.31
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 92
+        reasoning: "28 of 30 days are negative (>70%), average absolute GEX \u2248\
+          $28.3B (\u226B$5B), and only 4 sign flips (\u22645), indicating a stable\
+          \ persistent negative regime."
+    - window_id: window-2024-03-12
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 65
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.24
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 65
+        reasoning: Although the window is strongly negative (80% days) with high average
+          |GEX|, there are 12 sign flips (>>5), so it fails the stability criterion.
+    - window_id: window-2024-09-03
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.25
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "All 30 days are negative (100% persistence), average absolute\
+          \ GEX \u2248 $27.3B (> $5B threshold), and there are zero sign flips, meeting\
+          \ all criteria for a persistent negative regime."
+    - window_id: window-2024-03-19
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 32.02
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Negative GEX dominates (83.3% of days) and average magnitude (~$32B)\
+          \ is well above $5B, but 10 sign flips exceed the \u22645 limit, so the\
+          \ window is not a persistent regime."
+    - window_id: window-2024-03-13
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 75
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.48
+        sign_flips: 12
+        persistence_pct: 80.0
+        confidence: 75
+        reasoning: "Although negative GEX days account for 80% of the window and average\
+          \ absolute exposure is well above $5 B, the 12 sign flips exceed the \u2264\
+          5 threshold for stability, so this does not qualify as a persistent regime."
+    - window_id: window-2024-03-05
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.51
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 80
+        reasoning: Although 83% of days are negative and the average magnitude is
+          well above $5B, there are 10 sign flips, exceeding the 5-flip stability
+          threshold.
+    - window_id: window-2024-11-18
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.58
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "All 30 days show negative GEX (100% persistence), average absolute\
+          \ GEX \u224831.6B >5B threshold, and there are zero sign flips, satisfying\
+          \ all criteria for a persistent regime."
+    - window_id: window-2024-04-01
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 30.61
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 85
+        reasoning: "Although negative days dominate (80%) and average GEX magnitude\
+          \ (~$30.6B) far exceeds $5B, there are 11 sign flips (\u226B5), so the window\
+          \ fails the stability criterion and is transitional."
+    - window_id: window-2024-05-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 32.13
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 90
+        reasoning: All 30 days have negative GEX, average absolute exposure ~32.13B,
+          zero sign flips, exceeding the 70% and $5B thresholds.
+    - window_id: window-2024-02-28
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.89
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 80
+        reasoning: "While the window is dominated by negative GEX days (\u224887%)\
+          \ and the average absolute exposure is large (~$31.9B), there are 8 sign\
+          \ flips (>5), so it fails the stability test and is not a persistent regime."
+    - window_id: window-2024-07-25
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 28.97
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "All 30 days are negative (100% persistence), average |GEX| \u2248\
+          \ $29B \u226B $5B, and there are no sign flips, indicating a stable negative\
+          \ regime."
+    - window_id: window-2024-03-25
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.77
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "While negative GEX dominates (>70%) and average magnitude is well\
+          \ above $5B, the window sees 10 sign flips\u2014exceeding the \u22645\u2010\
+          flip stability criterion\u2014so it does not qualify as a persistent regime."
+    - window_id: window-2024-07-08
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 28.18
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: "Over 93% of days were negative, average absolute GEX ~28B\u2009\
+          >\u20095B, and only 4 sign flips (\u22645), meeting all persistence criteria."
+    - window_id: window-2024-03-06
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 75
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.66
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 75
+        reasoning: "Although negative GEX dominates (83% of days) and average magnitude\
+          \ is high (~$31.7B), the 10 sign flips exceed the \u22645-day stability\
+          \ threshold, so this does not qualify as a persistent regime."
+    - window_id: window-2024-11-20
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.67
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "All 30 days show negative GEX (100% persistence), average absolute\
+          \ GEX \u2248$31.7B (\u226B$5B), and there are no sign flips, satisfying\
+          \ a persistent negative regime."
+    - window_id: window-2024-03-26
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.93
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 80
+        reasoning: Negative GEX dominates at 83% with a large average magnitude (~$31.9B),
+          but stability fails with 10 sign flips (exceeding the 5-flip limit).
+    - window_id: window-2024-05-16
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.97
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: All 30 days are negative (100% persistence), the average absolute
+          GEX (~$31.97 B) far exceeds $5 B, and there are zero sign flips, meeting
+          all criteria for a persistent negative regime.
+    - window_id: window-2024-09-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 28.1
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: 100% of days are negative, the average absolute GEX (~$28.1 B)
+          far exceeds $5 B, and there are zero sign flips, meeting all persistence
+          criteria.
+    - window_id: window-2024-04-08
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.15
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 85
+        reasoning: Although negative GEX dominates (>70%) and magnitude is strong,
+          there are 8 sign flips (>5), failing the stability criterion.
+    - window_id: window-2024-04-16
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 75
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 3
+        negative_days: 27
+        avg_magnitude_billions: 32.81
+        sign_flips: 6
+        persistence_pct: 90.0
+        confidence: 75
+        reasoning: "Negative gamma dominates 90% of the window and average absolute\
+          \ GEX is large, but 6 sign flips exceed the \u22645-flip stability criterion."
+    - window_id: window-2024-03-14
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.61
+        sign_flips: 12
+        persistence_pct: 80
+        confidence: 85
+        reasoning: "Despite strong negative bias (80% negative days) and high average\
+          \ magnitude (~$31.6 B), the series exhibits 12 sign flips over 30 days\u2014\
+          well above the \u22645 threshold\u2014so it is not a stable persistent regime."
+    - window_id: window-2024-08-19
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.77
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days show negative GEX, average absolute exposure ~27.8
+          B >5 B, with zero sign flips, satisfying persistence criteria.
+    - window_id: window-2024-10-17
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 30.03
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "All 30 days show negative GEX (100% persistence), average absolute\
+          \ exposure \u2248 $30 billion (> $5 billion), and zero sign flips, satisfying\
+          \ the persistent regime criteria."
+    - window_id: window-2024-11-21
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.74
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: All 30 days are negative (100% persistence), zero sign flips, and
+          the average absolute GEX (~$31.7B) far exceeds the $5B threshold.
+    - window_id: window-2024-04-10
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 32.02
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 85
+        reasoning: "While negative GEX dominates (>70%) and average magnitude is well\
+          \ above $5B, the window has 8 sign flips (more than the 5\u2010flip stability\
+          \ threshold), so it fails the stability criterion and is classified as transitional."
+    - window_id: window-2024-03-15
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.52
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 85
+        reasoning: "Although 80% of days are negative and average absolute GEX (~31.5\
+          \ B) is well above 5 B, the window has 11 sign flips, exceeding the \u2264\
+          5\u2010flip stability criterion."
+    - window_id: window-2024-04-04
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 31.29
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 85
+        reasoning: "Although the window is dominated by negative GEX (83.3%) and the\
+          \ average absolute magnitude is well above $5 B, it fails the stability\
+          \ criterion with 10 sign flips (threshold \u22645)."
+    - window_id: window-2024-03-08
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.02
+        sign_flips: 11
+        persistence_pct: 80.0
+        confidence: 90
+        reasoning: Although there is a clear negative bias (80% negative days) and
+          the average absolute exposure (~$31B) is well above $5B, the series flips
+          sign 11 times (>5), failing the stability criterion and thus not qualifying
+          as a persistent regime.
+    - window_id: window-2024-03-18
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 80
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 5
+        negative_days: 25
+        avg_magnitude_billions: 32.13
+        sign_flips: 10
+        persistence_pct: 83.33
+        confidence: 80
+        reasoning: Negative GEX dominates (>70%) and magnitude is strong, but stability
+          criterion fails with 10 sign flips (>5), so no persistent regime.
+    - window_id: window-2024-02-26
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 4
+        negative_days: 26
+        avg_magnitude_billions: 31.8
+        sign_flips: 8
+        persistence_pct: 86.67
+        confidence: 85
+        reasoning: "Although the window is overwhelmingly negative (\u224887% negative\
+          \ days) with large average GEX magnitude, it suffers from 8 sign flips\u2014\
+          above the 5-flip stability threshold\u2014so it does not qualify as a persistent\
+          \ regime."
+    - window_id: window-2024-07-26
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 29.0
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: All 30 days show negative GEX (100% sign persistence), the average
+          absolute exposure (~$29 B) is well above $5 B, and there are zero sign flips,
+          meeting all criteria for a persistent negative regime.
+    - window_id: window-2024-10-31
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.53
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: Every day in the 30-day window shows negative GEX, the average
+          absolute exposure is ~31.5 B (well above 5 B), and there are zero sign flips,
+          satisfying all criteria for a persistent negative regime.
+    - window_id: window-2024-12-09
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 33.14
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: "All 30 days show negative GEX (100% persistence), average absolute\
+          \ exposure ~33.1B (\u226B5B), and zero sign flips, meeting all criteria\
+          \ for a persistent negative regime."
+    - window_id: window-2024-03-22
+      ground_truth: false
+      predicted: false
+      correct: true
+      confidence: 85
+      prompt_type: data_only
+      llm_response:
+        regime_detected: false
+        regime_type: transitional
+        positive_days: 6
+        negative_days: 24
+        avg_magnitude_billions: 31.03
+        sign_flips: 10
+        persistence_pct: 80.0
+        confidence: 85
+        reasoning: "Although there is clear negative dominance (80% of days) and a\
+          \ large average GEX (>\u2009$5 B), the window exhibits 10 sign flips\u2014\
+          well above the 5-flip stability threshold\u2014so it does not qualify as\
+          \ a persistent regime."
+    - window_id: window-2024-08-23
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 27.59
+        sign_flips: 0
+        persistence_pct: 100
+        confidence: 95
+        reasoning: "All 30 days are negative (100% persistence), average |GEX| \u2248\
+          \ $27.6B (> $5B), and there are zero sign flips, meeting all criteria for\
+          \ a persistent negative regime."
+    - window_id: window-2024-07-15
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 90
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 2
+        negative_days: 28
+        avg_magnitude_billions: 27.58
+        sign_flips: 4
+        persistence_pct: 93.33
+        confidence: 90
+        reasoning: "Over 93% of days are negative, average magnitude \u2248$27.6B,\
+          \ and only 4 sign flips in 30 days"
+    - window_id: window-2024-05-21
+      ground_truth: true
+      predicted: true
+      correct: true
+      confidence: 95
+      prompt_type: data_only
+      llm_response:
+        regime_detected: true
+        regime_type: persistent_negative
+        positive_days: 0
+        negative_days: 30
+        avg_magnitude_billions: 31.35
+        sign_flips: 0
+        persistence_pct: 100.0
+        confidence: 95
+        reasoning: All 30 days are negative (>70%), avg |GEX| (~$31B) far exceeds
+          $5B, and there are zero sign flips, meeting all criteria for a persistent
+          negative regime.
