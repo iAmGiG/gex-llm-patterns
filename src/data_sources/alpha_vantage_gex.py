@@ -31,7 +31,15 @@ class AlphaVantageGEXClient:
     - Intelligent caching for historical data
     """
 
-    def __init__(self, cache_manager=None):
+    def __init__(self, cache_manager=None, options_manager=None):
+        """Initialize Alpha Vantage client.
+
+        Args:
+            cache_manager: Optional cache manager for market data (default: UnifiedCacheManager)
+            options_manager: Optional options storage manager (default: SQLiteOptionsManager)
+                           Can be SQLiteOptionsManager or PostgreSQLOptionsManager for
+                           consistent data source across the application.
+        """
         # Load configuration from centralized config system
         config = get_config()
 
@@ -56,8 +64,11 @@ class AlphaVantageGEXClient:
         self.base_url = "https://www.alphavantage.co/query"
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # Initialize SQLite options manager (Issue #180: primary storage)
-        self.sqlite_options = SQLiteOptionsManager()
+        # Options storage manager via dependency injection (Issue #169 architectural fix)
+        # Accepts SQLiteOptionsManager or PostgreSQLOptionsManager for consistent data source
+        self.options_manager = options_manager or SQLiteOptionsManager()
+        # Backward compatibility alias
+        self.sqlite_options = self.options_manager
         # Legacy cache for non-options data (market data)
         self.cache = cache_manager or UnifiedCacheManager()
 

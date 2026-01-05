@@ -8,6 +8,7 @@ Stores results in YAML format for research notes.
 """
 
 import logging
+import os
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
@@ -95,7 +96,7 @@ def run_comparison(symbol: str, engine: BacktestEngine, start_date: str = None, 
     # GEX-based strategies
     # 1. Flip-based (original approach)
     gex_flip_signal = GEXPatternSignal(
-        db_path=".cache/options_historical.db",
+        # db_path=".cache/options_historical.db"  # Migrated to PostgreSQL,
         gex_flip_threshold=0.0,
         confidence_threshold=0.5,
     )

@@ -2,6 +2,7 @@
 """Quick SQL-based audit for large databases (Issue #183)."""
 
 import sqlite3
+import os
 from pathlib import Path
 
 db_path = Path(".cache/options_historical.db")

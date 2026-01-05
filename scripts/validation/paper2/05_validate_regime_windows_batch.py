@@ -66,6 +66,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from src.cache.research_cache import ResearchCache
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
 from src.validation.batch_regime_validator import BatchRegimeValidator
@@ -361,6 +362,46 @@ def retrieve_batch_results(batch_id: str) -> List[Dict]:
     logger.info(f"Summary:")
     logger.info(f"  Detection rate: {detected}/{len(results)} ({100*detected/len(results):.1f}%)")
     logger.info(f"  Avg confidence: {sum(r.get('confidence', 0) for r in results)/len(results):.0f}%")
+
+    # Store results in ResearchCache for queryable access
+    logger.info(f"")
+    logger.info(f"Storing results in ResearchCache...")
+    research_cache = ResearchCache()
+
+    stored_count = 0
+    for result in results:
+        try:
+            # Extract date from window_id (format: "window-YYYY-MM-DD")
+            window_id = result.get("window_id", "")
+            if window_id.startswith("window-"):
+                trading_date = window_id.replace("window-", "")
+            else:
+                logger.warning(f"Could not parse date from window_id: {window_id}")
+                continue
+
+            # Store detection in ResearchCache
+            research_cache.record_detection(
+                symbol=symbol,
+                trading_date=trading_date,
+                pattern_id="regime_30day",
+                llm_model="o4-mini",
+                prompt_version="v2.0_regime_detection",
+                detected=result.get("regime_detected", False),
+                confidence=result.get("confidence", 0),
+                structured_output={
+                    "regime_type": result.get("regime_type", "unknown"),
+                },
+                reasoning_chain=result.get("reasoning", ""),
+                raw_response=str(result.get("raw_response", {})),
+                experiment_run_id=f"batch_{batch_id}",
+            )
+            stored_count += 1
+
+        except Exception as e:
+            logger.error(f"Failed to store result for {result.get('window_id')}: {e}")
+            continue
+
+    logger.info(f"✅ Stored {stored_count}/{len(results)} detections in ResearchCache")
 
     return results
 

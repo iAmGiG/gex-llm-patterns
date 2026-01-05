@@ -35,6 +35,7 @@ import pandas as pd
 import psutil
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.fed_data_integration import FedDataIntegration
 from src.data_sources.historical_collector import HistoricalOptionsCollector
@@ -693,14 +694,14 @@ class HistoricalGEXDatabaseBuilder:
                 self.logger.warning(f"GEX calculation returned empty results for {symbol} {date}")
                 return None
 
-            # Sum total dealer GEX (this is what validation uses)
-            total_gex = gex_df["dealer_gex"].sum()
+            # Sum total dealer GEX using the correctly signed 'weighted_gex' column
+            total_gex = gex_df["weighted_gex"].sum()
 
             # Separate call and put GEX
             calls = gex_df[gex_df["type"] == "call"]
             puts = gex_df[gex_df["type"] == "put"]
-            total_call_gex = calls["dealer_gex"].sum() if len(calls) > 0 else 0
-            total_put_gex = puts["dealer_gex"].sum() if len(puts) > 0 else 0
+            total_call_gex = calls["weighted_gex"].sum() if len(calls) > 0 else 0
+            total_put_gex = puts["weighted_gex"].sum() if len(puts) > 0 else 0
 
             # Issue #138: Calculate dual GEX metrics (structural vs economic)
             dual_gex = None
@@ -727,8 +728,8 @@ class HistoricalGEXDatabaseBuilder:
 
                     self.logger.info(
                         f"Dual GEX calculated for {symbol} {date}: "
-                        f"OI=${dual_gex['gex_oi']/1e9:.2f}B, "
-                        f"Vol=${dual_gex['gex_volume']/1e9:.2f}B, "
+                        f"OI=${dual_gex['gex_oi'] / 1e9:.2f}B, "
+                        f"Vol=${dual_gex['gex_volume'] / 1e9:.2f}B, "
                         f"Regime={economic_regime}"
                     )
                 except Exception as e:
@@ -1073,9 +1074,9 @@ class HistoricalGEXDatabaseBuilder:
             }
 
             for symbol in symbols:
-                self.logger.info(f"\n{'='*60}")
+                self.logger.info(f"\n{'=' * 60}")
                 self.logger.info(f"Processing {symbol}")
-                self.logger.info(f"{'='*60}")
+                self.logger.info(f"{'=' * 60}")
 
                 symbol_summary = {
                     "symbol": symbol,
@@ -1113,7 +1114,7 @@ class HistoricalGEXDatabaseBuilder:
                         # Check memory usage periodically
                         self.check_memory_usage()
 
-                        self.logger.info(f"Processing {symbol} {trade_date} ({i+1}/{len(trading_dates)})")
+                        self.logger.info(f"Processing {symbol} {trade_date} ({i + 1}/{len(trading_dates)})")
 
                         # Get options data from SQLite (Issue #180)
                         options_data = self.sqlite_options.get_options_chain(symbol, trade_date)
@@ -1223,9 +1224,9 @@ class HistoricalGEXDatabaseBuilder:
             with open(summary_file, "w") as f:
                 json.dump(summary, f, indent=2, default=str)
 
-            self.logger.info(f"\n{'='*60}")
+            self.logger.info(f"\n{'=' * 60}")
             self.logger.info("GEX DATABASE BUILD COMPLETED")
-            self.logger.info(f"{'='*60}")
+            self.logger.info(f"{'=' * 60}")
             self.logger.info(f"Database: {self.db_path}")
             self.logger.info(f"Build summary: {summary_file}")
             self.logger.info(f"Duration: {summary['build_duration_minutes']:.1f} minutes")

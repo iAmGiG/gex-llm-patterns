@@ -102,6 +102,17 @@ def create_fig01_multiyear_detection():
 
     bars = ax.bar(years, detection, color=colors, alpha=0.85, edgecolor="black", linewidth=1.5, width=0.7)
 
+    # Apply hatching to unvalidated years
+    unvalidated_years = [2021, 2022, 2023, 2025]
+    for bar, year in zip(bars, years):
+        if year in unvalidated_years:
+            bar.set_hatch("///")
+            bar.set_alpha(0.6)
+
+    # Add legend for validation status
+    hatch_patch = mpatches.Patch(facecolor="white", edgecolor="black", hatch="///", label="Unvalidated Data")
+    ax.legend(handles=[hatch_patch], loc="upper left", fontsize=9, framealpha=0.9)
+
     # Add window count annotations above bars
     for year, det, n in zip(years, detection, n_windows):
         ax.text(year, det + 2, f"n={n}", ha="center", va="bottom", fontsize=9)
@@ -329,6 +340,7 @@ def create_fig04_gex_evolution():
     """
     Figure 4: GEX Magnitude Evolution (2020-2025)
     FIXED: Legend moved to BOTTOM-RIGHT (was top-left, now in empty space)
+    REFINED: Added validated vs unvalidated marker distinction
     """
     print("Creating fig04_gex_evolution...")
 
@@ -337,16 +349,42 @@ def create_fig04_gex_evolution():
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    # Main line
+    # Main line (dashed to indicate interpolation between validated points)
     ax.plot(
         years,
         gex_magnitude,
-        marker="o",
-        markersize=10,
-        linewidth=3,
+        linestyle="--",
+        linewidth=2,
         color="#2c3e50",
-        label="Avg GEX Magnitude",
+        zorder=2,
+    )
+
+    # Validated points (solid filled) - 2020 and 2024
+    val_years = [2020, 2024]
+    val_gex = [17.3, 32.0]
+    ax.scatter(
+        val_years,
+        val_gex,
+        s=120,
+        c="#2c3e50",
+        edgecolors="black",
+        linewidth=2,
         zorder=3,
+        label="Validated",
+    )
+
+    # Unvalidated points (hollow) - 2021-2023, 2025
+    unval_years = [2021, 2022, 2023, 2025]
+    unval_gex = [27.2, 20.1, 30.0, 30.4]
+    ax.scatter(
+        unval_years,
+        unval_gex,
+        s=120,
+        c="white",
+        edgecolors="#2c3e50",
+        linewidth=2,
+        zorder=3,
+        label="Unvalidated",
     )
 
     # Era shading
@@ -508,13 +546,42 @@ def create_fig06_regime_window():
 
     fig, (ax_chart, ax_criteria) = plt.subplots(1, 2, figsize=(14, 5), gridspec_kw={"width_ratios": [2.5, 1]})
 
-    # Simulated 30-day GEX data (realistic pattern from 2024)
-    np.random.seed(42)
-    base_gex = -14.0
-    gex_data = base_gex + np.random.randn(30) * 2.5
-    # Add 2 positive flips (days 8 and 22)
-    gex_data[7] = 3.2
-    gex_data[21] = 2.8
+    # Representative 30-day GEX data (Idealized for schematic clarity)
+    # Shows persistent negative regime with exactly 2 transitional flips
+    gex_data = np.array(
+        [
+            -12.5,
+            -15.2,
+            -13.8,
+            -14.1,
+            -16.5,
+            -11.2,
+            -13.4,
+            3.2,
+            -14.5,
+            -15.8,
+            -12.1,
+            -13.9,
+            -14.2,
+            -15.5,
+            -16.1,
+            -12.8,
+            -11.5,
+            -13.2,
+            -14.8,
+            -15.1,
+            -12.4,
+            2.8,
+            -13.5,
+            -14.2,
+            -15.9,
+            -16.3,
+            -12.7,
+            -13.1,
+            -14.5,
+            -15.2,
+        ]
+    )
 
     days = np.arange(1, 31)
     colors = [COLORS["positive"] if g > 0 else COLORS["negative"] for g in gex_data]
@@ -621,7 +688,7 @@ def create_fig07_selectivity():
         },
         {
             "ax": axes[1, 1],
-            "title": "2023 Stable Positive",
+            "title": "2023 Stable Positive*",
             "year": "2023",
             "persistence": 85.0,
             "magnitude": 8.2,
@@ -630,6 +697,7 @@ def create_fig07_selectivity():
             "reason": "All criteria met",
             "bg_color": "#E8F5E9",
             "border_color": COLORS["positive"],
+            "unvalidated": True,  # 2023 data not yet validated
         },
     ]
 
@@ -700,6 +768,9 @@ def create_fig07_selectivity():
         mpatches.Patch(facecolor=COLORS["negative"], label="Not detected (criteria failed)"),
     ]
     fig.legend(handles=legend_elements, loc="lower center", ncol=2, fontsize=10, bbox_to_anchor=(0.5, 0.02))
+
+    # Footnote for unvalidated data
+    fig.text(0.98, 0.01, "*2023 data: Unvalidated (Phase 4A planned)", fontsize=8, ha="right", color="#666666")
 
     plt.tight_layout(rect=[0, 0.06, 1, 0.96])
     output_path = OUTPUT_DIR / "fig07_selectivity.png"
@@ -825,17 +896,49 @@ def create_fig09_temporal_trend():
     detection = [12.1, 100.0, 100.0, 100.0, 81.2, 100.0]
     windows = [223, 250, 251, 250, 223, 221]
 
+    # Era shading (consistent with Figure 4)
+    ax.axvspan(2019.5, 2020.5, alpha=0.15, color=COLORS["negative"], label="Pre-0DTE Era")
+    ax.axvspan(2020.5, 2025.5, alpha=0.15, color=COLORS["positive"], label="Post-0DTE Era")
+
     # Main line plot
     ax.plot(
         years,
         detection,
-        "o-",
+        "--",  # Dashed line to imply continuity is inferred, not absolute
         color=COLORS["neutral"],
-        linewidth=3,
-        markersize=12,
-        markerfacecolor="white",
-        markeredgewidth=3,
+        linewidth=2,
+        zorder=1,
     )
+
+    # Validated points (Solid filled)
+    val_years = [2020, 2024]
+    val_det = [12.1, 81.2]
+    ax.scatter(
+        val_years,
+        val_det,
+        s=150,
+        c=COLORS["neutral"],
+        edgecolors="black",
+        linewidth=2,
+        zorder=2,
+        label="Validated",
+    )
+
+    # Unvalidated points (Hollow/White filled)
+    unval_years = [2021, 2022, 2023, 2025]
+    unval_det = [100.0, 100.0, 100.0, 100.0]
+    ax.scatter(
+        unval_years,
+        unval_det,
+        s=150,
+        c="white",
+        edgecolors=COLORS["neutral"],
+        linewidth=2,
+        zorder=2,
+        label="Unvalidated",
+    )
+
+    ax.legend(loc="lower right", fontsize=10, framealpha=0.9)
 
     # Data labels
     for yr, det in zip(years, detection):
@@ -889,167 +992,200 @@ def create_fig09_temporal_trend():
 def create_fig10_architecture():
     """
     Figure 10: System Architecture
-    COMPLETE REDESIGN: Clean block diagram with proper flow
+    REDESIGNED: Clean horizontal pipeline with enlarged fonts for readability.
+    Uses background shading for layers and separates text from geometry.
     """
-    print("Creating fig10_architecture (complete redesign)...")
+    print("Creating fig10_architecture (enlarged fonts)...")
 
     fig, ax = plt.subplots(figsize=(14, 7))
     ax.set_xlim(0, 14)
     ax.set_ylim(0, 7)
     ax.axis("off")
 
-    # Title
-    ax.text(7, 6.7, "LLM Regime Detection System Architecture", fontsize=15, weight="bold", ha="center")
-
-    # Component definitions
-    components = [
+    # Define steps
+    steps = [
         {
-            "name": "Data\nIngestion",
-            "items": ["Alpha Vantage API", "Options chains", "1,475 trading days"],
-            "x": 0.5,
-            "y": 4.0,
-            "w": 2.3,
-            "h": 2.0,
-            "color": "#E3F2FD",
-            "border": "#1976D2",
+            "title": "1. Data\nIngestion",
+            "details": ["Alpha Vantage API", "Options Chains", "1,475 Trading Days"],
+            "color": "#FFFFFF",
+            "edge": "#1976D2",
         },
         {
-            "name": "GEX\nCalculation",
-            "items": ["Net gamma exposure", "OI vs Volume", "Strike aggregation"],
-            "x": 3.1,
-            "y": 4.0,
-            "w": 2.3,
-            "h": 2.0,
-            "color": "#E3F2FD",
-            "border": "#1976D2",
+            "title": "2. GEX\nCalculation",
+            "details": ["Net Gamma Exposure", "OI vs Volume", "Strike Aggregation"],
+            "color": "#FFFFFF",
+            "edge": "#1976D2",
         },
         {
-            "name": "Temporal\nObfuscation",
-            "items": ["Date masking", "Symbol aliasing", "Relative strikes"],
-            "x": 5.7,
-            "y": 4.0,
-            "w": 2.3,
-            "h": 2.0,
-            "color": "#E8F5E9",
-            "border": "#388E3C",
+            "title": "3. Temporal\nObfuscation",
+            "details": ["Date Masking", "Symbol Aliasing", "Relative Strikes"],
+            "color": "#FFFFFF",
+            "edge": "#388E3C",
         },
         {
-            "name": "30-Day\nWindows",
-            "items": ["Rolling windows", "Regime detection", "1,418 windows"],
-            "x": 8.3,
-            "y": 4.0,
-            "w": 2.3,
-            "h": 2.0,
-            "color": "#E8F5E9",
-            "border": "#388E3C",
+            "title": "4. Rolling\nWindows",
+            "details": ["30-Day Windows", "Regime Detection", "1,418 Windows"],
+            "color": "#FFFFFF",
+            "edge": "#388E3C",
         },
         {
-            "name": "LLM\nAnalysis",
-            "items": ["OpenAI o4-mini", "Batch API", "Regime prediction"],
-            "x": 10.9,
-            "y": 4.0,
-            "w": 2.3,
-            "h": 2.0,
-            "color": "#F3E5F5",
-            "border": "#7B1FA2",
+            "title": "5. LLM\nAnalysis",
+            "details": ["o4-mini (OpenAI)", "Batch API", "Reasoning"],
+            "color": "#FFFFFF",
+            "edge": "#7B1FA2",
         },
     ]
 
-    # Draw components
-    for comp in components:
+    # Layout parameters - ENLARGED
+    start_x = 0.5
+    y_box = 3.4  # Lowered to prevent title collisions
+    box_w = 2.4
+    box_h = 1.4
+    gap = 0.35
+
+    # Layer Backgrounds - INCREASED ALPHA
+    # Data Layer (Steps 1-2)
+    ax.add_patch(
+        mpatches.Rectangle((0.15, 0.3), 2 * box_w + 2.5 * gap, 6.4, color="#E3F2FD", alpha=0.45, zorder=0, ec="none")
+    )
+    ax.text(start_x + box_w + gap / 2, 0.55, "Data Layer", ha="center", fontsize=13, weight="bold", color="#1565C0")
+
+    # Processing Layer (Steps 3-4)
+    ax.add_patch(
+        mpatches.Rectangle(
+            (0.15 + 2 * box_w + 2.5 * gap, 0.3),
+            2 * box_w + 2.5 * gap,
+            6.4,
+            color="#E8F5E9",
+            alpha=0.45,
+            zorder=0,
+            ec="none",
+        )
+    )
+    ax.text(
+        start_x + 3 * box_w + 3.5 * gap,
+        0.55,
+        "Processing Layer",
+        ha="center",
+        fontsize=13,
+        weight="bold",
+        color="#2E7D32",
+    )
+
+    # Analysis Layer (Step 5)
+    ax.add_patch(
+        mpatches.Rectangle(
+            (0.15 + 4 * box_w + 5 * gap, 0.3), box_w + 2 * gap, 6.4, color="#F3E5F5", alpha=0.45, zorder=0, ec="none"
+        )
+    )
+    ax.text(
+        start_x + 4 * box_w + 5.5 * gap + box_w / 2,
+        0.55,
+        "Analysis Layer",
+        ha="center",
+        fontsize=13,
+        weight="bold",
+        color="#6A1B9A",
+    )
+
+    # Draw main pipeline
+    for i, step in enumerate(steps):
+        x = start_x + i * (box_w + gap)
+
+        # Main Box - LARGER
         rect = FancyBboxPatch(
-            (comp["x"], comp["y"]),
-            comp["w"],
-            comp["h"],
+            (x, y_box),
+            box_w,
+            box_h,
             boxstyle="round,pad=0.1",
-            facecolor=comp["color"],
-            edgecolor=comp["border"],
+            facecolor=step["color"],
+            edgecolor=step["edge"],
             linewidth=3,
+            zorder=2,
         )
         ax.add_patch(rect)
 
-        # Name
+        # Title centered in box - LARGER FONT
         ax.text(
-            comp["x"] + comp["w"] / 2,
-            comp["y"] + comp["h"] - 0.4,
-            comp["name"],
-            fontsize=11,
-            weight="bold",
+            x + box_w / 2,
+            y_box + box_h / 2,
+            step["title"],
             ha="center",
-            va="top",
+            va="center",
+            fontsize=12,
+            weight="bold",
+            color="#333333",
+            zorder=3,
         )
 
-        # Items
-        y = comp["y"] + comp["h"] - 1.0
-        for item in comp["items"]:
-            ax.text(comp["x"] + comp["w"] / 2, y, item, fontsize=9, ha="center", color="#666666")
-            y -= 0.35
+        # Details below box (Bullet points) - LARGER FONT
+        detail_y = y_box - 0.5
+        for detail in step["details"]:
+            ax.text(
+                x + box_w / 2, detail_y, f"• {detail}", ha="center", va="top", fontsize=11, color="#333333", zorder=3
+            )
+            detail_y -= 0.5
 
-    # Arrows between components
-    for i in range(len(components) - 1):
-        x1 = components[i]["x"] + components[i]["w"]
-        x2 = components[i + 1]["x"]
-        y = components[i]["y"] + components[i]["h"] / 2
-        ax.annotate(
-            "", xy=(x2 - 0.05, y), xytext=(x1 + 0.05, y), arrowprops=dict(arrowstyle="->", lw=2, color="#666666")
-        )
+        # Arrow to next - DARKER
+        if i < len(steps) - 1:
+            ax.annotate(
+                "",
+                xy=(x + box_w + gap + 0.05, y_box + box_h / 2),
+                xytext=(x + box_w + 0.05, y_box + box_h / 2),
+                arrowprops=dict(arrowstyle="->", lw=2.5, color="#444444"),
+                zorder=2,
+            )
 
-    # Database box
-    db_x, db_y = 3.1, 1.5
-    db_rect = FancyBboxPatch(
-        (db_x, db_y), 2.3, 1.3, boxstyle="round,pad=0.1", facecolor="white", edgecolor="#1976D2", linewidth=2
+    # Database Annotation (Above Step 2) - LARGER
+    db_x = start_x + box_w + gap + box_w / 2
+    db_y = y_box + box_h + 0.8
+    ax.text(
+        db_x,
+        db_y,
+        "SQLite Database\n(11.8M Options)",
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        weight="bold",
+        color="#1565C0",
     )
-    ax.add_patch(db_rect)
-    ax.text(db_x + 1.15, db_y + 0.9, "SQLite DB", fontsize=10, weight="bold", ha="center", color="#1976D2")
-    ax.text(db_x + 1.15, db_y + 0.5, "3.25 GB", fontsize=9, ha="center", color="#666666")
-    ax.text(db_x + 1.15, db_y + 0.2, "11.8M options", fontsize=8, ha="center", color="#999999")
-
-    # Arrow from GEX to DB
     ax.annotate(
         "",
-        xy=(db_x + 1.15, db_y + 1.3),
-        xytext=(3.1 + 1.15, 4.0),
-        arrowprops=dict(arrowstyle="->", lw=2, color="#1976D2"),
+        xy=(db_x, y_box + box_h + 0.15),
+        xytext=(db_x, db_y - 0.15),
+        arrowprops=dict(arrowstyle="->", lw=2, color="#1565C0", linestyle="dashed"),
     )
 
-    # Results box
-    res_x, res_y = 5.5, 0.5
-    res_rect = FancyBboxPatch(
-        (res_x, res_y), 6.5, 1.5, boxstyle="round,pad=0.1", facecolor="#F5F5F5", edgecolor="#333333", linewidth=2
+    # Results Annotation (Above Step 5) - LARGER
+    res_x = start_x + 4 * (box_w + gap) + box_w / 2
+    res_y = y_box + box_h + 0.8
+    ax.text(
+        res_x,
+        res_y,
+        "Validation Results\n(Pre vs Post 0DTE)",
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        weight="bold",
+        color="#6A1B9A",
     )
-    ax.add_patch(res_rect)
-    ax.text(res_x + 3.25, res_y + 1.2, "Validation Results", fontsize=11, weight="bold", ha="center")
-
-    results = [
-        "2020: 12.1% detection (pre-0DTE baseline)",
-        "2021-2023, 2025: 100% detection (post-0DTE)",
-        "2024: 81.2% detection (volatility period)",
-    ]
-    y = res_y + 0.85
-    for res in results:
-        ax.text(res_x + 3.25, y, res, fontsize=9, ha="center", color="#666666")
-        y -= 0.3
-
-    # Arrow from LLM to Results
     ax.annotate(
         "",
-        xy=(res_x + 3.25, res_y + 1.5),
-        xytext=(10.9 + 1.15, 4.0),
-        arrowprops=dict(arrowstyle="->", lw=2, color="#7B1FA2", connectionstyle="arc3,rad=-0.2"),
+        xy=(res_x, res_y - 0.15),
+        xytext=(res_x, y_box + box_h + 0.15),
+        arrowprops=dict(arrowstyle="<-", lw=2, color="#6A1B9A", linestyle="dashed"),
     )
 
-    # Legend
-    legend_items = [
-        ("#1976D2", "Data Layer"),
-        ("#388E3C", "Processing Layer"),
-        ("#7B1FA2", "Analysis Layer"),
-    ]
-    legend_x = 0.8
-    for color, label in legend_items:
-        rect = FancyBboxPatch((legend_x, 0.3), 0.4, 0.4, boxstyle="round,pad=0.02", facecolor=color, edgecolor="none")
-        ax.add_patch(rect)
-        ax.text(legend_x + 0.6, 0.5, label, fontsize=9, va="center", color="#666666")
-        legend_x += 3.5
+    # Main Title - LARGER
+    ax.text(
+        7,
+        6.7,
+        "System Architecture: LLM Regime Detection Pipeline",
+        ha="center",
+        fontsize=16,
+        weight="bold",
+        color="#222222",
+    )
 
     plt.tight_layout()
     output_path = OUTPUT_DIR / "fig10_architecture.png"

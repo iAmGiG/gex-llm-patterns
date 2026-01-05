@@ -2,6 +2,7 @@
 """Check collection progress by symbol."""
 
 import sqlite3
+import os
 
 conn = sqlite3.connect(".cache/options_historical.db")
 cursor = conn.cursor()

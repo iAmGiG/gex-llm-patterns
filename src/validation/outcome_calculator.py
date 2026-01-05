@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 
 logger = logging.getLogger(__name__)
 

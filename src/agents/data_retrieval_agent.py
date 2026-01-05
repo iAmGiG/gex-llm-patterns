@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from cache.sqlite_options_manager import SQLiteOptionsManager
+from cache.postgresql_options_manager import PostgreSQLOptionsManager
 from cache.unified_cache import UnifiedCacheManager
 from data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
@@ -53,13 +54,13 @@ class DataRetrievalAgent:
 
         # Initialize data providers based on source
         if data_source == "production":
-            # Issue #180: SQLite is primary options storage
-            self.sqlite_options = SQLiteOptionsManager()
+            # Use PostgreSQL by default (migrated from SQLite)
+            self.db = PostgreSQLOptionsManager()
             self.cache_manager = UnifiedCacheManager(base_dir=str(self.cache_dir))
             self.alpha_vantage_client = AlphaVantageGEXClient(self.cache_manager)
             # LiveGEXInterface removed - use direct calculation instead
-            self.provider = None  # Will use sqlite_options + alpha_vantage_client
-            logger.info("Initialized production data retrieval with SQLite + Alpha Vantage Premium")
+            self.provider = None  # Will use db + alpha_vantage_client
+            logger.info("Initialized production data retrieval with PostgreSQL + Alpha Vantage Premium")
 
         elif data_source == "sample":
             # Sample mode no longer supported - must use real data
@@ -279,8 +280,8 @@ class DataRetrievalAgent:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
 
         # Step 1: Check SQLite first (Issue #180: primary storage)
-        if self.sqlite_options:
-            cached_data = self.sqlite_options.get_options_chain(symbol, date)
+        if self.db:
+            cached_data = self.db.get_options_chain(symbol, date)
             if cached_data is not None and not cached_data.empty:
                 logger.info(f"SQLite hit for {symbol} options on {date}")
                 return {"status": "success", "source": "sqlite", "data": cached_data}
@@ -291,8 +292,8 @@ class DataRetrievalAgent:
                 api_data = self.alpha_vantage_client.fetch_historical_options(symbol, date)
                 if api_data is not None and not api_data.empty:
                     # Store in SQLite (Issue #180)
-                    if self.sqlite_options:
-                        self.sqlite_options.store_options_chain(symbol, date, api_data)
+                    if self.db:
+                        self.db.store_options_chain(symbol, date, api_data)
                     return {"status": "success", "source": "alpha_vantage", "data": api_data}
             except Exception as e:
                 logger.warning(f"Alpha Vantage API failed: {e}")
@@ -412,7 +413,7 @@ class DataRetrievalAgent:
 
     def _get_recent_cached_dates(self, symbol, days_back=30):
         """Get list of dates with cached data for symbol."""
-        if not self.sqlite_options:
+        if not self.db:
             return []
 
         recent_dates = []
@@ -424,7 +425,7 @@ class DataRetrievalAgent:
             date_str = current_date.strftime("%Y-%m-%d")
             try:
                 # Issue #180: Use SQLite for options data
-                cached_data = self.sqlite_options.get_options_chain(symbol, date_str)
+                cached_data = self.db.get_options_chain(symbol, date_str)
                 if cached_data is not None and not cached_data.empty:
                     recent_dates.append(date_str)
             except Exception:

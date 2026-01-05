@@ -4,6 +4,7 @@ Fetches live options data from Alpha Vantage and validates it.
 """
 
 import sys
+import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -11,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 import logging
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # Set up logging
@@ -28,7 +30,7 @@ def test_validation_on_real_data():
     # Initialize clients
     print("\n[1] Initializing Alpha Vantage client and SQLite manager...")
     av_client = AlphaVantageGEXClient()
-    db_manager = SQLiteOptionsManager(db_path=".cache/options_historical.db", enable_validation=True)
+    db_manager = SQLiteOptionsManager(# db_path=".cache/options_historical.db"  # Migrated to PostgreSQL, enable_validation=True)
 
     # Fetch real data
     symbol = "SPY"

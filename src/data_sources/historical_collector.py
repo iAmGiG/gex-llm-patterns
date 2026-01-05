@@ -20,6 +20,7 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from src.utils.date_utils import now_iso, today_str
@@ -32,7 +33,8 @@ class HistoricalOptionsCollector:
     """Service to systematically collect historical options data.
 
     Features:
-    - SQLite storage (primary) with pickle fallback
+    - PostgreSQL storage (primary) for high concurrency
+    - SQLite storage (legacy/local)
     - Rate-limited API calls (1000/min for Premium, 75/min for standard)
     - Progress tracking in database with resume capability
     - Error handling and retry logic
@@ -47,7 +49,12 @@ class HistoricalOptionsCollector:
     def __init__(
         self,
         db_path: str = ".cache/options_historical.db",
-        use_sqlite: bool = True,
+        use_sqlite: bool = False,  # Default to PostgreSQL
+        use_postgresql: bool = True,  # New parameter
+        pg_host: str = "localhost",
+        pg_port: int = 5432,
+        pg_user: str = "cregan1",
+        pg_database: str = "gex_options",
         rate_limit_per_minute: int = 900,  # Buffer below 1000 premium limit
     ):
         """Initialize historical data collector.
@@ -65,7 +72,16 @@ class HistoricalOptionsCollector:
         self.logger.setLevel(logging.INFO)
 
         # Initialize storage backend
-        if use_sqlite:
+        if use_postgresql:
+            self.db = PostgreSQLOptionsManager(
+                host=pg_host,
+                port=pg_port,
+                user=pg_user,
+                database=pg_database
+            )
+            self.cache = None
+            self.logger.info(f"Using PostgreSQL storage: {pg_user}@{pg_host}:{pg_port}/{pg_database}")
+        elif use_sqlite:
             self.db = SQLiteOptionsManager(db_path=db_path)
             self.cache = None  # Lazy load if needed
             self.logger.info(f"Using SQLite storage: {db_path}")
@@ -173,12 +189,8 @@ class HistoricalOptionsCollector:
         Returns:
             True if data exists
         """
-        if self.use_sqlite:
+        if self.db:
             return self.db.has_options_data(symbol, trading_date)
-        else:
-            # Issue #180: Legacy pickle mode removed - use SQLite
-            self.logger.warning("Legacy pickle mode disabled (Issue #180). Falling back to SQLite.")
-            return self.db.has_options_data(symbol, trading_date) if self.db else False
 
     def _store_data(self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None) -> bool:
         """Store options data in the appropriate backend.
@@ -192,16 +204,10 @@ class HistoricalOptionsCollector:
         Returns:
             True if stored successfully
         """
-        if self.use_sqlite:
+        if self.db:
             count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
             return count > 0
-        else:
-            # Issue #180: Legacy pickle mode removed - use SQLite
-            self.logger.warning("Legacy pickle mode disabled (Issue #180). Falling back to SQLite.")
-            if self.db:
-                count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
-                return count > 0
-            return False
+        return False
 
     def _store_data_buffered(
         self, symbol: str, trading_date: str, data: pd.DataFrame, underlying_price: float = None
@@ -224,12 +230,7 @@ class HistoricalOptionsCollector:
         Returns:
             True (data queued successfully)
         """
-        if not self.use_sqlite:
-            # Issue #180: Legacy pickle mode removed - use SQLite synchronously
-            self.logger.warning("Legacy pickle mode disabled (Issue #180). Using SQLite.")
-            if self.db:
-                count = self.db.store_options_chain(symbol, trading_date, data, underlying_price=underlying_price)
-                return count > 0
+        if not self.db:
             return False
 
         # Start background write thread if not running
@@ -313,7 +314,7 @@ class HistoricalOptionsCollector:
         Args:
             timeout: Maximum time to wait in seconds
         """
-        if not self.use_sqlite:
+        if not self.db:
             return
 
         start_time = time.time()
@@ -345,7 +346,7 @@ class HistoricalOptionsCollector:
         Returns:
             List of missing trading dates
         """
-        if self.use_sqlite:
+        if self.db:
             return self.db.get_missing_dates(symbol, start_date, end_date)
         else:
             # Legacy: use JSON progress file
@@ -421,7 +422,7 @@ class HistoricalOptionsCollector:
         }
 
         self.stats["start_time"] = now_iso()
-        legacy_progress = self._load_legacy_progress() if not self.use_sqlite else None
+        legacy_progress = self._load_legacy_progress() if not self.db else None
 
         for i, trade_date in enumerate(remaining_dates):
             try:
@@ -440,12 +441,12 @@ class HistoricalOptionsCollector:
                     continue
 
                 # Make API call
-                self.logger.info(f"Fetching {symbol} options for {trade_date} " f"({i+1}/{len(remaining_dates)})")
+                self.logger.info(f"Fetching {symbol} options for {trade_date} " f"({i + 1}/{len(remaining_dates)})")
 
                 self.stats["last_call_time"] = time.time()
                 # Skip legacy cache since we handle SQLite storage ourselves
                 options_data = self.client.fetch_historical_options(
-                    symbol, trade_date, cache_result=not self.use_sqlite
+                    symbol, trade_date, cache_result=not self.db
                 )
                 self.stats["total_calls"] += 1
 
@@ -515,7 +516,7 @@ class HistoricalOptionsCollector:
         self.logger.info(f"API Stats: {self.stats['total_calls']} calls, " f"{self.stats['cached_hits']} cache hits")
 
         # Show database stats if using SQLite
-        if self.use_sqlite:
+        if self.db:
             stats = self.db.get_database_stats()
             self.logger.info(
                 f"Database: {stats.get('total_options_records', 0):,} records, " f"{stats.get('db_size_mb', 0):.2f} MB"
@@ -567,7 +568,7 @@ class HistoricalOptionsCollector:
             "symbols": symbols,
             "start_date": start_date,
             "end_date": end_date,
-            "storage_backend": "sqlite" if self.use_sqlite else "pickle",
+            "storage_backend": "database" if self.db else "pickle",
             "collection_start": now_iso(),
             "symbol_summaries": {},
             "total_api_calls": 0,
@@ -577,9 +578,9 @@ class HistoricalOptionsCollector:
         }
 
         for symbol in symbols:
-            self.logger.info(f"\n{'='*60}")
+            self.logger.info(f"\n{'=' * 60}")
             self.logger.info(f"Starting collection for {symbol}")
-            self.logger.info(f"{'='*60}")
+            self.logger.info(f"{'=' * 60}")
 
             # Reset stats for each symbol
             self.stats = {
@@ -620,7 +621,7 @@ class HistoricalOptionsCollector:
             "symbols": symbols,
             "start_date": start_date,
             "end_date": end_date,
-            "storage_backend": "sqlite" if self.use_sqlite else "pickle",
+            "storage_backend": "database" if self.db else "pickle",
             "collection_start": now_iso(),
             "symbol_summaries": {
                 sym: {
@@ -675,9 +676,9 @@ class HistoricalOptionsCollector:
             except StopIteration:
                 pass
 
-        self.logger.info(f"\n{'='*60}")
+        self.logger.info(f"\n{'=' * 60}")
         self.logger.info(f"Starting parallel collection for {len(symbols)} symbols")
-        self.logger.info(f"{'='*60}\n")
+        self.logger.info(f"{'=' * 60}\n")
 
         call_count = 0
 
@@ -709,7 +710,7 @@ class HistoricalOptionsCollector:
 
                         self.stats["last_call_time"] = time.time()
                         options_data = self.client.fetch_historical_options(
-                            symbol, trade_date, cache_result=not self.use_sqlite
+                            symbol, trade_date, cache_result=not self.db
                         )
                         self.stats["total_calls"] += 1
                         call_count += 1
@@ -741,7 +742,7 @@ class HistoricalOptionsCollector:
                     # Log progress every 10 calls across all symbols
                     if call_count % 10 == 0:
                         self._log_parallel_status(symbol_iterators)
-                        if self.use_sqlite:
+                        if self.db:
                             stats = self.db.get_database_stats()
                             self.logger.info(
                                 f"Database: {stats.get('total_options_records', 0):,} records, {stats.get('db_size_mb', 0):.2f} MB\n"
@@ -786,7 +787,7 @@ class HistoricalOptionsCollector:
             "symbols": symbols,
             "start_date": start_date,
             "end_date": end_date,
-            "storage_backend": "sqlite" if self.use_sqlite else "pickle",
+            "storage_backend": "database" if self.db else "pickle",
             "collection_start": now_iso(),
             "symbol_summaries": {
                 sym: {
@@ -844,10 +845,10 @@ class HistoricalOptionsCollector:
             except StopIteration:
                 pass
 
-        self.logger.info(f"\n{'='*60}")
+        self.logger.info(f"\n{'=' * 60}")
         self.logger.info(f"Starting BUFFERED parallel collection for {len(symbols)} symbols")
         self.logger.info(f"RAM buffer active - API calls decoupled from DB writes")
-        self.logger.info(f"{'='*60}\n")
+        self.logger.info(f"{'=' * 60}\n")
 
         call_count = 0
 
@@ -879,7 +880,7 @@ class HistoricalOptionsCollector:
 
                         self.stats["last_call_time"] = time.time()
                         options_data = self.client.fetch_historical_options(
-                            symbol, trade_date, cache_result=not self.use_sqlite
+                            symbol, trade_date, cache_result=not self.db
                         )
                         self.stats["total_calls"] += 1
                         call_count += 1
@@ -946,7 +947,7 @@ class HistoricalOptionsCollector:
             f"API Stats: {self.stats['total_calls']} calls | " f"Buffer: {self._pending_writes} pending writes\n"
         )
         # Show database stats less frequently to avoid locking
-        if self.stats["total_calls"] % 50 == 0 and self.use_sqlite:
+        if self.stats["total_calls"] % 50 == 0 and self.db:
             try:
                 stats = self.db.get_database_stats()
                 self.logger.info(
@@ -972,21 +973,21 @@ class HistoricalOptionsCollector:
         summary["collection_end"] = now_iso()
 
         # Add final storage statistics
-        if self.use_sqlite:
+        if self.db:
             summary["final_db_stats"] = self.db.get_database_stats()
         else:
             summary["final_cache_stats"] = self._get_legacy_cache_info()
 
         # Log final status
-        self.logger.info(f"\n{'='*60}")
+        self.logger.info(f"\n{'=' * 60}")
         self.logger.info("COLLECTION COMPLETE")
-        self.logger.info(f"{'='*60}")
+        self.logger.info(f"{'=' * 60}")
         self.logger.info(f"Mode: {summary.get('mode', 'sequential')}")
         self.logger.info(f"Total API calls: {summary['total_api_calls']}")
         self.logger.info(f"Successful: {summary['total_successful']}")
         self.logger.info(f"Failed: {summary['total_failed']}")
 
-        if self.use_sqlite:
+        if self.db:
             stats = summary["final_db_stats"]
             self.logger.info(f"Database: {stats.get('total_options_records', 0):,} records")
             self.logger.info(f"Database size: {stats.get('db_size_mb', 0):.2f} MB")
@@ -1032,12 +1033,12 @@ class HistoricalOptionsCollector:
         Returns:
             Status dictionary with progress and statistics
         """
-        if self.use_sqlite:
+        if self.db:
             stats = self.db.get_database_stats()
             progress = self.db.get_collection_progress(symbol)
 
             return {
-                "storage": "sqlite",
+                "storage": "database",
                 "database_stats": stats,
                 "progress_summary": (
                     {
@@ -1058,7 +1059,7 @@ class HistoricalOptionsCollector:
 
 
 async def main():
-    """Example usage of the historical collector with SQLite backend."""
+    """Example usage of the historical collector with PostgreSQL backend."""
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
@@ -1069,10 +1070,11 @@ async def main():
         ],
     )
 
-    # Initialize collector with SQLite backend (recommended)
+    # Initialize collector with PostgreSQL backend (default)
     collector = HistoricalOptionsCollector(
-        db_path=".cache/options_historical.db",
-        use_sqlite=True,
+        use_postgresql=True,
+        use_sqlite=False,
+        pg_host="localhost",
         rate_limit_per_minute=900,  # Premium tier buffer
     )
 

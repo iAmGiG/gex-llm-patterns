@@ -12,11 +12,13 @@ Patterns detected:
 """
 
 import logging
+import os
 from typing import Any, Dict, Optional
 
 import pandas as pd
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.gex.gex_calculator import GEXCalculator
 
 logger = logging.getLogger(__name__)

@@ -10,6 +10,7 @@ This analysis feeds gex-llm-patterns Paper 3 (cross-asset flows).
 """
 
 import sqlite3
+import os
 import sys
 from datetime import timedelta
 from pathlib import Path

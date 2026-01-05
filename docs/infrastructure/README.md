@@ -163,10 +163,15 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 
 [docs/development/](../development/) - Developer workflows (worktree management, testing)
 
+### Infrastructure Guides (January 2026)
+
+- **[RESEARCH_CACHE_GUIDE.md](RESEARCH_CACHE_GUIDE.md)** - ResearchCache usage guide for experiment tracking and reproducibility
+- **[DATABASE_UPGRADE_PLAN.md](DATABASE_UPGRADE_PLAN.md)** - PostgreSQL migration plan and status
+
 ### Paper-Specific Infrastructure
 
 - [docs/papers/paper1/](../papers/paper1/) - Paper #1 (single-day framework)
-- [docs/papers/paper2/infrastructure/](../papers/paper2/infrastructure/) - Paper #2 (sequential framework)
+- [docs/papers/paper2/infrastructure/](../papers/paper2/infrastructure/) - Paper #2 (sequential framework, PostgreSQL migration)
 
 ### User Guides
 

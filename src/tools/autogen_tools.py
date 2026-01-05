@@ -12,6 +12,7 @@ Organized by agent type for clean tool assignment and efficient agent workflows.
 
 # Standard library imports
 import logging
+import os
 
 import pandas as pd
 
@@ -66,7 +67,7 @@ import pandas as pd
 from autogen_core.tools import FunctionTool
 
 # Project imports - only tools actually used
-from src.cache import SQLiteOptionsManager, UnifiedCacheManager
+from src.cache import SQLiteOptionsManager, PostgreSQLOptionsManager, UnifiedCacheManager
 from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
@@ -88,13 +89,10 @@ ANALYSIS_AGENT = "analysis"
 ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 
 # Initialize shared components
-# Issue #180: SQLite is primary/only storage for options data
+# Use PostgreSQL by default (migrated from SQLite)
 # Issue #16: Validation enabled at ingress by default
 # UnifiedCacheManager is used for market data and GEX calculations (not options)
-sqlite_options = SQLiteOptionsManager(
-    db_path=".cache/options_historical.db",
-    enable_validation=True,  # Issue #16: Quality validation at ingress
-)
+options_db = PostgreSQLOptionsManager()  # Primary database for options data
 cache_manager = UnifiedCacheManager()  # For market data and GEX (not options)
 alpha_vantage_client = AlphaVantageGEXClient()
 live_gex = LiveGEXInterface()
@@ -135,7 +133,7 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
 
         if use_cache:
             # 1. Check SQLite database first (primary storage)
-            sqlite_data = sqlite_options.get_options_chain(symbol, trading_date)
+            sqlite_data = options_db.get_options_chain(symbol, trading_date)
             if sqlite_data is not None and not sqlite_data.empty:
                 logger.info(f"SQLite hit for {symbol} options on {trading_date}")
                 filtered_data = filter_options_data(sqlite_data)
@@ -155,7 +153,7 @@ def fetch_options_data(symbol: str = "SPY", trading_date: str = None, use_cache:
 
         if api_data is not None and not api_data.empty:
             # Store in SQLite (primary) - no longer storing in pickle
-            sqlite_options.store_options_chain(symbol, trading_date, api_data)
+            options_db.store_options_chain(symbol, trading_date, api_data)
             filtered_data = filter_options_data(api_data)
             return {
                 "status": "success",
