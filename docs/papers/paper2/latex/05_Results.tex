@@ -306,32 +306,34 @@ H_0: p_{2024} = p_{2020} \quad \text{vs} \quad H_1: p_{2024} > p_{2020}
 
 The 69.1 percentage point difference is statistically significant, confirming fundamentally different market regimes.
 
-\subsection{Cost and Efficiency}
-
-\begin{table}[ht]
-\centering
-\caption{Validation Execution Metrics (All Phases)}
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Phase} & \textbf{Windows} & \textbf{Duration} & \textbf{Cost} \\
-\midrule
-Phase 1 (Q1 2024) & 52 & 11.5 min & \$0.81 \\
-Phase 2 (Negatives) & 809 & ~2 hrs & \$12.12 \\
-Phase 3 (Full 2024) & 223 & 23 min & \$0.60 \\
-Phase 4 (2020) & 223 & 7 min & \$0.07 \\
-\midrule
-\textbf{Total (Valid)} & \textbf{1,307} & ~3 hrs & \textbf{\$13.60} \\
-\textbf{Wasted (Bugs)} & 774 & ~4 hrs & \$25.83 \\
-\midrule
-\textbf{Grand Total} & 2,081 & ~7 hrs & \$39.43 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-OpenAI Batch API enabled cost-effective validation (\$13.60 valid results, \$25.83 wasted on data bugs). The 50\% cost savings vs synchronous API made exhaustive testing economically feasible. Two critical bugs were identified and fixed:
-\begin{enumerate}
-\item \textbf{Missing 2020 export}: 4 batches resubmitted (\$14.57 wasted)
-\item \textbf{Zero GEX bug}: File cache alias issue, 3 batches resubmitted (\$11.26 wasted)
-\end{enumerate}
-
-All invalid results were archived for transparency, and corrected batches verified against database values.
+% \subsection{Cost and Efficiency}
+%
+% Cost metrics omitted from paper per user request - not tracking this metric
+%
+% \begin{table}[ht]
+% \centering
+% \caption{Validation Execution Metrics (All Phases)}
+% \begin{tabular}{lrrr}
+% \toprule
+% \textbf{Phase} & \textbf{Windows} & \textbf{Duration} & \textbf{Cost} \\
+% \midrule
+% Phase 1 (Q1 2024) & 52 & 11.5 min & \$0.81 \\
+% Phase 2 (Negatives) & 809 & ~2 hrs & \$12.12 \\
+% Phase 3 (Full 2024) & 223 & 23 min & \$0.60 \\
+% Phase 4 (2020) & 223 & 7 min & \$0.07 \\
+% \midrule
+% \textbf{Total (Valid)} & \textbf{1,307} & ~3 hrs & \textbf{\$13.60} \\
+% \textbf{Wasted (Bugs)} & 774 & ~4 hrs & \$25.83 \\
+% \midrule
+% \textbf{Grand Total} & 2,081 & ~7 hrs & \$39.43 \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+%
+% OpenAI Batch API enabled cost-effective validation (\$13.60 valid results, \$25.83 wasted on data bugs). The 50\% cost savings vs synchronous API made exhaustive testing economically feasible. Two critical bugs were identified and fixed:
+% \begin{enumerate}
+% \item \textbf{Missing 2020 export}: 4 batches resubmitted (\$14.57 wasted)
+% \item \textbf{Zero GEX bug}: File cache alias issue, 3 batches resubmitted (\$11.26 wasted)
+% \end{enumerate}
+%
+% All invalid results were archived for transparency, and corrected batches verified against database values.
