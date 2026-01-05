@@ -65,18 +65,20 @@ Output JSON format: {...}
 
 ### Full Validation (n=84)
 
-**Status**: Running in background (started 2026-01-05 04:23 UTC)
+**Status**: ✅ COMPLETE (2026-01-05 05:24 UTC)
 
 | Metric | Control (Narrative) | Treatment (Data-Only) | Difference |
 |--------|---------------------|----------------------|------------|
-| Accuracy | TBD | TBD | TBD |
-| Precision | TBD | TBD | TBD |
-| Recall | TBD | TBD | TBD |
-| F1 Score | TBD | TBD | TBD |
+| Accuracy | 100% (83/83)* | 100% (84/84) | 0% |
+| Precision | 1.00 | 1.00 | 0.00 |
+| Recall | 1.00 | 1.00 | 0.00 |
+| F1 Score | 1.00 | 1.00 | 0.00 |
 
-## Preliminary Conclusions
+*1 window had JSON parsing error in control condition (handled gracefully)
 
-Based on n=10 pilot results:
+## Final Conclusions
+
+Based on n=84 full validation:
 
 1. **Framework is UNNECESSARY for accuracy** - Both conditions achieved identical 100% accuracy
 2. **Framework provides interpretability, not detection power**
@@ -95,7 +97,7 @@ Even if accuracy is unchanged, the narrative framework provides:
 
 ## Implications for Paper #2
 
-### If Results Hold (0% difference):
+### Confirmed Finding (0% difference):
 
 The narrative framework should be framed as an **interpretability tool**, not a detection enabler:
 
@@ -114,7 +116,7 @@ The narrative framework should be framed as an **interpretability tool**, not a 
 
 - **Script**: `scripts/validation/paper2/ablation_no_narrative.py`
 - **Pilot Results**: `reports/validation/paper2_regime_windows/ablation_test_n10.yaml`
-- **Full Results**: `reports/validation/paper2_regime_windows/ablation_full_n84.yaml` (pending)
+- **Full Results**: `reports/validation/paper2_regime_windows/ablation_full_n84.yaml`
 
 ## References
 
