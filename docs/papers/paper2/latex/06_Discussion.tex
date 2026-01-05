@@ -264,6 +264,8 @@ This objection is partially valid. Our regime classification framework is indeed
 
 Conversely, when persistence = 70.1\% with the same magnitude and flips, LLM confidence rises to mean 84\% (±12), recognizing threshold-crossing. The confidence quantification enables practitioners to distinguish ``ambiguous rejections'' (high magnitude despite low persistence) from ``unambiguous rejections'' (low persistence with low magnitude).
 
+\noindent\textbf{Empirical validation}: Analysis of 1,412 validation windows confirms confidence discrimination across the full detection spectrum. Detected regimes (n=646) averaged 92.8\% confidence, while rejected cases (n=766) averaged 52.1\%—a 40.7 percentage point gap indicating strong discrimination. The specific illustrative example (42\% vs 84\% for the 69.8\% vs 70.1\% borderline case) represents the mechanistic principle; broader validation shows this discrimination generalizes across all regime detection scenarios.
+
 We validated this through our ablation study (Section 5.9): LLM confidence correlates with regime quality metrics (r = +0.501 with persistence, r = -0.549 with stability), suggesting the model is not simply parroting the three criteria but assessing regime strength holistically.
 
 \textbf{Dimension 2: Criterion Violation Detection}: A secondary test examined whether the LLM ever violated its stated criteria (e.g., classifying a window as regime despite persistence < 70\%). Across all 1,858 windows, zero criterion violations occurred; the LLM perfectly respects the hard thresholds. This validates the mechanical accuracy (98\% criterion citation in Section 5.9) and confirms the model is not arbitrarily overriding rules.
