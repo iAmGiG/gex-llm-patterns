@@ -8,7 +8,7 @@ We extended obfuscation-based LLM validation from single-day dealer gamma constr
 
 \textbf{Negative controls passed}: Phase 2 achieved 0\% false positives on transitional (7-10 flips) and low-magnitude ($<$\$5B) synthetic windows, confirming the framework enforces regime criteria. The 12.1\% false positive rate on 2020 shuffled data further validates that detection depends on temporal structure, not statistical artifacts.
 
-\textbf{Gradual 0DTE adoption pattern identified}: Phase 4A multi-year validation (1,412 windows, 2020-2025) revealed that the structural shift occurred through gradual adoption culminating in a 2023→2024 transition, not a sharp 2020→2021 change. Detection rates tracked market evolution precisely: 2020 (12.2\%), 2021 (3.7\%), 2022 (32.4\%), 2023 (20.2\%), 2024 (100\%), 2025 (100\%). This gradual pattern strengthens causal attribution—detection tracks 0DTE market penetration rather than exhibiting binary behavior.
+\textbf{Gradual 0DTE adoption pattern identified}: Phase 5 multi-year validation (1,412 windows, 2020-2025) revealed that the structural shift occurred through gradual adoption culminating in a 2023→2024 transition, not a sharp 2020→2021 change. Detection rates tracked market evolution precisely: 2020 (12.2\%), 2021 (3.7\%), 2022 (32.4\%), 2023 (20.2\%), 2024 (100\%), 2025 (100\%). This gradual pattern strengthens causal attribution—detection tracks 0DTE market penetration rather than exhibiting binary behavior.
 
 \textbf{Magnitude-driven regime shift}: GEX magnitude grew 360\% from \$5B (2021) to \$23B (2024), far exceeding 20-25\% cumulative inflation. The fixed \$5B threshold effectively discriminated borderline markets (2021: 3.7\% detection) from structural regimes (2024: 100\% detection), validating threshold design. The 4.95× detection increase (20.2\% → 100\%) temporally coincides with 0DTE trading explosion in late 2023.
 
@@ -42,7 +42,7 @@ Our findings have three implications for LLM-based financial analysis:
 
 Four research directions emerge from this work:
 
-\textbf{Historical extension}: While Phase 4A covered the 2020-2025 0DTE transition, longer-term historical analysis (2005-2020) could reveal whether similar regime transitions occurred during earlier options market innovations such as 2008-2010 (financial crisis), 2016-2018 (VIX ETF proliferation), and 2005-2007 (pre-crisis baseline).
+\textbf{Historical extension}: While Phase 5 covered the 2020-2025 0DTE transition, longer-term historical analysis (2005-2020) could reveal whether similar regime transitions occurred during earlier options market innovations such as 2008-2010 (financial crisis), 2016-2018 (VIX ETF proliferation), and 2005-2007 (pre-crisis baseline).
 
 \textbf{Cross-asset generalization}: Extending to individual equities (AAPL, MSFT, NVDA, TSLA) will test whether regime detection generalizes beyond S\&P 500 index options and identify asset-specific vs market-wide regime characteristics.
 

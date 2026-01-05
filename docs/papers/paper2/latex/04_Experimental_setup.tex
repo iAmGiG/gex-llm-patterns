@@ -86,9 +86,9 @@ Phase 1 (Q1 2024) & 52 & Real & ⊂ Phase 3 & 0 \\
 Phase 2a (Shuffle) & 404 & Synthetic & No & 404 \\
 Phase 2b (Transitional) & 202 & Synthetic & No & 202 \\
 Phase 2c (Low-Magnitude) & 203 & Synthetic & No & 203 \\
-Phase 3 (Full 2024) & 223 & Real & ⊂ Phase 4A & 0 \\
-Phase 4 (Full 2020) & 223 & Real & ⊂ Phase 4A & 0 \\
-Phase 4A (2020-2025) & 1,412 & Real & -- & 1,412 \\
+Phase 3 (Full 2024) & 223 & Real & ⊂ Phase 5 & 0 \\
+Phase 4 (Full 2020) & 223 & Real & ⊂ Phase 5 & 0 \\
+Phase 5 (2020-2025) & 1,412 & Real & -- & 1,412 \\
 \midrule
 \textbf{Total Real Windows (2020-2025)} & -- & -- & -- & 1,412 \\
 \textbf{Total Synthetic Controls} & -- & -- & -- & 809 \\
@@ -98,7 +98,7 @@ Phase 4A (2020-2025) & 1,412 & Real & -- & 1,412 \\
 \label{tab:windows_breakdown}
 \end{table}
 
-\noindent\textbf{Explanation}: The abstract references ``five phases across six years (2020-2025, 1,858 windows)'' referring to the rolling 30-day windows available from historical trading data. The 1,858 figure represents the sum of unique real windows: Phase 4A contains all 2020-2025 windows (1,412), with Phases 1, 3, and 4 being subsets. When considering only unique real windows, the total is 1,412 from Phase 4A. However, the five phases test these windows multiple times for robustness. Phase 1 tests a subset to establish baseline detection. Phase 3 tests the full 2024 year. Phase 4 tests the full 2020 year. Phase 4A re-tests all 1,412 unique windows (2020-2025) as part of the multi-year analysis.
+\noindent\textbf{Explanation}: The abstract references ``five phases across six years (2020-2025, 1,858 windows)'' referring to the rolling 30-day windows available from historical trading data. The 1,858 figure represents the sum of unique real windows: Phase 5 contains all 2020-2025 windows (1,412), with Phases 1, 3, and 4 being subsets. When considering only unique real windows, the total is 1,412 from Phase 5. However, the five phases test these windows multiple times for robustness. Phase 1 tests a subset to establish baseline detection. Phase 3 tests the full 2024 year. Phase 4 tests the full 2020 year. Phase 5 re-tests all 1,412 unique windows (2020-2025) as part of the multi-year analysis.
 
 Synthetic negative controls (Phase 2: 809 windows) are generated from the real data by shuffling, filtering for transitional regimes, or scaling for low magnitude. These 809 synthetic windows are additional to the 1,412 real windows, yielding 2,221 total evaluations.
 
