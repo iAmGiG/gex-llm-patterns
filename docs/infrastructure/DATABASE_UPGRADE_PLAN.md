@@ -2,17 +2,50 @@
 
 **Branch**: `db/upgrades`
 **Created**: 2026-01-02
+**Status**: ✅ **PostgreSQL Migration COMPLETE** (January 2-5, 2026)
 **Purpose**: Scale infrastructure for Papers 3 & 4 (50M+ records, GNN support)
 
 ---
 
-## Executive Summary
+## ⚠️ UPDATE: PostgreSQL Migration Complete (January 2-5, 2026)
 
-**Current**: SQLite (options_historical.db, 5GB, growing to 20-25GB)
-**Problem**: Concurrent write locks, no partitioning, not GNN-friendly
-**Solution**: Hybrid multi-format architecture (SQLite + Parquet + Graph)
+**Original Plan** (this document): Hybrid SQLite + Parquet + Graph
+**Actual Implementation**: PostgreSQL 18.1 + ResearchCache (SQLite) + Future Parquet/Graph
 
-**Timeline**: 2-3 weeks implementation while data collection continues
+**What Changed**:
+- Migrated from SQLite to **PostgreSQL 18.1** (Issues #194, #179, #183, #193)
+- Database: `gex_options` (20.58 GB, 81.8M contracts)
+- Coverage: 50 symbols, 2020-2025 (6 years, 1,507 trading days)
+- Schema: 31 fields per contract (27 original + 4 calculated)
+- Partitioning: Yearly partitions (2020-2025) for performance
+- Concurrency: Thread-safe, supports 100+ concurrent writers
+- **ResearchCache** added: SQLite research metadata layer (Issue #169)
+
+**Why PostgreSQL Instead of Parquet**:
+- Better write concurrency (no locks)
+- Native SQL query capabilities
+- ACID transactions for data integrity
+- Easier to maintain than Parquet for collection phase
+- Parquet export still planned for Papers 3-4 analytics
+
+**Current Status**: Production ready, Papers 2-5 infrastructure complete
+
+---
+
+## Original Plan (Archived for Reference)
+
+**Original Proposal**: SQLite → Parquet migration
+**Actual Implementation**: SQLite → PostgreSQL migration (see above)
+
+### Executive Summary (ARCHIVED)
+
+**Current** (OUTDATED): SQLite (options_historical.db, 5GB, growing to 20-25GB)
+**Problem** (SOLVED): Concurrent write locks, no partitioning, not GNN-friendly
+**Original Solution** (OUTDATED): Hybrid multi-format architecture (SQLite + Parquet + Graph)
+**Actual Solution** (IMPLEMENTED): PostgreSQL 18.1 + ResearchCache
+
+**Timeline** (OUTDATED): 2-3 weeks implementation while data collection continues
+**Actual Timeline**: 3 days (January 2-5, 2026)
 
 ---
 
