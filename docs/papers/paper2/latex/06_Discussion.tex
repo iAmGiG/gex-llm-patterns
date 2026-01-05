@@ -97,7 +97,15 @@ This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% vol
 
 \vspace{0.2cm}
 
-\noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 4A multi-year validation (Section 5.7) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior.
+\noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 4A multi-year validation (Section 5.7) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior. Figure \ref{fig:phase4a_progression} illustrates this temporal evolution.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/output/fig09_phase4a_detection_progression.png}
+\caption{\textbf{Phase 4A: Temporal Progression of Regime Detection (2020-2025).}
+The top panel shows detection rates evolved from pre-regime baseline (12.2\% in 2020) through borderline markets (3.7\% in 2021) and growing adoption (32.4\% in 2022, 20.2\% in 2023) to structural shift with sustained 100\% detection in 2024-2025. The 2023→2024 transition marks the structural reorganization of dealer positioning. The bottom panel shows average GEX magnitude grew 360\% from \$5B (2021) to \$23B (2024), far exceeding 20-25\% cumulative inflation, demonstrating the fixed \$5B threshold effectively discriminated borderline markets from structural regimes.}
+\label{fig:phase4a_progression}
+\end{figure}
 
 \subsection{Framework Selectivity Validation}
 
@@ -153,42 +161,15 @@ While various methodologies exist for quantifying dealer gamma exposure, we dist
 
 \noindent\textbf{Future validation}: A natural extension is the \textit{Formula Agreement Test}: running the detection pipeline with both absolute-scaled and normalized GEX formulations to measure regime classification agreement. High agreement ($>$90\%) would demonstrate calculation-independent findings; low agreement ($<$70\%) would indicate that LLM structural reasoning depends critically on absolute magnitude cues---a finding with implications for deploying LLMs across different financial data representations.
 
-\subsection{Regime Quality vs.\ Binary Classification}
+\subsection{LLM Value Beyond Deterministic Thresholds}
 
 \vspace{0.2cm}
 
-A valid critique of our methodology is that regime detection reduces to deterministic threshold evaluation: if persistence $\geq$70\%, magnitude $\geq$\$5B, and flips $\leq$5, the LLM should always detect the regime. This ``expensive calculator'' objection questions whether the LLM contributes value beyond arithmetic. We address this critique by demonstrating that LLM confidence scores provide continuous regime \textit{quality} discrimination beyond binary classification.
+A valid critique of our methodology is that regime detection reduces to deterministic threshold evaluation: if persistence $\geq$70\%, magnitude $\geq$\$5B, and flips $\leq$5, the LLM should always detect the regime. This ``expensive calculator'' objection questions whether the LLM contributes value beyond arithmetic.
 
 \vspace{0.2cm}
 
-\noindent\textbf{Confidence discriminates detection outcome}: Analysis of 1,301 validation windows reveals that LLM confidence strongly predicts detection decisions. Detected windows averaged 91.8\% confidence (n=305), while non-detected windows averaged 67.5\% confidence (n=996)—a 24.4 percentage point gap indicating the model expresses calibrated uncertainty about borderline cases.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Confidence predicts regime quality}: Beyond binary classification, confidence correlates significantly with regime quality metrics:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{Persistence}: $r = +0.501$ ($p < 0.001$)—higher confidence predicts stronger directional consistency
-\item \textbf{Magnitude}: $r = +0.425$ ($p < 0.001$)—higher confidence predicts larger GEX magnitude
-\item \textbf{Stability}: $r = -0.549$ ($p < 0.001$)—higher confidence predicts fewer sign reversals
-\end{itemize}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Stratified quality discrimination}: Partitioning detected windows by confidence reveals meaningful regime tiers:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{High confidence} ($\geq$90\%, n=216): 99.6\% average persistence—extremely robust regimes suitable for direct trading signals
-\item \textbf{Low confidence} ($<$90\%, n=89): 95.4\% average persistence—good but noisy regimes warranting manual review
-\end{itemize}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Complementary discrimination}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations demonstrate the model captures regime robustness nuances beyond threshold crossing—distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (92.9\% persistence). In production deployment, high-confidence detections could trigger automated responses while low-confidence detections flag for human review, creating practical value beyond simple threshold evaluation.
+Section 5.9 (LLM Confidence as Quality Metric) demonstrates that confidence scores provide continuous regime quality discrimination beyond binary classification. Analysis of 1,301 validation windows reveals strong correlations between confidence and regime metrics ($r > 0.4$, $p < 0.001$), enabling stratified quality tiers: high-confidence detections ($\geq$90\%) exhibit 99.6\% persistence while low-confidence detections show 95.4\% persistence. This complementary discrimination—hard-coded criteria determine regime \textit{category}, LLM confidence measures regime \textit{quality}—provides practical deployment value where high-confidence detections trigger automated responses while low-confidence cases flag for human review.
 
 \subsection{Open Interest vs Volume-Based GEX: The Transmission Mechanism}
 
