@@ -113,6 +113,12 @@ Table~\ref{tab:materialization} details how detected patterns translate into obs
 \toprule
 Prediction Type & Materialization Criteria & Success Rate \\
 \midrule
+% ERRATA (Issue #187, 2025-12-27): Values below match the published IEEE BigData PDF.
+% Corrected values in arXiv v2 (see ../arxiv_ieee_bigdata/v2/):
+%   C1 Volatility Amplification: 41.6% (not 89.2%)
+%   C3 Strike Convergence: N/A (gamma_flip_point unavailable)
+%   C4 0DTE Range Expansion: 21.6% (not 91.1%)
+%   Overall: 41.6% (C1 ∪ C4, excluding C2 which yields 99.4%)
 Volatility Amplification & T+1 move >0.3\% & 89.2\% \\
 Directional Follow-through & T+1 direction matches & 85.7\% \\
 Strike Convergence & Price within 0.5\% of strike & 93.4\% \\

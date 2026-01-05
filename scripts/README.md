@@ -1,178 +1,105 @@
 # Scripts Directory
 
-This directory contains all executable scripts for the GEX-LLM Patterns project, organized by purpose.
+Executable scripts for the GEX-LLM Patterns project, organized by purpose.
 
 ## Directory Structure
 
-### `baseline_comparison/` - **Primary Testing Framework**
+### `analysis/` - Data Analysis & Comparison
 
-Production-ready baseline comparison system
+| Script | Purpose |
+|--------|---------|
+| `explain_options_data.py` | Analyze and explain options data structure |
+| `gamma_pinning_validator.py` | Validate Friday gamma pinning patterns |
+| `run_baseline_comparison.py` | Compare LLM-filtered vs baseline strategies |
+| `example_flexible_algo_times.py` | Flexible algo time analysis demo |
 
-- `real_baseline_vs_llm.py` - **Main test runner** comparing O3-mini LLM vs mechanical baselines
-  - Uses real market data with configurable parameters
-  - Configurable via `config_defaults/baseline_comparison_config.yaml`
-  - Issue #58 implementation
+### `data_collection/` - Data Gathering
 
-### `runs/` - **Experiment Management**
+See [data_collection/README.md](data_collection/README.md) for details.
 
-Continuous experiment state management
+| Script | Purpose |
+|--------|---------|
+| `collect_leveraged_etfs.py` | Primary historical options collection |
+| `check_progress.py` | Collection progress by symbol |
+| `monitor_collection.py` | Real-time collection monitoring |
+| `validate_data_quality.py` | Data quality validation |
 
-- `checkpoint_manager.py` - Handles resumable long-running backtests
-  - Progress tracking and state persistence
-  - Checkpoint every 5 trading days
-  - Supports experiment resume from any checkpoint
+### `database/` - Database Operations
 
-### `validation/` - **Enhanced Pattern Testing**
+| Script | Purpose |
+|--------|---------|
+| `create_intraday_schema.sql` | Intraday tables SQL schema |
+| `migrate_to_intraday.py` | Add intraday tables |
+| `migrate_add_dual_gex.py` | Add dual GEX columns |
+| `rebuild_gex_database.py` | Full GEX database rebuild |
+| `validate_database_integrity.py` | Validate GEX calculations |
 
-Enhanced strike-level pattern validation (75% validated success rate)
+### `experiments/` - Experiment Orchestration
 
-- `test_enhanced_patterns.py` - Enhanced pattern detection validation
-- `test_enhanced_daily.py` - Daily enhanced pattern testing
-- `test_compound_patterns.py` - **Compound pattern testing** with multiple signal confirmation
-  - High Probability Pin (gamma + volume + timing)
-  - Volume Gamma Breakout (volume spike + gamma shift)
-  - Gamma-Volume-Time Confluence (all signals align)
-- `test_time_patterns.py` - **Time-based pattern testing** with intraday timing analysis
-  - Friday 3:30 PM validated patterns (75% success rate)
-  - Daily algo times (10:00, 14:30, 15:30, 15:50)
-  - Expiration timing effects (0DTE, weekly, monthly)
-  - Intraday gamma shift detection
-- `test_daily_signal_generation.py` - **Daily signal capacity validation**
-  - Tests 30+ monthly signal target (10x Friday-only improvement)
-  - SPY + QQQ daily 0DTE opportunity analysis
-  - Signal generation rate and quality metrics
-- `test_pattern_stability.py` - **Pattern robustness across market conditions**
-  - Low VIX (complacency), Normal VIX, High VIX (stress) testing
-  - Pattern effectiveness across volatility regimes
-- `test_10am_reversal.py` - **10 AM reversal pattern (specific)**
-  - Fade strong overnight moves when gamma > 30% at strike
-  - Expected 65% success rate validation
-- `test_afternoon_drift.py` - **Afternoon drift pattern (specific)**
-  - Follow momentum in low gamma zones after 2 PM
-  - Expected 60% success rate validation
+| Script | Purpose |
+|--------|---------|
+| `orchestrate_experiment.py` | Simple experiment runner |
+| `orchestrate_experiment_yaml.py` | Enhanced experiment runner with YAML output |
+| `checkpoint_manager.py` | Resumable backtest checkpointing |
 
-### `analysis/`
+### `statistical_validation/` - Statistical Analysis
 
-Data analysis and exploration
+Paper 1 statistical validation scripts for GEX predictive analysis.
 
-- `explain_options_data.py` - Analyzes and explains options data structure
-- `gamma_pinning_validator.py` - Validates gamma pinning patterns (Issue #73)
+| Script | Purpose |
+|--------|---------|
+| `p1_extract_validation_data.py` | Extract validation data |
+| `p1_granger_analysis_main.py` | Granger causality analysis |
+| `p1_granger_variations.py` | Granger analysis variations |
+| `p1_leadlag_analysis_main.py` | Lead-lag relationship analysis |
+| `p1_leadlag_variations.py` | Lead-lag variations |
 
-### `data_collection/`
+### `validation/` - Pattern Validation
 
-Data gathering and management
+Comprehensive validation suite organized by research paper. Scripts are numbered by workflow order.
 
-- `start_historical_collection.py` - Starts historical data collection
-- `automation/` - 24/7 automated collection system
-  - `automated_data_collector.py` - Main collection service
-  - `monitor_collection.py` - Progress monitoring
-  - `test_spx_access.py` - API access validation
-  - `test_polygon_collection.py` - Stock data testing
-
-### `database/`
-
-Database operations and migrations
-
-- `migrate_to_intraday.py` - Migrates data to support intraday timestamps (Issue #72)
-
-### `examples/`
-
-Example implementations and demonstrations
-
-- `example_flexible_algo_times.py` - Flexible algorithm timing examples
-
-### `experiments/`
-
-Experimental scripts and research
-
-### `utils/` - **Experiment Infrastructure**
-
-Shared utilities for experiment management
-
-- `experiment_reporter.py` - **Unified results storage** for all experiment types
-  - Consistent JSON format with metadata
-  - Organized storage: `reports/{experiment_type}/{name}_{timestamp}.json`
-  - Methods for validation, baseline comparison, continuous testing results
-  - Experiment listing and retrieval utilities
-
-## Primary Usage Patterns
-
-**Main Testing (Issue #71 - Production Deployment):**
-
-```bash
-# Run comprehensive baseline comparison with real data
-python scripts/baseline_comparison/real_baseline_vs_llm.py
-
-# With custom parameters
-python scripts/baseline_comparison/real_baseline_vs_llm.py --symbol SPY --start-date 2024-01-01 --end-date 2024-03-31
+```text
+validation/
+├── paper1/     # Paper 1 validation (17 scripts)
+│   ├── 01_validate_raw_options_chain.py     - Data validation
+│   ├── 02-04_validate_*.py                  - Pattern validation
+│   ├── 05-09_*materialization*.py           - Materialization analysis
+│   ├── 10_analyze_non_detections.py         - Non-detection analysis
+│   ├── 11-13_narrative_test_*.py            - Narrative framework tests
+│   ├── 14-15_*reasoning*.py                 - Reasoning extraction
+│   ├── 16_analyze_eod_latent_information.py - Latent info analysis
+│   └── 17_regenerate_validation_figures.py  - Figure generation
+├── paper2/     # Paper 2 validation (7 scripts)
+│   ├── 01-03_generate_*_windows.py          - Negative control generators
+│   ├── 04-05_validate_regime_*.py           - Regime validation
+│   └── 06-07_test_*.py                      - Testing scripts
+└── shared/     # Shared utilities (2 scripts)
+    ├── export_db_to_cache.py
+    └── production_cache_test.py
 ```
 
-**Enhanced Pattern Validation:**
+## Usage Examples
+
+**Run baseline comparison:**
 
 ```bash
-# Test enhanced patterns (75% validated gamma pinning)
-python scripts/validation/test_enhanced_patterns.py
-python scripts/validation/test_enhanced_daily.py
-
-# Test compound patterns with multiple signal confirmation
-python scripts/validation/test_compound_patterns.py --symbol SPY --start-date 2024-06-01 --end-date 2024-06-30
-
-# Test time-based patterns with intraday timing
-python scripts/validation/test_time_patterns.py --symbol SPY --start-date 2024-06-01 --end-date 2024-06-30
-
-# Test daily signal generation capacity (30+ monthly target)
-python scripts/validation/test_daily_signal_generation.py --start-date 2024-06-01 --end-date 2024-06-30
-
-# Test pattern stability across VIX regimes
-python scripts/validation/test_pattern_stability.py --start-date 2024-03-01 --end-date 2024-06-30
-
-# Test specific intraday patterns
-python scripts/validation/test_10am_reversal.py --symbol SPY --start-date 2024-06-01 --end-date 2024-06-30
-python scripts/validation/test_afternoon_drift.py --symbol SPY --start-date 2024-06-01 --end-date 2024-06-30
+python scripts/analysis/run_baseline_comparison.py --start-date 2024-01-02 --end-date 2024-03-29
 ```
 
-**Checkpoint Management:**
+**Validate gamma pinning:**
 
 ```bash
-# Check experiment status
-python -c "from scripts.runs.checkpoint_manager import CheckpointManager; cm = CheckpointManager(); print(cm.get_experiment_status())"
+python scripts/analysis/gamma_pinning_validator.py --start-date 2024-01-01 --end-date 2024-06-30
 ```
 
-**Data Collection:**
+**Run pattern validation:**
 
 ```bash
-# Start historical collection
-python scripts/data_collection/start_historical_collection.py
-
-# Monitor automated collection
-python scripts/data_collection/automation/monitor_collection.py
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py --pattern gamma_positioning --symbol SPY
 ```
 
-**Experiment Results Management:**
+**Run statistical validation:**
 
 ```bash
-# Import and use experiment reporter in scripts
-from scripts.utils.experiment_reporter import ExperimentReporter
-
-reporter = ExperimentReporter()
-# Store validation results
-reporter.store_validation_results("0dte_gamma", "SPY", "2024-06-25", "2024-06-28", results)
-# Store baseline comparison
-reporter.store_baseline_comparison("enhanced_vs_basic", ["SPY"], "2024-01-01", "2024-03-31", results)
+python scripts/statistical_validation/p1_granger_analysis_main.py
 ```
-
-## Current Focus: Production Testing (Issue #71)
-
-The enhanced strike-level pattern detection system is deployed and validated. Primary testing approach:
-
-1. **`real_baseline_vs_llm.py`** - Comprehensive comparison with real market data
-2. **Checkpoint manager** - For continuous/resumable experiments
-3. **Enhanced pattern validators** - For the 75% validated gamma pinning system
-
-## Organization Principles
-
-- **Production-ready testing** - Main testing framework uses real market data
-- **Resumable experiments** - Checkpoint system for long-running backtests
-- **Validated patterns** - Enhanced detection with 75% success rate
-- **Logical grouping** - Scripts grouped by primary purpose
-- **Clear naming** - Descriptive filenames indicating functionality

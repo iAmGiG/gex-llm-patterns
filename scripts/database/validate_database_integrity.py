@@ -5,13 +5,15 @@ issues.
 """
 
 import logging
+import os
 import sqlite3
 import sys
 from pathlib import Path
 
 import pandas as pd
 
-from src.cache.unified_cache import UnifiedCacheManager
+from src.cache.options_db_manager import SQLiteOptionsManager
+from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.gex.gex_calculator import GEXCalculator
 
 # Add project root to path
@@ -22,12 +24,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager, sample_size: int = 20):
+def validate_gex_data(db_path: str, options_db: PostgreSQLOptionsManager, sample_size: int = 20):
     """Validate GEX data in database against fresh calculations.
+
+    Uses PostgreSQL by default (migrated from SQLite).
 
     Args:
         db_path: Path to database
-        cache_manager: Cache manager for fetching options data
+        options_db: PostgreSQLOptionsManager for fetching options data
         sample_size: Number of random dates to check
 
     Returns:
@@ -56,8 +60,8 @@ def validate_gex_data(db_path: str, cache_manager: UnifiedCacheManager, sample_s
         db_gex = row["total_gex"]
         spot_price = row["spot_price"]
 
-        # Get fresh options data
-        options_data = cache_manager.get_options_data(symbol, date)
+        # Issue #180: Get fresh options data from SQLite
+        options_data = options_db.get_options_chain(symbol, date)
 
         if options_data is None or options_data.empty:
             results.append(
@@ -154,10 +158,10 @@ if __name__ == "__main__":
     for table, info in schema.items():
         logger.info(f"  {table}: {info['row_count']} rows")
 
-    # Validate GEX data
+    # Validate GEX data (use PostgreSQL by default)
     logger.info("\n2. Validating GEX calculations...")
-    cache = UnifiedCacheManager()
-    report = validate_gex_data(DB_PATH, cache, sample_size=20)
+    options_db = PostgreSQLOptionsManager()
+    report = validate_gex_data(DB_PATH, options_db, sample_size=20)
 
     logger.info(f"\nValidation Results:")
     logger.info(f"  Total checked: {report['total_checked']}")

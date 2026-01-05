@@ -1,0 +1,2092 @@
+metadata:
+  run_date: '2025-12-18T23:20:59.189867'
+  full_period: 2020-01-02 to 2025-12-01
+  regimes_tested:
+  - covid_crash
+  - recovery_2020
+  - bull_2021
+  - bear_2022
+  - mixed_2023
+  - bull_2024
+  symbols:
+  - SPY
+  - QQQ
+  - TQQQ
+  - SQQQ
+  - SOXL
+  - IWM
+  initial_capital: 100000
+full_period_summary:
+  gex_wins: 0
+  technical_wins: 6
+  avg_improvement_pct: -225.08
+  symbol_summary:
+  - symbol: SPY
+    winner: TECHNICAL
+    gex_sharpe: -1.7599
+    tech_sharpe: 0
+    improvement: 0.0
+  - symbol: QQQ
+    winner: TECHNICAL
+    gex_sharpe: -1.6218
+    tech_sharpe: -0.3215
+    improvement: -404.45
+  - symbol: TQQQ
+    winner: TECHNICAL
+    gex_sharpe: -2.6257
+    tech_sharpe: 0.7754
+    improvement: -438.63
+  - symbol: SQQQ
+    winner: TECHNICAL
+    gex_sharpe: 0.1331
+    tech_sharpe: 0.6841
+    improvement: -80.54
+  - symbol: SOXL
+    winner: TECHNICAL
+    gex_sharpe: -2.1536
+    tech_sharpe: 0.6589
+    improvement: -426.85
+  - symbol: IWM
+    winner: TECHNICAL
+    gex_sharpe: -3.0603
+    tech_sharpe: 0
+    improvement: 0.0
+regime_analysis:
+  best_regimes_for_gex:
+  - regime: covid_crash
+    gex_win_rate: 0.16666666666666666
+    gex_wins: 1
+    avg_improvement: -84.08
+  - regime: bull_2021
+    gex_win_rate: 0.16666666666666666
+    gex_wins: 1
+    avg_improvement: -125.04
+  - regime: recovery_2020
+    gex_win_rate: 0.0
+    gex_wins: 0
+    avg_improvement: -151.88
+  worst_regimes_for_gex:
+  - regime: bear_2022
+    gex_win_rate: 0.0
+    gex_wins: 0
+    avg_improvement: -1040.68
+  - regime: mixed_2023
+    gex_win_rate: 0.0
+    gex_wins: 0
+    avg_improvement: -193.34
+  - regime: bull_2024
+    gex_win_rate: 0.0
+    gex_wins: 0
+    avg_improvement: -231.29
+  detailed_by_regime:
+    covid_crash:
+      period: 2020-02-01 to 2020-03-31
+      gex_wins: 1
+      technical_wins: 5
+      avg_improvement_pct: -84.08
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: -1.7599
+          tech_sharpe: 0
+          gex_improvement_pct: 0.0
+          gex_trades: 1
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -20.4782
+                sharpe_ratio: -1.779
+                max_drawdown: -34.1047
+                win_rate: 45.0
+                num_trades: 1
+              macd:
+                total_return: -1.3227
+                sharpe_ratio: -0.6524
+                max_drawdown: -2.9804
+                win_rate: 2.5
+                num_trades: 1
+              rsi:
+                total_return: -16.9462
+                sharpe_ratio: -1.4196
+                max_drawdown: -28.7381
+                win_rate: 25.0
+                num_trades: 3
+              momentum:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+            gex:
+              gex_pattern:
+                total_return: -20.0589
+                sharpe_ratio: -1.7599
+                max_drawdown: -30.8521
+                win_rate: 25.0
+                num_trades: 1
+                sortino_ratio: -2.388
+                calmar_ratio: -2.4503
+                profit_factor: inf
+        QQQ:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -1.6218
+          tech_sharpe: -0.3215
+          gex_improvement_pct: -404.45
+          gex_trades: 1
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -14.3827
+                sharpe_ratio: -1.0981
+                max_drawdown: -28.5594
+                win_rate: 50.0
+                num_trades: 1
+              macd:
+                total_return: -0.7842
+                sharpe_ratio: -0.3215
+                max_drawdown: -3.4418
+                win_rate: 2.5
+                num_trades: 1
+              rsi:
+                total_return: -7.0114
+                sharpe_ratio: -0.3983
+                max_drawdown: -21.7587
+                win_rate: 25.0
+                num_trades: 4
+              momentum:
+                total_return: -1.9253
+                sharpe_ratio: -2.5992
+                max_drawdown: -1.9253
+                win_rate: 2.5
+                num_trades: 4
+            gex:
+              gex_pattern:
+                total_return: -18.9045
+                sharpe_ratio: -1.6218
+                max_drawdown: -27.8915
+                win_rate: 27.5
+                num_trades: 1
+                sortino_ratio: -2.2184
+                calmar_ratio: -2.6277
+                profit_factor: inf
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: -6.5042
+          tech_sharpe: 0
+          gex_improvement_pct: 0.0
+          gex_trades: 10
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -51.3605
+                sharpe_ratio: -1.268
+                max_drawdown: -69.9221
+                win_rate: 52.5
+                num_trades: 1
+              macd:
+                total_return: -3.7284
+                sharpe_ratio: -0.4393
+                max_drawdown: -10.3971
+                win_rate: 2.5
+                num_trades: 1
+              rsi:
+                total_return: -37.2322
+                sharpe_ratio: -0.5882
+                max_drawdown: -59.7417
+                win_rate: 27.5
+                num_trades: 9
+              momentum:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+            gex:
+              gex_pattern:
+                total_return: -68.0292
+                sharpe_ratio: -6.5042
+                max_drawdown: -68.0292
+                win_rate: 5.0
+                num_trades: 10
+                sortino_ratio: -4.6223
+                calmar_ratio: -1.4688
+                profit_factor: 0.0
+        SQQQ:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: 0
+          tech_sharpe: 1.323
+          gex_improvement_pct: -100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 0.0771
+                sharpe_ratio: 0.9712
+                max_drawdown: -40.9978
+                win_rate: 50.0
+                num_trades: 1
+              macd:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+              rsi:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+              momentum:
+                total_return: 13.7484
+                sharpe_ratio: 1.323
+                max_drawdown: -29.2377
+                win_rate: 25.0
+                num_trades: 2
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+        SOXL:
+          winner: GEX
+          best_technical: momentum
+          gex_sharpe: 2.5074
+          tech_sharpe: 0
+          gex_improvement_pct: 0.0
+          gex_trades: 2
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -62.5408
+                sharpe_ratio: -1.3139
+                max_drawdown: -80.3822
+                win_rate: 50.0
+                num_trades: 1
+              macd:
+                total_return: -12.3468
+                sharpe_ratio: -1.39
+                max_drawdown: -15.3999
+                win_rate: 2.5
+                num_trades: 1
+              rsi:
+                total_return: -47.8167
+                sharpe_ratio: -0.7487
+                max_drawdown: -69.3509
+                win_rate: 27.5
+                num_trades: 8
+              momentum:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+            gex:
+              gex_pattern:
+                total_return: 7.5686
+                sharpe_ratio: 2.5074
+                max_drawdown: -0.0077
+                win_rate: 2.5
+                num_trades: 2
+                sortino_ratio: .nan
+                calmar_ratio: 7586.1745
+                profit_factor: inf
+        IWM:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: -3.0603
+          tech_sharpe: 0
+          gex_improvement_pct: 0.0
+          gex_trades: 5
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -29.4871
+                sharpe_ratio: -2.6991
+                max_drawdown: -40.821
+                win_rate: 45.0
+                num_trades: 1
+              macd:
+                total_return: -2.016
+                sharpe_ratio: -1.1275
+                max_drawdown: -3.6425
+                win_rate: 2.5
+                num_trades: 1
+              rsi:
+                total_return: -25.281
+                sharpe_ratio: -2.2486
+                max_drawdown: -34.7857
+                win_rate: 25.0
+                num_trades: 20
+              momentum:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+            gex:
+              gex_pattern:
+                total_return: -32.1359
+                sharpe_ratio: -3.0603
+                max_drawdown: -41.1809
+                win_rate: 32.5
+                num_trades: 5
+                sortino_ratio: -3.7207
+                calmar_ratio: -2.2171
+                profit_factor: 1.1714
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -1.7599
+        tech_sharpe: 0
+        improvement: 0.0
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -1.6218
+        tech_sharpe: -0.3215
+        improvement: -404.45
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -6.5042
+        tech_sharpe: 0
+        improvement: 0.0
+      - symbol: SQQQ
+        winner: TECHNICAL
+        gex_sharpe: 0
+        tech_sharpe: 1.323
+        improvement: -100.0
+      - symbol: SOXL
+        winner: GEX
+        gex_sharpe: 2.5074
+        tech_sharpe: 0
+        improvement: 0.0
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: -3.0603
+        tech_sharpe: 0
+        improvement: 0.0
+    recovery_2020:
+      period: 2020-04-01 to 2020-12-31
+      gex_wins: 0
+      technical_wins: 6
+      avg_improvement_pct: -151.88
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -1.4205
+          tech_sharpe: 3.2081
+          gex_improvement_pct: -144.28
+          gex_trades: 22
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 51.888
+                sharpe_ratio: 2.6573
+                max_drawdown: -9.8015
+                win_rate: 60.53
+                num_trades: 1
+              macd:
+                total_return: 12.3257
+                sharpe_ratio: 1.3425
+                max_drawdown: -7.522
+                win_rate: 26.32
+                num_trades: 12
+              rsi:
+                total_return: 15.5969
+                sharpe_ratio: 3.2081
+                max_drawdown: -1.0891
+                win_rate: 20.0
+                num_trades: 12
+              momentum:
+                total_return: 16.202
+                sharpe_ratio: 1.4271
+                max_drawdown: -8.0246
+                win_rate: 51.05
+                num_trades: 152
+            gex:
+              gex_pattern:
+                total_return: -13.8284
+                sharpe_ratio: -1.4205
+                max_drawdown: -14.7822
+                win_rate: 11.05
+                num_trades: 22
+                sortino_ratio: -0.8517
+                calmar_ratio: -1.2118
+                profit_factor: 0.1398
+        QQQ:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -1.7431
+          tech_sharpe: 2.9179
+          gex_improvement_pct: -159.74
+          gex_trades: 35
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 72.0868
+                sharpe_ratio: 2.9179
+                max_drawdown: -12.7494
+                win_rate: 65.26
+                num_trades: 1
+              macd:
+                total_return: 0.5134
+                sharpe_ratio: 0.1195
+                max_drawdown: -8.9905
+                win_rate: 25.26
+                num_trades: 20
+              rsi:
+                total_return: 16.9017
+                sharpe_ratio: 2.368
+                max_drawdown: -3.7035
+                win_rate: 23.68
+                num_trades: 19
+              momentum:
+                total_return: 29.8425
+                sharpe_ratio: 1.9129
+                max_drawdown: -12.4979
+                win_rate: 55.79
+                num_trades: 105
+            gex:
+              gex_pattern:
+                total_return: -23.2672
+                sharpe_ratio: -1.7431
+                max_drawdown: -24.3795
+                win_rate: 21.05
+                num_trades: 35
+                sortino_ratio: -1.5436
+                calmar_ratio: -1.215
+                profit_factor: 0.1543
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -2.2857
+          tech_sharpe: 2.9347
+          gex_improvement_pct: -177.89
+          gex_trades: 10
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 335.6056
+                sharpe_ratio: 2.9347
+                max_drawdown: -35.375
+                win_rate: 66.32
+                num_trades: 1
+              macd:
+                total_return: 10.2828
+                sharpe_ratio: 0.5191
+                max_drawdown: -23.4823
+                win_rate: 30.53
+                num_trades: 19
+              rsi:
+                total_return: 69.6121
+                sharpe_ratio: 2.5626
+                max_drawdown: -11.1156
+                win_rate: 24.21
+                num_trades: 19
+              momentum:
+                total_return: 107.1751
+                sharpe_ratio: 2.0556
+                max_drawdown: -27.8195
+                win_rate: 53.16
+                num_trades: 21
+            gex:
+              gex_pattern:
+                total_return: -26.5703
+                sharpe_ratio: -2.2857
+                max_drawdown: -26.5703
+                win_rate: 0.0
+                num_trades: 10
+                sortino_ratio: -0.631
+                calmar_ratio: -1.2649
+                profit_factor: 0.0
+        SQQQ:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -1.1553
+          tech_sharpe: 0.9148
+          gex_improvement_pct: -226.29
+          gex_trades: 2
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -30.8586
+                sharpe_ratio: 0.6289
+                max_drawdown: -75.3961
+                win_rate: 33.16
+                num_trades: 1
+              macd:
+                total_return: 110.0133
+                sharpe_ratio: 0.9148
+                max_drawdown: -46.5898
+                win_rate: 10.0
+                num_trades: 9
+              rsi:
+                total_return: 93.686
+                sharpe_ratio: 0.8985
+                max_drawdown: -60.0385
+                win_rate: 23.68
+                num_trades: 52
+              momentum:
+                total_return: -17.6223
+                sharpe_ratio: -0.3843
+                max_drawdown: -25.2611
+                win_rate: 7.37
+                num_trades: 12
+            gex:
+              gex_pattern:
+                total_return: -7.7618
+                sharpe_ratio: -1.1553
+                max_drawdown: -7.7618
+                win_rate: 0.0
+                num_trades: 2
+                sortino_ratio: -0.1189
+                calmar_ratio: -1.3092
+                profit_factor: 0.0
+        SOXL:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: 0
+          tech_sharpe: 2.8706
+          gex_improvement_pct: -100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 487.3953
+                sharpe_ratio: 2.8706
+                max_drawdown: -30.8473
+                win_rate: 54.21
+                num_trades: 1
+              macd:
+                total_return: 56.635
+                sharpe_ratio: 1.4948
+                max_drawdown: -21.8914
+                win_rate: 18.95
+                num_trades: 10
+              rsi:
+                total_return: 83.4852
+                sharpe_ratio: 2.613
+                max_drawdown: -12.3784
+                win_rate: 15.79
+                num_trades: 20
+              momentum:
+                total_return: 63.0666
+                sharpe_ratio: 1.279
+                max_drawdown: -30.608
+                win_rate: 40.0
+                num_trades: 35
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+        IWM:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -0.1169
+          tech_sharpe: 3.8094
+          gex_improvement_pct: -103.07
+          gex_trades: 25
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 83.8091
+                sharpe_ratio: 2.7312
+                max_drawdown: -11.797
+                win_rate: 57.89
+                num_trades: 1
+              macd:
+                total_return: 29.1962
+                sharpe_ratio: 2.0589
+                max_drawdown: -11.924
+                win_rate: 26.32
+                num_trades: 12
+              rsi:
+                total_return: 16.6045
+                sharpe_ratio: 3.8094
+                max_drawdown: -0.875
+                win_rate: 17.89
+                num_trades: 31
+              momentum:
+                total_return: 18.1577
+                sharpe_ratio: 1.1255
+                max_drawdown: -14.2206
+                win_rate: 47.37
+                num_trades: 91
+            gex:
+              gex_pattern:
+                total_return: -3.938
+                sharpe_ratio: -0.1169
+                max_drawdown: -13.889
+                win_rate: 27.89
+                num_trades: 25
+                sortino_ratio: -0.1171
+                calmar_ratio: -0.3736
+                profit_factor: 0.7503
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -1.4205
+        tech_sharpe: 3.2081
+        improvement: -144.28
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -1.7431
+        tech_sharpe: 2.9179
+        improvement: -159.74
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.2857
+        tech_sharpe: 2.9347
+        improvement: -177.89
+      - symbol: SQQQ
+        winner: TECHNICAL
+        gex_sharpe: -1.1553
+        tech_sharpe: 0.9148
+        improvement: -226.29
+      - symbol: SOXL
+        winner: TECHNICAL
+        gex_sharpe: 0
+        tech_sharpe: 2.8706
+        improvement: -100.0
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: -0.1169
+        tech_sharpe: 3.8094
+        improvement: -103.07
+    bull_2021:
+      period: 2021-01-01 to 2021-12-31
+      gex_wins: 1
+      technical_wins: 5
+      avg_improvement_pct: -125.04
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -2.4541
+          tech_sharpe: 2.0126
+          gex_improvement_pct: -221.94
+          gex_trades: 38
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 28.787
+                sharpe_ratio: 2.0126
+                max_drawdown: -5.4172
+                win_rate: 58.17
+                num_trades: 1
+              macd:
+                total_return: 9.2994
+                sharpe_ratio: 1.4365
+                max_drawdown: -4.4325
+                win_rate: 26.29
+                num_trades: 23
+              rsi:
+                total_return: 4.1492
+                sharpe_ratio: 1.0134
+                max_drawdown: -3.3102
+                win_rate: 7.57
+                num_trades: 10
+              momentum:
+                total_return: 8.5344
+                sharpe_ratio: 1.0297
+                max_drawdown: -4.8983
+                win_rate: 52.19
+                num_trades: 232
+            gex:
+              gex_pattern:
+                total_return: -19.9901
+                sharpe_ratio: -2.4541
+                max_drawdown: -19.9901
+                win_rate: 7.57
+                num_trades: 38
+                sortino_ratio: -1.8944
+                calmar_ratio: -1.0036
+                profit_factor: 0.0
+        QQQ:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -1.2134
+          tech_sharpe: 2.3193
+          gex_improvement_pct: -152.32
+          gex_trades: 45
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 28.6229
+                sharpe_ratio: 1.4803
+                max_drawdown: -10.8515
+                win_rate: 56.97
+                num_trades: 1
+              macd:
+                total_return: 22.0054
+                sharpe_ratio: 2.3193
+                max_drawdown: -3.2836
+                win_rate: 27.09
+                num_trades: 11
+              rsi:
+                total_return: 15.2231
+                sharpe_ratio: 1.3901
+                max_drawdown: -6.5801
+                win_rate: 25.9
+                num_trades: 45
+              momentum:
+                total_return: 12.3711
+                sharpe_ratio: 1.1912
+                max_drawdown: -7.9914
+                win_rate: 48.61
+                num_trades: 213
+            gex:
+              gex_pattern:
+                total_return: -18.1033
+                sharpe_ratio: -1.2134
+                max_drawdown: -20.5494
+                win_rate: 22.71
+                num_trades: 45
+                sortino_ratio: -1.3495
+                calmar_ratio: -0.8841
+                profit_factor: 0.2279
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -2.3094
+          tech_sharpe: 2.4856
+          gex_improvement_pct: -192.91
+          gex_trades: 38
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -4.3283
+                sharpe_ratio: 0.3887
+                max_drawdown: -61.3053
+                win_rate: 56.18
+                num_trades: 1
+              macd:
+                total_return: 89.491
+                sharpe_ratio: 2.4856
+                max_drawdown: -9.7001
+                win_rate: 28.29
+                num_trades: 11
+              rsi:
+                total_return: 44.4936
+                sharpe_ratio: 1.221
+                max_drawdown: -21.2407
+                win_rate: 32.67
+                num_trades: 64
+              momentum:
+                total_return: 27.3514
+                sharpe_ratio: 0.9689
+                max_drawdown: -21.1059
+                win_rate: 36.65
+                num_trades: 76
+            gex:
+              gex_pattern:
+                total_return: -77.5556
+                sharpe_ratio: -2.3094
+                max_drawdown: -77.5556
+                win_rate: 4.38
+                num_trades: 38
+                sortino_ratio: -1.1093
+                calmar_ratio: -1.0017
+                profit_factor: 0.0139
+        SQQQ:
+          winner: GEX
+          best_technical: macd
+          gex_sharpe: 0
+          tech_sharpe: -0.4008
+          gex_improvement_pct: 100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -62.5118
+                sharpe_ratio: -1.5348
+                max_drawdown: -65.1348
+                win_rate: 42.63
+                num_trades: 1
+              macd:
+                total_return: -18.1023
+                sharpe_ratio: -0.4008
+                max_drawdown: -29.7975
+                win_rate: 17.53
+                num_trades: 10
+              rsi:
+                total_return: -23.5132
+                sharpe_ratio: -0.5139
+                max_drawdown: -45.2352
+                win_rate: 39.84
+                num_trades: 58
+              momentum:
+                total_return: -27.2658
+                sharpe_ratio: -0.6666
+                max_drawdown: -39.7224
+                win_rate: 13.94
+                num_trades: 53
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+        SOXL:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: 0
+          tech_sharpe: 1.3054
+          gex_improvement_pct: -100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -85.2167
+                sharpe_ratio: 0.2739
+                max_drawdown: -96.0614
+                win_rate: 52.99
+                num_trades: 1
+              macd:
+                total_return: 30.5738
+                sharpe_ratio: 0.7653
+                max_drawdown: -37.4889
+                win_rate: 28.29
+                num_trades: 11
+              rsi:
+                total_return: 65.0701
+                sharpe_ratio: 1.3054
+                max_drawdown: -24.3806
+                win_rate: 35.46
+                num_trades: 35
+              momentum:
+                total_return: -87.4184
+                sharpe_ratio: -0.8702
+                max_drawdown: -90.4977
+                win_rate: 30.28
+                num_trades: 79
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+        IWM:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -0.62
+          tech_sharpe: 0.7463
+          gex_improvement_pct: -183.08
+          gex_trades: 37
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 14.9583
+                sharpe_ratio: 0.7463
+                max_drawdown: -12.5495
+                win_rate: 51.0
+                num_trades: 1
+              macd:
+                total_return: -4.2913
+                sharpe_ratio: -0.3978
+                max_drawdown: -11.3987
+                win_rate: 18.33
+                num_trades: 23
+              rsi:
+                total_return: 4.8876
+                sharpe_ratio: 0.4886
+                max_drawdown: -5.9877
+                win_rate: 23.11
+                num_trades: 14
+              momentum:
+                total_return: -10.3586
+                sharpe_ratio: -0.8006
+                max_drawdown: -20.3728
+                win_rate: 35.86
+                num_trades: 174
+            gex:
+              gex_pattern:
+                total_return: -13.3607
+                sharpe_ratio: -0.62
+                max_drawdown: -19.7278
+                win_rate: 37.05
+                num_trades: 37
+                sortino_ratio: -0.8736
+                calmar_ratio: -0.6798
+                profit_factor: 0.3396
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -2.4541
+        tech_sharpe: 2.0126
+        improvement: -221.94
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -1.2134
+        tech_sharpe: 2.3193
+        improvement: -152.32
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.3094
+        tech_sharpe: 2.4856
+        improvement: -192.91
+      - symbol: SQQQ
+        winner: GEX
+        gex_sharpe: 0
+        tech_sharpe: -0.4008
+        improvement: 100.0
+      - symbol: SOXL
+        winner: TECHNICAL
+        gex_sharpe: 0
+        tech_sharpe: 1.3054
+        improvement: -100.0
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: -0.62
+        tech_sharpe: 0.7463
+        improvement: -183.08
+    bear_2022:
+      period: 2022-01-01 to 2022-12-31
+      gex_wins: 0
+      technical_wins: 6
+      avg_improvement_pct: -1040.68
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -2.4822
+          tech_sharpe: 0.2058
+          gex_improvement_pct: -1306.12
+          gex_trades: 33
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -19.946
+                sharpe_ratio: -0.8009
+                max_drawdown: -25.3356
+                win_rate: 42.8
+                num_trades: 1
+              macd:
+                total_return: 2.0031
+                sharpe_ratio: 0.2058
+                max_drawdown: -12.7801
+                win_rate: 20.0
+                num_trades: 12
+              rsi:
+                total_return: -1.6711
+                sharpe_ratio: 0.0257
+                max_drawdown: -16.703
+                win_rate: 39.6
+                num_trades: 49
+              momentum:
+                total_return: -9.9073
+                sharpe_ratio: -0.7727
+                max_drawdown: -10.9987
+                win_rate: 27.2
+                num_trades: 153
+            gex:
+              gex_pattern:
+                total_return: -43.2797
+                sharpe_ratio: -2.4822
+                max_drawdown: -44.1349
+                win_rate: 30.4
+                num_trades: 33
+                sortino_ratio: -3.5254
+                calmar_ratio: -0.9864
+                profit_factor: 0.0099
+        QQQ:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -2.213
+          tech_sharpe: -0.244
+          gex_improvement_pct: -806.97
+          gex_trades: 25
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -33.7092
+                sharpe_ratio: -1.1261
+                max_drawdown: -34.396
+                win_rate: 44.0
+                num_trades: 1
+              macd:
+                total_return: -9.3716
+                sharpe_ratio: -0.4361
+                max_drawdown: -16.6599
+                win_rate: 18.4
+                num_trades: 14
+              rsi:
+                total_return: -10.0617
+                sharpe_ratio: -0.244
+                max_drawdown: -20.7306
+                win_rate: 42.0
+                num_trades: 42
+              momentum:
+                total_return: -12.4339
+                sharpe_ratio: -0.7544
+                max_drawdown: -14.0669
+                win_rate: 22.8
+                num_trades: 99
+            gex:
+              gex_pattern:
+                total_return: -45.7299
+                sharpe_ratio: -2.213
+                max_drawdown: -46.9894
+                win_rate: 26.0
+                num_trades: 25
+                sortino_ratio: -2.7873
+                calmar_ratio: -0.9788
+                profit_factor: 0.0444
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: -3.7043
+          tech_sharpe: -0.1356
+          gex_improvement_pct: -2631.78
+          gex_trades: 38
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -89.891
+                sharpe_ratio: -1.4757
+                max_drawdown: -90.1751
+                win_rate: 43.6
+                num_trades: 1
+              macd:
+                total_return: -38.5649
+                sharpe_ratio: -0.6684
+                max_drawdown: -49.4877
+                win_rate: 15.2
+                num_trades: 14
+              rsi:
+                total_return: -45.9049
+                sharpe_ratio: -0.3224
+                max_drawdown: -60.2814
+                win_rate: 41.6
+                num_trades: 40
+              momentum:
+                total_return: -14.7459
+                sharpe_ratio: -0.1356
+                max_drawdown: -35.3928
+                win_rate: 14.4
+                num_trades: 24
+            gex:
+              gex_pattern:
+                total_return: -93.0915
+                sharpe_ratio: -3.7043
+                max_drawdown: -93.0913
+                win_rate: 2.8
+                num_trades: 38
+                sortino_ratio: -1.9655
+                calmar_ratio: -1.0016
+                profit_factor: 0.0
+        SQQQ:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: 1.0032
+          tech_sharpe: 1.2328
+          gex_improvement_pct: -18.62
+          gex_trades: 2
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 840.1218
+                sharpe_ratio: 1.2095
+                max_drawdown: -49.3872
+                win_rate: 56.0
+                num_trades: 1
+              macd:
+                total_return: 22.1234
+                sharpe_ratio: 0.636
+                max_drawdown: -45.1988
+                win_rate: 22.0
+                num_trades: 13
+              rsi:
+                total_return: 52.3663
+                sharpe_ratio: 1.2328
+                max_drawdown: -34.2945
+                win_rate: 30.8
+                num_trades: 36
+              momentum:
+                total_return: -7.907
+                sharpe_ratio: 0.2532
+                max_drawdown: -38.7475
+                win_rate: 31.2
+                num_trades: 50
+            gex:
+              gex_pattern:
+                total_return: 14.7147
+                sharpe_ratio: 1.0032
+                max_drawdown: -0.012
+                win_rate: 0.4
+                num_trades: 2
+                sortino_ratio: .nan
+                calmar_ratio: 1240.5366
+                profit_factor: inf
+        SOXL:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -3.8968
+          tech_sharpe: 0.3043
+          gex_improvement_pct: -1380.58
+          gex_trades: 30
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -86.589
+                sharpe_ratio: -0.9072
+                max_drawdown: -90.2491
+                win_rate: 46.4
+                num_trades: 1
+              macd:
+                total_return: -9.2694
+                sharpe_ratio: 0.3043
+                max_drawdown: -56.7355
+                win_rate: 20.4
+                num_trades: 12
+              rsi:
+                total_return: -63.3831
+                sharpe_ratio: -0.2876
+                max_drawdown: -80.8253
+                win_rate: 44.0
+                num_trades: 49
+              momentum:
+                total_return: -55.3301
+                sharpe_ratio: -0.7594
+                max_drawdown: -60.6044
+                win_rate: 15.2
+                num_trades: 41
+            gex:
+              gex_pattern:
+                total_return: -81.2122
+                sharpe_ratio: -3.8968
+                max_drawdown: -81.2122
+                win_rate: 0.8
+                num_trades: 30
+                sortino_ratio: -1.8168
+                calmar_ratio: -1.0031
+                profit_factor: 0.0058
+        IWM:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: 0
+          tech_sharpe: 0.0987
+          gex_improvement_pct: -100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -22.6184
+                sharpe_ratio: -0.7773
+                max_drawdown: -27.1491
+                win_rate: 48.4
+                num_trades: 1
+              macd:
+                total_return: 0.1621
+                sharpe_ratio: 0.0987
+                max_drawdown: -14.0851
+                win_rate: 22.8
+                num_trades: 12
+              rsi:
+                total_return: -9.3377
+                sharpe_ratio: -0.2969
+                max_drawdown: -23.1052
+                win_rate: 45.2
+                num_trades: 39
+              momentum:
+                total_return: -11.5168
+                sharpe_ratio: -0.7438
+                max_drawdown: -15.3287
+                win_rate: 30.0
+                num_trades: 131
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -2.4822
+        tech_sharpe: 0.2058
+        improvement: -1306.12
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.213
+        tech_sharpe: -0.244
+        improvement: -806.97
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -3.7043
+        tech_sharpe: -0.1356
+        improvement: -2631.78
+      - symbol: SQQQ
+        winner: TECHNICAL
+        gex_sharpe: 1.0032
+        tech_sharpe: 1.2328
+        improvement: -18.62
+      - symbol: SOXL
+        winner: TECHNICAL
+        gex_sharpe: -3.8968
+        tech_sharpe: 0.3043
+        improvement: -1380.58
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: 0
+        tech_sharpe: 0.0987
+        improvement: -100.0
+    mixed_2023:
+      period: 2023-01-01 to 2023-12-31
+      gex_wins: 0
+      technical_wins: 6
+      avg_improvement_pct: -193.34
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -2.3922
+          tech_sharpe: 1.7651
+          gex_improvement_pct: -235.53
+          gex_trades: 46
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 24.8106
+                sharpe_ratio: 1.7651
+                max_drawdown: -10.2907
+                win_rate: 56.22
+                num_trades: 1
+              macd:
+                total_return: 6.7962
+                sharpe_ratio: 0.9426
+                max_drawdown: -6.088
+                win_rate: 26.91
+                num_trades: 18
+              rsi:
+                total_return: 8.3354
+                sharpe_ratio: 1.0242
+                max_drawdown: -7.2553
+                win_rate: 30.92
+                num_trades: 34
+              momentum:
+                total_return: 12.4673
+                sharpe_ratio: 1.4262
+                max_drawdown: -5.7923
+                win_rate: 49.8
+                num_trades: 231
+            gex:
+              gex_pattern:
+                total_return: -22.1121
+                sharpe_ratio: -2.3922
+                max_drawdown: -24.3915
+                win_rate: 24.1
+                num_trades: 46
+                sortino_ratio: -2.8574
+                calmar_ratio: -0.9162
+                profit_factor: 0.1074
+        QQQ:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -2.9577
+          tech_sharpe: 2.5657
+          gex_improvement_pct: -215.28
+          gex_trades: 52
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 54.8368
+                sharpe_ratio: 2.5657
+                max_drawdown: -10.9089
+                win_rate: 56.63
+                num_trades: 1
+              macd:
+                total_return: 19.5334
+                sharpe_ratio: 1.8653
+                max_drawdown: -6.3638
+                win_rate: 24.5
+                num_trades: 14
+              rsi:
+                total_return: 10.6542
+                sharpe_ratio: 1.2285
+                max_drawdown: -7.4192
+                win_rate: 15.26
+                num_trades: 15
+              momentum:
+                total_return: 26.1674
+                sharpe_ratio: 1.845
+                max_drawdown: -6.7512
+                win_rate: 49.8
+                num_trades: 202
+            gex:
+              gex_pattern:
+                total_return: -29.1903
+                sharpe_ratio: -2.9577
+                max_drawdown: -30.8957
+                win_rate: 16.87
+                num_trades: 52
+                sortino_ratio: -3.1383
+                calmar_ratio: -0.9543
+                profit_factor: 0.074
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -2.2711
+          tech_sharpe: 2.35
+          gex_improvement_pct: -196.64
+          gex_trades: 10
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 199.734
+                sharpe_ratio: 2.35
+                max_drawdown: -33.3765
+                win_rate: 57.03
+                num_trades: 1
+              macd:
+                total_return: 55.6721
+                sharpe_ratio: 1.6306
+                max_drawdown: -20.2711
+                win_rate: 25.3
+                num_trades: 13
+              rsi:
+                total_return: 27.9067
+                sharpe_ratio: 1.0901
+                max_drawdown: -21.5528
+                win_rate: 15.66
+                num_trades: 17
+              momentum:
+                total_return: 90.2489
+                sharpe_ratio: 1.8773
+                max_drawdown: -19.6701
+                win_rate: 37.35
+                num_trades: 47
+            gex:
+              gex_pattern:
+                total_return: -22.3485
+                sharpe_ratio: -2.2711
+                max_drawdown: -22.3485
+                win_rate: 0.4
+                num_trades: 10
+                sortino_ratio: -0.6132
+                calmar_ratio: -1.0106
+                profit_factor: 0.0
+        SQQQ:
+          winner: TECHNICAL
+          best_technical: momentum
+          gex_sharpe: -1.0114
+          tech_sharpe: -0.7469
+          gex_improvement_pct: -35.41
+          gex_trades: 2
+          results:
+            technical:
+              buy_and_hold:
+                total_return: -75.6142
+                sharpe_ratio: -2.4216
+                max_drawdown: -76.7785
+                win_rate: 42.57
+                num_trades: 1
+              macd:
+                total_return: -33.7508
+                sharpe_ratio: -1.1328
+                max_drawdown: -37.4088
+                win_rate: 17.27
+                num_trades: 13
+              rsi:
+                total_return: -55.9235
+                sharpe_ratio: -1.7004
+                max_drawdown: -60.4727
+                win_rate: 40.96
+                num_trades: 56
+              momentum:
+                total_return: -22.3866
+                sharpe_ratio: -0.7469
+                max_drawdown: -24.7013
+                win_rate: 12.05
+                num_trades: 42
+            gex:
+              gex_pattern:
+                total_return: -2.0109
+                sharpe_ratio: -1.0114
+                max_drawdown: -2.0109
+                win_rate: 0.0
+                num_trades: 2
+                sortino_ratio: -0.0911
+                calmar_ratio: -1.0119
+                profit_factor: 0.0
+        SOXL:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -1.8949
+          tech_sharpe: 1.8713
+          gex_improvement_pct: -201.26
+          gex_trades: 10
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 235.291
+                sharpe_ratio: 1.8713
+                max_drawdown: -49.0712
+                win_rate: 53.01
+                num_trades: 1
+              macd:
+                total_return: 37.5218
+                sharpe_ratio: 0.8531
+                max_drawdown: -46.8696
+                win_rate: 21.29
+                num_trades: 15
+              rsi:
+                total_return: 31.7416
+                sharpe_ratio: 0.8559
+                max_drawdown: -39.2821
+                win_rate: 30.12
+                num_trades: 29
+              momentum:
+                total_return: 71.1191
+                sharpe_ratio: 1.183
+                max_drawdown: -36.6463
+                win_rate: 31.33
+                num_trades: 59
+            gex:
+              gex_pattern:
+                total_return: -30.3343
+                sharpe_ratio: -1.8949
+                max_drawdown: -30.3343
+                win_rate: 1.2
+                num_trades: 10
+                sortino_ratio: -0.5064
+                calmar_ratio: -1.01
+                profit_factor: 0.0
+        IWM:
+          winner: TECHNICAL
+          best_technical: macd
+          gex_sharpe: -1.7389
+          tech_sharpe: 0.9885
+          gex_improvement_pct: -275.91
+          gex_trades: 18
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 15.7464
+                sharpe_ratio: 0.8344
+                max_drawdown: -18.3685
+                win_rate: 52.61
+                num_trades: 1
+              macd:
+                total_return: 14.0664
+                sharpe_ratio: 0.9885
+                max_drawdown: -11.1831
+                win_rate: 22.89
+                num_trades: 13
+              rsi:
+                total_return: 1.272
+                sharpe_ratio: 0.1594
+                max_drawdown: -15.0065
+                win_rate: 39.76
+                num_trades: 32
+              momentum:
+                total_return: 6.9949
+                sharpe_ratio: 0.5645
+                max_drawdown: -12.8014
+                win_rate: 40.16
+                num_trades: 164
+            gex:
+              gex_pattern:
+                total_return: -24.8977
+                sharpe_ratio: -1.7389
+                max_drawdown: -28.4878
+                win_rate: 33.33
+                num_trades: 18
+                sortino_ratio: -2.3382
+                calmar_ratio: -0.8831
+                profit_factor: 0.1264
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -2.3922
+        tech_sharpe: 1.7651
+        improvement: -235.53
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.9577
+        tech_sharpe: 2.5657
+        improvement: -215.28
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.2711
+        tech_sharpe: 2.35
+        improvement: -196.64
+      - symbol: SQQQ
+        winner: TECHNICAL
+        gex_sharpe: -1.0114
+        tech_sharpe: -0.7469
+        improvement: -35.41
+      - symbol: SOXL
+        winner: TECHNICAL
+        gex_sharpe: -1.8949
+        tech_sharpe: 1.8713
+        improvement: -201.26
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: -1.7389
+        tech_sharpe: 0.9885
+        improvement: -275.91
+    bull_2024:
+      period: 2024-01-01 to 2024-11-30
+      gex_wins: 0
+      technical_wins: 6
+      avg_improvement_pct: -231.29
+      symbol_results:
+        SPY:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -2.0108
+          tech_sharpe: 2.5587
+          gex_improvement_pct: -178.59
+          gex_trades: 46
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 27.482
+                sharpe_ratio: 2.2004
+                max_drawdown: -8.4056
+                win_rate: 60.0
+                num_trades: 1
+              macd:
+                total_return: 5.1835
+                sharpe_ratio: 0.8932
+                max_drawdown: -2.7674
+                win_rate: 26.09
+                num_trades: 23
+              rsi:
+                total_return: 11.7444
+                sharpe_ratio: 2.5587
+                max_drawdown: -1.8634
+                win_rate: 11.74
+                num_trades: 13
+              momentum:
+                total_return: 12.1572
+                sharpe_ratio: 1.4381
+                max_drawdown: -4.5374
+                win_rate: 52.61
+                num_trades: 207
+            gex:
+              gex_pattern:
+                total_return: -16.0064
+                sharpe_ratio: -2.0108
+                max_drawdown: -16.9344
+                win_rate: 15.65
+                num_trades: 46
+                sortino_ratio: -1.8049
+                calmar_ratio: -1.0273
+                profit_factor: 0.0661
+        QQQ:
+          winner: TECHNICAL
+          best_technical: buy_and_hold
+          gex_sharpe: -3.0912
+          tech_sharpe: 1.5421
+          gex_improvement_pct: -300.45
+          gex_trades: 58
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 26.6136
+                sharpe_ratio: 1.5421
+                max_drawdown: -13.5577
+                win_rate: 60.0
+                num_trades: 1
+              macd:
+                total_return: 1.5909
+                sharpe_ratio: 0.2323
+                max_drawdown: -7.1112
+                win_rate: 21.74
+                num_trades: 22
+              rsi:
+                total_return: 9.0919
+                sharpe_ratio: 1.1434
+                max_drawdown: -7.6321
+                win_rate: 18.7
+                num_trades: 22
+              momentum:
+                total_return: 7.816
+                sharpe_ratio: 0.7369
+                max_drawdown: -5.7645
+                win_rate: 48.26
+                num_trades: 195
+            gex:
+              gex_pattern:
+                total_return: -30.3819
+                sharpe_ratio: -3.0912
+                max_drawdown: -31.1251
+                win_rate: 16.96
+                num_trades: 58
+                sortino_ratio: -2.7027
+                calmar_ratio: -1.0523
+                profit_factor: 0.0422
+        TQQQ:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -2.9023
+          tech_sharpe: 1.5145
+          gex_improvement_pct: -291.63
+          gex_trades: 14
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 65.9707
+                sharpe_ratio: 1.3135
+                max_drawdown: -37.372
+                win_rate: 59.13
+                num_trades: 1
+              macd:
+                total_return: 0.2292
+                sharpe_ratio: 0.1489
+                max_drawdown: -20.9296
+                win_rate: 22.17
+                num_trades: 20
+              rsi:
+                total_return: 41.747
+                sharpe_ratio: 1.5145
+                max_drawdown: -22.0327
+                win_rate: 18.26
+                num_trades: 24
+              momentum:
+                total_return: 8.4307
+                sharpe_ratio: 0.4284
+                max_drawdown: -20.7076
+                win_rate: 41.74
+                num_trades: 75
+            gex:
+              gex_pattern:
+                total_return: -36.288
+                sharpe_ratio: -2.9023
+                max_drawdown: -36.288
+                win_rate: 0.0
+                num_trades: 14
+                sortino_ratio: -1.0079
+                calmar_ratio: -1.0741
+                profit_factor: 0.0
+        SQQQ:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: 0
+          tech_sharpe: 1.0184
+          gex_improvement_pct: -100.0
+          gex_trades: 0
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 130.3287
+                sharpe_ratio: 0.8724
+                max_drawdown: -55.1887
+                win_rate: 40.43
+                num_trades: 1
+              macd:
+                total_return: 290.5212
+                sharpe_ratio: 1.0078
+                max_drawdown: -34.3701
+                win_rate: 18.7
+                num_trades: 16
+              rsi:
+                total_return: 306.7778
+                sharpe_ratio: 1.0184
+                max_drawdown: -35.4634
+                win_rate: 35.65
+                num_trades: 49
+              momentum:
+                total_return: -26.9698
+                sharpe_ratio: -0.7679
+                max_drawdown: -35.1796
+                win_rate: 14.35
+                num_trades: 48
+            gex:
+              gex_pattern:
+                total_return: 0.0
+                sharpe_ratio: 0
+                max_drawdown: 0.0
+                win_rate: 0.0
+                num_trades: 0
+        SOXL:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -2.7049
+          tech_sharpe: 1.0363
+          gex_improvement_pct: -361.02
+          gex_trades: 16
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 0.0535
+                sharpe_ratio: 0.5224
+                max_drawdown: -62.1519
+                win_rate: 51.3
+                num_trades: 1
+              macd:
+                total_return: -30.0792
+                sharpe_ratio: -0.2327
+                max_drawdown: -53.3996
+                win_rate: 20.87
+                num_trades: 16
+              rsi:
+                total_return: 50.1801
+                sharpe_ratio: 1.0363
+                max_drawdown: -39.9835
+                win_rate: 26.52
+                num_trades: 26
+              momentum:
+                total_return: -25.6735
+                sharpe_ratio: -0.1215
+                max_drawdown: -56.9668
+                win_rate: 27.83
+                num_trades: 50
+            gex:
+              gex_pattern:
+                total_return: -60.373
+                sharpe_ratio: -2.7049
+                max_drawdown: -61.8914
+                win_rate: 0.87
+                num_trades: 16
+                sortino_ratio: -0.9683
+                calmar_ratio: -1.0297
+                profit_factor: 0.0247
+        IWM:
+          winner: TECHNICAL
+          best_technical: rsi
+          gex_sharpe: -1.2454
+          tech_sharpe: 2.2211
+          gex_improvement_pct: -156.07
+          gex_trades: 32
+          results:
+            technical:
+              buy_and_hold:
+                total_return: 21.2229
+                sharpe_ratio: 1.1139
+                max_drawdown: -10.0712
+                win_rate: 53.48
+                num_trades: 1
+              macd:
+                total_return: 1.7669
+                sharpe_ratio: 0.2151
+                max_drawdown: -9.6074
+                win_rate: 20.0
+                num_trades: 15
+              rsi:
+                total_return: 11.5928
+                sharpe_ratio: 2.2211
+                max_drawdown: -2.02
+                win_rate: 35.22
+                num_trades: 24
+              momentum:
+                total_return: -2.8701
+                sharpe_ratio: -0.123
+                max_drawdown: -12.4772
+                win_rate: 44.78
+                num_trades: 177
+            gex:
+              gex_pattern:
+                total_return: -15.2919
+                sharpe_ratio: -1.2454
+                max_drawdown: -18.608
+                win_rate: 25.22
+                num_trades: 32
+                sortino_ratio: -1.2207
+                calmar_ratio: -0.8935
+                profit_factor: 0.2006
+      summary:
+      - symbol: SPY
+        winner: TECHNICAL
+        gex_sharpe: -2.0108
+        tech_sharpe: 2.5587
+        improvement: -178.59
+      - symbol: QQQ
+        winner: TECHNICAL
+        gex_sharpe: -3.0912
+        tech_sharpe: 1.5421
+        improvement: -300.45
+      - symbol: TQQQ
+        winner: TECHNICAL
+        gex_sharpe: -2.9023
+        tech_sharpe: 1.5145
+        improvement: -291.63
+      - symbol: SQQQ
+        winner: TECHNICAL
+        gex_sharpe: 0
+        tech_sharpe: 1.0184
+        improvement: -100.0
+      - symbol: SOXL
+        winner: TECHNICAL
+        gex_sharpe: -2.7049
+        tech_sharpe: 1.0363
+        improvement: -361.02
+      - symbol: IWM
+        winner: TECHNICAL
+        gex_sharpe: -1.2454
+        tech_sharpe: 2.2211
+        improvement: -156.07
+full_period_detailed:
+  SPY:
+    winner: TECHNICAL
+    best_technical: momentum
+    gex_sharpe: -1.7599
+    tech_sharpe: 0
+    gex_improvement_pct: 0.0
+    gex_trades: 1
+    results:
+      technical:
+        buy_and_hold:
+          total_return: -20.4782
+          sharpe_ratio: -1.779
+          max_drawdown: -34.1047
+          win_rate: 45.0
+          num_trades: 1
+        macd:
+          total_return: -1.3227
+          sharpe_ratio: -0.6524
+          max_drawdown: -2.9804
+          win_rate: 2.5
+          num_trades: 1
+        rsi:
+          total_return: -16.9462
+          sharpe_ratio: -1.4196
+          max_drawdown: -28.7381
+          win_rate: 25.0
+          num_trades: 3
+        momentum:
+          total_return: 0.0
+          sharpe_ratio: 0
+          max_drawdown: 0.0
+          win_rate: 0.0
+          num_trades: 0
+      gex:
+        gex_pattern:
+          total_return: -20.0589
+          sharpe_ratio: -1.7599
+          max_drawdown: -30.8521
+          win_rate: 25.0
+          num_trades: 1
+          sortino_ratio: -2.388
+          calmar_ratio: -2.4503
+          profit_factor: inf
+  QQQ:
+    winner: TECHNICAL
+    best_technical: macd
+    gex_sharpe: -1.6218
+    tech_sharpe: -0.3215
+    gex_improvement_pct: -404.45
+    gex_trades: 1
+    results:
+      technical:
+        buy_and_hold:
+          total_return: -14.3827
+          sharpe_ratio: -1.0981
+          max_drawdown: -28.5594
+          win_rate: 50.0
+          num_trades: 1
+        macd:
+          total_return: -0.7842
+          sharpe_ratio: -0.3215
+          max_drawdown: -3.4418
+          win_rate: 2.5
+          num_trades: 1
+        rsi:
+          total_return: -7.0114
+          sharpe_ratio: -0.3983
+          max_drawdown: -21.7587
+          win_rate: 25.0
+          num_trades: 4
+        momentum:
+          total_return: -1.9253
+          sharpe_ratio: -2.5992
+          max_drawdown: -1.9253
+          win_rate: 2.5
+          num_trades: 4
+      gex:
+        gex_pattern:
+          total_return: -18.9045
+          sharpe_ratio: -1.6218
+          max_drawdown: -27.8915
+          win_rate: 27.5
+          num_trades: 1
+          sortino_ratio: -2.2184
+          calmar_ratio: -2.6277
+          profit_factor: inf
+  TQQQ:
+    winner: TECHNICAL
+    best_technical: momentum
+    gex_sharpe: -2.6257
+    tech_sharpe: 0.7754
+    gex_improvement_pct: -438.63
+    gex_trades: 122
+    results:
+      technical:
+        buy_and_hold:
+          total_return: -12.059
+          sharpe_ratio: 0.426
+          max_drawdown: -91.8367
+          win_rate: 55.74
+          num_trades: 1
+        macd:
+          total_return: 5.6875
+          sharpe_ratio: 0.312
+          max_drawdown: -74.745
+          win_rate: 29.29
+          num_trades: 92
+        rsi:
+          total_return: 98.7167
+          sharpe_ratio: 0.5386
+          max_drawdown: -64.376
+          win_rate: 37.86
+          num_trades: 243
+        momentum:
+          total_return: 234.0225
+          sharpe_ratio: 0.7754
+          max_drawdown: -61.651
+          win_rate: 37.54
+          num_trades: 259
+      gex:
+        gex_pattern:
+          total_return: -99.8288
+          sharpe_ratio: -2.6257
+          max_drawdown: -99.8288
+          win_rate: 1.7
+          num_trades: 122
+          sortino_ratio: -1.068
+          calmar_ratio: -0.7284
+          profit_factor: 0.0024
+  SQQQ:
+    winner: TECHNICAL
+    best_technical: rsi
+    gex_sharpe: 0.1331
+    tech_sharpe: 0.6841
+    gex_improvement_pct: -80.54
+    gex_trades: 6
+    results:
+      technical:
+        buy_and_hold:
+          total_return: 52.9218
+          sharpe_ratio: 0.5708
+          max_drawdown: -89.938
+          win_rate: 43.77
+          num_trades: 1
+        macd:
+          total_return: 964.3206
+          sharpe_ratio: 0.6669
+          max_drawdown: -76.0443
+          win_rate: 22.9
+          num_trades: 80
+        rsi:
+          total_return: 1792.9234
+          sharpe_ratio: 0.6841
+          max_drawdown: -73.2055
+          win_rate: 36.89
+          num_trades: 265
+        momentum:
+          total_return: 63.3962
+          sharpe_ratio: 0.3951
+          max_drawdown: -66.9585
+          win_rate: 17.56
+          num_trades: 229
+      gex:
+        gex_pattern:
+          total_return: 3.683
+          sharpe_ratio: 0.1331
+          max_drawdown: -7.7728
+          win_rate: 0.08
+          num_trades: 6
+          sortino_ratio: 0.019
+          calmar_ratio: 0.0952
+          profit_factor: 1.3847
+  SOXL:
+    winner: TECHNICAL
+    best_technical: rsi
+    gex_sharpe: -2.1536
+    tech_sharpe: 0.6589
+    gex_improvement_pct: -426.85
+    gex_trades: 58
+    results:
+      technical:
+        buy_and_hold:
+          total_return: -90.3893
+          sharpe_ratio: 0.4345
+          max_drawdown: -99.0082
+          win_rate: 51.29
+          num_trades: 1
+        macd:
+          total_return: 40.4857
+          sharpe_ratio: 0.4653
+          max_drawdown: -73.9462
+          win_rate: 26.62
+          num_trades: 82
+        rsi:
+          total_return: 165.8318
+          sharpe_ratio: 0.6589
+          max_drawdown: -80.8725
+          win_rate: 38.83
+          num_trades: 195
+        momentum:
+          total_return: -85.6305
+          sharpe_ratio: 0.0669
+          max_drawdown: -96.4256
+          win_rate: 30.34
+          num_trades: 276
+      gex:
+        gex_pattern:
+          total_return: -94.4208
+          sharpe_ratio: -2.1536
+          max_drawdown: -95.0121
+          win_rate: 0.65
+          num_trades: 58
+          sortino_ratio: -0.6377
+          calmar_ratio: -0.4682
+          profit_factor: 0.0812
+  IWM:
+    winner: TECHNICAL
+    best_technical: momentum
+    gex_sharpe: -3.0603
+    tech_sharpe: 0
+    gex_improvement_pct: 0.0
+    gex_trades: 5
+    results:
+      technical:
+        buy_and_hold:
+          total_return: -29.4871
+          sharpe_ratio: -2.6991
+          max_drawdown: -40.821
+          win_rate: 45.0
+          num_trades: 1
+        macd:
+          total_return: -2.016
+          sharpe_ratio: -1.1275
+          max_drawdown: -3.6425
+          win_rate: 2.5
+          num_trades: 1
+        rsi:
+          total_return: -25.281
+          sharpe_ratio: -2.2486
+          max_drawdown: -34.7857
+          win_rate: 25.0
+          num_trades: 20
+        momentum:
+          total_return: 0.0
+          sharpe_ratio: 0
+          max_drawdown: 0.0
+          win_rate: 0.0
+          num_trades: 0
+      gex:
+        gex_pattern:
+          total_return: -32.1359
+          sharpe_ratio: -3.0603
+          max_drawdown: -41.1809
+          win_rate: 32.5
+          num_trades: 5
+          sortino_ratio: -3.7207
+          calmar_ratio: -2.2171
+          profit_factor: 1.1714

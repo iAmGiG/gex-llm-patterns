@@ -26,7 +26,7 @@ Validates that patterns work via **obfuscation tests** - proving patterns detect
 
 ```bash
 # Test gamma_positioning pattern across full 2024 dataset
-python scripts/validation/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --symbol SPY \
   --start-date 2024-01-02 \
@@ -38,7 +38,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 
 ```bash
 # Check what dates are available and identify gaps
-python scripts/validation/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --check-continuity
 ```
@@ -81,7 +81,7 @@ python scripts/validation/validate_pattern_taxonomy.py \
 
 ```bash
 # Check cache coverage for date range
-python scripts/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --start-date 2024-01-02 \
   --end-date 2024-06-28 \
   --check-continuity
@@ -99,7 +99,7 @@ python scripts/validate_pattern_taxonomy.py \
 
 ```bash
 # Start with gamma_positioning (strongest academic support)
-python scripts/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --confidence 60.0
 
@@ -136,7 +136,7 @@ If you see many `failed_dates`, re-run to attempt fresh API fetches:
 
 ```bash
 # Agent will retry fetching missing dates
-python scripts/validate_pattern_taxonomy.py \
+python scripts/validation/paper1/02_validate_pattern_taxonomy.py \
   --pattern gamma_positioning \
   --start-date 2024-01-02 \
   --end-date 2024-06-28
@@ -303,7 +303,8 @@ ls .cache/options/SPY/
 
 ## Related Files
 
-- **Validation Script**: `scripts/validate_pattern_taxonomy.py`
+- **Validation Script**: `scripts/validation/paper1/02_validate_pattern_taxonomy.py`
+- **Batch Validation**: `scripts/validation/paper1/03_validate_all_patterns.py`
 - **Pattern Framework**: `src/validation/pattern_taxonomy.py`
 - **Obfuscation**: `src/validation/data_obfuscation.py`
 - **Baseline Strategy**: `src/analysis/baseline_gex_strategy.py`

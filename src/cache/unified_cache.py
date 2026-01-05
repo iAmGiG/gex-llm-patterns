@@ -42,52 +42,21 @@ class UnifiedCacheManager:
         # Initialize GEX cache manager (lazy loading)
         self._gex_cache = None
 
-    # === OPTIONS DATA ===
+        # SQLite options manager for get_or_calculate_gex internal use
+        self._sqlite_options = None
 
-    def store_options_data(self, symbol, trading_date, df: pd.DataFrame) -> bool:
-        """Store real options data.
+    @property
+    def sqlite_options(self):
+        """Lazy-loaded SQLiteOptionsManager for internal GEX calculations only.
 
-        Args:
-            symbol: Stock symbol (SPY, SPX, etc.)
-            trading_date: Date in YYYY-MM-DD format
-            df: Options DataFrame
+        Note: For options data access, use SQLiteOptionsManager directly.
+        Issue #180: Deprecated wrapper methods removed.
         """
-        try:
-            # Path: .cache/options/SPY/2024-08-01.pickle
-            symbol_dir = self.options_dir / symbol.upper()
-            symbol_dir.mkdir(exist_ok=True)
+        if self._sqlite_options is None:
+            from src.cache.sqlite_options_manager import SQLiteOptionsManager
 
-            file_path = symbol_dir / f"{trading_date}.pickle"
-            df.to_pickle(file_path)
-
-            self.logger.info(f"Stored {len(df)} {symbol} options contracts for {trading_date}")
-            return True
-
-        except Exception as e:
-            self.logger.error(f"Failed to store {symbol} options: {e}")
-            return False
-
-    def get_options_data(self, symbol, trading_date):
-        """Get real options data.
-
-        Args:
-            symbol: Stock symbol
-            trading_date: Date in YYYY-MM-DD format
-        """
-        try:
-            file_path = self.options_dir / symbol.upper() / f"{trading_date}.pickle"
-
-            if file_path.exists():
-                df = pd.read_pickle(file_path)
-                self.logger.info(f"Loaded {len(df)} {symbol} options contracts for {trading_date}")
-                return df
-
-            self.logger.debug(f"No {symbol} options data found for {trading_date}")
-            return None
-
-        except Exception as e:
-            self.logger.error(f"Failed to load {symbol} options: {e}")
-            return None
+            self._sqlite_options = SQLiteOptionsManager()
+        return self._sqlite_options
 
     # === MARKET DATA ===
 
@@ -346,8 +315,8 @@ class UnifiedCacheManager:
                 self.logger.debug(f"GEX cache hit for {symbol} {trading_date}")
                 return cached_gex
 
-            # 2. Get options data (from existing cache)
-            options_data = self.get_options_data(symbol, trading_date)
+            # 2. Get options data (Issue #180: directly from SQLite)
+            options_data = self.sqlite_options.get_options_chain(symbol, trading_date)
 
             if options_data is None or options_data.empty:
                 self.logger.warning(f"No options data available for GEX calculation: {symbol} {trading_date}")
