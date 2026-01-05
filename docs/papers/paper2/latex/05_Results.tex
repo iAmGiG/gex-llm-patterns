@@ -306,6 +306,43 @@ H_0: p_{2024} = p_{2020} \quad \text{vs} \quad H_1: p_{2024} > p_{2020}
 
 The 69.1 percentage point difference is statistically significant, confirming fundamentally different market regimes.
 
+\subsection{LLM Confidence as Quality Metric}
+
+\vspace{0.2cm}
+
+Beyond binary regime classification, LLM confidence scores provide continuous quality discrimination that demonstrates value beyond deterministic threshold evaluation. Analysis across 1,301 validation windows reveals that confidence scores predict both detection outcomes and regime robustness.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Confidence discriminates detection outcome}: Detected windows averaged 91.8\% confidence (n=305), while non-detected windows averaged 67.5\% confidence (n=996)—a 24.4 percentage point gap indicating the model expresses calibrated uncertainty about borderline cases.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Confidence predicts regime quality}: Beyond binary classification, confidence correlates significantly with regime quality metrics:
+
+\vspace{0.1cm}
+
+\begin{itemize}
+\item \textbf{Persistence}: $r = +0.501$ ($p < 0.001$)—higher confidence predicts stronger directional consistency
+\item \textbf{Magnitude}: $r = +0.425$ ($p < 0.001$)—higher confidence predicts larger GEX magnitude
+\item \textbf{Stability}: $r = -0.549$ ($p < 0.001$)—higher confidence predicts fewer sign reversals
+\end{itemize}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Stratified quality discrimination}: Partitioning detected windows by confidence reveals meaningful regime tiers:
+
+\vspace{0.1cm}
+
+\begin{itemize}
+\item \textbf{High confidence} ($\geq$90\%, n=216): 99.6\% average persistence—extremely robust regimes
+\item \textbf{Low confidence} ($<$90\%, n=89): 95.4\% average persistence—good but noisy regimes
+\end{itemize}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Interpretation}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations ($r > 0.4$) demonstrate the model captures regime robustness nuances beyond threshold crossing—distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (95.4\% persistence). This continuous quality measure provides practical value for deployment: high-confidence detections could trigger automated responses while low-confidence detections flag for human review.
+
 % \subsection{Cost and Efficiency}
 %
 % Cost metrics omitted from paper per user request - not tracking this metric

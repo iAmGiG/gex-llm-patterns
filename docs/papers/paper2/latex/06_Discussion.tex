@@ -161,42 +161,15 @@ While various methodologies exist for quantifying dealer gamma exposure, we dist
 
 \noindent\textbf{Future validation}: A natural extension is the \textit{Formula Agreement Test}: running the detection pipeline with both absolute-scaled and normalized GEX formulations to measure regime classification agreement. High agreement ($>$90\%) would demonstrate calculation-independent findings; low agreement ($<$70\%) would indicate that LLM structural reasoning depends critically on absolute magnitude cues---a finding with implications for deploying LLMs across different financial data representations.
 
-\subsection{Regime Quality vs.\ Binary Classification}
+\subsection{LLM Value Beyond Deterministic Thresholds}
 
 \vspace{0.2cm}
 
-A valid critique of our methodology is that regime detection reduces to deterministic threshold evaluation: if persistence $\geq$70\%, magnitude $\geq$\$5B, and flips $\leq$5, the LLM should always detect the regime. This ``expensive calculator'' objection questions whether the LLM contributes value beyond arithmetic. We address this critique by demonstrating that LLM confidence scores provide continuous regime \textit{quality} discrimination beyond binary classification.
+A valid critique of our methodology is that regime detection reduces to deterministic threshold evaluation: if persistence $\geq$70\%, magnitude $\geq$\$5B, and flips $\leq$5, the LLM should always detect the regime. This ``expensive calculator'' objection questions whether the LLM contributes value beyond arithmetic.
 
 \vspace{0.2cm}
 
-\noindent\textbf{Confidence discriminates detection outcome}: Analysis of 1,301 validation windows reveals that LLM confidence strongly predicts detection decisions. Detected windows averaged 91.8\% confidence (n=305), while non-detected windows averaged 67.5\% confidence (n=996)—a 24.4 percentage point gap indicating the model expresses calibrated uncertainty about borderline cases.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Confidence predicts regime quality}: Beyond binary classification, confidence correlates significantly with regime quality metrics:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{Persistence}: $r = +0.501$ ($p < 0.001$)—higher confidence predicts stronger directional consistency
-\item \textbf{Magnitude}: $r = +0.425$ ($p < 0.001$)—higher confidence predicts larger GEX magnitude
-\item \textbf{Stability}: $r = -0.549$ ($p < 0.001$)—higher confidence predicts fewer sign reversals
-\end{itemize}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Stratified quality discrimination}: Partitioning detected windows by confidence reveals meaningful regime tiers:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{High confidence} ($\geq$90\%, n=216): 99.6\% average persistence—extremely robust regimes suitable for direct trading signals
-\item \textbf{Low confidence} ($<$90\%, n=89): 95.4\% average persistence—good but noisy regimes warranting manual review
-\end{itemize}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Complementary discrimination}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations demonstrate the model captures regime robustness nuances beyond threshold crossing—distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (92.9\% persistence). In production deployment, high-confidence detections could trigger automated responses while low-confidence detections flag for human review, creating practical value beyond simple threshold evaluation.
+Section 5.9 (LLM Confidence as Quality Metric) demonstrates that confidence scores provide continuous regime quality discrimination beyond binary classification. Analysis of 1,301 validation windows reveals strong correlations between confidence and regime metrics ($r > 0.4$, $p < 0.001$), enabling stratified quality tiers: high-confidence detections ($\geq$90\%) exhibit 99.6\% persistence while low-confidence detections show 95.4\% persistence. This complementary discrimination—hard-coded criteria determine regime \textit{category}, LLM confidence measures regime \textit{quality}—provides practical deployment value where high-confidence detections trigger automated responses while low-confidence cases flag for human review.
 
 \subsection{Open Interest vs Volume-Based GEX: The Transmission Mechanism}
 
