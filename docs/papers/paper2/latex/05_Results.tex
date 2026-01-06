@@ -42,13 +42,13 @@ Phase 2 validated framework selectivity through three synthetic tests totaling 8
 \begin{table}[ht]
 \centering
 \caption{Phase 2 Negative Control Results}
-\begin{tabular}{lrrr}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-\textbf{Test} & \textbf{2024 FP} & \textbf{2020 FP} & \textbf{Success Criteria} \\
+\textbf{Test} & \textbf{2024 FP} & \textbf{2020 FP} & \textbf{Criterion} \\
 \midrule
-Shuffle (404 total) & 61.1\% & 12.1\% & <20\% \\
-Transitional (202 total) & 0\% & 0\% & <10\% \\
-Low-Magnitude (203 total) & 0\% & 0\% & <10\% \\
+Shuffle (404) & 61.1\% & 12.1\% & $<$20\% \\
+Transitional (202) & 0\% & 0\% & $<$10\% \\
+Low-Magnitude (203) & 0\% & 0\% & $<$10\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -118,7 +118,7 @@ The 81.2\% detection rate initially raised concerns about framework selectivity 
 
 Critical question: Is 81.2\% detection evidence of loose criteria, or genuine 2024 market anomaly?
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{../figures/output/fig05_selectivity.png}
 \caption{Framework Selectivity Demonstration. Four example windows illustrating regime classification: detected windows (green) meet all three criteria, while rejected windows (red) fail on magnitude (2020 baseline) or stability (2024 transitional).}
@@ -197,7 +197,7 @@ The large effect size ($\phi = 0.672$) and temporal coincidence with 0DTE prolif
 
 \subsection{Regime Characteristics Comparison}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Market Structure Comparison (2020 vs 2024)}
 \begin{tabular}{lrr}
@@ -234,10 +234,10 @@ Phase 5 extended the temporal analysis to six years (2020-2025) with 1,412 30-da
 \begin{table}[ht]
 \centering
 \caption{Phase 5 Multi-Year Detection Results (2020-2025)}
-\small
-\begin{tabular}{lrrrrr}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
-\textbf{Year} & \textbf{Windows} & \textbf{Detected} & \textbf{Rate} & \textbf{Avg GEX} & \textbf{Status} \\
+\textbf{Year} & \textbf{Win.} & \textbf{Det.} & \textbf{Rate} & \textbf{GEX} & \textbf{Status} \\
 \midrule
 2020 & 213 & 26 & 12.2\% & \$5B & Pre-regime \\
 2021 & 241 & 9 & 3.7\% & \$5B & Borderline \\
@@ -384,7 +384,7 @@ In borderline cases (persistence 68-72\%, n=84), confidence scores successfully 
 
 \vspace{0.2cm}
 
-\begin{figure}[h!]
+\begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.95\textwidth]{../figures/output/fig07_confidence_discrimination.png}
 \caption{\textbf{LLM Confidence Discrimination Across Full Detection Spectrum.}
@@ -396,7 +396,7 @@ Persistence threshold line (vertical dotted) at 70\% shows where regime classifi
 Strong correlation between persistence and confidence (r = +0.860) for detected regimes indicates confidence meaningfully tracks regime strength.
 }
 \label{fig:confidence_discrimination}
-\end{figure}
+\end{figure*}
 
 \vspace{0.2cm}
 
