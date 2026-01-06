@@ -3,12 +3,23 @@
 Paper #2: Improved Figure Generation
 Addresses all quality issues and follows Paper 1 naming convention (fig##_descriptor.png)
 
-WARNING (2025-12-27): Phase 4A (multi-year 2021-2023, 2025 validation) was PLANNED but
-NOT EXECUTED. The 100% detection rates for 2021-2023/2025 in this script are UNVALIDATED.
-Only 2020 (12.1%) and 2024 (81.2%) are supported by actual Phase 3/4 results.
+NOTE (2026-01-06): Phase 4A was executed January 4-5, 2026 with 1,476 validation results.
+All years (2020-2025) now have validated detection rates from PostgreSQL data.
 
-TODO: When Phase 4A is executed, regenerate all figures with validated data.
-      Until then, figures showing 2021-2023/2025 data should be considered placeholders.
+Figures used in paper (new naming scheme):
+- fig01_architecture.png (create_fig10_architecture)
+- fig02_regime_window.png (create_fig06_regime_window)
+- fig03_obfuscation.png (create_fig05_obfuscation)
+- fig04_validation_pipeline.png (create_fig08_validation_pipeline)
+- fig05_selectivity.png (create_fig07_selectivity)
+
+Figures generated elsewhere (validation analysis scripts):
+- fig06_gex_magnitude_distribution.png
+- fig07_confidence_discrimination.png
+- fig08_detection_progression.png
+- fig09_scar_tissue.png
+- fig10_borderline_persistence.png
+- fig11_threshold_sensitivity.png
 
 Issues Fixed:
 - Figure 1: Legend moved from bad top-right position
@@ -531,7 +542,7 @@ def create_fig05_obfuscation():
         y_offset += 0.03
 
     plt.tight_layout(rect=[0, 0.15, 1, 0.95])
-    output_path = OUTPUT_DIR / "fig05_obfuscation.png"
+    output_path = OUTPUT_DIR / "fig03_obfuscation.png"
     plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"  Saved: {output_path.name}")
     plt.close()
@@ -634,7 +645,7 @@ def create_fig06_regime_window():
     ax_criteria.text(5, 1.25, "PERSISTENT REGIME DETECTED", fontsize=11, weight="bold", ha="center", color="white")
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "fig06_regime_window.png"
+    output_path = OUTPUT_DIR / "fig02_regime_window.png"
     plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"  Saved: {output_path.name}")
     plt.close()
@@ -697,7 +708,7 @@ def create_fig07_selectivity():
             "reason": "All criteria met",
             "bg_color": "#E8F5E9",
             "border_color": COLORS["positive"],
-            "unvalidated": True,  # 2023 data not yet validated
+            "unvalidated": False,  # 2023 data validated in Phase 4A (Jan 2026)
         },
     ]
 
@@ -770,10 +781,10 @@ def create_fig07_selectivity():
     fig.legend(handles=legend_elements, loc="lower center", ncol=2, fontsize=10, bbox_to_anchor=(0.5, 0.02))
 
     # Footnote for unvalidated data
-    fig.text(0.98, 0.01, "*2023 data: Unvalidated (Phase 4A planned)", fontsize=8, ha="right", color="#666666")
+    fig.text(0.98, 0.01, "*2023 data validated in Phase 4A (Jan 2026)", fontsize=8, ha="right", color="#666666")
 
     plt.tight_layout(rect=[0, 0.06, 1, 0.96])
-    output_path = OUTPUT_DIR / "fig07_selectivity.png"
+    output_path = OUTPUT_DIR / "fig05_selectivity.png"
     plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"  Saved: {output_path.name}")
     plt.close()
@@ -876,7 +887,7 @@ def create_fig08_validation_pipeline():
     )
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "fig08_validation_pipeline.png"
+    output_path = OUTPUT_DIR / "fig04_validation_pipeline.png"
     plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"  Saved: {output_path.name}")
     plt.close()
@@ -1188,7 +1199,7 @@ def create_fig10_architecture():
     )
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "fig10_architecture.png"
+    output_path = OUTPUT_DIR / "fig01_architecture.png"
     plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"  Saved: {output_path.name}")
     plt.close()
