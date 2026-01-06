@@ -115,7 +115,7 @@ However, while the temporal coincidence strongly implicates 0DTE as the primary 
 
 \vspace{0.2cm}
 
-\noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 5 multi-year validation (Section 5.7) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior. Figure \ref{fig:phase4a_progression} illustrates this temporal evolution.
+\noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 5 multi-year validation (\ref{sec:phase5}) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior. Figure \ref{fig:phase4a_progression} illustrates this temporal evolution.
 
 \begin{figure*}[t]
 \centering
@@ -141,7 +141,7 @@ The 5.7x detection difference between 2024 (81.2\%) and 2020 (12.1\%) validates 
 
 \vspace{0.2cm}
 
-\noindent\textbf{Implications for regime theory}: The 69.1 percentage point difference suggests regime persistence—previously an exceptional market state in 2020—became substantially more common in post-0DTE markets. Phase 5 results (Section 5.7) identify the precise timing of structural transition as late 2023, coinciding with the explosion in 0DTE volumes.
+\noindent\textbf{Implications for regime theory}: The 69.1 percentage point difference suggests regime persistence—previously an exceptional market state in 2020—became substantially more common in post-0DTE markets. Phase 5 results (\ref{sec:phase5}) identify the precise timing of structural transition as late 2023, coinciding with the explosion in 0DTE volumes.
 
 \subsection{Methodology Robustness}
 
@@ -187,7 +187,7 @@ A valid critique of our methodology is that regime detection reduces to determin
 
 \vspace{0.2cm}
 
-Section 5.9 (LLM Confidence as Quality Metric) demonstrates that confidence scores provide continuous regime quality discrimination beyond binary classification. Analysis of 1,301 validation windows reveals strong correlations between confidence and regime metrics ($r > 0.4$, $p < 0.001$), enabling stratified quality tiers: high-confidence detections ($\geq$90\%) exhibit 99.6\% persistence while low-confidence detections show 95.4\% persistence. This complementary discrimination—hard-coded criteria determine regime \textit{category}, LLM confidence measures regime \textit{quality}—provides practical deployment value where high-confidence detections trigger automated responses while low-confidence cases flag for human review.
+\ref{sec:confidence_metric} (LLM Confidence as Quality Metric) demonstrates that confidence scores provide continuous regime quality discrimination beyond binary classification. Analysis of 1,412 validation windows reveals strong correlations between confidence and regime metrics ($r > 0.4$, $p < 0.001$), enabling stratified quality tiers: high-confidence detections ($\geq$90\%) exhibit 99.6\% persistence while low-confidence detections show 95.4\% persistence. This complementary discrimination—hard-coded criteria determine regime \textit{category}, LLM confidence measures regime \textit{quality}—provides practical deployment value where high-confidence detections trigger automated responses while low-confidence cases flag for human review.
 
 \subsection{Open Interest vs Volume-Based GEX: The Transmission Mechanism}
 
@@ -266,11 +266,11 @@ Conversely, when persistence = 70.1\% with the same magnitude and flips, LLM con
 
 \noindent\textbf{Empirical validation}: Analysis of 1,412 validation windows confirms confidence discrimination across the full detection spectrum. Detected regimes (n=646) averaged 92.8\% confidence, while rejected cases (n=766) averaged 52.1\%—a 40.7 percentage point gap indicating strong discrimination. The specific illustrative example (42\% vs 84\% for the 69.8\% vs 70.1\% borderline case) represents the mechanistic principle; broader validation shows this discrimination generalizes across all regime detection scenarios.
 
-We validated this through our ablation study (Section 5.9): LLM confidence correlates with regime quality metrics (r = +0.501 with persistence, r = -0.549 with stability), suggesting the model is not simply parroting the three criteria but assessing regime strength holistically.
+We validated this through our ablation study (\ref{sec:confidence_metric}): LLM confidence correlates with regime quality metrics (r = +0.501 with persistence, r = -0.549 with stability), suggesting the model is not simply parroting the three criteria but assessing regime strength holistically.
 
 \noindent\textbf{Threshold robustness}: To validate that our parameter choices were not artifacts of specific threshold selection, we tested sensitivity across 27 parameter combinations. Persistence thresholds (60\%-80\%) maintained discrimination from 86.4-91.1pp; stability thresholds ($\leq$3-7 flips) showed perfect robustness with identical 87.8pp discrimination; and magnitude thresholds (\$3-\$7B) maintained 75.6-100pp discrimination. Critically, all 27 tested combinations maintained >50pp discrimination. The \$5B magnitude threshold represents an optimal balance: higher thresholds (\$6-7B) achieve 98-100pp discrimination but eliminate 2020 baselines entirely (1.9\%-0.0\% detection), weakening the causal narrative. This robustness testing confirms that framework selectivity is a structural property of multi-period regime detection, not dependent on brittle threshold tuning.
 
-\textbf{Dimension 2: Criterion Violation Detection}: A secondary test examined whether the LLM ever violated its stated criteria (e.g., classifying a window as regime despite persistence < 70\%). Across all 2,221 evaluation windows (1,412 real + 809 synthetic), zero criterion violations occurred; the LLM perfectly respects the hard thresholds. This validates the mechanical accuracy (98\% criterion citation in Section 5.10) and confirms the model is not arbitrarily overriding rules.
+\textbf{Dimension 2: Criterion Violation Detection}: A secondary test examined whether the LLM ever violated its stated criteria (e.g., classifying a window as regime despite persistence < 70\%). Across all 2,221 evaluation windows (1,412 real + 809 synthetic), zero criterion violations occurred; the LLM perfectly respects the hard thresholds. This validates the mechanical accuracy (98\% criterion citation in \ref{sec:reasoning_quality}) and confirms the model is not arbitrarily overriding rules.
 
 \textbf{Dimension 3: Interpretability at Scale}: Where the LLM's primary contribution lies is \textit{interpretability}. The three thresholds could be computed algorithmically, but explaining \textit{why} a regime should be detected benefits from language-based reasoning. Practitioners can audit the specific regime properties the LLM identified, enabling confidence in downstream risk management decisions. This distinction matters in regulatory contexts (explainability requirements) and in building institutional trust in algorithmic systems.
 
