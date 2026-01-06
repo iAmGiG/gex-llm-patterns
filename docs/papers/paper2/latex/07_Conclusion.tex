@@ -1,6 +1,6 @@
 \section{Conclusion}
 
-We extended obfuscation-based LLM validation from single-day dealer gamma constraints to persistent 30-day market regimes, addressing a critical gap in temporal structural reasoning. Five-phase validation across 1,858 windows spanning six years (2020-2025) demonstrates that LLMs can identify sustained dealer positioning through three structural criteria: persistence ($\geq$70\% same-sign dominance), magnitude ($\geq$\$5B average), and stability ($\leq$5 sign flips), while tracking gradual market structure evolution through 0DTE adoption.
+We extended obfuscation-based LLM validation from single-day dealer gamma constraints to persistent 30-day market regimes, addressing a critical gap in temporal structural reasoning. Five-phase validation across 2,221 total windows (1,412 real market windows plus 809 synthetic controls) spanning six years (2020-2025) demonstrates that LLMs can identify sustained dealer positioning through three structural criteria: persistence ($\geq$70\% same-sign dominance), magnitude ($\geq$\$5B average), and stability ($\leq$5 sign flips), while tracking gradual market structure evolution through 0DTE adoption.
 
 \subsection{Key Findings}
 
@@ -24,7 +24,7 @@ This work advances LLM-based market microstructure analysis in four ways:
 \item \textbf{Temporal obfuscation methodology}: First application of obfuscation testing to multi-day regimes (30-day windows vs single-day snapshots), establishing that LLMs can reason about sustained constraints across pre-0DTE (2020) and post-0DTE (2024) market eras
 \item \textbf{Selectivity validation framework}: Comprehensive negative controls demonstrating $<$10\% false positive rate, addressing a key limitation of prior LLM finance validation that typically tests only positive cases
 \item \textbf{Cross-era regime comparison}: Phase 4 isolated a large 2020→2024 structural difference (12.1\% → 81.2\% detection, 69.1pp, $\phi$ = 0.672), quantifying the market structure change between pre-0DTE and post-0DTE eras
-\item \textbf{Scalable validation methodology}: OpenAI Batch API enabled comprehensive five-phase validation across 1,858 windows, making rigorous multi-year testing computationally feasible for academic research
+\item \textbf{Scalable validation methodology}: OpenAI Batch API enabled comprehensive five-phase validation across 2,221 windows, making rigorous multi-year testing computationally feasible for academic research
 % Cost details (\$11.67, 50\% savings vs synchronous) omitted from paper
 \end{enumerate}
 
@@ -32,7 +32,7 @@ This work advances LLM-based market microstructure analysis in four ways:
 
 Our findings have three implications for LLM-based financial analysis:
 
-\textbf{Temporal reasoning capabilities}: LLMs can identify persistent structural constraints across 30-day windows when given appropriate prompts and criteria. Manual review of 50 randomly sampled windows revealed 98\% mechanical accuracy, suggesting robust computational reasoning about dealer hedging mechanics across all 1,858 validation windows.
+\textbf{Temporal reasoning capabilities}: LLMs can identify persistent structural constraints across 30-day windows when given appropriate prompts and criteria. Manual review of 50 randomly sampled windows revealed 98\% mechanical accuracy, suggesting robust computational reasoning about dealer hedging mechanics across all 2,221 validation windows.
 
 \textbf{Selectivity is essential}: Our finding that 5-day windows achieved 98-100\% detection (too universal) while 30-day windows with strict criteria achieved 12-81\% detection (selective) underscores that validation frameworks must test discrimination, not just positive case accuracy. Future work should include cross-regime comparison and negative controls.
 
