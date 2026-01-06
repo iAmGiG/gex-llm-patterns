@@ -103,6 +103,12 @@ However, while the temporal coincidence strongly implicates 0DTE as the primary 
 
 \vspace{0.2cm}
 
+\noindent\textbf{Confounder 4: Market Maker Concentration}: Increasing concentration among equity options market makers could mechanically produce coordinated positioning without 0DTE as a causal driver. If fewer dealers control larger shares of open interest, their collective hedging behavior would naturally appear more synchronized—producing the regime persistence patterns we observe.
+
+\noindent\textbf{Acknowledging concentration as contributing factor}: Unlike the previous confounders, market maker concentration cannot be definitively ruled out as a partial driver. Industry consolidation has occurred: Citadel Securities and Virtu Financial dominate equity market making, and similar concentration exists in options~\cite{cboe2024market}. This concentration may amplify the structural effects we observe. However, concentration alone cannot explain the \textit{timing} of the 2023→2024 discontinuity—market maker consolidation has been gradual since 2015, whereas our detection pattern shows a sharp transition. More likely, concentration \textit{amplifies} 0DTE effects: concentrated market makers facing sustained 0DTE hedging pressure would exhibit more coordinated residual positioning than a fragmented dealer population. We acknowledge concentration as a legitimate confounding factor that may contribute to regime detection, while noting the temporal mismatch argues against it as the \textit{primary} driver.
+
+\vspace{0.2cm}
+
 \noindent\textbf{External validation: OCC record volume corroborates 0DTE timing}: The structural shift between 2020 and 2024 is corroborated by unprecedented ``volume shock'' documented by the Options Clearing Corporation. In 2021, the OCC cleared a record 9.93 billion total contracts—a 32.2\% surge over the 2020 record of 7.52 billion~\cite{occ2022record}. Short-term contracts expiring within one day climbed to 21\% of 2021 flow, up from 16\% in 2020. This massive influx of short-term contract liquidity peaked in 2024, temporally aligning with our detected structural regime transition.
 
 \vspace{0.2cm}
@@ -304,7 +310,7 @@ Our findings raise fundamental questions about the nature of emergent market ord
 
 \subsection{Limitations and Future Work}
 
-Four limitations motivate future research:
+Five limitations motivate future research:
 
 \textbf{Single asset (SPY)}: Testing focused on S\&P 500 index options. Future work will extend to individual equities (AAPL, MSFT, NVDA, TSLA) to test cross-asset generalization and identify asset-specific vs market-wide regime characteristics.
 
@@ -313,5 +319,7 @@ Four limitations motivate future research:
 \textbf{Framework-dependent reasoning}: Ablation testing (n=84 balanced sample: 42 detected, 42 rejected windows) confirms the WHO→WHOM→WHAT narrative framework is not strictly necessary for detection accuracy—both narrative and data-only prompts achieved identical 100\% classification performance. The framework's value lies in interpretability rather than detection: auditable reasoning chains, mechanism-grounded explanations, and enhanced human oversight of LLM decisions. Cross-period testing (pre-2024 windows with weaker signals) could clarify whether interpretability scaffolding becomes detection-critical in edge cases.
 
 \textbf{Intraday positioning dynamics}: Our methodology measures end-of-day open interest, capturing persistent dealer positioning but not intraday gamma evolution. 0DTE options exhibit concentrated activity during opening (9:30-10:30 AM) and expiry (2:30-4:00 PM) windows, with theta decay accelerating repositioning after 2:00 PM. While EOD measurements effectively capture the cumulative ``scar tissue'' of daily hedging flows, granular intraday snapshots (10-15 minute intervals during high-activity periods) could validate whether peak intraday gamma exposure aligns with EOD persistence or whether significant unwinding occurs before market close. Such infrastructure would require adaptive sampling matching theta decay patterns and algorithmic activity bursts, beyond the scope of this work.
+
+\textbf{Causal attribution remains circumstantial}: The ``scar tissue'' mechanism—whereby intraday 0DTE hedging pressure creates persistent overnight positioning—is a plausible hypothesis supported by temporal coincidence and theoretical mechanism, not direct causal evidence. While we observe that (1) detection rates increased from 3.7\% to 100\% between 2021-2024, (2) this timing aligns with documented 0DTE volume growth, and (3) GEX magnitude increased 360\% over this period, observational data cannot definitively exclude alternative explanations. The market maker concentration confounder discussed above exemplifies this limitation: coordinated positioning could emerge from industry consolidation rather than 0DTE-induced hedging pressure. Our contribution is demonstrating \textit{that} market structure shifted discontinuously; the causal attribution to 0DTE remains the most parsimonious explanation given temporal alignment and theoretical mechanism, but should be interpreted as strong circumstantial evidence rather than proven causation.
 
 Despite these limitations, five-phase validation across 2,221 total evaluation windows (1,412 real + 809 synthetic, 2020-2025, six years) with comprehensive negative controls establishes that LLMs can identify persistent dealer gamma regimes through structural reasoning. The gradual detection pattern (3.7\% → 32.4\% → 20.2\% → 100\%) combined with 360\% GEX magnitude growth provides strong evidence of market structure evolution tracking 0DTE adoption, extending obfuscation testing methodology to multi-year temporal domains.
