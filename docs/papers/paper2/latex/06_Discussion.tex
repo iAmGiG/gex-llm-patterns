@@ -266,6 +266,13 @@ Conversely, when persistence = 70.1\% with the same magnitude and flips, LLM con
 
 \noindent\textbf{Empirical validation}: Analysis of 1,412 validation windows confirms confidence discrimination across the full detection spectrum. Detected regimes (n=646) averaged 92.8\% confidence, while rejected cases (n=766) averaged 52.1\%—a 40.7 percentage point gap indicating strong discrimination. The specific illustrative example (42\% vs 84\% for the 69.8\% vs 70.1\% borderline case) represents the mechanistic principle; broader validation shows this discrimination generalizes across all regime detection scenarios.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{../figures/output/fig_borderline_persistence.png}
+\caption{Borderline Persistence Region Analysis (68-72\%). Panel A: Confidence distribution shows rejected windows (n=80) average 57.9\% confidence while detected windows (n=4) average 75.0\%, yielding 17.1pp discrimination gap. Panel B: Scatterplot of 65-75\% persistence range with borderline region highlighted; 70\% threshold line shows classification boundary. Panel C: Statistical summary confirming discrimination persists at threshold boundary, consistent with full-spectrum 40.7pp gap.}
+\label{fig:borderline_persistence}
+\end{figure}
+
 We validated this through our ablation study (\ref{sec:confidence_metric}): LLM confidence correlates with regime quality metrics (r = +0.501 with persistence, r = -0.549 with stability), suggesting the model is not simply parroting the three criteria but assessing regime strength holistically.
 
 \noindent\textbf{Threshold robustness}: To validate that our parameter choices were not artifacts of specific threshold selection, we tested sensitivity across 27 parameter combinations. Persistence thresholds (60\%-80\%) maintained discrimination from 86.4-91.1pp; stability thresholds ($\leq$3-7 flips) showed perfect robustness with identical 87.8pp discrimination; and magnitude thresholds (\$3-\$7B) maintained 75.6-100pp discrimination. Critically, all 27 tested combinations maintained >50pp discrimination. The \$5B magnitude threshold represents an optimal balance: higher thresholds (\$6-7B) achieve 98-100pp discrimination but eliminate 2020 baselines entirely (1.9\%-0.0\% detection), weakening the causal narrative. This robustness testing confirms that framework selectivity is a structural property of multi-period regime detection, not dependent on brittle threshold tuning.
