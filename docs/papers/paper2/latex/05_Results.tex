@@ -384,6 +384,22 @@ In borderline cases (persistence 68-72\%, n=84), confidence scores successfully 
 
 \vspace{0.2cm}
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/output/fig12_confidence_discrimination.png}
+\caption{\textbf{LLM Confidence Discrimination Across Full Detection Spectrum.}
+Scatterplot showing relationship between persistence (X-axis) and LLM confidence (Y-axis) for all 1,412 Phase 5 windows.
+Blue points represent detected regimes (n=646, mean confidence 92.8\%), red points represent rejected cases (n=766, mean confidence 52.1\%).
+Point size encodes GEX magnitude (larger points indicate larger dealer positions).
+The 40.7 percentage point confidence gap demonstrates strong discrimination between regimes and non-regimes.
+Persistence threshold line (vertical dotted) at 70\% shows where regime classification criterion is applied.
+Strong correlation between persistence and confidence (r = +0.860) for detected regimes indicates confidence meaningfully tracks regime strength.
+}
+\label{fig:confidence_discrimination}
+\end{figure}
+
+\vspace{0.2cm}
+
 \noindent\textbf{Interpretation}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations ($r > 0.4$) demonstrate the model captures regime robustness nuances beyond threshold crossing—distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (95.4\% persistence). This continuous quality measure provides practical value for deployment: high-confidence detections could trigger automated responses while low-confidence detections flag for human review.
 
 % \subsection{Cost and Efficiency}
