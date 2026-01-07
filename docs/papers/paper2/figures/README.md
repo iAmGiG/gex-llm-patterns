@@ -1,108 +1,104 @@
-# Paper #2 Figures
+# Paper #2 Figure Generation
 
 Publication-quality figures for "LLM Detection of Persistent Dealer Gamma Regimes"
 
-## Generated Figures
+## SpotGamma Dark Theme (Issue #216)
 
-### Figure 1: Multi-Year Detection Rates (2020-2025)
+All figures use consistent styling:
+- Background: `#1a1a2e` (deep navy)
+- Text: `#ffffff` (white)
+- Accent colors: `#00ff88` (green), `#ff4444` (red), `#00d4ff` (cyan), `#ffaa00` (amber)
+- Resolution: 300 DPI
 
-**File**: `output/figure1_multiyear_detection.png`
+## Figure Generation Scripts
 
-Bar chart showing sharp 2020→2021 structural transition (12.1% → 100% detection).
+| Figure | Output File | Generation Script |
+|--------|-------------|-------------------|
+| Fig 1 | `output/fig01_architecture.png` | `scripts/figures/fig01_architecture.py` |
+| Fig 2 | `output/fig02_regime_window.png` | `scripts/figures/fig02_regime_window_example.py` |
+| Fig 3 | `output/fig03_obfuscation.png` | `scripts/figures/fig03_obfuscation.py` |
+| Fig 4 | `output/fig04_validation_pipeline.png` | `scripts/figures/fig04_validation_pipeline.py` |
+| Fig 5 | `output/fig05_selectivity.png` | `scripts/figures/fig05_selectivity_demo.py` |
+| Fig 6 | `output/fig06_gex_magnitude_distribution.png` | `scripts/figures/fig06_gex_magnitude_distribution.py` |
+| Fig 7 | `output/fig07_confidence_discrimination.png` | `scripts/figures/fig07_confidence_discrimination.py` |
+| Fig 8 | `output/fig08_detection_progression.png` | `scripts/visualization/fig08_detection_progression.py` |
+| Fig 9 | `output/fig09_scar_tissue.png` | `scripts/visualization/fig09_scar_tissue.py` |
+| Fig 10 | `output/fig10_borderline_persistence.png` | `scripts/figures/fig10_borderline_persistence.py` |
+| Fig 11 | `output/fig11_threshold_sensitivity.png` | `scripts/figures/fig11_threshold_sensitivity_heatmap.py` |
 
-- Annotates 87.9 pp increase (p < 10⁻⁸⁶, φ = 0.909)
-- Color-coded: Red (pre-transition), Green (post-transition), Yellow (volatile 2024)
-- Shows window counts for each year
+## Figure Descriptions
 
-**Key Finding**: Sharp transition, not gradual evolution
+### Methodology Figures
+- **Fig 1**: System architecture pipeline (5 stages: ingestion → calculation → obfuscation → windowing → LLM)
+- **Fig 2**: 30-day regime window example with criteria annotations
+- **Fig 3**: Temporal obfuscation before/after transformation
+- **Fig 4**: Multi-phase validation pipeline with detection rates
 
-### Figure 2: 2020 vs 2024 Metrics Comparison
+### Results Figures
+- **Fig 5**: Framework selectivity (4-panel: detected vs rejected windows)
+- **Fig 6**: GEX magnitude distribution (2020 vs 2024 histograms)
+- **Fig 7**: Confidence discrimination (persistence vs LLM confidence scatter)
+- **Fig 8**: Detection rate temporal progression (2020-2025 bar chart)
 
-**File**: `output/figure2_2020_vs_2024.png`
+### Discussion Figures
+- **Fig 9**: Scar tissue mechanism diagram
+- **Fig 10**: Borderline persistence region analysis (3-panel)
+- **Fig 11**: Threshold sensitivity heatmap
 
-Side-by-side grouped bar chart comparing 4 metrics:
+## Running the Scripts
 
-- Detection Rate: 12.1% → 81.2% (+69.1 pp)
-- Avg Confidence: 72.4% → 86.8% (+14.4 pts)
-- Persistence: 83.3% → 96.0% (+12.7 pp)
-- Avg Magnitude: $2.85B → $13.95B (4.9x increase)
-
-**Key Finding**: Comprehensive market structure change across all metrics
-
-### Figure 3: Phase 2 Negative Controls
-
-**File**: `output/figure3_negative_controls.png`
-
-Grouped bar chart showing false positive rates for 3 synthetic tests:
-
-- Shuffle Test: 61.1% (2024) vs 12.1% (2020) - PASS (5x discrimination)
-- Transitional Test (7-10 flips): 0% both years - PASS
-- Low Magnitude (<$5B): 0% both years - PASS
-
-**Key Finding**: Framework selectivity validated (0% FP on critical tests)
-
-### Figure 4: GEX Magnitude Evolution
-
-**File**: `output/figure4_gex_evolution.png`
-
-Line chart showing average GEX magnitude across 6 years:
-
-- 2020: $17.3B (pre-0DTE baseline)
-- 2021: $27.2B (+58% jump)
-- 2022-2025: Stable $20-32B range
-- Annotates structural transition at 2020→2021 boundary
-
-**Key Finding**: Magnitude increased 58% during transition year
-
-## Generation
-
-### Requirements
+All scripts require Python with matplotlib and numpy. Use the AutoGex conda environment:
 
 ```bash
-# Standard Python scientific stack
-pip install matplotlib numpy pandas
+# Single figure
+/mnt/bst/a100/yxie2/cregan1/miniconda3/envs/AutoGex/bin/python scripts/figures/fig01_architecture.py
+
+# Regenerate all figures
+for script in scripts/figures/fig*.py scripts/visualization/fig*.py; do
+    /mnt/bst/a100/yxie2/cregan1/miniconda3/envs/AutoGex/bin/python "$script"
+done
 ```
 
-### Run
+## Data Dependencies
 
-```bash
-cd a:\Projects\gex-llm-patterns
-python docs/papers/paper2/figures/scripts/generate_paper2_figures.py
+Scripts that query the ResearchCache database:
+- fig06, fig07, fig08, fig10, fig11 - Query `.cache/research_cache.db`
+- fig02 - Queries database but falls back to synthetic data if unavailable
+
+Scripts with no external dependencies (synthetic/conceptual diagrams):
+- fig01, fig03, fig04, fig05, fig09
+
+## Color Palette Reference
+
+```python
+DARK_THEME = {
+    'background': '#1a1a2e',      # Deep navy/black
+    'text': '#ffffff',             # White text
+    'grid': '#2d2d44',            # Subtle grid
+    'accent_positive': '#00ff88', # Neon green
+    'accent_negative': '#ff4444', # Neon red
+    'accent_neutral': '#00d4ff',  # Cyan
+    'accent_warning': '#ffaa00',  # Orange/amber
+    'dim': '#666666',             # Grey for low values
+    'panel_bg': '#252540',        # Slightly lighter for panels
+}
 ```
-
-### Output
-
-All figures saved to `docs/papers/paper2/figures/output/` at 300 DPI (publication quality)
-
-## Notes
-
-- **DPI**: 300 (publication standard)
-- **Font**: Serif family for academic publications
-- **Format**: PNG (can convert to PDF/EPS for LaTeX if needed)
-- **Color Scheme**: Colorblind-friendly palette
-- **Style**: Consistent with Paper #1 figures
 
 ## LaTeX Integration
 
-Add to paper with:
+Figures are referenced in LaTeX with:
 
 ```latex
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/figure1_multiyear_detection.png}
-\caption{Multi-Year Detection Rates showing sharp 2020→2021 structural transition.}
-\label{fig:multiyear}
+\includegraphics[width=\columnwidth]{../figures/output/fig01_architecture.png}
+\caption{LLM Regime Detection System Architecture.}
+\label{fig:architecture}
 \end{figure}
 ```
 
-## Windows Compatibility
+## Notes
 
-Script is Windows-compatible (no Unicode emoji in console output after fix).
-If matplotlib import fails on HPCC, update environment:
-
-```bash
-# On HPCC/Linux cluster
-conda install matplotlib numpy pandas
-# or
-pip install --upgrade matplotlib
-```
+- **DPI**: 300 (publication standard)
+- **Format**: PNG (can convert to PDF/EPS for LaTeX if needed)
+- **Style**: SpotGamma-inspired dark theme for visual consistency
