@@ -23,7 +23,6 @@ Related:
 
 import json
 import logging
-import re
 import time
 from datetime import datetime
 from pathlib import Path
@@ -34,6 +33,9 @@ from openai import APIError, OpenAI
 
 # Import prompt builder for consistent prompts
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
+
+# Import robust JSON parser (Issue #192)
+from src.utils.json_parser import RobustJSONParser, extract_json
 
 # Get project root
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -314,6 +316,12 @@ class BatchRegimeValidator:
     def _parse_batch_result(self, batch_result: Dict) -> Dict:
         """Parse individual batch result from OpenAI format.
 
+        Uses robust JSON parser (Issue #192) to handle LLM formatting quirks:
+        - Markdown code blocks (```json ... ```)
+        - Conversational prefixes/suffixes
+        - Trailing commas
+        - Invalid escape sequences
+
         Args:
             batch_result: Single result from batch output
 
@@ -339,21 +347,19 @@ class BatchRegimeValidator:
             message = choices[0].get("message", {})
             content = message.get("content", "{}")
 
-            # Strip markdown code blocks if present (LLM often wraps JSON in ```json ... ```)
-            if content.startswith("```json"):
-                content = content.replace("```json\n", "", 1).replace("\n```", "", 1).strip()
-            elif content.startswith("```"):
-                content = content.replace("```\n", "", 1).replace("\n```", "", 1).strip()
+            # Use robust JSON parser (Issue #192)
+            llm_response, strategy = extract_json(content, return_strategy=True)
 
-            # FIX: Handle o4-mini JSON formatting quirks (Issue #137)
-            # o4-mini sometimes uses invalid escape sequences like \$ in reasoning text
-            content = content.replace(r"\$", "$")
+            if llm_response is None:
+                logger.error(f"All JSON parsing strategies failed for {custom_id}")
+                return {
+                    "window_id": custom_id,
+                    "error": "JSON parse error: all strategies failed",
+                    "regime_detected": False,
+                    "raw_content": content[:500],  # Include truncated content for debugging
+                }
 
-            # o4-mini occasionally writes confidence as word instead of number (rare)
-            content = re.sub(r'"confidence":\s*thirty-five,', '"confidence": 35,', content, flags=re.IGNORECASE)
-
-            # Parse JSON response from LLM
-            llm_response = json.loads(content)
+            logger.debug(f"Parsed {custom_id} using strategy: {strategy}")
 
             return {
                 "window_id": custom_id,
@@ -362,11 +368,12 @@ class BatchRegimeValidator:
                 "confidence": llm_response.get("confidence", 0),
                 "reasoning": llm_response.get("reasoning", ""),
                 "raw_response": llm_response,
+                "parse_strategy": strategy,  # Track which strategy succeeded
             }
 
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse JSON for {custom_id}: {e}")
-            return {"window_id": custom_id, "error": f"JSON parse error: {e}", "regime_detected": False}
+        except Exception as e:
+            logger.error(f"Unexpected error parsing result for {custom_id}: {e}")
+            return {"window_id": custom_id, "error": f"Parse error: {e}", "regime_detected": False}
 
     def save_results_yaml(self, results: List[Dict], windows: List[Dict], output_file: Path, batch_id: str):
         """Save batch results in YAML format compatible with sync validation.
