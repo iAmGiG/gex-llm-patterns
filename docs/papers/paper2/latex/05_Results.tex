@@ -284,6 +284,75 @@ Phase 5 extended the temporal analysis to six years (2020-2025) with 1,412 30-da
 
 \noindent\textbf{Inflation Analysis}: The fixed \$5B threshold does not account for inflation (2020-2024 cumulative: ~20-25\%), making detection slightly more conservative in later years. However, the 360\% GEX magnitude increase far exceeds any inflation effect, confirming the shift represents real market structural change, not nominal value drift.
 
+\subsection{LLM Confidence as Quality Metric}
+\label{sec:confidence_metric}
+
+\vspace{0.2cm}
+
+Beyond binary regime classification, LLM confidence scores provide continuous quality discrimination that demonstrates value beyond deterministic threshold evaluation. Analysis across 1,412 Phase 5 windows reveals that confidence scores predict both detection outcomes and regime robustness.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Confidence discriminates detection outcome}: Analysis of 1,412 Phase 5 windows reveals that detected windows averaged 92.8\% confidence, while rejected windows averaged 52.1\%---a 40.7 percentage point gap indicating the model expresses calibrated uncertainty.
+
+\begin{table}[ht]
+\centering
+\caption{LLM Confidence Discrimination (Phase 5)}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Segment} & \textbf{Detected} & \textbf{Rejected} & \textbf{Gap} \\
+\midrule
+Full Sample (n=1,412) & 92.8\% & 52.1\% & +40.7 pp \\
+Borderline (68-72\% P) & 75.0\% & 57.9\% & +17.1 pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In borderline cases (persistence 68-72\%, n=84), confidence scores successfully discriminated outcomes with a 17.1 pp gap (75.0\% vs 57.9\%), confirming the model tracks regime quality even at threshold boundaries.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Confidence predicts regime quality}: Beyond binary classification, confidence correlates significantly with regime quality metrics:
+
+\vspace{0.1cm}
+
+\begin{itemize}
+\item \textbf{Persistence}: $r = +0.501$ ($p < 0.001$)---higher confidence predicts stronger directional consistency
+\item \textbf{Magnitude}: $r = +0.425$ ($p < 0.001$)---higher confidence predicts larger GEX magnitude
+\item \textbf{Stability}: $r = -0.549$ ($p < 0.001$)---higher confidence predicts fewer sign reversals
+\end{itemize}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Stratified quality discrimination}: Partitioning detected windows by confidence reveals meaningful regime tiers:
+
+\vspace{0.1cm}
+
+\begin{itemize}
+\item \textbf{High confidence} ($\geq$90\%, n=216): 99.6\% average persistence---extremely robust regimes
+\item \textbf{Low confidence} ($<$90\%, n=89): 95.4\% average persistence---good but noisy regimes
+\end{itemize}
+
+\vspace{0.2cm}
+
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/output/fig07_confidence_discrimination.png}
+\caption{\textbf{LLM Confidence Discrimination Across Full Detection Spectrum.}
+Scatterplot showing relationship between persistence (X-axis) and LLM confidence (Y-axis) for all 1,412 Phase 5 windows.
+Blue points represent detected regimes (n=646, mean confidence 92.8\%), red points represent rejected cases (n=766, mean confidence 52.1\%).
+Point size encodes GEX magnitude (larger points indicate larger dealer positions).
+The 40.7 percentage point confidence gap demonstrates strong discrimination between regimes and non-regimes.
+Persistence threshold line (vertical dotted) at 70\% shows where regime classification criterion is applied.
+Strong correlation between persistence and confidence (r = +0.860) for detected regimes indicates confidence meaningfully tracks regime strength.
+}
+\label{fig:confidence_discrimination}
+\end{figure*}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Interpretation}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations ($r > 0.4$) demonstrate the model captures regime robustness nuances beyond threshold crossing---distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (95.4\% persistence). This continuous quality measure provides practical value for deployment: high-confidence detections could trigger automated responses while low-confidence detections flag for human review.
+
 \subsection{LLM Reasoning Quality}
 \label{sec:reasoning_quality}
 
@@ -332,75 +401,6 @@ H_0: p_{2024} = p_{2020} \quad \text{vs} \quad H_1: p_{2024} > p_{2020}
 \vspace{0.1cm}
 
 The 69.1 percentage point difference is statistically significant, confirming fundamentally different market regimes.
-
-\subsection{LLM Confidence as Quality Metric}
-\label{sec:confidence_metric}
-
-\vspace{0.2cm}
-
-Beyond binary regime classification, LLM confidence scores provide continuous quality discrimination that demonstrates value beyond deterministic threshold evaluation. Analysis across 1,412 Phase 5 windows reveals that confidence scores predict both detection outcomes and regime robustness.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Confidence discriminates detection outcome}: Analysis of 1,412 Phase 5 windows reveals that detected windows averaged 92.8\% confidence, while rejected windows averaged 52.1\%—a 40.7 percentage point gap indicating the model expresses calibrated uncertainty.
-
-\begin{table}[ht]
-\centering
-\caption{LLM Confidence Discrimination (Phase 5)}
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Segment} & \textbf{Detected} & \textbf{Rejected} & \textbf{Gap} \\
-\midrule
-Full Sample (n=1,412) & 92.8\% & 52.1\% & +40.7 pp \\
-Borderline (68-72\% P) & 75.0\% & 57.9\% & +17.1 pp \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-In borderline cases (persistence 68-72\%, n=84), confidence scores successfully discriminated outcomes with a 17.1 pp gap (75.0\% vs 57.9\%), confirming the model tracks regime quality even at threshold boundaries.
-
-\vspace{0.2cm}
-
-\noindent\textbf{Confidence predicts regime quality}: Beyond binary classification, confidence correlates significantly with regime quality metrics:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{Persistence}: $r = +0.501$ ($p < 0.001$)—higher confidence predicts stronger directional consistency
-\item \textbf{Magnitude}: $r = +0.425$ ($p < 0.001$)—higher confidence predicts larger GEX magnitude
-\item \textbf{Stability}: $r = -0.549$ ($p < 0.001$)—higher confidence predicts fewer sign reversals
-\end{itemize}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Stratified quality discrimination}: Partitioning detected windows by confidence reveals meaningful regime tiers:
-
-\vspace{0.1cm}
-
-\begin{itemize}
-\item \textbf{High confidence} ($\geq$90\%, n=216): 99.6\% average persistence—extremely robust regimes
-\item \textbf{Low confidence} ($<$90\%, n=89): 95.4\% average persistence—good but noisy regimes
-\end{itemize}
-
-\vspace{0.2cm}
-
-\begin{figure*}[!ht]
-\centering
-\includegraphics[width=0.95\textwidth]{../figures/output/fig07_confidence_discrimination.png}
-\caption{\textbf{LLM Confidence Discrimination Across Full Detection Spectrum.}
-Scatterplot showing relationship between persistence (X-axis) and LLM confidence (Y-axis) for all 1,412 Phase 5 windows.
-Blue points represent detected regimes (n=646, mean confidence 92.8\%), red points represent rejected cases (n=766, mean confidence 52.1\%).
-Point size encodes GEX magnitude (larger points indicate larger dealer positions).
-The 40.7 percentage point confidence gap demonstrates strong discrimination between regimes and non-regimes.
-Persistence threshold line (vertical dotted) at 70\% shows where regime classification criterion is applied.
-Strong correlation between persistence and confidence (r = +0.860) for detected regimes indicates confidence meaningfully tracks regime strength.
-}
-\label{fig:confidence_discrimination}
-\end{figure*}
-
-\vspace{0.2cm}
-
-\noindent\textbf{Interpretation}: Hard-coded criteria determine regime \textit{category} (binary: is this a regime?); LLM confidence measures regime \textit{quality} (continuous: how strong is this regime?). The strong correlations ($r > 0.4$) demonstrate the model captures regime robustness nuances beyond threshold crossing—distinguishing ``strong persistent regime'' (99.6\% persistence) from ``marginal persistent regime'' (95.4\% persistence). This continuous quality measure provides practical value for deployment: high-confidence detections could trigger automated responses while low-confidence detections flag for human review.
 
 % \subsection{Cost and Efficiency}
 %
