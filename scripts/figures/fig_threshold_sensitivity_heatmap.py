@@ -5,13 +5,16 @@ Generate Threshold Sensitivity Heatmap (Issue #210)
 Creates 2D heatmap showing discrimination gap across parameter space
 to demonstrate framework robustness to threshold selection.
 
-Output: docs/papers/paper2/figures/output/fig_threshold_sensitivity_heatmap.png
+Updated with SpotGamma-inspired dark theme (Issue #216).
+
+Output: docs/papers/paper2/figures/output/fig11_threshold_sensitivity.png
 """
 
 import sqlite3
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Circle
 from pathlib import Path
 
@@ -19,6 +22,18 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
 OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
+
+# SpotGamma-inspired Dark Theme (Issue #216)
+DARK_THEME = {
+    'background': '#1a1a2e',      # Deep navy/black
+    'text': '#ffffff',             # White text
+    'grid': '#2d2d44',            # Subtle grid
+    'accent_positive': '#00ff88', # Neon green
+    'accent_negative': '#ff4444', # Neon red
+    'accent_neutral': '#00d4ff',  # Cyan
+    'dim': '#666666',             # Grey for low values
+    'panel_bg': '#252540',        # Slightly lighter for panels
+}
 
 # Parameter ranges to test
 PERSISTENCE_THRESHOLDS = [60, 65, 70, 75, 80]
@@ -28,6 +43,16 @@ STABILITY_THRESHOLD = 5  # Fixed at ≤5 flips
 # Current paper parameters
 CURRENT_PERSISTENCE = 70
 CURRENT_MAGNITUDE = 5
+
+
+def create_spotgamma_colormap():
+    """Create SpotGamma-style colormap: dim grey -> neon cyan -> neon green."""
+    colors = [
+        (0.4, 0.4, 0.4),      # Dim grey for low values
+        (0.0, 0.83, 1.0),     # Cyan (#00d4ff)
+        (0.0, 1.0, 0.53),     # Neon green (#00ff88)
+    ]
+    return LinearSegmentedColormap.from_list('spotgamma', colors, N=256)
 
 
 def query_data():
@@ -76,7 +101,7 @@ def calculate_detection_rate(windows, persistence_thresh, magnitude_thresh, stab
 
 
 def create_heatmap(data, output_path):
-    """Create threshold sensitivity heatmap."""
+    """Create threshold sensitivity heatmap with dark theme."""
 
     # Calculate discrimination gaps for each parameter combination
     gaps = np.zeros((len(PERSISTENCE_THRESHOLDS), len(MAGNITUDE_THRESHOLDS)))
@@ -91,27 +116,43 @@ def create_heatmap(data, output_path):
             rates_2020[i, j] = rate_2020
             rates_2024[i, j] = rate_2024
 
+    # Set dark theme
+    plt.style.use('dark_background')
+
     # Create figure
-    fig, ax = plt.subplots(figsize=(10, 8), dpi=200)
+    fig, ax = plt.subplots(figsize=(10, 8), dpi=300)
+    fig.patch.set_facecolor(DARK_THEME['background'])
+    ax.set_facecolor(DARK_THEME['background'])
 
-    # Create heatmap
-    im = ax.imshow(gaps, cmap='RdYlGn', aspect='auto', vmin=50, vmax=100)
+    # Create SpotGamma-style colormap
+    spotgamma_cmap = create_spotgamma_colormap()
 
-    # Add colorbar
+    # Create heatmap with SpotGamma colormap
+    im = ax.imshow(gaps, cmap=spotgamma_cmap, aspect='auto', vmin=50, vmax=100)
+
+    # Add colorbar with dark theme styling
     cbar = plt.colorbar(im, ax=ax, shrink=0.8)
-    cbar.set_label('Discrimination Gap (pp)\n(2024% - 2020%)', fontsize=11, fontweight='bold')
+    cbar.set_label('Discrimination Gap (pp)\n(2024% - 2020%)', fontsize=11,
+                   fontweight='bold', color=DARK_THEME['text'])
+    cbar.ax.yaxis.set_tick_params(color=DARK_THEME['text'])
+    cbar.outline.set_edgecolor(DARK_THEME['dim'])
+    plt.setp(plt.getp(cbar.ax.axes, 'yticklabels'), color=DARK_THEME['text'])
 
     # Set ticks and labels
     ax.set_xticks(np.arange(len(MAGNITUDE_THRESHOLDS)))
     ax.set_yticks(np.arange(len(PERSISTENCE_THRESHOLDS)))
-    ax.set_xticklabels([f'${m}B' for m in MAGNITUDE_THRESHOLDS], fontsize=11)
-    ax.set_yticklabels([f'{p}%' for p in PERSISTENCE_THRESHOLDS], fontsize=11)
+    ax.set_xticklabels([f'${m}B' for m in MAGNITUDE_THRESHOLDS], fontsize=11,
+                       color=DARK_THEME['text'])
+    ax.set_yticklabels([f'{p}%' for p in PERSISTENCE_THRESHOLDS], fontsize=11,
+                       color=DARK_THEME['text'])
 
     # Labels
-    ax.set_xlabel('Magnitude Threshold', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Persistence Threshold', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Magnitude Threshold', fontsize=12, fontweight='bold',
+                  color=DARK_THEME['text'])
+    ax.set_ylabel('Persistence Threshold', fontsize=12, fontweight='bold',
+                  color=DARK_THEME['text'])
     ax.set_title('Threshold Sensitivity Analysis:\nDiscrimination Gap Across Parameter Space',
-                 fontsize=14, fontweight='bold', pad=15)
+                 fontsize=14, fontweight='bold', pad=15, color=DARK_THEME['text'])
 
     # Add text annotations in each cell
     for i in range(len(PERSISTENCE_THRESHOLDS)):
@@ -120,8 +161,8 @@ def create_heatmap(data, output_path):
             r2020 = rates_2020[i, j]
             r2024 = rates_2024[i, j]
 
-            # Choose text color based on background
-            text_color = 'white' if gap < 70 else 'black'
+            # Use dark text on bright cells, white text on dim cells
+            text_color = DARK_THEME['background'] if gap > 75 else DARK_THEME['text']
 
             # Main gap value
             ax.text(j, i, f'{gap:.0f}pp',
@@ -137,21 +178,21 @@ def create_heatmap(data, output_path):
     current_i = PERSISTENCE_THRESHOLDS.index(CURRENT_PERSISTENCE)
     current_j = MAGNITUDE_THRESHOLDS.index(CURRENT_MAGNITUDE)
 
-    # Draw rectangle around current parameters
+    # Draw rectangle around current parameters with neon cyan
     rect = plt.Rectangle((current_j - 0.5, current_i - 0.5), 1, 1,
-                          fill=False, edgecolor='blue', linewidth=3)
+                          fill=False, edgecolor=DARK_THEME['accent_neutral'], linewidth=3)
     ax.add_patch(rect)
 
-    # Add marker
-    ax.plot(current_j, current_i, 'b*', markersize=20, markeredgecolor='white',
-            markeredgewidth=1.5)
+    # Add star marker
+    ax.plot(current_j, current_i, '*', markersize=25, color=DARK_THEME['accent_neutral'],
+            markeredgecolor=DARK_THEME['background'], markeredgewidth=1.5)
 
     # Add legend for current parameters
     ax.text(0.02, 0.98, '★ Current Parameters\n    (70%, $5B)',
             transform=ax.transAxes, fontsize=10, fontweight='bold',
-            verticalalignment='top', color='blue',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                      edgecolor='blue', alpha=0.9))
+            verticalalignment='top', color=DARK_THEME['accent_neutral'],
+            bbox=dict(boxstyle='round,pad=0.3', facecolor=DARK_THEME['panel_bg'],
+                      edgecolor=DARK_THEME['accent_neutral'], alpha=0.95))
 
     # Add summary statistics
     min_gap = gaps.min()
@@ -166,17 +207,25 @@ def create_heatmap(data, output_path):
     )
     ax.text(0.98, 0.02, stats_text, transform=ax.transAxes, fontsize=10,
             verticalalignment='bottom', horizontalalignment='right',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                      edgecolor='gray', alpha=0.9),
+            color=DARK_THEME['text'],
+            bbox=dict(boxstyle='round,pad=0.3', facecolor=DARK_THEME['panel_bg'],
+                      edgecolor=DARK_THEME['dim'], alpha=0.95),
             family='monospace')
+
+    # Style spines
+    for spine in ax.spines.values():
+        spine.set_color(DARK_THEME['dim'])
 
     plt.tight_layout()
 
     # Save figure
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=200, bbox_inches='tight',
-                facecolor='white', edgecolor='none')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight',
+                facecolor=DARK_THEME['background'], edgecolor='none')
     plt.close()
+
+    # Reset style
+    plt.style.use('default')
 
     print(f"Figure saved to: {output_path}")
     print(f"\nThreshold Sensitivity Results:")
@@ -204,7 +253,7 @@ def create_heatmap(data, output_path):
 
 
 def main():
-    print("Generating Threshold Sensitivity Heatmap (Issue #210)...")
+    print("Generating Threshold Sensitivity Heatmap (Issue #210, Dark Theme #216)...")
     print(f"Database: {CACHE_DB}")
 
     # Query data
@@ -212,7 +261,7 @@ def main():
     print(f"\nData loaded: 2020={len(data['2020'])} windows, 2024={len(data['2024'])} windows")
 
     # Create heatmap
-    output_path = OUTPUT_DIR / "fig_threshold_sensitivity_heatmap.png"
+    output_path = OUTPUT_DIR / "fig11_threshold_sensitivity.png"
     create_heatmap(data, output_path)
 
     print("\nDone!")
