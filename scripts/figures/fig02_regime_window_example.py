@@ -188,9 +188,15 @@ def create_figure(example_data, output_path):
 
 def main():
     print("Generating Regime Window Example Figure (Dark Theme #216)...")
-    print(f"Database: {CACHE_DB}")
 
-    example = query_example_window()
+    # Try to query real example, fall back to synthetic if database unavailable
+    try:
+        example = query_example_window()
+        print(f"Using real example from database")
+    except Exception as e:
+        print(f"Database query failed ({e}), using synthetic example")
+        example = None
+
     output_path = OUTPUT_DIR / "fig02_regime_window.png"
     create_figure(example, output_path)
 
