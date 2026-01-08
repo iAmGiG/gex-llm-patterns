@@ -22,10 +22,11 @@ Usage:
 import argparse
 import json
 import logging
+import os
 import random
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 import yaml
 from openai import OpenAI
@@ -44,15 +45,16 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-def load_model_from_config() -> Tuple[str, str]:
-    """Load OpenAI model and API key from config.json.
+def load_model_from_config() -> str:
+    """Load OpenAI model name from config.json.
 
-    Returns:
-        Tuple of (model_name, api_key)
+        Returns:
+            model_name string
 
-    CRITICAL: Never hardcode model names - Issue #133 root cause
+        CRITICAL: Never hardcode model names - Issue #133 root cause
+    Note: API key should be set via OPENAI_API_KEY environment variable.    The OpenAI client reads this automatically - no need to pass explicitly.
     """
-    # Use absolute path to main repo config (worktrees don't share untracked files)
+    # Verify API key is set in environment (standard secure practice)    if not os.environ.get("OPENAI_API_KEY"):        raise ValueError(            "OPENAI_API_KEY environment variable not set. "            "Set it with: export OPENAI_API_KEY='your-key'"        )    # Use absolute path to main repo config (worktrees don't share untracked files)
     config_path = Path("/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/config/config.json")
 
     if not config_path.exists():
@@ -62,13 +64,9 @@ def load_model_from_config() -> Tuple[str, str]:
         config = json.load(f)
 
     model_name = config.get("LLM_MODEL", "o4-mini")
-    api_key = config.get("OPEN_AI_KEY", "")  # nosec B105 - passed to OpenAI client, never logged
-
-    if not api_key:
-        raise ValueError("OPEN_AI_KEY not found in config.json")
 
     logger.info(f"Loaded LLM model from config: {model_name}")
-    return model_name, api_key
+    return model_name
 
 
 def load_phase3_results() -> Dict:
@@ -180,19 +178,18 @@ Analyze the data and provide your assessment."""
     return prompt
 
 
-def run_ablation_validation(sample: List[Dict], model: str, api_key: str, use_narrative: bool = True) -> List[Dict]:
+def run_ablation_validation(sample: List[Dict], model: str, use_narrative: bool = True) -> List[Dict]:
     """Run validation on sample with or without narrative framework.
 
     Args:
         sample: List of windows to validate
         model: OpenAI model name
-        api_key: OpenAI API key
         use_narrative: If True, use narrative prompt; if False, use data-only
 
     Returns:
         List of validation results
     """
-    client = OpenAI(api_key=api_key)
+    # OpenAI client automatically reads OPENAI_API_KEY from environment    client = OpenAI()
     cache_manager = UnifiedCacheManager()
     gex_fetcher = SequentialGEXFetcher(cache_manager=cache_manager, window_size=30)
     prompt_builder = MechanicsPromptBuilder()
@@ -327,13 +324,14 @@ def main():
     args = parser.parse_args()
 
     # Load model from config (CRITICAL: never hardcode)
-    model_name, api_key = load_model_from_config()
+    model_name = load_model_from_config()
 
     # Pre-flight check
     logger.info("=" * 60)
     logger.info("PRE-FLIGHT CHECK")
     logger.info("=" * 60)
-    logger.info(f"LLM Model: {model_name}")  # lgtm[py/clear-text-logging-sensitive-data] model_name is not sensitive
+    logger.info(f"LLM Model: {model_name}")
+    logger.info("API Key: [set via OPENAI_API_KEY env var]")
     logger.info(f"Sample size: {args.sample_size}")
     logger.info(f"Output file: {args.output}")
     logger.info("=" * 60)
@@ -351,7 +349,7 @@ def main():
         logger.info("\n" + "=" * 60)
         logger.info("CONTROL: Narrative Prompt (WHO→WHOM→WHAT)")
         logger.info("=" * 60)
-        control_results = run_ablation_validation(sample, model_name, api_key, use_narrative=True)
+        control_results = run_ablation_validation(sample, model_name, use_narrative=True)
         control_metrics = calculate_metrics(control_results)
         results["control"] = {
             "prompt_type": "narrative",
@@ -366,7 +364,7 @@ def main():
         logger.info("\n" + "=" * 60)
         logger.info("TREATMENT: Data-Only Prompt (No Narrative)")
         logger.info("=" * 60)
-        treatment_results = run_ablation_validation(sample, model_name, api_key, use_narrative=False)
+        treatment_results = run_ablation_validation(sample, model_name, use_narrative=False)
         treatment_metrics = calculate_metrics(treatment_results)
         results["treatment"] = {
             "prompt_type": "data_only",

@@ -280,14 +280,12 @@ detection = agent.detect_pattern(obfuscated_data)
 #   'whom': 'Market participants',
 #   'what': 'Force dealers to amplify volatility',
 #   'confidence': 0.85
-# }
 
 # Verify outcome (forward returns)
 outcome = calculate_outcome(date="2024-01-05", horizon=1)
 # Returns: {
 #   'forward_1d_return_pct': 0.49,
 #   'prediction_materialized': True
-# }
 ```
 
 ### Full Validation Run
@@ -328,13 +326,16 @@ cd gex-llm-patterns
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure API keys
+# Configure API keys via environment variables (recommended for security)
+export OPENAI_API_KEY="your_openai_key"
+export POLYGON_API_KEY="your_polygon_key"
+
+# Or create a .env file (git-ignored) for local development:
+# echo 'OPENAI_API_KEY=your_openai_key' >> .env
+# echo 'POLYGON_API_KEY=your_polygon_key' >> .env
+
+# Copy config template for model settings (no secrets)
 cp config_defaults/config.json config/config.json
-# Edit config/config.json with your API keys:
-# {
-#   "OPEN_AI_KEY": "your_openai_key",
-#   "POLYGON_IO": "your_polygon_key"
-# }
 
 # Verify setup
 python -c "from src.analysis.pattern_library import PatternLibrary; print('Setup OK')"
