@@ -42,7 +42,7 @@ Synthetic Controls & Phase 2 (Negatives) & 809 \\
 \end{tabular}
 \end{table}
 
-All options data includes strike price, open interest, implied volatility, days to expiration, and contract type (call/put). Spot prices obtained from daily close values.
+All options data includes strike price, open interest, implied volatility, days to expiration, and contract type (call/put). Spot prices obtained from daily close values. While institutional sources (e.g., OptionMetrics) may handle corporate actions differently, the structural signal of multi-billion dollar regimes is robust to minor data variations.
 
 \subsection{Data Processing Pipeline}
 
@@ -91,7 +91,7 @@ Transform each window before LLM submission:
 
 \textbf{API Parameters}:
 \begin{itemize}
-\item Temperature: 1.0 (default reasoning temperature)
+\item Temperature: 1.0 (default reasoning configuration; for o-series reasoning models, internal chain-of-thought variance is managed architecturally, making standard temperature tuning less critical for structured outputs)
 \item Max tokens: 16,384 (sufficient for detailed chain-of-thought)
 \item Top-p: 1.0 (no nucleus sampling)
 \end{itemize}

@@ -20,7 +20,7 @@ However, these approaches rely on statistical properties (volatility, returns) r
 
 \subsection{LLM Applications in Finance}
 
-Large language models have shown promise in financial analysis tasks. Lopez-Lira and Tang~\cite{lopez2023can} demonstrate that GPT-4 can extract financial information from text with accuracy comparable to human analysts. Kim et al.~\cite{kim2024financial} show LLMs can reason about market mechanisms when given appropriate context.
+Large language models have shown promise in financial analysis tasks. Lopez-Lira and Tang~\cite{lopez2023can} demonstrate that GPT-4 can extract financial information from text with accuracy comparable to human analysts. Kim et al.~\cite{kim2024financial} show LLMs can reason about market mechanisms when given appropriate context. While recent work employs LLMs as direct trading agents~\cite{yang2024tradingagents}, our contribution focuses on validating LLM structural reasoning about market microstructure---a necessary prerequisite for building informed agents that understand regime dynamics rather than just price action.
 
 Yet LLM financial reasoning faces two critical challenges. First, \textit{temporal memorization}: LLMs may recall specific market events from training data rather than reasoning from structure. Second, \textit{spurious pattern detection}: LLMs may identify statistically significant but mechanically meaningless patterns. Our obfuscation testing methodology addresses both concerns by stripping temporal context and requiring structural reasoning.
 
