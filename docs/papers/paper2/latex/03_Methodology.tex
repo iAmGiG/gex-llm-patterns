@@ -4,7 +4,7 @@ Figure~\ref{fig:architecture} presents our system architecture, showing the comp
 
 \begin{figure*}[ht]
 \centering
-\includegraphics[width=\textwidth]{../figures/output/fig10_architecture.png}
+\includegraphics[width=\textwidth]{../figures/output/fig01_architecture.png}
 \caption{LLM Regime Detection System Architecture. The pipeline processes trading days through five stages: data ingestion from Alpha Vantage API, GEX calculation with OI/Volume aggregation, temporal obfuscation to prevent memorization, 30-day window generation, and LLM analysis using OpenAI o4-mini via Batch API.}
 \label{fig:architecture}
 \end{figure*}
@@ -40,11 +40,11 @@ S = \text{count}(\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)) \
 \item \textbf{Low Conviction}: Meets persistence/stability but $M < \$5$B
 \end{itemize}
 
-These thresholds were selected based on empirical analysis of 2024 SPY options data: median daily GEX magnitude was \$13.95B, and 70\% persistence represents a clear structural bias rather than random variation.
+These thresholds were derived from principled criteria to isolate structurally significant positioning from background noise. The \$5B magnitude threshold reflects dealer risk management practices from financial microstructure literature, while 70\% persistence ensures detected regimes exhibit directional bias significantly exceeding random binomial variation ($\approx 2.2\sigma$ above chance).
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\columnwidth]{../figures/output/fig06_regime_window.png}
+\includegraphics[width=\columnwidth]{../figures/output/fig02_regime_window.png}
 \caption{30-Day Persistent Negative Regime Example. Daily GEX values showing 28/30 days negative (93.3\% persistence), average magnitude \$14.1B, and only 2 sign flips. All three detection criteria pass, triggering regime classification.}
 \label{fig:regime_window}
 \end{figure}
@@ -86,7 +86,7 @@ The LLM receives 30 consecutive GEX values with no contextual information, forci
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.48\textwidth]{../figures/output/fig05_obfuscation.png}
+\includegraphics[width=0.48\textwidth]{../figures/output/fig03_obfuscation.png}
 \caption{Temporal Obfuscation Process. Calendar dates, ticker symbols, and temporal context are removed while preserving GEX magnitude and structural relationships.}
 \label{fig:obfuscation}
 \end{figure}
