@@ -62,7 +62,7 @@ def load_model_from_config() -> Tuple[str, str]:
         config = json.load(f)
 
     model_name = config.get("LLM_MODEL", "o4-mini")
-    api_key = config.get("OPEN_AI_KEY", "")
+    api_key = config.get("OPEN_AI_KEY", "")  # nosec B105 - passed to OpenAI client, never logged
 
     if not api_key:
         raise ValueError("OPEN_AI_KEY not found in config.json")
@@ -333,7 +333,7 @@ def main():
     logger.info("=" * 60)
     logger.info("PRE-FLIGHT CHECK")
     logger.info("=" * 60)
-    logger.info(f"LLM Model: {model_name}")
+    logger.info(f"LLM Model: {model_name}")  # lgtm[py/clear-text-logging-sensitive-data] model_name is not sensitive
     logger.info(f"Sample size: {args.sample_size}")
     logger.info(f"Output file: {args.output}")
     logger.info("=" * 60)
