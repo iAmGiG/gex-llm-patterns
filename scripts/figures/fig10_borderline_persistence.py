@@ -128,7 +128,7 @@ def create_borderline_figure(data, output_path):
     ax1.set_ylabel('Count', fontsize=11, fontweight='bold', color=DARK_THEME['text'])
     ax1.set_title('A: Confidence Distribution\n(Borderline 68-72% Persistence)',
                   fontsize=12, fontweight='bold', color=DARK_THEME['text'])
-    legend1 = ax1.legend(loc='upper left', fontsize=9, facecolor=DARK_THEME['background'],
+    legend1 = ax1.legend(loc='upper left', fontsize=11, facecolor=DARK_THEME['background'],
                          edgecolor=DARK_THEME['dim'])
     for text in legend1.get_texts():
         text.set_color(DARK_THEME['text'])
@@ -168,7 +168,7 @@ def create_borderline_figure(data, output_path):
     ax2.set_ylabel('LLM Confidence (%)', fontsize=11, fontweight='bold', color=DARK_THEME['text'])
     ax2.set_title('B: Threshold Crossing Detail\n(65-75% Persistence Range)',
                   fontsize=12, fontweight='bold', color=DARK_THEME['text'])
-    legend2 = ax2.legend(loc='lower right', fontsize=9, facecolor=DARK_THEME['background'],
+    legend2 = ax2.legend(loc='upper right', fontsize=11, facecolor=DARK_THEME['background'],
                          edgecolor=DARK_THEME['dim'])
     for text in legend2.get_texts():
         text.set_color(DARK_THEME['text'])

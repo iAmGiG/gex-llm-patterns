@@ -160,8 +160,8 @@ def create_figure(data, output_path):
                  'Point size encodes GEX magnitude (larger = higher dealer positioning)',
                  fontsize=14, fontweight='bold', pad=15, color=DARK_THEME['text'])
 
-    # Legend
-    legend = ax.legend(loc='lower right', fontsize=11, facecolor=DARK_THEME['panel_bg'],
+    # Legend - placed at upper right to avoid data overlap in lower region
+    legend = ax.legend(loc='upper right', fontsize=11, facecolor=DARK_THEME['panel_bg'],
                        edgecolor=DARK_THEME['dim'], framealpha=0.95)
     for text in legend.get_texts():
         text.set_color(DARK_THEME['text'])

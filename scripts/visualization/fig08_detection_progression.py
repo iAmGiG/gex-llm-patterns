@@ -196,7 +196,7 @@ def create_figure(results, output_path):
         "Growing but inconsistent rates in 2022-2023 (32.4%, 20.2%) show gradual 0DTE adoption. Perfect 100% detection in 2024-2025\n"
         "marks structural shift with sustained dealer gamma regimes. GEX magnitude grew 360% ($5B → $23B), far exceeding inflation (20-25%)."
     )
-    fig.text(0.5, 0.02, footer_text, ha='center', va='bottom', fontsize=9,
+    fig.text(0.5, 0.02, footer_text, ha='center', va='bottom', fontsize=10,
              style='italic', color=DARK_THEME['dim'], wrap=True)
 
     plt.tight_layout(rect=[0, 0.06, 1, 1])

@@ -148,9 +148,9 @@ def create_magnitude_histogram(data, output_path):
     ax.set_title('GEX Magnitude Distribution: Pre-0DTE (2020) vs Post-0DTE (2024)',
                  fontsize=14, fontweight='bold', pad=15, color=DARK_THEME['text'])
 
-    # Legend with dark background
-    legend = ax.legend(loc='upper right', fontsize=11, framealpha=0.9,
-                       bbox_to_anchor=(0.99, 0.72), facecolor=DARK_THEME['background'],
+    # Legend with dark background - placed at upper left to avoid annotation overlap
+    legend = ax.legend(loc='upper left', fontsize=11, framealpha=0.9,
+                       facecolor=DARK_THEME['background'],
                        edgecolor=DARK_THEME['dim'])
     for text in legend.get_texts():
         text.set_color(DARK_THEME['text'])

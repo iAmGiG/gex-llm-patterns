@@ -171,7 +171,7 @@ def create_heatmap(data, output_path):
 
             # Smaller annotation with rates
             ax.text(j, i + 0.32, f'({r2024:.0f}%-{r2020:.0f}%)',
-                    ha='center', va='center', fontsize=8,
+                    ha='center', va='center', fontsize=10,
                     color=text_color, alpha=0.8)
 
     # Highlight current parameters (70%, $5B)

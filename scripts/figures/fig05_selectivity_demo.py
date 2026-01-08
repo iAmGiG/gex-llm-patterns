@@ -183,7 +183,7 @@ def create_figure(windows, output_path):
         )
 
         # Position stats box
-        ax.text(0.98, 0.98, stats_text, transform=ax.transAxes, fontsize=9,
+        ax.text(0.98, 0.98, stats_text, transform=ax.transAxes, fontsize=11,
                 verticalalignment='top', horizontalalignment='right',
                 color=DARK_THEME['text'],
                 bbox=dict(boxstyle='round,pad=0.4', facecolor=DARK_THEME['panel_bg'],
@@ -193,12 +193,12 @@ def create_figure(windows, output_path):
         # Axis formatting
         ax.set_xlim(0, 31)
         ax.set_xticks([1, 10, 20, 30])
-        ax.tick_params(colors=DARK_THEME['text'], labelsize=9)
+        ax.tick_params(colors=DARK_THEME['text'], labelsize=10)
         ax.grid(axis='y', alpha=0.2, color=DARK_THEME['grid'], linestyle='-')
 
         # Labels
-        ax.set_xlabel('Day', fontsize=10, color=DARK_THEME['text'])
-        ax.set_ylabel('GEX ($B)', fontsize=10, color=DARK_THEME['text'])
+        ax.set_xlabel('Day', fontsize=11, color=DARK_THEME['text'])
+        ax.set_ylabel('GEX ($B)', fontsize=11, color=DARK_THEME['text'])
 
     # Main title
     fig.suptitle('Framework Selectivity Demonstration\n'
