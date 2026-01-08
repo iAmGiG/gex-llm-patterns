@@ -11,11 +11,12 @@ System architecture, design decisions, implementation guides, and maintenance do
 1. **[01-project-overview.md](01-project-overview.md)** - Start here to understand the research hypothesis and system vision
 2. **[02-architecture-overview.md](02-architecture-overview.md)** - High-level system design and component interactions
 3. **[03-data-and-database.md](03-data-and-database.md)** - Understand the 2-tier data system and database architecture
-4. **[04-cache-and-performance.md](04-cache-and-performance.md)** - Learn about multi-layer caching and token optimization
+4. **[04-cache-and-performance.md](04-cache-and-performance.md)** - Learn about multi-layer caching, token optimization, and ResearchCache
 5. **[05-llm-integration.md](05-llm-integration.md)** - Model selection decisions and LLM integration patterns
 6. **[06-implementation-guide.md](06-implementation-guide.md)** - Actionable patterns and intraday support implementation
 7. **[07-experiments-and-validation.md](07-experiments-and-validation.md)** - Continuous experiment framework and validation methodology
 8. **[08-maintenance-and-audits.md](08-maintenance-and-audits.md)** - Infrastructure maintenance, audits, and best practices
+9. **[09-intraday-infrastructure.md](09-intraday-infrastructure.md)** - Intraday data collection, database schema, and OI monitor service (Paper #3)
 
 **Time Investment**: ~2-3 hours for complete sequential reading
 
@@ -23,9 +24,9 @@ System architecture, design decisions, implementation guides, and maintenance do
 
 ## Documentation Organization
 
-### Sequential Learning (01-08)
+### Sequential Learning (01-09)
 
-**Numbered files (01-08) follow a logical progression from high-level concepts to specific implementation details.** Each document builds on previous knowledge and includes navigation links.
+**Numbered files (01-09) follow a logical progression from high-level concepts to specific implementation details.** Each document builds on previous knowledge and includes navigation links.
 
 #### Part 1: System Foundation (01-03)
 
@@ -91,6 +92,15 @@ System architecture, design decisions, implementation guides, and maintenance do
 - **Part 3-4: Recommendations and History** - Completed actions and future work
 - **Part 5-7: Best Practices, Known Issues, Audit Schedule**
 
+#### Part 4: Specialized Infrastructure (09)
+
+**[09-intraday-infrastructure.md](09-intraday-infrastructure.md)** - Intraday Data Collection (Paper #3)
+
+- PostgreSQL `intraday_snapshots` table with yearly partitioning
+- Intraday OI Monitor service (21 snapshots/day adaptive sampling)
+- 0DTE gamma evolution analysis support
+- Common queries and maintenance procedures
+
 ---
 
 ## Content Index by Topic
@@ -106,6 +116,7 @@ System architecture, design decisions, implementation guides, and maintenance do
 - Database schema: [03-data-and-database.md](03-data-and-database.md)
 - Cache architecture: [04-cache-and-performance.md](04-cache-and-performance.md)
 - Intraday storage: [06-implementation-guide.md](06-implementation-guide.md)
+- Intraday PostgreSQL: [09-intraday-infrastructure.md](09-intraday-infrastructure.md)
 
 ### LLM Integration
 
@@ -162,16 +173,6 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 ### Development Guides
 
 [docs/development/](../development/) - Developer workflows (worktree management, testing)
-
-### Infrastructure Guides (January 2026)
-
-- **[RESEARCH_CACHE_GUIDE.md](RESEARCH_CACHE_GUIDE.md)** - ResearchCache usage guide for experiment tracking and reproducibility
-- **[DATABASE_UPGRADE_PLAN.md](DATABASE_UPGRADE_PLAN.md)** - PostgreSQL migration plan and status
-
-### Intraday Data Collection (January 2026 - Paper #3)
-
-- **[intraday_schema.md](intraday_schema.md)** - PostgreSQL `intraday_snapshots` table schema, partitioning, and queries (Issue #203)
-- **[intraday_monitor.md](intraday_monitor.md)** - Intraday OI Monitor service operations guide, deployment, and troubleshooting (Issue #204)
 
 ### Paper-Specific Infrastructure
 
@@ -254,10 +255,10 @@ For infrastructure audits:
 
 ### Active Documentation
 
-- **Infrastructure**: 12 files (01-08 sequential + README + 3 specialized guides)
-- **Total Size**: ~220 KB
-- **Line Count**: ~4,000 lines
-- **Last Update**: January 7, 2026
+- **Infrastructure**: 10 files (01-09 sequential + README)
+- **Total Size**: ~230 KB
+- **Line Count**: ~4,200 lines
+- **Last Update**: January 8, 2026
 
 ### Consolidation Impact
 
@@ -318,13 +319,20 @@ This infrastructure documentation is designed to support future adoption of GEX 
 
 ## Recent Updates (January 2026)
 
+### Documentation Consolidation (January 8, 2026)
+
+- Merged `intraday_schema.md` + `intraday_monitor.md` → **[09-intraday-infrastructure.md](09-intraday-infrastructure.md)**
+- Merged `RESEARCH_CACHE_GUIDE.md` → **[04-cache-and-performance.md](04-cache-and-performance.md)** Part 3
+- Archived `DATABASE_UPGRADE_PLAN.md` → `archive/` (PostgreSQL migration complete)
+- Updated file statistics and navigation
+
 ### Intraday Infrastructure (Issues #203, #204, #205)
 
-**Added January 7, 2026**:
+**Added January 7, 2026** (now in [09-intraday-infrastructure.md](09-intraday-infrastructure.md)):
+
 - `intraday_snapshots` PostgreSQL table with yearly partitioning
 - Intraday OI Monitor background service (21 snapshots/day)
 - Adaptive theta decay sampling schedule
-- Service documentation and operations guide
 
 **Service Status**: Running on HPCC (screen session `intraday-monitor`)
 
