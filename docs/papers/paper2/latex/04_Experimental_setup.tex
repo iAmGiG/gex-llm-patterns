@@ -27,7 +27,22 @@
 \item Low-magnitude test: 203 windows (2024 Q1 + 2020, scaled <\$5B)
 \end{itemize}
 
-All options data includes strike price, open interest, implied volatility, days to expiration, and contract type (call/put). Spot prices obtained from daily close values.
+\begin{table}[ht]
+\centering
+\caption{Validation Sample Composition}
+\begin{tabular}{llr}
+\toprule
+\textbf{Dataset Type} & \textbf{Phase} & \textbf{Windows} \\
+\midrule
+Real Market Data & Phase 5 (2020-2025) & 1,412 \\
+Synthetic Controls & Phase 2 (Negatives) & 809 \\
+\midrule
+\textbf{Total Evaluations} & & \textbf{2,221} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All options data includes strike price, open interest, implied volatility, days to expiration, and contract type (call/put). Spot prices obtained from daily close values. While institutional sources (e.g., OptionMetrics) may handle corporate actions differently, the structural signal of multi-billion dollar regimes is robust to minor data variations.
 
 \subsection{Data Processing Pipeline}
 
@@ -72,11 +87,11 @@ Transform each window before LLM submission:
 
 \subsection{LLM Configuration}
 
-\textbf{Model}: OpenAI o4-mini-2025-04-16 (reasoning model)
+\textbf{Model}: OpenAI o4-mini (reasoning model)
 
 \textbf{API Parameters}:
 \begin{itemize}
-\item Temperature: 1.0 (default reasoning temperature)
+\item Temperature: 1.0 (default reasoning configuration; for o-series reasoning models, internal chain-of-thought variance is managed architecturally, making standard temperature tuning less critical for structured outputs)
 \item Max tokens: 16,384 (sufficient for detailed chain-of-thought)
 \item Top-p: 1.0 (no nucleus sampling)
 \end{itemize}

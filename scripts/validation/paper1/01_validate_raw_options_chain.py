@@ -13,6 +13,7 @@ Date: November 25, 2025
 
 import json
 import logging
+import re
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,9 @@ from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 import yaml
+
+# Import robust JSON parser (Issue #192)
+from src.utils.json_parser import extract_json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -232,10 +236,17 @@ Provide your analysis in the structured format above. If you do not detect any c
 
 
 class RawChainResponseParser:
-    """Parse LLM responses for raw chain analysis."""
+    """Parse LLM responses for raw chain analysis.
+
+    Supports both JSON and structured text responses (Issue #192).
+    Tries JSON parsing first, falls back to regex extraction.
+    """
 
     def parse_response(self, response: str) -> Dict:
         """Parse LLM response to extract detection and reasoning.
+
+        Uses robust JSON parser (Issue #192) first, then falls back to regex
+        extraction for structured text responses.
 
         Args:
             response: Raw LLM response text
@@ -243,8 +254,6 @@ class RawChainResponseParser:
         Returns:
             Dictionary with parsed fields
         """
-        import re
-
         result = {
             "detected": False,
             "confidence": 0,
@@ -254,7 +263,30 @@ class RawChainResponseParser:
             "why": "",
             "outcome": "",
             "raw_response": response,
+            "parse_method": "unknown",
         }
+
+        # Try JSON parsing first (Issue #192)
+        json_result = extract_json(response)
+        if json_result is not None:
+            result["parse_method"] = "json"
+            result["confidence"] = json_result.get("confidence", 0)
+            result["detected"] = result["confidence"] >= 60
+            result["who"] = str(json_result.get("who", ""))[:500]
+            result["whom"] = str(json_result.get("whom", ""))[:500]
+            result["what"] = str(json_result.get("what", ""))[:500]
+            result["why"] = str(json_result.get("why", ""))[:500]
+            result["outcome"] = str(json_result.get("outcome", ""))[:500]
+
+            # Handle "no pattern detected" in JSON response
+            if json_result.get("detected") is False or json_result.get("pattern_detected") is False:
+                result["detected"] = False
+                result["confidence"] = 0
+
+            return result
+
+        # Fall back to regex extraction for structured text responses
+        result["parse_method"] = "regex"
 
         # Check for "No pattern detected"
         if re.search(r"no (pattern|constraint|structure) detected", response, re.I):
@@ -304,8 +336,6 @@ class RawChainResponseParser:
         Returns:
             Dictionary with reasoning quality scores
         """
-        import re
-
         response = parsed.get("raw_response", "")
 
         quality = {

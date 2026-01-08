@@ -168,6 +168,11 @@ Larger files (03-08) use "Part 1, Part 2" structure for easy navigation within l
 - **[RESEARCH_CACHE_GUIDE.md](RESEARCH_CACHE_GUIDE.md)** - ResearchCache usage guide for experiment tracking and reproducibility
 - **[DATABASE_UPGRADE_PLAN.md](DATABASE_UPGRADE_PLAN.md)** - PostgreSQL migration plan and status
 
+### Intraday Data Collection (January 2026 - Paper #3)
+
+- **[intraday_schema.md](intraday_schema.md)** - PostgreSQL `intraday_snapshots` table schema, partitioning, and queries (Issue #203)
+- **[intraday_monitor.md](intraday_monitor.md)** - Intraday OI Monitor service operations guide, deployment, and troubleshooting (Issue #204)
+
 ### Paper-Specific Infrastructure
 
 - [docs/papers/paper1/](../papers/paper1/) - Paper #1 (single-day framework)
@@ -249,10 +254,10 @@ For infrastructure audits:
 
 ### Active Documentation
 
-- **Infrastructure**: 9 sequential files (01-08, README)
-- **Total Size**: ~200 KB
-- **Line Count**: ~3,500 lines
-- **Last Update**: November 24, 2025
+- **Infrastructure**: 12 files (01-08 sequential + README + 3 specialized guides)
+- **Total Size**: ~220 KB
+- **Line Count**: ~4,000 lines
+- **Last Update**: January 7, 2026
 
 ### Consolidation Impact
 
@@ -305,6 +310,22 @@ This infrastructure documentation is designed to support future adoption of GEX 
 
 ---
 
-**Last Updated**: November 24, 2025
+**Last Updated**: January 7, 2026
 **Maintained By**: Infrastructure Team
 **Status**: Active Development
+
+---
+
+## Recent Updates (January 2026)
+
+### Intraday Infrastructure (Issues #203, #204, #205)
+
+**Added January 7, 2026**:
+- `intraday_snapshots` PostgreSQL table with yearly partitioning
+- Intraday OI Monitor background service (21 snapshots/day)
+- Adaptive theta decay sampling schedule
+- Service documentation and operations guide
+
+**Service Status**: Running on HPCC (screen session `intraday-monitor`)
+
+**Data Collection**: Q1 2026 (~59 trading days, ~1,239 snapshots expected)

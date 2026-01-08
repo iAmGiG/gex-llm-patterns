@@ -2,7 +2,7 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Paper 1](https://img.shields.io/badge/Paper%201-Submitted-success.svg)](https://github.com/iAmGiG/gex-llm-patterns/issues/88)
+[![Paper 1](https://img.shields.io/badge/Paper%201-arXiv%3A2512.17923-b31b1b.svg)](https://arxiv.org/abs/2512.17923)
 [![Research](https://img.shields.io/badge/Research-PhD%20Project-purple.svg)](docs/papers/research_roadmap.md)
 
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-71.5%25%20Unbiased-orange.svg)](docs/presentations/phd_symposium_2025.md)
@@ -280,14 +280,12 @@ detection = agent.detect_pattern(obfuscated_data)
 #   'whom': 'Market participants',
 #   'what': 'Force dealers to amplify volatility',
 #   'confidence': 0.85
-# }
 
 # Verify outcome (forward returns)
 outcome = calculate_outcome(date="2024-01-05", horizon=1)
 # Returns: {
 #   'forward_1d_return_pct': 0.49,
 #   'prediction_materialized': True
-# }
 ```
 
 ### Full Validation Run
@@ -328,13 +326,16 @@ cd gex-llm-patterns
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure API keys
+# Configure API keys via environment variables (recommended for security)
+export OPENAI_API_KEY="your_openai_key"
+export POLYGON_API_KEY="your_polygon_key"
+
+# Or create a .env file (git-ignored) for local development:
+# echo 'OPENAI_API_KEY=your_openai_key' >> .env
+# echo 'POLYGON_API_KEY=your_polygon_key' >> .env
+
+# Copy config template for model settings (no secrets)
 cp config_defaults/config.json config/config.json
-# Edit config/config.json with your API keys:
-# {
-#   "OPEN_AI_KEY": "your_openai_key",
-#   "POLYGON_IO": "your_polygon_key"
-# }
 
 # Verify setup
 python -c "from src.analysis.pattern_library import PatternLibrary; print('Setup OK')"
@@ -406,19 +407,21 @@ Comprehensive documentation available in `docs/`:
 - **[Validation Framework](docs/guides/validation-framework.md)**: How to run pattern validations
 - **[Pattern Library Guide](docs/guides/pattern-library-guide.md)**: Using the 15-pattern library
 
-## Research Papers (In Progress)
+## Research Papers
 
-### Paper #1: Workshop Submission (Due Oct 26, 2025)
+### Paper #1: IEEE BigData 2025 / arXiv
 
-**Title**: "Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing"
+**Title**: "Signal Recovery from Raw Options Chains: Evidence that Standard GEX Metrics Discard Structural Information"
+
+**arXiv**: [arXiv:2512.17923](https://arxiv.org/abs/2512.17923)
 
 **Venue**: [IEEE LLM-Finance 2025](https://intelligentfinance.github.io/IEEE-LLM-finance-2025/call.html) (workshop at [IEEE BigData 2025](https://conferences.cis.um.edu.mo/ieeebigdata2025/), Macau)
 
-**Contribution**: Novel obfuscation testing framework for validating LLM structural reasoning
+**Contribution**: Novel obfuscation testing framework for validating LLM structural reasoning; evidence that raw options chains contain structural information discarded by standard GEX aggregation
 
-**Status**: Draft complete (10 pages, IEEE format), under advisor review ([Issue #88](https://github.com/iAmGiG/gex-llm-patterns/issues/88))
+**Status**: Published on arXiv, presented at IEEE BigData 2025
 
-**Key Results**: 71.5% unbiased detection rate and 90.9% predictive accuracy across 242 trading days (full 2024)
+**Key Results**: 92.3% detection from raw chains vs 61.5% from GEX metrics (+30.8pp), proving LLMs act as structural analysts, not calculators
 
 ### Paper #2: Sequential GEX Analysis
 
@@ -496,12 +499,14 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 If you use this methodology or code in your research, please cite:
 
 ```bibtex
-@misc{gex-llm-patterns-2025,
-  author = {Chris Regan},
-  title = {Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing},
-  year = {2025},
-  publisher = {GitHub},
-  url = {https://github.com/iAmGiG/gex-llm-patterns}
+@misc{regan2024signal,
+  title={Signal Recovery from Raw Options Chains: Evidence that Standard GEX Metrics Discard Structural Information},
+  author={Chris Regan},
+  year={2024},
+  eprint={2512.17923},
+  archivePrefix={arXiv},
+  primaryClass={q-fin.TR},
+  url={https://arxiv.org/abs/2512.17923}
 }
 ```
 
@@ -514,8 +519,8 @@ If you use this methodology or code in your research, please cite:
 
 ---
 
-**Last Updated**: November 2025
-**Project Status**: Full 2024 validation complete (242 days), Paper #1 submitted, agent infrastructure deployed
-**Next Milestone**: Paper #1 reviews, Paper #2 sequential GEX analysis, individual equities extension
+**Last Updated**: January 2026
+**Project Status**: Paper #1 published ([arXiv:2512.17923](https://arxiv.org/abs/2512.17923)), Paper #2 ready for submission (1,858 windows, 6 years, 2020-2025)
+**Next Milestone**: Paper #2 submission, Paper #1 journal revision
 
 *This research explores the intersection of large language models, market microstructure, and validation methodology for testing AI structural reasoning capabilities.*
