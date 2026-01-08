@@ -1,9 +1,10 @@
+import os
 import sqlite3
+from pathlib import Path
+
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-from pathlib import Path
-import os
 
 # Configuration
 DB_PATH = ".cache/options_historical.db"
@@ -29,7 +30,7 @@ def migrate_data():
     print(f"Found {len(tables)} tables to migrate...")
 
     for idx, row in tables.iterrows():
-        table_name = row['name']
+        table_name = row["name"]
         print(f"Processing {table_name}...")
 
         # Read in chunks to handle large tables without OOM
@@ -38,9 +39,9 @@ def migrate_data():
         # Using pandas chunksize for memory efficiency
         for chunk in pd.read_sql(query, conn, chunksize=CHUNK_SIZE):
             # Ensure date column is datetime for partitioning
-            if 'date' in chunk.columns:
-                chunk['date'] = pd.to_datetime(chunk['date'])
-                chunk['year'] = chunk['date'].dt.year
+            if "date" in chunk.columns:
+                chunk["date"] = pd.to_datetime(chunk["date"])
+                chunk["year"] = chunk["date"].dt.year
 
             # Convert to PyArrow Table
             table = pa.Table.from_pandas(chunk)
@@ -48,7 +49,7 @@ def migrate_data():
             # Write to partitioned dataset
             # This creates folder structure: .cache/parquet/symbol=SPY/year=2024/part-xxx.parquet
             # If your table name IS the symbol, you can inject it as a column
-            if 'symbol' not in chunk.columns:
+            if "symbol" not in chunk.columns:
                 # Assuming table name is the symbol, e.g., "SPY"
                 # If table names are "options_SPY", do string manipulation here
                 symbol_val = table_name.replace("options_", "")
@@ -61,8 +62,8 @@ def migrate_data():
                 pq.write_to_dataset(
                     table,
                     root_path=PARQUET_ROOT,
-                    partition_cols=['year'] if 'year' in chunk.columns else None,
-                    existing_data_behavior='overwrite_or_ignore'
+                    partition_cols=["year"] if "year" in chunk.columns else None,
+                    existing_data_behavior="overwrite_or_ignore",
                 )
 
     conn.close()

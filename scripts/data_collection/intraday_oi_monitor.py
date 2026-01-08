@@ -32,19 +32,16 @@ import schedule
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
+from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('/tmp/intraday_oi_monitor.log')
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(), logging.FileHandler("/tmp/intraday_oi_monitor.log")],
 )
-logger = logging.getLogger('IntradayOIMonitor')
+logger = logging.getLogger("IntradayOIMonitor")
 
 
 class IntradayOIMonitor:
@@ -62,41 +59,65 @@ class IntradayOIMonitor:
     # Default symbols to monitor (can be overridden)
     DEFAULT_SYMBOLS = [
         # Major indices/ETFs
-        'SPY', 'QQQ', 'IWM', 'DIA',
+        "SPY",
+        "QQQ",
+        "IWM",
+        "DIA",
         # Volatility
-        'VIX', 'UVXY', 'SVXY',
+        "VIX",
+        "UVXY",
+        "SVXY",
         # Leveraged
-        'TQQQ', 'SQQQ', 'SPXL', 'SPXS',
+        "TQQQ",
+        "SQQQ",
+        "SPXL",
+        "SPXS",
         # Sector ETFs
-        'XLF', 'XLE', 'XLK', 'XLV', 'XLI',
+        "XLF",
+        "XLE",
+        "XLK",
+        "XLV",
+        "XLI",
         # International
-        'EEM', 'EFA', 'FXI',
+        "EEM",
+        "EFA",
+        "FXI",
         # Bonds
-        'TLT', 'HYG', 'LQD',
+        "TLT",
+        "HYG",
+        "LQD",
         # Commodities
-        'GLD', 'SLV', 'USO',
+        "GLD",
+        "SLV",
+        "USO",
         # Large cap tech
-        'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'NVDA', 'TSLA',
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "AMZN",
+        "META",
+        "NVDA",
+        "TSLA",
     ]
 
     # Snapshot type definitions
     SNAPSHOT_TYPES = {
-        'market_open': '09:30',
-        'morning_baseline': ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'],
-        'theta_accel': ['14:15', '14:30', '14:45', '15:00'],
-        'expiry_rush': ['15:10', '15:20', '15:30', '15:40', '15:50'],
-        'final_rush': '15:55',
-        'market_close': '16:00'
+        "market_open": "09:30",
+        "morning_baseline": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00"],
+        "theta_accel": ["14:15", "14:30", "14:45", "15:00"],
+        "expiry_rush": ["15:10", "15:20", "15:30", "15:40", "15:50"],
+        "final_rush": "15:55",
+        "market_close": "16:00",
     }
 
     def __init__(
         self,
         symbols: Optional[List[str]] = None,
         dry_run: bool = False,
-        db_host: str = 'localhost',
+        db_host: str = "localhost",
         db_port: int = 5432,
-        db_user: str = 'cregan1',
-        db_name: str = 'gex_options'
+        db_user: str = "cregan1",
+        db_name: str = "gex_options",
     ):
         """Initialize the intraday monitor.
 
@@ -110,27 +131,17 @@ class IntradayOIMonitor:
         """
         self.symbols = symbols or self.DEFAULT_SYMBOLS[:30]  # Limit to 30 for API capacity
         self.dry_run = dry_run
-        self.et_tz = pytz.timezone('US/Eastern')
+        self.et_tz = pytz.timezone("US/Eastern")
 
         # Statistics tracking
-        self.stats = {
-            'snapshots_captured': 0,
-            'api_calls': 0,
-            'errors': 0,
-            'start_time': datetime.now()
-        }
+        self.stats = {"snapshots_captured": 0, "api_calls": 0, "errors": 0, "start_time": datetime.now()}
 
         if not dry_run:
             # Initialize API client
             self.api_client = AlphaVantageGEXClient()
 
             # Initialize PostgreSQL connection
-            self.db = PostgreSQLOptionsManager(
-                host=db_host,
-                port=db_port,
-                user=db_user,
-                database=db_name
-            )
+            self.db = PostgreSQLOptionsManager(host=db_host, port=db_port, user=db_user, database=db_name)
             logger.info(f"Connected to PostgreSQL: {db_name}@{db_host}:{db_port}")
         else:
             self.api_client = None
@@ -170,13 +181,7 @@ class IntradayOIMonitor:
 
         return market_open <= now_et <= market_close
 
-    def _store_snapshot(
-        self,
-        symbol: str,
-        data: pd.DataFrame,
-        snapshot_type: str,
-        timestamp: datetime
-    ):
+    def _store_snapshot(self, symbol: str, data: pd.DataFrame, snapshot_type: str, timestamp: datetime):
         """Store options snapshot in PostgreSQL intraday_snapshots table.
 
         Args:
@@ -197,22 +202,22 @@ class IntradayOIMonitor:
             for _, row in data.iterrows():
                 record = (
                     symbol,
-                    row.get('strike', 0),
-                    row.get('expiration', timestamp.date()),
+                    row.get("strike", 0),
+                    row.get("expiration", timestamp.date()),
                     timestamp,
                     snapshot_type,
-                    row.get('type', 'call'),  # call or put
-                    row.get('open_interest', 0),
-                    row.get('volume', 0),
-                    row.get('implied_volatility', None),
-                    row.get('underlying_price', None),
-                    row.get('delta', None),
-                    row.get('gamma', None),
-                    row.get('theta', None),
-                    row.get('vega', None),
-                    row.get('bid', None),
-                    row.get('ask', None),
-                    row.get('last', None)
+                    row.get("type", "call"),  # call or put
+                    row.get("open_interest", 0),
+                    row.get("volume", 0),
+                    row.get("implied_volatility", None),
+                    row.get("underlying_price", None),
+                    row.get("delta", None),
+                    row.get("gamma", None),
+                    row.get("theta", None),
+                    row.get("vega", None),
+                    row.get("bid", None),
+                    row.get("ask", None),
+                    row.get("last", None),
                 )
                 records.append(record)
 
@@ -231,6 +236,7 @@ class IntradayOIMonitor:
             """
 
             from psycopg2.extras import execute_batch
+
             execute_batch(cursor, insert_query, records, page_size=1000)
             conn.commit()
 
@@ -238,7 +244,7 @@ class IntradayOIMonitor:
 
         except Exception as e:
             logger.error(f"Error storing snapshot for {symbol}: {e}")
-            self.stats['errors'] += 1
+            self.stats["errors"] += 1
 
     def capture_snapshot(self, snapshot_type: str):
         """Capture options snapshot at :59 seconds of current minute.
@@ -269,12 +275,10 @@ class IntradayOIMonitor:
 
                 # Fetch current options data (no date = current/latest)
                 data = self.api_client.fetch_historical_options(
-                    symbol=symbol,
-                    date=None,  # Current data
-                    cache_result=False  # Don't cache intraday data in SQLite
+                    symbol=symbol, date=None, cache_result=False  # Current data  # Don't cache intraday data in SQLite
                 )
 
-                self.stats['api_calls'] += 1
+                self.stats["api_calls"] += 1
 
                 if not data.empty:
                     self._store_snapshot(symbol, data, snapshot_type, timestamp)
@@ -289,50 +293,35 @@ class IntradayOIMonitor:
             except Exception as e:
                 logger.error(f"Error capturing {symbol}: {e}")
                 failed += 1
-                self.stats['errors'] += 1
+                self.stats["errors"] += 1
 
-        self.stats['snapshots_captured'] += 1
-        logger.info(
-            f"Snapshot complete: {successful}/{len(self.symbols)} symbols captured, "
-            f"{failed} failed"
-        )
+        self.stats["snapshots_captured"] += 1
+        logger.info(f"Snapshot complete: {successful}/{len(self.symbols)} symbols captured, " f"{failed} failed")
 
     def schedule_captures(self):
         """Set up the adaptive sampling schedule."""
         logger.info("Setting up capture schedule...")
 
         # Market open
-        schedule.every().day.at("09:30").do(
-            self.capture_snapshot, snapshot_type="market_open"
-        )
+        schedule.every().day.at("09:30").do(self.capture_snapshot, snapshot_type="market_open")
 
         # Morning baseline (30-min intervals)
-        for time_str in self.SNAPSHOT_TYPES['morning_baseline']:
-            schedule.every().day.at(time_str).do(
-                self.capture_snapshot, snapshot_type="morning_baseline"
-            )
+        for time_str in self.SNAPSHOT_TYPES["morning_baseline"]:
+            schedule.every().day.at(time_str).do(self.capture_snapshot, snapshot_type="morning_baseline")
 
         # Theta acceleration (15-min intervals)
-        for time_str in self.SNAPSHOT_TYPES['theta_accel']:
-            schedule.every().day.at(time_str).do(
-                self.capture_snapshot, snapshot_type="theta_accel"
-            )
+        for time_str in self.SNAPSHOT_TYPES["theta_accel"]:
+            schedule.every().day.at(time_str).do(self.capture_snapshot, snapshot_type="theta_accel")
 
         # Expiry rush (10-min intervals)
-        for time_str in self.SNAPSHOT_TYPES['expiry_rush']:
-            schedule.every().day.at(time_str).do(
-                self.capture_snapshot, snapshot_type="expiry_rush"
-            )
+        for time_str in self.SNAPSHOT_TYPES["expiry_rush"]:
+            schedule.every().day.at(time_str).do(self.capture_snapshot, snapshot_type="expiry_rush")
 
         # Final rush
-        schedule.every().day.at("15:55").do(
-            self.capture_snapshot, snapshot_type="final_rush"
-        )
+        schedule.every().day.at("15:55").do(self.capture_snapshot, snapshot_type="final_rush")
 
         # Market close
-        schedule.every().day.at("16:00").do(
-            self.capture_snapshot, snapshot_type="market_close"
-        )
+        schedule.every().day.at("16:00").do(self.capture_snapshot, snapshot_type="market_close")
 
         # Log scheduled jobs
         total_jobs = len(schedule.get_jobs())
@@ -343,7 +332,7 @@ class IntradayOIMonitor:
 
     def print_status(self):
         """Print current monitoring status."""
-        uptime = datetime.now() - self.stats['start_time']
+        uptime = datetime.now() - self.stats["start_time"]
         logger.info("=" * 50)
         logger.info("INTRADAY MONITOR STATUS")
         logger.info("=" * 50)
@@ -381,44 +370,16 @@ class IntradayOIMonitor:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Intraday OI Monitor - Adaptive Theta Decay Sampling'
-    )
-    parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Run without API calls or database writes'
-    )
-    parser.add_argument(
-        '--symbols',
-        nargs='+',
-        help='Symbols to monitor (default: predefined list)'
-    )
-    parser.add_argument(
-        '--test-capture',
-        action='store_true',
-        help='Run a single test capture and exit'
-    )
-    parser.add_argument(
-        '--db-host',
-        default='localhost',
-        help='PostgreSQL host (default: localhost)'
-    )
-    parser.add_argument(
-        '--db-port',
-        type=int,
-        default=5432,
-        help='PostgreSQL port (default: 5432)'
-    )
+    parser = argparse.ArgumentParser(description="Intraday OI Monitor - Adaptive Theta Decay Sampling")
+    parser.add_argument("--dry-run", action="store_true", help="Run without API calls or database writes")
+    parser.add_argument("--symbols", nargs="+", help="Symbols to monitor (default: predefined list)")
+    parser.add_argument("--test-capture", action="store_true", help="Run a single test capture and exit")
+    parser.add_argument("--db-host", default="localhost", help="PostgreSQL host (default: localhost)")
+    parser.add_argument("--db-port", type=int, default=5432, help="PostgreSQL port (default: 5432)")
 
     args = parser.parse_args()
 
-    monitor = IntradayOIMonitor(
-        symbols=args.symbols,
-        dry_run=args.dry_run,
-        db_host=args.db_host,
-        db_port=args.db_port
-    )
+    monitor = IntradayOIMonitor(symbols=args.symbols, dry_run=args.dry_run, db_host=args.db_host, db_port=args.db_port)
 
     if args.test_capture:
         logger.info("Running test capture...")
@@ -428,5 +389,5 @@ def main():
         monitor.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
