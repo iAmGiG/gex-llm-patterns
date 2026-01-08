@@ -74,6 +74,10 @@ The 5x difference between 2024 (61.1\% FP) and 2020 (12.1\% FP) is not a test fa
 
 \noindent\textbf{Summary}: Two of three controls passed traditional criteria (transitional and low-magnitude: 0\% FP). The shuffle test exceeded the 20\% criterion for 2024, but this exceedance is explained by and validates the structural shift we observe: 2024 regimes are defined by such extreme persistence that randomizing day order rarely breaks the regime threshold, whereas 2020 regimes are more sensitive to permutation.
 
+\vspace{0.2cm}
+
+\noindent\textbf{Design Limitation}: The shuffle test was designed assuming regime detection depends on temporal sequencing; the high 2024 FP rate reveals this assumption was incorrect for structurally saturated markets. In retrospect, a more appropriate negative control for 2024 would test whether detection persists when sign distribution is artificially balanced (e.g., forcing 50\% positive/50\% negative days while preserving magnitude). We retain the original shuffle test results for transparency rather than post-hoc re-running controls.
+
 \subsection{Phase 3: Full 2024 Validation}
 
 \vspace{0.2cm}
@@ -253,7 +257,7 @@ Phase 5 extended the temporal analysis to six years (2020-2025) with 1,412 30-da
 
 \vspace{0.2cm}
 
-\noindent\textbf{Methodology Note}: Phase 5 used PostgreSQL-migrated data with improved calendar coverage (filled Columbus Day, Veterans Day gaps), resulting in 241 windows for 2024 versus 223 windows in Phase 3's SQLite-based validation. The 100\% detection rate in Phase 5 reflects both complete data coverage and the structural dominance that emerged in late 2024. Phase 3's 81.2\% rate (181/223) remains valid for its November 2025 snapshot; Phase 5's higher rate reflects data completeness improvements from the January 2026 PostgreSQL migration.
+\noindent\textbf{Methodology Note}: Phase 5 used PostgreSQL-migrated data with improved calendar coverage (filled Columbus Day, Veterans Day gaps), resulting in 241 windows for 2024 versus 223 windows in Phase 3's SQLite-based validation. The 81.2\% $\rightarrow$ 100\% increase reflects two distinct factors: (1) \textit{data completeness}---the PostgreSQL migration added 18 windows previously missing due to holiday gaps, and these added windows exhibited regime characteristics; (2) \textit{window composition}---Phase 3 (November 2025) captured early-2024 windows that exhibited transitional volatility (February-March sign flips), while Phase 5's complete calendar includes late-2024 windows where regime dominance was absolute. Both results are valid for their respective data snapshots. The 100\% rate in Phase 5 represents the complete 2024 picture; the 81.2\% rate in Phase 3 accurately reflected the partial-year snapshot available at that time. Neither rate is ``wrong''---they measure the same underlying market structure with different temporal coverage.
 
 \vspace{0.2cm}
 
