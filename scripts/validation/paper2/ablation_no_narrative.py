@@ -32,7 +32,9 @@ from openai import OpenAI
 
 # Add project root to path (use main repo for data access)
 PROJECT_ROOT = Path("/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns")
-sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT))  # noqa: E402
+
+# pylint: disable=wrong-import-position
 
 from src.cache.unified_cache import UnifiedCacheManager
 from src.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
@@ -56,27 +58,29 @@ def load_model_from_config() -> Tuple[str, str]:
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
 
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
 
-    model = config.get("LLM_MODEL", "o4-mini")
+    model_name = config.get("LLM_MODEL", "o4-mini")
     api_key = config.get("OPEN_AI_KEY", "")
 
     if not api_key:
         raise ValueError("OPEN_AI_KEY not found in config.json")
 
-    logger.info(f"✅ Loaded model from config: {model}")
-    return model, api_key
+    logger.info(f"Loaded LLM model from config: {model_name}")
+    return model_name, api_key
 
 
 def load_phase3_results() -> Dict:
     """Load Phase 3 2024 full year validation results."""
-    phase3_file = PROJECT_ROOT / "reports" / "validation" / "paper2_regime_windows" / "phase3_baseline_2024_full_year.yaml"
+    phase3_file = (
+        PROJECT_ROOT / "reports" / "validation" / "paper2_regime_windows" / "phase3_baseline_2024_full_year.yaml"
+    )
 
     if not phase3_file.exists():
         raise FileNotFoundError(f"Phase 3 results not found: {phase3_file}")
 
-    with open(phase3_file, "r") as f:
+    with open(phase3_file, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     logger.info(f"✅ Loaded Phase 3 results: {len(data['windows'])} windows")
@@ -121,12 +125,14 @@ def create_balanced_sample(phase3_data: Dict, sample_size: int = 100) -> List[Di
     balanced_sample = sampled_detected + sampled_rejected
     random.shuffle(balanced_sample)  # Shuffle to avoid ordering bias
 
-    logger.info(f"✅ Created balanced sample: {n_per_class} detected + {n_per_class} rejected = {len(balanced_sample)} total")
+    logger.info(
+        f"✅ Created balanced sample: {n_per_class} detected + {n_per_class} rejected = {len(balanced_sample)} total"
+    )
 
     return balanced_sample
 
 
-def create_data_only_prompt(gex_sequence: List[Dict], end_date: str) -> str:
+def create_data_only_prompt(gex_sequence: List[Dict], _end_date: str) -> str:
     """Create data-only prompt WITHOUT WHO→WHOM→WHAT narrative framework.
 
     Args:
@@ -174,12 +180,7 @@ Analyze the data and provide your assessment."""
     return prompt
 
 
-def run_ablation_validation(
-    sample: List[Dict],
-    model: str,
-    api_key: str,
-    use_narrative: bool = True
-) -> List[Dict]:
+def run_ablation_validation(sample: List[Dict], model: str, api_key: str, use_narrative: bool = True) -> List[Dict]:
     """Run validation on sample with or without narrative framework.
 
     Args:
@@ -220,25 +221,21 @@ def run_ablation_validation(
             day_offset = j - 30 + 1
             day_label = f"Day T{day_offset:+d}" if day_offset != 0 else "Day T+0"
 
-            gex_sequence_obfuscated.append({
-                "date": day_label,
-                "net_gex_usd": day.get("net_gex", 0),
-                "positive_gex": day.get("positive_gex", 0),
-                "negative_gex": day.get("negative_gex", 0),
-            })
+            gex_sequence_obfuscated.append(
+                {
+                    "date": day_label,
+                    "net_gex_usd": day.get("net_gex", 0),
+                    "positive_gex": day.get("positive_gex", 0),
+                    "negative_gex": day.get("negative_gex", 0),
+                }
+            )
 
         # Build prompt (narrative or data-only)
         if use_narrative:
-            prompt_text = prompt_builder.build_regime_prompt(
-                gex_sequence=gex_sequence_obfuscated,
-                end_date=end_date
-            )
+            prompt_text = prompt_builder.build_regime_prompt(gex_sequence=gex_sequence_obfuscated, end_date=end_date)
             prompt_type = "narrative"
         else:
-            prompt_text = create_data_only_prompt(
-                gex_sequence=gex_sequence_obfuscated,
-                end_date=end_date
-            )
+            prompt_text = create_data_only_prompt(gex_sequence=gex_sequence_obfuscated, end_date=end_date)
             prompt_type = "data_only"
 
         # Call LLM
@@ -262,15 +259,17 @@ def run_ablation_validation(
             predicted = llm_result.get("regime_detected", False)
             confidence = llm_result.get("confidence", 0)
 
-            results.append({
-                "window_id": window_id,
-                "ground_truth": ground_truth,
-                "predicted": predicted,
-                "correct": predicted == ground_truth,
-                "confidence": confidence,
-                "prompt_type": prompt_type,
-                "llm_response": llm_result,
-            })
+            results.append(
+                {
+                    "window_id": window_id,
+                    "ground_truth": ground_truth,
+                    "predicted": predicted,
+                    "correct": predicted == ground_truth,
+                    "confidence": confidence,
+                    "prompt_type": prompt_type,
+                    "llm_response": llm_result,
+                }
+            )
 
             logger.info(f"  Predicted: {predicted}, Ground truth: {ground_truth}, Correct: {predicted == ground_truth}")
 
@@ -319,9 +318,7 @@ def calculate_metrics(results: List[Dict]) -> Dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Ablation study: Narrative vs Data-Only Detection"
-    )
+    parser = argparse.ArgumentParser(description="Ablation study: Narrative vs Data-Only Detection")
     parser.add_argument("--sample-size", type=int, default=100, help="Total sample size (default 100)")
     parser.add_argument("--output", type=str, default="ablation_results.yaml", help="Output file")
     parser.add_argument("--skip-control", action="store_true", help="Skip control (narrative) condition")
@@ -330,13 +327,13 @@ def main():
     args = parser.parse_args()
 
     # Load model from config (CRITICAL: never hardcode)
-    model, api_key = load_model_from_config()
+    model_name, api_key = load_model_from_config()
 
     # Pre-flight check
     logger.info("=" * 60)
     logger.info("PRE-FLIGHT CHECK")
     logger.info("=" * 60)
-    logger.info(f"Model: {model}")
+    logger.info(f"LLM Model: {model_name}")
     logger.info(f"Sample size: {args.sample_size}")
     logger.info(f"Output file: {args.output}")
     logger.info("=" * 60)
@@ -354,27 +351,31 @@ def main():
         logger.info("\n" + "=" * 60)
         logger.info("CONTROL: Narrative Prompt (WHO→WHOM→WHAT)")
         logger.info("=" * 60)
-        control_results = run_ablation_validation(sample, model, api_key, use_narrative=True)
+        control_results = run_ablation_validation(sample, model_name, api_key, use_narrative=True)
         control_metrics = calculate_metrics(control_results)
         results["control"] = {
             "prompt_type": "narrative",
             "metrics": control_metrics,
             "results": control_results,
         }
-        logger.info(f"\nControl Metrics: Accuracy={control_metrics['accuracy']:.2%}, F1={control_metrics['f1_score']:.2%}")
+        logger.info(
+            f"\nControl Metrics: Accuracy={control_metrics['accuracy']:.2%}, F1={control_metrics['f1_score']:.2%}"
+        )
 
     if not args.skip_treatment:
         logger.info("\n" + "=" * 60)
         logger.info("TREATMENT: Data-Only Prompt (No Narrative)")
         logger.info("=" * 60)
-        treatment_results = run_ablation_validation(sample, model, api_key, use_narrative=False)
+        treatment_results = run_ablation_validation(sample, model_name, api_key, use_narrative=False)
         treatment_metrics = calculate_metrics(treatment_results)
         results["treatment"] = {
             "prompt_type": "data_only",
             "metrics": treatment_metrics,
             "results": treatment_results,
         }
-        logger.info(f"\nTreatment Metrics: Accuracy={treatment_metrics['accuracy']:.2%}, F1={treatment_metrics['f1_score']:.2%}")
+        logger.info(
+            f"\nTreatment Metrics: Accuracy={treatment_metrics['accuracy']:.2%}, F1={treatment_metrics['f1_score']:.2%}"
+        )
 
     # Save results
     output_path = PROJECT_ROOT / "reports" / "validation" / "paper2_regime_windows" / args.output
@@ -383,13 +384,13 @@ def main():
     output_data = {
         "experiment": "ablation_narrative_vs_data_only",
         "issue": "#191",
-        "model": model,
+        "model": model_name,
         "sample_size": args.sample_size,
         "balanced": True,
         "results": results,
     }
 
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         yaml.dump(output_data, f, default_flow_style=False, sort_keys=False)
 
     logger.info(f"\n✅ Results saved to: {output_path}")
