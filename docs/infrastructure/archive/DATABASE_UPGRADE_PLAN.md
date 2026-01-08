@@ -13,6 +13,7 @@
 **Actual Implementation**: PostgreSQL 18.1 + ResearchCache (SQLite) + Future Parquet/Graph
 
 **What Changed**:
+
 - Migrated from SQLite to **PostgreSQL 18.1** (Issues #194, #179, #183, #193)
 - Database: `gex_options` (20.58 GB, 81.8M contracts)
 - Coverage: 50 symbols, 2020-2025 (6 years, 1,507 trading days)
@@ -22,6 +23,7 @@
 - **ResearchCache** added: SQLite research metadata layer (Issue #169)
 
 **Why PostgreSQL Instead of Parquet**:
+
 - Better write concurrency (no locks)
 - Native SQL query capabilities
 - ACID transactions for data integrity

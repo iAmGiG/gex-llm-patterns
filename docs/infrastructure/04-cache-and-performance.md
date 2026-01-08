@@ -405,6 +405,106 @@ Total: 4000 tokens for complete analysis
 
 ---
 
+## Part 3: ResearchCache for Experiment Tracking
+
+### Overview
+
+ResearchCache provides a structured way to store and query LLM detection results, validation outcomes, and experiment runs with git versioning for reproducibility.
+
+**Location**: `src/cache/research_cache.py`
+
+### Quick Start
+
+```python
+from src.cache.research_cache import ResearchCache
+
+# Initialize
+cache = ResearchCache()
+
+# Store a detection
+detection_id = cache.store_detection(
+    symbol="SPY",
+    trading_date="2024-01-15",
+    pattern_id="regime_30day",
+    model_name="o4-mini",
+    confidence_score=85.0,
+    chain_of_thought="Analysis shows...",
+    detected=True
+)
+
+# Query detections
+detections = cache.get_detections(
+    symbol="SPY",
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+    pattern_ids=["regime_30day"]
+)
+
+# Record experiment
+cache.record_experiment_run(
+    run_id="my_experiment_v1",
+    description="Testing new regime criteria",
+    config={"threshold": 70, "window": 30}
+)
+```
+
+### Common Queries
+
+```python
+from src.cache.research_cache_queries import (
+    get_detection_stats_by_year,
+    compare_detections_by_confidence,
+    get_experiment_history
+)
+
+# Detection statistics by year
+stats = get_detection_stats_by_year()
+for year, data in stats.items():
+    print(f"{year}: {data['detection_rate']:.1f}% ({data['detected']}/{data['total']})")
+
+# Compare high vs low confidence
+comparison = compare_detections_by_confidence(threshold=80.0)
+print(f"Above 80%: {comparison['above']['rate']:.1f}%")
+print(f"Below 80%: {comparison['below']['rate']:.1f}%")
+
+# Experiment history
+experiments = get_experiment_history("paper2")
+for exp in experiments:
+    print(f"{exp['run_id']}: {exp['description']}")
+```
+
+### Database Schema
+
+| Table | Purpose |
+|-------|---------|
+| `llm_detections` | Pattern detection results with chain-of-thought |
+| `experiment_runs` | Tracks runs with git commit hash for reproducibility |
+| `validation_results` | Outcome verification (T+1, T+3, T+5 returns) |
+
+### Best Practices
+
+1. **Always record experiment runs** before generating detections
+2. **Use git commit hashes** for reproducibility
+3. **Store chain-of-thought** for reviewer transparency
+4. **Keep YAML backups** for human review
+5. **Query by year/pattern** for performance
+
+### Troubleshooting
+
+**Database locked?** ResearchCache uses `threading.Lock()` for safety. Wait and retry.
+
+**Missing detections?** Check date format (`YYYY-MM-DD`), verify `pattern_id` matches exactly.
+
+### Scaling for Papers 3-5
+
+ResearchCache scales across all papers:
+
+- Paper 3: Multi-symbol detections
+- Paper 4: Graph neural network results
+- Paper 5: Real-time detection tracking
+
+---
+
 ## Summary
 
 The combined cache and performance architecture provides:
