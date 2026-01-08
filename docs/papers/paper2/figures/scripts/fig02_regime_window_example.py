@@ -14,25 +14,11 @@ import sqlite3
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-}
+from theme import (
+    DARK_THEME, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
 def query_example_window():
@@ -96,7 +82,7 @@ def generate_synthetic_example():
     }
 
 
-def create_figure(example_data, output_path):
+def create_figure(example_data):
     """Create regime window example figure with dark theme."""
 
     # Use synthetic data for consistent example
@@ -104,7 +90,7 @@ def create_figure(example_data, output_path):
     gex_values = data['gex_values']
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(12, 6), dpi=300)
@@ -170,20 +156,12 @@ def create_figure(example_data, output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
     print(f"\nExample Window Statistics:")
     print(f"  Persistence: {neg_days}/30 = {neg_days/30*100:.1f}%")
     print(f"  Avg Magnitude: ${avg_magnitude:.1f}B")
     print(f"  Sign Flips: {data['flips']}")
+
+    return fig
 
 
 def main():
@@ -197,8 +175,8 @@ def main():
         print(f"Database query failed ({e}), using synthetic example")
         example = None
 
-    output_path = OUTPUT_DIR / "fig02_regime_window.png"
-    create_figure(example, output_path)
+    fig = create_figure(example)
+    save_figure(fig, "fig02_regime_window.png")
 
     print("\nDone!")
 

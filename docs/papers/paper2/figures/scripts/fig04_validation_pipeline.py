@@ -14,37 +14,18 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import numpy as np
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-    # Phase-specific colors
-    'phase1': '#00d4ff',          # Cyan - baseline
-    'phase2': '#ff4444',          # Red - negative control
-    'phase3': '#00ff88',          # Green - full validation
-    'phase4': '#a855f7',          # Purple - temporal comparison
-    'arrow': '#666666',           # Grey arrows
-}
+from theme import (
+    DARK_THEME, PHASE_COLORS, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
-def create_figure(output_path):
+def create_figure():
     """Create validation pipeline figure with dark theme."""
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(14, 8), dpi=300)
@@ -70,7 +51,7 @@ def create_figure(output_path):
             'subtitle': 'Q1 2024',
             'detection': '71.2%',
             'windows': '52 windows',
-            'color': DARK_THEME['phase1'],
+            'color': PHASE_COLORS['phase1'],
             'x': 1.5,
             'description': 'Initial detection\nrate establishes\nbaseline capability'
         },
@@ -80,7 +61,7 @@ def create_figure(output_path):
             'subtitle': 'Shuffled Data',
             'detection': '6.3%',
             'windows': '52 windows',
-            'color': DARK_THEME['phase2'],
+            'color': PHASE_COLORS['phase2'],
             'x': 4.5,
             'description': 'Randomized temporal\nstructure destroys\nregime patterns'
         },
@@ -90,7 +71,7 @@ def create_figure(output_path):
             'subtitle': '2024 Full Year',
             'detection': '81.2%',
             'windows': '223 windows',
-            'color': DARK_THEME['phase3'],
+            'color': PHASE_COLORS['phase3'],
             'x': 7.5,
             'description': 'Extended validation\nconfirms consistent\nregime detection'
         },
@@ -100,7 +81,7 @@ def create_figure(output_path):
             'subtitle': '2020 Pre-0DTE',
             'detection': '12.1%',
             'windows': '223 windows',
-            'color': DARK_THEME['phase4'],
+            'color': PHASE_COLORS['phase4'],
             'x': 10.5,
             'description': 'Pre-0DTE era shows\nminimal regime\npresence'
         },
@@ -155,7 +136,7 @@ def create_figure(output_path):
 
     # Draw arrows between phases
     arrow_y = y_center
-    arrow_style = dict(arrowstyle='->', lw=2.5, color=DARK_THEME['arrow'],
+    arrow_style = dict(arrowstyle='->', lw=2.5, color=DARK_THEME['dim'],
                        connectionstyle='arc3,rad=0')
 
     for i in range(len(phases) - 1):
@@ -198,22 +179,13 @@ def create_figure(output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
+    return fig
 
 
 def main():
     print("Generating Validation Pipeline Figure (Dark Theme #216)...")
-    output_path = OUTPUT_DIR / "fig04_validation_pipeline.png"
-    create_figure(output_path)
+    fig = create_figure()
+    save_figure(fig, "fig04_validation_pipeline.png")
     print("\nDone!")
 
 

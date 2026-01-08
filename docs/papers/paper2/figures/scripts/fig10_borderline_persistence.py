@@ -15,25 +15,11 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green (detected)
-    'accent_negative': '#ff4444', # Neon red (rejected)
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber for borderline
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-}
+from theme import (
+    DARK_THEME, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
 def query_data():
@@ -73,7 +59,7 @@ def query_data():
     return {k: np.array(v) for k, v in data.items()}
 
 
-def create_borderline_figure(data, output_path):
+def create_figure(data):
     """Create multi-panel borderline persistence figure with dark theme."""
 
     # Filter borderline region (68-72%)
@@ -100,7 +86,7 @@ def create_borderline_figure(data, output_path):
     std_conf_rejected = bl_confidence[bl_rejected_mask].std() if n_rejected > 0 else 0
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure with 3 panels
     fig = plt.figure(figsize=(16, 6), dpi=300)
@@ -232,16 +218,6 @@ def create_borderline_figure(data, output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved to: {output_path}")
     print(f"\nBorderline Statistics (68-72% persistence):")
     print(f"  Total: {len(bl_persistence)} windows")
     print(f"  Detected: {n_detected} ({n_detected/len(bl_persistence)*100:.1f}%)")
@@ -250,6 +226,8 @@ def create_borderline_figure(data, output_path):
     print(f"  Mean confidence - Rejected: {mean_conf_rejected:.1f}% (±{std_conf_rejected:.1f}%)")
     print(f"  Discrimination gap: {gap:+.1f} pp")
     print(f"  Full-spectrum gap: {full_gap:+.1f} pp")
+
+    return fig
 
 
 def main():
@@ -261,8 +239,8 @@ def main():
     print(f"\nData loaded: {len(data['persistence'])} total windows")
 
     # Create figure
-    output_path = OUTPUT_DIR / "fig10_borderline_persistence.png"
-    create_borderline_figure(data, output_path)
+    fig = create_figure(data)
+    save_figure(fig, "fig10_borderline_persistence.png")
 
     print("\nDone!")
 

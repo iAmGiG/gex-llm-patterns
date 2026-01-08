@@ -13,27 +13,11 @@ Output: docs/papers/paper2/figures/output/fig05_selectivity.png
 
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-    # Panel-specific
-    'detected_border': '#00ff88', # Green border for detected
-    'rejected_border': '#ff4444', # Red border for rejected
-}
+from theme import (
+    DARK_THEME, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
 def generate_example_windows():
@@ -118,11 +102,11 @@ def generate_example_windows():
     return windows
 
 
-def create_figure(windows, output_path):
+def create_figure(windows):
     """Create selectivity demonstration figure with dark theme."""
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create 2x2 subplot grid
     fig, axes = plt.subplots(2, 2, figsize=(14, 10), dpi=300)
@@ -215,24 +199,15 @@ def create_figure(windows, output_path):
 
     plt.tight_layout(rect=[0, 0.04, 1, 0.95])
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
+    return fig
 
 
 def main():
     print("Generating Selectivity Demonstration Figure (Dark Theme #216)...")
 
     windows = generate_example_windows()
-    output_path = OUTPUT_DIR / "fig05_selectivity.png"
-    create_figure(windows, output_path)
+    fig = create_figure(windows)
+    save_figure(fig, "fig05_selectivity.png")
 
     print("\nWindow Summary:")
     for key, window in windows.items():

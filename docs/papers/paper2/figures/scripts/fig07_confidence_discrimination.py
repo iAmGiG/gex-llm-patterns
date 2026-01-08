@@ -15,25 +15,11 @@ import sqlite3
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green (detected)
-    'accent_negative': '#ff4444', # Neon red (rejected)
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-}
+from theme import (
+    DARK_THEME, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
 def query_data():
@@ -73,7 +59,7 @@ def query_data():
     return {k: np.array(v) for k, v in data.items()}
 
 
-def create_figure(data, output_path):
+def create_figure(data):
     """Create confidence discrimination scatterplot with dark theme."""
 
     # Split data by detection status
@@ -93,7 +79,7 @@ def create_figure(data, output_path):
     r_detected, p_detected = stats.pearsonr(detected_persistence, detected_confidence)
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(14, 10), dpi=300)
@@ -178,22 +164,14 @@ def create_figure(data, output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
     print(f"\nStatistics:")
     print(f"  Total windows: {len(data['persistence'])}")
     print(f"  Detected: {n_detected} (mean confidence: {mean_conf_detected:.1f}%)")
     print(f"  Rejected: {n_rejected} (mean confidence: {mean_conf_rejected:.1f}%)")
     print(f"  Confidence gap: {conf_gap:.1f} pp")
     print(f"  Correlation (detected): r = {r_detected:.3f}")
+
+    return fig
 
 
 def main():
@@ -203,8 +181,8 @@ def main():
     data = query_data()
     print(f"\nData loaded: {len(data['persistence'])} total windows")
 
-    output_path = OUTPUT_DIR / "fig07_confidence_discrimination.png"
-    create_figure(data, output_path)
+    fig = create_figure(data)
+    save_figure(fig, "fig07_confidence_discrimination.png")
 
     print("\nDone!")
 

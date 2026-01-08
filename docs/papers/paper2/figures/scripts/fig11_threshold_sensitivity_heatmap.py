@@ -16,24 +16,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Circle
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-}
+from theme import (
+    DARK_THEME, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure, create_spotgamma_colormap
+)
 
 # Parameter ranges to test
 PERSISTENCE_THRESHOLDS = [60, 65, 70, 75, 80]
@@ -43,16 +30,6 @@ STABILITY_THRESHOLD = 5  # Fixed at ≤5 flips
 # Current paper parameters
 CURRENT_PERSISTENCE = 70
 CURRENT_MAGNITUDE = 5
-
-
-def create_spotgamma_colormap():
-    """Create SpotGamma-style colormap: dim grey -> neon cyan -> neon green."""
-    colors = [
-        (0.4, 0.4, 0.4),      # Dim grey for low values
-        (0.0, 0.83, 1.0),     # Cyan (#00d4ff)
-        (0.0, 1.0, 0.53),     # Neon green (#00ff88)
-    ]
-    return LinearSegmentedColormap.from_list('spotgamma', colors, N=256)
 
 
 def query_data():
@@ -100,7 +77,7 @@ def calculate_detection_rate(windows, persistence_thresh, magnitude_thresh, stab
     return detected / len(windows) * 100
 
 
-def create_heatmap(data, output_path):
+def create_figure(data):
     """Create threshold sensitivity heatmap with dark theme."""
 
     # Calculate discrimination gaps for each parameter combination
@@ -117,7 +94,7 @@ def create_heatmap(data, output_path):
             rates_2024[i, j] = rate_2024
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(10, 8), dpi=300)
@@ -218,16 +195,6 @@ def create_heatmap(data, output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved to: {output_path}")
     print(f"\nThreshold Sensitivity Results:")
     print(f"  Parameter combinations tested: {len(PERSISTENCE_THRESHOLDS) * len(MAGNITUDE_THRESHOLDS)}")
     print(f"  All combinations >50pp discrimination: {all_above_50}")
@@ -251,6 +218,8 @@ def create_heatmap(data, output_path):
             print(f'  {gaps[i,j]:4.0f}', end='')
         print()
 
+    return fig
+
 
 def main():
     print("Generating Threshold Sensitivity Heatmap (Issue #210, Dark Theme #216)...")
@@ -261,8 +230,8 @@ def main():
     print(f"\nData loaded: 2020={len(data['2020'])} windows, 2024={len(data['2024'])} windows")
 
     # Create heatmap
-    output_path = OUTPUT_DIR / "fig11_threshold_sensitivity.png"
-    create_heatmap(data, output_path)
+    fig = create_figure(data)
+    save_figure(fig, "fig11_threshold_sensitivity.png")
 
     print("\nDone!")
 

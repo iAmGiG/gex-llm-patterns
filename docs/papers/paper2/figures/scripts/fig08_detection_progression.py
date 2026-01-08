@@ -15,29 +15,11 @@ Output: docs/papers/paper2/figures/output/fig08_detection_progression.png
 import matplotlib.pyplot as plt
 import numpy as np
 import sqlite3
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-    # Year-specific colors (dark theme adapted)
-    'pre_regime': '#6b8cae',      # Muted blue for pre-regime (2020-2021)
-    'growing': '#7cb377',         # Muted green for growing (2022-2023)
-    'structural': '#ff6b6b',      # Coral red for structural shift (2024-2025)
-}
+from theme import (
+    DARK_THEME, YEAR_COLORS, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
 def query_data():
@@ -65,7 +47,7 @@ def query_data():
     return results
 
 
-def create_figure(results, output_path):
+def create_figure(results):
     """Create detection progression figure with dark theme."""
 
     # Extract data
@@ -76,7 +58,7 @@ def create_figure(results, output_path):
     avg_gex = [row[4] for row in results]
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure with two subplots (detection rate + GEX magnitude)
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9), dpi=300,
@@ -91,12 +73,12 @@ def create_figure(results, output_path):
 
     # Assign colors based on regime state
     colors = [
-        DARK_THEME['pre_regime'],     # 2020 - Pre-regime
-        DARK_THEME['pre_regime'],     # 2021 - Borderline
-        DARK_THEME['growing'],        # 2022 - Growing
-        DARK_THEME['growing'],        # 2023 - Inconsistent
-        DARK_THEME['structural'],     # 2024 - Structural shift
-        DARK_THEME['structural'],     # 2025 - Sustained
+        YEAR_COLORS['pre_regime'],     # 2020 - Pre-regime
+        YEAR_COLORS['pre_regime'],     # 2021 - Borderline
+        YEAR_COLORS['growing'],        # 2022 - Growing
+        YEAR_COLORS['growing'],        # 2023 - Inconsistent
+        YEAR_COLORS['structural'],     # 2024 - Structural shift
+        YEAR_COLORS['structural'],     # 2025 - Sustained
     ]
 
     # Plot bars with appropriate colors
@@ -132,11 +114,11 @@ def create_figure(results, output_path):
 
     # Add regime labels
     ax1.text(2020.5, 108, 'Pre-Regime', ha='center', fontsize=10,
-             fontweight='bold', color=DARK_THEME['pre_regime'])
+             fontweight='bold', color=YEAR_COLORS['pre_regime'])
     ax1.text(2022.5, 108, 'Gradual Adoption', ha='center', fontsize=10,
-             fontweight='bold', color=DARK_THEME['growing'])
+             fontweight='bold', color=YEAR_COLORS['growing'])
     ax1.text(2024.5, 108, 'Persistent Regime', ha='center', fontsize=10,
-             fontweight='bold', color=DARK_THEME['structural'])
+             fontweight='bold', color=YEAR_COLORS['structural'])
 
     # Formatting
     ax1.set_xlabel('Year', fontsize=13, fontweight='bold', color=DARK_THEME['text'])
@@ -201,17 +183,6 @@ def create_figure(results, output_path):
 
     plt.tight_layout(rect=[0, 0.06, 1, 1])
 
-    # Save publication-quality version (300 DPI)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
-
     # Print data summary
     print("\n" + "="*60)
     print("PHASE 4A DETECTION RATES BY YEAR (2020-2025)")
@@ -222,14 +193,16 @@ def create_figure(results, output_path):
         print(f"{year:<6} {total:<8} {detected:<10} {rate:>5.1f}%    ${gex:.1f}B")
     print("="*60)
 
+    return fig
+
 
 def main():
     print("Generating Detection Progression Figure (Issue #195, Dark Theme #216)...")
     print(f"Database: {CACHE_DB}")
 
     results = query_data()
-    output_path = OUTPUT_DIR / "fig08_detection_progression.png"
-    create_figure(results, output_path)
+    fig = create_figure(results)
+    save_figure(fig, "fig08_detection_progression.png")
 
     print("\nDone!")
 

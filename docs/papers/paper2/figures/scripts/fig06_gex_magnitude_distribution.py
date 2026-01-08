@@ -14,25 +14,12 @@ import sqlite3
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-CACHE_DB = PROJECT_ROOT / ".cache" / "research_cache.db"
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
+from theme import (
+    DARK_THEME, CACHE_DB, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'dim': '#666666',             # Grey for low values
-    'year_2020': '#ff6b6b',       # Coral red for pre-0DTE
-    'year_2024': '#00d4ff',       # Cyan for post-0DTE
-}
 
 def query_magnitude_data():
     """Query magnitude data from ResearchCache by year."""
@@ -61,7 +48,8 @@ def query_magnitude_data():
 
     return data
 
-def create_magnitude_histogram(data, output_path):
+
+def create_figure(data):
     """Create publication-quality histogram comparing 2020 vs 2024 with dark theme."""
 
     # Extract 2020 and 2024 data
@@ -75,7 +63,7 @@ def create_magnitude_histogram(data, output_path):
     pct_above_5b_2024 = (mag_2024 >= 5.0).sum() / len(mag_2024) * 100
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(12, 7), dpi=300)
@@ -170,21 +158,14 @@ def create_magnitude_histogram(data, output_path):
 
     plt.tight_layout()
 
-    # Save figure with dark background
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved to: {output_path}")
     print(f"\nStatistics:")
     print(f"  2020: n={len(mag_2020)}, mean=${mean_2020:.2f}B, range=${mag_2020.min():.1f}-${mag_2020.max():.1f}B")
     print(f"  2024: n={len(mag_2024)}, mean=${mean_2024:.2f}B, range=${mag_2024.min():.1f}-${mag_2024.max():.1f}B")
     print(f"  Above $5B: 2020={pct_above_5b_2020:.1f}%, 2024={pct_above_5b_2024:.1f}%")
     print(f"  Magnitude growth: +{((mean_2024/mean_2020)-1)*100:.0f}%")
+
+    return fig
+
 
 def main():
     print("Generating GEX Magnitude Distribution Figure (Issue #213, Dark Theme #216)...")
@@ -195,10 +176,11 @@ def main():
     print(f"\nData loaded: {', '.join(f'{y}: {len(v)} windows' for y, v in sorted(data.items()))}")
 
     # Create histogram
-    output_path = OUTPUT_DIR / "fig06_gex_magnitude_distribution.png"
-    create_magnitude_histogram(data, output_path)
+    fig = create_figure(data)
+    save_figure(fig, "fig06_gex_magnitude_distribution.png")
 
     print("\nDone!")
+
 
 if __name__ == "__main__":
     main()

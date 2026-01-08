@@ -15,39 +15,18 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import numpy as np
-from pathlib import Path
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "paper2" / "figures" / "output"
-
-# SpotGamma-inspired Dark Theme (Issue #216)
-DARK_THEME = {
-    'background': '#1a1a2e',      # Deep navy/black
-    'text': '#ffffff',             # White text
-    'grid': '#2d2d44',            # Subtle grid
-    'accent_positive': '#00ff88', # Neon green
-    'accent_negative': '#ff4444', # Neon red
-    'accent_neutral': '#00d4ff',  # Cyan
-    'accent_warning': '#ffaa00',  # Orange/amber
-    'dim': '#666666',             # Grey for low values
-    'panel_bg': '#252540',        # Slightly lighter for panels
-    # Diagram-specific colors
-    'intraday': '#00d4ff',        # Cyan for intraday
-    'gamma': '#00ff88',           # Neon green for gamma
-    'hedging': '#a855f7',         # Purple for hedging
-    'volatility': '#ff6b6b',      # Coral for volatility
-    'positioning': '#ffaa00',     # Amber for positioning
-    'measurement': '#ff4444',     # Red for measurement/observable
-    'transition': '#4a4a6a',      # Muted for transitions
-}
+from theme import (
+    DARK_THEME, DIAGRAM_COLORS, OUTPUT_DIR,
+    apply_dark_theme, reset_theme, save_figure
+)
 
 
-def create_figure(output_path):
+def create_figure():
     """Create scar tissue mechanism diagram with dark theme."""
 
     # Set dark theme
-    plt.style.use('dark_background')
+    apply_dark_theme()
 
     # Create figure and axis
     fig, ax = plt.subplots(1, 1, figsize=(14, 9), dpi=300)
@@ -81,7 +60,7 @@ def create_figure(output_path):
     box1_x, box1_y = 1.0, y_start
     box1 = FancyBboxPatch((box1_x, box1_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['intraday'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['intraday'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box1)
     ax.text(box1_x + box_width/2, box1_y + box_height/2,
@@ -99,7 +78,7 @@ def create_figure(output_path):
     box2_x, box2_y = 1.0, arrow1_y - 0.8
     box2 = FancyBboxPatch((box2_x, box2_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['gamma'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['gamma'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box2)
     ax.text(box2_x + box_width/2, box2_y + box_height/2,
@@ -117,7 +96,7 @@ def create_figure(output_path):
     box3_x, box3_y = 1.0, arrow2_y - 0.8
     box3 = FancyBboxPatch((box3_x, box3_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['hedging'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['hedging'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box3)
     ax.text(box3_x + box_width/2, box3_y + box_height/2,
@@ -135,7 +114,7 @@ def create_figure(output_path):
     box4_x, box4_y = 1.0, arrow3_y - 0.8
     box4 = FancyBboxPatch((box4_x, box4_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['volatility'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['volatility'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box4)
     ax.text(box4_x + box_width/2, box4_y + box_height/2,
@@ -151,7 +130,7 @@ def create_figure(output_path):
     box5_x, box5_y = 6.5, y_start
     box5 = FancyBboxPatch((box5_x, box5_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['transition'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['transition'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box5)
     ax.text(box5_x + box_width/2, box5_y + box_height/2,
@@ -168,7 +147,7 @@ def create_figure(output_path):
     box6_x, box6_y = 6.5, y_start - 1.3
     box6 = FancyBboxPatch((box6_x, box6_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['positioning'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['positioning'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box6)
     ax.text(box6_x + box_width/2, box6_y + box_height/2,
@@ -186,7 +165,7 @@ def create_figure(output_path):
     box7_x, box7_y = 6.5, y_start - 2.6
     box7 = FancyBboxPatch((box7_x, box7_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['positioning'], edgecolor=DARK_THEME['background'],
+                          facecolor=DIAGRAM_COLORS['positioning'], edgecolor=DARK_THEME['background'],
                           linewidth=2, alpha=0.9)
     ax.add_patch(box7)
     ax.text(box7_x + box_width/2, box7_y + box_height/2,
@@ -204,7 +183,7 @@ def create_figure(output_path):
     box8_x, box8_y = 6.5, y_start - 3.9
     box8 = FancyBboxPatch((box8_x, box8_y), box_width, box_height,
                           boxstyle="round,pad=0.1",
-                          facecolor=DARK_THEME['measurement'], edgecolor=DARK_THEME['accent_negative'],
+                          facecolor=DIAGRAM_COLORS['measurement'], edgecolor=DARK_THEME['accent_negative'],
                           linewidth=2.5, alpha=0.95)
     ax.add_patch(box8)
     ax.text(box8_x + box_width/2, box8_y + box_height/2,
@@ -241,11 +220,11 @@ def create_figure(output_path):
 
     # Left side: What happens during trading
     ax.text(0.3, 6.2, "INTRADAY\nMECHANISM", fontsize=9, fontweight='bold',
-            ha='center', va='center', color=DARK_THEME['intraday'], rotation=90, family='sans-serif')
+            ha='center', va='center', color=DIAGRAM_COLORS['intraday'], rotation=90, family='sans-serif')
 
     # Right side: What we measure
     ax.text(9.2, 6.0, "MEASUREMENT\nLAYER", fontsize=9, fontweight='bold',
-            ha='center', va='center', color=DARK_THEME['measurement'], rotation=90, family='sans-serif')
+            ha='center', va='center', color=DIAGRAM_COLORS['measurement'], rotation=90, family='sans-serif')
 
     # ============================================================================
     # FOOTER EXPLANATION
@@ -261,22 +240,13 @@ def create_figure(output_path):
 
     plt.tight_layout()
 
-    # Save figure
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
-                facecolor=DARK_THEME['background'], edgecolor='none')
-    plt.close()
-
-    # Reset style
-    plt.style.use('default')
-
-    print(f"Figure saved: {output_path}")
+    return fig
 
 
 def main():
     print("Generating Scar Tissue Mechanism Figure (Issue #168, Dark Theme #216)...")
-    output_path = OUTPUT_DIR / "fig09_scar_tissue.png"
-    create_figure(output_path)
+    fig = create_figure()
+    save_figure(fig, "fig09_scar_tissue.png")
     print("\nDone!")
 
 
