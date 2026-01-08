@@ -1,0 +1,499 @@
+{
+  "subset": "Q1",
+  "year": 2024,
+  "test_date": "2026-01-08T02:56:34.022577",
+  "agreement_rate": 0.0,
+  "total_windows": 61,
+  "agreements": 0,
+  "disagreements": 61,
+  "results": [
+    {
+      "window_date": "2024-01-02",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.20393376592720916,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-03",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.1937592341255723,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-04",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.28799041069253584,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-05",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.23074358843255838,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-08",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.2234351698061861,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-09",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.1521760198727781,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-10",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.1616647487252105,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-11",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.18505716616393028,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-12",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.25423525371588757,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-16",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.31427060597253276,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-17",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.28849221470483105,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-18",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.3671742809044645,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-19",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.42342367107007645,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-22",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.40120006964801136,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-23",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.42352307120912464,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-24",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.47318068873111796,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-25",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.4267242127092592,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-26",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.47307795715475054,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-29",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.4741048115821239,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-30",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.5077463618105215,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-01-31",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.4710671520157656,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-01",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.5378657247649588,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-02",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.475845806573393,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-05",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.4277169876933313,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-06",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.42333075241216445,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-07",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.3545424582061646,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-08",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.30435316049783806,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-09",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.23414981909412508,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-12",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.2230822935500299,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-13",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.029231063221760667,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-14",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.058683011868479656,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-15",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.13581542893220197,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-16",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.184485553415676,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-20",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.20451912240989423,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-21",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.2780457192140563,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-22",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.21162845260662522,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-23",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.19695513037813045,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-26",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.1460279628866497,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-27",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.15146536340128738,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-28",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.15051506400518258,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-02-29",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.14974365773062306,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-01",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.13303537524108214,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-04",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.043631810044036184,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-05",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.0,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-06",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.0,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-07",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.0,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-08",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.02509396422497792,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-11",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.0,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-12",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.0038117983554066814,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-13",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.07295621964653443,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-14",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.1307110571323516,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-15",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.08617666536853325,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-18",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.132406029288604,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-19",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.11615444923981216,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-20",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.15393002833860192,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-21",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.20328754127869814,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-22",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.24043104362710538,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-25",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.20135979922678024,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-26",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.27214501388580664,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-27",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.26547736939762906,
+      "agreement": false
+    },
+    {
+      "window_date": "2024-03-28",
+      "baseline_regime": "persistent_negative",
+      "normalized_regime": "transitional",
+      "baseline_confidence": 1.0,
+      "normalized_confidence": 0.3666666666666667,
+      "agreement": false
+    }
+  ]
+}

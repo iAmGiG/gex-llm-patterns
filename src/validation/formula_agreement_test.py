@@ -205,10 +205,15 @@ class FormulaAgreementTester:
             baseline_gex = baseline_windows[window_date]
             normalized_gex = normalized_windows[window_date]
 
+            # Convert list of floats to list of dicts for baseline classifier
+            baseline_gex_dicts = [{"net_gex": v} for v in baseline_gex]
+
             # Classify with baseline method
-            baseline_result = self.baseline_classifier.classify_window(baseline_gex)
-            baseline_regime = baseline_result.metrics.regime_type if hasattr(baseline_result, "metrics") else "unknown"
-            baseline_confidence = baseline_result.confidence if hasattr(baseline_result, "confidence") else 0.0
+            baseline_result = self.baseline_classifier.classify_window(baseline_gex_dicts)
+            baseline_regime = baseline_result.get("regime_type", "unknown")
+            # Calculate confidence from metrics
+            baseline_metrics = baseline_result.get("metrics")
+            baseline_confidence = baseline_metrics.persistence_pct / 100.0 if baseline_metrics else 0.0
 
             # Classify with normalized method
             norm_regime, norm_confidence = self.normalized_classifier.classify_window(normalized_gex)
