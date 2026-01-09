@@ -221,7 +221,105 @@ May revisit automated mining as a **comparative baseline** in future work (post-
 
 ---
 
+## Future Research Backlog (Deferred with Blockers)
+
+Ideas captured for potential future revisit. Unlike "superseded" approaches, these could still be valuable if blockers are resolved.
+
+---
+
+## #130: 0DTE Intraday Gamma Dynamics
+
+**Status:** Blocked by methodological challenge
+**GitHub Issue:** [#130](https://github.com/iAmGiG/gex-llm-patterns/issues/130) (closed) → consolidated to [#116](https://github.com/iAmGiG/gex-llm-patterns/issues/116) (open)
+**Date Deferred:** November 2025
+
+### Original Concept
+
+Test if LLM can detect **time-dependent** dealer hedging constraints when 0DTE gamma is concentrated. 0DTE options exploded from ~5% to 40%+ of SPX volume (2020-2024).
+
+```python
+pattern_0dte = {
+    "net_gex": -5e9,
+    "pct_0dte_gamma": 0.45,  # 45% in same-day expiry
+    "time_to_close": "3 hours",  # Intraday timing
+    "prompt": "0DTE options with high gamma expire in 3 hours. What dealer actions are FORCED before 4pm close?"
+}
+```
+
+### Why It's Blocked
+
+**Methodological conflict with obfuscation testing:**
+
+- Adding "3 hours to close" reveals market hours (breaks obfuscation principle)
+- LLM could memorize that "market close = 4pm EST" rather than reasoning about gamma decay
+- Obfuscation is foundational to Papers 1-2 validation methodology
+
+**Proposed solution (not yet implemented):**
+
+Frame as relative time: "T hours until gamma decay" without specifying market close time.
+
+### What Would Unblock This
+
+1. Develop relative-time obfuscation methodology
+2. Validate that time-obfuscated prompts still enable constraint reasoning
+3. Academic grounding in 0DTE literature (Gao et al. 2024)
+
+### Potential Value
+
+- 0DTE is now dominant microstructure factor
+- Practitioners report intraday regime flips are tradeable
+- First academic work on intraday gamma dynamics (Paper 3/4 candidate)
+
+### Related Work
+
+- Issue #116: Intraday GEX Regime Shift Detection (open - future Paper 3)
+- Issue #203/#204: Intraday data collection infrastructure (completed)
+
+---
+
+## #132: Cross-Asset Dealer Hedging Networks
+
+**Status:** Deferred to future PhD work
+**GitHub Issue:** [#132](https://github.com/iAmGiG/gex-llm-patterns/issues/132) (closed) → consolidated to [#117](https://github.com/iAmGiG/gex-llm-patterns/issues/117) (open)
+**Date Deferred:** November 2025
+
+### Original Concept
+
+Test if LLM can detect dealer hedging constraints across asset classes:
+
+- Treasury options (TLT) - duration/convexity mechanics
+- Currency options (FXE, EUO) - FX dealer hedging
+- Commodity options (GLD, USO) - storage cost dynamics
+
+### Why It's Deferred
+
+1. **Different literature base required**: Fixed income options require Fabozzi/Tuckman grounding (not current focus)
+2. **Data complexity**: Multiple exchanges, different data formats, separate vendor relationships
+3. **Scope creep risk**: Each asset class is potentially a separate research project
+4. **Sequencing**: Need to complete equity-based Papers 1-3 first for credibility
+
+### What Would Unblock This
+
+1. Complete Papers 1-3 (foundational credibility)
+2. Identify data vendors with multi-asset options coverage
+3. Literature review for each target asset class
+4. Advisor approval for PhD timeline extension
+
+### Potential Value
+
+- Test methodology generalizability beyond equities
+- Distinguish universal constraints vs asset-specific mechanics
+- Top-tier venue potential (JFE, RFS) if results show cross-asset predictability
+
+### Related Work
+
+- Issue #117: Cross-Asset Dealer Hedging Networks (open - future Paper 4/5)
+- Issue #87: Individual equities expansion (prerequisite)
+
+---
+
 ## See Also
 
 - [auxiliary_research/](auxiliary_research/) - Research that's out of scope but documented for reference
 - [CLAUDE.md](../../CLAUDE.md) - Current project status and active research paths
+- Open issues #116, #117, #118, #119 - Active future research tracking
