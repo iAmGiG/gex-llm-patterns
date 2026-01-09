@@ -285,6 +285,82 @@ Dynamic trailing stop system for position management:
 
 ---
 
+## #20: Multi-Agent LLM Orchestration System
+
+**Status:** Abandoned in favor of simplified architecture
+**GitHub Issue:** [#20](https://github.com/iAmGiG/gex-llm-patterns/issues/20)
+**Date Closed:** September 2025
+
+### Original Concept
+
+Complex multi-agent system with AutoGen framework:
+
+- DataRetrievalAgent for API calls and caching
+- Multi-agent communication protocols
+- Agent orchestrator with parallel processing
+- Comprehensive agent lifecycle management
+
+### Why It Was Abandoned
+
+Issue #50 (Agent Architecture Analysis) concluded:
+
+1. **Complexity not justified**: 75% win rate achieved without complex agent system
+2. **Mathematical workflow works**: Data → GEX → Pattern → Validation pipeline is deterministic
+3. **Agents are overkill for**: Data retrieval, GEX calculations, basic pattern detection
+4. **Single agent sufficient**: One LLM agent for pattern context enhancement
+5. **PhD focus**: Research paper, not production infrastructure
+
+### What Was Actually Built
+
+- Single `MarketMechanicsAgent` (simplified from multi-agent)
+- Direct Python implementation without agent overhead
+- LLM used only where it adds clear value (pattern interpretation)
+
+### Related Work
+
+- Issue #50: Agent Architecture Analysis (decision document)
+- Issue #51: LLM Market Mechanics Interpreter (replacement approach)
+- `src/agents/market_mechanics_agent.py` - Simplified single-agent implementation
+
+---
+
+## #39: Forward-Test Experiment Runner
+
+**Status:** Abandoned as production infrastructure
+**GitHub Issue:** [#39](https://github.com/iAmGiG/gex-llm-patterns/issues/39)
+**Date Closed:** October 2025
+
+### Original Concept
+
+Live paper trading system for real-time validation:
+
+- Real-time data integration with <5 second latency
+- Live GEX calculation and pattern detection
+- Paper trading engine with position management
+- 30+ days of live forward testing
+- Risk management with drawdown protection
+
+### Why It Was Abandoned
+
+1. **Production infrastructure, not research**: PhD focuses on pattern detection, not trading execution
+2. **Massive scope**: Real-time data, position management, risk systems = months of work
+3. **Validation accomplished differently**: Historical backtesting and obfuscation testing proved sufficient
+4. **AutoTrader handoff**: Production trading belongs in separate AutoTrader-AgentEdge project
+
+### What Would Make This Viable
+
+1. Post-PhD commercialization with dedicated engineering team
+2. Clear separation from research (production system vs research validation)
+3. Partnership with data vendors for real-time feeds
+
+### Related Work
+
+- Issue #47: Live Trading Execution (related scope)
+- Issue #48: Complete Daily Trading Pipeline (related scope)
+- AutoTrader-AgentEdge project - Future production trading
+
+---
+
 ## #31: Six-Category Pattern Detection
 
 **Status:** Partially implemented, full testing deferred
