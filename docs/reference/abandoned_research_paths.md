@@ -103,6 +103,69 @@ When abandoning a research path, document:
 
 ---
 
+## Partially Implemented (Deferred)
+
+Research that was started but not fully completed due to scope prioritization.
+
+---
+
+## #11: Monte Carlo & Permutation Testing Framework
+
+**Status:** Partially implemented, full framework deferred
+**GitHub Issue:** [#11](https://github.com/iAmGiG/gex-llm-patterns/issues/11)
+**Date Closed:** September 2025
+
+### Original Concept
+
+Comprehensive statistical validation framework including:
+
+- Permutation testing with 10,000+ iterations for pattern significance
+- False Discovery Rate (FDR) corrections (Benjamini-Hochberg)
+- Temporal stability testing across rolling windows
+- Market regime robustness analysis (4+ regimes: COVID crash, recovery, rate hikes, normalization)
+- Monte Carlo simulations for confidence intervals
+- Data mining bias detection
+
+### What Was Implemented
+
+Basic statistical validation was completed:
+
+- Wilson confidence intervals for pattern accuracy
+- Sharpe ratio and Calmar ratio calculations
+- Kelly Criterion position sizing
+- Baseline comparison (proved +10.44% edge over random)
+- Sample size validation (7 trades meeting minimum threshold)
+
+### What Was NOT Implemented
+
+- **10,000+ iteration permutation tests** - Not done
+- **Full Monte Carlo simulations** - Only bootstrap CI, not full MC
+- **FDR correction** - Multiple testing adjustment not implemented
+- **4-regime robustness analysis** - COVID/recovery/bear/normalization testing not executed
+- **Temporal stability rolling windows** - Not implemented
+
+### Why It Was Deferred
+
+1. **PhD timeline pressure**: Paper #1 submission took priority
+2. **"Good enough" validation**: Basic stats proved positive expected value
+3. **Scope creep risk**: Full framework would delay research by weeks
+4. **Diminishing returns**: Pattern validation via LLM obfuscation testing (Issue #79) became the primary validation approach
+
+### Potential Future Use
+
+If revisiting for Papers 2-3 or publication revision:
+
+1. Implement `PermutationTester` class from issue specification
+2. Add `test_regime_robustness()` for multi-regime validation
+3. Apply FDR correction when testing multiple patterns simultaneously
+
+### Related Work
+
+- Issue #79: Obfuscation testing (became primary validation approach)
+- `src/analysis/pattern_probability_mapper.py` - Contains basic statistical validation
+
+---
+
 ## Superseded Approaches
 
 These research directions were not abandoned due to infeasibility, but replaced by better approaches that emerged during research.
