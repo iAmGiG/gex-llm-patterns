@@ -103,6 +103,61 @@ When abandoning a research path, document:
 
 ---
 
+## Superseded Approaches
+
+These research directions were not abandoned due to infeasibility, but replaced by better approaches that emerged during research.
+
+---
+
+## #6: Algorithmic Pattern Mining (PrefixSpan)
+
+**Status:** Superseded by LLM-based detection
+**GitHub Issue:** [#6](https://github.com/iAmGiG/gex-llm-patterns/issues/6)
+**Date Closed:** November 2025
+
+### Original Concept
+
+Implement automated sequential pattern mining using algorithms like PrefixSpan to:
+
+- Extract frequent, statistically significant patterns from tokenized GEX sequences
+- Calculate support thresholds (>10 occurrences) and confidence thresholds (>60%)
+- Perform statistical significance testing (chi-square, permutation tests)
+- Rank patterns by predictive value and lift ratios
+
+### Why It Was Superseded
+
+The research direction evolved to favor LLM-based pattern detection:
+
+| Approach | Algorithmic Mining | LLM-Based Detection |
+|----------|-------------------|---------------------|
+| Pattern discovery | Automated (PrefixSpan) | Human-guided prompts |
+| Interpretability | Statistical metrics only | Natural language reasoning |
+| Flexibility | Fixed pattern types | Adapts to novel patterns |
+| PhD thesis fit | Supporting analysis | Core contribution |
+
+### What Was Learned
+
+1. **PatternProbabilityMapper** implementation was completed and functional
+2. Demonstrated 60% win rate for gamma_trap pattern (5 samples)
+3. Key insight: "Pattern correctly identifies DIRECTION (60% accuracy) but has poor exit timing"
+4. Statistical validation framework proved useful for evaluating LLM outputs
+
+### Replacement Approach
+
+Issue #89 (Sequential GEX Analysis) addresses temporal dynamics through LLM interpretation rather than algorithmic mining. This aligns better with the PhD thesis focus on demonstrating LLM capabilities in market analysis.
+
+### Potential Future Use
+
+May revisit automated mining as a **comparative baseline** in future work (post-PhD) to quantify the value-add of LLM interpretation vs. pure statistical approaches.
+
+### Related Work
+
+- Issue #79: Obfuscation testing framework (validates LLM detection)
+- Issue #89: Sequential GEX Analysis (replacement approach)
+- `src/analysis/pattern_probability_mapper.py` - Completed implementation (archived)
+
+---
+
 ## See Also
 
 - [auxiliary_research/](auxiliary_research/) - Research that's out of scope but documented for reference
