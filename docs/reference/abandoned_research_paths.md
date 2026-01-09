@@ -166,6 +166,174 @@ If revisiting for Papers 2-3 or publication revision:
 
 ---
 
+## #33: Combinatorial Purged Cross-Validation (CPCV)
+
+**Status:** Deferred as "overly complex for POC"
+**GitHub Issue:** [#33](https://github.com/iAmGiG/gex-llm-patterns/issues/33)
+**Date Closed:** 2025
+
+### Original Concept
+
+Implement CPCV (Combinatorial Purged Cross-Validation) from de Prado's "Advances in Financial Machine Learning" for:
+
+- Proper time-series cross-validation that respects temporal ordering
+- Purging overlapping training/test samples to prevent data leakage
+- Embargo periods between train/test sets
+- Multiple combinatorial paths for more robust statistical estimates
+
+### Why It Was Deferred
+
+1. **Complexity vs POC scope**: Full CPCV implementation requires substantial engineering effort
+2. **Diminishing returns for PhD timeline**: Basic validation proved sufficient for paper submissions
+3. **Alternative validation approaches**: Obfuscation testing (Issue #79) became primary validation method
+4. **Sample size constraints**: With limited pattern occurrences, sophisticated CV provides marginal benefit
+
+### What Would Make This Viable
+
+1. Scale to hundreds of pattern instances (current: ~7-15 per pattern type)
+2. Production system where overfitting prevention justifies implementation cost
+3. Post-PhD publication requiring additional statistical rigor
+
+### Related Work
+
+- de Prado, "Advances in Financial Machine Learning" (2018), Chapter 7
+- Issue #11: Monte Carlo testing (also deferred for similar reasons)
+- Issue #79: Obfuscation testing (replacement validation approach)
+
+---
+
+## #31: Six-Category Pattern Detection
+
+**Status:** Partially implemented, full testing deferred
+**GitHub Issue:** [#31](https://github.com/iAmGiG/gex-llm-patterns/issues/31)
+**Date Closed:** 2025
+
+### Original Concept
+
+Comprehensive six-category pattern classification framework:
+
+1. **Gamma Trap** - Concentrated gamma creating pin risk
+2. **Gamma Squeeze** - Forced dealer hedging amplifying moves
+3. **Volatility Compression** - Low gamma enabling breakout setups
+4. **Mean Reversion** - GEX extremes suggesting reversal
+5. **Momentum Continuation** - Gamma alignment with trend
+6. **Neutral/No Signal** - Insufficient gamma structure
+
+### What Was Implemented
+
+- Pattern library structure with 15 patterns (`src/analysis/pattern_library.py`)
+- Basic pattern detection logic
+- Some validation on subset of patterns (gamma_trap: 60% win rate)
+
+### What Was NOT Implemented
+
+- **Full validation across all 6 categories** - Only gamma_trap thoroughly tested
+- **Category-specific thresholds** - Generic thresholds used
+- **Inter-category confusion matrix** - Pattern misclassification rates not measured
+- **Edge case handling** - Overlapping pattern conditions not resolved
+
+### Why It Was Deferred
+
+1. **Scope consolidation**: Issue closed as "duplicates existing pattern_library.py functionality"
+2. **PhD focus shift**: Papers 1-2 focused on regime detection rather than categorical patterns
+3. **Validation bottleneck**: Each category requires dedicated historical event testing
+4. **Diminishing thesis contribution**: Six-category proved less novel than regime-based approach
+
+### Potential Future Use
+
+- Post-PhD expansion of pattern taxonomy
+- Trading system development requiring granular pattern classification
+- Comparative study: categorical vs regime-based detection accuracy
+
+### Related Work
+
+- `src/analysis/pattern_library.py` - Contains implemented patterns
+- Issue #54: Market Mechanics Pattern Library (15 patterns implemented)
+- Issue #79: Obfuscation testing applied to subset of patterns
+
+---
+
+## Explored but Found Infeasible
+
+Research that was completed (exploratory analysis performed) but concluded to be impractical for the thesis scope. Paper 1 documents the rationale.
+
+---
+
+## #27: Third-Order Greeks (Speed, Zomma, Color)
+
+**Status:** Explored, deemed infeasible for LLM interpretation
+**GitHub Issue:** [#27](https://github.com/iAmGiG/gex-llm-patterns/issues/27)
+**Date Closed:** 2025
+
+### Original Concept
+
+Incorporate third-order Greeks into GEX analysis:
+
+- **Speed** (DgammaDspot): Rate of gamma change with underlying price
+- **Zomma** (DgammaDvol): Gamma sensitivity to volatility changes
+- **Color** (DgammaDtime): Gamma decay rate over time
+
+### Why It's Infeasible
+
+Paper 1 addresses this in the methodology limitations:
+
+1. **Signal-to-noise ratio**: Third-order derivatives amplify measurement noise
+2. **Data quality requirements**: Requires tick-level precision not available in daily data
+3. **LLM interpretability**: Natural language explanation of third-order effects is extremely difficult
+4. **Practitioner irrelevance**: No market practitioners use third-order Greeks for positioning
+5. **Computational instability**: Numerical differentiation errors compound at higher orders
+
+### What Would Make This Viable
+
+1. Intraday tick-level options data with sub-second timestamps
+2. Market maker interviews confirming third-order Greeks influence hedging
+3. Academic literature establishing predictive value (currently absent)
+
+### Related Work
+
+- Paper 1, Section [Methodology Limitations] - Documents infeasibility rationale
+- `src/gex/advanced_greeks.py` (archived in `docs/legacy/`) - Exploratory implementation
+
+---
+
+## #28: Volatility Greeks (Vomma, Veta)
+
+**Status:** Explored, deemed infeasible for LLM interpretation
+**GitHub Issue:** [#28](https://github.com/iAmGiG/gex-llm-patterns/issues/28)
+**Date Closed:** 2025
+
+### Original Concept
+
+Incorporate volatility-related Greeks into analysis:
+
+- **Vomma** (Volga): Second derivative of option price with respect to volatility
+- **Veta**: Sensitivity of vega to time decay
+- **Vanna**: Cross-derivative (delta sensitivity to volatility)
+
+### Why It's Infeasible
+
+Paper 1 addresses this alongside #27:
+
+1. **Implied volatility surface complexity**: Requires modeling full IV surface, not just ATM vol
+2. **Regime-dependent behavior**: Vomma effects vary dramatically across volatility regimes
+3. **LLM hallucination risk**: Complex volatility dynamics prone to confident but incorrect reasoning
+4. **Scope creep**: Full volatility surface modeling is a separate research project
+5. **Data requirements**: Need real-time IV surface data across strikes and expirations
+
+### What Would Make This Viable
+
+1. Partnership with volatility surface data provider (e.g., OptionMetrics, LiveVol)
+2. Separate research focus on volatility trading (not GEX-based thesis)
+3. Constrained scope: single-strike Vanna effects only
+
+### Related Work
+
+- Paper 1, Section [Methodology Limitations] - Documents infeasibility rationale
+- Issue #27: Third-Order Greeks (related feasibility concerns)
+- `src/gex/advanced_greeks.py` (archived) - Contains vomma/veta calculations
+
+---
+
 ## Superseded Approaches
 
 These research directions were not abandoned due to infeasibility, but replaced by better approaches that emerged during research.
