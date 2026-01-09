@@ -202,6 +202,89 @@ Implement CPCV (Combinatorial Purged Cross-Validation) from de Prado's "Advances
 
 ---
 
+## #38: LLM Few-Shot Training Pipeline
+
+**Status:** Abandoned as excessive scope
+**GitHub Issue:** [#38](https://github.com/iAmGiG/gex-llm-patterns/issues/38)
+**Date Closed:** September 2025
+
+### Original Concept
+
+Full ML training pipeline for few-shot learning:
+
+- Example library builder with quality scoring and diverse selection
+- Context template system (market context, GEX profile, technical context)
+- Prompt engineering framework with chain-of-thought reasoning
+- Iterative learning system with outcome tracking and example refinement
+- Performance validation with backtesting and regime testing
+
+### Why It Was Abandoned
+
+1. **Way over the top**: Full ML training pipeline exceeds thesis scope
+2. **PhD focus mismatch**: Thesis demonstrates LLM capability, not ML pipeline engineering
+3. **Complexity explosion**: Example curation, prompt A/B testing, feedback integration = months of work
+4. **Diminishing returns**: Simple prompts proved sufficient for pattern detection validation
+5. **Production vs research**: This is production infrastructure, not research contribution
+
+### What Would Make This Viable
+
+1. Post-PhD commercialization of the research
+2. Production trading system requiring continuous improvement
+3. Multi-year development timeline with dedicated engineering resources
+
+### Related Work
+
+- Issue #32: Dynamic Prompt Generation (simpler approach used instead)
+- `src/llm/mechanics_prompt_builder.py` - Simple prompt system that proved sufficient
+
+---
+
+## #46: Trailing Stop Logic for GAMMA_TRAP Strategy
+
+**Status:** Partially implemented (field exists, no execution logic)
+**GitHub Issue:** [#46](https://github.com/iAmGiG/gex-llm-patterns/issues/46)
+**Date Closed:** October 2025
+
+### Original Concept
+
+Dynamic trailing stop system for position management:
+
+- Move to breakeven at +0.5% profit
+- Trail by 0.5% after +1% profit
+- `TrailingStopManager` class for position tracking
+- Integration with `ValidatedTradingEngine`
+
+### What Was Implemented
+
+- `trailing_stop_pct` field added to `ActionableSignal` dataclass
+- Field used in signal generation (2.0% default trailing value)
+
+### What Was NOT Implemented
+
+- **`TrailingStopManager` class** - Never created
+- **Execution logic** - No actual trailing stop updates during position holding
+- **Integration with trading engine** - Field exists but unused
+- **Backtesting validation** - Never tested trailing vs fixed stops
+
+### Why It Was Deferred
+
+1. **Thesis scope**: Trading execution is outside LLM pattern detection research
+2. **AutoTrader handoff**: Execution logic belongs in AutoTrader-AgentEdge project (#502)
+3. **PhD boundary**: Paper focuses on pattern detection, not position management
+
+### Potential Future Use
+
+- AutoTrader-AgentEdge project (production trading system)
+- Post-PhD trading system development
+- Cross-project integration when both systems mature
+
+### Related Work
+
+- `src/analysis/actionable_patterns.py` - Contains partial implementation
+- AutoTrader-AgentEdge Issue #502 - Production trading integration
+
+---
+
 ## #31: Six-Category Pattern Detection
 
 **Status:** Partially implemented, full testing deferred
