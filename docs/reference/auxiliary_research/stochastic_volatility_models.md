@@ -187,6 +187,47 @@ The Dim, Eraker, Vilkov findings align with our regime detection methodology.
 
 ---
 
+## Practitioner Insight: GAMMA-SVIX Divergence
+
+**Source**: @TailThatWagsDog (Twitter/X practitioner analysis, January 2026)
+
+### Key Finding
+
+Practitioners track the divergence between aggregate GAMMA exposure and SVIX (VIX of VIX) implied volatility as a regime indicator:
+
+| Metric | Observed Value | Interpretation |
+|--------|----------------|----------------|
+| GAMMA vs SVIX IV correlation | -0.89 | Strong inverse relationship |
+| Current divergence | +5σ | EXTREME divergence event |
+| VRP (Volatility Risk Premium) | Elevated | Premium selling opportunity |
+
+### Mechanism
+
+1. **Normal regime**: GAMMA and SVIX move inversely (negative correlation)
+2. **Divergence**: When correlation breaks down, signals regime transition
+3. **+5σ divergence**: Extreme - either GAMMA too high or SVIX IV too low
+4. **VRP edge**: Large divergence suggests mispriced volatility premium
+
+### LLM Signal Potential
+
+| Signal | What It Measures | Regime Implication |
+|--------|------------------|-------------------|
+| GAMMA-SVIX correlation | Structural relationship health | Normal vs stressed markets |
+| Divergence magnitude (σ) | Deviation from normal | Transition probability |
+| VRP direction | Premium buyer vs seller edge | Positioning bias |
+
+### Dissertation Connection
+
+**Potential LLM input features**:
+
+- Real-time GAMMA-SVIX divergence as regime transition indicator
+- Complements SABR ρ (skew) and GEX regime classification
+- Could serve as "meta-signal" for LLM confidence calibration
+
+**Research Question**: Does LLM regime detection improve when given GAMMA-SVIX divergence context alongside raw GEX data?
+
+---
+
 ## Neural Network Calibration
 
 ### The Calibration Bottleneck
@@ -276,12 +317,17 @@ Classical calibration is slow (minutes per surface).
 - [Deep Learning Calibration](https://arxiv.org/abs/2309.07843) - Neural network approach
 - [Columbia FE Notes](http://www.columbia.edu/~mh2078/ContinuousFE/LocalStochasticJumps.pdf) - Model comparison
 
+## Practitioner Sources
+
+- @TailThatWagsDog (Twitter/X) - GAMMA-SVIX divergence analysis, VRP regime indicators
+
 ---
 
 ## Related Issues
 
 - #223: Intraday GEX Validation (Open→Close)
 - #221: Gamma Distribution Shape Analysis
+- #228: GAMMA-SVIX Divergence as LLM Regime Indicator
 - #116: Intraday GEX Regime Shift Detection
 - #135: Per-Strike GEX Analysis
 
