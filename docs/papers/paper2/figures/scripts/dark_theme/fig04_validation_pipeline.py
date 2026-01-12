@@ -5,7 +5,7 @@ Generate Figure 4: Multi-Phase Validation Pipeline
 Creates a flow diagram showing the validation phases with detection rates:
 Phase 1 (71.2%) → Phase 2 (6.3%) → Phase 3 (81.2%) → Phase 4 (12.1%)
 
-IEEE Publication Theme (white background).
+Updated with SpotGamma-inspired dark theme (Issue #216).
 
 Output: docs/papers/paper2/figures/output/fig04_validation_pipeline.png
 """
@@ -14,35 +14,19 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
-from theme import OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "accent_warning": "#E65100",
-}
-
-# Phase colors for IEEE theme
-PHASE_COLORS = {
-    "phase1": "#1565C0",  # Blue
-    "phase2": "#C62828",  # Red
-    "phase3": "#2E7D32",  # Green
-    "phase4": "#6A1B9A",  # Purple
-}
+from theme import DARK_THEME, OUTPUT_DIR, PHASE_COLORS, apply_dark_theme, reset_theme, save_figure
 
 
 def create_figure():
-    """Create validation pipeline figure with IEEE theme."""
+    """Create validation pipeline figure with dark theme."""
 
-    plt.style.use("default")
+    # Set dark theme
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(14, 8), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
     ax.set_xlim(0, 14)
     ax.set_ylim(0, 10)
     ax.axis("off")
@@ -56,7 +40,7 @@ def create_figure():
         fontweight="bold",
         ha="center",
         va="top",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
     ax.text(
         7,
@@ -65,7 +49,7 @@ def create_figure():
         fontsize=12,
         ha="center",
         va="top",
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
         style="italic",
     )
 
@@ -128,7 +112,7 @@ def create_figure():
             box_width,
             box_height,
             boxstyle="round,pad=0.1",
-            facecolor=IEEE_THEME["panel_bg"],
+            facecolor=DARK_THEME["panel_bg"],
             edgecolor=phase["color"],
             linewidth=3,
             alpha=0.95,
@@ -156,7 +140,7 @@ def create_figure():
             va="top",
             fontsize=12,
             fontweight="bold",
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
         )
 
         # Subtitle
@@ -167,7 +151,7 @@ def create_figure():
             ha="center",
             va="top",
             fontsize=9,
-            color=IEEE_THEME["dim"],
+            color=DARK_THEME["dim"],
             style="italic",
         )
 
@@ -191,7 +175,7 @@ def create_figure():
             ha="center",
             va="center",
             fontsize=9,
-            color=IEEE_THEME["dim"],
+            color=DARK_THEME["dim"],
         )
 
         # Description
@@ -202,13 +186,13 @@ def create_figure():
             ha="center",
             va="center",
             fontsize=8,
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
             linespacing=1.2,
         )
 
     # Draw arrows between phases
     arrow_y = y_center
-    arrow_style = dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"], connectionstyle="arc3,rad=0")
+    arrow_style = dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"], connectionstyle="arc3,rad=0")
 
     for i in range(len(phases) - 1):
         x_start = phases[i]["x"] + box_width
@@ -222,8 +206,8 @@ def create_figure():
         11.2,
         1.2,
         boxstyle="round,pad=0.1",
-        facecolor=IEEE_THEME["panel_bg"],
-        edgecolor=IEEE_THEME["accent_warning"],
+        facecolor=DARK_THEME["panel_bg"],
+        edgecolor=DARK_THEME["accent_warning"],
         linewidth=2,
         linestyle="--",
         alpha=0.9,
@@ -235,7 +219,7 @@ def create_figure():
         "(p < 0.0001, φ = 0.672)\n"
         "Negative control (6.3%) confirms detection requires temporal structure, not just statistical distribution"
     )
-    ax.text(7.1, findings_y, findings_text, ha="center", va="center", fontsize=10, color=IEEE_THEME["text"], wrap=True)
+    ax.text(7.1, findings_y, findings_text, ha="center", va="center", fontsize=10, color=DARK_THEME["text"], wrap=True)
 
     # Phase 4A expansion note (top right)
     expansion_text = (
@@ -248,11 +232,11 @@ def create_figure():
         ha="right",
         va="top",
         fontsize=9,
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
         bbox=dict(
             boxstyle="round,pad=0.4",
-            facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["dim"],
+            facecolor=DARK_THEME["panel_bg"],
+            edgecolor=DARK_THEME["dim"],
             linewidth=1,
             alpha=0.8,
         ),
@@ -264,7 +248,7 @@ def create_figure():
 
 
 def main():
-    print("Generating Validation Pipeline Figure (IEEE Theme)...")
+    print("Generating Validation Pipeline Figure (Dark Theme #216)...")
     fig = create_figure()
     save_figure(fig, "fig04_validation_pipeline.png")
     print("\nDone!")

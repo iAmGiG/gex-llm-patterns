@@ -15,42 +15,42 @@ Output: ../output/fig01_architecture.png
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyBboxPatch
-from theme import OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F8F9FA",
-    "accent_positive": "#2E7D32",
-    "arrow": "#444444",
-}
-
-STAGE_COLORS = {
-    "stage1": "#1976D2",  # Blue
-    "stage2": "#388E3C",  # Green
-    "stage3": "#FBC02D",  # Yellow/Orange (Darker for white bg)
-    "stage4": "#E64A19",  # Deep Orange
-    "stage5": "#5E35B1",  # Deep Purple
-    "arrow": "#444444",
-    "data_flow": "#E3F2FD",  # Light Blue
-}
+from theme import DARK_THEME, OUTPUT_DIR, STAGE_COLORS, apply_dark_theme, reset_theme, save_figure
 
 
 def create_figure():
-    """Create architecture diagram with IEEE theme."""
-    plt.style.use("default")
+    """Create architecture diagram with dark theme."""
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(16, 9), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
     ax.set_xlim(0, 16)
     ax.set_ylim(0, 9)
     ax.axis("off")
 
-    # Title removed for IEEE paper (use caption)
+    # Title
+    ax.text(
+        8,
+        8.6,
+        "LLM Regime Detection System Architecture",
+        fontsize=18,
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=DARK_THEME["text"],
+    )
+    ax.text(
+        8,
+        8.1,
+        "Five-Stage Pipeline: From Raw Options Data to Regime Classification",
+        fontsize=11,
+        ha="center",
+        va="top",
+        color=DARK_THEME["dim"],
+        style="italic",
+    )
 
     # Stage definitions
     stages = [
@@ -111,7 +111,7 @@ def create_figure():
             box_width,
             box_height,
             boxstyle="round,pad=0.15",
-            facecolor=IEEE_THEME["panel_bg"],
+            facecolor=DARK_THEME["panel_bg"],
             edgecolor=stage["color"],
             linewidth=2.5,
             alpha=0.95,
@@ -123,7 +123,7 @@ def create_figure():
             (x + 0.4, y + box_height - 0.4),
             0.25,
             facecolor=stage["color"],
-            edgecolor=IEEE_THEME["background"],
+            edgecolor=DARK_THEME["background"],
             linewidth=2,
             zorder=5,
         )
@@ -136,7 +136,7 @@ def create_figure():
             va="center",
             fontsize=11,
             fontweight="bold",
-            color="#FFFFFF",
+            color=DARK_THEME["background"],
             zorder=6,
         )
 
@@ -149,7 +149,7 @@ def create_figure():
             va="top",
             fontsize=12,
             fontweight="bold",
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
         )
 
         # Subtitle
@@ -167,7 +167,7 @@ def create_figure():
         # Details list
         detail_y = y + box_height - 1.8
         for detail in stage["details"]:
-            ax.text(x + 0.3, detail_y, f"• {detail}", ha="left", va="top", fontsize=9, color=IEEE_THEME["text"])
+            ax.text(x + 0.3, detail_y, f"• {detail}", ha="left", va="top", fontsize=9, color=DARK_THEME["text"])
             detail_y -= 0.5
 
     # Draw arrows between stages
@@ -202,7 +202,7 @@ def create_figure():
             1.5,
             boxstyle="round,pad=0.1",
             facecolor=STAGE_COLORS["data_flow"],
-            edgecolor=IEEE_THEME["dim"],
+            edgecolor=DARK_THEME["dim"],
             linewidth=1,
             alpha=0.8,
         )
@@ -214,7 +214,7 @@ def create_figure():
             ha="center",
             va="center",
             fontsize=7,
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
             family="monospace",
         )
 
@@ -226,7 +226,7 @@ def create_figure():
         va="center",
         fontsize=8,
         fontweight="bold",
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
     )
 
     # Output summary (right side)
@@ -240,11 +240,11 @@ def create_figure():
         ha="left",
         va="center",
         fontsize=9,
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         bbox=dict(
             boxstyle="round,pad=0.4",
-            facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["accent_positive"],
+            facecolor=DARK_THEME["panel_bg"],
+            edgecolor=DARK_THEME["accent_positive"],
             linewidth=2,
             alpha=0.9,
         ),

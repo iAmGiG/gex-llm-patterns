@@ -6,7 +6,7 @@ This script creates a temporal analysis figure showing how LLM detection rates
 evolved from 2020-2025, revealing gradual 0DTE adoption and the 2023→2024
 structural market shift.
 
-IEEE Publication Theme (white background).
+Updated with SpotGamma-inspired dark theme (Issue #216).
 
 Issue #195: Phase 4A Detection Rate Temporal Progression Figure
 Output: docs/papers/paper2/figures/output/fig08_detection_progression.png
@@ -16,25 +16,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_warning": "#E65100",
-}
-
-# Year colors for IEEE theme
-YEAR_COLORS = {
-    "pre_regime": "#757575",  # Grey
-    "growing": "#1565C0",  # Blue
-    "structural": "#2E7D32",  # Green
-}
+from theme import CACHE_DB, DARK_THEME, OUTPUT_DIR, YEAR_COLORS, apply_dark_theme, reset_theme, save_figure
 
 
 def query_data():
@@ -63,7 +45,7 @@ def query_data():
 
 
 def create_figure(results):
-    """Create detection progression figure with IEEE theme."""
+    """Create detection progression figure with dark theme."""
 
     # Extract data
     years = [int(row[0]) for row in results]
@@ -72,30 +54,35 @@ def create_figure(results):
     detection_rates = [row[3] for row in results]
     avg_gex = [row[4] for row in results]
 
-    plt.style.use("default")
+    # Set dark theme
+    apply_dark_theme()
 
-    # Create figure with two subplots
+    # Create figure with two subplots (detection rate + GEX magnitude)
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9), dpi=300, gridspec_kw={"height_ratios": [2, 1]})
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax1.set_facecolor(IEEE_THEME["background"])
-    ax2.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax1.set_facecolor(DARK_THEME["background"])
+    ax2.set_facecolor(DARK_THEME["background"])
+
+    # ============================================================================
+    # TOP PLOT: Detection Rate Temporal Progression
+    # ============================================================================
 
     # Assign colors based on regime state
     colors = [
-        YEAR_COLORS["pre_regime"],  # 2020
-        YEAR_COLORS["pre_regime"],  # 2021
-        YEAR_COLORS["growing"],  # 2022
-        YEAR_COLORS["growing"],  # 2023
-        YEAR_COLORS["structural"],  # 2024
-        YEAR_COLORS["structural"],  # 2025
+        YEAR_COLORS["pre_regime"],  # 2020 - Pre-regime
+        YEAR_COLORS["pre_regime"],  # 2021 - Borderline
+        YEAR_COLORS["growing"],  # 2022 - Growing
+        YEAR_COLORS["growing"],  # 2023 - Inconsistent
+        YEAR_COLORS["structural"],  # 2024 - Structural shift
+        YEAR_COLORS["structural"],  # 2025 - Sustained
     ]
 
-    # Plot bars
+    # Plot bars with appropriate colors
     bars = ax1.bar(
-        years, detection_rates, color=colors, width=0.7, edgecolor=IEEE_THEME["background"], linewidth=1.5, alpha=0.9
+        years, detection_rates, color=colors, width=0.7, edgecolor=DARK_THEME["background"], linewidth=1.5, alpha=0.9
     )
 
-    # Add detection counts on top
+    # Add detection counts on top of bars
     for i, (year, rate, count, total) in enumerate(zip(years, detection_rates, detected_counts, total_windows)):
         ax1.text(
             year,
@@ -105,12 +92,12 @@ def create_figure(results):
             va="bottom",
             fontsize=10,
             fontweight="bold",
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
         )
 
     # Add percentage labels inside bars
     for i, (year, rate) in enumerate(zip(years, detection_rates)):
-        if rate > 15:
+        if rate > 15:  # Only show inside if bar is tall enough
             ax1.text(
                 year,
                 rate / 2,
@@ -119,7 +106,7 @@ def create_figure(results):
                 va="center",
                 fontsize=12,
                 fontweight="bold",
-                color=IEEE_THEME["background"],
+                color=DARK_THEME["background"],
             )
         else:
             ax1.text(
@@ -130,15 +117,15 @@ def create_figure(results):
                 va="bottom",
                 fontsize=10,
                 fontweight="bold",
-                color=IEEE_THEME["text"],
+                color=DARK_THEME["text"],
             )
 
-    # Highlight 2023→2024 structural shift
+    # Highlight 2023→2024 structural shift with annotation
     ax1.annotate(
         "",
         xy=(2024, 100),
         xytext=(2023, 20.2),
-        arrowprops=dict(arrowstyle="->", lw=3, color=IEEE_THEME["accent_warning"], linestyle="--"),
+        arrowprops=dict(arrowstyle="->", lw=3, color=DARK_THEME["accent_warning"], linestyle="--"),
     )
     ax1.text(
         2023.5,
@@ -148,16 +135,16 @@ def create_figure(results):
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         bbox=dict(
             boxstyle="round,pad=0.5",
-            facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["accent_warning"],
+            facecolor=DARK_THEME["panel_bg"],
+            edgecolor=DARK_THEME["accent_warning"],
             linewidth=2,
         ),
     )
 
-    # Regime labels
+    # Add regime labels
     ax1.text(2020.5, 108, "Pre-Regime", ha="center", fontsize=10, fontweight="bold", color=YEAR_COLORS["pre_regime"])
     ax1.text(2022.5, 108, "Gradual Adoption", ha="center", fontsize=10, fontweight="bold", color=YEAR_COLORS["growing"])
     ax1.text(
@@ -165,38 +152,43 @@ def create_figure(results):
     )
 
     # Formatting
-    ax1.set_xlabel("Year", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Detection Rate (%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_xlabel("Year", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax1.set_ylabel("Detection Rate (%)", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
     ax1.set_title(
         "Phase 4A: Temporal Progression of Regime Detection (2020-2025)\n"
         + "Gradual 0DTE Adoption with 2023→2024 Structural Market Shift",
         fontsize=14,
         fontweight="bold",
         pad=15,
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
     ax1.set_ylim(0, 118)
     ax1.set_xticks(years)
-    ax1.tick_params(colors=IEEE_THEME["text"])
-    ax1.grid(axis="y", alpha=0.3, linestyle="--", color=IEEE_THEME["grid"])
+    ax1.tick_params(colors=DARK_THEME["text"])
+    ax1.grid(axis="y", alpha=0.3, linestyle="--", color=DARK_THEME["grid"])
     ax1.spines["top"].set_visible(False)
     ax1.spines["right"].set_visible(False)
     for spine in ["bottom", "left"]:
-        ax1.spines[spine].set_color(IEEE_THEME["dim"])
+        ax1.spines[spine].set_color(DARK_THEME["dim"])
 
-    # BOTTOM PLOT: GEX Magnitude
+    # ============================================================================
+    # BOTTOM PLOT: Average GEX Magnitude Evolution
+    # ============================================================================
+
+    # Plot GEX magnitude as line chart with markers
     ax2.plot(
         years,
         avg_gex,
         marker="o",
         markersize=10,
         linewidth=3,
-        color=IEEE_THEME["accent_warning"],
-        markerfacecolor=IEEE_THEME["accent_warning"],
-        markeredgecolor=IEEE_THEME["background"],
+        color=DARK_THEME["accent_warning"],
+        markerfacecolor=DARK_THEME["accent_warning"],
+        markeredgecolor=DARK_THEME["background"],
         markeredgewidth=1.5,
     )
 
+    # Add magnitude labels
     for year, gex in zip(years, avg_gex):
         ax2.text(
             year,
@@ -206,33 +198,38 @@ def create_figure(results):
             va="bottom",
             fontsize=10,
             fontweight="bold",
-            color=IEEE_THEME["text"],
+            color=DARK_THEME["text"],
         )
 
-    ax2.axhline(y=5.0, color=IEEE_THEME["accent_positive"], linestyle="--", linewidth=2, alpha=0.8)
+    # Add threshold line at $5B
+    ax2.axhline(y=5.0, color=DARK_THEME["accent_positive"], linestyle="--", linewidth=2, alpha=0.8)
     ax2.text(
-        2020.3, 5.8, "$5B Threshold", fontsize=9, fontweight="bold", color=IEEE_THEME["accent_positive"], va="bottom"
+        2020.3, 5.8, "$5B Threshold", fontsize=9, fontweight="bold", color=DARK_THEME["accent_positive"], va="bottom"
     )
 
-    ax2.set_xlabel("Year", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    # Formatting
+    ax2.set_xlabel("Year", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=DARK_THEME["text"])
     ax2.set_title(
         "Average GEX Magnitude Evolution (360% Growth 2021→2024)",
         fontsize=12,
         fontweight="bold",
         pad=10,
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
     ax2.set_ylim(0, 25)
     ax2.set_xticks(years)
-    ax2.tick_params(colors=IEEE_THEME["text"])
-    ax2.grid(axis="y", alpha=0.3, linestyle="--", color=IEEE_THEME["grid"])
+    ax2.tick_params(colors=DARK_THEME["text"])
+    ax2.grid(axis="y", alpha=0.3, linestyle="--", color=DARK_THEME["grid"])
     ax2.spines["top"].set_visible(False)
     ax2.spines["right"].set_visible(False)
     for spine in ["bottom", "left"]:
-        ax2.spines[spine].set_color(IEEE_THEME["dim"])
+        ax2.spines[spine].set_color(DARK_THEME["dim"])
 
-    # Footer
+    # ============================================================================
+    # FOOTER EXPLANATION
+    # ============================================================================
+
     footer_text = (
         "Key Finding: Detection rates track market evolution precisely. Low rates in 2020-2021 (12.2%, 3.7%) reflect pre-regime baseline.\n"
         "Growing but inconsistent rates in 2022-2023 (32.4%, 20.2%) show gradual 0DTE adoption. Perfect 100% detection in 2024-2025\n"
@@ -246,13 +243,13 @@ def create_figure(results):
         va="bottom",
         fontsize=10,
         style="italic",
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
         wrap=True,
     )
 
     plt.tight_layout(rect=[0, 0.06, 1, 1])
 
-    # Print summary
+    # Print data summary
     print("\n" + "=" * 60)
     print("PHASE 4A DETECTION RATES BY YEAR (2020-2025)")
     print("=" * 60)
@@ -266,7 +263,7 @@ def create_figure(results):
 
 
 def main():
-    print("Generating Detection Progression Figure (IEEE Theme)...")
+    print("Generating Detection Progression Figure (Issue #195, Dark Theme #216)...")
     print(f"Database: {CACHE_DB}")
 
     results = query_data()

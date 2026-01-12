@@ -15,18 +15,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "grid": "#DDDDDD",
-    "year_2020": "#757575",  # Grey
-    "year_2024": "#1565C0",  # Blue
-    "accent_positive": "#2E7D32",  # Green
-}
+from theme import CACHE_DB, DARK_THEME, OUTPUT_DIR, apply_dark_theme, reset_theme, save_figure
 
 
 def query_magnitude_data():
@@ -73,51 +62,49 @@ def create_figure(data):
     pct_above_5b_2024 = (mag_2024 >= 5.0).sum() / len(mag_2024) * 100
 
     # Set dark theme
-    plt.style.use("default")
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(12, 7), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
 
     # Define bins - from 0 to 30B in $2B increments
     bins = np.arange(0, 32, 2)
 
-    # Plot histograms with IEEE theme colors
+    # Plot histograms with dark theme colors
     ax.hist(
         mag_2020,
         bins=bins,
         alpha=0.7,
         label=f"2020 Pre-0DTE (n={len(mag_2020)})",
-        color=IEEE_THEME["year_2020"],
-        edgecolor="black",
-        linewidth=0.5,
-        zorder=3,
+        color=DARK_THEME["year_2020"],
+        edgecolor=DARK_THEME["background"],
+        linewidth=0.8,
     )
     ax.hist(
         mag_2024,
         bins=bins,
         alpha=0.7,
         label=f"2024 Post-0DTE (n={len(mag_2024)})",
-        color=IEEE_THEME["year_2024"],
-        edgecolor="black",
-        linewidth=0.5,
-        zorder=3,
+        color=DARK_THEME["year_2024"],
+        edgecolor=DARK_THEME["background"],
+        linewidth=0.8,
     )
 
     # Add $5B threshold line with neon green
     ax.axvline(
         x=5.0,
-        color=IEEE_THEME["accent_positive"],
+        color=DARK_THEME["accent_positive"],
         linestyle="--",
-        linewidth=2.0,
+        linewidth=2.5,
         label="$5B Regime Threshold",
-        zorder=4,
+        zorder=10,
     )
 
     # Add mean lines
-    ax.axvline(x=mean_2020, color=IEEE_THEME["year_2020"], linestyle=":", linewidth=2, alpha=0.9, zorder=2)
-    ax.axvline(x=mean_2024, color=IEEE_THEME["year_2024"], linestyle=":", linewidth=2, alpha=0.9, zorder=2)
+    ax.axvline(x=mean_2020, color=DARK_THEME["year_2020"], linestyle=":", linewidth=2, alpha=0.9)
+    ax.axvline(x=mean_2024, color=DARK_THEME["year_2024"], linestyle=":", linewidth=2, alpha=0.9)
 
     # Annotations
     y_max = ax.get_ylim()[1]
@@ -129,8 +116,8 @@ def create_figure(data):
         xytext=(mean_2020 - 3.5, y_max * 0.92),
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["year_2020"],
-        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["year_2020"], lw=1.5),
+        color=DARK_THEME["year_2020"],
+        arrowprops=dict(arrowstyle="->", color=DARK_THEME["year_2020"], lw=1.5),
         ha="center",
     )
 
@@ -141,8 +128,8 @@ def create_figure(data):
         xytext=(mean_2024 + 3.5, y_max * 0.80),
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["year_2024"],
-        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["year_2024"], lw=1.5),
+        color=DARK_THEME["year_2024"],
+        arrowprops=dict(arrowstyle="->", color=DARK_THEME["year_2024"], lw=1.5),
         ha="center",
     )
 
@@ -153,8 +140,8 @@ def create_figure(data):
         xytext=(8.5, y_max * 0.55),
         fontsize=10,
         fontweight="bold",
-        color=IEEE_THEME["accent_positive"],
-        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_positive"], lw=1.5),
+        color=DARK_THEME["accent_positive"],
+        arrowprops=dict(arrowstyle="->", color=DARK_THEME["accent_positive"], lw=1.5),
         ha="left",
     )
 
@@ -164,7 +151,7 @@ def create_figure(data):
         f"  2020: {pct_above_5b_2020:.1f}%\n"
         f"  2024: {pct_above_5b_2024:.1f}%\n\n"
         f"Magnitude Growth:\n"
-        f"  +{((mean_2024 / mean_2020) - 1) * 100:.0f}% ({mean_2020:.1f}B → {mean_2024:.1f}B)"
+        f"  +{((mean_2024/mean_2020)-1)*100:.0f}% ({mean_2020:.1f}B → {mean_2024:.1f}B)"
     )
     ax.text(
         0.98,
@@ -174,33 +161,43 @@ def create_figure(data):
         fontsize=10,
         verticalalignment="top",
         horizontalalignment="right",
-        bbox=dict(boxstyle="round,pad=0.5", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.95),
+        bbox=dict(
+            boxstyle="round,pad=0.5", facecolor=DARK_THEME["background"], edgecolor=DARK_THEME["dim"], alpha=0.95
+        ),
         family="monospace",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
 
     # Labels and title with white text
-    ax.set_xlabel("Average GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("Number of 30-Day Windows", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    # Title removed for IEEE paper
+    ax.set_xlabel("Average GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax.set_ylabel("Number of 30-Day Windows", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax.set_title(
+        "GEX Magnitude Distribution: Pre-0DTE (2020) vs Post-0DTE (2024)",
+        fontsize=14,
+        fontweight="bold",
+        pad=15,
+        color=DARK_THEME["text"],
+    )
 
     # Legend with dark background - placed at upper left to avoid annotation overlap
-    legend = ax.legend(loc="upper left", fontsize=11, framealpha=0.9, facecolor="white", edgecolor=IEEE_THEME["dim"])
+    legend = ax.legend(
+        loc="upper left", fontsize=11, framealpha=0.9, facecolor=DARK_THEME["background"], edgecolor=DARK_THEME["dim"]
+    )
     for text in legend.get_texts():
-        text.set_color(IEEE_THEME["text"])
+        text.set_color(DARK_THEME["text"])
 
     # Grid with subtle dark theme color
-    ax.grid(True, alpha=0.5, linestyle="-", linewidth=0.5, color=IEEE_THEME["grid"], zorder=0)
+    ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5, color=DARK_THEME["grid"])
     ax.set_xlim(0, 30)
     ax.set_axisbelow(True)
 
     # Tick colors
-    ax.tick_params(colors=IEEE_THEME["text"])
+    ax.tick_params(colors=DARK_THEME["text"])
 
     # Spine styling
     for spine in ax.spines.values():
-        spine.set_linewidth(1.0)
-        spine.set_color(IEEE_THEME["dim"])
+        spine.set_linewidth(0.5)
+        spine.set_color(DARK_THEME["dim"])
 
     plt.tight_layout()
 
@@ -208,7 +205,7 @@ def create_figure(data):
     print(f"  2020: n={len(mag_2020)}, mean=${mean_2020:.2f}B, range=${mag_2020.min():.1f}-${mag_2020.max():.1f}B")
     print(f"  2024: n={len(mag_2024)}, mean=${mean_2024:.2f}B, range=${mag_2024.min():.1f}-${mag_2024.max():.1f}B")
     print(f"  Above $5B: 2020={pct_above_5b_2020:.1f}%, 2024={pct_above_5b_2024:.1f}%")
-    print(f"  Magnitude growth: +{((mean_2024 / mean_2020) - 1) * 100:.0f}%")
+    print(f"  Magnitude growth: +{((mean_2024/mean_2020)-1)*100:.0f}%")
 
     return fig
 

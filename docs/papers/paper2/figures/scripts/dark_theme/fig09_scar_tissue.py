@@ -5,7 +5,7 @@ Generate Figure 9: Scar Tissue Mechanism Diagram
 This script creates a conceptual diagram illustrating how 0DTE intraday trading
 creates "scar tissue" in overnight open interest positioning.
 
-IEEE Publication Theme (white background).
+Updated with SpotGamma-inspired dark theme (Issue #216).
 
 Issue #168: Add 'Scar Tissue' Mechanism Diagram
 Output: docs/papers/paper2/figures/output/fig09_scar_tissue.png
@@ -15,39 +15,19 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
-from theme import OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "accent_warning": "#E65100",
-    "accent_negative": "#C62828",
-}
-
-# Diagram colors for IEEE theme
-DIAGRAM_COLORS = {
-    "intraday": "#1565C0",  # Blue
-    "gamma": "#C62828",  # Red
-    "hedging": "#757575",  # Grey
-    "volatility": "#E65100",  # Orange
-    "transition": "#9E9E9E",  # Light grey
-    "positioning": "#1565C0",  # Blue
-    "measurement": "#F5F5F5",  # Light bg
-}
+from theme import DARK_THEME, DIAGRAM_COLORS, OUTPUT_DIR, apply_dark_theme, reset_theme, save_figure
 
 
 def create_figure():
-    """Create scar tissue mechanism diagram with IEEE theme."""
+    """Create scar tissue mechanism diagram with dark theme."""
 
-    plt.style.use("default")
+    # Set dark theme
+    apply_dark_theme()
 
     # Create figure and axis
     fig, ax = plt.subplots(1, 1, figsize=(14, 9), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     ax.axis("off")
@@ -63,7 +43,7 @@ def create_figure():
         ha="center",
         va="top",
         family="sans-serif",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
 
     # Subtitle
@@ -77,11 +57,16 @@ def create_figure():
         ha="center",
         va="top",
         family="sans-serif",
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
     )
 
-    # Define positions
+    # ============================================================================
+    # MAIN FLOW DIAGRAM
+    # ============================================================================
+
+    # Define positions for main flow boxes
     y_start = 8.0
+    y_spacing = 1.3
     box_width = 2.5
     box_height = 0.8
 
@@ -93,7 +78,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["intraday"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -106,7 +91,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["background"],
         family="sans-serif",
     )
 
@@ -116,7 +101,7 @@ def create_figure():
         "",
         xy=(box1_x + box_width / 2, arrow1_y - 0.3),
         xytext=(box1_x + box_width / 2, box1_y),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
 
     # Box 2: Gamma Explosion
@@ -127,7 +112,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["gamma"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -140,7 +125,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["background"],
         family="sans-serif",
     )
 
@@ -150,7 +135,7 @@ def create_figure():
         "",
         xy=(box2_x + box_width / 2, arrow2_y - 0.3),
         xytext=(box2_x + box_width / 2, box2_y),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
 
     # Box 3: Dealer Hedging Pressure
@@ -161,7 +146,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["hedging"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -174,7 +159,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["text"],
         family="sans-serif",
     )
 
@@ -184,7 +169,7 @@ def create_figure():
         "",
         xy=(box3_x + box_width / 2, arrow3_y - 0.3),
         xytext=(box3_x + box_width / 2, box3_y),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
 
     # Box 4: Intraday Volatility
@@ -195,7 +180,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["volatility"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -208,12 +193,15 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["background"],
         family="sans-serif",
     )
 
+    # ============================================================================
     # RIGHT SIDE: MEASUREMENT FLOW
-    # Box 5: Market Close
+    # ============================================================================
+
+    # Box 5: Market Close (transition)
     box5_x, box5_y = 6.5, y_start
     box5 = FancyBboxPatch(
         (box5_x, box5_y),
@@ -221,7 +209,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["transition"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -234,19 +222,19 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         family="sans-serif",
     )
 
-    # Cross arrow 4 -> 5
+    # Arrow 4 -> 5 (cross)
     ax.annotate(
         "",
         xy=(box5_x, box4_y + box_height / 2),
         xytext=(box1_x + box_width, box4_y + box_height / 2),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"], linestyle="dashed"),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"], linestyle="dashed"),
     )
 
-    # Box 6: Incomplete Unwinding
+    # Box 6: Incomplete Position Unwinding
     box6_x, box6_y = 6.5, y_start - 1.3
     box6 = FancyBboxPatch(
         (box6_x, box6_y),
@@ -254,7 +242,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["positioning"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -267,7 +255,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["background"],
         family="sans-serif",
     )
 
@@ -277,10 +265,10 @@ def create_figure():
         "",
         xy=(box6_x + box_width / 2, box6_y + box_height),
         xytext=(box5_x + box_width / 2, arrow6_y - 0.3),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
 
-    # Box 7: Residual Positioning
+    # Box 7: Residual EOD Positioning
     box7_x, box7_y = 6.5, y_start - 2.6
     box7 = FancyBboxPatch(
         (box7_x, box7_y),
@@ -288,7 +276,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["positioning"],
-        edgecolor=IEEE_THEME["background"],
+        edgecolor=DARK_THEME["background"],
         linewidth=2,
         alpha=0.9,
     )
@@ -301,7 +289,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["background"],
+        color=DARK_THEME["background"],
         family="sans-serif",
     )
 
@@ -311,10 +299,10 @@ def create_figure():
         "",
         xy=(box7_x + box_width / 2, box7_y + box_height),
         xytext=(box6_x + box_width / 2, arrow7_y - 0.3),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
 
-    # Box 8: EOD OI
+    # Box 8: EOD OI (what we measure)
     box8_x, box8_y = 6.5, y_start - 3.9
     box8 = FancyBboxPatch(
         (box8_x, box8_y),
@@ -322,7 +310,7 @@ def create_figure():
         box_height,
         boxstyle="round,pad=0.1",
         facecolor=DIAGRAM_COLORS["measurement"],
-        edgecolor=IEEE_THEME["accent_negative"],
+        edgecolor=DARK_THEME["accent_negative"],
         linewidth=2.5,
         alpha=0.95,
     )
@@ -335,7 +323,7 @@ def create_figure():
         va="center",
         fontsize=11,
         fontweight="bold",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         family="sans-serif",
     )
 
@@ -345,8 +333,12 @@ def create_figure():
         "",
         xy=(box8_x + box_width / 2, box8_y + box_height),
         xytext=(box7_x + box_width / 2, arrow8_y - 0.3),
-        arrowprops=dict(arrowstyle="->", lw=2.5, color=IEEE_THEME["dim"]),
+        arrowprops=dict(arrowstyle="->", lw=2.5, color=DARK_THEME["dim"]),
     )
+
+    # ============================================================================
+    # BOTTOM: INTERPRETATION
+    # ============================================================================
 
     # "Scar Tissue" annotation box
     scar_box_x, scar_box_y = 3.5, 0.3
@@ -356,8 +348,8 @@ def create_figure():
         scar_width,
         scar_height,
         boxstyle="round,pad=0.1",
-        facecolor=IEEE_THEME["panel_bg"],
-        edgecolor=IEEE_THEME["accent_warning"],
+        facecolor=DARK_THEME["panel_bg"],
+        edgecolor=DARK_THEME["accent_warning"],
         linewidth=2.5,
         linestyle="--",
     )
@@ -370,11 +362,15 @@ def create_figure():
         va="center",
         fontsize=10,
         fontweight="bold",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         family="sans-serif",
     )
 
-    # Side annotations
+    # ============================================================================
+    # SIDE ANNOTATIONS
+    # ============================================================================
+
+    # Left side: What happens during trading
     ax.text(
         0.3,
         6.2,
@@ -388,6 +384,7 @@ def create_figure():
         family="sans-serif",
     )
 
+    # Right side: What we measure
     ax.text(
         9.2,
         6.0,
@@ -396,12 +393,15 @@ def create_figure():
         fontweight="bold",
         ha="center",
         va="center",
-        color=IEEE_THEME["dim"],
+        color=DIAGRAM_COLORS["measurement"],
         rotation=90,
         family="sans-serif",
     )
 
-    # Footer
+    # ============================================================================
+    # FOOTER EXPLANATION
+    # ============================================================================
+
     footer_text = (
         "How it works: High-frequency intraday 0DTE trading creates gamma exposure that dealers must hedge aggressively.\n"
         "When positions cannot be fully unwound by market close due to liquidity constraints, this creates residual positioning.\n"
@@ -415,7 +415,7 @@ def create_figure():
         ha="center",
         va="top",
         family="sans-serif",
-        color=IEEE_THEME["dim"],
+        color=DARK_THEME["dim"],
         wrap=True,
         style="italic",
     )
@@ -426,7 +426,7 @@ def create_figure():
 
 
 def main():
-    print("Generating Scar Tissue Mechanism Figure (IEEE Theme)...")
+    print("Generating Scar Tissue Mechanism Figure (Issue #168, Dark Theme #216)...")
     fig = create_figure()
     save_figure(fig, "fig09_scar_tissue.png")
     print("\nDone!")

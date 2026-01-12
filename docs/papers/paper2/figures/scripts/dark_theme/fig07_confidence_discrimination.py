@@ -6,7 +6,7 @@ Creates scatterplot showing relationship between persistence and LLM confidence
 for all Phase 5 validation windows, demonstrating confidence discrimination
 between detected regimes and rejected cases.
 
-IEEE Publication Theme (white background).
+Updated with SpotGamma-inspired dark theme (Issue #216).
 
 Output: docs/papers/paper2/figures/output/fig07_confidence_discrimination.png
 """
@@ -16,20 +16,7 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_negative": "#C62828",
-    "accent_warning": "#E65100",
-    "accent_neutral": "#1565C0",
-}
+from theme import CACHE_DB, DARK_THEME, OUTPUT_DIR, apply_dark_theme, reset_theme, save_figure
 
 
 def query_data():
@@ -67,7 +54,7 @@ def query_data():
 
 
 def create_figure(data):
-    """Create confidence discrimination scatterplot with IEEE theme."""
+    """Create confidence discrimination scatterplot with dark theme."""
 
     # Split data by detection status
     detected_mask = data["detected"] == 1
@@ -85,12 +72,13 @@ def create_figure(data):
     detected_confidence = data["confidence"][detected_mask]
     r_detected, p_detected = stats.pearsonr(detected_persistence, detected_confidence)
 
-    plt.style.use("default")
+    # Set dark theme
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(14, 10), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
 
     # Normalize magnitude for point sizes
     sizes_detected = (data["magnitude"][detected_mask] / data["magnitude"].max()) * 200 + 30
@@ -101,10 +89,10 @@ def create_figure(data):
         data["persistence"][rejected_mask],
         data["confidence"][rejected_mask],
         s=sizes_rejected,
-        c=IEEE_THEME["accent_negative"],
+        c=DARK_THEME["accent_negative"],
         alpha=0.5,
         label=f"Rejected (n={n_rejected}, mean={mean_conf_rejected:.1f}%)",
-        edgecolors=IEEE_THEME["background"],
+        edgecolors=DARK_THEME["background"],
         linewidths=0.5,
     )
 
@@ -113,17 +101,17 @@ def create_figure(data):
         data["persistence"][detected_mask],
         data["confidence"][detected_mask],
         s=sizes_detected,
-        c=IEEE_THEME["accent_positive"],
+        c=DARK_THEME["accent_positive"],
         alpha=0.7,
         label=f"Detected (n={n_detected}, mean={mean_conf_detected:.1f}%)",
-        edgecolors=IEEE_THEME["background"],
+        edgecolors=DARK_THEME["background"],
         linewidths=0.5,
     )
 
     # Add persistence threshold line at 70%
     ax.axvline(
         70,
-        color=IEEE_THEME["accent_neutral"],
+        color=DARK_THEME["accent_neutral"],
         linestyle="--",
         linewidth=2.5,
         label="70% Persistence Threshold",
@@ -131,8 +119,8 @@ def create_figure(data):
     )
 
     # Add mean confidence lines
-    ax.axhline(mean_conf_detected, color=IEEE_THEME["accent_positive"], linestyle=":", linewidth=2, alpha=0.8)
-    ax.axhline(mean_conf_rejected, color=IEEE_THEME["accent_negative"], linestyle=":", linewidth=2, alpha=0.8)
+    ax.axhline(mean_conf_detected, color=DARK_THEME["accent_positive"], linestyle=":", linewidth=2, alpha=0.8)
+    ax.axhline(mean_conf_rejected, color=DARK_THEME["accent_negative"], linestyle=":", linewidth=2, alpha=0.8)
 
     # Annotate confidence gap
     gap_x = 95
@@ -140,7 +128,7 @@ def create_figure(data):
         "",
         xy=(gap_x, mean_conf_detected),
         xytext=(gap_x, mean_conf_rejected),
-        arrowprops=dict(arrowstyle="<->", color=IEEE_THEME["accent_warning"], lw=2.5, shrinkA=0, shrinkB=0),
+        arrowprops=dict(arrowstyle="<->", color=DARK_THEME["accent_warning"], lw=2.5, shrinkA=0, shrinkB=0),
     )
     ax.text(
         gap_x + 1.5,
@@ -148,7 +136,7 @@ def create_figure(data):
         f"{conf_gap:.1f}pp\ngap",
         fontsize=12,
         fontweight="bold",
-        color=IEEE_THEME["accent_warning"],
+        color=DARK_THEME["accent_warning"],
         va="center",
         ha="left",
     )
@@ -171,39 +159,39 @@ def create_figure(data):
         transform=ax.transAxes,
         fontsize=11,
         verticalalignment="top",
-        color=IEEE_THEME["text"],
-        bbox=dict(boxstyle="round,pad=0.5", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], alpha=0.95),
+        color=DARK_THEME["text"],
+        bbox=dict(boxstyle="round,pad=0.5", facecolor=DARK_THEME["panel_bg"], edgecolor=DARK_THEME["dim"], alpha=0.95),
         family="monospace",
     )
 
     # Labels and title
-    ax.set_xlabel("Persistence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Persistence (%)", fontsize=14, fontweight="bold", color=DARK_THEME["text"])
+    ax.set_ylabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=DARK_THEME["text"])
     ax.set_title(
         "LLM Confidence Discrimination Across Full Detection Spectrum\n"
         "Point size encodes GEX magnitude (larger = higher dealer positioning)",
         fontsize=14,
         fontweight="bold",
         pad=15,
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
     )
 
-    # Legend
+    # Legend - placed at upper right to avoid data overlap in lower region
     legend = ax.legend(
-        loc="upper right", fontsize=11, facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], framealpha=0.95
+        loc="upper right", fontsize=11, facecolor=DARK_THEME["panel_bg"], edgecolor=DARK_THEME["dim"], framealpha=0.95
     )
     for text in legend.get_texts():
-        text.set_color(IEEE_THEME["text"])
+        text.set_color(DARK_THEME["text"])
 
     # Axis limits and grid
     ax.set_xlim(45, 105)
     ax.set_ylim(0, 105)
-    ax.grid(True, alpha=0.3, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5)
-    ax.tick_params(colors=IEEE_THEME["text"])
+    ax.grid(True, alpha=0.3, color=DARK_THEME["grid"], linestyle="-", linewidth=0.5)
+    ax.tick_params(colors=DARK_THEME["text"])
 
     # Spine styling
     for spine in ax.spines.values():
-        spine.set_color(IEEE_THEME["dim"])
+        spine.set_color(DARK_THEME["dim"])
 
     plt.tight_layout()
 
@@ -218,7 +206,7 @@ def create_figure(data):
 
 
 def main():
-    print("Generating Confidence Discrimination Figure (IEEE Theme)...")
+    print("Generating Confidence Discrimination Figure (Dark Theme #216)...")
     print(f"Database: {CACHE_DB}")
 
     data = query_data()

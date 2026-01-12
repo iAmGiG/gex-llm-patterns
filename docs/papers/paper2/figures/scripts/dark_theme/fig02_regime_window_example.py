@@ -15,19 +15,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F8F9FA",
-    "grid": "#DDDDDD",
-    "accent_positive": "#1976D2",  # Blue
-    "accent_negative": "#D32F2F",  # Red
-    "accent_warning": "#F57F17",  # Dark Orange
-}
+from theme import CACHE_DB, DARK_THEME, OUTPUT_DIR, apply_dark_theme, reset_theme, save_figure
 
 
 def query_example_window():
@@ -100,29 +88,31 @@ def create_figure(example_data):
     data = generate_synthetic_example()
     gex_values = data["gex_values"]
 
-    # Set IEEE theme
-    plt.style.use("default")
+    # Set dark theme
+    apply_dark_theme()
 
     # Create figure
     fig, ax = plt.subplots(figsize=(12, 6), dpi=300)
-    fig.patch.set_facecolor(IEEE_THEME["background"])
-    ax.set_facecolor(IEEE_THEME["background"])
+    fig.patch.set_facecolor(DARK_THEME["background"])
+    ax.set_facecolor(DARK_THEME["background"])
 
     # Create bar colors based on sign
-    colors = [IEEE_THEME["accent_positive"] if v > 0 else IEEE_THEME["accent_negative"] for v in gex_values]
+    colors = [DARK_THEME["accent_positive"] if v > 0 else DARK_THEME["accent_negative"] for v in gex_values]
 
     # Plot bars
     days = np.arange(1, 31)
-    bars = ax.bar(days, gex_values, color=colors, width=0.8, edgecolor="black", linewidth=0.5, alpha=0.8, zorder=3)
+    bars = ax.bar(
+        days, gex_values, color=colors, width=0.8, edgecolor=DARK_THEME["background"], linewidth=0.5, alpha=0.9
+    )
 
     # Add zero line
-    ax.axhline(0, color="black", linestyle="-", linewidth=1, zorder=2)
+    ax.axhline(0, color=DARK_THEME["dim"], linestyle="-", linewidth=1)
 
     # Add threshold lines
-    ax.axhline(-5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
-    ax.axhline(5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
-    ax.text(31.5, -5, "−$5B", fontsize=9, color=IEEE_THEME["accent_warning"], va="center")
-    ax.text(31.5, 5, "+$5B", fontsize=9, color=IEEE_THEME["accent_warning"], va="center")
+    ax.axhline(-5, color=DARK_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7)
+    ax.axhline(5, color=DARK_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7)
+    ax.text(31.5, -5, "−$5B", fontsize=9, color=DARK_THEME["accent_warning"], va="center")
+    ax.text(31.5, 5, "+$5B", fontsize=9, color=DARK_THEME["accent_warning"], va="center")
 
     # Statistics box
     neg_days = sum(1 for v in gex_values if v < 0)
@@ -132,7 +122,7 @@ def create_figure(example_data):
     stats_text = (
         f"Regime Criteria\n"
         f"─────────────────\n"
-        f"Persistence: {neg_days}/30 = {neg_days / 30 * 100:.1f}%  ✓\n"
+        f"Persistence: {neg_days}/30 = {neg_days/30*100:.1f}%  ✓\n"
         f"Magnitude:   ${avg_magnitude:.1f}B avg  ✓\n"
         f'Sign Flips:  {data["flips"]}  ✓\n'
         f"─────────────────\n"
@@ -147,11 +137,11 @@ def create_figure(example_data):
         fontsize=10,
         verticalalignment="top",
         horizontalalignment="right",
-        color=IEEE_THEME["text"],
+        color=DARK_THEME["text"],
         bbox=dict(
             boxstyle="round,pad=0.5",
-            facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["accent_negative"],
+            facecolor=DARK_THEME["panel_bg"],
+            edgecolor=DARK_THEME["accent_negative"],
             linewidth=2,
             alpha=0.95,
         ),
@@ -159,24 +149,30 @@ def create_figure(example_data):
     )
 
     # Labels and title
-    ax.set_xlabel("Day in 30-Day Window", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
-    # Title removed for IEEE paper
+    ax.set_xlabel("Day in 30-Day Window", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax.set_ylabel("GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=DARK_THEME["text"])
+    ax.set_title(
+        "30-Day Persistent Negative Regime Example\n" "All Three Detection Criteria Met",
+        fontsize=14,
+        fontweight="bold",
+        pad=15,
+        color=DARK_THEME["text"],
+    )
 
     # Axis formatting
     ax.set_xlim(0, 32)
     ax.set_xticks([1, 5, 10, 15, 20, 25, 30])
-    ax.tick_params(colors=IEEE_THEME["text"])
-    ax.grid(axis="y", alpha=0.5, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5, zorder=0)
+    ax.tick_params(colors=DARK_THEME["text"])
+    ax.grid(axis="y", alpha=0.3, color=DARK_THEME["grid"], linestyle="-", linewidth=0.5)
 
     # Spine styling
     for spine in ax.spines.values():
-        spine.set_color(IEEE_THEME["dim"])
+        spine.set_color(DARK_THEME["dim"])
 
     plt.tight_layout()
 
     print(f"\nExample Window Statistics:")
-    print(f"  Persistence: {neg_days}/30 = {neg_days / 30 * 100:.1f}%")
+    print(f"  Persistence: {neg_days}/30 = {neg_days/30*100:.1f}%")
     print(f"  Avg Magnitude: ${avg_magnitude:.1f}B")
     print(f"  Sign Flips: {data['flips']}")
 
