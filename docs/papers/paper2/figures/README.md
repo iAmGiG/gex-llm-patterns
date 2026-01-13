@@ -47,9 +47,10 @@ All scripts are consolidated in `scripts/`:
 | Fig 6 | `fig06_gex_magnitude_distribution.py` | GEX Magnitude Distribution | ResearchCache |
 | Fig 7 | `fig07_confidence_discrimination.py` | Confidence Discrimination | ResearchCache |
 | Fig 8 | `fig08_detection_progression.py` | Temporal Progression (2020-2025) | ResearchCache |
-| Fig 9 | `fig09_scar_tissue.py` | Scar Tissue Mechanism | Conceptual |
+| Fig 9 | `fig09_scar_tissue.py` | Scar Tissue Mechanism (2-panel) | Conceptual |
 | Fig 10 | `fig10_borderline_persistence.py` | Borderline Persistence | ResearchCache |
 | Fig 11 | `fig11_threshold_sensitivity_heatmap.py` | Threshold Sensitivity | ResearchCache |
+| Fig 12 | `fig12_overnight_intraday_divergence.py` | Overnight vs Intraday Divergence | Database (OHLC) |
 
 ## Module Structure
 
@@ -118,9 +119,11 @@ Scripts with optional database (fallback to synthetic):
 - **Fig 8**: Detection rate temporal progression (2020-2025 bar chart)
 
 ### Discussion Figures
-- **Fig 9**: Scar tissue mechanism diagram
+
+- **Fig 9**: Scar tissue mechanism diagram (2-panel: dynamics + phase change)
 - **Fig 10**: Borderline persistence region analysis (3-panel)
 - **Fig 11**: Threshold sensitivity heatmap
+- **Fig 12**: Overnight vs Intraday return divergence ("Great Divergence")
 
 ## LaTeX Integration
 
@@ -139,5 +142,52 @@ Figures are referenced in LaTeX:
 
 - **Resolution**: 300 DPI (publication standard)
 - **Format**: PNG (LaTeX compatible)
-- **Style**: SpotGamma-inspired dark theme
-- **Total figures**: 11
+- **Style**: IEEE publication theme (white background)
+- **Total figures**: 12
+
+## Figure Notes
+
+### Fig 9: Scar Tissue Mechanism (Combined Two-Panel)
+
+Updated January 2026 to use combined two-panel layout:
+- **Panel A**: Time-series gamma decay curve showing intraday dynamics
+- **Panel B**: "Phase Change" Before/After schematic at 4:00 PM expiration
+
+Uses `figure*` environment in LaTeX for full two-column width.
+
+### Fig 12: Overnight vs Intraday Divergence ("Great Divergence")
+
+Added January 2026 to provide supplementary evidence for scar tissue mechanism:
+
+- **Panel A**: Cumulative "jaw" chart showing overnight (Close→Open) vs intraday (Open→Close) returns
+- **Panel B**: Year-by-year bar chart breakdown
+
+Key findings:
+- Pre-0DTE (2020-2021): Overnight and intraday returns roughly balanced
+- Post-0DTE (2024): Overnight dominates (+21.2%) while intraday compressed (+0.6%)
+
+**Important caveat**: This shows correlation, not causation. Alternative explanations (interest rates, market structure) cannot be excluded.
+
+Uses `figure*` environment in LaTeX for full two-column width.
+
+## Data Limitations & Future Figures
+
+### Global Session Heatmap (NOT IMPLEMENTED)
+
+**Concept**: 2D heatmap showing GEX regime impact on Tokyo/London/NY session volatility
+- X-Axis: Hour of Day (0-23 ET)
+- Y-Axis: GEX Regime bins
+- Color: Realized volatility or absolute returns
+
+**Data Gap**: Requires overnight futures data (8 PM - 4 AM ET) not available through Alpha Vantage:
+- Alpha Vantage extended hours: 4 AM - 8 PM ET only
+- Tokyo session (7 PM - 2 AM ET): NOT covered
+- London early session (3 AM - 4 AM ET): NOT covered
+- No S&P 500 futures (ES) data available
+
+**Status**: Deferred to future work. Limitation documented in Discussion section.
+
+**Alternative Data Sources** (for future implementation):
+- CME ES futures (requires separate data subscription)
+- Interactive Brokers historical data
+- Polygon.io (may have extended hours)
