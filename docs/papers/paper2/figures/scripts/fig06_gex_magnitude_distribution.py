@@ -15,18 +15,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "grid": "#DDDDDD",
-    "year_2020": "#757575",  # Grey
-    "year_2024": "#1565C0",  # Blue
-    "accent_positive": "#2E7D32",  # Green
-}
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 
 def generate_synthetic_data():
@@ -155,16 +144,16 @@ def create_figure(data):
     # Annotations
     y_max = ax.get_ylim()[1]
 
-    # 2020 mean annotation
+    # 2020 mean annotation - right aligned
     ax.annotate(
         f"2020 Mean\n${mean_2020:.1f}B",
         xy=(mean_2020, y_max * 0.85),
-        xytext=(mean_2020 - 3.5, y_max * 0.92),
+        xytext=(mean_2020 - 3.0, y_max * 0.92),
         fontsize=14,
         fontweight="bold",
         color=IEEE_THEME["year_2020"],
         arrowprops=dict(arrowstyle="->", color=IEEE_THEME["year_2020"], lw=1.5),
-        ha="center",
+        ha="right",
     )
 
     # 2024 mean annotation
@@ -191,23 +180,22 @@ def create_figure(data):
         ha="left",
     )
 
-    # Statistics text box with dark theme
+    # Statistics text box - below legend on right side, larger size
     stats_text = (
-        f"Above $5B Threshold:\n"
+        f"Above $5B:\n"
         f"  2020: {pct_above_5b_2020:.1f}%\n"
-        f"  2024: {pct_above_5b_2024:.1f}%\n\n"
-        f"Magnitude Growth:\n"
-        f"  +{((mean_2024 / mean_2020) - 1) * 100:.0f}% ({mean_2020:.1f}B → {mean_2024:.1f}B)"
+        f"  2024: {pct_above_5b_2024:.1f}%\n"
+        f"Growth: +{((mean_2024 / mean_2020) - 1) * 100:.0f}%"
     )
     ax.text(
         0.98,
-        0.97,
+        0.55,
         stats_text,
         transform=ax.transAxes,
-        fontsize=13,
+        fontsize=11,
         verticalalignment="top",
         horizontalalignment="right",
-        bbox=dict(boxstyle="round,pad=0.5", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.95),
+        bbox=dict(boxstyle="round,pad=0.4", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.95),
         family="monospace",
         color=IEEE_THEME["text"],
     )
@@ -217,8 +205,8 @@ def create_figure(data):
     ax.set_ylabel("Number of 30-Day Windows", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
     # Title removed for IEEE paper
 
-    # Legend with dark background - placed at upper left to avoid annotation overlap
-    legend = ax.legend(loc="upper left", fontsize=14, framealpha=0.9, facecolor="white", edgecolor=IEEE_THEME["dim"])
+    # Legend - placed at upper right, smaller font
+    legend = ax.legend(loc="upper right", fontsize=11, framealpha=0.9, facecolor="white", edgecolor=IEEE_THEME["dim"])
     for text in legend.get_texts():
         text.set_color(IEEE_THEME["text"])
 

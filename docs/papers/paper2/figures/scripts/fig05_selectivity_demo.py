@@ -13,22 +13,7 @@ Output: docs/papers/paper2/figures/output/fig05_selectivity.png
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_negative": "#C62828",
-    "accent_warning": "#E65100",
-    "accent_neutral": "#1565C0",
-    "detected_border": "#2E7D32",
-    "rejected_border": "#C62828",
-}
+from theme import IEEE_THEME, OUTPUT_DIR, save_figure
 
 
 def generate_example_windows():
@@ -115,7 +100,7 @@ def create_figure(windows):
     plt.style.use("default")
 
     # Create 2x2 subplot grid
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10), dpi=300)
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
 
     # Flatten for easier iteration
@@ -133,7 +118,7 @@ def create_figure(windows):
 
         # Plot bars
         days = np.arange(1, 31)
-        bars = ax.bar(days, gex, color=colors, width=0.8, edgecolor=IEEE_THEME["background"], linewidth=0.3, alpha=0.9)
+        ax.bar(days, gex, color=colors, width=0.8, edgecolor=IEEE_THEME["background"], linewidth=0.3, alpha=0.9)
 
         # Add zero line
         ax.axhline(0, color=IEEE_THEME["dim"], linestyle="-", linewidth=1)
@@ -153,66 +138,30 @@ def create_figure(windows):
         # Add border to indicate status
         for spine in ax.spines.values():
             spine.set_color(border_color)
-            spine.set_linewidth(3)
+            spine.set_linewidth(2.5)
 
-        # Title with status badge
-        ax.set_title(
-            f"{window['label']}\n[{window['status']}]", fontsize=16, fontweight="bold", color=badge_color, pad=10
-        )
+        # Compact title with status
+        title = f"{window['label']} [{window['status']}]"
 
-        # Stats annotation
-        stats_text = (
-            f"Persistence: {window['persistence']:.1f}%\n"
-            f"Magnitude: ${window['magnitude']:.1f}B\n"
-            f"Sign Flips: {window['flips']}\n"
-            f"─────────────\n"
-            f"{window['reason']}"
-        )
-
-        # Position stats box
-        ax.text(
-            0.98,
-            0.98,
-            stats_text,
-            transform=ax.transAxes,
-            fontsize=13,
-            verticalalignment="top",
-            horizontalalignment="right",
-            color=IEEE_THEME["text"],
-            bbox=dict(
-                boxstyle="round,pad=0.4",
-                facecolor=IEEE_THEME["panel_bg"],
-                edgecolor=badge_color,
-                linewidth=1.5,
-                alpha=0.95,
-            ),
-            family="monospace",
-        )
+        ax.set_title(title, fontsize=11, fontweight="bold", color=badge_color, pad=4)
 
         # Axis formatting
         ax.set_xlim(0, 31)
-        ax.set_xticks([1, 10, 20, 30])
-        ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
+        ax.set_xticks([1, 15, 30])
+        ax.tick_params(colors=IEEE_THEME["text"], labelsize=10)
         ax.grid(axis="y", alpha=0.3, color=IEEE_THEME["grid"], linestyle="-")
 
         # Labels
-        ax.set_xlabel("Day", fontsize=14, color=IEEE_THEME["text"])
-        ax.set_ylabel("GEX ($B)", fontsize=14, color=IEEE_THEME["text"])
+        ax.set_xlabel("Day", fontsize=11, color=IEEE_THEME["text"])
+        ax.set_ylabel("GEX ($B)", fontsize=11, color=IEEE_THEME["text"])
 
-    # Main title
-    fig.suptitle(
-        "Framework Selectivity Demonstration\n" "Detected Windows (Green Border) vs Rejected Windows (Red Border)",
-        fontsize=18,
-        fontweight="bold",
-        color=IEEE_THEME["text"],
-        y=0.98,
+    # Criteria legend at bottom - larger font
+    criteria_text = "Detection Criteria:  Persistence > 70%  |  Avg Magnitude > $5B  |  Sign Flips ≤ 5"
+    fig.text(
+        0.5, 0.01, criteria_text, ha="center", va="bottom", fontsize=12, fontweight="bold", color=IEEE_THEME["text"]
     )
 
-    # Criteria legend at bottom
-    criteria_text = "Detection Criteria: Persistence > 70% same sign  |  " "Avg Magnitude > $5B  |  ≤5 Sign Flips"
-    fig.text(0.5, 0.02, criteria_text, ha="center", va="bottom", fontsize=13, color=IEEE_THEME["dim"], style="italic")
-
-    plt.tight_layout(rect=[0, 0.04, 1, 0.95])
+    plt.tight_layout(rect=[0, 0.04, 1, 1])
 
     return fig
 

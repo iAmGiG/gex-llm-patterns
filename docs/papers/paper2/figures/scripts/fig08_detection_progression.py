@@ -16,18 +16,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_warning": "#E65100",
-}
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 # Year colors for IEEE theme
 YEAR_COLORS = {
@@ -124,7 +113,7 @@ def create_figure(results):
             f"{count}/{total}",
             ha="center",
             va="bottom",
-            fontsize=16,
+            fontsize=11,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
@@ -138,7 +127,7 @@ def create_figure(results):
                 f"{rate:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=15,
+                fontsize=12,
                 fontweight="bold",
                 color=IEEE_THEME["background"],
             )
@@ -149,51 +138,51 @@ def create_figure(results):
                 f"{rate:.1f}%",
                 ha="center",
                 va="bottom",
-                fontsize=16,
+                fontsize=11,
                 fontweight="bold",
                 color=IEEE_THEME["text"],
             )
 
-    # Highlight 2023→2024 structural shift
+    # Highlight 2023→2024 structural shift - arrow and annotation positioned to avoid overlap
     ax1.annotate(
         "",
         xy=(2024, 100),
         xytext=(2023, 20.2),
-        arrowprops=dict(arrowstyle="->", lw=3, color=IEEE_THEME["accent_warning"], linestyle="--"),
+        arrowprops=dict(arrowstyle="->", lw=2, color=IEEE_THEME["accent_warning"], linestyle="--"),
     )
     ax1.text(
-        2023.5,
-        60,
+        2023.65,
+        68,
         "2023→2024\nStructural\nShift",
         ha="center",
         va="center",
-        fontsize=17,
+        fontsize=11,
         fontweight="bold",
         color=IEEE_THEME["text"],
         bbox=dict(
-            boxstyle="round,pad=0.5",
+            boxstyle="round,pad=0.3",
             facecolor=IEEE_THEME["panel_bg"],
             edgecolor=IEEE_THEME["accent_warning"],
-            linewidth=2,
+            linewidth=1.5,
         ),
     )
 
     # Regime labels
-    ax1.text(2020.5, 108, "Pre-Regime", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["pre_regime"])
-    ax1.text(2022.5, 108, "Gradual Adoption", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["growing"])
+    ax1.text(2020.5, 108, "Pre-Regime", ha="center", fontsize=11, fontweight="bold", color=YEAR_COLORS["pre_regime"])
+    ax1.text(2022.5, 108, "Gradual Adoption", ha="center", fontsize=11, fontweight="bold", color=YEAR_COLORS["growing"])
     ax1.text(
-        2024.5, 108, "Persistent Regime", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["structural"]
+        2024.5, 108, "Persistent Regime", ha="center", fontsize=11, fontweight="bold", color=YEAR_COLORS["structural"]
     )
 
     # Formatting
-    ax1.set_xlabel("Year", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Detection Rate (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_xlabel("Year", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_ylabel("Detection Rate (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
     ax1.set_title(
         "Phase 4A: Temporal Progression of Regime Detection (2020-2025)\n"
         + "Gradual 0DTE Adoption with 2023→2024 Structural Market Shift",
-        fontsize=17,
+        fontsize=13,
         fontweight="bold",
-        pad=15,
+        pad=10,
         color=IEEE_THEME["text"],
     )
     ax1.set_ylim(0, 118)
@@ -225,23 +214,23 @@ def create_figure(results):
             f"${gex:.1f}B",
             ha="center",
             va="bottom",
-            fontsize=16,
+            fontsize=10,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
 
     ax2.axhline(y=5.0, color=IEEE_THEME["accent_positive"], linestyle="--", linewidth=2, alpha=0.8)
     ax2.text(
-        2020.3, 5.8, "$5B Threshold", fontsize=15, fontweight="bold", color=IEEE_THEME["accent_positive"], va="bottom"
+        2020.3, 5.8, "$5B Threshold", fontsize=10, fontweight="bold", color=IEEE_THEME["accent_positive"], va="bottom"
     )
 
-    ax2.set_xlabel("Year", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_xlabel("Year", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
     ax2.set_title(
         "Average GEX Magnitude Evolution (360% Growth 2021→2024)",
-        fontsize=15,
+        fontsize=12,
         fontweight="bold",
-        pad=10,
+        pad=8,
         color=IEEE_THEME["text"],
     )
     ax2.set_ylim(0, 25)
@@ -265,7 +254,7 @@ def create_figure(results):
         footer_text,
         ha="center",
         va="bottom",
-        fontsize=16,
+        fontsize=9,
         style="italic",
         color=IEEE_THEME["dim"],
         wrap=True,

@@ -5,7 +5,7 @@ Generate Figure 2: 30-Day Persistent Negative Regime Example
 Creates a bar chart showing daily GEX values for a representative
 30-day window that meets all regime classification criteria.
 
-Updated with SpotGamma-inspired dark theme (Issue #216).
+IEEE Publication Theme (white background).
 
 Output: docs/papers/paper2/figures/output/fig02_regime_window.png
 """
@@ -15,19 +15,7 @@ import sqlite3
 
 import matplotlib.pyplot as plt
 import numpy as np
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F8F9FA",
-    "grid": "#DDDDDD",
-    "accent_positive": "#1976D2",  # Blue
-    "accent_negative": "#D32F2F",  # Red
-    "accent_warning": "#F57F17",  # Dark Orange
-}
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 
 def query_example_window():
@@ -35,7 +23,6 @@ def query_example_window():
     conn = sqlite3.connect(CACHE_DB)
     cursor = conn.cursor()
 
-    # Find a good example window with high persistence and magnitude
     cursor.execute(
         """
         SELECT
@@ -73,7 +60,6 @@ def query_example_window():
 
 def generate_synthetic_example():
     """Generate a synthetic example if no suitable window found in database."""
-    # Create a representative persistent negative regime
     np.random.seed(42)
 
     # 28/30 days negative (93.3% persistence)
@@ -94,17 +80,15 @@ def generate_synthetic_example():
 
 
 def create_figure(example_data):
-    """Create regime window example figure with dark theme."""
+    """Create regime window example figure with IEEE theme."""
 
-    # Use synthetic data for consistent example
     data = generate_synthetic_example()
     gex_values = data["gex_values"]
 
-    # Set IEEE theme
     plt.style.use("default")
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=300)
+    # Create figure with space at bottom for stats
+    fig, ax = plt.subplots(figsize=(12, 5), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax.set_facecolor(IEEE_THEME["background"])
 
@@ -113,7 +97,7 @@ def create_figure(example_data):
 
     # Plot bars
     days = np.arange(1, 31)
-    bars = ax.bar(days, gex_values, color=colors, width=0.8, edgecolor="black", linewidth=0.5, alpha=0.8, zorder=3)
+    bars = ax.bar(days, gex_values, color=colors, width=0.8, edgecolor="black", linewidth=0.5, alpha=0.85, zorder=3)
 
     # Add zero line
     ax.axhline(0, color="black", linestyle="-", linewidth=1, zorder=2)
@@ -121,59 +105,54 @@ def create_figure(example_data):
     # Add threshold lines
     ax.axhline(-5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
     ax.axhline(5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
-    ax.text(31.5, -5, "−$5B", fontsize=13, color=IEEE_THEME["accent_warning"], va="center")
-    ax.text(31.5, 5, "+$5B", fontsize=13, color=IEEE_THEME["accent_warning"], va="center")
 
-    # Statistics box
-    neg_days = sum(1 for v in gex_values if v < 0)
-    pos_days = sum(1 for v in gex_values if v > 0)
-    avg_magnitude = np.mean(np.abs(gex_values))
+    # Threshold labels on right edge
+    ax.text(31, -5, "$5B", fontsize=10, color=IEEE_THEME["accent_warning"], va="center", ha="left")
+    ax.text(31, 5, "$5B", fontsize=10, color=IEEE_THEME["accent_warning"], va="center", ha="left")
 
-    stats_text = (
-        f"Regime Criteria\n"
-        f"─────────────────\n"
-        f"Persistence: {neg_days}/30 = {neg_days / 30 * 100:.1f}%  ✓\n"
-        f"Magnitude:   ${avg_magnitude:.1f}B avg  ✓\n"
-        f'Sign Flips:  {data["flips"]}  ✓\n'
-        f"─────────────────\n"
-        f"Classification:\n"
-        f"  PERSISTENT NEGATIVE"
-    )
-    ax.text(
-        0.98,
-        0.98,
-        stats_text,
-        transform=ax.transAxes,
-        fontsize=14,
-        verticalalignment="top",
-        horizontalalignment="right",
-        color=IEEE_THEME["text"],
-        bbox=dict(
-            boxstyle="round,pad=0.5",
-            facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["accent_negative"],
-            linewidth=2,
-            alpha=0.95,
-        ),
-        family="monospace",
-    )
-
-    # Labels and title
-    ax.set_xlabel("Day in 30-Day Window", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("GEX Magnitude ($B)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
-    # Title removed for IEEE paper
+    # Labels
+    ax.set_xlabel("Day in 30-Day Window", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
 
     # Axis formatting
     ax.set_xlim(0, 32)
     ax.set_xticks([1, 5, 10, 15, 20, 25, 30])
-    ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
-    ax.grid(axis="y", alpha=0.5, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5, zorder=0)
+    ax.tick_params(colors=IEEE_THEME["text"], labelsize=11)
+    ax.grid(axis="y", alpha=0.4, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5, zorder=0)
 
     # Spine styling
     for spine in ax.spines.values():
         spine.set_color(IEEE_THEME["dim"])
 
-    plt.tight_layout()
+    # Calculate stats
+    neg_days = sum(1 for v in gex_values if v < 0)
+    avg_magnitude = np.mean(np.abs(gex_values))
+
+    # Stats bar at bottom of figure (outside plot area)
+    stats_text = (
+        f"Persistence: {neg_days}/30 ({neg_days/30*100:.1f}%)     "
+        f"Avg Magnitude: ${avg_magnitude:.1f}B     "
+        f"Sign Flips: {data['flips']}     "
+        f"Classification: PERSISTENT NEGATIVE"
+    )
+    fig.text(
+        0.5,
+        0.02,
+        stats_text,
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        color=IEEE_THEME["text"],
+        fontweight="bold",
+        bbox=dict(
+            boxstyle="round,pad=0.4",
+            facecolor=IEEE_THEME["panel_bg"],
+            edgecolor=IEEE_THEME["accent_negative"],
+            linewidth=1.5,
+        ),
+    )
+
+    plt.tight_layout(rect=[0, 0.08, 1, 1])
 
     print(f"\nExample Window Statistics:")
     print(f"  Persistence: {neg_days}/30 = {neg_days / 30 * 100:.1f}%")
@@ -184,9 +163,8 @@ def create_figure(example_data):
 
 
 def main():
-    print("Generating Regime Window Example Figure (Dark Theme #216)...")
+    print("Generating Regime Window Example Figure (IEEE Theme)...")
 
-    # Try to query real example, fall back to synthetic if database unavailable
     try:
         example = query_example_window()
         print(f"Using real example from database")

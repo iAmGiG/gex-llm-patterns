@@ -2,7 +2,7 @@
 """
 Generate Borderline Persistence Region Detail Figure (Issue #212)
 
-Creates multi-panel visualization showing confidence discrimination
+Creates a two-panel visualization showing confidence discrimination
 in the borderline persistence region (68-72%).
 
 IEEE Publication Theme (white background).
@@ -16,28 +16,12 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_negative": "#C62828",
-    "accent_warning": "#E65100",
-    "accent_neutral": "#1565C0",
-}
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 
 def generate_synthetic_data():
     """Generate synthetic borderline persistence data based on paper findings."""
     np.random.seed(42)
-
-    # Generate full spectrum of persistence values
-    n_samples = 400
 
     # Low persistence (rejected)
     n_low = 150
@@ -49,7 +33,6 @@ def generate_synthetic_data():
     # Borderline region (68-72%) - mixed outcomes
     n_borderline = 100
     bl_persistence = np.random.uniform(68, 72, n_borderline)
-    # Some detected, some rejected in borderline
     n_bl_detected = 45
     bl_detected = np.array([1] * n_bl_detected + [0] * (n_borderline - n_bl_detected))
     np.random.shuffle(bl_detected)
@@ -119,7 +102,7 @@ def query_data():
 
 
 def create_figure(data):
-    """Create multi-panel borderline persistence figure with IEEE theme."""
+    """Create two-panel borderline persistence figure with IEEE theme."""
 
     # Filter borderline region (68-72%)
     borderline_mask = (data["persistence"] >= 68) & (data["persistence"] <= 72)
@@ -141,17 +124,16 @@ def create_figure(data):
     n_rejected = bl_rejected_mask.sum()
     mean_conf_detected = bl_confidence[bl_detected_mask].mean() if n_detected > 0 else 0
     mean_conf_rejected = bl_confidence[bl_rejected_mask].mean() if n_rejected > 0 else 0
-    std_conf_detected = bl_confidence[bl_detected_mask].std() if n_detected > 0 else 0
-    std_conf_rejected = bl_confidence[bl_rejected_mask].std() if n_rejected > 0 else 0
 
     plt.style.use("default")
 
-    # Create figure with 3 panels
-    fig = plt.figure(figsize=(16, 6), dpi=300)
+    # Create figure with 2 panels
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
 
-    # Panel A: Histogram
-    ax1 = fig.add_subplot(131)
+    # =========================================================================
+    # Panel A: Confidence Distribution Histogram
+    # =========================================================================
     ax1.set_facecolor(IEEE_THEME["background"])
 
     bins = np.arange(0, 105, 10)
@@ -174,43 +156,42 @@ def create_figure(data):
         linewidth=0.8,
     )
 
-    ax1.axvline(
-        mean_conf_rejected,
-        color=IEEE_THEME["accent_negative"],
-        linestyle="--",
-        linewidth=2,
-        label=f"Rejected Mean: {mean_conf_rejected:.1f}%",
-    )
-    ax1.axvline(
-        mean_conf_detected,
-        color=IEEE_THEME["accent_positive"],
-        linestyle="--",
-        linewidth=2,
-        label=f"Detected Mean: {mean_conf_detected:.1f}%",
+    # Mean lines
+    ax1.axvline(mean_conf_rejected, color=IEEE_THEME["accent_negative"], linestyle="--", linewidth=2)
+    ax1.axvline(mean_conf_detected, color=IEEE_THEME["accent_positive"], linestyle="--", linewidth=2)
+
+    # Stats annotation
+    gap = mean_conf_detected - mean_conf_rejected
+    stats_text = f"Detected: {mean_conf_detected:.0f}%\nRejected: {mean_conf_rejected:.0f}%\nGap: {gap:.0f}pp"
+    ax1.text(
+        0.97,
+        0.97,
+        stats_text,
+        transform=ax1.transAxes,
+        fontsize=9,
+        va="top",
+        ha="right",
+        color=IEEE_THEME["text"],
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
+        family="monospace",
     )
 
-    ax1.set_xlabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Count", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_title(
-        "A: Confidence Distribution\n(Borderline 68-72% Persistence)",
-        fontsize=15,
-        fontweight="bold",
-        color=IEEE_THEME["text"],
-    )
-    legend1 = ax1.legend(loc="upper left", fontsize=14, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"])
-    for text in legend1.get_texts():
-        text.set_color(IEEE_THEME["text"])
+    ax1.set_xlabel("LLM Confidence (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_ylabel("Count", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_title("(A) Borderline Region (68-72%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.legend(loc="upper left", fontsize=9, framealpha=0.9)
     ax1.set_xlim(0, 100)
     ax1.grid(True, alpha=0.3, color=IEEE_THEME["grid"])
-    ax1.tick_params(colors=IEEE_THEME["text"])
+    ax1.tick_params(colors=IEEE_THEME["text"], labelsize=10)
     for spine in ax1.spines.values():
         spine.set_color(IEEE_THEME["dim"])
 
-    # Panel B: Scatterplot
-    ax2 = fig.add_subplot(132)
+    # =========================================================================
+    # Panel B: Threshold Crossing Scatterplot
+    # =========================================================================
     ax2.set_facecolor(IEEE_THEME["background"])
 
-    sizes = (wide_magnitude / wide_magnitude.max()) * 150 + 20
+    sizes = (wide_magnitude / wide_magnitude.max()) * 100 + 15
 
     rejected_mask = wide_detected == 0
     ax2.scatter(
@@ -221,7 +202,7 @@ def create_figure(data):
         alpha=0.6,
         label="Rejected",
         edgecolors=IEEE_THEME["background"],
-        linewidths=0.5,
+        linewidths=0.3,
     )
 
     detected_mask = wide_detected == 1
@@ -233,84 +214,23 @@ def create_figure(data):
         alpha=0.8,
         label="Detected",
         edgecolors=IEEE_THEME["background"],
-        linewidths=0.5,
+        linewidths=0.3,
     )
 
-    ax2.axvline(70, color=IEEE_THEME["accent_neutral"], linestyle="--", linewidth=2.5, label="70% Threshold", zorder=10)
-    ax2.axvspan(68, 72, alpha=0.15, color=IEEE_THEME["accent_warning"], label="Borderline Region")
+    # Threshold and region
+    ax2.axvline(70, color=IEEE_THEME["accent_neutral"], linestyle="--", linewidth=2, label="70% Threshold", zorder=10)
+    ax2.axvspan(68, 72, alpha=0.1, color=IEEE_THEME["accent_warning"])
 
-    ax2.set_xlabel("Persistence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_ylabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_title(
-        "B: Threshold Crossing Detail\n(65-75% Persistence Range)",
-        fontsize=15,
-        fontweight="bold",
-        color=IEEE_THEME["text"],
-    )
-    legend2 = ax2.legend(
-        loc="upper right", fontsize=14, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"]
-    )
-    for text in legend2.get_texts():
-        text.set_color(IEEE_THEME["text"])
+    ax2.set_xlabel("Persistence (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_ylabel("LLM Confidence (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_title("(B) Threshold Crossing (65-75%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.legend(loc="lower right", fontsize=9, framealpha=0.9)
     ax2.set_xlim(64, 76)
     ax2.set_ylim(0, 100)
     ax2.grid(True, alpha=0.3, color=IEEE_THEME["grid"])
-    ax2.tick_params(colors=IEEE_THEME["text"])
+    ax2.tick_params(colors=IEEE_THEME["text"], labelsize=10)
     for spine in ax2.spines.values():
         spine.set_color(IEEE_THEME["dim"])
-
-    # Panel C: Summary
-    ax3 = fig.add_subplot(133)
-    ax3.set_facecolor(IEEE_THEME["background"])
-    ax3.axis("off")
-
-    gap = mean_conf_detected - mean_conf_rejected
-    all_detected = data["detected"] == 1
-    all_rejected = data["detected"] == 0
-    full_gap = data["confidence"][all_detected].mean() - data["confidence"][all_rejected].mean()
-
-    summary_text = f"""
-    BORDERLINE PERSISTENCE REGION (68-72%)
-    ══════════════════════════════════════
-
-    Total Windows:           {len(bl_persistence):>6}
-    ├─ Detected:             {n_detected:>6}  ({n_detected/len(bl_persistence)*100:.1f}%)
-    └─ Rejected:             {n_rejected:>6}  ({n_rejected/len(bl_persistence)*100:.1f}%)
-
-
-    CONFIDENCE DISCRIMINATION
-    ─────────────────────────────────────
-
-    Detected Mean:       {mean_conf_detected:>6.1f}%  (±{std_conf_detected:.1f}%)
-    Rejected Mean:       {mean_conf_rejected:>6.1f}%  (±{std_conf_rejected:.1f}%)
-    ─────────────────────────────────────
-    Borderline Gap:      {gap:>+6.1f} pp
-
-
-    COMPARISON TO FULL SPECTRUM
-    ─────────────────────────────────────
-
-    Full-Spectrum Gap:   {full_gap:>+6.1f} pp
-    Borderline Gap:      {gap:>+6.1f} pp
-
-    → Discrimination persists at threshold
-    → Confidence tracks regime quality
-      even in ambiguous cases
-    """
-
-    ax3.text(
-        0.05,
-        0.95,
-        summary_text,
-        transform=ax3.transAxes,
-        fontsize=14,
-        fontfamily="monospace",
-        verticalalignment="top",
-        color=IEEE_THEME["text"],
-        bbox=dict(boxstyle="round,pad=0.5", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], linewidth=1),
-    )
-
-    ax3.set_title("C: Statistical Summary", fontsize=15, fontweight="bold", x=0.5, y=0.98, color=IEEE_THEME["text"])
 
     plt.tight_layout()
 
@@ -318,10 +238,7 @@ def create_figure(data):
     print(f"  Total: {len(bl_persistence)} windows")
     print(f"  Detected: {n_detected} ({n_detected/len(bl_persistence)*100:.1f}%)")
     print(f"  Rejected: {n_rejected} ({n_rejected/len(bl_persistence)*100:.1f}%)")
-    print(f"  Mean confidence - Detected: {mean_conf_detected:.1f}% (±{std_conf_detected:.1f}%)")
-    print(f"  Mean confidence - Rejected: {mean_conf_rejected:.1f}% (±{std_conf_rejected:.1f}%)")
     print(f"  Discrimination gap: {gap:+.1f} pp")
-    print(f"  Full-spectrum gap: {full_gap:+.1f} pp")
 
     return fig
 

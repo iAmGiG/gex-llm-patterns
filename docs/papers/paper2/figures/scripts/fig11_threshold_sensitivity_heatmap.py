@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Circle
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 # Parameter ranges to test
 PERSISTENCE_THRESHOLDS = [60, 65, 70, 75, 80]
@@ -27,15 +27,6 @@ STABILITY_THRESHOLD = 5  # Fixed at ≤5 flips
 # Current paper parameters
 CURRENT_PERSISTENCE = 70
 CURRENT_MAGNITUDE = 5
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F8F9FA",
-    "accent_neutral": "#1565C0",  # Blue
-}
 
 
 def generate_synthetic_data():
@@ -190,30 +181,30 @@ def create_figure(data):
     current_i = PERSISTENCE_THRESHOLDS.index(CURRENT_PERSISTENCE)
     current_j = MAGNITUDE_THRESHOLDS.index(CURRENT_MAGNITUDE)
 
-    # Draw rectangle around current parameters with neon cyan
+    # Draw rectangle around current parameters with cyan border (no star marker)
     rect = plt.Rectangle(
         (current_j - 0.5, current_i - 0.5), 1, 1, fill=False, edgecolor=IEEE_THEME["accent_neutral"], linewidth=3
     )
     ax.add_patch(rect)
 
-    # Add star marker
-    ax.plot(
-        current_j,
-        current_i,
-        "*",
-        markersize=25,
-        color=IEEE_THEME["accent_neutral"],
-        markeredgecolor="white",
-        markeredgewidth=1.5,
-    )
+    # Calculate statistics for legends
+    min_gap = gaps.min()
+    max_gap = gaps.max()
+    mean_gap = gaps.mean()
+    all_above_50 = (gaps >= 50).all()
 
-    # Add legend for current parameters
-    ax.text(
-        0.02,
-        0.98,
-        "★ Current Parameters\n    (70%, $5B)",
-        transform=ax.transAxes,
-        fontsize=13,
+    # Style spines
+    for spine in ax.spines.values():
+        spine.set_color(IEEE_THEME["dim"])
+
+    plt.tight_layout(rect=[0, 0.08, 1, 0.92])
+
+    # Add legend for current parameters OUTSIDE matrix (above)
+    fig.text(
+        0.12,
+        0.95,
+        "Current Parameters (70%, $5B)",
+        fontsize=12,
         fontweight="bold",
         verticalalignment="top",
         color=IEEE_THEME["accent_neutral"],
@@ -225,35 +216,23 @@ def create_figure(data):
         ),
     )
 
-    # Add summary statistics
-    min_gap = gaps.min()
-    max_gap = gaps.max()
-    mean_gap = gaps.mean()
-    all_above_50 = (gaps >= 50).all()
-
+    # Add summary statistics OUTSIDE matrix (below)
     stats_text = (
-        f'All combinations >50pp: {"✓" if all_above_50 else "✗"}\n'
-        f"Range: {min_gap:.0f}-{max_gap:.0f}pp\n"
+        f'All combinations >50pp: {"✓" if all_above_50 else "✗"}  |  '
+        f"Range: {min_gap:.0f}-{max_gap:.0f}pp  |  "
         f"Mean: {mean_gap:.0f}pp"
     )
-    ax.text(
-        0.98,
+    fig.text(
+        0.5,
         0.02,
         stats_text,
-        transform=ax.transAxes,
-        fontsize=13,
+        fontsize=11,
         verticalalignment="bottom",
-        horizontalalignment="right",
+        horizontalalignment="center",
         color=IEEE_THEME["text"],
         bbox=dict(boxstyle="round,pad=0.3", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], alpha=0.95),
         family="monospace",
     )
-
-    # Style spines
-    for spine in ax.spines.values():
-        spine.set_color(IEEE_THEME["dim"])
-
-    plt.tight_layout()
 
     print(f"\nThreshold Sensitivity Results:")
     print(f"  Parameter combinations tested: {len(PERSISTENCE_THRESHOLDS) * len(MAGNITUDE_THRESHOLDS)}")

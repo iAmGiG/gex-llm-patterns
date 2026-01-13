@@ -15,16 +15,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
-from theme import OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "accent_warning": "#E65100",  # Deep Orange
-}
+from theme import IEEE_THEME, OUTPUT_DIR, save_figure
 
 # Obfuscation colors for IEEE theme
 OBFUSCATION_COLORS = {
@@ -53,7 +44,7 @@ def create_figure():
         6,
         9.6,
         "Temporal Obfuscation Process",
-        fontsize=22,
+        fontsize=18,
         fontweight="bold",
         ha="center",
         va="top",
@@ -61,9 +52,9 @@ def create_figure():
     )
     ax.text(
         6,
-        9.0,
+        9.1,
         "Preventing LLM Memorization While Preserving Structural Information",
-        fontsize=14,
+        fontsize=11,
         ha="center",
         va="top",
         color=IEEE_THEME["dim"],
@@ -82,7 +73,7 @@ def create_figure():
         before_x + 2,
         before_y + 0.3,
         "BEFORE",
-        fontsize=18,
+        fontsize=14,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -92,7 +83,7 @@ def create_figure():
         before_x + 2,
         before_y - 0.1,
         "Original Data",
-        fontsize=13,
+        fontsize=10,
         ha="center",
         va="top",
         color=IEEE_THEME["dim"],
@@ -125,21 +116,21 @@ def create_figure():
     data_y = before_y - 0.7
     for label, value, is_redacted in original_data:
         ax.text(
-            before_x + 0.3, data_y, label, fontsize=13, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
+            before_x + 0.3, data_y, label, fontsize=10, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
         )
         color = OBFUSCATION_COLORS["redact"] if is_redacted else OBFUSCATION_COLORS["preserve"]
         ax.text(
             before_x + 1.8,
             data_y,
             value,
-            fontsize=13,
+            fontsize=10,
             ha="left",
             va="top",
             fontweight="bold",
             color=color,
             family="monospace",
         )
-        data_y -= 0.5
+        data_y -= 0.45
 
     # ============================================================================
     # CENTER: TRANSFORMATION ARROW
@@ -158,7 +149,7 @@ def create_figure():
         6.15,
         6.3,
         "OBFUSCATION",
-        fontsize=15,
+        fontsize=11,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -177,7 +168,7 @@ def create_figure():
         6.15,
         4.6,
         transform_text,
-        fontsize=12,
+        fontsize=9,
         ha="center",
         va="top",
         color=IEEE_THEME["text"],
@@ -202,7 +193,7 @@ def create_figure():
         after_x + 2,
         after_y + 0.3,
         "AFTER",
-        fontsize=18,
+        fontsize=14,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -212,7 +203,7 @@ def create_figure():
         after_x + 2,
         after_y - 0.1,
         "Obfuscated Data",
-        fontsize=13,
+        fontsize=10,
         ha="center",
         va="top",
         color=IEEE_THEME["dim"],
@@ -245,7 +236,7 @@ def create_figure():
     data_y = after_y - 0.7
     for label, value, is_placeholder in obfuscated_data:
         ax.text(
-            after_x + 0.3, data_y, label, fontsize=13, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
+            after_x + 0.3, data_y, label, fontsize=10, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
         )
         if is_placeholder:
             color = IEEE_THEME["dim"]
@@ -257,7 +248,7 @@ def create_figure():
             after_x + 1.8,
             data_y,
             value,
-            fontsize=13,
+            fontsize=10,
             ha="left",
             va="top",
             fontweight="bold",
@@ -265,7 +256,7 @@ def create_figure():
             family="monospace",
             style=style,
         )
-        data_y -= 0.5
+        data_y -= 0.45
 
     # ============================================================================
     # BOTTOM: LEGEND AND EXPLANATION
@@ -284,7 +275,7 @@ def create_figure():
         1.6,
         legend_y - 0.1,
         "REMOVED: Temporal identifiers that could enable memorization",
-        fontsize=12,
+        fontsize=9,
         ha="left",
         va="center",
         color=IEEE_THEME["text"],
@@ -305,7 +296,7 @@ def create_figure():
         1.6,
         legend_y - 0.7,
         "PRESERVED: Structural metrics required for regime detection",
-        fontsize=12,
+        fontsize=9,
         ha="left",
         va="center",
         color=IEEE_THEME["text"],
@@ -324,7 +315,7 @@ def create_figure():
         explanation,
         ha="center",
         va="center",
-        fontsize=11,
+        fontsize=9,
         color=IEEE_THEME["dim"],
         style="italic",
         wrap=True,

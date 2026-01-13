@@ -16,20 +16,7 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
-from theme import CACHE_DB, OUTPUT_DIR, save_figure
-
-# IEEE Publication Theme
-IEEE_THEME = {
-    "background": "#FFFFFF",
-    "text": "#000000",
-    "dim": "#444444",
-    "panel_bg": "#F5F5F5",
-    "grid": "#DDDDDD",
-    "accent_positive": "#2E7D32",
-    "accent_negative": "#C62828",
-    "accent_warning": "#E65100",
-    "accent_neutral": "#1565C0",
-}
+from theme import CACHE_DB, IEEE_THEME, OUTPUT_DIR, save_figure
 
 
 def generate_synthetic_data():
@@ -122,7 +109,7 @@ def create_figure(data):
     plt.style.use("default")
 
     # Create figure
-    fig, ax = plt.subplots(figsize=(14, 10), dpi=300)
+    fig, ax = plt.subplots(figsize=(12, 8), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax.set_facecolor(IEEE_THEME["background"])
 
@@ -180,51 +167,49 @@ def create_figure(data):
         gap_x + 1.5,
         (mean_conf_detected + mean_conf_rejected) / 2,
         f"{conf_gap:.1f}pp\ngap",
-        fontsize=15,
+        fontsize=12,
         fontweight="bold",
         color=IEEE_THEME["accent_warning"],
         va="center",
         ha="left",
     )
 
-    # Add statistics box
+    # Add statistics box (top left corner)
     stats_text = (
         f"Confidence Discrimination\n"
         f"─────────────────────────\n"
-        f"Detected:  {mean_conf_detected:.1f}% (n={n_detected})\n"
-        f"Rejected:  {mean_conf_rejected:.1f}% (n={n_rejected})\n"
-        f"Gap:       {conf_gap:.1f} pp\n"
-        f"─────────────────────────\n"
-        f"Correlation (detected):\n"
-        f"  r = {r_detected:.3f}, p < 0.001"
+        f"Detected: {mean_conf_detected:.1f}% (n={n_detected})\n"
+        f"Rejected: {mean_conf_rejected:.1f}% (n={n_rejected})\n"
+        f"Gap: {conf_gap:.1f} pp\n"
+        f"r = {r_detected:.3f}, p < 0.001"
     )
     ax.text(
         0.02,
         0.98,
         stats_text,
         transform=ax.transAxes,
-        fontsize=16,
+        fontsize=10,
         verticalalignment="top",
         color=IEEE_THEME["text"],
-        bbox=dict(boxstyle="round,pad=0.5", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], alpha=0.95),
+        bbox=dict(boxstyle="round,pad=0.3", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], alpha=0.95),
         family="monospace",
     )
 
     # Labels and title
-    ax.set_xlabel("Persistence (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("LLM Confidence (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Persistence (%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("LLM Confidence (%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
     ax.set_title(
         "LLM Confidence Discrimination Across Full Detection Spectrum\n"
         "Point size encodes GEX magnitude (larger = higher dealer positioning)",
-        fontsize=16,
+        fontsize=14,
         fontweight="bold",
-        pad=15,
+        pad=10,
         color=IEEE_THEME["text"],
     )
 
-    # Legend
+    # Legend (moved to lower right)
     legend = ax.legend(
-        loc="upper right", fontsize=16, facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], framealpha=0.95
+        loc="lower right", fontsize=11, facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], framealpha=0.95
     )
     for text in legend.get_texts():
         text.set_color(IEEE_THEME["text"])
