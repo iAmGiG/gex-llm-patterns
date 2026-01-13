@@ -189,15 +189,15 @@ def create_figure(data):
         label=f"Detected Mean: {mean_conf_detected:.1f}%",
     )
 
-    ax1.set_xlabel("LLM Confidence (%)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Count", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_xlabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_ylabel("Count", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
     ax1.set_title(
         "A: Confidence Distribution\n(Borderline 68-72% Persistence)",
-        fontsize=12,
+        fontsize=15,
         fontweight="bold",
         color=IEEE_THEME["text"],
     )
-    legend1 = ax1.legend(loc="upper left", fontsize=11, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"])
+    legend1 = ax1.legend(loc="upper left", fontsize=14, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"])
     for text in legend1.get_texts():
         text.set_color(IEEE_THEME["text"])
     ax1.set_xlim(0, 100)
@@ -239,16 +239,16 @@ def create_figure(data):
     ax2.axvline(70, color=IEEE_THEME["accent_neutral"], linestyle="--", linewidth=2.5, label="70% Threshold", zorder=10)
     ax2.axvspan(68, 72, alpha=0.15, color=IEEE_THEME["accent_warning"], label="Borderline Region")
 
-    ax2.set_xlabel("Persistence (%)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_ylabel("LLM Confidence (%)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_xlabel("Persistence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_ylabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
     ax2.set_title(
         "B: Threshold Crossing Detail\n(65-75% Persistence Range)",
-        fontsize=12,
+        fontsize=15,
         fontweight="bold",
         color=IEEE_THEME["text"],
     )
     legend2 = ax2.legend(
-        loc="upper right", fontsize=11, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"]
+        loc="upper right", fontsize=14, facecolor=IEEE_THEME["background"], edgecolor=IEEE_THEME["dim"]
     )
     for text in legend2.get_texts():
         text.set_color(IEEE_THEME["text"])
@@ -303,14 +303,14 @@ def create_figure(data):
         0.95,
         summary_text,
         transform=ax3.transAxes,
-        fontsize=11,
+        fontsize=14,
         fontfamily="monospace",
         verticalalignment="top",
         color=IEEE_THEME["text"],
         bbox=dict(boxstyle="round,pad=0.5", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], linewidth=1),
     )
 
-    ax3.set_title("C: Statistical Summary", fontsize=12, fontweight="bold", x=0.5, y=0.98, color=IEEE_THEME["text"])
+    ax3.set_title("C: Statistical Summary", fontsize=15, fontweight="bold", x=0.5, y=0.98, color=IEEE_THEME["text"])
 
     plt.tight_layout()
 

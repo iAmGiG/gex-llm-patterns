@@ -121,7 +121,7 @@ def create_figure():
         # Stage number circle
         circle = plt.Circle(
             (x + 0.4, y + box_height - 0.4),
-            0.25,
+            0.3,
             facecolor=stage["color"],
             edgecolor=IEEE_THEME["background"],
             linewidth=2,
@@ -134,7 +134,7 @@ def create_figure():
             stage["num"],
             ha="center",
             va="center",
-            fontsize=11,
+            fontsize=16,
             fontweight="bold",
             color="#FFFFFF",
             zorder=6,
@@ -143,11 +143,11 @@ def create_figure():
         # Title
         ax.text(
             x + box_width / 2,
-            y + box_height - 0.8,
+            y + box_height - 0.85,
             stage["title"],
             ha="center",
             va="top",
-            fontsize=12,
+            fontsize=18,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
@@ -155,20 +155,20 @@ def create_figure():
         # Subtitle
         ax.text(
             x + box_width / 2,
-            y + box_height - 1.2,
+            y + box_height - 1.35,
             stage["subtitle"],
             ha="center",
             va="top",
-            fontsize=9,
+            fontsize=14,
             color=stage["color"],
             style="italic",
         )
 
         # Details list
-        detail_y = y + box_height - 1.8
+        detail_y = y + box_height - 1.9
         for detail in stage["details"]:
-            ax.text(x + 0.3, detail_y, f"• {detail}", ha="left", va="top", fontsize=9, color=IEEE_THEME["text"])
-            detail_y -= 0.5
+            ax.text(x + 0.3, detail_y, f"• {detail}", ha="left", va="top", fontsize=13, color=IEEE_THEME["text"])
+            detail_y -= 0.55
 
     # Draw arrows between stages
     arrow_y = y_center
@@ -213,7 +213,7 @@ def create_figure():
             ex["text"],
             ha="center",
             va="center",
-            fontsize=7,
+            fontsize=10,
             color=IEEE_THEME["text"],
             family="monospace",
         )
@@ -224,7 +224,7 @@ def create_figure():
         "Data\nFlow:",
         ha="right",
         va="center",
-        fontsize=8,
+        fontsize=12,
         fontweight="bold",
         color=IEEE_THEME["dim"],
     )
@@ -239,7 +239,7 @@ def create_figure():
         output_text,
         ha="left",
         va="center",
-        fontsize=9,
+        fontsize=13,
         color=IEEE_THEME["text"],
         bbox=dict(
             boxstyle="round,pad=0.4",

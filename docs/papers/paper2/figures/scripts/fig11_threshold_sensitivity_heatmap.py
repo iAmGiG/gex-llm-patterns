@@ -145,7 +145,7 @@ def create_figure(data):
 
     # Add colorbar with dark theme styling
     cbar = plt.colorbar(im, ax=ax, shrink=0.8)
-    cbar.set_label("Discrimination Gap (pp)\n(2024% - 2020%)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
+    cbar.set_label("Discrimination Gap (pp)\n(2024% - 2020%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
     cbar.ax.yaxis.set_tick_params(color=IEEE_THEME["text"])
     cbar.outline.set_edgecolor(IEEE_THEME["dim"])
     plt.setp(plt.getp(cbar.ax.axes, "yticklabels"), color=IEEE_THEME["text"])
@@ -153,12 +153,12 @@ def create_figure(data):
     # Set ticks and labels
     ax.set_xticks(np.arange(len(MAGNITUDE_THRESHOLDS)))
     ax.set_yticks(np.arange(len(PERSISTENCE_THRESHOLDS)))
-    ax.set_xticklabels([f"${m}B" for m in MAGNITUDE_THRESHOLDS], fontsize=11, color=IEEE_THEME["text"])
-    ax.set_yticklabels([f"{p}%" for p in PERSISTENCE_THRESHOLDS], fontsize=11, color=IEEE_THEME["text"])
+    ax.set_xticklabels([f"${m}B" for m in MAGNITUDE_THRESHOLDS], fontsize=14, color=IEEE_THEME["text"])
+    ax.set_yticklabels([f"{p}%" for p in PERSISTENCE_THRESHOLDS], fontsize=14, color=IEEE_THEME["text"])
 
     # Labels
-    ax.set_xlabel("Magnitude Threshold", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("Persistence Threshold", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Magnitude Threshold", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("Persistence Threshold", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
     # Title removed for IEEE paper
 
     # Add text annotations in each cell
@@ -172,7 +172,7 @@ def create_figure(data):
             text_color = "white" if gap > 75 else "black"
 
             # Main gap value
-            ax.text(j, i, f"{gap:.0f}pp", ha="center", va="center", fontsize=12, fontweight="bold", color=text_color)
+            ax.text(j, i, f"{gap:.0f}pp", ha="center", va="center", fontsize=15, fontweight="bold", color=text_color)
 
             # Smaller annotation with rates
             ax.text(
@@ -181,7 +181,7 @@ def create_figure(data):
                 f"({r2024:.0f}%-{r2020:.0f}%)",
                 ha="center",
                 va="center",
-                fontsize=10,
+                fontsize=13,
                 color=text_color,
                 alpha=0.8,
             )
@@ -213,7 +213,7 @@ def create_figure(data):
         0.98,
         "★ Current Parameters\n    (70%, $5B)",
         transform=ax.transAxes,
-        fontsize=10,
+        fontsize=13,
         fontweight="bold",
         verticalalignment="top",
         color=IEEE_THEME["accent_neutral"],
@@ -241,7 +241,7 @@ def create_figure(data):
         0.02,
         stats_text,
         transform=ax.transAxes,
-        fontsize=10,
+        fontsize=13,
         verticalalignment="bottom",
         horizontalalignment="right",
         color=IEEE_THEME["text"],

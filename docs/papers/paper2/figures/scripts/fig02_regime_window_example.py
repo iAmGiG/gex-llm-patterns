@@ -121,8 +121,8 @@ def create_figure(example_data):
     # Add threshold lines
     ax.axhline(-5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
     ax.axhline(5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
-    ax.text(31.5, -5, "−$5B", fontsize=9, color=IEEE_THEME["accent_warning"], va="center")
-    ax.text(31.5, 5, "+$5B", fontsize=9, color=IEEE_THEME["accent_warning"], va="center")
+    ax.text(31.5, -5, "−$5B", fontsize=13, color=IEEE_THEME["accent_warning"], va="center")
+    ax.text(31.5, 5, "+$5B", fontsize=13, color=IEEE_THEME["accent_warning"], va="center")
 
     # Statistics box
     neg_days = sum(1 for v in gex_values if v < 0)
@@ -144,7 +144,7 @@ def create_figure(example_data):
         0.98,
         stats_text,
         transform=ax.transAxes,
-        fontsize=10,
+        fontsize=14,
         verticalalignment="top",
         horizontalalignment="right",
         color=IEEE_THEME["text"],
@@ -159,14 +159,14 @@ def create_figure(example_data):
     )
 
     # Labels and title
-    ax.set_xlabel("Day in 30-Day Window", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Day in 30-Day Window", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("GEX Magnitude ($B)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
     # Title removed for IEEE paper
 
     # Axis formatting
     ax.set_xlim(0, 32)
     ax.set_xticks([1, 5, 10, 15, 20, 25, 30])
-    ax.tick_params(colors=IEEE_THEME["text"])
+    ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
     ax.grid(axis="y", alpha=0.5, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5, zorder=0)
 
     # Spine styling

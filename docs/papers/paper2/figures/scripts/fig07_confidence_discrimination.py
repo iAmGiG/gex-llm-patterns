@@ -180,7 +180,7 @@ def create_figure(data):
         gap_x + 1.5,
         (mean_conf_detected + mean_conf_rejected) / 2,
         f"{conf_gap:.1f}pp\ngap",
-        fontsize=12,
+        fontsize=15,
         fontweight="bold",
         color=IEEE_THEME["accent_warning"],
         va="center",
@@ -203,7 +203,7 @@ def create_figure(data):
         0.98,
         stats_text,
         transform=ax.transAxes,
-        fontsize=11,
+        fontsize=16,
         verticalalignment="top",
         color=IEEE_THEME["text"],
         bbox=dict(boxstyle="round,pad=0.5", facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], alpha=0.95),
@@ -211,12 +211,12 @@ def create_figure(data):
     )
 
     # Labels and title
-    ax.set_xlabel("Persistence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("LLM Confidence (%)", fontsize=14, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Persistence (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("LLM Confidence (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
     ax.set_title(
         "LLM Confidence Discrimination Across Full Detection Spectrum\n"
         "Point size encodes GEX magnitude (larger = higher dealer positioning)",
-        fontsize=14,
+        fontsize=16,
         fontweight="bold",
         pad=15,
         color=IEEE_THEME["text"],
@@ -224,7 +224,7 @@ def create_figure(data):
 
     # Legend
     legend = ax.legend(
-        loc="upper right", fontsize=11, facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], framealpha=0.95
+        loc="upper right", fontsize=16, facecolor=IEEE_THEME["panel_bg"], edgecolor=IEEE_THEME["dim"], framealpha=0.95
     )
     for text in legend.get_texts():
         text.set_color(IEEE_THEME["text"])

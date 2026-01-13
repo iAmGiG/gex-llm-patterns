@@ -157,7 +157,7 @@ def create_figure(windows):
 
         # Title with status badge
         ax.set_title(
-            f"{window['label']}\n[{window['status']}]", fontsize=12, fontweight="bold", color=badge_color, pad=10
+            f"{window['label']}\n[{window['status']}]", fontsize=16, fontweight="bold", color=badge_color, pad=10
         )
 
         # Stats annotation
@@ -175,7 +175,7 @@ def create_figure(windows):
             0.98,
             stats_text,
             transform=ax.transAxes,
-            fontsize=11,
+            fontsize=13,
             verticalalignment="top",
             horizontalalignment="right",
             color=IEEE_THEME["text"],
@@ -192,17 +192,17 @@ def create_figure(windows):
         # Axis formatting
         ax.set_xlim(0, 31)
         ax.set_xticks([1, 10, 20, 30])
-        ax.tick_params(colors=IEEE_THEME["text"], labelsize=10)
+        ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
         ax.grid(axis="y", alpha=0.3, color=IEEE_THEME["grid"], linestyle="-")
 
         # Labels
-        ax.set_xlabel("Day", fontsize=11, color=IEEE_THEME["text"])
-        ax.set_ylabel("GEX ($B)", fontsize=11, color=IEEE_THEME["text"])
+        ax.set_xlabel("Day", fontsize=14, color=IEEE_THEME["text"])
+        ax.set_ylabel("GEX ($B)", fontsize=14, color=IEEE_THEME["text"])
 
     # Main title
     fig.suptitle(
         "Framework Selectivity Demonstration\n" "Detected Windows (Green Border) vs Rejected Windows (Red Border)",
-        fontsize=14,
+        fontsize=18,
         fontweight="bold",
         color=IEEE_THEME["text"],
         y=0.98,
@@ -210,7 +210,7 @@ def create_figure(windows):
 
     # Criteria legend at bottom
     criteria_text = "Detection Criteria: Persistence > 70% same sign  |  " "Avg Magnitude > $5B  |  ≤5 Sign Flips"
-    fig.text(0.5, 0.02, criteria_text, ha="center", va="bottom", fontsize=10, color=IEEE_THEME["dim"], style="italic")
+    fig.text(0.5, 0.02, criteria_text, ha="center", va="bottom", fontsize=13, color=IEEE_THEME["dim"], style="italic")
 
     plt.tight_layout(rect=[0, 0.04, 1, 0.95])
 

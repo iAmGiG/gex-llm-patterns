@@ -52,7 +52,7 @@ def create_figure():
         7,
         9.5,
         "Multi-Phase Validation Pipeline",
-        fontsize=18,
+        fontsize=22,
         fontweight="bold",
         ha="center",
         va="top",
@@ -60,9 +60,9 @@ def create_figure():
     )
     ax.text(
         7,
-        8.9,
+        8.85,
         "Progressive Validation with Negative Controls",
-        fontsize=12,
+        fontsize=15,
         ha="center",
         va="top",
         color=IEEE_THEME["dim"],
@@ -142,7 +142,7 @@ def create_figure():
             phase["name"],
             ha="center",
             va="top",
-            fontsize=10,
+            fontsize=14,
             fontweight="bold",
             color=phase["color"],
         )
@@ -154,7 +154,7 @@ def create_figure():
             phase["title"],
             ha="center",
             va="top",
-            fontsize=12,
+            fontsize=15,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
@@ -166,7 +166,7 @@ def create_figure():
             phase["subtitle"],
             ha="center",
             va="top",
-            fontsize=9,
+            fontsize=12,
             color=IEEE_THEME["dim"],
             style="italic",
         )
@@ -178,7 +178,7 @@ def create_figure():
             phase["detection"],
             ha="center",
             va="center",
-            fontsize=24,
+            fontsize=28,
             fontweight="bold",
             color=phase["color"],
         )
@@ -190,7 +190,7 @@ def create_figure():
             phase["windows"],
             ha="center",
             va="center",
-            fontsize=9,
+            fontsize=12,
             color=IEEE_THEME["dim"],
         )
 
@@ -201,7 +201,7 @@ def create_figure():
             phase["description"],
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=11,
             color=IEEE_THEME["text"],
             linespacing=1.2,
         )
@@ -235,7 +235,7 @@ def create_figure():
         "(p < 0.0001, φ = 0.672)\n"
         "Negative control (6.3%) confirms detection requires temporal structure, not just statistical distribution"
     )
-    ax.text(7.1, findings_y, findings_text, ha="center", va="center", fontsize=10, color=IEEE_THEME["text"], wrap=True)
+    ax.text(7.1, findings_y, findings_text, ha="center", va="center", fontsize=13, color=IEEE_THEME["text"], wrap=True)
 
     # Phase 4A expansion note (top right)
     expansion_text = (
@@ -247,7 +247,7 @@ def create_figure():
         expansion_text,
         ha="right",
         va="top",
-        fontsize=9,
+        fontsize=12,
         color=IEEE_THEME["dim"],
         bbox=dict(
             boxstyle="round,pad=0.4",

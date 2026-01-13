@@ -160,7 +160,7 @@ def create_figure(data):
         f"2020 Mean\n${mean_2020:.1f}B",
         xy=(mean_2020, y_max * 0.85),
         xytext=(mean_2020 - 3.5, y_max * 0.92),
-        fontsize=11,
+        fontsize=14,
         fontweight="bold",
         color=IEEE_THEME["year_2020"],
         arrowprops=dict(arrowstyle="->", color=IEEE_THEME["year_2020"], lw=1.5),
@@ -172,7 +172,7 @@ def create_figure(data):
         f"2024 Mean\n${mean_2024:.1f}B",
         xy=(mean_2024, y_max * 0.65),
         xytext=(mean_2024 + 3.5, y_max * 0.80),
-        fontsize=11,
+        fontsize=14,
         fontweight="bold",
         color=IEEE_THEME["year_2024"],
         arrowprops=dict(arrowstyle="->", color=IEEE_THEME["year_2024"], lw=1.5),
@@ -184,7 +184,7 @@ def create_figure(data):
         "Regime\nThreshold",
         xy=(5.0, y_max * 0.5),
         xytext=(8.5, y_max * 0.55),
-        fontsize=10,
+        fontsize=13,
         fontweight="bold",
         color=IEEE_THEME["accent_positive"],
         arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_positive"], lw=1.5),
@@ -204,7 +204,7 @@ def create_figure(data):
         0.97,
         stats_text,
         transform=ax.transAxes,
-        fontsize=10,
+        fontsize=13,
         verticalalignment="top",
         horizontalalignment="right",
         bbox=dict(boxstyle="round,pad=0.5", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.95),
@@ -213,12 +213,12 @@ def create_figure(data):
     )
 
     # Labels and title with white text
-    ax.set_xlabel("Average GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("Number of 30-Day Windows", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Average GEX Magnitude ($B)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("Number of 30-Day Windows", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
     # Title removed for IEEE paper
 
     # Legend with dark background - placed at upper left to avoid annotation overlap
-    legend = ax.legend(loc="upper left", fontsize=11, framealpha=0.9, facecolor="white", edgecolor=IEEE_THEME["dim"])
+    legend = ax.legend(loc="upper left", fontsize=14, framealpha=0.9, facecolor="white", edgecolor=IEEE_THEME["dim"])
     for text in legend.get_texts():
         text.set_color(IEEE_THEME["text"])
 
@@ -228,7 +228,7 @@ def create_figure(data):
     ax.set_axisbelow(True)
 
     # Tick colors
-    ax.tick_params(colors=IEEE_THEME["text"])
+    ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
 
     # Spine styling
     for spine in ax.spines.values():

@@ -124,7 +124,7 @@ def create_figure(results):
             f"{count}/{total}",
             ha="center",
             va="bottom",
-            fontsize=10,
+            fontsize=16,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
@@ -138,7 +138,7 @@ def create_figure(results):
                 f"{rate:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=12,
+                fontsize=15,
                 fontweight="bold",
                 color=IEEE_THEME["background"],
             )
@@ -149,7 +149,7 @@ def create_figure(results):
                 f"{rate:.1f}%",
                 ha="center",
                 va="bottom",
-                fontsize=10,
+                fontsize=16,
                 fontweight="bold",
                 color=IEEE_THEME["text"],
             )
@@ -167,7 +167,7 @@ def create_figure(results):
         "2023→2024\nStructural\nShift",
         ha="center",
         va="center",
-        fontsize=11,
+        fontsize=17,
         fontweight="bold",
         color=IEEE_THEME["text"],
         bbox=dict(
@@ -179,19 +179,19 @@ def create_figure(results):
     )
 
     # Regime labels
-    ax1.text(2020.5, 108, "Pre-Regime", ha="center", fontsize=10, fontweight="bold", color=YEAR_COLORS["pre_regime"])
-    ax1.text(2022.5, 108, "Gradual Adoption", ha="center", fontsize=10, fontweight="bold", color=YEAR_COLORS["growing"])
+    ax1.text(2020.5, 108, "Pre-Regime", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["pre_regime"])
+    ax1.text(2022.5, 108, "Gradual Adoption", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["growing"])
     ax1.text(
-        2024.5, 108, "Persistent Regime", ha="center", fontsize=10, fontweight="bold", color=YEAR_COLORS["structural"]
+        2024.5, 108, "Persistent Regime", ha="center", fontsize=16, fontweight="bold", color=YEAR_COLORS["structural"]
     )
 
     # Formatting
-    ax1.set_xlabel("Year", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Detection Rate (%)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_xlabel("Year", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_ylabel("Detection Rate (%)", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
     ax1.set_title(
         "Phase 4A: Temporal Progression of Regime Detection (2020-2025)\n"
         + "Gradual 0DTE Adoption with 2023→2024 Structural Market Shift",
-        fontsize=14,
+        fontsize=17,
         fontweight="bold",
         pad=15,
         color=IEEE_THEME["text"],
@@ -225,21 +225,21 @@ def create_figure(results):
             f"${gex:.1f}B",
             ha="center",
             va="bottom",
-            fontsize=10,
+            fontsize=16,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
 
     ax2.axhline(y=5.0, color=IEEE_THEME["accent_positive"], linestyle="--", linewidth=2, alpha=0.8)
     ax2.text(
-        2020.3, 5.8, "$5B Threshold", fontsize=9, fontweight="bold", color=IEEE_THEME["accent_positive"], va="bottom"
+        2020.3, 5.8, "$5B Threshold", fontsize=15, fontweight="bold", color=IEEE_THEME["accent_positive"], va="bottom"
     )
 
-    ax2.set_xlabel("Year", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_xlabel("Year", fontsize=16, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_ylabel("Avg GEX Magnitude ($B)", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
     ax2.set_title(
         "Average GEX Magnitude Evolution (360% Growth 2021→2024)",
-        fontsize=12,
+        fontsize=15,
         fontweight="bold",
         pad=10,
         color=IEEE_THEME["text"],
@@ -265,7 +265,7 @@ def create_figure(results):
         footer_text,
         ha="center",
         va="bottom",
-        fontsize=10,
+        fontsize=16,
         style="italic",
         color=IEEE_THEME["dim"],
         wrap=True,
