@@ -17,22 +17,22 @@ Output: docs/papers/paper2/figures/output/fig09_scar_tissue.png
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import FancyBboxPatch, Rectangle, FancyArrowPatch, Polygon
-from matplotlib.lines import Line2D
 from matplotlib.gridspec import GridSpec
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Polygon, Rectangle
 from theme import IEEE_THEME, OUTPUT_DIR, save_figure
 
 # Diagram colors
 COLORS = {
     "gamma": "#C62828",  # Red for gamma exposure (0DTE options)
     "hedge": "#1565C0",  # Blue for hedge position (stock)
-    "residual": "#E65100",  # Orange for residual/scar tissue
+    "scar_tissue": "#1565C0",  # Blue for scar tissue (matches hedge)
     "expired": "#BDBDBD",  # Grey for expired/vanished
     "time_marker": "#2E7D32",  # Green for 4:00 PM marker
     "background_panel": "#F5F5F5",  # Light grey panel background
     "arrow": "#424242",  # Dark grey for arrows
     "fill_intraday": "#FFCDD2",  # Light red fill
-    "fill_residual": "#FFE0B2",  # Light orange fill
+    "fill_scar_tissue": "#BBDEFB",  # Light blue fill (matches hedge)
 }
 
 
@@ -80,11 +80,7 @@ def create_figure():
     ax_schematic.set_facecolor(IEEE_THEME["background"])
 
     # Main title
-    fig.suptitle(
-        'The "Scar Tissue" Mechanism',
-        fontsize=18, fontweight="bold", color=IEEE_THEME["text"],
-        y=0.97
-    )
+    fig.suptitle('The "Scar Tissue" Mechanism', fontsize=18, fontweight="bold", color=IEEE_THEME["text"], y=0.97)
 
     # ========================================================================
     # PANEL A: INTRADAY GAMMA DYNAMICS (Time-Series Curve)
@@ -95,32 +91,35 @@ def create_figure():
     gamma = gamma_curve(t)
 
     # Plot the gamma curve
-    ax_curve.plot(t, gamma, color=COLORS["gamma"], linewidth=3,
-                  label="Dealer Gamma Exposure", zorder=5)
+    ax_curve.plot(t, gamma, color=COLORS["gamma"], linewidth=3, label="Dealer Gamma Exposure", zorder=5)
 
     # Fill area under curve during trading hours
     trading_mask = t <= 1.0
-    ax_curve.fill_between(t[trading_mask], 0, gamma[trading_mask],
-                          color=COLORS["fill_intraday"], alpha=0.4, zorder=2)
+    ax_curve.fill_between(t[trading_mask], 0, gamma[trading_mask], color=COLORS["fill_intraday"], alpha=0.4, zorder=2)
 
     # Highlight residual area (scar tissue)
     residual_mask = t >= 1.0
-    ax_curve.fill_between(t[residual_mask], 0, gamma[residual_mask],
-                          color=COLORS["fill_residual"], alpha=0.6, zorder=3,
-                          label='"Scar Tissue" Residual')
+    ax_curve.fill_between(
+        t[residual_mask],
+        0,
+        gamma[residual_mask],
+        color=COLORS["fill_scar_tissue"],
+        alpha=0.6,
+        zorder=3,
+        label='"Scar Tissue" Residual',
+    )
 
     # Scar tissue level line
-    ax_curve.axhline(y=6.0, color=COLORS["residual"], linestyle="--", linewidth=1.5,
-                     alpha=0.7, zorder=4)
-    ax_curve.fill_between([0.85, 1.2], 0, 6.0, color=COLORS["fill_residual"],
-                          alpha=0.3, zorder=1)
+    ax_curve.axhline(y=6.0, color=COLORS["scar_tissue"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=4)
+    ax_curve.fill_between([0.85, 1.2], 0, 6.0, color=COLORS["fill_scar_tissue"], alpha=0.3, zorder=1)
 
     # Zero reference line
     ax_curve.axhline(y=0, color=IEEE_THEME["dim"], linewidth=1, zorder=1)
 
     # Market close vertical line
-    ax_curve.axvline(x=1.0, color=COLORS["time_marker"], linewidth=2.5, linestyle="-",
-                     label="Market Close (4:00 PM)", zorder=4)
+    ax_curve.axvline(
+        x=1.0, color=COLORS["time_marker"], linewidth=2.5, linestyle="-", label="Market Close (4:00 PM)", zorder=4
+    )
 
     # Annotations
     peak_idx = np.argmax(gamma)
@@ -128,54 +127,66 @@ def create_figure():
         "Peak Gamma\n~$23B",
         xy=(t[peak_idx], gamma[peak_idx]),
         xytext=(0.72, 26),
-        fontsize=10, fontweight="bold", color=COLORS["gamma"], ha="center",
-        arrowprops=dict(arrowstyle="->", color=COLORS["gamma"], lw=1.5,
-                        connectionstyle="arc3,rad=0.2"),
+        fontsize=10,
+        fontweight="bold",
+        color=COLORS["gamma"],
+        ha="center",
+        arrowprops=dict(arrowstyle="->", color=COLORS["gamma"], lw=1.5, connectionstyle="arc3,rad=0.2"),
     )
 
     ax_curve.annotate(
         "Incomplete\nUnwind",
         xy=(0.82, gamma_curve(np.array([0.82]))[0]),
         xytext=(0.58, 5),
-        fontsize=10, fontweight="bold", color=COLORS["hedge"], ha="center",
-        arrowprops=dict(arrowstyle="->", color=COLORS["hedge"], lw=1.5,
-                        connectionstyle="arc3,rad=-0.2"),
+        fontsize=10,
+        fontweight="bold",
+        color=COLORS["hedge"],
+        ha="center",
+        arrowprops=dict(arrowstyle="->", color=COLORS["hedge"], lw=1.5, connectionstyle="arc3,rad=-0.2"),
     )
 
     # Residual annotation
     ax_curve.text(
-        1.12, 10,
+        1.12,
+        10,
         '"Scar Tissue"\nResidual\n~$6B',
-        fontsize=9, fontweight="bold", color=COLORS["residual"],
-        ha="center", va="center",
-        bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
-                  edgecolor=COLORS["residual"], linewidth=1.5, alpha=0.95),
+        fontsize=9,
+        fontweight="bold",
+        color=COLORS["scar_tissue"],
+        ha="center",
+        va="center",
+        bbox=dict(
+            boxstyle="round,pad=0.3", facecolor="white", edgecolor=COLORS["scar_tissue"], linewidth=1.5, alpha=0.95
+        ),
     )
     ax_curve.annotate(
-        "", xy=(1.08, 6.0), xytext=(1.10, 8.5),
-        arrowprops=dict(arrowstyle="->", color=COLORS["residual"], lw=1.5),
+        "",
+        xy=(1.08, 6.0),
+        xytext=(1.10, 8.5),
+        arrowprops=dict(arrowstyle="->", color=COLORS["scar_tissue"], lw=1.5),
     )
 
     # X-axis labels
     ax_curve.set_xlim(-0.02, 1.22)
     ax_curve.set_xticks([0, 0.25, 0.5, 0.75, 1.0, 1.1])
-    ax_curve.set_xticklabels(["9:30\nOpen", "11:00", "12:30", "2:00", "4:00\nClose", "After\nHours"],
-                              fontsize=10)
+    ax_curve.set_xticklabels(["9:30\nOpen", "11:00", "12:30", "2:00", "4:00\nClose", "After\nHours"], fontsize=10)
 
     # Y-axis
     ax_curve.set_ylim(-1, 28)
-    ax_curve.set_ylabel("Gamma Exposure ($B)", fontsize=12, fontweight="bold",
-                        color=IEEE_THEME["text"])
-    ax_curve.set_xlabel("Trading Day Timeline", fontsize=12, fontweight="bold",
-                        color=IEEE_THEME["text"])
+    ax_curve.set_ylabel("Gamma Exposure ($B)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    ax_curve.set_xlabel("Trading Day Timeline", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
 
     # Panel A title
-    ax_curve.set_title("(A) Intraday Gamma Dynamics: Why Residual Positioning Accumulates",
-                       fontsize=13, fontweight="bold", color=IEEE_THEME["text"], pad=10)
+    ax_curve.set_title(
+        "(A) Intraday Gamma Dynamics: Why Residual Positioning Accumulates",
+        fontsize=13,
+        fontweight="bold",
+        color=IEEE_THEME["text"],
+        pad=10,
+    )
 
     # Legend
-    ax_curve.legend(loc="upper left", fontsize=10, framealpha=0.95,
-                    facecolor="white", edgecolor=IEEE_THEME["dim"])
+    ax_curve.legend(loc="upper left", fontsize=10, framealpha=0.95, facecolor="white", edgecolor=IEEE_THEME["dim"])
 
     # Grid and spines
     ax_curve.grid(True, alpha=0.3, linestyle="-", color=IEEE_THEME["grid"], zorder=0)
@@ -196,10 +207,14 @@ def create_figure():
 
     # Panel B title - positioned to avoid overlap with 4:00 PM marker
     ax_schematic.text(
-        6, 6.5,
+        6,
+        6.5,
         "(B) The Expiration Event: What Happens at 4:00 PM",
-        fontsize=13, fontweight="bold", ha="center", va="top",
-        color=IEEE_THEME["text"]
+        fontsize=13,
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=IEEE_THEME["text"],
     )
 
     # Common parameters
@@ -212,99 +227,148 @@ def create_figure():
 
     # Panel background
     left_panel = FancyBboxPatch(
-        (0.3, 0.9), 4.4, 4.8,
+        (0.3, 0.9),
+        4.4,
+        4.8,
         boxstyle="round,pad=0.1",
         facecolor=COLORS["background_panel"],
         edgecolor=IEEE_THEME["dim"],
-        linewidth=1.5, alpha=0.5
+        linewidth=1.5,
+        alpha=0.5,
     )
     ax_schematic.add_patch(left_panel)
 
     # Panel header
     ax_schematic.text(
-        left_center_x, 5.5, "3:55 PM ET",
-        fontsize=13, fontweight="bold", ha="center", va="bottom",
-        color=IEEE_THEME["text"]
+        left_center_x,
+        5.5,
+        "3:55 PM ET",
+        fontsize=13,
+        fontweight="bold",
+        ha="center",
+        va="bottom",
+        color=IEEE_THEME["text"],
     )
     ax_schematic.text(
-        left_center_x, 5.2, "Before Expiration",
-        fontsize=10, ha="center", va="bottom",
-        color=IEEE_THEME["dim"], style="italic"
+        left_center_x,
+        5.2,
+        "Before Expiration",
+        fontsize=10,
+        ha="center",
+        va="bottom",
+        color=IEEE_THEME["dim"],
+        style="italic",
     )
 
     # Gamma Exposure Bar (red)
     gamma_bar = FancyBboxPatch(
-        (left_center_x - bar_width - 0.3, bar_base_y), bar_width, bar_height,
+        (left_center_x - bar_width - 0.3, bar_base_y),
+        bar_width,
+        bar_height,
         boxstyle="round,pad=0.05",
-        facecolor=COLORS["gamma"], edgecolor=COLORS["gamma"],
-        linewidth=2, alpha=0.9
+        facecolor=COLORS["gamma"],
+        edgecolor=COLORS["gamma"],
+        linewidth=2,
+        alpha=0.9,
     )
     ax_schematic.add_patch(gamma_bar)
     ax_schematic.text(
-        left_center_x - bar_width/2 - 0.3, 1.2,
+        left_center_x - bar_width / 2 - 0.3,
+        1.2,
         "Gamma\nExposure",
-        fontsize=9, fontweight="bold", ha="center", va="top",
-        color=COLORS["gamma"]
+        fontsize=9,
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=COLORS["gamma"],
     )
     ax_schematic.text(
-        left_center_x - bar_width/2 - 0.3, bar_base_y + bar_height/2,
+        left_center_x - bar_width / 2 - 0.3,
+        bar_base_y + bar_height / 2,
         "$15B",
-        fontsize=11, fontweight="bold", ha="center", va="center",
-        color="white"
+        fontsize=11,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color="white",
     )
 
     # Hedge Position Bar (blue)
     hedge_bar = FancyBboxPatch(
-        (left_center_x + 0.3, bar_base_y), bar_width, bar_height,
+        (left_center_x + 0.3, bar_base_y),
+        bar_width,
+        bar_height,
         boxstyle="round,pad=0.05",
-        facecolor=COLORS["hedge"], edgecolor=COLORS["hedge"],
-        linewidth=2, alpha=0.9
+        facecolor=COLORS["hedge"],
+        edgecolor=COLORS["hedge"],
+        linewidth=2,
+        alpha=0.9,
     )
     ax_schematic.add_patch(hedge_bar)
     ax_schematic.text(
-        left_center_x + bar_width/2 + 0.3, 1.2,
+        left_center_x + bar_width / 2 + 0.3,
+        1.2,
         "Hedge\nPosition",
-        fontsize=9, fontweight="bold", ha="center", va="top",
-        color=COLORS["hedge"]
+        fontsize=9,
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=COLORS["hedge"],
     )
     ax_schematic.text(
-        left_center_x + bar_width/2 + 0.3, bar_base_y + bar_height/2,
+        left_center_x + bar_width / 2 + 0.3,
+        bar_base_y + bar_height / 2,
         "~$15B\nStock",
-        fontsize=10, fontweight="bold", ha="center", va="center",
-        color="white", linespacing=1.0
+        fontsize=10,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color="white",
+        linespacing=1.0,
     )
 
     # --- CENTER: 4:00 PM MARKER ---
     center_x = 6.0
 
     # Vertical dashed line
-    ax_schematic.axvline(x=center_x, ymin=0.10, ymax=0.80,
-                         color=COLORS["time_marker"], linewidth=3,
-                         linestyle="--", alpha=0.8)
+    ax_schematic.axvline(
+        x=center_x, ymin=0.10, ymax=0.80, color=COLORS["time_marker"], linewidth=3, linestyle="--", alpha=0.8
+    )
 
     # Time marker label - positioned below the title
     ax_schematic.text(
-        center_x, 5.7, "4:00 PM ET",
-        fontsize=12, fontweight="bold", ha="center", va="bottom",
+        center_x,
+        5.7,
+        "4:00 PM ET",
+        fontsize=12,
+        fontweight="bold",
+        ha="center",
+        va="bottom",
         color=COLORS["time_marker"],
-        bbox=dict(boxstyle="round,pad=0.25", facecolor="white",
-                  edgecolor=COLORS["time_marker"], linewidth=2)
+        bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor=COLORS["time_marker"], linewidth=2),
     )
 
     # Expiration event annotation
     ax_schematic.text(
-        center_x, 0.55, "0DTE OPTIONS EXPIRE",
-        fontsize=9, fontweight="bold", ha="center", va="center",
+        center_x,
+        0.55,
+        "0DTE OPTIONS EXPIRE",
+        fontsize=9,
+        fontweight="bold",
+        ha="center",
+        va="center",
         color=COLORS["time_marker"],
-        bbox=dict(boxstyle="round,pad=0.2", facecolor="#E8F5E9",
-                  edgecolor=COLORS["time_marker"], linewidth=1.5)
+        bbox=dict(boxstyle="round,pad=0.2", facecolor="#E8F5E9", edgecolor=COLORS["time_marker"], linewidth=1.5),
     )
 
     # Transformation arrow
     ax_schematic.annotate(
-        "", xy=(7.5, 3.2), xytext=(4.8, 3.2),
-        arrowprops=dict(arrowstyle="-|>", lw=2.5, color=COLORS["arrow"],
-                        mutation_scale=15, connectionstyle="arc3,rad=0")
+        "",
+        xy=(7.5, 3.2),
+        xytext=(4.8, 3.2),
+        arrowprops=dict(
+            arrowstyle="-|>", lw=2.5, color=COLORS["arrow"], mutation_scale=15, connectionstyle="arc3,rad=0"
+        ),
     )
 
     # --- RIGHT PANEL: AFTER (4:05 PM) ---
@@ -312,66 +376,105 @@ def create_figure():
 
     # Panel background
     right_panel = FancyBboxPatch(
-        (7.3, 0.9), 4.4, 4.8,
+        (7.3, 0.9),
+        4.4,
+        4.8,
         boxstyle="round,pad=0.1",
         facecolor=COLORS["background_panel"],
         edgecolor=IEEE_THEME["dim"],
-        linewidth=1.5, alpha=0.5
+        linewidth=1.5,
+        alpha=0.5,
     )
     ax_schematic.add_patch(right_panel)
 
     # Panel header
     ax_schematic.text(
-        right_center_x, 5.5, "4:05 PM ET",
-        fontsize=13, fontweight="bold", ha="center", va="bottom",
-        color=IEEE_THEME["text"]
+        right_center_x,
+        5.5,
+        "4:05 PM ET",
+        fontsize=13,
+        fontweight="bold",
+        ha="center",
+        va="bottom",
+        color=IEEE_THEME["text"],
     )
     ax_schematic.text(
-        right_center_x, 5.2, "After Expiration",
-        fontsize=10, ha="center", va="bottom",
-        color=IEEE_THEME["dim"], style="italic"
+        right_center_x,
+        5.2,
+        "After Expiration",
+        fontsize=10,
+        ha="center",
+        va="bottom",
+        color=IEEE_THEME["dim"],
+        style="italic",
     )
 
     # Gamma Exposure Bar - VANISHED (ghosted)
     gamma_ghost = FancyBboxPatch(
-        (right_center_x - bar_width - 0.3, bar_base_y), bar_width, bar_height,
+        (right_center_x - bar_width - 0.3, bar_base_y),
+        bar_width,
+        bar_height,
         boxstyle="round,pad=0.05",
-        facecolor="none", edgecolor=COLORS["expired"],
-        linewidth=2, linestyle="--", alpha=0.6
+        facecolor="none",
+        edgecolor=COLORS["expired"],
+        linewidth=2,
+        linestyle="--",
+        alpha=0.6,
     )
     ax_schematic.add_patch(gamma_ghost)
     ax_schematic.text(
-        right_center_x - bar_width/2 - 0.3, 1.2,
+        right_center_x - bar_width / 2 - 0.3,
+        1.2,
         "Gamma\n(Expired)",
-        fontsize=9, ha="center", va="top",
-        color=COLORS["expired"], style="italic"
+        fontsize=9,
+        ha="center",
+        va="top",
+        color=COLORS["expired"],
+        style="italic",
     )
     ax_schematic.text(
-        right_center_x - bar_width/2 - 0.3, bar_base_y + bar_height/2,
+        right_center_x - bar_width / 2 - 0.3,
+        bar_base_y + bar_height / 2,
         "EXPIRED\n$0",
-        fontsize=10, fontweight="bold", ha="center", va="center",
-        color=COLORS["expired"]
+        fontsize=10,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color=COLORS["expired"],
     )
 
     # Hedge Position Bar - STILL PRESENT (orange for scar tissue)
     residual_bar = FancyBboxPatch(
-        (right_center_x + 0.3, bar_base_y), bar_width, bar_height,
+        (right_center_x + 0.3, bar_base_y),
+        bar_width,
+        bar_height,
         boxstyle="round,pad=0.05",
-        facecolor=COLORS["residual"], edgecolor=COLORS["residual"],
-        linewidth=2, alpha=0.9
+        facecolor=COLORS["scar_tissue"],
+        edgecolor=COLORS["scar_tissue"],
+        linewidth=2,
+        alpha=0.9,
     )
     ax_schematic.add_patch(residual_bar)
     ax_schematic.text(
-        right_center_x + bar_width/2 + 0.3, 1.2,
+        right_center_x + bar_width / 2 + 0.3,
+        1.2,
         '"Scar Tissue"',
-        fontsize=9, fontweight="bold", ha="center", va="top",
-        color=COLORS["residual"]
+        fontsize=9,
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=COLORS["scar_tissue"],
     )
     ax_schematic.text(
-        right_center_x + bar_width/2 + 0.3, bar_base_y + bar_height/2,
+        right_center_x + bar_width / 2 + 0.3,
+        bar_base_y + bar_height / 2,
         "~$15B\nStock\nRemainder",
-        fontsize=9, fontweight="bold", ha="center", va="center",
-        color="white", linespacing=1.0
+        fontsize=9,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color="white",
+        linespacing=1.0,
     )
 
     # ========================================================================
@@ -384,12 +487,17 @@ def create_figure():
     )
 
     fig.text(
-        0.5, 0.02, insight_text,
-        fontsize=10, ha="center", va="bottom",
+        0.5,
+        0.02,
+        insight_text,
+        fontsize=10,
+        ha="center",
+        va="bottom",
         color=IEEE_THEME["text"],
-        bbox=dict(boxstyle="round,pad=0.5", facecolor="#FFF3E0",
-                  edgecolor=COLORS["residual"], linewidth=1.5, alpha=0.95),
-        linespacing=1.4
+        bbox=dict(
+            boxstyle="round,pad=0.5", facecolor="#E3F2FD", edgecolor=COLORS["scar_tissue"], linewidth=1.5, alpha=0.95
+        ),
+        linespacing=1.4,
     )
 
     plt.tight_layout(rect=[0, 0.06, 1, 0.95])
