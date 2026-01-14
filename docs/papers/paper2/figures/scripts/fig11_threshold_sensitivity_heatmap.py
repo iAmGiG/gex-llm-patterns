@@ -160,7 +160,7 @@ def create_figure(data):
             r2024 = rates_2024[i, j]
 
             # Use white text on dark cells (high gap), black text on light cells (low gap)
-            text_color = "white" if gap > 75 else "black"
+            text_color = "white" if gap >= 90 else "black"
 
             # Main gap value
             ax.text(j, i, f"{gap:.0f}pp", ha="center", va="center", fontsize=15, fontweight="bold", color=text_color)
@@ -182,9 +182,7 @@ def create_figure(data):
     current_j = MAGNITUDE_THRESHOLDS.index(CURRENT_MAGNITUDE)
 
     # Draw rectangle around current parameters with cyan border (no star marker)
-    rect = plt.Rectangle(
-        (current_j - 0.5, current_i - 0.5), 1, 1, fill=False, edgecolor=IEEE_THEME["accent_neutral"], linewidth=3
-    )
+    rect = plt.Rectangle((current_j - 0.5, current_i - 0.5), 1, 1, fill=False, edgecolor="#00FF00", linewidth=4)
     ax.add_patch(rect)
 
     # Calculate statistics for legends
@@ -207,11 +205,11 @@ def create_figure(data):
         fontsize=12,
         fontweight="bold",
         verticalalignment="top",
-        color=IEEE_THEME["accent_neutral"],
+        color="#00FF00",
         bbox=dict(
             boxstyle="round,pad=0.3",
             facecolor=IEEE_THEME["panel_bg"],
-            edgecolor=IEEE_THEME["accent_neutral"],
+            edgecolor="#00FF00",
             alpha=0.95,
         ),
     )
