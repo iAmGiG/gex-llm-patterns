@@ -113,9 +113,11 @@ def create_figure(data):
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax.set_facecolor(IEEE_THEME["background"])
 
-    # Normalize magnitude for point sizes
-    sizes_detected = (data["magnitude"][detected_mask] / data["magnitude"].max()) * 200 + 30
-    sizes_rejected = (data["magnitude"][rejected_mask] / data["magnitude"].max()) * 200 + 30
+    # Normalize magnitude for point sizes - SQUARED for dramatic visual distinction
+    # # Normalize magnitude for point sizesB days should look "massive" compared to B days
+    norm_mag = data["magnitude"] / data["magnitude"].max()
+    sizes_detected = (norm_mag[detected_mask] ** 2) * 500 + 20
+    sizes_rejected = (norm_mag[rejected_mask] ** 2) * 500 + 20
 
     # Plot rejected points first (background)
     ax.scatter(
