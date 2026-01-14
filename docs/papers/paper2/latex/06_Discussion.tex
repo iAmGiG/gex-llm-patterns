@@ -127,7 +127,7 @@ However, while the temporal coincidence strongly implicates 0DTE as the primary 
 
 \noindent\textbf{Phase 4 confirms 2020 vs 2024 structural difference}: Testing 223 windows from each year with identical methodology revealed a 69.1 percentage point detection difference (12.1\% vs 81.2\%). This large effect size ($\phi$ = 0.672) provides quantitative evidence of fundamental market structure change between pre-0DTE and post-0DTE eras. Phase 5 multi-year validation (\ref{sec:phase5}) subsequently identified gradual 0DTE adoption timing: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024), confirming the structural reorganization of dealer positioning tracks market evolution rather than exhibiting binary behavior. Figure~\ref{fig:phase4a_progression} visualizes this temporal evolution: the top panel shows detection rates climbing from 12.2\% (2020) through borderline years to sustained 100\% (2024-2025), while the bottom panel reveals the underlying driver—GEX magnitude grew 360\% from \$5B to \$23B, far exceeding inflation.
 
-\begin{figure*}[t]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{../figures/output/fig08_detection_progression.png}
 \caption{\textbf{Phase 5: Temporal Progression of Regime Detection (2020-2025).}
@@ -247,7 +247,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \vspace{0.3cm}
 
-\begin{figure*}[t]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{../figures/output/fig09_scar_tissue.png}
 \caption{\textbf{Scar Tissue Mechanism: How Intraday 0DTE Trading Creates Overnight Positioning.}
@@ -279,7 +279,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 
 \noindent\textbf{Supplementary evidence: The ``Great Divergence''}: The scar tissue mechanism implies a testable consequence—if dealers carry overnight positioning, returns should shift from intraday to overnight sessions. Figure~\ref{fig:divergence} decomposes SPY total returns into overnight (Close$_T$ → Open$_{T+1}$) and intraday (Open$_{T+1}$ → Close$_{T+1}$) components across 2020-2025, revealing a striking temporal pattern: Panel~A's cumulative ``jaw'' chart shows overnight and intraday returns tracking together through 2021, then diverging sharply as 0DTE adoption accelerated; Panel~B's annual breakdown quantifies the shift—pre-0DTE (2020-2021), overnight and intraday returns were roughly balanced, while post-adoption (2024), overnight returns dominate (+21.2\%) and intraday returns compressed to near-zero (+0.6\%). This pattern is \textit{consistent with} the scar tissue hypothesis—dealers extracting risk premium from overnight carry—though we emphasize correlation rather than causation. Alternative explanations (interest rate environment changes, market maker behavior shifts) cannot be excluded.
 
-\begin{figure*}[t]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{../figures/output/fig12_overnight_intraday_divergence.png}
 \caption{\textbf{The ``Great Divergence'': Overnight vs Intraday Return Decomposition.}
@@ -307,7 +307,7 @@ Conversely, when persistence = 70.1\% with the same magnitude and flips, LLM con
 
 \noindent\textbf{Empirical validation}: Analysis of 1,412 validation windows confirms confidence discrimination across the full detection spectrum. Detected regimes (n=646) averaged 92.8\% confidence, while rejected cases (n=766) averaged 52.1\%—a 40.7 percentage point gap indicating strong discrimination. The specific illustrative example (42\% vs 84\% for the 69.8\% vs 70.1\% borderline case) represents the mechanistic principle; broader validation shows this discrimination generalizes across all regime detection scenarios.
 
-\begin{figure*}[ht]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{../figures/output/fig10_borderline_persistence.png}
 \caption{Borderline Persistence Region Analysis (68-72\%). Panel A: Confidence distribution shows rejected windows (n=80) average 57.9\% confidence while detected windows (n=4) average 75.0\%, yielding 17.1pp discrimination gap. Panel B: Scatterplot of 65-75\% persistence range with borderline region highlighted; 70\% threshold line shows classification boundary. Panel C: Statistical summary confirming discrimination persists at threshold boundary, consistent with full-spectrum 40.7pp gap.}
