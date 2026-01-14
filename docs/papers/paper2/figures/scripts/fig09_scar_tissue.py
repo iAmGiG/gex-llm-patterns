@@ -202,7 +202,7 @@ def create_figure():
     # ========================================================================
 
     ax_schematic.set_xlim(0, 12)
-    ax_schematic.set_ylim(0, 7)
+    ax_schematic.set_ylim(0, 7.8)
     ax_schematic.axis("off")
 
     # Panel B title - positioned to avoid overlap with 4:00 PM marker
@@ -227,9 +227,9 @@ def create_figure():
 
     # Panel background
     left_panel = FancyBboxPatch(
-        (0.3, 0.9),
+        (0.3, 0.6),
         4.4,
-        4.8,
+        5.5,
         boxstyle="round,pad=0.1",
         facecolor=COLORS["background_panel"],
         edgecolor=IEEE_THEME["dim"],
@@ -376,9 +376,9 @@ def create_figure():
 
     # Panel background
     right_panel = FancyBboxPatch(
-        (7.3, 0.9),
+        (7.3, 0.6),
         4.4,
-        4.8,
+        5.5,
         boxstyle="round,pad=0.1",
         facecolor=COLORS["background_panel"],
         edgecolor=IEEE_THEME["dim"],
