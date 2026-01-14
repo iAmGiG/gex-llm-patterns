@@ -143,18 +143,12 @@ def create_figure(results):
                 color=IEEE_THEME["text"],
             )
 
-    # Highlight 2023→2024 structural shift - arrow and annotation positioned to avoid overlap
-    ax1.annotate(
-        "",
-        xy=(2024, 100),
-        xytext=(2023, 20.2),
-        arrowprops=dict(arrowstyle="->", lw=2, color=IEEE_THEME["accent_warning"], linestyle="--"),
-    )
+    # Highlight 2023→2024 structural shift - arrow starts from text box, not through it
     ax1.text(
-        2023.65,
-        68,
+        2023.25,
+        55,
         "2023→2024\nStructural\nShift",
-        ha="center",
+        ha="right",
         va="center",
         fontsize=11,
         fontweight="bold",
@@ -165,6 +159,13 @@ def create_figure(results):
             edgecolor=IEEE_THEME["accent_warning"],
             linewidth=1.5,
         ),
+    )
+    # Dashed arrow from right edge of text box to 2024 bar
+    ax1.annotate(
+        "",
+        xy=(2024, 100),
+        xytext=(2023.35, 55),
+        arrowprops=dict(arrowstyle="->", lw=2, color=IEEE_THEME["accent_warning"], linestyle="--"),
     )
 
     # Regime labels
