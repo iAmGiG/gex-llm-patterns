@@ -51,11 +51,26 @@ Two research tracks emerged from planning. **Advisor input needed on prioritizat
 - Gamma "wall" validation (practitioner claim testing)
 - Continuous vs binary regime classification
 
+**Proposed Experiments** (from #116, #221-223):
+
+| Experiment | Setup | Metric |
+|------------|-------|--------|
+| Intraday flip detection | Predict 4PM regime from 9:45+12:00 data | Detection accuracy, timing |
+| Per-strike vs aggregate | A/B test: scalar GEX vs distribution | Detection rate improvement |
+| Continuous vs binary | Regime intensity vs binary label | Calibration improvement |
+| Supplementary signals | Add SABR ρ/ν, GAMMA-SVIX divergence | Incremental value |
+
+**Supplementary Signal Research** (from #226, #228):
+
+- **SABR Parameters**: ρ (vol-spot correlation) as directional bias, ν (vol-of-vol) as jump risk
+- **GAMMA-SVIX Divergence**: Normal correlation is -0.89; divergence signals regime transition
+
 **Expected Contributions**:
 
 1. First systematic study of intraday dealer gamma dynamics
 2. Per-strike analysis bridges practitioner intuition with academic rigor
 3. Earlier detection of regime shifts (morning signal vs EOD)
+4. Supplementary signals validation (SABR, SVIX)
 
 **Timeline**: 13-18 weeks
 **Data**: **Critical blocker** - intraday options Greeks vendor TBD
