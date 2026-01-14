@@ -29,7 +29,7 @@
 - [Key Results](#key-results)
 - [Quick Links](#quick-links)
 - [Research Roadmap](#research-roadmap)
-- [Project Status](#project-status-november-2025)
+- [Project Status](#project-status-january-2026)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
 
@@ -58,7 +58,7 @@
 | **Research** | [Research Roadmap](docs/papers/research_roadmap.md) | Multi-paper strategy (Phase 1-3) |
 | **Presentation** | [PhD Symposium 2025](docs/presentations/phd_symposium_2025.md) | Complete presentation guide |
 | **Fundamentals** | [Concepts Explained](docs/presentations/fundamentals_explained.md) | Non-technical introduction |
-| **Implementation** | [Technical Deep Dive](docs/presentations/technical_deep_dive.md) | Code walkthrough |
+| **Implementation** | [Technical Deep Dive](docs/presentations/technical-deep-dive.md) | Code walkthrough |
 | **Validation** | [Pattern Taxonomy](reports/validation/pattern_taxonomy/) | Full 2024 test results |
 | **Issues** | [GitHub Issues](https://github.com/iAmGiG/gex-llm-patterns/issues) | Active development tracker |
 
@@ -110,7 +110,7 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 
 *Q2 excluded due to insufficient data coverage (~27% availability) - remaining quarters represent full 2024 validation coverage
 
-## Project Status (November 2025)
+## Project Status (January 2026)
 
 ### Completed
 
@@ -134,9 +134,9 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
 
 ### In Progress
 
-- **Paper #1 Review**: Awaiting reviews from IEEE LLM-Finance 2025 (4-6 weeks)
+- **Paper #2 Submission**: Sequential regime detection across 6 years (2020-2025), 1,858 windows validated, figures polished
+- **Paper #1 Journal Revision**: Preparing extended version for journal submission
 - **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM (Issue #87)
-- **Sequential GEX**: 5-day lookback analysis for temporal constraint detection (Issue #89)
 
 ### Deferred
 
@@ -244,7 +244,7 @@ gex-llm-patterns/
 │   ├── presentations/             # PhD symposium, papers
 │   │   ├── phd_symposium_2025.md         # Full presentation guide
 │   │   ├── fundamentals_explained.md     # Non-technical explanation
-│   │   └── technical_deep_dive.md        # Implementation details
+│   │   └── technical-deep-dive.md        # Implementation details
 │   ├── system/                    # System documentation
 │   │   └── SYSTEM_FLOW_SIMPLE.md         # Methodology flowcharts
 │   └── guides/                    # Implementation guides
@@ -399,11 +399,11 @@ Comprehensive documentation available in `docs/`:
 
 - **[PhD Symposium 2025](docs/presentations/phd_symposium_2025.md)**: Complete presentation with methodology, results, Q&A
 - **[Fundamentals Explained](docs/presentations/fundamentals_explained.md)**: Non-technical introduction to concepts
-- **[Technical Deep Dive](docs/presentations/technical_deep_dive.md)**: Implementation details and code walkthrough
+- **[Technical Deep Dive](docs/presentations/technical-deep-dive.md)**: Implementation details and code walkthrough
 
 ### System Documentation
 
-- **[System Flow Guide](docs/SYSTEM_FLOW_SIMPLE.md)**: Visual methodology flowcharts
+- **[System Flow Guide](docs/archive/system_flow_simple.md)**: Visual methodology flowcharts
 - **[Validation Framework](docs/guides/validation-framework.md)**: How to run pattern validations
 - **[Pattern Library Guide](docs/guides/pattern-library-guide.md)**: Using the 15-pattern library
 
