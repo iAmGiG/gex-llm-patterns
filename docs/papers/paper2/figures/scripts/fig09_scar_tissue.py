@@ -208,7 +208,7 @@ def create_figure():
     # Panel B title - positioned to avoid overlap with 4:00 PM marker
     ax_schematic.text(
         6,
-        6.5,
+        7.3,
         "(B) The Expiration Event: What Happens at 4:00 PM",
         fontsize=13,
         fontweight="bold",
