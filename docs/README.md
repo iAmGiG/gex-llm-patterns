@@ -1,6 +1,6 @@
 # Documentation
 
-**Last Updated**: November 24, 2025
+**Last Updated**: January 13, 2026
 
 ---
 
@@ -13,7 +13,7 @@
 3. Understand [Data & Database](infrastructure/03-data-and-database.md)
 4. Explore [GEX Metrics Guide](guides/02-gex-metrics-explained.md)
 
-**Full Infrastructure Learning Path**: See [infrastructure/README.md](infrastructure/README.md) for sequential 01-08 reading order (~2-3 hours)
+**Full Infrastructure Learning Path**: See [infrastructure/README.md](infrastructure/README.md) for sequential 01-09 reading order (~2-3 hours)
 
 ### Looking for Something Specific?
 
@@ -43,6 +43,7 @@ docs/
 │   ├── 06-implementation-guide.md # Patterns & intraday support
 │   ├── 07-experiments-and-validation.md # Continuous experiment framework
 │   ├── 08-maintenance-and-audits.md # Maintenance & infrastructure audits
+│   ├── 09-intraday-infrastructure.md # Intraday data & OI monitor (Paper #3)
 │   └── README.md                  # Sequential learning path guide
 │
 ├── development/                    # Developer workflows & tools
@@ -111,7 +112,7 @@ docs/
 - `04-pattern-validation.md` → Methodology
 - ... logical progression
 
-**Infrastructure**: Numbered by dependency (01-08)
+**Infrastructure**: Numbered by dependency (01-09)
 
 - `01-project-overview.md` → Start here
 - `02-architecture-overview.md` → High-level design
@@ -194,6 +195,7 @@ Comprehensive system architecture and implementation documentation (📖 recomme
 - **Performance** (04-05): Cache system, token optimization, LLM integration
 - **Implementation** (06-07): Patterns, intraday support, experiments, validation
 - **Maintenance** (08): Infrastructure audits, best practices, known issues
+- **Intraday** (09): Intraday data collection, OI monitor service (Paper #3)
 
 **Start**: [infrastructure/01-project-overview.md](infrastructure/01-project-overview.md)
 **Learning Path**: [infrastructure/README.md](infrastructure/README.md) (~2-3 hour sequential read)
@@ -220,9 +222,17 @@ Educational materials and symposium presentations:
 
 ---
 
-## Recent Updates (November 2025)
+## Recent Updates
 
-### Infrastructure Consolidation (Nov 24) 🆕
+### January 2026
+
+- Added **09-intraday-infrastructure.md** for Paper #3 intraday data collection
+- Paper #2 figure improvements and LaTeX polishing
+- Options chain quality validation (Issue #16) implemented
+
+### November 2025
+
+#### Infrastructure Consolidation (Nov 24)
 
 - Merged 13 files (system/ + reference/ + infrastructure/) → 9 sequential files (01-08)
 - Created comprehensive learning path with sequential numbering
@@ -256,7 +266,7 @@ Educational materials and symposium presentations:
 
 - **Papers**: 2 papers, 9 ADRs, 6 methodology docs, 4 session logs
 - **Guides**: 8 sequenced guides (02-09)
-- **Infrastructure**: 9 sequential docs (01-08 + README)
+- **Infrastructure**: 10 sequential docs (01-09 + README)
 - **Development**: 2 guides (worktree management + README)
 - **Presentations**: 3 active, 1 archived
 - **Total**: ~85 markdown files (reduced from ~90 via consolidation)
@@ -267,11 +277,11 @@ Educational materials and symposium presentations:
 - **Archived**: ~3.5 MB
 - **Total**: ~6.2 MB
 
-### Consolidation Impact (Nov 24, 2025)
+### Consolidation Impact
 
-- **Before**: 13 files (system/ + reference/ + infrastructure/)
-- **After**: 9 files (infrastructure/ 01-08 + README)
-- **Reduction**: 31% fewer files, 100% detail preserved
+- **Nov 2025**: 13 files (system/ + reference/) → 9 files (infrastructure/ 01-08)
+- **Jan 2026**: Added 09-intraday-infrastructure.md → 10 files (01-09 + README)
+- **Net Result**: Clear sequential learning path, 100% detail preserved
 
 ---
 
