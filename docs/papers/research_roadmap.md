@@ -1,7 +1,7 @@
 # Research Roadmap: LLM-Based Market Microstructure Analysis
 
-**Last Updated**: November 20, 2025
-**Status**: Paper #1 submitted (Oct 26), Paper #2 validation COMPLETE (Nov 20), Ready for writing
+**Last Updated**: January 13, 2026
+**Status**: Paper #1 published (arXiv:2512.17923), Paper #2 ready for submission (figures polished Jan 2026)
 
 **Related Issues**: [#118 (Dissertation Structure)](https://github.com/iAmGiG/gex-llm-patterns/issues/118), [#135 (Paper #3 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/135), [#136 (Paper #4 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/136)
 
@@ -21,20 +21,20 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 | Paper | Status | Timeline | Contribution |
 |-------|--------|----------|--------------|
-| **Paper #1** | ✅ Submitted | Oct 2025 | Baseline obfuscation methodology (single-day, SPY) |
-| **Paper #2** | ✅ Validation COMPLETE | Q1 2026 | 30-day regime detection + 0DTE hypothesis confirmed (Nov 20) |
-| **Paper #3** | 📋 Planned | Q2 2026 | Cross-asset generalization (individual equities) |
-| **Paper #4+** | 💭 Future | 2026+ | Pattern discovery, comparative LLMs, hybrid systems |
+| **Paper #1** | ✅ Published | Dec 2025 | Baseline obfuscation methodology (single-day, SPY) |
+| **Paper #2** | ✅ Ready for Submission | Q1 2026 | 30-day regime detection + 0DTE hypothesis confirmed |
+| **Paper #3** | 🔀 Migrating | Q2 2026 | Cross-asset generalization → separate repository |
+| **Paper #4+** | 🔀 Migrating | 2026+ | Causal networks, pattern discovery → separate repository |
 
 ---
 
 ## Paper #1: Obfuscation Testing Baseline (Workshop)
 
-### Status: ✅ Submitted October 26, 2025
+### Status: ✅ Published December 2025 (arXiv:2512.17923)
 
 **Title**: "Validating Large Language Model Understanding of Market Microstructure Through Obfuscation Testing"
 
-**Target**: LLM-Finance 2025 Workshop @ IEEE BigData 2025
+**Venue**: LLM-Finance 2025 Workshop @ IEEE BigData 2025
 
 **Contribution**:
 
@@ -60,7 +60,7 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 ## Paper #2: Regime Detection via Sequential GEX (Journal)
 
-### Status: ✅ Validation COMPLETE - Q1 2026 (All 4 Phases Complete Nov 20, 2025)
+### Status: ✅ Ready for Submission (Figures polished Jan 2026, validation complete Nov 20, 2025)
 
 **GitHub Issues**: [#89 (30-Day Regime Detection)](https://github.com/iAmGiG/gex-llm-patterns/issues/89), [#107 (Validation Strategy)](https://github.com/iAmGiG/gex-llm-patterns/issues/107)
 
@@ -150,7 +150,9 @@ This document outlines the multi-paper research trajectory for validating LLM un
 
 ## Paper #3: Cross-Asset Generalization (Journal)
 
-### Status: 📋 Planned - Q2 2026
+### Status: 🔀 Migrating to Separate Repository
+
+> **Note**: Paper #3 development is being moved to a dedicated repository to keep this repo focused on Papers #1-2 (SPY-based obfuscation validation). The cross-asset work requires different data infrastructure and will be tracked separately.
 
 **GitHub Issue**: [#135 (Per-Strike GEX & Intraday Dynamics)](https://github.com/iAmGiG/gex-llm-patterns/issues/135)
 
@@ -207,6 +209,10 @@ This document outlines the multi-paper research trajectory for validating LLM un
 ---
 
 ## Paper #4+ Candidates (Long-Term)
+
+### Status: 🔀 Migrating to Separate Repository
+
+> **Note**: Paper #4+ work (causal constraint networks, pattern discovery, comparative LLMs) is being moved to a dedicated repository alongside Paper #3. This repo will remain focused on the completed Papers #1-2.
 
 **GitHub Issue**: [#136 (Causal Constraint Networks - Graph-Theoretic Framework)](https://github.com/iAmGiG/gex-llm-patterns/issues/136)
 
@@ -380,27 +386,23 @@ These ideas were proposed earlier but have been superseded by the current roadma
 
 ### Venues
 
-**Paper #1** (Workshop):
+**Paper #1** (Workshop): ✅ PUBLISHED
 
 - LLM-Finance 2025 Workshop @ IEEE BigData 2025
-- Deadline: October 26, 2025 ✅
+- Published: December 2025 (arXiv:2512.17923)
 - Format: 4-6 pages workshop paper
 
-**Paper #2** (Journal):
+**Paper #2** (Journal): Ready for Submission
 
 - Target: Journal of Financial Markets, Journal of Finance, or similar
 - Format: 6-8 pages journal article
 - Timeline: Q1 2026 submission
+- Status: Figures polished Jan 2026, validation complete
 
-**Paper #3** (Journal):
+**Paper #3 & #4+**: Migrating to Separate Repository
 
-- Target: Same tier as Paper #2
-- Format: 8-10 pages (larger scope with cross-asset)
-- Timeline: Q2 2026 submission
-
-**Paper #4+** (Journal/Conference):
-
-- Depends on direction chosen
+- Cross-asset generalization and causal networks work
+- Will be tracked in dedicated repository
 - Timeline: 2026+
 
 ### Conference Presentations
@@ -432,13 +434,12 @@ Throughout all papers, maintain:
 | Date | Milestone |
 |------|-----------|
 | ✅ Oct 26, 2025 | Paper #1 submitted |
-| Nov-Dec 2025 | Paper #1 review period |
-| Jan 2026 | Start Paper #2 (sequential GEX) |
-| Q1 2026 | Paper #2 submission |
-| Q2 2026 | Paper #3 submission (cross-asset) |
-| 2026+ | Paper #4+ (discovery/comparative/hybrid) |
+| ✅ Dec 2025 | Paper #1 published (arXiv:2512.17923) |
+| ✅ Jan 2026 | Paper #2 figures polished |
+| 🔜 Q1 2026 | Paper #2 submission |
+| 🔀 Q2 2026+ | Papers #3-4 → separate repository |
 
-**Key Dependency**: Paper #1 acceptance gates Paper #2 timeline. If acceptance delayed, adjust subsequent timelines accordingly.
+**Repository Focus**: This repository is now complete for Papers #1-2 (SPY obfuscation validation). Papers #3-4 (cross-asset, causal networks) are being migrated to a dedicated repository.
 
 ---
 
@@ -450,4 +451,4 @@ Throughout all papers, maintain:
 
 ---
 
-**Status**: Roadmap consolidated October 25, 2025 based on advisor input (Issue #89) and repository-wide Paper #2/3 reference analysis.
+**Status**: Updated January 13, 2026. Paper #1 published, Paper #2 ready for submission. Papers #3-4 migrating to separate repository.

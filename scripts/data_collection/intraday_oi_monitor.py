@@ -67,6 +67,7 @@ class IntradayOIMonitor:
         "VIX",
         "UVXY",
         "SVXY",
+        "SVIX",
         # Leveraged
         "TQQQ",
         "SQQQ",
@@ -100,14 +101,25 @@ class IntradayOIMonitor:
         "TSLA",
     ]
 
-    # Snapshot type definitions
+    # Snapshot type definitions (times in UTC - add 5 hours to ET during EST, 4 during EDT)
+    # ET times shown in comments for reference
     SNAPSHOT_TYPES = {
-        "market_open": "09:30",
-        "morning_baseline": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00"],
-        "theta_accel": ["14:15", "14:30", "14:45", "15:00"],
-        "expiry_rush": ["15:10", "15:20", "15:30", "15:40", "15:50"],
-        "final_rush": "15:55",
-        "market_close": "16:00",
+        "market_open": "14:30",  # 09:30 ET
+        "morning_baseline": [
+            "15:00",
+            "15:30",
+            "16:00",
+            "16:30",
+            "17:00",
+            "17:30",
+            "18:00",
+            "18:30",
+            "19:00",
+        ],  # 10:00-14:00 ET
+        "theta_accel": ["19:15", "19:30", "19:45", "20:00"],  # 14:15-15:00 ET
+        "expiry_rush": ["20:10", "20:20", "20:30", "20:40", "20:50"],  # 15:10-15:50 ET
+        "final_rush": "20:55",  # 15:55 ET
+        "market_close": "21:00",  # 16:00 ET
     }
 
     def __init__(
@@ -129,7 +141,7 @@ class IntradayOIMonitor:
             db_user: PostgreSQL user
             db_name: PostgreSQL database name
         """
-        self.symbols = symbols or self.DEFAULT_SYMBOLS[:30]  # Limit to 30 for API capacity
+        self.symbols = symbols or self.DEFAULT_SYMBOLS[:31]  # Limit to 31 for API capacity (includes SVIX)
         self.dry_run = dry_run
         self.et_tz = pytz.timezone("US/Eastern")
 
@@ -194,7 +206,7 @@ class IntradayOIMonitor:
             return
 
         try:
-            conn = self.db._get_connection()
+            conn = self.db.conn  # Use existing connection attribute
             cursor = conn.cursor()
 
             # Prepare data for insertion
@@ -299,11 +311,13 @@ class IntradayOIMonitor:
         logger.info(f"Snapshot complete: {successful}/{len(self.symbols)} symbols captured, " f"{failed} failed")
 
     def schedule_captures(self):
-        """Set up the adaptive sampling schedule."""
+        """Set up the adaptive sampling schedule (all times in UTC)."""
         logger.info("Setting up capture schedule...")
 
-        # Market open
-        schedule.every().day.at("09:30").do(self.capture_snapshot, snapshot_type="market_open")
+        # Market open (14:30 UTC = 09:30 ET)
+        schedule.every().day.at(self.SNAPSHOT_TYPES["market_open"]).do(
+            self.capture_snapshot, snapshot_type="market_open"
+        )
 
         # Morning baseline (30-min intervals)
         for time_str in self.SNAPSHOT_TYPES["morning_baseline"]:
@@ -317,11 +331,13 @@ class IntradayOIMonitor:
         for time_str in self.SNAPSHOT_TYPES["expiry_rush"]:
             schedule.every().day.at(time_str).do(self.capture_snapshot, snapshot_type="expiry_rush")
 
-        # Final rush
-        schedule.every().day.at("15:55").do(self.capture_snapshot, snapshot_type="final_rush")
+        # Final rush (20:55 UTC = 15:55 ET)
+        schedule.every().day.at(self.SNAPSHOT_TYPES["final_rush"]).do(self.capture_snapshot, snapshot_type="final_rush")
 
-        # Market close
-        schedule.every().day.at("16:00").do(self.capture_snapshot, snapshot_type="market_close")
+        # Market close (21:00 UTC = 16:00 ET)
+        schedule.every().day.at(self.SNAPSHOT_TYPES["market_close"]).do(
+            self.capture_snapshot, snapshot_type="market_close"
+        )
 
         # Log scheduled jobs
         total_jobs = len(schedule.get_jobs())

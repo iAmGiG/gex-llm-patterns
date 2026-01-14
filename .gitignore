@@ -297,3 +297,4 @@ docs/papers/**/latex/*.sh
 # Batch API test artifacts
 reports/validation/paper2_regime_windows/batch_jobs/
 docs/applications/
+tmpclaude*

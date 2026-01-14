@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD036 -->
 # Understanding the Fundamentals: From Options to Our Research
 
 **A Ground-Up Explanation for Non-Finance Audiences**
@@ -1130,7 +1131,7 @@ Same methodology: Testing constraint understanding
 ### Our Documentation
 
 - [PhD Symposium Presentation](phd_symposium_2025.md) - Accessible research overview
-- [Technical Deep Dive](technical_deep_dive.md) - Implementation details
+- [Technical Deep Dive](technical-deep-dive.md) - Implementation details
 - [Pattern Taxonomy Guide](../guides/pattern-taxonomy.md) - Pattern classification framework
 
 ---

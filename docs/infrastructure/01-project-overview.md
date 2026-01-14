@@ -31,8 +31,8 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
                     ┌─────────────────┐
                     │   LLM Layer     │
                     │                 │
+                    │ • O3-mini       │
                     │ • GPT-4o-mini   │
-                    │ • GPT-4o        │
                     │ • AutoGen 0.7.4 │
                     └─────────────────┘
 ```
