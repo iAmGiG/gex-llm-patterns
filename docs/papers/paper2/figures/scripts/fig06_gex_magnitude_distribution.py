@@ -22,17 +22,21 @@ def generate_synthetic_data():
     np.random.seed(42)
 
     # 2020: Pre-0DTE era - lower magnitudes, mean ~$3B
-    mag_2020 = np.concatenate([
-        np.random.normal(2.5, 1.0, 150),
-        np.random.normal(4.5, 1.5, 50),
-    ])
+    mag_2020 = np.concatenate(
+        [
+            np.random.normal(2.5, 1.0, 150),
+            np.random.normal(4.5, 1.5, 50),
+        ]
+    )
     mag_2020 = np.clip(mag_2020, 0.5, 8)
 
     # 2024: Post-0DTE era - higher magnitudes, mean ~$20B
-    mag_2024 = np.concatenate([
-        np.random.normal(18.0, 3.0, 150),
-        np.random.normal(23.0, 2.0, 50),
-    ])
+    mag_2024 = np.concatenate(
+        [
+            np.random.normal(18.0, 3.0, 150),
+            np.random.normal(23.0, 2.0, 50),
+        ]
+    )
     mag_2024 = np.clip(mag_2024, 12.0, 28)
 
     return {"2020": mag_2020.tolist(), "2024": mag_2024.tolist()}
@@ -44,14 +48,16 @@ def query_magnitude_data():
         conn = sqlite3.connect(CACHE_DB)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT
                 substr(trading_date, 1, 4) as year,
                 json_extract(structured_output, '$.avg_magnitude_billions') as magnitude
             FROM llm_detections
             WHERE structured_output IS NOT NULL
             ORDER BY year
-        """)
+        """
+        )
 
         rows = cursor.fetchall()
         conn.close()
@@ -118,16 +124,24 @@ def create_figure(data):
     # Annotations for 2020
     y_max_2020 = ax1.get_ylim()[1]
     ax1.text(
-        mean_2020 + 0.3, y_max_2020 * 0.85,
+        mean_2020 + 0.3,
+        y_max_2020 * 0.85,
         f"Mean\n${mean_2020:.1f}B",
-        fontsize=10, fontweight="bold", color=IEEE_THEME["year_2020"],
-        ha="left", va="top",
+        fontsize=10,
+        fontweight="bold",
+        color=IEEE_THEME["year_2020"],
+        ha="left",
+        va="top",
     )
     ax1.text(
-        5.2, y_max_2020 * 0.5,
+        5.2,
+        y_max_2020 * 0.5,
         "$5B\nThreshold",
-        fontsize=9, fontweight="bold", color=IEEE_THEME["accent_positive"],
-        ha="left", va="center",
+        fontsize=9,
+        fontweight="bold",
+        color=IEEE_THEME["accent_positive"],
+        ha="left",
+        va="center",
     )
 
     ax1.set_title("2020 Pre-0DTE Era", fontsize=13, fontweight="bold", color=IEEE_THEME["year_2020"], pad=10)
@@ -137,11 +151,16 @@ def create_figure(data):
 
     # Stats box for 2020
     ax1.text(
-        0.95, 0.95,
+        0.95,
+        0.95,
         f"n = {len(mag_2020)}\nAbove $5B: {pct_above_5b_2020:.0f}%",
-        transform=ax1.transAxes, fontsize=10, va="top", ha="right",
+        transform=ax1.transAxes,
+        fontsize=10,
+        va="top",
+        ha="right",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
-        family="monospace", color=IEEE_THEME["text"],
+        family="monospace",
+        color=IEEE_THEME["text"],
     )
 
     # ========================
@@ -163,10 +182,14 @@ def create_figure(data):
     # Annotations for 2024
     y_max_2024 = ax2.get_ylim()[1]
     ax2.text(
-        mean_2024 + 0.3, y_max_2024 * 0.85,
+        mean_2024 + 0.3,
+        y_max_2024 * 0.85,
         f"Mean\n${mean_2024:.1f}B",
-        fontsize=10, fontweight="bold", color=IEEE_THEME["year_2024"],
-        ha="left", va="top",
+        fontsize=10,
+        fontweight="bold",
+        color=IEEE_THEME["year_2024"],
+        ha="left",
+        va="top",
     )
 
     ax2.set_title("2024 Post-0DTE Era", fontsize=13, fontweight="bold", color=IEEE_THEME["year_2024"], pad=10)
@@ -175,11 +198,16 @@ def create_figure(data):
 
     # Stats box for 2024
     ax2.text(
-        0.95, 0.95,
+        0.95,
+        0.95,
         f"n = {len(mag_2024)}\nAbove $5B: {pct_above_5b_2024:.0f}%",
-        transform=ax2.transAxes, fontsize=10, va="top", ha="right",
+        transform=ax2.transAxes,
+        fontsize=10,
+        va="top",
+        ha="right",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
-        family="monospace", color=IEEE_THEME["text"],
+        family="monospace",
+        color=IEEE_THEME["text"],
     )
 
     # Style both axes
@@ -194,7 +222,10 @@ def create_figure(data):
     # Add overall title with growth statistic
     fig.suptitle(
         f"GEX Magnitude Distribution: +{((mean_2024 / mean_2020) - 1) * 100:.0f}% Growth (2020 → 2024)",
-        fontsize=14, fontweight="bold", color=IEEE_THEME["text"], y=0.98,
+        fontsize=14,
+        fontweight="bold",
+        color=IEEE_THEME["text"],
+        y=0.98,
     )
 
     plt.tight_layout(rect=[0, 0, 1, 0.94])

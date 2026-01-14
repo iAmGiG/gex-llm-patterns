@@ -105,7 +105,17 @@ class IntradayOIMonitor:
     # ET times shown in comments for reference
     SNAPSHOT_TYPES = {
         "market_open": "14:30",  # 09:30 ET
-        "morning_baseline": ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"],  # 10:00-14:00 ET
+        "morning_baseline": [
+            "15:00",
+            "15:30",
+            "16:00",
+            "16:30",
+            "17:00",
+            "17:30",
+            "18:00",
+            "18:30",
+            "19:00",
+        ],  # 10:00-14:00 ET
         "theta_accel": ["19:15", "19:30", "19:45", "20:00"],  # 14:15-15:00 ET
         "expiry_rush": ["20:10", "20:20", "20:30", "20:40", "20:50"],  # 15:10-15:50 ET
         "final_rush": "20:55",  # 15:55 ET
@@ -305,7 +315,9 @@ class IntradayOIMonitor:
         logger.info("Setting up capture schedule...")
 
         # Market open (14:30 UTC = 09:30 ET)
-        schedule.every().day.at(self.SNAPSHOT_TYPES["market_open"]).do(self.capture_snapshot, snapshot_type="market_open")
+        schedule.every().day.at(self.SNAPSHOT_TYPES["market_open"]).do(
+            self.capture_snapshot, snapshot_type="market_open"
+        )
 
         # Morning baseline (30-min intervals)
         for time_str in self.SNAPSHOT_TYPES["morning_baseline"]:
@@ -323,7 +335,9 @@ class IntradayOIMonitor:
         schedule.every().day.at(self.SNAPSHOT_TYPES["final_rush"]).do(self.capture_snapshot, snapshot_type="final_rush")
 
         # Market close (21:00 UTC = 16:00 ET)
-        schedule.every().day.at(self.SNAPSHOT_TYPES["market_close"]).do(self.capture_snapshot, snapshot_type="market_close")
+        schedule.every().day.at(self.SNAPSHOT_TYPES["market_close"]).do(
+            self.capture_snapshot, snapshot_type="market_close"
+        )
 
         # Log scheduled jobs
         total_jobs = len(schedule.get_jobs())

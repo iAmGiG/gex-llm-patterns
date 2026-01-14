@@ -268,7 +268,12 @@ def create_figure():
     # Redacted legend
     ax.add_patch(
         FancyBboxPatch(
-            (1.0, legend_y - 0.15), 0.3, 0.3, boxstyle="round,pad=0.05", facecolor=OBFUSCATION_COLORS["redact"], alpha=0.8
+            (1.0, legend_y - 0.15),
+            0.3,
+            0.3,
+            boxstyle="round,pad=0.05",
+            facecolor=OBFUSCATION_COLORS["redact"],
+            alpha=0.8,
         )
     )
     ax.text(

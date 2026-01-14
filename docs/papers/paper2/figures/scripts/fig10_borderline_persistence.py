@@ -149,9 +149,11 @@ def create_figure(data):
 
     # Detection rate overlay (colored bars)
     colors = [
-        IEEE_THEME["accent_negative"] if r < 30 else
-        IEEE_THEME["accent_warning"] if r < 60 else
-        IEEE_THEME["accent_positive"]
+        (
+            IEEE_THEME["accent_negative"]
+            if r < 30
+            else IEEE_THEME["accent_warning"] if r < 60 else IEEE_THEME["accent_positive"]
+        )
         for r in detection_rates
     ]
 
@@ -171,9 +173,14 @@ def create_figure(data):
     for bc, rate, count in zip(bin_centers, detection_rates, bin_counts):
         if count > 5:  # Only label bins with sufficient data
             ax1_twin.text(
-                bc, rate + 3, f"{rate:.0f}%",
-                ha="center", va="bottom", fontsize=8,
-                color=IEEE_THEME["text"], fontweight="bold"
+                bc,
+                rate + 3,
+                f"{rate:.0f}%",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+                color=IEEE_THEME["text"],
+                fontweight="bold",
             )
 
     ax1.set_xlabel("LLM Confidence (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
@@ -222,11 +229,13 @@ def create_figure(data):
     try:
         # Fit logistic curve
         popt, _ = curve_fit(
-            sigmoid, x_fit, y_fit,
+            sigmoid,
+            x_fit,
+            y_fit,
             p0=[1.0, 0.1, 75, 0],  # L, k, x0, b
             bounds=([0.5, 0.01, 50, -0.1], [1.5, 0.5, 95, 0.1]),
-            sigma=1/weights,
-            maxfev=5000
+            sigma=1 / weights,
+            maxfev=5000,
         )
         L, k, x0, b = popt
         fit_success = True
@@ -243,39 +252,44 @@ def create_figure(data):
     y_smooth = sigmoid(x_smooth, L, k, x0, b) * 100
 
     # Plot sigmoid curve
-    ax2.plot(
-        x_smooth, y_smooth,
-        color=IEEE_THEME["accent_neutral"],
-        linewidth=3,
-        label="Sigmoid fit",
-        zorder=3
-    )
+    ax2.plot(x_smooth, y_smooth, color=IEEE_THEME["accent_neutral"], linewidth=3, label="Sigmoid fit", zorder=3)
 
     # Plot actual data points (sized by count)
     sizes = np.clip(fine_counts[valid_mask] * 2, 30, 200)
     scatter_colors = [
-        IEEE_THEME["accent_negative"] if r < 0.3 else
-        IEEE_THEME["accent_warning"] if r < 0.6 else
-        IEEE_THEME["accent_positive"]
+        (
+            IEEE_THEME["accent_negative"]
+            if r < 0.3
+            else IEEE_THEME["accent_warning"] if r < 0.6 else IEEE_THEME["accent_positive"]
+        )
         for r in y_fit
     ]
     ax2.scatter(
-        x_fit, y_fit * 100,
+        x_fit,
+        y_fit * 100,
         s=sizes,
         c=scatter_colors,
         alpha=0.7,
         edgecolors=IEEE_THEME["text"],
         linewidths=0.5,
         label="Observed rates",
-        zorder=4
+        zorder=4,
     )
 
     # Mark threshold point - use 80% as meaningful transition
     threshold_x = 80  # 80% confidence is where detection transitions
     threshold_y = sigmoid(threshold_x, L, k, x0, b) * 100
     ax2.axvline(threshold_x, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=2, alpha=0.7, zorder=2)
-    ax2.scatter([threshold_x], [threshold_y], s=120, c=IEEE_THEME["accent_warning"],
-                marker="D", edgecolors=IEEE_THEME["text"], linewidths=1.5, zorder=5)
+    ax2.scatter(
+        [threshold_x],
+        [threshold_y],
+        s=120,
+        c=IEEE_THEME["accent_warning"],
+        marker="D",
+        edgecolors=IEEE_THEME["text"],
+        linewidths=1.5,
+        zorder=5,
+    )
 
     # Shade transition zone (70-90% where transition occurs)
     transition_low = 70
@@ -285,19 +299,27 @@ def create_figure(data):
     # Phase labels - position in empty space, arrows point to relevant region
     ax2.annotate(
         "Low Detection\nPhase",
-        xy=(50, 3), xytext=(35, 55),
-        fontsize=9, ha="center", va="center",
-        color=IEEE_THEME["accent_negative"], fontweight="bold",
+        xy=(50, 3),
+        xytext=(35, 55),
+        fontsize=9,
+        ha="center",
+        va="center",
+        color=IEEE_THEME["accent_negative"],
+        fontweight="bold",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["accent_negative"], alpha=0.9),
-        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_negative"], lw=1.5, alpha=0.7)
+        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_negative"], lw=1.5, alpha=0.7),
     )
     ax2.annotate(
         "High Detection\nPhase",
-        xy=(95, 90), xytext=(55, 90),
-        fontsize=9, ha="center", va="center",
-        color=IEEE_THEME["accent_positive"], fontweight="bold",
+        xy=(95, 90),
+        xytext=(55, 90),
+        fontsize=9,
+        ha="center",
+        va="center",
+        color=IEEE_THEME["accent_positive"],
+        fontweight="bold",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["accent_positive"], alpha=0.9),
-        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_positive"], lw=1.5, alpha=0.7)
+        arrowprops=dict(arrowstyle="->", color=IEEE_THEME["accent_positive"], lw=1.5, alpha=0.7),
     )
 
     ax2.set_xlabel("LLM Confidence (%)", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
@@ -316,13 +338,16 @@ def create_figure(data):
     overall_rate = n_detected / n_total * 100
     stats_text = f"n = {n_total:,}\nDetection: {overall_rate:.1f}%"
     ax2.text(
-        0.03, 0.97, stats_text,
+        0.03,
+        0.97,
+        stats_text,
         transform=ax2.transAxes,
         fontsize=9,
-        va="top", ha="left",
+        va="top",
+        ha="left",
         color=IEEE_THEME["text"],
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
-        family="monospace"
+        family="monospace",
     )
 
     plt.tight_layout()
