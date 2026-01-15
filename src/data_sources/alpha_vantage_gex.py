@@ -16,7 +16,7 @@ import requests
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config.config_loader import ConfigLoader
 
-from src.cache import SQLiteOptionsManager, UnifiedCacheManager
+from gex_db_infrastructure.cache import SQLiteOptionsManager, UnifiedCacheManager
 from src.utils.config_manager import get_config
 from src.utils.date_utils import get_default_timezone, get_processed_date_range, localize_df
 

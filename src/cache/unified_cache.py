@@ -53,7 +53,7 @@ class UnifiedCacheManager:
         Issue #180: Deprecated wrapper methods removed.
         """
         if self._sqlite_options is None:
-            from src.cache.sqlite_options_manager import SQLiteOptionsManager
+            from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
 
             self._sqlite_options = SQLiteOptionsManager()
         return self._sqlite_options
@@ -293,7 +293,7 @@ class UnifiedCacheManager:
     def gex_cache(self):
         """Lazy-loaded GEX cache manager."""
         if self._gex_cache is None:
-            from src.cache.gex_cache_manager import GEXCacheManager
+            from gex_db_infrastructure.cache.gex_cache_manager import GEXCacheManager
 
             self._gex_cache = GEXCacheManager(str(self.base_dir))
         return self._gex_cache
@@ -323,7 +323,7 @@ class UnifiedCacheManager:
                 return None
 
             # 3. Calculate GEX using live data engine
-            from src.gex.live_gex_interface import LiveGEXInterface
+            from gex_db_infrastructure.gex.live_gex_interface import LiveGEXInterface
 
             gex_interface = LiveGEXInterface()
 

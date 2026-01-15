@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.cache.options_db_manager import SQLiteOptionsManager
-from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
-from src.gex.gex_calculator import GEXCalculator
+from gex_db_infrastructure.cache.options_db_manager import SQLiteOptionsManager
+from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
+from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

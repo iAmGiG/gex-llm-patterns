@@ -30,7 +30,7 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from src.data_sources.historical_collector import HistoricalOptionsCollector
+from gex_db_infrastructure.data_sources.historical_collector import HistoricalOptionsCollector
 from src.utils.date_utils import today_str
 
 # Leveraged ETF tiers by options liquidity

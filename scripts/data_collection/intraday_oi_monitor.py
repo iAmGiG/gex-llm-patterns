@@ -32,8 +32,8 @@ import schedule
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
-from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
+from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # Configure logging
 logging.basicConfig(

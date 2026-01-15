@@ -67,15 +67,15 @@ import pandas as pd
 from autogen_core.tools import FunctionTool
 
 # Project imports - only tools actually used
-from src.cache import SQLiteOptionsManager, PostgreSQLOptionsManager, UnifiedCacheManager
-from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from gex_db_infrastructure.cache import SQLiteOptionsManager, PostgreSQLOptionsManager, UnifiedCacheManager
+from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
-# from src.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
-from src.gex.live_gex_interface import LiveGEXInterface
+# from gex_db_infrastructure.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
+from gex_db_infrastructure.gex.live_gex_interface import LiveGEXInterface
 from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
 from src.utils.market_intelligence import market_intelligence
 from src.utils.unified_reports_manager import reports_manager
-from src.validation.options_data_validator import OptionsDataValidator
+from gex_db_infrastructure.validation.options_data_validator import OptionsDataValidator
 
 logger = logging.getLogger(__name__)
 
@@ -638,7 +638,7 @@ def process_historical_gex_range(
             start_date = add_business_days(end_date, -30)
 
         # Initialize concurrent processor
-        from src.cache.concurrent_gex_processor import ConcurrentGEXProcessor
+        from gex_db_infrastructure.cache.concurrent_gex_processor import ConcurrentGEXProcessor
 
         processor = ConcurrentGEXProcessor(max_workers=max_workers, unified_cache_manager=cache_manager)
 

@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.cache.unified_cache import UnifiedCacheManager
+from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent

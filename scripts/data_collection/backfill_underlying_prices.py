@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 logging.basicConfig(
     level=logging.INFO,

@@ -28,7 +28,7 @@ sys.path.insert(0, '/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns')
 # Import production prompt builder for consistent prompts
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 # Import GEXCalculator for single source of truth (Issue #169 architectural fix)
-from src.gex.gex_calculator import GEXCalculator
+from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 
 logging.basicConfig(
     level=logging.INFO,
@@ -320,7 +320,7 @@ def retrieve_results(batch_id: str):
     from openai import OpenAI
 
     sys.path.insert(0, '/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns')
-    from src.cache.research_cache import ResearchCache
+    from gex_db_infrastructure.cache.research_cache import ResearchCache
 
     client = OpenAI()
 

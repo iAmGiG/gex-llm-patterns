@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from src.validation.regime_classifier import RegimeClassifier
+from gex_db_infrastructure.validation.regime_classifier import RegimeClassifier
 
 logger = logging.getLogger(__name__)
 

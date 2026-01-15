@@ -309,7 +309,7 @@ class ConcurrentGEXProcessor:
         """
         try:
             # Import GEX calculation engine
-            from src.gex.live_gex_interface import LiveGEXInterface
+            from gex_db_infrastructure.gex.live_gex_interface import LiveGEXInterface
 
             gex_interface = LiveGEXInterface()
 
