@@ -14,8 +14,8 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from src.cache.sqlite_options_manager import SQLiteOptionsManager
-from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
+from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 
 logger = logging.getLogger(__name__)
 

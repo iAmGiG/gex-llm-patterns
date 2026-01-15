@@ -12,11 +12,7 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-from src.data_sources.historical_collector import HistoricalOptionsCollector
-
-# Add src to path
-project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root))
+from gex_db_infrastructure.data_sources.historical_collector import HistoricalOptionsCollector
 
 
 def setup_logging(log_level="INFO", log_file=None):

@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 
 from src.utils.date_utils import now_iso
-from src.validation.options_chain_validator import OptionsChainValidator, ValidationResult, ValidationSeverity
+from gex_db_infrastructure.validation.options_chain_validator import OptionsChainValidator, ValidationResult, ValidationSeverity
 
 logger = logging.getLogger(__name__)
 

@@ -43,7 +43,7 @@ from src.tools.autogen_tools import (
     process_historical_gex_range,
 )
 from src.utils.date_utils import parse_date_string, today_str
-from src.validation.data_obfuscation import DataObfuscator
+from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 

@@ -21,7 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, '/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns')
 
-from src.cache.research_cache import ResearchCache
+from gex_db_infrastructure.cache.research_cache import ResearchCache
 
 logging.basicConfig(
     level=logging.INFO,

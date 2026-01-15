@@ -3,7 +3,7 @@
 Common query patterns for Papers 1-5.
 
 Usage:
-    from src.cache.research_cache_queries import *
+    from gex_db_infrastructure.cache.research_cache_queries import *
 
     # Get all 2021 detections with high confidence
     detections = get_detections_by_year(2021, min_confidence=80.0)
@@ -15,7 +15,7 @@ Usage:
 import sqlite3
 from typing import Dict, List
 
-from src.cache.research_cache import ResearchCache
+from gex_db_infrastructure.cache.research_cache import ResearchCache
 
 
 def get_detections_by_year(year: int, min_confidence: float = 0.0) -> List[Dict]:

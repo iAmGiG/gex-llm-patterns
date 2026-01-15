@@ -26,7 +26,7 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 import yaml
 
-from src.cache.unified_cache import UnifiedCacheManager
+from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
 from src.utils.date_utils import get_market_close_time, get_market_open_time, parse_date_string
 
 logger = logging.getLogger(__name__)

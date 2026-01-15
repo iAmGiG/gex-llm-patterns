@@ -23,7 +23,7 @@ import numpy as np
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from src.validation.formula_agreement_test import FormulaAgreementTester
+from gex_db_infrastructure.validation.formula_agreement_test import FormulaAgreementTester
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

@@ -17,11 +17,11 @@ import pandas as pd
 import yaml
 
 from src.analysis.actionable_patterns import ActionablePatternDetector
-from src.cache.sqlite_options_manager import SQLiteOptionsManager
-from src.cache.postgresql_options_manager import PostgreSQLOptionsManager
-from src.cache.unified_cache import UnifiedCacheManager
-from src.gex.enhanced_pattern_detector import EnhancedPatternDetector
-from src.gex.gex_calculator import GEXCalculator
+from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
+from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
+from gex_db_infrastructure.gex.enhanced_pattern_detector import EnhancedPatternDetector
+from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 from src.utils.date_utils import add_business_days, is_opex_week, now_iso, parse_date_string
 from src.utils.unified_reports_manager import unified_reports
@@ -251,7 +251,7 @@ class MarketMechanicsAgent:
         try:
             # Step 0: Obfuscate dates/tickers if requested (BEFORE LLM calls)
             if obfuscate:
-                from src.validation.data_obfuscation import DataObfuscator
+                from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
 
                 obfuscator = DataObfuscator()
                 date_mapping = obfuscator.obfuscate_dates([date])
@@ -367,7 +367,7 @@ class MarketMechanicsAgent:
             Dictionary with batch analysis results
         """
         try:
-            from src.validation.data_obfuscation import DataObfuscator
+            from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
 
             # Prepare data for all dates first
             batch_data = {}

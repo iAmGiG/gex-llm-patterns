@@ -267,7 +267,7 @@ def test_with_alpha_vantage_demo():
 
     try:
         # Use the updated Alpha Vantage client (Issue #180: Skip cache, fetch live only)
-        from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+        from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
         # Initialize client without cache (demo fetches live data)
         client = AlphaVantageGEXClient(cache_manager=None)

@@ -18,7 +18,7 @@ Transformations:
     - Context: Remove market event references (COVID, Fed, specific years)
 
 Usage:
-    from src.validation.data_obfuscation import DataObfuscator
+    from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
 
     obfuscator = DataObfuscator()
 

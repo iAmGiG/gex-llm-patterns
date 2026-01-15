@@ -14,7 +14,7 @@ import yaml
 
 from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.utils.unified_reports_manager import yaml_reports
-from src.validation.data_obfuscation import DataObfuscator
+from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
 
 logger = logging.getLogger(__name__)
 

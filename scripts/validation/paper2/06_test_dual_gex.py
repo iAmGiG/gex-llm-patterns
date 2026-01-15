@@ -29,8 +29,8 @@ import pandas as pd
 project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
-from src.gex.gex_calculator import GEXCalculator
-from src.validation.regime_classifier import RegimeClassifier
+from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
+from gex_db_infrastructure.validation.regime_classifier import RegimeClassifier
 
 
 def create_synthetic_options_data(n_contracts: int = 100) -> pd.DataFrame:

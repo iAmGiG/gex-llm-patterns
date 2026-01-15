@@ -29,7 +29,7 @@ import yaml
 
 from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.analysis.pattern_library import PatternLibrary
-from src.cache.unified_cache import UnifiedCacheManager
+from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
 from src.utils.date_utils import is_business_day, parse_date_string
 
 # Add project root to Python path

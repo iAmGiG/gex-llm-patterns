@@ -18,7 +18,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from src.validation.options_chain_validator import OptionsChainValidator, ValidationSeverity, validate_options_chain
+from gex_db_infrastructure.validation.options_chain_validator import OptionsChainValidator, ValidationSeverity, validate_options_chain
 
 
 def create_test_data():
@@ -285,7 +285,7 @@ def test_sqlite_integration():
     import tempfile
     import uuid
 
-    from src.cache.sqlite_options_manager import SQLiteOptionsManager
+    from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
 
     # Use unique temp files to avoid Windows file locking issues
     tmpdir = tempfile.gettempdir()
