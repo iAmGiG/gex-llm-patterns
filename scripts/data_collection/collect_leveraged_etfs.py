@@ -30,10 +30,6 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Add project root to path (system-agnostic)
-project_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(project_root))
-
 from src.data_sources.historical_collector import HistoricalOptionsCollector
 from src.utils.date_utils import today_str
 
