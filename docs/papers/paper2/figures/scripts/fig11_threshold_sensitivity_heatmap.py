@@ -181,8 +181,8 @@ def create_figure(data):
     current_i = PERSISTENCE_THRESHOLDS.index(CURRENT_PERSISTENCE)
     current_j = MAGNITUDE_THRESHOLDS.index(CURRENT_MAGNITUDE)
 
-    # Draw rectangle around current parameters with cyan border (no star marker)
-    rect = plt.Rectangle((current_j - 0.5, current_i - 0.5), 1, 1, fill=False, edgecolor="#00FF00", linewidth=4)
+    # Draw rectangle around current parameters with amber border (no star marker)
+    rect = plt.Rectangle((current_j - 0.5, current_i - 0.5), 1, 1, fill=False, edgecolor="#FFB000", linewidth=4)
     ax.add_patch(rect)
 
     # Calculate statistics for legends
@@ -205,11 +205,11 @@ def create_figure(data):
         fontsize=12,
         fontweight="bold",
         verticalalignment="top",
-        color="#00FF00",
+        color="#FFB000",
         bbox=dict(
             boxstyle="round,pad=0.3",
             facecolor=IEEE_THEME["panel_bg"],
-            edgecolor="#00FF00",
+            edgecolor="#FFB000",
             alpha=0.95,
         ),
     )
