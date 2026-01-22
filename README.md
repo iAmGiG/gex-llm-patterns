@@ -11,7 +11,7 @@
 
 [![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20O3--mini-412991.svg)](https://openai.com/)
 [![AutoGen](https://img.shields.io/badge/Framework-AutoGen%200.7-00A36C.svg)](https://github.com/microsoft/autogen)
-[![SQLite](https://img.shields.io/badge/Database-SQLite-003B57.svg)](https://www.sqlite.org/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2018.1-336791.svg)](https://www.postgresql.org/)
 [![Alpha Vantage](https://img.shields.io/badge/Data-Alpha%20Vantage%20Premium-0066CC.svg)](https://www.alphavantage.co/)
 [![Matplotlib](https://img.shields.io/badge/Viz-Matplotlib-11557c.svg)](https://matplotlib.org/)
 [![Graphviz](https://img.shields.io/badge/Diagrams-Graphviz-2C3E50.svg)](https://graphviz.org/)
@@ -74,10 +74,11 @@ Phase 1: Methodology Validation [COMPLETE]
 ├─ Symposium presentation delivered
 └─ Paper #1 submitted to IEEE LLM-Finance 2025
 
-Phase 2: Temporal Dynamics [IN PROGRESS]
-├─ Sequential GEX (5-day lookback)
-├─ Constraint trajectory detection
-└─ Target: Q1 2026 journal submission
+Phase 2: Temporal Dynamics [COMPLETE]
+├─ 30-day regime persistence (2020-2025, 6 years)
+├─ 1,412 windows validated across 1,507 trading days
+├─ Finding: 2023→2024 structural shift (+360% GEX)
+└─ Paper #2 ready for submission (January 2026)
 
 Phase 3: Cross-Asset Generalization [PLANNED]
 ├─ Individual equities (AAPL, TSLA, NVDA, etc.)
@@ -131,11 +132,31 @@ Both approaches prove LLM detects structural dealer constraints even when tempor
   - Tool Registry - AutoGen 0.7 compatible tool management
   - Performance Optimizations - O(1) rate limiting, adaptive thread pools, thread-safe singletons
   - Configuration Extraction - all hardcoded values moved to `config_defaults/`
+- **PostgreSQL Migration** (January 2-4, 2026):
+  - 81.8M contracts (50 symbols, 2020-2025)
+  - 20.58 GB production database on HPCC
+  - Yearly partitioning for performance
+  - Automated gap detection and monitoring
+- **ResearchCache System** (January 4-5, 2026):
+  - Experiment metadata tracking (4 runs documented)
+  - 1,412 Phase 4A detections with chain-of-thought
+  - Query utilities and documentation complete
+- **Paper #2 Complete** (January 2026):
+  - 6-year validation (2020-2025), 1,412 windows
+  - Key finding: 2023→2024 structural shift (not 2020→2021)
+  - 11 publication-quality figures
+  - Language review complete (3 passes)
+  - Ready for submission
+- **Intraday Infrastructure** (January 2026):
+  - PostgreSQL `intraday_snapshots` table with yearly partitioning
+  - Background monitor service (21 snapshots/day, adaptive sampling)
+  - Running on HPCC since January 13, 2026
+  - Collecting data for Paper #3 (target: 60+ trading days)
 
 ### In Progress
 
-- **Paper #2 Submission**: Sequential regime detection across 6 years (2020-2025), 1,858 windows validated, figures polished
-- **Paper #1 Journal Revision**: Preparing extended version for journal submission
+- **Paper #1 Journal Revision**: MC defenses framework (4 of 5 complete), Issue #144 final defense
+- **Paper #3 Data Collection**: Intraday OI monitoring active (target: 60+ days by April 2026)
 - **Individual Equities**: Extending validation to AAPL, TSLA, NVDA, JPM, XOM (Issue #87)
 
 ### Deferred
