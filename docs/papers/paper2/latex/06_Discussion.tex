@@ -2,19 +2,19 @@
 
 \subsection{LLM Temporal Reasoning at 30-Day Scales}
 
-Five-phase validation demonstrates that LLMs can identify persistent dealer gamma regimes from 30-day GEX sequences without temporal context. The 69.1 percentage point discrimination between 2024 (81.2\% detection) and 2020 (12.1\% detection) establishes that the framework detects \textit{structural persistence}, not universal patterns.
+Five-phase validation suggests that LLMs can identify persistent dealer gamma regimes from 30-day GEX sequences without temporal context. The 69.1 percentage point discrimination between 2024 (81.2\% detection) and 2020 (12.1\% detection) provides evidence that the framework may detect \textit{structural persistence}, not universal patterns.
 
 This selectivity contrasts sharply with earlier 5-day trajectory testing, which achieved 98-100\% detection across all market conditions. The 5-day approach detected daily hedging flows—mechanics present in all markets since Black-Scholes (1973)—rather than persistent regimes. The shift to 30-day windows with strict persistence criteria ($\geq$70\% same-sign dominance, $\geq$\$5B magnitude, $\leq$5 flips) transformed the task from universal pattern matching to selective regime identification.
 
-Critically, LLM reasoning quality remained high across both detection conditions. Manual review of 50 randomly sampled responses (25 from 2024, 25 from 2020) revealed 98\% mechanical accuracy, 100\% criterion citation, and 88\% step-by-step calculation verification. The LLM correctly computed persistence percentages, magnitude averages, and flip counts regardless of whether the window qualified as a persistent regime. This suggests the model reasons structurally about dealer constraints rather than pattern matching on summary statistics.
+Critically, LLM reasoning quality remained high across both detection conditions. Manual review of 50 randomly sampled responses (25 from 2024, 25 from 2020) revealed 98\% mechanical accuracy, 100\% criterion citation, and 88\% step-by-step calculation verification. The LLM accurately computed persistence percentages, magnitude averages, and flip counts regardless of whether the window qualified as a persistent regime. This suggests the model reasons structurally about dealer constraints rather than pattern matching on summary statistics.
 
 \subsection{Regime Exceptionality vs Universal Positioning}
 
 A critical methodological concern is whether our framework detects \textit{exceptional persistent regimes} or simply identifies universal dealer positioning present in all markets. Four empirical findings establish regime exceptionality:
 
-\textbf{Cross-period discrimination}: The 69.1 percentage point difference between 2024 detection (81.2\%) and 2020 detection (12.1\%) demonstrates the framework identifies \textit{selective} structural persistence, not universal patterns. If dealer gamma positioning were always regime-like, detection rates would converge across periods rather than exhibiting 5.7x separation (p $<$ 0.0001, Cram\'er's $\phi$ = 0.672).
+\textbf{Cross-period discrimination}: The 69.1 percentage point difference between 2024 detection (81.2\%) and 2020 detection (12.1\%) suggests the framework identifies \textit{selective} structural persistence, not universal patterns. If dealer gamma positioning were always regime-like, detection rates would converge across periods rather than exhibiting 5.7x separation (p $<$ 0.0001, Cram\'er's $\phi$ = 0.672).
 
-\textbf{2020 as negative baseline}: The 12.1\% detection rate in 2020 establishes a crucial baseline—dealer gamma hedging was active (average \$2.85B magnitude), but 87.9\% of windows failed persistence criteria. This indicates our framework correctly \textit{rejects} fragmented positioning as non-regimes, even when dealer constraints are present. 2020 serves as an implicit negative control: active hedging dynamics without sustained regime structure.
+\textbf{2020 as negative baseline}: The 12.1\% detection rate in 2020 establishes a crucial baseline—dealer gamma hedging was active (average \$2.85B magnitude), but 87.9\% of windows failed persistence criteria. This indicates our framework can reject fragmented positioning as non-regimes, even when dealer constraints are present. 2020 serves as an implicit negative control: active hedging dynamics without sustained regime structure.
 
 \textbf{Magnitude threshold enforcement}: The \$5B average magnitude criterion excludes routine dealer activity. In 2020, 83.3\% same-sign persistence existed but at \$2.85B scale—insufficient to create regime-level market impact. By requiring both persistence \textit{and} magnitude, we filter low-conviction positioning that does not materially constrain price dynamics.
 
@@ -34,7 +34,7 @@ A critical methodological concern is whether the 2020→2024 detection increase 
 
 \vspace{0.2cm}
 
-\noindent\textbf{Results}: Price normalization increased 2020 detection from 12.1\% to 33.2\% (+21.1 percentage points), accounting for \textbf{31\%} of the total 69.1 pp gap between 2020 and 2024. The remaining 48.0 pp (\textbf{69\%}) persists after normalization, attributable to structural evolution in dealer positioning.
+\noindent\textbf{Results}: Price normalization increased 2020 detection from 12.1\% to 33.2\% (+21.1 percentage points), consistent with accounting for approximately \textbf{31\%} of the total 69.1 pp gap between 2020 and 2024. The remaining 48.0 pp (\textbf{69\%}) persists after normalization, attributable to structural evolution in dealer positioning.
 
 \vspace{0.2cm}
 
@@ -50,7 +50,7 @@ A critical methodological concern is whether the 2020→2024 detection increase 
 
 \vspace{0.2cm}
 
-\noindent\textbf{Interpretation}: Even after giving 2020 a 2.3$\times$ magnitude ``handicap,'' it still fails persistence and stability criteria at far higher rates than 2024. The 2024 advantage reflects genuine market behavior differences—sustained directional positioning and reduced sign volatility—not merely larger dollar values crossing thresholds.
+\noindent\textbf{Interpretation}: Even after giving 2020 a 2.3$\times$ magnitude ``handicap,'' it still fails persistence and stability criteria at far higher rates than 2024. The 2024 advantage is consistent with genuine market behavior differences—sustained directional positioning and reduced sign volatility—not merely larger dollar values crossing thresholds.
 
 \vspace{0.2cm}
 
@@ -73,7 +73,7 @@ The 69.1 percentage point detection difference between 2020 and 2024 provides qu
 
 \vspace{0.2cm}
 
-This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2023 43\% volume, 2024 $\approx$48\%)~\cite{cboe2024zero}. Academic research confirms these structural effects: Brogaard et al.~\cite{brogaard2023does} find that a one standard deviation increase in 0DTE trading leads to a 10.4\% increase in market volatility. Crucially, although 0DTE contracts themselves expire intraday and vanish from EOD open interest, their hedging activity leaves persistent ``scar tissue'' in dealer positioning. As illustrated in Figure~\ref{fig:scar-tissue}, the expiration of 0DTE options creates a discontinuity in gamma (options expire worthless) but continuity in delta (hedge positions remain), resulting in a positioning state that remains after the daily unwind---we interpret EOD Open Interest as potentially reflecting the structural footprint of this repeated hedging pressure. Rather than measuring intraday flow directly, our metric captures the overnight positioning state that persists after dealers partially unwind during the close.
+This shift temporally coincides with 0DTE options proliferation (2020 $<$5\% volume $\rightarrow$ 2023 43\% volume, 2024 $\approx$48\%)~\cite{cboe2024zero}. Academic research confirms these structural effects: Brogaard et al.~\cite{brogaard2023does} find that a one standard deviation increase in 0DTE trading leads to a 10.4\% increase in market volatility. Crucially, although 0DTE contracts themselves expire intraday and vanish from EOD open interest, their hedging activity leaves persistent ``scar tissue'' in dealer positioning. As illustrated in Figure~\ref{fig:scar-tissue}, the expiration of 0DTE options creates a discontinuity in gamma (options expire worthless) but continuity in delta (hedge positions remain), resulting in a positioning state that remains after the daily unwind---we interpret EOD Open Interest as potentially reflecting the structural footprint of this repeated hedging pressure. Rather than measuring intraday flow directly, our metric appears to capture the overnight positioning state that persists after dealers partially unwind during the close.
 
 However, while the temporal coincidence is consistent with 0DTE as a plausible primary catalyst, observational data cannot strictly prove causality without a counterfactual control. Alternative factors like market maker concentration likely contributed, though the temporal alignment and mechanical linkages provide strong circumstantial evidence for the 0DTE transmission hypothesis. We must systematically address three major confounders that increased simultaneously from 2020 to 2024:
 
@@ -87,25 +87,25 @@ However, while the temporal coincidence is consistent with 0DTE as a plausible p
 \item \textbf{Spread dynamics}: Higher rates compressed credit spreads~\cite{kolanovic2023volmageddon}, potentially forcing dealers to accept more directional positioning in equity index options to maintain profitability.
 \end{enumerate}
 
-\noindent\textbf{Ruling out interest rates as primary driver}: Interest rate changes are a \textit{secular monotonic factor} (continuously rising 2020-2023), whereas our Phase 5 detection pattern is \textit{non-monotonic} (3.7\% → 32.4\% → 20.2\% → 100\%). Critically, the 2023→2024 regime detection transition (20.2\% → 100\%) coincides with the Federal Reserve's \textit{terminal rate plateau} in December 2023, not ongoing rate increases. This temporal mismatch directly argues against interest rates as the primary structural driver, though they likely contributed as a secondary amplifying factor alongside 0DTE adoption.
+\noindent\textbf{Ruling out interest rates as primary driver}: Interest rate changes are a \textit{secular monotonic factor} (continuously rising 2020-2023), whereas our Phase 5 detection pattern is \textit{non-monotonic} (3.7\% → 32.4\% → 20.2\% → 100\%). Critically, the 2023→2024 regime detection transition (20.2\% → 100\%) coincides with the Federal Reserve's \textit{terminal rate plateau} in December 2023, not ongoing rate increases. This temporal mismatch argues against interest rates as the primary structural driver, though they likely contributed as a secondary amplifying factor alongside 0DTE adoption.
 
 \vspace{0.2cm}
 
 \noindent\textbf{Confounder 2: Volatility Regime Changes}: 2020 included COVID-19 crisis volatility (VIX spike to 80+ in March), while 2024 exhibited relatively subdued volatility (VIX mostly 12-20 range). Regime persistence might improve naturally in low-volatility environments independent of 0DTE.
 
-\noindent\textbf{Ruling out volatility as primary driver}: Phase 2a shuffle test on 2020 randomized windows achieved only 12.1\% false positive rate despite 2020's extreme volatility, suggesting low baseline regime persistence was structural, not volatility-driven. Furthermore, 2023 exhibited elevated volatility similar to 2020 (post-FOMC uncertainty), yet detection jumped from 20.2\% to 100\% in 2024. If volatility regime were the primary driver, we would expect higher detection in volatile 2023 and lower in calmer 2024—the opposite of what we observe.
+\noindent\textbf{Ruling out volatility as primary driver}: Phase 2a shuffle test on 2020 randomized windows achieved only 12.1\% false positive rate despite 2020's extreme volatility, suggesting low baseline regime persistence may be structural rather than volatility-driven. Furthermore, 2023 exhibited elevated volatility similar to 2020 (post-FOMC uncertainty), yet detection jumped from 20.2\% to 100\% in 2024. If volatility regime were the primary driver, we would expect higher detection in volatile 2023 and lower in calmer 2024—the opposite of what we observe.
 
 \vspace{0.2cm}
 
 \noindent\textbf{Confounder 3: Quantitative Trading Growth and Liquidity}: Growth in quantitative trading, increased options liquidity, and algorithmic market making may have independently increased positioning persistence. These secular trends have been accelerating since 2015.
 
-\noindent\textbf{Ruling out gradual tech evolution as primary driver}: If positioning persistence improved gradually from technological evolution, we would expect steady detection rate progression across 2020-2024. Instead, Phase 5 reveals a \textit{discontinuity}: detection remains flat through 2023 (3.7\% → 32.4\% → 20.2\%) then explodes in 2024 (100\%). This cliff-like transition at 2023→2024 boundary closely aligns with 0DTE market saturation (reaching 48\% volume share), not with any discrete technology adoption. Gradual forces (technology diffusion, regulatory changes, quant growth) cannot explain discontinuous regime shifts.
+\noindent\textbf{Ruling out gradual tech evolution as primary driver}: If positioning persistence improved gradually from technological evolution, we would expect steady detection rate progression across 2020-2024. Instead, Phase 5 reveals a \textit{discontinuity}: detection remains flat through 2023 (3.7\% → 32.4\% → 20.2\%) then explodes in 2024 (100\%). This cliff-like transition at 2023→2024 boundary appears to align with 0DTE market saturation (reaching 48\% volume share), not with any discrete technology adoption. Gradual forces (technology diffusion, regulatory changes, quant growth) cannot explain discontinuous regime shifts.
 
 \vspace{0.2cm}
 
 \noindent\textbf{Confounder 4: Market Maker Concentration}: Closely related to quantitative trading growth, increasing concentration among equity options market makers could mechanically produce coordinated positioning without 0DTE as a causal driver. If fewer dealers control larger shares of open interest, their collective hedging behavior would naturally appear more synchronized—producing the regime persistence patterns we observe.
 
-\noindent\textbf{Acknowledging concentration as contributing factor}: Unlike the previous confounders, market maker concentration cannot be definitively ruled out as a partial driver. Industry consolidation has occurred: Citadel Securities and Virtu Financial dominate equity market making, and similar concentration exists in options~\cite{cboe2024market}. This concentration may amplify the structural effects we observe. However, concentration alone cannot explain the \textit{timing} of the 2023→2024 discontinuity—market maker consolidation has been gradual since 2015, whereas our detection pattern shows a sharp transition. More likely, concentration \textit{amplifies} 0DTE effects: concentrated market makers facing sustained 0DTE hedging pressure would exhibit more coordinated residual positioning than a fragmented dealer population. We acknowledge concentration as a legitimate confounding factor that may contribute to regime detection, while noting the temporal mismatch argues against it as the \textit{primary} driver.
+\noindent\textbf{Acknowledging concentration as contributing factor}: Unlike the previous confounders, market maker concentration cannot be definitively ruled out as a partial driver. Industry consolidation has occurred: Citadel Securities and Virtu Financial dominate equity market making, and similar concentration exists in options~\cite{cboe2024market}. This concentration may amplify the structural effects we observe. However, concentration alone cannot explain the \textit{timing} of the 2023→2024 discontinuity—market maker consolidation has been gradual since 2015, whereas our detection pattern shows a sharp transition. More likely, concentration may amplify 0DTE effects: concentrated market makers facing sustained 0DTE hedging pressure would exhibit more coordinated residual positioning than a fragmented dealer population. We acknowledge concentration as a legitimate confounding factor that may contribute to regime detection, while noting the temporal mismatch argues against it as the \textit{primary} driver.
 
 \vspace{0.2cm}
 
@@ -121,7 +121,7 @@ However, while the temporal coincidence is consistent with 0DTE as a plausible p
 
 \vspace{0.2cm}
 
-\noindent\textbf{Mechanistic interpretation synthesis}: Our framework documents \textit{that} market structure shifted discontinuously at 2023→2024 boundary. The temporal coincidence with 0DTE market saturation (3.7\% detection in 2021 → 100\% in 2024), discontinuous detection pattern ruling out gradual confounders, and independent OCC volume corroboration together provide the strongest evidence possible from observational data that 0DTE is the primary driver. Interest rates and volatility are secondary factors that may have amplified the structural transition but cannot explain its timing or magnitude.
+\noindent\textbf{Mechanistic interpretation synthesis}: Our framework documents \textit{that} market structure shifted discontinuously at 2023→2024 boundary. The temporal coincidence with 0DTE market saturation (3.7\% detection in 2021 → 100\% in 2024), discontinuous detection pattern ruling out gradual confounders, and independent OCC volume corroboration together provide strong circumstantial evidence that 0DTE is a plausible primary driver. Interest rates and volatility are secondary factors that may have amplified the structural transition but cannot explain its timing or magnitude.
 
 \vspace{0.2cm}
 
@@ -131,7 +131,7 @@ However, while the temporal coincidence is consistent with 0DTE as a plausible p
 \centering
 \includegraphics[width=1.0\textwidth, height=0.7\textheight, keepaspectratio]{../figures/output/fig08_detection_progression.png}
 \caption{\textbf{Phase 5: Temporal Progression of Regime Detection (2020-2025).}
-The top panel shows detection rates evolved from pre-regime baseline (12.2\% in 2020) through borderline markets (3.7\% in 2021) and growing adoption (32.4\% in 2022, 20.2\% in 2023) to structural shift with sustained 100\% detection in 2024-2025. The 2023→2024 transition marks the structural reorganization of dealer positioning. The bottom panel shows average GEX magnitude grew 360\% from \$5B (2021) to \$23B (2024), far exceeding 20-25\% cumulative inflation, demonstrating the fixed \$5B threshold effectively discriminated borderline markets from structural regimes.}
+The top panel shows detection rates evolved from pre-regime baseline (12.2\% in 2020) through borderline markets (3.7\% in 2021), growing adoption (32.4\% in 2022), a threshold resistance phase (20.2\% in 2023, where high 0DTE volume faced market volatility disruptions), to structural shift with sustained 100\% detection in 2024-2025. The 2023→2024 transition marks the structural reorganization of dealer positioning. The bottom panel shows average GEX magnitude grew 360\% from \$5B (2021) to \$23B (2024), far exceeding 20-25\% cumulative inflation, demonstrating the fixed \$5B threshold effectively discriminated borderline markets from structural regimes.}
 \label{fig:phase4a_progression}
 \end{figure*}
 
@@ -165,7 +165,7 @@ Three validation elements establish framework robustness:
 
 \vspace{0.2cm}
 
-\noindent\textbf{Consistent LLM reasoning}: Across 1,412 real market windows spanning six years (2020-2025), the LLM maintained 98\% mechanical accuracy. This consistency suggests structural reasoning rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome. McCoy et al.~\cite{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences than low-probability ones. Our obfuscation testing methodology—stripping temporal context and market identifiers—directly addresses this concern by forcing the model to reason from structural properties rather than pattern-match against high-probability training examples.
+\noindent\textbf{Consistent LLM reasoning}: Across 1,412 real market windows spanning six years (2020-2025), the LLM maintained 98\% mechanical accuracy. This consistency suggests that structural reasoning may be occurring rather than memorization or spurious pattern detection. The model computes metrics correctly and applies criteria systematically regardless of detection outcome. McCoy et al.~\cite{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences than low-probability ones. Our obfuscation testing methodology—stripping temporal context and market identifiers—directly addresses this concern by forcing the model to reason from structural properties rather than pattern-match against high-probability training examples.
 
 \subsection{Sensitivity to GEX Formulation}
 
@@ -195,11 +195,11 @@ While various methodologies exist for quantifying dealer gamma exposure, we dist
 
 \vspace{0.2cm}
 
-\noindent\textbf{Resolving the Magnitude Paradox}: This finding complements the Inflation Defense (Section VI.C). There we showed that 2020 failed to qualify as a regime \textit{even when adjusted for inflation}---it lacked structural persistence. Here we show that 2024 qualifies as a regime \textit{even when stripped of dollar magnitude}---it has robust structure. Together, these tests prove that \textit{structure} (persistence and stability) is the dominant variable discriminating regime states, with dollar magnitude serving as a proxy for structural intensity rather than the causal factor.
+\noindent\textbf{Resolving the Magnitude Paradox}: This finding complements the Inflation Defense (Section VI.C). There we showed that 2020 failed to qualify as a regime \textit{even when adjusted for inflation}---it lacked structural persistence. Here we show that 2024 qualifies as a regime \textit{even when stripped of dollar magnitude}---it has robust structure. Together, these tests provide strong evidence that \textit{structure} (persistence and stability) is the dominant variable discriminating regime states, with dollar magnitude serving as a proxy for structural intensity rather than the causal factor.
 
 \vspace{0.2cm}
 
-\noindent\textbf{Structural Realism}: The 100\% agreement between absolute-scaled and normalized formulations provides a philosophical foundation for our findings. In the language of structural realism~\cite{worrall1989structural}, we argue that the regime phenomenon exists \textit{objectively}---invariant to the coordinate system used to measure it. Just as physical laws remain valid under coordinate transformations, the dealer positioning regime persists whether measured in dollars, ratios, or any mathematically equivalent representation. This transformation invariance distinguishes genuine market structure from measurement artifacts.
+\noindent\textbf{Structural Realism}: The 100\% agreement between absolute-scaled and normalized formulations provides a philosophical foundation for our findings. In the language of structural realism~\cite{worrall1989structural}, our findings allow for a structural realist interpretation---suggesting the regime phenomenon may exist \textit{objectively}, invariant to the coordinate system used to measure it. Just as physical laws remain valid under coordinate transformations, the dealer positioning regime persists whether measured in dollars, ratios, or any mathematically equivalent representation. This transformation invariance distinguishes genuine market structure from measurement artifacts.
 
 \vspace{0.2cm}
 
@@ -252,7 +252,7 @@ Our methodology measures GEX from end-of-day open interest (GEX\textunderscore O
 \includegraphics[width=1.0\textwidth, height=0.9\textheight, keepaspectratio]{../figures/output/fig09_scar_tissue.png}
 \caption{\textbf{Scar Tissue Mechanism: How Intraday 0DTE Trading Creates Overnight Positioning.}
 \textbf{(A)} Intraday gamma dynamics showing dealer exposure throughout a trading day. Gamma builds during morning 0DTE accumulation, peaks mid-afternoon ($\sim$\$23B), then partially unwinds before market close. The incomplete unwind leaves $\sim$\$6B residual—the ``scar tissue.''
-\textbf{(B)} Phase change schematic at 4:00 PM expiration. Before expiration, dealers hold both gamma exposure (\$15B from 0DTE options) and corresponding hedge positions ($\sim$\$15B stock). At expiration, gamma vanishes instantly as options expire worthless or are exercised, but the hedge position remains. This residual stock position must be unwound during overnight/T+1 sessions, creating the persistent positioning captured in EOD open interest measurements.
+\textbf{(B)} Phase change schematic at 4:00 PM expiration. Before expiration, dealers hold both gamma exposure (\$15B from 0DTE options) and corresponding hedge positions ($\sim$\$15B stock). At expiration, gamma vanishes instantly as options expire worthless or are exercised, but the hedge position remains. This residual stock position is typically unwound during overnight/T+1 sessions, contributing to the persistent positioning we interpret in EOD open interest measurements.
 }
 \label{fig:scar-tissue}
 \end{figure*}

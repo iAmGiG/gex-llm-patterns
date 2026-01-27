@@ -93,9 +93,9 @@ def create_figure():
     df = calculate_returns(df)
     print(f"Calculated returns for {len(df)} days")
 
-    # Create figure with two panels
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), dpi=300,
-                                    gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.25})
+    # Create figure with two panels (Panel B gets more vertical space)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 11), dpi=300,
+                                    gridspec_kw={'height_ratios': [1.8, 1.2], 'hspace': 0.28})
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax1.set_facecolor(IEEE_THEME["background"])
     ax2.set_facecolor(IEEE_THEME["background"])
@@ -221,23 +221,37 @@ def create_figure():
     bars2 = ax2.bar(x + width/2, intraday_by_year, width,
                     label="Intraday", color=COLORS["intraday"], alpha=0.8)
 
-    # Add value labels on bars
+    # Add value labels on bars (negative bars positioned inside or just above x-axis to prevent collision)
     for bar, val in zip(bars1, overnight_by_year):
         height = bar.get_height()
+        # For negative values, place text inside bar or very close to x-axis
+        if height >= 0:
+            offset_y = 5
+            va_pos = 'bottom'
+        else:
+            offset_y = -5  # Reduced from -16 to prevent overlap with x-axis
+            va_pos = 'center'
         ax2.annotate(f'{val:+.1f}%',
                      xy=(bar.get_x() + bar.get_width()/2, height),
-                     xytext=(0, 3 if height >= 0 else -12),
+                     xytext=(0, offset_y),
                      textcoords="offset points",
-                     ha='center', va='bottom' if height >= 0 else 'top',
+                     ha='center', va=va_pos,
                      fontsize=8, fontweight="bold", color=COLORS["overnight"])
 
     for bar, val in zip(bars2, intraday_by_year):
         height = bar.get_height()
+        # For negative values, place text inside bar or very close to x-axis
+        if height >= 0:
+            offset_y = 5
+            va_pos = 'bottom'
+        else:
+            offset_y = -5  # Reduced from -16 to prevent overlap with x-axis
+            va_pos = 'center'
         ax2.annotate(f'{val:+.1f}%',
                      xy=(bar.get_x() + bar.get_width()/2, height),
-                     xytext=(0, 3 if height >= 0 else -12),
+                     xytext=(0, offset_y),
                      textcoords="offset points",
-                     ha='center', va='bottom' if height >= 0 else 'top',
+                     ha='center', va=va_pos,
                      fontsize=8, fontweight="bold", color=COLORS["intraday"])
 
     # Zero line
@@ -246,8 +260,7 @@ def create_figure():
     # Highlight 0DTE adoption period
     ax2.axvspan(1.5, 3.5, color="#FFF9C4", alpha=0.3, zorder=0)
 
-    # Panel B formatting
-    ax2.set_xlabel("Year", fontsize=12, fontweight="bold", color=IEEE_THEME["text"])
+    # Panel B formatting (no xlabel needed - year labels are self-explanatory)
     ax2.set_ylabel("Annual Return (%)", fontsize=12, fontweight="bold",
                    color=IEEE_THEME["text"])
     ax2.set_title("(B) Annual Breakdown: Overnight vs Intraday Returns",
@@ -277,7 +290,7 @@ def create_figure():
     )
 
     fig.text(
-        0.5, 0.02, insight_text,
+        0.5, 0.035, insight_text,
         fontsize=9, ha="center", va="bottom",
         color=IEEE_THEME["text"],
         bbox=dict(boxstyle="round,pad=0.5", facecolor="#FFF3E0",
@@ -286,7 +299,7 @@ def create_figure():
         linespacing=1.3
     )
 
-    plt.tight_layout(rect=[0, 0.08, 1, 0.94])
+    plt.tight_layout(rect=[0, 0.12, 1, 0.94])
 
     return fig
 
