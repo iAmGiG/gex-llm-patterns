@@ -1,0 +1,42 @@
+% JFQA Submission Format - Blind Review Manuscript
+% Author information is in separate TitlePage.tex file
+\documentclass[12pt]{article}
+
+\input{00_Header}
+
+\begin{document}
+
+\title{The ``Scar Tissue'' of 0DTE: Identifying Structural Shifts in Dealer Inventory and Overnight Risk Premia}
+
+\maketitle
+
+\begin{abstract}
+We document a fundamental structural shift in options markets characterized by the emergence of persistent dealer gamma regimes. Using a structural reasoning framework applied to 30-day sequences across six years (2020--2025), we find that sustained dealer positioning has transitioned from an exceptional state (12\% detection in 2020) to a permanent characteristic of the post-0DTE era (100\% in 2024). We propose a ``scar tissue'' mechanism where concentrated intraday 0DTE hedging flows leave residual inventory that market makers carry overnight. This is supported by a ``great divergence'' in SPY returns: since late 2023, overnight returns (+21.2\%) have significantly outperformed intraday returns (+0.6\%), consistent with a displacement of risk premium to the overnight session. Our results suggest that 0DTE proliferation has reorganized market microstructure, transforming transient hedging constraints into persistent regimes of decentralized coordination.
+\end{abstract}
+
+\textbf{Keywords:} large language models, regime detection, gamma exposure, market microstructure, structural reasoning, dealer constraints, obfuscation testing, 0DTE options, persistent regimes
+
+\input{01_Introduction}
+
+\input{02_Related_work}
+
+\input{03_Methodology}
+\FloatBarrier
+
+\input{04_Experimental_setup}
+
+\input{05_Results}
+\FloatBarrier
+
+\input{06_Discussion}
+\FloatBarrier
+
+\input{07_Conclusion}
+
+% Note: Acknowledgments moved to TitlePage.tex for blind review
+
+\FloatBarrier
+\bibliographystyle{apalike}
+\bibliography{references,statistical_references}
+
+\end{document}

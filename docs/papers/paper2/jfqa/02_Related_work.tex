@@ -1,0 +1,43 @@
+\section{Background and Related Work}
+
+\subsection{Gamma Exposure and Dealer Hedging Dynamics}
+
+Gamma exposure (GEX) measures the second-order price sensitivity of options portfolios, determining how rapidly dealers must adjust delta hedges as underlying prices move~\citep{black1973pricing}. When dealers are short gamma (negative GEX), they must sell on declines and buy on rallies to maintain delta neutrality, amplifying price movements~\citep{ni2005stock}. Conversely, positive gamma positioning dampens volatility through stabilizing hedging flows.
+
+Recent empirical work documents the market impact of dealer gamma hedging. \citet{baltussen2021hedging} demonstrate that end-of-day rebalancing flows create predictable intraday return patterns. \citet{gao2018market} show that options market maker inventory positions significantly affect underlying asset prices. The theoretical foundation for dealer unwinding constraints comes from~\citet{garleanu2013dynamic}, who model how transaction costs and liquidity constraints prevent instantaneous portfolio rebalancing. Their framework predicts that dealers facing sudden gamma exposure changes will carry residual inventory overnight when unwinding costs exceed carry costs---a mechanism central to our ``scar tissue'' hypothesis. Industry practitioners have operationalized these dynamics through real-time GEX monitoring~\citep{spotgamma2021,fishman2023gamma}, though academic validation of these frameworks remains limited.
+
+\subsection{Zero-Days-to-Expiration (0DTE) Options}
+
+The introduction of daily options expirations in 2022 fundamentally altered options market structure~\citep{cboe2024zero}. By 2023, 0DTE options accounted for 43\% of options volume (up from $<$5\% in 2020), with 2024 reaching approximately 48\% on average, concentrating gamma exposure at very short maturities. \citet{dim2025zero} document that 0DTE proliferation increased intraday volatility and created more pronounced hedging-driven price dynamics.
+
+This shift potentially impacts regime persistence. Traditional monthly expiration cycles allowed dealers to gradually adjust positioning, while daily 0DTE rollovers may create more sustained directional gamma exposure. Our work empirically tests whether regime persistence indeed increased during this structural transition.
+
+\subsection{Regime Detection in Financial Markets}
+
+Regime detection in financial time series has a rich history. \citet{hamilton1989new} introduced Markov-switching models for identifying volatility regimes. \citet{ang2002regime} apply regime-switching to asset pricing. More recently, \citet{nystrup2020regime} survey machine learning approaches to regime detection, documenting improved performance over traditional econometric methods.
+
+However, these approaches rely on statistical properties (volatility, returns) rather than structural market mechanics. Our contribution differs by detecting regimes through \textit{dealer positioning constraints}—a microstructure-based signal with explicit causal interpretation—rather than purely statistical patterns.
+
+\subsection{LLM Applications in Finance}
+
+Large language models have shown promise in financial analysis tasks. \citet{lopez2023can} demonstrate that GPT-4 can extract financial information from text with accuracy comparable to human analysts. \citet{kim2024financial} show LLMs can reason about market mechanisms when given appropriate context. While recent work employs LLMs as direct trading agents~\citep{yang2024tradingagents}, our contribution focuses on validating LLM structural reasoning about market microstructure---a necessary prerequisite for building informed agents that understand regime dynamics rather than just price action.
+
+Yet LLM financial reasoning faces two critical challenges. First, \textit{temporal memorization}: LLMs may recall specific market events from training data rather than reasoning from structure. Second, \textit{spurious pattern detection}: LLMs may identify statistically significant but mechanically meaningless patterns. Our obfuscation testing methodology addresses both concerns by stripping temporal context and requiring structural reasoning.
+
+\subsection{Temporal Robustness Protocols}
+
+Identifying genuine market structure shifts requires distinguishing structural patterns from artifacts of specific historical events or date memorization. Our companion paper~\citep{regan2025obfuscation} introduced temporal obfuscation---replacing calendar dates with relative labels (``Day T+0'') and removing event context---to ensure detection depends on structural properties rather than memorized associations. This prior work demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy.
+
+This paper extends temporal robustness testing to \textbf{30-day regime windows}. The key methodological challenge is ensuring selectivity: detecting universal patterns (present in all markets) proves only pattern matching, while discriminating persistent regimes from transitional periods validates genuine structural identification. Our five-phase validation strategy addresses this challenge through negative controls, pre/post-0DTE comparison, and multi-year temporal analysis (2020-2025).
+
+\subsection{Gap in Literature}
+
+Despite extensive research on dealer gamma dynamics~\citep{ni2005stock,baltussen2021hedging} and 0DTE market structure changes~\citep{dim2025zero}, no prior work quantitatively examines whether 0DTE proliferation induced \textit{persistent dealer gamma regimes}---sustained periods of directional positioning that were absent or rare in pre-0DTE markets. Specifically:
+
+\begin{itemize}
+\item Gamma research focuses on instantaneous hedging dynamics, not multi-day regime persistence
+\item 0DTE literature documents structural changes but lacks quantitative frameworks for detecting regime emergence
+\item No empirical work tests whether regime persistence increased during the 0DTE transition (2020-2024)
+\end{itemize}
+
+We fill this gap by developing a structural identification framework for 30-day regimes, providing the first empirical evidence that persistent dealer positioning emerged coincident with 0DTE proliferation and quantifying the market structure difference between pre-0DTE (2020) and post-0DTE (2024) eras.
