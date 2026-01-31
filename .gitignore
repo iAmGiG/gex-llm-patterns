@@ -295,3 +295,6 @@ docs/papers/**/latex/*.sh
 reports/validation/paper2_regime_windows/batch_jobs/
 docs/applications/
 tmpclaude*
+# Windows-specific LaTeX build scripts (local only)
+docs/papers/paper2/jfqa/build.bat
+.vscode/tasks.json
