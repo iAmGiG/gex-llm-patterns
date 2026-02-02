@@ -1,0 +1,191 @@
+\section{Experimental Setup}
+
+\subsection{Dataset}
+
+\textbf{Symbol}: SPY (S\&P 500 ETF)
+
+\textbf{Primary Dataset (2024)}:
+\begin{itemize}
+\item Period: January 2, 2024 - December 31, 2024
+\item Trading days: 252
+\item 30-day windows: 223 (rolling windows with 29-day stride)
+\item Data source: Alpha Vantage Premium API (options chain + spot prices)
+\end{itemize}
+
+\textbf{Comparison Dataset (2020)}:
+\begin{itemize}
+\item Period: January 2, 2020 - December 31, 2020
+\item Trading days: 252
+\item 30-day windows: 223
+\item Purpose: Pre-0DTE baseline for regime persistence comparison
+\end{itemize}
+
+\textbf{Negative Control Datasets}:
+\begin{itemize}
+\item Shuffle test: 404 windows (2024 Q1 + 2020, randomized day order)
+\item Transitional test: 202 windows (2024 Q1 + 2020, high flip counts)
+\item Low-magnitude test: 203 windows (2024 Q1 + 2020, scaled <\$5B)
+\end{itemize}
+
+\begin{table}[ht]
+\centering
+\caption{Validation Sample Composition}
+\begin{tabular}{llr}
+\toprule
+\textbf{Dataset Type} & \textbf{Phase} & \textbf{Windows} \\
+\midrule
+Real Market Data & Phase 5 (2020-2025) & 1,412 \\
+Synthetic Controls & Phase 2 (Negatives) & 809 \\
+\midrule
+\textbf{Total Evaluations} & & \textbf{2,221} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All options data includes strike price, open interest, implied volatility, days to expiration, and contract type (call/put). Spot prices obtained from daily close values. While institutional sources (e.g., OptionMetrics) may handle corporate actions differently, the structural signal of multi-billion dollar regimes is robust to minor data variations.
+
+\subsection{Data Processing Pipeline}
+
+\subsubsection{GEX Calculation}
+
+For each trading day:
+\begin{enumerate}
+\item Fetch options chain (all strikes, all expirations)
+\item Calculate Black-Scholes gamma using implied volatility from market prices
+\item Weight by open interest: $\text{GEX}_{\text{strike}} = \text{OI} \times \Gamma \times S^2 \times 0.01 \times 100$
+\item Aggregate across strikes: $\text{GEX}_{\text{total}} = \sum_{\text{calls}} \text{GEX} - \sum_{\text{puts}} \text{GEX}$
+\item Store net GEX value (positive = dealer long gamma, negative = dealer short gamma)
+\end{enumerate}
+
+\subsubsection{Window Generation}
+
+Generate 30-day rolling windows with stride=1:
+\begin{itemize}
+\item Window 1: Days 1-30
+\item Window 2: Days 2-31
+\item Window 3: Days 3-32
+\item \ldots
+\item Window N: Days (N)-(N+29)
+\end{itemize}
+
+For each window, calculate:
+\begin{itemize}
+\item Persistence: $\frac{\max(\text{positive days}, \text{negative days})}{30}$
+\item Magnitude: $\frac{1}{30}\sum_{i=1}^{30} |\text{GEX}_i|$
+\item Flips: $\sum_{i=1}^{29} \mathbb{1}[\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)]$
+\end{itemize}
+
+\subsubsection{Obfuscation}
+
+Transform each window before LLM submission:
+\begin{itemize}
+\item Replace calendar dates with relative labels: "Day T-29", "Day T-28", \ldots, "Day T+0"
+\item Replace "SPY" with generic label: "INDEX\_1"
+\item Remove all temporal context (day of week, month, quarter, year)
+\item Present only: GEX sequence (30 values), spot price, current date label
+\end{itemize}
+
+\subsection{LLM Configuration}
+
+\textbf{Model}: OpenAI o4-mini (reasoning model)
+
+\textbf{API Parameters}:
+\begin{itemize}
+\item Temperature: 1.0 (default reasoning configuration; for o-series reasoning models, internal chain-of-thought variance is managed architecturally, making standard temperature tuning less critical for structured outputs)
+\item Max tokens: 16,384 (sufficient for detailed chain-of-thought)
+\item Top-p: 1.0 (no nucleus sampling)
+\end{itemize}
+
+\textbf{Batch Processing}:
+\begin{itemize}
+\item Method: OpenAI Batch API (asynchronous processing)
+% \item Cost savings: 50\% vs synchronous API (\$0.075 vs \$0.15 per 1M input tokens) % Omitted - not tracking cost
+\item Processing time: 6-23 minutes per batch (223 windows)
+\item Reliability: 100\% completion rate (no timeouts or rate limits)
+\end{itemize}
+
+\subsection{Prompt Structure}
+
+Each prompt contains:
+
+\vspace{0.2cm}
+
+\noindent\textbf{System Message}:
+\begin{verbatim}
+You are a financial market analyst identifying
+persistent dealer gamma regimes from 30-day
+GEX sequences.
+\end{verbatim}
+
+\vspace{0.2cm}
+
+\noindent\textbf{User Message}:
+\begin{itemize}
+\item 30-day GEX sequence with obfuscated dates
+\item Regime classification criteria (70\% persistence, \$5B magnitude, $\leq$5 flips)
+\item Explicit instructions for step-by-step reasoning
+\item Output format: JSON with regime\_type, confidence, reasoning, metrics
+\end{itemize}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Output Schema}:
+\begin{verbatim}
+{
+  "regime_type": "persistent_negative",
+  "regime_detected": true,
+  "confidence": 85,
+  "reasoning": "...",
+  "llm_metrics": {
+    "persistence_pct": 96.67,
+    "avg_magnitude_b": 13.45,
+    "sign_flips": 1
+  }
+}
+\end{verbatim}
+
+\subsection{Validation Protocol}
+
+Our multi-phase validation strategy tests both framework selectivity and market structure evolution:
+
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 1 - Q1 2024 Baseline} (52 windows): Establish baseline detection rate on January-March 2024 data. Success criteria: 30-50\% detection demonstrating selectivity rather than universal pattern matching.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 2 - Negative Controls} (809 windows): Validate discrimination through three synthetic tests. Shuffle test (404 windows) randomizes day order within sequences to destroy temporal structure, expected $<$20\% false positive rate. Transitional test (202 windows) filters high-volatility periods with 7-10 sign flips, expected $<$10\% FP. Low-magnitude test (203 windows) scales persistent sequences below \$5B threshold, expected $<$10\% FP.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 3 - Full 2024 Validation} (223 windows): Test generalization across all 252 trading days in 2024 to determine whether Q1 results extend to full year or reflect quarterly anomaly.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Phase 4 - 2020 Comparison} (223 windows): Test pre-0DTE era (2020, 0DTE $<$5\% volume) versus post-0DTE era (2024, 0DTE 43\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
+
+\subsection{Quality Control}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Mechanical Verification}:
+
+For each LLM response, we extract the model's stated metrics (persistence\_pct, avg\_magnitude\_b, sign\_flips) and compare against ground truth calculated from actual GEX data. Windows with >5\% metric discrepancy are flagged for manual review.
+
+\vspace{0.2cm}
+
+\noindent\textbf{Output Validation}:
+
+All LLM outputs validated for correct structure and required fields:
+\begin{itemize}
+\item Valid JSON structure (LLM responses)
+\item Required fields present (regime\_type, confidence, reasoning, llm\_metrics)
+\item Confidence in valid range [0, 100]
+\item Regime type in valid set (persistent\_positive, persistent\_negative, transitional, low\_conviction)
+\end{itemize}
+
+Validation results stored in YAML format for reproducibility and batch metadata in JSON. Invalid responses logged and excluded from analysis (Phase 3: 0\% invalid, Phase 4: 0\% invalid).
+
+\subsection{Reproducibility}
+
+All code, data preprocessing scripts, and validation results are available in the public GitHub repository: \url{https://github.com/iAmGiG/gex-llm-patterns}. Validation runs can be reproduced using the exact prompt templates and experimental configurations provided in the repository.

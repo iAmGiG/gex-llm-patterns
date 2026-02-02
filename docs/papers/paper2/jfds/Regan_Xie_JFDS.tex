@@ -1,0 +1,78 @@
+% JFDS (Elsevier) Submission - Blind Review Version
+% No author information in this file (see TitlePage.tex for author details)
+
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\input{00_Header}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Structural Reasoning for Market Microstructure: Detecting Persistent Dealer Gamma Regimes in the 0DTE Era}
+
+% Author information removed for blind review
+% See TitlePage.tex for complete author information
+
+\begin{abstract}
+We introduce a structural reasoning framework using large language models to detect emergent coordination patterns in equity index options markets. Analyzing 1,412 30-day GEX sequences (2020--2025), we identify a fundamental regime transition: dealer positioning evolved from exceptional (12\% detection in 2020) to persistent (100\% in 2024), coinciding with 0DTE proliferation. Our framework achieves high-fidelity discrimination that arithmetic thresholds miss, validated through negative controls and temporal obfuscation protocols. We propose a ``scar tissue'' mechanism---concentrated intraday hedging leaving residual overnight inventory---confirmed by a ``great divergence'' in SPY returns: overnight (+21.2\%) vastly outperforming intraday (+0.6\%) since 2023. This demonstrates how structural reasoning architectures can identify market microstructure evolution invisible to traditional econometric approaches.
+\end{abstract}
+
+\begin{keyword}
+structural reasoning \sep gamma exposure \sep market microstructure \sep 0DTE options \sep regime detection \sep sequence analysis \sep dealer positioning
+\end{keyword}
+
+\end{frontmatter}
+
+% \section{Introduction}
+\input{01_Introduction}
+
+% \section{Background and Related Work}
+\input{02_Related_work}
+
+% \section{Methodology}
+\input{03_Methodology}
+\FloatBarrier
+
+% \section{Experimental Setup}
+\input{04_Experimental_setup}
+
+% \section{Results}
+\input{05_Results}
+\FloatBarrier
+
+% \section{Discussion}
+\input{06_Discussion}
+\FloatBarrier
+
+% \section{Conclusion}
+\input{07_Conclusion}
+
+% ============================================
+% DECLARATIONS (Required by JFDS/Elsevier)
+% ============================================
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Ethics Approval}
+This research uses publicly available market data and does not involve human subjects. Ethics approval was not required.
+
+\section*{Declaration of Generative AI and AI-Assisted Technologies}
+During the preparation of this work, the authors used Claude (Anthropic) and GPT-4 (OpenAI) for coding assistance and manuscript editing. The core analytical framework employs OpenAI's o4-mini model (snapshot: o4-mini-2025-04-16) via the Batch API for structural reasoning. The authors reviewed and edited all AI-assisted content and take full responsibility for the content of the publication.
+
+\section*{Data Availability}
+All code, data preprocessing scripts, and validation results are available in the public GitHub repository: \url{https://github.com/iAmGiG/gex-llm-patterns}
+
+\section*{Funding}
+This research received no external funding.
+
+% ============================================
+% BIBLIOGRAPHY
+% ============================================
+
+\FloatBarrier
+\bibliographystyle{elsarticle-harv}
+\bibliography{references,statistical_references}
+
+\end{document}

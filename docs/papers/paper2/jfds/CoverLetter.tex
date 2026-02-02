@@ -1,0 +1,55 @@
+% JFDS Cover Letter - NOT for blind review
+% This accompanies the submission but is only seen by editors
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+\begin{document}
+
+\noindent
+\today
+
+\vspace{1cm}
+
+\noindent
+To the Editorial Office of \textit{The Journal of Finance and Data Science},
+
+\vspace{0.5cm}
+
+We are pleased to submit our manuscript, ``Structural Reasoning for Market Microstructure: Detecting Persistent Dealer Gamma Regimes in the 0DTE Era,'' for consideration at \textit{The Journal of Finance and Data Science}.
+
+This paper introduces a novel structural reasoning framework that bridges computational data science with market microstructure analysis. We demonstrate how large language models---specifically OpenAI's o4-mini architecture---can serve as a systematic heuristic for detecting emergent coordination patterns in high-dimensional financial time series that traditional econometric approaches and simple threshold rules fail to identify.
+
+\textbf{The Financial Problem.} The 2022 explosion in zero-days-to-expiration (0DTE) options trading has fundamentally altered dealer positioning dynamics. We investigate whether this proliferation has created persistent dealer gamma regimes---sustained periods where decentralized dealer positioning exhibits systematic coherence.
+
+\textbf{The Data Science Solution.} Our framework treats 30-day GEX sequences as a time-series feature space for pattern recognition, validated through ablation studies (negative controls achieving 0\% false positives) and temporal obfuscation protocols that prevent data leakage from model training sets.
+
+\textbf{Key Results.} Analyzing 1,412 market windows (2020--2025), we identify a fundamental regime transition: dealer positioning evolved from exceptional (12\% detection) to persistent (100\% detection), with GEX magnitude growing 360\% (far exceeding inflation). We propose and validate a ``scar tissue'' mechanism confirmed by a ``great divergence'' in SPY returns: overnight (+21.2\%) vastly outperforming intraday (+0.6\%) since 2023.
+
+We believe this work exemplifies the interdisciplinary contribution JFDS seeks: a discovery in finance enabled by innovation in data science. Our methodology demonstrates how structural reasoning architectures can identify market microstructure evolution invisible to traditional approaches, with full reproducibility via our public GitHub repository.
+
+This manuscript is not currently under consideration at any other journal.
+
+\vspace{1cm}
+
+\noindent
+Sincerely,
+
+\vspace{0.8cm}
+
+\noindent
+Christopher Regan\\
+College of Computing and Software Engineering\\
+Kennesaw State University\\
+cregan1@kennesaw.edu
+
+\vspace{0.3cm}
+
+\noindent
+Ying Xie\\
+College of Computing and Software Engineering\\
+Kennesaw State University\\
+yxie2@kennesaw.edu
+
+\end{document}
