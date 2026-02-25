@@ -1,0 +1,50 @@
+% Validating LLM Structural Reasoning: Detecting Persistent Market Regimes
+% Through Temporal Obfuscation
+% IFIP AIAI 2026 - Springer LNCS Format
+%
+\documentclass[runningheads]{llncs}
+
+\input{00_Header}
+
+\begin{document}
+
+\title{Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation}
+
+\titlerunning{Validating LLM Structural Reasoning}
+
+\author{Christopher Regan\inst{1}\orcidID{0009-0001-0647-0331} \and
+Ying Xie\inst{1}\orcidID{0000-0002-8661-8877}}
+
+\authorrunning{C. Regan and Y. Xie}
+
+\institute{College of Computing and Software Engineering,
+Kennesaw State University, Marietta, GA 30060, USA\\
+\email{\{cregan1,yxie2\}@kennesaw.edu}}
+
+\maketitle
+
+\begin{abstract}
+We present a validation framework for large language model (LLM) structural reasoning applied to financial market regime detection. A critical challenge in deploying LLMs for domain-specific analysis is distinguishing genuine structural reasoning from training data memorization. We address this through temporal obfuscation testing: stripping calendar dates, ticker symbols, and contextual markers from input sequences, forcing the model to reason purely from numerical structure. Applying this framework to 30-day gamma exposure (GEX) sequences---a measure of options dealer positioning constraints---we validate detection across five phases spanning 2020--2025 (1,412 real windows plus 809 synthetic controls). The framework achieves 81.2\% detection of persistent dealer regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$), with 0\% false positives on transitional and low-magnitude negative controls. Multi-year analysis reveals gradual regime evolution tracking zero-days-to-expiration (0DTE) options adoption rather than sharp structural breaks. These results validate LLM structural reasoning capabilities in a challenging quantitative domain while demonstrating temporal obfuscation as a generalizable methodology for preventing training data contamination in domain-specific AI applications.
+
+\keywords{LLM validation \and structural reasoning \and temporal obfuscation \and regime detection \and market microstructure \and gamma exposure}
+\end{abstract}
+
+\input{01_Introduction}
+\input{02_Related_work}
+\input{03_Methodology}
+\input{04_Results}
+\input{05_Discussion}
+\input{06_Conclusion}
+
+\begin{credits}
+\subsubsection{\ackname}
+We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We are grateful to Anthropic for Claude Code, which facilitated development and testing, and to OpenAI for providing the o4-mini model via the Batch API. We thank Alpha Vantage for academic API access to market data.
+
+\subsubsection{\discintname}
+The authors have no competing interests to declare that are relevant to the content of this article.
+\end{credits}
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}

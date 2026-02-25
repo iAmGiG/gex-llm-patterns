@@ -1,0 +1,21 @@
+\section{Introduction}
+
+Large language models (LLMs) have demonstrated remarkable capabilities across diverse reasoning tasks, yet validating whether they perform genuine \textit{structural reasoning}---as opposed to pattern matching against training data---remains a fundamental challenge~\cite{mccoy2023embers}. This challenge intensifies in specialized domains where LLMs may have encountered domain-specific data during pre-training, making it difficult to distinguish learned reasoning from memorization.
+
+We address this challenge through \textbf{temporal obfuscation testing}: a validation methodology that strips identifying information (dates, symbols, contextual markers) from input sequences, forcing models to reason purely from numerical structure. We apply this framework to financial market microstructure---specifically, detecting persistent dealer gamma exposure (GEX) regimes from 30-day time series. GEX measures the aggregate second-order price sensitivity of options dealer portfolios; when dealers collectively maintain sustained directional positioning, their hedging activity creates predictable market dynamics that an LLM should identify from structural properties alone.
+
+This work extends our prior single-day obfuscation testing~\cite{regan2025obfuscation} to multi-day temporal domains, testing whether LLMs can identify \textit{persistent regimes} rather than instantaneous patterns. The distinction is critical: detecting universal patterns present in all markets validates only pattern matching, while selectively discriminating sustained regimes from transitional periods validates structural reasoning.
+
+\subsection{Research Questions and Contributions}
+
+We investigate three questions: (1) Can LLMs identify persistent dealer positioning regimes from obfuscated 30-day sequences? (2) Does the framework discriminate persistent regimes from transitional periods? (3) Did the proliferation of zero-days-to-expiration (0DTE) options~\cite{cboe2024zero} increase regime persistence between 2020 and 2024?
+
+Our contributions are:
+
+\begin{enumerate}
+\item \textbf{Temporal obfuscation methodology}: First application of obfuscation testing to multi-day regime detection (30-day windows), validated across six years (2020--2025) with 2,221 evaluations (1,412 real windows, 809 synthetic controls)
+\item \textbf{Selectivity validation with negative controls}: Framework achieves 69.1 percentage point discrimination between persistent regimes (2024: 81.2\%) and fragmented markets (2020: 12.1\%), with 0\% false positives on synthetic controls
+\item \textbf{Generalizable validation framework}: Temporal obfuscation as a domain-agnostic methodology for preventing training data contamination in LLM applications
+\end{enumerate}
+
+Section~\ref{sec:related} reviews related work. Section~\ref{sec:methodology} presents our methodology. Section~\ref{sec:results} reports results across five validation phases. Section~\ref{sec:discussion} discusses implications. Section~\ref{sec:conclusion} concludes.
