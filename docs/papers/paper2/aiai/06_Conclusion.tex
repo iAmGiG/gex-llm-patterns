@@ -1,0 +1,16 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented temporal obfuscation testing as a methodology for validating LLM structural reasoning in domain-specific applications. Applied to financial market regime detection, five-phase validation across 2,221 evaluations (1,412 real windows, 809 synthetic controls) spanning 2020--2025 demonstrates three contributions:
+
+\begin{enumerate}
+\item \textbf{Temporal obfuscation validates structural reasoning}: Stripping calendar dates, symbols, and contextual markers forces LLMs to reason from numerical structure. The framework achieved 69.1 percentage point discrimination between persistent regimes (2024: 81.2\%) and fragmented markets (2020: 12.1\%), with 0\% false positives on synthetic controls and 98\% mechanical accuracy across 50 manually reviewed responses.
+
+\item \textbf{Selective regime detection}: Unlike prior 5-day testing that achieved universal 98--100\% detection, 30-day windows with strict criteria (persistence $\geq$70\%, magnitude $\geq$\$5B, flips $\leq$5) produce selective 12--81\% detection---validating that the framework identifies persistent structural states rather than universal patterns.
+
+\item \textbf{Generalizable validation methodology}: Temporal obfuscation addresses training data contamination---a universal concern in deploying LLMs for specialized analysis. The three-component framework (feature removal, structural pattern preservation, negative controls) applies to any domain where memorization threatens evaluation validity.
+\end{enumerate}
+
+\noindent\textbf{Future directions}: Two extensions emerge. First, cross-asset generalization to individual equities would test whether regime detection reflects market-wide versus asset-specific dynamics. Second, extending temporal obfuscation to other domains (medical time series, climate data, industrial anomaly detection) would validate the methodology's generalizability beyond financial applications.
+
+All code, data preprocessing scripts, and validation results are publicly available.\footnote{\url{https://github.com/iAmGiG/gex-llm-patterns}}
