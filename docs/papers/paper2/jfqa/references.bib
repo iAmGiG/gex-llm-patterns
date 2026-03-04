@@ -1,0 +1,529 @@
+%% Paper #2: Temporal Dynamics of LLM-Based Market Microstructure Detection
+%% Sequential GEX Pattern Analysis
+
+%% ============================================================================
+%% PAPER #1 (IEEE BigData 2025 - Published)
+%% ============================================================================
+
+@inproceedings{regan2025obfuscation,
+  author = {Regan, Christopher and Xie, Ying},
+  title = {Inferring Latent Market Forces: Evaluating {LLM} Detection of Gamma Exposure Patterns via Obfuscation Testing},
+  booktitle = {2nd IEEE International Workshop on Large Language Models for Finance (LLM-Finance), IEEE International Conference on Big Data (BigData)},
+  year = {2025},
+  publisher = {IEEE},
+  address = {Macau, China},
+  url = {https://arxiv.org/abs/2512.17923},
+  note = {arXiv:2512.17923}
+}
+
+%% ============================================================================
+%% VERIFIED CITATIONS (Academic Sources)
+%% ============================================================================
+
+%% Market Microstructure Foundations
+@article{black1973pricing,
+  author = {Black, Fischer and Scholes, Myron},
+  title = {The Pricing of Options and Corporate Liabilities},
+  journal = {Journal of Political Economy},
+  year = {1973},
+  volume = {81},
+  number = {3},
+  pages = {637--654},
+  doi = {10.1086/260062}
+}
+
+@article{ni2005stock,
+  author = {Ni, Sophie X. and Pearson, Neil D. and Poteshman, Allen M.},
+  title = {Stock Price Clustering on Option Expiration Dates},
+  journal = {Journal of Financial Economics},
+  year = {2005},
+  volume = {78},
+  number = {1},
+  pages = {49--87},
+  doi = {10.1016/j.jfineco.2004.08.005}
+}
+
+%% 0DTE Options Research
+@misc{cboe2024zero,
+  author = {{CBOE Global Markets}},
+  title = {Zero Days to Expiration Options (0DTE): Market Structure and Trading Activity},
+  year = {2024},
+  howpublished = {CBOE Research Report},
+  url = {https://www.cboe.com/insights/posts/zero-days-to-expiration-0dte-options/}
+}
+
+@article{dim2025zero,
+  author = {Dim, Chukwuma and Marsh, Ian W. and Schrimpf, Andreas},
+  title = {Zero Days to Expiration Options and Market Dynamics},
+  journal = {Working Paper},
+  year = {2025},
+  institution = {Bank for International Settlements},
+  note = {Forthcoming}
+}
+
+%% GEX Calculation Methodology
+@misc{anderegg2022impact,
+  author = {Anderegg, Cem and Sokolov, Kris},
+  title = {The Impact of Gamma Hedging on the Market},
+  year = {2022},
+  howpublished = {SqueezeMetrics Technical Report},
+  url = {https://squeezemetrics.com/monitor/docs}
+}
+
+@misc{spotgamma2021,
+  author = {{SpotGamma}},
+  title = {Understanding Gamma Exposure},
+  year = {2021},
+  howpublished = {Technical Documentation},
+  url = {https://spotgamma.com}
+}
+
+%% LLM Research - Foundational Papers
+@inproceedings{brown2020language,
+  title={Language Models are Few-Shot Learners},
+  author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={1877--1901},
+  year={2020},
+  note={GPT-3 foundational paper}
+}
+
+@inproceedings{wei2022chain,
+  title={Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
+  author={Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and Chi, Ed and Le, Quoc and Zhou, Denny},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={35},
+  pages={24824--24837},
+  year={2022},
+  note={Chain-of-thought prompting methodology}
+}
+
+@article{kojima2022large,
+  title={Large Language Models are Zero-Shot Reasoners},
+  author={Kojima, Takeshi and Gu, Shixiang Shane and Reid, Machel and Matsuo, Yutaka and Iwasawa, Yusuke},
+  journal={Advances in Neural Information Processing Systems},
+  volume={35},
+  pages={22199--22213},
+  year={2022},
+  note={Zero-shot reasoning capabilities}
+}
+
+@article{openai2024reasoning,
+  author = {{OpenAI}},
+  title = {Introducing OpenAI o-series: A New Series of Reasoning Models},
+  journal = {OpenAI Research Blog},
+  year = {2024},
+  url = {https://openai.com/index/introducing-openai-o1-preview/}
+}
+
+@article{lopez2023can,
+  author = {Lopez-Lira, Alejandro and Tang, Yuehua},
+  title = {Can {ChatGPT} Forecast Stock Price Movements? {Return} Predictability and Large Language Models},
+  journal = {arXiv preprint arXiv:2304.07619},
+  year = {2023},
+  url = {https://arxiv.org/abs/2304.07619}
+}
+
+@article{kim2024financial,
+  author = {Kim, Alex and Muhn, Maximilian and Nikolaev, Valeri V.},
+  title = {Financial Statement Analysis with Large Language Models},
+  journal = {arXiv preprint arXiv:2407.17866},
+  year = {2024},
+  url = {https://arxiv.org/abs/2407.17866}
+}
+
+@article{yang2024tradingagents,
+  author = {Yang, Yijia and others},
+  title = {{TradingAgents}: Multi-Agents LLM Financial Trading Framework},
+  journal = {arXiv preprint arXiv:2412.20138},
+  year = {2024},
+  url = {https://arxiv.org/abs/2412.20138},
+  note = {LLM-based multi-agent trading systems}
+}
+
+@techreport{fishman2023gamma,
+  author = {Fishman, Rocky},
+  title = {All You Ever Wanted To Know About Gamma, Op-Ex, And Option-Driven Equity Flows},
+  institution = {Goldman Sachs Equity Derivatives Strategy},
+  year = {2023},
+  month = {March},
+  note = {Republished by SpotGamma},
+  url = {https://spotgamma.com/all-you-ever-wanted-to-know-about-gamma/}
+}
+
+@article{baltussen2021hedging,
+  author = {Baltussen, Guido and Da, Zhi and Lammers, Sten and Martens, Martin},
+  title = {Hedging Demand and Market Intraday Momentum},
+  journal = {Journal of Financial Economics},
+  year = {2021},
+  volume = {142},
+  number = {1},
+  pages = {377--403},
+  doi = {10.1016/j.jfineco.2021.05.012}
+}
+
+@article{gao2018market,
+  author = {Gao, Lei and Han, Yufeng and Li, Sophia Zhengzi and Zhou, Guofu},
+  title = {Market Intraday Momentum},
+  journal = {Journal of Financial Economics},
+  year = {2018},
+  volume = {129},
+  number = {3},
+  pages = {394--414},
+  doi = {10.1016/j.jfineco.2018.05.009}
+}
+
+%% ============================================================================
+%% TEMPORAL PATTERN DETECTION AND SEQUENCE MODELING
+%% ============================================================================
+
+%% Regime Detection - Foundational Papers
+@article{hamilton1989new,
+  author = {Hamilton, James D.},
+  title = {A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle},
+  journal = {Econometrica},
+  year = {1989},
+  volume = {57},
+  number = {2},
+  pages = {357--384},
+  doi = {10.2307/1912559}
+}
+
+@article{ang2002regime,
+  author = {Ang, Andrew and Bekaert, Geert},
+  title = {Regime Switches in Interest Rates},
+  journal = {Journal of Business \& Economic Statistics},
+  year = {2002},
+  volume = {20},
+  number = {2},
+  pages = {163--182},
+  doi = {10.1198/073500102317351930}
+}
+
+@article{nystrup2020regime,
+  author = {Nystrup, Peter and Madsen, Henrik and Lindstr{\"o}m, Erik},
+  title = {Dynamic Portfolio Optimization across Hidden Market Regimes},
+  journal = {Quantitative Finance},
+  year = {2018},
+  volume = {18},
+  number = {1},
+  pages = {83--95},
+  doi = {10.1080/14697688.2017.1342837}
+}
+
+%% Market Theory & Evolution
+@article{lo2004adaptive,
+  title={The Adaptive Markets Hypothesis},
+  author={Lo, Andrew W},
+  journal={Journal of Portfolio Management},
+  volume={30},
+  number={5},
+  pages={15--29},
+  year={2004},
+  note={Markets evolve through continuous adaptation}
+}
+
+@article{grossman1988liquidity,
+  title={Liquidity and Market Structure},
+  author={Grossman, Sanford J and Miller, Merton H},
+  journal={The Journal of Finance},
+  volume={43},
+  number={3},
+  pages={617--633},
+  year={1988},
+  publisher={Wiley},
+  note={Foundational market structure theory}
+}
+
+%% Options Hedging Dynamics
+@article{frey1997market,
+  title={Market Volatility and Feedback Effects from Dynamic Hedging},
+  author={Frey, R{\"u}diger and Stremme, Alexander},
+  journal={Mathematical Finance},
+  volume={7},
+  number={4},
+  pages={351--374},
+  year={1997},
+  publisher={Wiley},
+  note={Dynamic hedging feedback loops}
+}
+
+%% ============================================================================
+%% ALTERNATIVE APPROACHES (For Methodology Justification - Section 3.1)
+%% ============================================================================
+
+%% Prior-Fitted Networks (PFNs) - Statistical Pattern Matching Alternative
+@article{muller2021pfn,
+  author = {M{\"u}ller, Samuel and Hollmann, Noah and Arango, Sebastian Pineda and Grabocka, Josif and Hutter, Frank},
+  title = {Transformers Can Do Bayesian Inference},
+  journal = {arXiv preprint arXiv:2112.10510},
+  year = {2021},
+  note = {Published at ICLR 2022},
+  url = {https://arxiv.org/abs/2112.10510}
+}
+
+%% Probabilistic Programming - PyMC3 Framework
+@article{salvatier2016pymc3,
+  author = {Salvatier, John and Wiecki, Thomas V. and Fonnesbeck, Christopher},
+  title = {Probabilistic Programming in Python Using PyMC3},
+  journal = {PeerJ Computer Science},
+  year = {2016},
+  volume = {2},
+  pages = {e55},
+  doi = {10.7717/peerj-cs.55},
+  url = {https://peerj.com/articles/cs-55/}
+}
+
+%% Probabilistic Programming - Pyro Framework (PyTorch-based)
+@article{bingham2019pyro,
+  author = {Bingham, Eli and Chen, Jonathan P. and Jankowiak, Martin and Obermeyer, Fritz and Pradhan, Neeraj and Karaletsos, Theofanis and Singh, Rohit and Szerlip, Paul A. and Horsfall, Paul and Goodman, Noah D.},
+  title = {Pyro: Deep Universal Probabilistic Programming},
+  journal = {Journal of Machine Learning Research},
+  year = {2019},
+  volume = {20},
+  number = {28},
+  pages = {1--6},
+  url = {http://jmlr.org/papers/v20/18-403.html}
+}
+
+%% LSTM - Foundational Recurrent Neural Network Architecture
+@article{hochreiter1997lstm,
+  author = {Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  title = {Long Short-Term Memory},
+  journal = {Neural Computation},
+  year = {1997},
+  volume = {9},
+  number = {8},
+  pages = {1735--1780},
+  doi = {10.1162/neco.1997.9.8.1735},
+  note = {95,000+ citations}
+}
+
+%% Transformer Architecture - Foundation for Modern LLMs
+@inproceedings{vaswani2017attention,
+  author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  title = {Attention Is All You Need},
+  booktitle = {Advances in Neural Information Processing Systems 30 (NeurIPS 2017)},
+  year = {2017},
+  pages = {5998--6008},
+  url = {https://arxiv.org/abs/1706.03762},
+  note = {173,000+ citations - foundational paper for modern LLMs}
+}
+
+%% ============================================================================
+%% GRANGER CAUSALITY AND LEAD-LAG ANALYSIS
+%% ============================================================================
+
+%% TODO: Add foundational econometric papers:
+%% - Granger (1969) - Original Granger causality
+%% - Hamilton (1994) - Time series analysis
+%% - Papers on lead-lag relationships in finance
+
+%% ============================================================================
+%% RELATED WORK FROM PAPER #1
+%% ============================================================================
+
+%% TODO: Import relevant citations from Paper #1:
+%% - LLM reasoning papers
+%% - Market microstructure papers
+%% - Obfuscation testing methodology
+%% - WHO→WHOM→WHAT framework
+
+%% ============================================================================
+%% PHILOSOPHY OF SCIENCE
+%% ============================================================================
+
+@article{worrall1989structural,
+  author = {Worrall, John},
+  title = {Structural Realism: The Best of Both Worlds?},
+  journal = {Dialectica},
+  year = {1989},
+  volume = {43},
+  number = {1-2},
+  pages = {99--124},
+  doi = {10.1111/j.1746-8361.1989.tb00933.x},
+  note = {Foundational paper on structural realism in philosophy of science}
+}
+
+%% ============================================================================
+%% AUSTRIAN ECONOMICS (Market Process Theory)
+%% ============================================================================
+
+@book{hayek1945,
+  title={The Use of Knowledge in Society},
+  author={Hayek, Friedrich A.},
+  year={1945},
+  journal={American Economic Review},
+  volume={35},
+  number={4},
+  pages={519--530},
+  publisher={American Economic Association},
+  note={Reprinted in \textit{Individualism and Economic Order}, University of Chicago Press, 1948}
+}
+
+@book{mises1949,
+  title={Human Action: A Treatise on Economics},
+  author={von Mises, Ludwig},
+  year={1949},
+  publisher={Yale University Press},
+  address={New Haven, CT},
+  note={Available at: \url{https://mises.org/library/human-action-0}}
+}
+
+@book{rothbard1962,
+  title={Man, Economy, and State with Power and Market},
+  author={Rothbard, Murray N},
+  year={1962},
+  publisher={Ludwig von Mises Institute},
+  address={Auburn, AL},
+  note={Scholar's Edition, 2009. Available at: \url{https://mises.org/library/man-economy-and-state-power-and-market}}
+}
+
+%% ============================================================================
+%% 0DTE VOLUME AND MARKET STRUCTURE DATA
+%% ============================================================================
+
+%% OCC Record Volume (2021) - Corroborates 2020→2021 transition timing
+@misc{occ2022record,
+  author = {{Options Clearing Corporation}},
+  title = {{OCC} Clears Record-Setting 9.93 Billion Total Contracts in 2021},
+  year = {2022},
+  month = {January},
+  howpublished = {Press Release},
+  url = {https://www.theocc.com/Newsroom/Press-Releases/2022/01-04-OCC-Clears-Record-Setting-9-93-Billion-Total},
+  note = {32.0\% increase over 2020 record of 7.52 billion contracts}
+}
+
+%% Brogaard et al. (2023) - Academic evidence on 0DTE volatility impact
+@article{brogaard2023does,
+  author = {Brogaard, Jonathan and Han, Jaehee and Won, Peter Y.},
+  title = {Does {0DTE} Options Trading Increase Volatility?},
+  journal = {SSRN Working Paper},
+  year = {2023},
+  url = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4426358},
+  note = {1 SD increase in 0DTE trading → 10.40\% volatility increase}
+}
+
+%% CBOE 0DTE Volume Data (2024)
+@misc{cboe2024volume,
+  author = {{CBOE Global Markets}},
+  title = {{SPX} {0DTE} Options Jump to Record 62\% Share in August},
+  year = {2024},
+  howpublished = {CBOE Insights},
+  url = {https://www.cboe.com/insights/posts/spx-0-dte-options-jump-to-record-62-share-in-august/},
+  note = {0DTE share rose from 5\% (2016) to 43\% (2023) to 62\% (2024)}
+}
+
+%% CBOE Retail Flow Analysis (2021) - 1-lot trade growth
+@misc{cboe2021retail,
+  author = {{CBOE Global Markets}},
+  title = {Option Flow 2021 -- Retail Rising},
+  year = {2021},
+  howpublished = {CBOE Insights},
+  url = {https://www.cboe.com/insights/posts/option-flow-2021-retail-rising/},
+  note = {1-lot trades grew 6x vs 5 years prior; 0DTE share 21\% (2021) vs 16\% (2020)}
+}
+
+%% CBOE AIM Activation for SPX (February 2021)
+@misc{cboe2021aim,
+  author = {{CBOE Global Markets}},
+  title = {Cboe to Enable Electronic Auction Mechanism for {S\&P} 500 Index Options Products},
+  year = {2021},
+  month = {February},
+  howpublished = {Press Release},
+  url = {https://www.prnewswire.com/news-releases/cboe-to-enable-electronic-auction-mechanism-for-sp-500-index-options-products-beginning-february-22-301229181.html},
+  note = {AIM activated February 22, 2021 for SPX orders up to 10 contracts}
+}
+
+%% Albers (2023/2025) - VIX1D and 0DTE forecasting
+@article{albers2025vix1d,
+  author = {Albers, Stefan},
+  title = {A New Star Is Born: Does the {VIX1D} Render Common Volatility Forecasting Models for the {US} Equity Market Obsolete?},
+  journal = {Journal of Futures Markets},
+  year = {2025},
+  publisher = {Wiley},
+  doi = {10.1002/fut.70023},
+  url = {https://onlinelibrary.wiley.com/doi/10.1002/fut.70023},
+  note = {Originally SSRN Working Paper 4505785 (2023); VIX1D captures 0DTE information}
+}
+
+%% Kolanovic (2023) - JPMorgan "Volmageddon 2.0" warning
+@misc{kolanovic2023volmageddon,
+  author = {Kolanovic, Marko},
+  title = {Rise of Near-Term Options Trading Carries Risk of {V}olmageddon 2.0},
+  year = {2023},
+  month = {February},
+  howpublished = {J.P. Morgan Equity Derivatives Strategy, via Bloomberg News},
+  note = {Daily 0DTE notional value approximately \$1 trillion; forced covering risk of \$30B}
+}
+
+%% ============================================================================
+%% LLM REASONING VALIDATION
+%% ============================================================================
+
+%% McCoy et al. (2023) - Embers of Autoregression (justifies obfuscation testing)
+@article{mccoy2023embers,
+  author = {McCoy, R. Thomas and Yao, Shunyu and Friedman, Dan and Hardy, Matthew and Griffiths, Thomas L.},
+  title = {Embers of Autoregression: Understanding Large Language Models Through the Problem They are Trained to Solve},
+  journal = {Proceedings of the National Academy of Sciences},
+  year = {2024},
+  volume = {121},
+  number = {41},
+  pages = {e2322420121},
+  doi = {10.1073/pnas.2322420121},
+  url = {https://arxiv.org/abs/2309.13638},
+  note = {Originally arXiv:2309.13638 (2023); LLMs influenced by training probability, not abstract reasoning}
+}
+
+%% ============================================================================
+%% QUANTITATIVE FINANCE - THEORETICAL FOUNDATIONS
+%% ============================================================================
+
+%% Garleanu & Pedersen (2013) - Theoretical backing for incomplete unwinding
+@article{garleanu2013dynamic,
+  author = {G\^{a}rleanu, Nicolae and Pedersen, Lasse Heje},
+  title = {Dynamic Trading with Predictable Returns and Transaction Costs},
+  journal = {The Journal of Finance},
+  year = {2013},
+  volume = {68},
+  number = {6},
+  pages = {2309--2340},
+  doi = {10.1111/jofi.12080},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12080},
+  note = {Optimal portfolio rebalancing under transaction cost constraints}
+}
+
+%% ============================================================================
+%% PRACTITIONER SOURCES (Mention but do not cite formally)
+%% ============================================================================
+
+%% SpotGamma (2024) - Commercial data provider
+%% - Volatility Trigger™
+%% - Zero Gamma levels
+%% - Mention in text: "Industry practitioners (e.g., SpotGamma, 2024) track..."
+%% - DO NOT add BibTeX entry (not peer-reviewed)
+
+%% ============================================================================
+%% WORKING PAPERS (To be added when authors identified)
+%% ============================================================================
+
+%% Gamma-Theta Breakeven Range (GTBR) Paper (2024)
+%% - Title: "Where does gamma hedge drive the intraday market move?"
+%% - Date: June 2, 2024
+%% - Status: Working paper (authors TBD)
+%% - Alternative: Cite Baltussen et al. (2021) and Gao et al. (2018) instead
+
+%% ============================================================================
+%% MARKET STRUCTURE REFERENCES
+%% ============================================================================
+
+%% CBOE Options Market Structure Whitepaper (2024)
+@misc{cboe2024market,
+  author = {{CBOE Global Markets}},
+  title = {2024 Options Market Structure: A Half Century of Innovation},
+  year = {2024},
+  howpublished = {CBOE Whitepaper},
+  url = {https://cdn.cboe.com/resources/government_relations/FINAL-Options-Market-Structure-Document-v14-2024.pdf},
+  note = {Comprehensive analysis of options market structure including market maker roles}
+}

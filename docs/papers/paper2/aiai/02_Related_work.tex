@@ -1,0 +1,22 @@
+\section{Background and Related Work}
+\label{sec:related}
+
+\subsection{LLM Reasoning Evaluation}
+
+Evaluating LLM reasoning capabilities beyond surface-level pattern matching is an active research area. McCoy et al.~\cite{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences---raising concerns about memorization versus genuine reasoning. Chain-of-thought prompting~\cite{openai2024reasoning} enables transparent reasoning traces but does not inherently prevent training data leakage. Our temporal obfuscation methodology addresses this gap by stripping identifiable information, forcing structural reasoning from numerical patterns alone.
+
+\subsection{LLM Applications in Finance}
+
+LLMs have shown promise in financial analysis: Lopez-Lira and Tang~\cite{lopez2023can} demonstrate GPT-4 extracts financial information with human-comparable accuracy, while Kim et al.~\cite{kim2024financial} show LLMs can reason about market mechanisms given appropriate context. Recent work employs LLMs as trading agents~\cite{yang2024tradingagents}, though validation of structural reasoning---rather than pattern recall---remains limited. Two critical challenges persist: \textit{temporal memorization} (recalling specific events from training data) and \textit{spurious pattern detection} (identifying statistically significant but mechanically meaningless patterns). Our obfuscation framework addresses both.
+
+\subsection{Options Market Microstructure}
+
+Gamma exposure (GEX) measures how rapidly options dealers must adjust hedges as prices move~\cite{black1973pricing}. Negative GEX forces dealers to sell on declines and buy on rallies, amplifying volatility; positive GEX dampens it~\cite{ni2005stock,baltussen2021hedging}. The introduction of daily options expirations in 2022~\cite{cboe2024zero} altered market structure: by 2024, 0DTE options reached approximately 48\% of volume (up from $<$5\% in 2020), concentrating gamma at very short maturities~\cite{dim2025zero}. Industry practitioners monitor GEX in real time~\cite{spotgamma2021,fishman2023gamma}, though academic validation remains limited.
+
+\subsection{Regime Detection Methods}
+
+Traditional regime detection relies on statistical properties: Hamilton~\cite{hamilton1989new} introduced Markov-switching models; Nystrup et al.~\cite{nystrup2020regime} survey machine learning approaches. These methods detect volatility regimes from return statistics rather than structural market mechanics. Our approach detects regimes through \textit{dealer positioning constraints}---a microstructure signal with causal interpretation---validated via obfuscation testing generalizable beyond finance.
+
+\subsection{Obfuscation Testing}
+
+Our companion paper~\cite{regan2025obfuscation} introduced obfuscation testing for validating LLM structural reasoning by replacing calendar dates with relative labels and removing event context. This prior work demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy. We extend this methodology to \textbf{temporal domains} (30-day regimes vs single-day snapshots), with the key challenge being selectivity: discriminating persistent regimes from transitional periods validates structural reasoning, whereas detecting universal patterns proves only pattern matching.

@@ -1,0 +1,70 @@
+% JFQA Format Header - Converted from IEEE format
+% Requirements: 12pt Times New Roman, double-spaced, 1" margins
+
+\RequirePackage{silence}
+\WarningFilter{latex}{Command \showhyphens has changed}
+
+% ============================================
+% JFQA-SPECIFIC PACKAGES
+% ============================================
+
+% Page layout: 8.5" x 11", 1" margins
+\usepackage[margin=1in, letterpaper]{geometry}
+
+% Double spacing
+\usepackage{setspace}
+\doublespacing
+
+% Times New Roman font (JFQA requirement)
+\usepackage{newtxtext,newtxmath}
+
+% Author-year citations (JFQA style)
+\usepackage[authoryear,round,sort&compress]{natbib}
+
+% ============================================
+% SECTION NUMBERING (JFQA Format)
+% ============================================
+% Sections: Roman numerals (I, II, III)
+% Subsections: Letters (A, B, C)
+% Subsubsections: Arabic numerals (1, 2, 3)
+
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}}
+
+% Fix cross-references to use full JFQA format (e.g., "Section III.B.2")
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% ============================================
+% STANDARD PACKAGES (Compatible with JFQA)
+% ============================================
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}  % Professional tables
+\usepackage{multirow}
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{gensymb}
+\usepackage{microtype}  % Better typography
+\usepackage[hypertexnames=false,plainpages=false]{hyperref}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{float}
+\usepackage{placeins}
+
+% Table column spacing
+\setlength{\tabcolsep}{5pt}
+
+% ============================================
+% JFQA EQUATION NUMBERING
+% ============================================
+% Equations numbered at left margin in parentheses
+\makeatletter
+\def\tagform@#1{\maketag@@@{(#1)\hfill}}
+\makeatother

@@ -1,0 +1,68 @@
+\section{Introduction}
+
+The explosive growth of zero-days-to-expiration (0DTE) options has fundamentally altered options market microstructure~\citep{cboe2024zero,dim2025zero}. Since 2021, these ultra-short-dated contracts have grown from less than 5\% to nearly 48\% of total options volume, concentrating unprecedented gamma exposure at daily expirations. We document that this structural change has transformed dealer positioning from episodic hedging events into \textit{persistent regimes}---month-long periods where decentralized dealer gamma exposure exhibits sustained directional bias despite no coordinating mechanism.
+
+This regime persistence matters for three reasons. First, persistent dealer positioning creates predictable hedging flows that constrain price dynamics across extended periods, unlike daily snapshots that capture only instantaneous states. Second, regime boundaries offer actionable insights for risk management and sector rotation strategies. Third, the emergence of persistent regimes represents a fundamental reorganization of market microstructure---what we term the ``scar tissue'' of 0DTE trading, where concentrated intraday hedging flows leave residual inventory that market makers carry overnight.
+
+We employ a structural identification framework to detect these persistent regimes from \textbf{30-day GEX sequences}. Building on the obfuscation testing methodology from our companion paper~\citep{regan2025obfuscation}, we strip all temporal context from dealer gamma data, preventing memorization of specific market events while preserving structural patterns. This approach discriminates sustained structural regimes from transitional fragmentation---a selectivity that validates detection of genuine market structure rather than universal patterns present in all markets since Black-Scholes~\citep{black1973pricing}.
+
+\subsection{Research Questions}
+
+We investigate three primary questions about post-0DTE market structure:
+
+\begin{enumerate}
+\item \textbf{Regime Emergence}: Did 0DTE proliferation create persistent dealer gamma regimes that were absent or rare in pre-0DTE markets?
+\item \textbf{Structural Selectivity}: Can we discriminate genuine persistent regimes from transitional periods, avoiding false detection of universal patterns?
+\item \textbf{Market Structure Timing}: When did the structural transition occur---was it a sharp 2020$\rightarrow$2021 shift or gradual adoption through 2023$\rightarrow$2024?
+\end{enumerate}
+
+\subsection{Methodology}
+
+We define a \textbf{persistent regime} through three structural criteria: (1) $\geq$70\% of days share the dominant GEX sign (persistence), (2) $\geq$\$5B average magnitude (economic significance), and (3) $\leq$5 sign flips across 30 days (stability). Windows failing these criteria are classified as transitional or low-conviction periods.
+
+Following our previous obfuscation protocol~\citep{regan2025obfuscation}, we strip all temporal context from 30-day GEX sequences, presenting them to the LLM as "Day T-29" through "Day T+0" with generic asset labels. This prevents memorization of specific market events while preserving structural patterns that manifest through dealer hedging constraints.
+
+\subsection{Validation Strategy}
+
+We employ a multi-phase validation protocol across 6 years (2020-2025):
+
+\textbf{Phase 1} (Q1 2024 Baseline): Establish baseline detection rate on 52 real windows. Success criteria: 30-50\% detection (demonstrates selectivity, not universal pattern matching).
+
+\textbf{Phase 2} (Negative Controls): Validate framework discrimination through three synthetic tests: (a) shuffled windows (destroys temporal structure), (b) transitional windows (7-10 sign flips, high volatility), (c) low-magnitude windows (scaled $<$\$5B). Expected: $<$10\% false positive rate.
+
+\textbf{Phase 3} (Full 2024): Test generalization across all 252 trading days (223 windows). Determines if Q1 results extend to full year or reflect quarterly anomaly.
+
+\textbf{Phase 4} (2020 Comparison): Test pre-0DTE era (2020, 0DTE $<$5\% volume) vs post-0DTE era (2024, 0DTE $\approx$48\% volume). Hypothesis: Lower detection rate in 2020 indicates 0DTE increased regime persistence.
+
+\textbf{Phase 5} (Multi-Year Validation 2020-2025): Test 1,412 windows across six years to identify when structural market shift occurred. Hypothesis: Sharp 2020→2021 transition vs gradual adoption pattern. Result: Rejected sharp transition, revealed gradual adoption (3.7\% → 32.4\% → 20.2\% → 100\%).
+
+\subsection{Key Contributions}
+
+This work advances understanding of post-0DTE market microstructure through five contributions:
+
+\begin{enumerate}
+\item \textbf{Temporal Extension}: First application of obfuscation testing to multi-day regimes (30-day windows vs single-day snapshots) with comprehensive six-year validation (2020-2025, 2,221 total evaluations including 1,412 real windows and 809 synthetic controls)
+\item \textbf{Selectivity Validation}: Demonstrates framework discriminates persistent regimes (2024: 81.2\%) from fragmented markets (2020: 12.1\%), achieving 5.7x separation
+\item \textbf{Gradual Market Structure Evolution}: Identifies 2023→2024 structural transition through multi-year validation, finding insufficient evidence for sharp 2020→2021 hypothesis. Detection rates closely align with 0DTE market penetration: 3.7\% (2021) → 32.4\% (2022) → 20.2\% (2023) → 100\% (2024)
+\item \textbf{Magnitude-Driven Regime Shift}: Documents 360\% GEX magnitude growth (\$5B → \$23B) far exceeding inflation (20-25\%), consistent with validation of threshold design and confirming real structural change
+\item \textbf{Negative Controls}: Comprehensive validation through synthetic windows establishing $<$10\% false positive rate on transitional/low-magnitude scenarios
+\end{enumerate}
+
+\subsection{Main Findings}
+
+Five-phase validation (2,221 total evaluations: 1,412 real windows plus 809 synthetic controls, spanning six years 2020-2025) reveals:
+% Total cost: \$11.67 (not reported in paper)
+
+\begin{itemize}
+\item \textbf{Gradual 0DTE adoption pattern identified}: Multi-year validation (1,412 windows) found insufficient evidence for sharp 2020→2021 transition hypothesis. Detection rates closely align with market evolution: 2020 (12.2\%), 2021 (3.7\%), 2022 (32.4\%), 2023 (20.2\%), 2024 (100\%), 2025 (100\%). The 4.95× increase (20.2\% → 100\%) coincides with 0DTE trading explosion in late 2023.
+
+\item \textbf{Magnitude-driven regime shift}: GEX magnitude grew 360\% from \$5B (2021) to \$23B (2024), far exceeding 20-25\% cumulative inflation. The fixed \$5B threshold effectively discriminated borderline markets (2021: 3.7\%) from structural regimes (2024: 100\%), consistent with validation of threshold design.
+
+\item \textbf{Framework selectivity validated}: The 69.1 percentage point discrimination between 2024 (81.2\%) and 2020 (12.1\%) establishes framework detects structural persistence, not universal patterns. The 2020 baseline correctly rejected 87.9\% of windows as transitional.
+
+\item \textbf{Negative controls passed}: 0\% false positives on transitional/low-magnitude tests, confirming framework enforces all three regime criteria (persistence, magnitude, stability).
+\end{itemize}
+
+\subsection{Paper Organization}
+
+Section~II reviews related work on gamma exposure dynamics, regime detection, and LLM temporal reasoning. Section~III presents the 30-day regime detection framework and obfuscation protocol. Section~IV describes experimental setup including datasets, LLM configuration, and validation phases. Section~V reports results from five validation phases (Q1 2024 baseline, negative controls, full 2024, 2020 comparison, multi-year 2020-2025). Section~VI discusses implications for LLM structural reasoning, market microstructure evolution, and methodology robustness. Section~VII concludes and outlines future research directions.
