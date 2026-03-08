@@ -22,7 +22,25 @@ Preserved information includes: net gamma exposure values, directional gamma (ca
 \label{fig:obfuscation}
 \end{figure}
 
-This approach forces LLMs to identify patterns from quantitative relationships alone. A model memorizing ``January 2024 SPY negative gamma'' cannot succeed when presented with ``Day T+0 INDEX\_1 GEX: -\$32B''. Only genuine structural understanding enables detection under these conditions.
+As a concrete example, the transformation converts raw market data:
+
+\begin{small}
+\begin{verbatim}
+SPY, 2024-03-15: Net GEX: -$32.9B, Flip: $485.00
+SPY, 2024-03-18: Net GEX: -$28.4B, Flip: $487.50
+\end{verbatim}
+\end{small}
+
+\noindent into obfuscated format:
+
+\begin{small}
+\begin{verbatim}
+Day T+0, INDEX_1: Net GEX: -$32.9B, Flip: $485.00
+Day T+1, INDEX_1: Net GEX: -$28.4B, Flip: $487.50
+\end{verbatim}
+\end{small}
+
+The quantitative values are identical; only contextual identifiers change. This approach forces LLMs to identify patterns from quantitative relationships alone. A model memorizing ``January 2024 SPY negative gamma'' cannot succeed when presented with ``Day T+0 INDEX\_1 GEX: -\$32B''. Only genuine structural understanding enables detection under these conditions.
 
 \subsection{Causal Framework: WHO$\rightarrow$WHOM$\rightarrow$WHAT}
 
@@ -35,6 +53,8 @@ Beyond detecting patterns, we require models to articulate causal mechanisms:
 \textbf{WHAT}: The forced action and mechanism (e.g., ``must sell rallies and buy dips to maintain delta neutrality, amplifying volatility'').
 
 This framework, derived from agent-based market microstructure theory~\cite{grossman1988liquidity,garleanu2009demand}, prevents vague pattern claims and requires specific mechanical understanding. It implements a structured form of chain-of-thought prompting~\cite{wei2022chain}, ensuring the model derives outcomes from mechanical constraints rather than recalling historical correlations.
+
+A valid causal chain demonstrates the complete mechanism. For example: WHO---``Dealers accumulate net short gamma exposure of \$28B concentrated at the 520 strike.'' WHOM---``Market makers holding these positions are forced to continuously delta-hedge to maintain regulatory neutrality.'' WHAT---``As price rises toward 520, dealers must buy shares to offset negative delta, amplifying the upward move; as price falls, they must sell, amplifying downward moves. This creates a pro-cyclical feedback loop that persists until gamma exposure dissipates.'' The causal chain must connect actors to mechanisms to observable outcomes, preventing the model from declaring patterns without articulating the structural logic that produces them.
 
 \subsection{Single-Day Pattern Detection}
 \label{subsec:single_day_method}
@@ -61,7 +81,9 @@ We establish three validation levels: (1) detection rate $\geq$60\% (exceeds ran
 
 \subsection{30-Day Regime Detection Framework}
 
-Extending from single-day patterns, we define \textit{persistent regimes} through three structural criteria applied to 30-day windows:
+Extending from single-day patterns, we define \textit{persistent regimes} through three structural criteria applied to rolling 30-day windows. Each window contains 30 consecutive trading days of GEX values, generated with stride 1 (producing $N - 29$ overlapping windows from $N$ trading days). Windows are labeled ``Day T$-$29'' through ``Day T+0'' to preserve relative temporal ordering while removing absolute date information. For each year, this generates approximately 220 windows from $\sim$250 trading days, yielding the 1,412 real windows across 2020--2025 used in our analysis.
+
+We classify each window using three structural criteria:
 
 \textbf{Persistence}: Fraction of days sharing the dominant GEX sign.
 \begin{equation}
@@ -95,7 +117,11 @@ Following standard market microstructure practice~\cite{anderegg2022impact,spotg
 \text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
 \end{equation}
 
-where $\Gamma_i$ is the Black-Scholes gamma at strike $i$, $\text{OI}_i$ is open interest, and $S^2$ scales gamma to dollar exposure. This open interest-based approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX may better capture 0DTE dynamics, 30-day window aggregation smooths daily measurement noise, and the underlying hedging mechanism remains constant regardless of measurement method~\cite{dim2025zero}.
+where $\Gamma_i$ is the Black-Scholes gamma~\cite{black1973pricing,hull2018options} at strike $i$, $\text{OI}_i$ is open interest, $S$ is the underlying spot price, and the $S^2$ factor scales gamma to dollar exposure (since gamma measures $\partial^2 V / \partial S^2$, multiplying by $S^2$ produces dollar-denominated sensitivity). The sign convention reflects the dealer counterparty relationship: calls contribute positive GEX (dealers are typically long gamma on calls) and puts contribute negative GEX (dealers are typically short gamma on puts)~\cite{anderegg2022impact}.
+
+The resulting aggregate GEX value has a direct mechanical interpretation. \textbf{Positive GEX} indicates dealers are net long gamma: they buy when prices fall and sell when prices rise, \textit{dampening} volatility. \textbf{Negative GEX} indicates dealers are net short gamma: they sell when prices fall and buy when prices rise, \textit{amplifying} volatility through pro-cyclical hedging flows. The magnitude determines the scale of forced hedging---a $-$\$20B GEX day implies larger rebalancing flows than a $-$\$5B day, though our Granger causality analysis (Section~\ref{subsec:granger}) reveals a threshold effect: the \textit{presence} of negative gamma drives volatility amplification, not the specific level.
+
+This open interest-based approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX may better capture 0DTE dynamics, 30-day window aggregation smooths daily measurement noise, and the underlying hedging mechanism remains constant regardless of measurement method~\cite{dim2025zero}.
 
 We deliberately constrain analysis to gamma rather than higher-order Greeks (vanna, charm). Gamma hedging represents a universal regulatory requirement binding across institutions~\cite{mixon2009}, making it the ideal testing ground where all participants face the same fundamental constraint. Higher-order Greeks vary across proprietary implementations, precluding objective ``ground truth'' validation.
 
@@ -105,7 +131,13 @@ For regime detection, we employ a five-phase protocol spanning 2020--2025:
 
 \textbf{Phase 1} (Q1 2024 Baseline, 52 windows): Establish baseline detection rate. Success criteria: 30--50\% (demonstrates selectivity, not universal matching).
 
-\textbf{Phase 2} (Negative Controls, 809 windows): Three synthetic tests---shuffled (404), transitional (202), and low-magnitude (203) windows. Expected: $<$10\% false positive rate.
+\textbf{Phase 2} (Negative Controls, 809 windows): Three synthetic control types, each violating a specific regime criterion:
+\begin{itemize}
+    \item \textit{Shuffled} (404 windows): Randomize day order within real windows, destroying temporal structure while preserving aggregate statistics. Tests whether detection depends on temporal ordering or merely aggregate distribution.
+    \item \textit{Transitional} (202 windows): Generate windows with frequent sign flips ($>$8 per window), violating the stability criterion. Tests whether the model incorrectly classifies volatile positioning as persistent regimes.
+    \item \textit{Low-magnitude} (203 windows): Generate windows with magnitude below \$3B, violating the magnitude criterion. Tests whether the model flags weak positioning as economically meaningful.
+\end{itemize}
+Expected: $<$10\% false positive rate across all control types.
 
 \textbf{Phase 3} (Full 2024, 223 windows): Test Q1 generalization across all 252 trading days.
 
