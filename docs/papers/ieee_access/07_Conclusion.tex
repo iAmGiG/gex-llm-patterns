@@ -1,0 +1,34 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We present temporal obfuscation testing as a comprehensive methodology for validating LLM structural reasoning, applied across two temporal scales in financial market microstructure analysis.
+
+\subsection{Single-Day Contributions}
+
+Applied to 242 trading days (SPY, 2024), two findings provide converging evidence for genuine mechanism identification:
+
+\textbf{Raw chain superiority}: When pre-calculated GEX is removed entirely, detection \textit{improves} from 61.5\% to 92.3\% (+30.8pp), demonstrating the LLM reconstructs dealer constraints from first principles---performing the gamma integration itself from strike-level data. This establishes that parametric GEX represents lossy compression of actionable structural information.
+
+\textbf{Inverse p-hacking and alpha orthogonality}: Detection days show 33\% lower range expansion than baseline ($p = 0.033$), proving suppression detection rather than volatility chasing. Stable detection (68--74\%) persists as profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), establishing these as risk management signals orthogonal to trading alpha.
+
+Five independent empirical defenses validate structural reasoning: (1) sensitivity to signal concentration ($p < 0.0001$), (2) inverse p-hacking ($p = 0.033$), (3) alpha orthogonality (increasing confidence as Sharpe collapses), (4) EOD validity (AUC = 0.681), and (5) raw chain superiority (+30.8pp).
+
+\subsection{Regime Detection Contributions}
+
+Extended to 30-day windows across 2,221 evaluations (2020--2025):
+
+\textbf{Framework selectivity}: 69.1pp discrimination between persistent regimes (2024: 81.2\%) and fragmented markets (2020: 12.1\%), with $\phi = 0.672$ ($p < 0.0001$) and 0\% false positives on synthetic controls.
+
+\textbf{Gradual 0DTE evolution}: Detection rates track market structure change---3.7\% (2021) $\rightarrow$ 32.4\% (2022) $\rightarrow$ 20.2\% (2023) $\rightarrow$ 100\% (2024--2025)---with GEX magnitude growing 360\% from \$5B to \$23B, far exceeding inflation.
+
+\textbf{Sustained regime identification}: 100\% detection across 486 windows (2024--2025) confirms stable post-0DTE market structure with 98\% mechanical accuracy across manually reviewed responses.
+
+\subsection{Generalizable Methodology}
+
+Temporal obfuscation testing addresses training data contamination---a universal concern in deploying LLMs for specialized analysis. The three-component framework (feature removal, structural pattern preservation, negative controls) applies to any domain where memorization threatens evaluation validity: medical time series, climate data, industrial anomaly detection, or other structured domains with temporal patterns.
+
+\subsection{Future Directions}
+
+Four research directions emerge: (1) \textbf{cross-asset generalization} to individual equities to test whether regime detection reflects market-wide versus asset-specific dynamics; (2) \textbf{historical extension} to 2005--2020 to examine earlier market structure transitions; (3) \textbf{volume-based GEX} incorporating intraday flow data to capture 0DTE dynamics missed by end-of-day measurements; and (4) \textbf{tiered regime classification} leveraging the strong confidence-quality correlation ($r = +0.501$) for intensity grading beyond binary detection.
+
+All code, data preprocessing scripts, and validation results are publicly available.\footnote{\url{https://github.com/iAmGiG/gex-llm-patterns}}

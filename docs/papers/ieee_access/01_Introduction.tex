@@ -1,0 +1,50 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Options market makers operate under regulatory mandates to maintain delta-neutral books despite accumulating gamma exposure~\cite{sec15c31}. When aggregate gamma exposure turns substantially negative, dealers face forced pro-cyclical hedging---selling strength and purchasing weakness---thereby amplifying price movements through coordinated rebalancing flows~\cite{ni2005stock,garleanu2009demand}. Practitioners summarize these dynamics through net gamma exposure (GEX) metrics, compressing rich strike-level options data into scalar values. Yet a critical question remains: can AI systems detect these structural constraints through genuine reasoning rather than memorization?
+
+The urgency of this question has intensified with the explosive growth of zero-days-to-expiration (0DTE) options. Since the introduction of daily SPY expirations in 2022, 0DTE volume has surged from less than 5\% to approximately 48\% of total SPY options volume by 2024~\cite{cboe2024zero,dim2025zero}. This concentration of gamma exposure at ultra-short maturities has fundamentally altered market microstructure: rather than the historical regime-switching dynamics where dealer gamma alternated between positive (stabilizing) and negative (amplifying) states~\cite{ni2005stock,garleanu2009demand}, markets now exhibit persistent negative gamma environments driven by continuous 0DTE rollover. Understanding whether AI systems can identify this structural shift---and distinguish it from routine market noise---has direct implications for risk management, market surveillance, and the deployment of LLM-based financial analysis tools.
+
+We address this question through \textbf{temporal obfuscation testing}: systematically removing all temporal and contextual information---dates, ticker symbols, market events---from financial data while preserving structural relationships. If large language models (LLMs) truly understand market mechanics, they should detect dealer constraints from quantitative structure alone, without cues that might trigger memorized associations.
+
+We validate this framework at two temporal scales, establishing a comprehensive arc from single-day pattern detection to persistent regime identification:
+
+\textbf{Single-day validation.} Applied to 242 trading days (SPY, 2024), obfuscation testing achieves 71.5\% detection of dealer hedging patterns using unbiased prompts, with 90.9\% of detections materializing in forward returns. More critically, a \textbf{raw chain validation} removing all pre-calculated metrics achieves 92.3\% detection---outperforming the GEX-assisted baseline by 30.8 percentage points---demonstrating that LLMs reconstruct dealer positioning from first principles rather than matching parametric summaries.
+
+\textbf{Multi-day regime detection.} Extending to 30-day windows across six years (2020--2025), the framework achieves 81.2\% detection of persistent regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking zero-days-to-expiration (0DTE) options adoption: detection rates rise from 3.7\% (2021) to 100\% (2024), with GEX magnitude growing 360\%.
+
+\subsection{Research Questions}
+
+We investigate four questions spanning both temporal scales:
+
+\begin{enumerate}
+\item \textbf{Single-Day Detection}: Can LLMs identify dealer hedging patterns when all temporal context is removed through obfuscation? This tests whether structural reasoning persists without memorizable cues, establishing a baseline for genuine mechanical understanding.
+
+\item \textbf{Raw Chain Superiority}: Does unstructured strike-level data outperform parametric GEX compression for structural pattern detection? If so, this implies that scalar aggregation destroys structural signal---a finding with direct implications for financial data pipeline design.
+
+\item \textbf{Regime Selectivity}: Can LLMs identify persistent 30-day regimes while discriminating them from transitional periods? Selective detection (rejecting noise) is more informative than universal detection, as it demonstrates criterion-based evaluation rather than base-rate guessing.
+
+\item \textbf{Market Structure Evolution}: Did 0DTE proliferation create detectable structural change in dealer positioning regimes? Answering this connects microstructure innovation to measurable regime shifts, providing evidence for the 0DTE structural hypothesis~\cite{dim2025zero,brogaard2023does}.
+\end{enumerate}
+
+\subsection{Contributions}
+
+This work advances LLM validation methodology and financial market analysis through six contributions:
+
+\begin{enumerate}
+\item \textbf{Temporal obfuscation testing}: A generalizable methodology for distinguishing LLM structural reasoning from training data memorization, applicable beyond finance to any domain with structural constraints.
+
+\item \textbf{Raw chain validation}: First demonstration that LLMs achieve superior pattern detection (92.3\% vs.\ 61.5\%) from raw strike-level data compared to pre-calculated metrics, establishing that parametric GEX represents lossy compression of structural signal.
+
+\item \textbf{WHO$\rightarrow$WHOM$\rightarrow$WHAT causal framework}: A structured prompt design requiring explicit identification of economic actors, affected parties, and forced mechanisms, preventing vague pattern claims.
+
+\item \textbf{Multi-scale regime detection}: Extension of obfuscation testing from single-day snapshots to 30-day persistent regimes, validated across 2,221 evaluations (1,412 real windows, 809 synthetic controls) spanning six years.
+
+\item \textbf{Selectivity validation with negative controls}: Framework achieves 69.1 percentage point discrimination between persistent and fragmented markets, with 0\% false positives on transitional and low-magnitude synthetic controls.
+
+\item \textbf{Detection-alpha orthogonality}: Stable detection (68--74\% quarterly) persists as economic profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), establishing detected patterns as risk management signals rather than alpha generators.
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:related} reviews related work. Section~\ref{sec:methodology} presents the unified methodology covering obfuscation testing, causal framework, and regime detection criteria. Section~\ref{sec:single_day} reports single-day validation results including raw chain analysis. Section~\ref{sec:regime} presents multi-day regime detection and market structure evolution. Section~\ref{sec:discussion} discusses implications and limitations. Section~\ref{sec:conclusion} concludes.

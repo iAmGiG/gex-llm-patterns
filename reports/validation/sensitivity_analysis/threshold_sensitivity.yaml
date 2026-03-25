@@ -1,0 +1,844 @@
+test1_persistence:
+  parameter: persistence_threshold
+  values:
+    50%:
+      by_year:
+        2020:
+          detected: 30
+          total: 213
+          rate: 14.1
+        2021:
+          detected: 16
+          total: 241
+          rate: 6.6
+        2022:
+          detected: 85
+          total: 244
+          rate: 34.8
+        2023:
+          detected: 51
+          total: 228
+          rate: 22.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 85.9
+      discrimination_2024_vs_2020: 100.0% vs 14.1%
+    55%:
+      by_year:
+        2020:
+          detected: 30
+          total: 213
+          rate: 14.1
+        2021:
+          detected: 16
+          total: 241
+          rate: 6.6
+        2022:
+          detected: 85
+          total: 244
+          rate: 34.8
+        2023:
+          detected: 51
+          total: 228
+          rate: 22.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 85.9
+      discrimination_2024_vs_2020: 100.0% vs 14.1%
+    60%:
+      by_year:
+        2020:
+          detected: 29
+          total: 213
+          rate: 13.6
+        2021:
+          detected: 13
+          total: 241
+          rate: 5.4
+        2022:
+          detected: 85
+          total: 244
+          rate: 34.8
+        2023:
+          detected: 51
+          total: 228
+          rate: 22.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 86.4
+      discrimination_2024_vs_2020: 100.0% vs 13.6%
+    65%:
+      by_year:
+        2020:
+          detected: 28
+          total: 213
+          rate: 13.1
+        2021:
+          detected: 11
+          total: 241
+          rate: 4.6
+        2022:
+          detected: 85
+          total: 244
+          rate: 34.8
+        2023:
+          detected: 50
+          total: 228
+          rate: 21.9
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 86.9
+      discrimination_2024_vs_2020: 100.0% vs 13.1%
+    70%:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 9
+          total: 241
+          rate: 3.7
+        2022:
+          detected: 79
+          total: 244
+          rate: 32.4
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    75%:
+      by_year:
+        2020:
+          detected: 25
+          total: 213
+          rate: 11.7
+        2021:
+          detected: 8
+          total: 241
+          rate: 3.3
+        2022:
+          detected: 77
+          total: 244
+          rate: 31.6
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 88.3
+      discrimination_2024_vs_2020: 100.0% vs 11.7%
+    80%:
+      by_year:
+        2020:
+          detected: 19
+          total: 213
+          rate: 8.9
+        2021:
+          detected: 7
+          total: 241
+          rate: 2.9
+        2022:
+          detected: 73
+          total: 244
+          rate: 29.9
+        2023:
+          detected: 44
+          total: 228
+          rate: 19.3
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 91.1
+      discrimination_2024_vs_2020: 100.0% vs 8.9%
+    85%:
+      by_year:
+        2020:
+          detected: 17
+          total: 213
+          rate: 8.0
+        2021:
+          detected: 6
+          total: 241
+          rate: 2.5
+        2022:
+          detected: 68
+          total: 244
+          rate: 27.9
+        2023:
+          detected: 42
+          total: 228
+          rate: 18.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 92.0
+      discrimination_2024_vs_2020: 100.0% vs 8.0%
+test2_magnitude:
+  parameter: magnitude_threshold_billions
+  values:
+    $2B:
+      by_year:
+        2020:
+          detected: 67
+          total: 213
+          rate: 31.5
+        2021:
+          detected: 14
+          total: 241
+          rate: 5.8
+        2022:
+          detected: 87
+          total: 244
+          rate: 35.7
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 68.5
+      discrimination_2024_vs_2020: 100.0% vs 31.5%
+    $3B:
+      by_year:
+        2020:
+          detected: 52
+          total: 213
+          rate: 24.4
+        2021:
+          detected: 14
+          total: 241
+          rate: 5.8
+        2022:
+          detected: 87
+          total: 244
+          rate: 35.7
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 75.6
+      discrimination_2024_vs_2020: 100.0% vs 24.4%
+    $4B:
+      by_year:
+        2020:
+          detected: 29
+          total: 213
+          rate: 13.6
+        2021:
+          detected: 14
+          total: 241
+          rate: 5.8
+        2022:
+          detected: 85
+          total: 244
+          rate: 34.8
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 86.4
+      discrimination_2024_vs_2020: 100.0% vs 13.6%
+    $5B:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 9
+          total: 241
+          rate: 3.7
+        2022:
+          detected: 79
+          total: 244
+          rate: 32.4
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    $6B:
+      by_year:
+        2020:
+          detected: 4
+          total: 213
+          rate: 1.9
+        2021:
+          detected: 3
+          total: 241
+          rate: 1.2
+        2022:
+          detected: 63
+          total: 244
+          rate: 25.8
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 98.1
+      discrimination_2024_vs_2020: 100.0% vs 1.9%
+    $7B:
+      by_year:
+        2020:
+          detected: 0
+          total: 213
+          rate: 0.0
+        2021:
+          detected: 0
+          total: 241
+          rate: 0.0
+        2022:
+          detected: 30
+          total: 244
+          rate: 12.3
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 100.0
+      discrimination_2024_vs_2020: 100.0% vs 0.0%
+    $8B:
+      by_year:
+        2020:
+          detected: 0
+          total: 213
+          rate: 0.0
+        2021:
+          detected: 0
+          total: 241
+          rate: 0.0
+        2022:
+          detected: 0
+          total: 244
+          rate: 0.0
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 100.0
+      discrimination_2024_vs_2020: 100.0% vs 0.0%
+    $10B:
+      by_year:
+        2020:
+          detected: 0
+          total: 213
+          rate: 0.0
+        2021:
+          detected: 0
+          total: 241
+          rate: 0.0
+        2022:
+          detected: 0
+          total: 244
+          rate: 0.0
+        2023:
+          detected: 43
+          total: 228
+          rate: 18.9
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 100.0
+      discrimination_2024_vs_2020: 100.0% vs 0.0%
+test3_stability:
+  parameter: max_sign_flips
+  values:
+    2 flips:
+      by_year:
+        2020:
+          detected: 24
+          total: 213
+          rate: 11.3
+        2021:
+          detected: 0
+          total: 241
+          rate: 0.0
+        2022:
+          detected: 16
+          total: 244
+          rate: 6.6
+        2023:
+          detected: 36
+          total: 228
+          rate: 15.8
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 88.7
+      discrimination_2024_vs_2020: 100.0% vs 11.3%
+    3 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 1
+          total: 241
+          rate: 0.4
+        2022:
+          detected: 33
+          total: 244
+          rate: 13.5
+        2023:
+          detected: 40
+          total: 228
+          rate: 17.5
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    4 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 4
+          total: 241
+          rate: 1.7
+        2022:
+          detected: 72
+          total: 244
+          rate: 29.5
+        2023:
+          detected: 42
+          total: 228
+          rate: 18.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    5 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 9
+          total: 241
+          rate: 3.7
+        2022:
+          detected: 79
+          total: 244
+          rate: 32.4
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    6 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 26
+          total: 241
+          rate: 10.8
+        2022:
+          detected: 109
+          total: 244
+          rate: 44.7
+        2023:
+          detected: 57
+          total: 228
+          rate: 25.0
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    7 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 45
+          total: 241
+          rate: 18.7
+        2022:
+          detected: 120
+          total: 244
+          rate: 49.2
+        2023:
+          detected: 63
+          total: 228
+          rate: 27.6
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    8 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 64
+          total: 241
+          rate: 26.6
+        2022:
+          detected: 128
+          total: 244
+          rate: 52.5
+        2023:
+          detected: 74
+          total: 228
+          rate: 32.5
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    10 flips:
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 81
+          total: 241
+          rate: 33.6
+        2022:
+          detected: 136
+          total: 244
+          rate: 55.7
+        2023:
+          detected: 88
+          total: 228
+          rate: 38.6
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+test4_combined:
+  parameter: combined_threshold_shift
+  values:
+    -20%:
+      thresholds:
+        persistence: 0.56
+        magnitude_b: 4.0
+        max_flips: 6
+      by_year:
+        2020:
+          detected: 47
+          total: 213
+          rate: 22.1
+        2021:
+          detected: 55
+          total: 241
+          rate: 22.8
+        2022:
+          detected: 139
+          total: 244
+          rate: 57.0
+        2023:
+          detected: 74
+          total: 228
+          rate: 32.5
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 77.9
+      discrimination_2024_vs_2020: 100.0% vs 22.1%
+    -10%:
+      thresholds:
+        persistence: 0.63
+        magnitude_b: 4.5
+        max_flips: 6
+      by_year:
+        2020:
+          detected: 30
+          total: 213
+          rate: 14.1
+        2021:
+          detected: 45
+          total: 241
+          rate: 18.7
+        2022:
+          detected: 136
+          total: 244
+          rate: 55.7
+        2023:
+          detected: 73
+          total: 228
+          rate: 32.0
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 85.9
+      discrimination_2024_vs_2020: 100.0% vs 14.1%
+    default:
+      thresholds:
+        persistence: 0.7
+        magnitude_b: 5.0
+        max_flips: 5
+      by_year:
+        2020:
+          detected: 26
+          total: 213
+          rate: 12.2
+        2021:
+          detected: 9
+          total: 241
+          rate: 3.7
+        2022:
+          detected: 79
+          total: 244
+          rate: 32.4
+        2023:
+          detected: 46
+          total: 228
+          rate: 20.2
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 87.8
+      discrimination_2024_vs_2020: 100.0% vs 12.2%
+    +10%:
+      thresholds:
+        persistence: 0.77
+        magnitude_b: 5.5
+        max_flips: 5
+      by_year:
+        2020:
+          detected: 20
+          total: 213
+          rate: 9.4
+        2021:
+          detected: 2
+          total: 241
+          rate: 0.8
+        2022:
+          detected: 68
+          total: 244
+          rate: 27.9
+        2023:
+          detected: 45
+          total: 228
+          rate: 19.7
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 90.6
+      discrimination_2024_vs_2020: 100.0% vs 9.4%
+    +20%:
+      thresholds:
+        persistence: 0.84
+        magnitude_b: 6.0
+        max_flips: 4
+      by_year:
+        2020:
+          detected: 4
+          total: 213
+          rate: 1.9
+        2021:
+          detected: 0
+          total: 241
+          rate: 0.0
+        2022:
+          detected: 51
+          total: 244
+          rate: 20.9
+        2023:
+          detected: 42
+          total: 228
+          rate: 18.4
+        2024:
+          detected: 241
+          total: 241
+          rate: 100.0
+        2025:
+          detected: 245
+          total: 245
+          rate: 100.0
+      effect_size_pp: 98.1
+      discrimination_2024_vs_2020: 100.0% vs 1.9%
