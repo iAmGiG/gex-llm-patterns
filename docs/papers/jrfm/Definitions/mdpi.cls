@@ -440,7 +440,7 @@
 
 %% ORCID
 % Make Orcid icon
-\newcommand{\orcidicon}{\includegraphics[width=0.32cm]{Definitions/logo-orcid.eps}}
+\newcommand{\orcidicon}{\includegraphics[width=0.32cm]{Definitions/logo-orcid}}
 
 % Define link and button for each author
 \foreach \x in {A, ..., Z}{%
@@ -545,7 +545,7 @@
 			\OR \equal{\@arttype}{Book}}{}{%
 				\ifthenelse{\equal{\@status}{submit}}{%	
 					\hfill \href{http://www.mdpi.com}{%
-					\includegraphics[height=1cm]{Definitions/logo-mdpi.eps}}\vspace{0.5cm}%
+					\includegraphics[height=1cm]{Definitions/logo-mdpi}}\vspace{0.5cm}%
 					}{
 					\href{http://www.mdpi.com/journal/\@journal}{
 					\includegraphics[height=1.2cm]{Definitions/\@journal-logo.eps}}%
@@ -558,7 +558,7 @@
 					\ifthenelse{\equal{\@journal}{scipharm}}{%
 						\href{http://www.mdpi.com}{\includegraphics[height=1cm]{Definitions/logo-mdpi-scipharm.eps}}%
 						}{%
-						\href{http://www.mdpi.com}{\includegraphics[height=1cm]{Definitions/logo-mdpi.eps}}%
+						\href{http://www.mdpi.com}{\includegraphics[height=1cm]{Definitions/logo-mdpi}}%
 						}%
 					}%
 			}%
