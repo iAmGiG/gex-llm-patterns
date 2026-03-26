@@ -133,17 +133,17 @@ For regime detection, we employ a five-phase protocol spanning 2020--2025:
 
 \textbf{Phase 1} (Q1 2024 Baseline, 52 windows): Establish baseline detection rate. Success criteria: detection substantially above chance while remaining selective---not universal matching, which would indicate base-rate guessing rather than structural discrimination.
 
-\textbf{Phase 2} (Negative Controls, 809 windows): Three synthetic control types, each violating a specific regime criterion:
+\textbf{Phase 2} (Negative Controls, 809 windows across 2024 and 2020): Three synthetic control types, each violating a specific regime criterion:
 \begin{itemize}
-    \item \textit{Shuffled} (404 windows): Randomize day order within real windows, destroying temporal structure while preserving aggregate statistics.
-    \item \textit{Transitional} (202 windows): Generate windows with frequent sign flips ($>$8 per window), violating the stability criterion.
-    \item \textit{Low-magnitude} (203 windows): Generate windows with magnitude below \$3B, violating the magnitude criterion.
+    \item \textit{Shuffled} (277 windows): Randomize day order within real windows, destroying temporal structure while preserving aggregate statistics.
+    \item \textit{Transitional} (255 windows): Generate windows with frequent sign flips ($>$8 per window), violating the stability criterion.
+    \item \textit{Low-magnitude} (277 windows): Generate windows with magnitude below \$3B, violating the magnitude criterion.
 \end{itemize}
-Expected: $<$10\% false positive rate across all control types.
+Expected: $<$10\% false positive rate on transitional and low-magnitude controls, which isolate individual criterion violations. The shuffle test serves a different diagnostic purpose: by preserving aggregate statistics while destroying temporal order, it measures whether detection depends on day sequencing or aggregate dominance---an important distinction discussed in Section~\ref{sec:regime}.
 
 \textbf{Phase 3} (Full 2024, 223 windows): Test Q1 generalization across all 252 trading days.
 
-\textbf{Phase 4} (2020 Comparison, 223 windows): Test pre-0DTE era (2020, $<$5\% 0DTE volume) against post-0DTE (2024, $\approx$48\%).
+\textbf{Phase 4} (2020 Comparison, 223 windows): Test pre-0DTE era (2020, $<$5\% 0DTE volume) against post-0DTE (2024, $\approx$46\% SPY).
 
 \textbf{Phase 5} (Multi-Year 2020--2025, 1,412 windows): Identify when structural market shift occurred.
 

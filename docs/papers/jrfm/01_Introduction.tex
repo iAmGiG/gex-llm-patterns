@@ -11,7 +11,7 @@ We validate this framework at two temporal scales. The progression from single-d
 
 \textbf{Single-day validation.} Applied to 242 trading days (SPY, 2024), obfuscation testing achieves 71.5\% detection of dealer hedging patterns using unbiased prompts, with 90.9\% of detections materializing in forward returns. A \textbf{raw chain validation} removing all pre-calculated metrics achieves 92.3\% detection---outperforming the GEX-assisted baseline by 30.8 percentage points---demonstrating that LLMs reconstruct dealer positioning from first principles rather than matching parametric summaries \citep{regan2025obfuscation}.
 
-\textbf{Multi-day regime detection.} Extending to 30-day windows across six years (2020--2025), the framework achieves 81.2\% detection of persistent regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking 0DTE adoption: detection rates rise from 3.7\% (2021) to 100\% (2024), with GEX magnitude growing 360\%.
+\textbf{Multi-day regime detection.} Extending to 30-day windows across six years (2020--2025), the framework achieves 81.2\% detection of persistent regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking 0DTE adoption: detection rates rise from 3.7\% (2021) to 100\% (2024), with average GEX magnitude growing from \$3.0B to \$20.3B.
 
 \subsection{Research Questions}
 
