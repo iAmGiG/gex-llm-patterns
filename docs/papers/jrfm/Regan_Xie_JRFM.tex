@@ -18,6 +18,12 @@
 %% Additional packages
 \usepackage{placeins}  % for \FloatBarrier
 
+%% Commands not defined in this version of mdpi.cls
+\newcommand{\dataavailability}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Data Availability Statement:} {#1}\par}}
+\newcommand{\disclaimer}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Disclaimer/AI Statement:} {#1}\par}}
+
 %=================================================================
 \Title{Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation}
 
