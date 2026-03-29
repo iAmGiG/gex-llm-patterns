@@ -23,6 +23,10 @@
 \vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Data Availability Statement:} {#1}\par}}
 \newcommand{\disclaimer}[1]{%
 \vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Disclaimer/AI Statement:} {#1}\par}}
+\newcommand{\institutionalreview}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Institutional Review Board Statement:} {#1}\par}}
+\newcommand{\informedconsent}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Informed Consent Statement:} {#1}\par}}
 
 %=================================================================
 \Title{Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation}
@@ -45,7 +49,7 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \corres{Correspondence: cregan1@kennesaw.edu (C.R.)}
 
 % Abstract — IMRAD structure without headings, per MDPI guidelines
-\abstract{Deploying large language models (LLMs) for domain-specific analysis raises a critical validation challenge: distinguishing genuine structural reasoning from training data memorization. We address this through temporal obfuscation testing, a methodology that systematically strips calendar dates, ticker symbols, and contextual markers from input sequences, forcing models to reason from numerical structure alone. Applying this framework to financial market microstructure---specifically, the detection of options dealer gamma exposure (GEX) patterns across two temporal scales---we validate detection using 2,221 evaluations (1,412 real windows plus 809 synthetic controls) spanning 2020--2025. At the single-day scale, obfuscation testing achieves 71.5\% detection of dealer hedging patterns with 91.2\% predictive accuracy; raw strike-level data outperforms pre-calculated GEX metrics by 30.8 percentage points (92.3\% vs.\ 61.5\%), establishing that parametric aggregation represents lossy compression of structural signal. At the multi-day scale, 30-day regime detection achieves 81.2\% detection in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking zero-days-to-expiration (0DTE) options adoption---from 3.7\% detection in 2021 to 100\% in 2024---with average GEX magnitude growing from \$3.0B to \$20.3B. Stable detection despite collapsing economic profitability (Sharpe 1.8 $\rightarrow$ 0.1) confirms detected patterns represent structural market mechanics rather than exploitable inefficiencies, establishing temporal obfuscation as a generalizable methodology for validating LLM reasoning in quantitative domains.}
+\abstract{Deploying large language models (LLMs) for domain-specific analysis raises a critical validation challenge: distinguishing genuine structural reasoning from training data memorization. We address this through temporal obfuscation testing, which strips calendar dates, ticker symbols, and contextual markers from input sequences, forcing models to reason from numerical structure alone. Applying this framework to options dealer gamma exposure (GEX) patterns across two temporal scales, we validate detection using 2,221 evaluations (1,412 real windows plus 809 synthetic controls) spanning 2020--2025. At the single-day scale, obfuscation testing achieves 71.5\% detection of dealer hedging patterns with 91.2\% predictive accuracy; raw strike-level data outperforms pre-calculated GEX metrics by 30.8 percentage points (92.3\% vs.\ 61.5\%), establishing that parametric aggregation represents lossy compression of structural signal. At the multi-day scale, 30-day regime detection achieves 81.2\% detection in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals regime evolution tracking zero-days-to-expiration (0DTE) adoption---detection rising from 3.7\% (2021) to 100\% (2024)---with GEX magnitude growing from \$3.0B to \$20.3B. Stable detection despite collapsing profitability (Sharpe 1.8 $\rightarrow$ 0.1) confirms structural market mechanics rather than exploitable inefficiencies, establishing temporal obfuscation as a generalizable methodology for validating LLM reasoning in quantitative domains.}
 
 % Keywords (semicolon-separated per MDPI style)
 \keyword{LLM validation; structural reasoning; temporal obfuscation; regime detection; market microstructure; gamma exposure; zero-days-to-expiration options; options market structure}
@@ -70,16 +74,19 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \funding{This research received no external funding.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data.}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \conflictsofinterest{The authors declare no conflict of interest.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \dataavailability{All code, data preprocessing scripts, and validation results are publicly available at \url{https://github.com/iAmGiG/gex-llm-patterns}. Raw options data were obtained from Alpha Vantage under academic API access.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\disclaimer{This study employs OpenAI's o4-mini reasoning model as the subject of investigation for regime classification tasks, accessed via the OpenAI Batch API with structured JSON output. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code) for the purposes of clarifying and refining the written presentation. The authors have reviewed and edited all output and take full responsibility for the content of this publication. All scientific interpretations and conclusions are solely those of the authors.}
+\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code, 2025) for the purposes of clarifying and refining the written presentation. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\institutionalreview{Not applicable. This study uses publicly available market data and does not involve human participants.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\informedconsent{Not applicable.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \abbreviations{The following abbreviations are used in this manuscript:\\
