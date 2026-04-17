@@ -1,0 +1,40 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.9in,top=0.8in,bottom=0.8in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\titleformat{\section}{\normalfont\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+
+\pagenumbering{gobble}
+
+\begin{document}
+
+\begin{center}
+{\large\bfseries Research Summary and Statement of Benefits}\\[2pt]
+\textit{Graduate College Research Travel Award Application}\\[4pt]
+Christopher Regan \quad\textbar\quad KSU ID: CRegan1 \quad\textbar\quad PhD Computer Science, CCSE\\
+Conference: 22nd IFIP AIAI 2026, Chania, Crete, Greece (Virtual Participation), July 16--19, 2026\\
+Paper: \textit{Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation}
+\end{center}
+
+\section*{Research Summary}
+
+Large language models (LLMs) have shown strong performance on reasoning tasks, but a central question remains: when an LLM produces a correct answer in a specialized domain, is it performing genuine \emph{structural reasoning}, or is it recalling patterns memorized from training data? This distinction matters for any field that plans to rely on LLMs for analysis, from medicine to law to finance. My research addresses this question with a validation methodology I call \textbf{temporal obfuscation testing}.
+
+The method is simple in principle: before asking an LLM to analyze a time series, we strip every identifying marker---calendar dates, ticker symbols, company names, and contextual cues such as ``COVID crash'' or ``2020 election.'' What remains is pure numerical structure. If the model can still correctly characterize the underlying regime, that outcome cannot be explained by memorization of well-known historical episodes; it must reflect reasoning over the data itself.
+
+I apply this framework to a challenging quantitative domain: detecting \emph{persistent dealer gamma exposure (GEX) regimes} in U.S. equity options markets. GEX measures how options market-makers are positioned, and when that positioning is sustained in one direction, it produces characteristic patterns in price dynamics. The task is well-suited to validation because persistence is not a pattern memorizable as a single ``event''---it must be inferred from 30 consecutive days of numerical structure.
+
+Across six years of market data (2020--2025), I evaluated 2,221 windows (1,412 real; 809 synthetic negative controls). The framework achieves \textbf{81.2\%} detection of persistent regimes in 2024 versus \textbf{12.1\%} in 2020---a 69.1 percentage point separation ($\varphi=0.672$)---with \textbf{0\% false positives} on synthetic controls designed to look superficially similar to real regimes. The multi-year trajectory tracks the real-world adoption of zero-days-to-expiration (0DTE) options rather than any single structural break, providing external validity for the detection signal. Beyond the financial application, the contribution is a \emph{generalizable} validation methodology: temporal obfuscation can be applied wherever training-data contamination threatens the credibility of LLM-based analysis.
+
+\section*{Statement of Benefits}
+
+Presenting this work at AIAI 2026 directly advances my doctoral research and degree completion in three ways. \emph{First}, AIAI is an IFIP-sponsored venue with Springer LNCS proceedings and peer review focused specifically on applied AI validation---precisely the community whose feedback sharpens the methodological contribution of my dissertation. \emph{Second}, this paper is a core chapter of my dissertation, and a Springer-indexed publication with discussion at the conference strengthens the external validation required at the defense stage. \emph{Third}, engaging with researchers working on LLM reasoning, financial AI, and validation methodology will surface follow-on questions---particularly around formula-independence and cross-domain transfer---that shape the remaining chapters of my thesis. Virtual participation keeps costs minimal while preserving full access to sessions, Q\&A, and networking. The Graduate College Research Travel Award would cover a meaningful portion of the early-bird remote registration fee (\texteuro490, $\approx$\$530~USD), directly enabling a dissertation-aligned dissemination that I could not otherwise fund.
+
+\end{document}
