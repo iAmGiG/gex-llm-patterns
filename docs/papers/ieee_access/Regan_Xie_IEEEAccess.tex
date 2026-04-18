@@ -1,0 +1,61 @@
+\documentclass[journal]{IEEEtran}
+
+\input{00_Header}
+
+\begin{document}
+
+\title{Validating LLM Structural Reasoning in Financial Markets: From Single-Day Pattern Detection to Persistent Regime Identification}
+
+\author{Christopher~Regan,~\IEEEmembership{}
+        and~Ying~Xie,~\IEEEmembership{Senior Member,~IEEE}
+\thanks{Manuscript received March XX, 2026.}
+\thanks{C. Regan and Y. Xie are with the College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060 USA (e-mail: cregan1@kennesaw.edu; yxie2@kennesaw.edu).}}
+
+\markboth{IEEE Access}{Regan and Xie: Validating LLM Structural Reasoning in Financial Markets}
+
+\maketitle
+
+\begin{abstract}
+We present a comprehensive validation framework for large language model (LLM) structural reasoning in financial market microstructure analysis. A critical challenge in deploying LLMs for domain-specific tasks is distinguishing genuine structural reasoning from training data memorization. We address this through temporal obfuscation testing: stripping calendar dates, ticker symbols, and contextual markers from input sequences, forcing models to reason purely from numerical structure. We validate this framework at two temporal scales. First, single-day analysis of options dealer gamma exposure (GEX) achieves 71.5\% detection of mechanical hedging patterns under obfuscation, with raw options chain data yielding 92.3\% detection versus 61.5\% from pre-calculated GEX---demonstrating that LLMs reconstruct dealer positioning from first principles rather than matching parametric summaries. Second, extending to 30-day regime detection across six years (2020--2025, 1,412 windows plus 809 synthetic controls), the framework achieves 81.2\% detection of persistent regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking zero-days-to-expiration (0DTE) options adoption (3.7\% detection in 2021 $\rightarrow$ 100\% in 2024), with GEX magnitude growing 360\%. These results validate LLM structural reasoning capabilities across temporal scales while demonstrating temporal obfuscation as a generalizable methodology for preventing training data contamination.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Large language models, structural reasoning, temporal obfuscation, regime detection, market microstructure, gamma exposure, dealer constraints, 0DTE options
+\end{IEEEkeywords}
+
+\input{01_Introduction}
+
+\FloatBarrier
+\input{02_Related_Work}
+
+\FloatBarrier
+\input{03_Methodology}
+
+\FloatBarrier
+\input{04_Single_Day_Validation}
+
+\FloatBarrier
+\input{05_Regime_Detection}
+
+\FloatBarrier
+\input{06_Discussion}
+
+\FloatBarrier
+\input{07_Conclusion}
+
+\section*{Acknowledgment}
+The authors acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We are grateful to Anthropic for Claude Code, which facilitated development and testing, and to OpenAI for providing the o4-mini model via the Batch API. We thank Alpha Vantage for academic API access to market data.
+
+\FloatBarrier
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\begin{IEEEbiography}[]{Christopher Regan}
+is a doctoral candidate in the College of Computing and Software Engineering at Kennesaw State University, Marietta, GA. His research focuses on validating large language model reasoning capabilities in specialized domains, with particular emphasis on financial market microstructure analysis. His work develops temporal obfuscation testing as a methodology for distinguishing genuine structural reasoning from training data memorization.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[]{Ying Xie}
+is a Professor in the College of Computing and Software Engineering at Kennesaw State University, Marietta, GA. Her research interests include data mining, machine learning, and artificial intelligence applications. She has published extensively in journals and conferences on topics including deep learning, natural language processing, and applied AI systems.
+\end{IEEEbiography}
+
+\end{document}
