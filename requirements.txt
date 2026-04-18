@@ -1,21 +1,59 @@
-# GEX LLM Patterns - Project Dependencies
-# Install: pip install -r requirements.txt
+# GEX LLM Patterns — Project Dependencies
+#
+# Versions pinned to (at minimum) those used for Paper 1 (IEEE BigData 2025)
+# and Paper 2 (AIAI 2026). Python 3.10+ required.
+#
+# Install:
+#   pip install -r requirements.txt
 
-# Code Quality and Linting
+# -----------------------------------------------------------------------------
+# LLM / AutoGen stack
+# -----------------------------------------------------------------------------
+# Paper 2 used o4-mini via OpenAI Batch API; Paper 1 used o3-mini.
+# AutoGen 0.7.x is the reference version for MarketMechanicsAgent + tools.
+autogen-agentchat>=0.7.0,<0.8
+autogen-core>=0.7.0,<0.8
+autogen-ext>=0.7.0,<0.8
+openai>=1.40.0
+
+# Robust JSON extraction from LLM responses (Issue #192)
+json-repair>=0.28.0
+
+# -----------------------------------------------------------------------------
+# Scientific / data stack
+# -----------------------------------------------------------------------------
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+statsmodels>=0.14.0     # Granger causality, regime-shift diagnostics
+matplotlib>=3.7.0       # Paper figures
+
+# -----------------------------------------------------------------------------
+# Data persistence / IO
+# -----------------------------------------------------------------------------
+pyarrow>=14.0.0          # Parquet / columnar storage
+psycopg2-binary>=2.9.9   # PostgreSQL (primary options store in production)
+pyyaml>=6.0              # Config files under config_defaults/
+pytz>=2023.3             # Timezone-aware date handling
+
+# -----------------------------------------------------------------------------
+# External data sources
+# -----------------------------------------------------------------------------
+requests>=2.31.0
+fredapi>=0.5.0           # FRED macroeconomic series
+
+# -----------------------------------------------------------------------------
+# Runtime utilities
+# -----------------------------------------------------------------------------
+psutil>=5.9.0            # Process / memory monitoring in long-running jobs
+
+# -----------------------------------------------------------------------------
+# Development / code quality (optional — install with -r requirements-dev.txt
+# if/when a dev-only file is added; retained here for backward compatibility)
+# -----------------------------------------------------------------------------
 pre-commit>=3.5.0
 black>=24.3.0
 flake8>=7.0.0
 isort>=5.13.0
 docformatter>=1.7.5
-
-# Core Dependencies (add your existing packages here)
-# Example:
-# pyautogen>=0.2.0
-# openai>=1.0.0
-# pandas>=2.0.0
-# numpy>=1.24.0
-# pyyaml>=6.0.0
-# aiofiles>=23.0.0
-
-# JSON Parsing (Issue #192)
-json-repair>=0.28.0  # Robust JSON extraction from LLM responses
