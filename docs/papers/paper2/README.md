@@ -393,7 +393,7 @@ docs/papers/paper2/
 ## Related Documentation
 
 **Scripts**: `scripts/validation/paper2/README.md` - Validation scripts documentation
-**Paper #1**: `docs/papers/paper1/` - Pattern taxonomy (submitted Oct 2025)
+**Paper #1**: `docs/papers/paper1/` - Pattern taxonomy (published at IEEE BigData 2025, Dec 2025)
 **GitHub Issues**: See ROADMAP.md for all 14 Paper #2 issues
 
 ---

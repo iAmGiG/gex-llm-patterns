@@ -2,6 +2,8 @@
 
 This directory contains validation reports and historical archives.
 
+> **Note:** This README captures directory state as of October 2025. For the latest validation results see the published papers ([Paper 1 — IEEE BigData 2025](../docs/papers/paper1/), [Paper 2 — AIAI 2026 accepted / JRFM under review](../docs/papers/paper2/)).
+
 ## Structure (October 11, 2025)
 
 ```

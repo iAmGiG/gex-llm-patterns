@@ -262,14 +262,14 @@ For infrastructure audits:
 
 ### Consolidation Impact
 
-**Before** (Nov 22, 2025):
+**Before consolidation** (Nov 22, 2025):
 
-- docs/system/: 9 files
+- Legacy scattered docs (system-level): 9 files
 - docs/reference/: 2 files
 - docs/infrastructure/: 2 files
 - **Total**: 13 files
 
-**After** (Nov 24, 2025):
+**After consolidation** (Nov 24, 2025):
 
 - docs/infrastructure/: 9 files (01-08, README)
 - **Total**: 9 files

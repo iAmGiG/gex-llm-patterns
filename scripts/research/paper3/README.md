@@ -157,7 +157,7 @@ python cross_asset_correlation.py
 python hedge_ratio_optimization.py
 ```
 
-**Output Directory**: `docs/papers/paper3/analysis/`
+**Output Directory**: `reports/research/paper3/` (the `docs/papers/paper3/` doc folder was consolidated into [`docs/papers/extensions/`](../../../docs/papers/extensions/) during the April 2026 final sweep; these analysis scripts remain for anyone pursuing Extension Track A or Track C)
 
 ---
 
@@ -183,11 +183,11 @@ Each script generates a markdown report with:
 - Lead-lag relationships
 - Visualizations (if matplotlib available)
 
-**Example**:
+**Example (suggested location):**
 
-- `docs/papers/paper3/analysis/volatility_spillover_analysis.md`
-- `docs/papers/paper3/analysis/cross_asset_correlation.md`
-- `docs/papers/paper3/analysis/hedge_ratio_optimization.md`
+- `reports/research/paper3/volatility_spillover_analysis.md`
+- `reports/research/paper3/cross_asset_correlation.md`
+- `reports/research/paper3/hedge_ratio_optimization.md`
 
 ---
 

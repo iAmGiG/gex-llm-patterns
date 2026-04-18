@@ -55,23 +55,23 @@ This research explores using LLMs to discover multi-dimensional patterns in opti
 - Can detect anomalies in complex datasets
 - Learn from historical pattern outcomes
 
-### Key Pattern Example: Short Put Arbitrage
+### Key Pattern Example: Persistent Dealer Gamma Regime
 
-**Pattern Mechanics** (Issue #13):
+**Pattern Mechanics** (validated in Paper 2):
 
-1. **Setup**: Summer months, lower volume conditions
-2. **Phase 1**: Load above-ask calls to create urgency/FOMO
-3. **Phase 2**: Rapid-fire short OTM puts across multiple strikes
-4. **Phase 3**: Manipulate fills to appear bullish on tape
-5. **Result**: Force additional call buying, create upside momentum
+1. **Setup**: Extended periods where dealer gamma exposure maintains a dominant sign (>70% of days)
+2. **Signal 1**: Average absolute gamma exposure exceeds economically significant threshold ($5B+)
+3. **Signal 2**: Low sign-flip count (≤5 flips over 30-day window) indicates stable dealer positioning
+4. **Mechanism**: Sustained directional hedging creates predictable intraday flow dynamics
+5. **Result**: Persistent negative-gamma regimes amplify volatility; persistent positive regimes suppress it
 
 **Why LLMs Matter**: This pattern requires recognizing:
 
-- Seasonal timing (summer bias)
-- Volume/OI anomalies across strikes
-- Fill-side manipulation signatures
-- Cross-asset coordination (calls + puts)
-- Temporal sequencing of actions
+- Multi-day structural persistence (not single-day snapshots)
+- Magnitude AND stability criteria jointly
+- Distinguishing persistent regimes from transitional periods (selectivity)
+- Temporal obfuscation-resistant reasoning (structural, not memorized)
+- 0DTE market structure evolution tracking (2020: 12% detection → 2024: 100%)
 
 ## Current Development Status
 

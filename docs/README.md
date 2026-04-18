@@ -53,8 +53,10 @@ docs/
 ├── papers/                         # Research papers
 │   ├── adr/                        # Cross-paper architecture decisions
 │   ├── planning/                   # Research planning docs
-│   ├── paper1/                     # Paper #1 (single-day, submitted Oct 2025)
-│   └── paper2/                     # Paper #2 (sequential, in progress)
+│   ├── paper1/                     # Paper #1 (single-day, IEEE BigData 2025 — published)
+│   ├── paper2/                     # Paper #2 (regime detection — AIAI accepted, JRFM under review)
+│   ├── ieee_access/                # IEEE Access combined paper 1+2
+│   └── extensions/                 # Forward-looking research directions (snapshot)
 │
 ├── guides/                         # User-facing how-to guides
 │   ├── 02-gex-metrics-explained.md
@@ -157,16 +159,16 @@ All docs include **Navigation** sections with:
 
 **Paper #1** (Single-Day Framework):
 
-- **Status**: ✅ Submitted (Oct 26, 2025)
-- **Results**: 100% detection, 87-98% accuracy (181 trading days)
-- **Finding**: Detection stable despite alpha decline (Q1→Q4)
+- **Status**: ✅ Published (IEEE BigData 2025, Dec 2025)
+- **Results**: 71.5% detection, 91.2% predictive accuracy (242 trading days, 726 evaluations)
+- **Finding**: LLMs identify dealer constraint patterns under temporal obfuscation
 - **Location**: [papers/paper1/](papers/paper1/)
 
-**Paper #2** (Sequential Framework):
+**Paper #2** (30-Day Regime Framework):
 
-- **Status**: 🔄 Phase 1 complete, Phase 2 pending
-- **Innovation**: 5-day temporal trajectory analysis
-- **Components**: SequentialGEXFetcher, neutral prompts, negative controls
+- **Status**: ✅ Accepted at AIAI 2026 (camera-ready May 2026) · 🔄 Under review at JRFM (MDPI)
+- **Results**: 81.2% detection 2024 vs 12.1% 2020 (69.1pp separation, φ = 0.672, p < 0.0001), 2,221 evaluations
+- **Finding**: 0DTE-driven market structure evolution detected under temporal obfuscation
 - **Location**: [papers/paper2/](papers/paper2/)
 
 **Cross-Paper ADRs**:

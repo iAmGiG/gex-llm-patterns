@@ -14,7 +14,7 @@ scripts/
 ├── experiments/        # Experiment orchestration
 ├── research/
 │   ├── paper1/         # Paper 1 research scripts
-│   └── paper3/         # Paper 3 research scripts
+│   └── paper3/         # Extension scripts (cross-asset, spillover) — see docs/papers/extensions/
 └── validation/
     ├── paper1/         # Paper 1 validation (17 scripts)
     │   └── statistical/  # Statistical validation (Granger, lead-lag)
@@ -60,9 +60,11 @@ scripts/
 | `ablation_no_narrative.py` | Ablation study (Issue #191) |
 | `run_formula_agreement.py` | Formula agreement test (Issue #217) |
 
-### Paper 3: Intraday & Multi-Asset
+### Research Extensions (Cross-Asset / Intraday)
 
-**Research:** `scripts/research/paper3/`
+> These scripts support the forward-looking research directions documented in [docs/papers/extensions/](../docs/papers/extensions/) — not an active paper in this repository.
+
+**Research:** `scripts/research/paper3/` (folder name retained for git-history continuity)
 
 | Script | Purpose |
 |--------|---------|

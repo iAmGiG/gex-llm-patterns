@@ -1,9 +1,20 @@
 # Research Roadmap: LLM-Based Market Microstructure Analysis
 
-**Last Updated**: January 13, 2026
-**Status**: Paper #1 published (arXiv:2512.17923), Paper #2 ready for submission (figures polished Jan 2026)
+> ⚠️ **Historical snapshot — January 13, 2026.** This document captured the research trajectory as of early 2026. For current state see:
+>
+> - **Paper 1**: ✅ Published at IEEE BigData 2025 (Dec 2025) — [`docs/papers/paper1/`](paper1/)
+> - **Paper 2**: ✅ Accepted at AIAI 2026 (camera-ready May 2026), 🔄 under review at JRFM (MDPI), rejected at Digital Finance — [`docs/papers/paper2/`](paper2/)
+> - **Forward-looking research directions**: consolidated in [`docs/papers/extensions/`](extensions/) (supersedes the Paper 3 / Paper 4 planning referenced below)
+> - **GitHub issues referenced below**: all closed as of April 2026
+>
+> The content below is preserved as the trajectory-at-the-time, not current state.
 
-**Related Issues**: [#118 (Dissertation Structure)](https://github.com/iAmGiG/gex-llm-patterns/issues/118), [#135 (Paper #3 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/135), [#136 (Paper #4 Planning)](https://github.com/iAmGiG/gex-llm-patterns/issues/136)
+---
+
+**Last Updated**: January 13, 2026
+**Status (at time of writing)**: Paper #1 published (arXiv:2512.17923), Paper #2 ready for submission (figures polished Jan 2026)
+
+**Related Issues (all since closed)**: #118 (Dissertation Structure), #135 (Paper #3 Planning), #136 (Paper #4 Planning)
 
 ---
 

@@ -169,10 +169,9 @@ These could enhance Papers 3-4 or become separate contributions:
 
 ## Related Documentation
 
-- [Paper 3 Detailed Planning](../paper3/README.md) - Full Track A/B breakdown
-- [Paper 4 Detailed Planning](../paper4/README.md) - GNN methodology options
+- [Research Extensions](../extensions/README.md) - Consolidated forward-looking directions (Tracks A, B, C)
 - [GNN Literature Review](../../reference/auxiliary_research/gnn_literature_review.md) - Paper summaries
-- [Research Roadmap](../research_roadmap.md) - Overall dissertation trajectory
+- [Research Roadmap](../research_roadmap.md) - Historical dissertation trajectory (Jan 2026 snapshot)
 
 ---
 
