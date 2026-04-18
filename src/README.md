@@ -6,13 +6,17 @@ This directory contains the core modules for the GEX-LLM pattern analysis projec
 
 ```
 src/
+├── agents/                # Market mechanics agent, data retrieval agent
 ├── analysis/              # Pattern analysis and baseline comparison tools
+├── backtesting/           # Strategy backtesting utilities
 ├── cache/                 # Unified caching system for API data
+├── data/                  # Market data system
 ├── data_sources/          # Alpha Vantage API client for options/stock data
 ├── gex/                   # GEX calculation modules
-├── tokenization/          # LLM sequence generation (to be implemented)
-├── utils/                 # General utilities (date, agent operations)
-└── validation/            # Data obfuscation and validation tools
+├── llm/                   # LLM integration (AutoGen, mechanics prompt builder)
+├── tools/                 # AutoGen tool registry and data-fetch tools
+├── utils/                 # General utilities (date, config, market intelligence)
+└── validation/            # Data obfuscation, regime classifier, chain validator
 ```
 
 ## Core Modules

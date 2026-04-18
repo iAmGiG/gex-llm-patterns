@@ -1,6 +1,6 @@
 # Paper #2: Temporal Dynamics of LLM-Based Market Microstructure Detection
 
-**Status**: LaTeX structure created, awaiting Phase 1 validation results
+**Status**: ✅ Validation complete. Venue-specific formats under [docs/papers/paper2/aiai/](../aiai/) (AIAI 2026 accepted), [docs/papers/paper2/jfqa/](../jfqa/), and [docs/papers/jrfm/](../../jrfm/) (under review). This folder retains the master LaTeX structure for reference.
 
 ## Overview
 

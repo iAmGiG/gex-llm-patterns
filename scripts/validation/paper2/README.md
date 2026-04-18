@@ -1,8 +1,8 @@
 # Paper #2 Validation Scripts
 
-**Paper Title**: "LLM-Based Regime Detection in Gamma Exposure Markets"
+**Paper Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
 
-**Status**: Phase 1 complete (71.2% detection, Q1 2024), Phase 2 pending
+**Status**: ✅ All five validation phases complete. Paper accepted at AIAI 2026 (camera-ready May 2026), under review at JRFM (MDPI). Final results: 81.2% detection 2024 vs 12.1% 2020 (69.1pp separation, φ = 0.672, p < 0.0001), 2,221 evaluations.
 
 ---
 
