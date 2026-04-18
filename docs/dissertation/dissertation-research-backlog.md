@@ -1,8 +1,9 @@
 # Future Research Tracker: GitHub Issues 115-119
 
 **Created:** 2025-11-09
-**Purpose:** Living documentation of dissertation research roadmap
-**Status:** Ready for evolution as research progresses
+**Last substantive update:** 2025-11-09
+**Purpose:** Snapshot of dissertation research roadmap as of Nov 2025
+**Status:** Historical snapshot — dissertation defense proposal has since been made. Paper 1 published at IEEE BigData 2025; Paper 2 accepted at AIAI 2026 and under review at JRFM. See [docs/papers/extensions/](../papers/extensions/) for consolidated future-work tracking.
 
 ---
 

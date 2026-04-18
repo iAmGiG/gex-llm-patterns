@@ -27,10 +27,10 @@ This document consolidates LLM model selection research (Issue #62), cost optimi
 
 | Model | Result | Notes |
 |-------|--------|-------|
-| O3-mini | ✅ 90% confidence | Selected for production |
-| O4-mini | ✅ 90% confidence | Alternative option |
-| GPT-4o | ✅ 60% confidence | Reliable fallback |
-| GPT-5 mini | ❌ Inconsistent | Good for simple questions, fails complex scenarios |
+| o3-mini | ✅ 90% confidence | Initial production model (Paper 1) |
+| o4-mini | ✅ 90% confidence | Used for Paper 2 regime detection via Batch API |
+| gpt-4o | ✅ 60% confidence | Reliable fallback for complex scenarios |
+| gpt-4o-mini | ✅ N/A | Tool/data operations (low cost) |
 
 ### Technical Implementation
 
@@ -77,10 +77,10 @@ CONFIDENCE: [0-100]
 
 #### Per-Query Costs
 
-- **O3-mini**: $0.002 (60% savings)
-- **GPT-4o**: $0.005 (baseline)
-- **GPT-4o-mini**: $0.0001 (tools)
-- **GPT-5 mini**: $0.0006 (unreliable)
+- **o3-mini**: $0.002 (60% savings vs baseline) — Paper 1
+- **o4-mini**: used via Batch API for Paper 2 (total cost across 2,221 evaluations: ~$11.07)
+- **gpt-4o**: $0.005 (baseline, fallback for complex scenarios)
+- **gpt-4o-mini**: $0.0001 (tool/data operations, low-cost path)
 
 #### Production Architecture
 

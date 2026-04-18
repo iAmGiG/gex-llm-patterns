@@ -1,5 +1,7 @@
 # Data Collection Status
 
+> ⚠️ **Snapshot: last validated 2025-12-17.** Paper 1 (published) and Paper 2 (AIAI 2026 accepted, JRFM under review) used the data reflected below. For live collection status, see CLAUDE.md. Active trading-infrastructure data collection has been migrated to the AutoTrader-AgentEdge repository.
+
 Last updated: 2025-12-17 00:35 UTC
 
 ## Current Collection Progress

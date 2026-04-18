@@ -30,8 +30,7 @@ Comprehensive guide for managing `.cache/` directories across git worktrees:
 
 ## Related Documentation
 
-- **Infrastructure**: `docs/infrastructure/` - System architecture, audits
-- **System Docs**: `docs/system/` - Core system documentation
+- **Infrastructure**: `docs/infrastructure/` - System architecture, audits, technical diagrams
 - **General Guides**: `docs/guides/` - Numbered system-wide guides (01-09)
 - **Paper #2 Infrastructure**: `docs/papers/paper2/infrastructure/` - Paper-specific infra
 

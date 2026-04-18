@@ -270,4 +270,4 @@ docs/legacy/              # Moved components
 
 **Prerequisites**: [01-project-overview.md](01-project-overview.md)
 **Next**: [03-data-and-database.md](03-data-and-database.md)
-**Related**: [docs/system/](../system/)
+**Related**: [diagrams/](diagrams/README.md) — technical system diagrams

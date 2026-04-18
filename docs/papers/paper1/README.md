@@ -1,10 +1,13 @@
 # Paper #1: LLM-Based Validation of Dealer Constraint Patterns in Options Markets
 
-**Working Title**: "Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing"
+**Final Title**: "Validating LLM Understanding of Market Microstructure Through Obfuscation Testing"
 
-**Status**: LaTeX conversion in progress
+**Status**: ✅ Published at IEEE BigData 2025 — 2nd International Workshop on Large Language Models for Finance (December 2025, Macau). Extended version (`docs/papers/ieee_access/`) prepared for IEEE Access journal submission.
 
-**Target Venue**: TBD (Financial Markets, Computational Finance, or AI in Finance journal)
+**Venues**:
+
+- IEEE BigData 2025 Workshop (published)
+- IEEE Access journal (extended version in place)
 
 ---
 

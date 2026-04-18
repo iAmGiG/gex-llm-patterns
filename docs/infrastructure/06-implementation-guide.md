@@ -347,13 +347,13 @@ Batch processing enhanced for intraday:
 python scripts/data_collection/intraday_collector.py --symbol SPY --start-time 09:30 --end-time 16:15 --interval 10min
 ```
 
-#### 2. GEX Calculator Enhancement (Pending)
+#### 2. GEX Calculator Enhancement (Deferred to AutoTrader-AgentEdge #573, 2026-04)
 
 - Real-time GEX calculation at 10-minute intervals
 - Strike-level gamma exposure tracking
 - Time-series gamma flip point detection
 
-#### 3. Alpha Vantage Integration (Pending)
+#### 3. Alpha Vantage Integration (Completed 2025; used by Paper 1 and Paper 2 data collection)
 
 - Historical options data population via API
 - Intraday options chain fetching
