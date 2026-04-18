@@ -69,7 +69,7 @@ env_test/
 *.env
 .env.*
 
-# Local development configs (but keep .vscode/settings.json)
+# Local development configs
 .editorconfig
 .tool-versions
 
