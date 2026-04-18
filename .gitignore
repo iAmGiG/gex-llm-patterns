@@ -69,7 +69,7 @@ env_test/
 *.env
 .env.*
 
-# Local development configs (but keep .vscode/settings.json)
+# Local development configs
 .editorconfig
 .tool-versions
 
@@ -96,9 +96,8 @@ env_test/
 # PyCharm
 .idea/
 
-# VS Code (keeping settings.json for project-specific linting config)
+# VS Code (machine-specific paths — keep local only)
 .vscode/*
-!.vscode/settings.json
 
 # Spyder
 .spyderproject
