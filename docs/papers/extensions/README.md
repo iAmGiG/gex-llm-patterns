@@ -9,7 +9,7 @@
 These directions build on the two papers anchored in this repository:
 
 - **Paper 1** — *Validating LLM Understanding of Market Microstructure Through Obfuscation Testing* — IEEE BigData 2025 Workshop (published). Single-day dealer constraint detection, 71.5% detection / 91.2% predictive accuracy, 726 evaluations.
-- **Paper 2** — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* — AIAI 2026 (accepted, camera-ready May 2026), JRFM (MDPI, under review), IEEE Access (extended). Multi-day regime detection across 2020–2025, 2,221 evaluations, 69.1pp discrimination between 2020 (12.1%) and 2024 (81.2%), documents 0DTE-driven market structure evolution.
+- **Paper 2** — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* — AIAI 2026 (accepted, camera-ready May 2026), JRFM (MDPI, under review). Multi-day regime detection across 2020–2025, 2,221 evaluations, 69.1pp discrimination between 2020 (12.1%) and 2024 (81.2%), documents 0DTE-driven market structure evolution.
 
 ---
 

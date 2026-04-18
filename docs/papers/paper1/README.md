@@ -2,12 +2,11 @@
 
 **Final Title**: "Validating LLM Understanding of Market Microstructure Through Obfuscation Testing"
 
-**Status**: ✅ Published at IEEE BigData 2025 — 2nd International Workshop on Large Language Models for Finance (December 2025, Macau). Extended version (`docs/papers/ieee_access/`) prepared for IEEE Access journal submission.
+**Status**: ✅ Published at IEEE BigData 2025 — 2nd International Workshop on Large Language Models for Finance (December 2025, Macau). An extended version combining Paper 1 + Paper 2 was prepared for IEEE Access but that submission path was not pursued (archived at [docs/archive/papers_ieee_access/](../../archive/papers_ieee_access/)).
 
 **Venues**:
 
 - IEEE BigData 2025 Workshop (published)
-- IEEE Access journal (extended version in place)
 
 ---
 

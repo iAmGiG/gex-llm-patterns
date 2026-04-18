@@ -55,7 +55,6 @@ docs/
 │   ├── planning/                   # Research planning docs
 │   ├── paper1/                     # Paper #1 (single-day, IEEE BigData 2025 — published)
 │   ├── paper2/                     # Paper #2 (regime detection — AIAI accepted, JRFM under review)
-│   ├── ieee_access/                # IEEE Access combined paper 1+2
 │   └── extensions/                 # Forward-looking research directions (snapshot)
 │
 ├── guides/                         # User-facing how-to guides

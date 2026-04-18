@@ -71,14 +71,6 @@ Stable detection (68–74% quarterly) persists while economic profitability coll
 - **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JFQA/Cambridge](docs/papers/paper2/jfqa/)
 - **LaTeX**: [`docs/papers/paper2/`](docs/papers/paper2/)
 
-### IEEE Access: Combined Paper 1+2
-
-**Title**: *Validating LLM Structural Reasoning in Options Markets: From Single-Day Detection to Persistent Regime Identification*
-
-- **Format**: IEEE Access journal (single-column)
-- **LaTeX**: [`docs/papers/ieee_access/`](docs/papers/ieee_access/)
-- **Status**: 18 pages, sensitivity analysis complete
-
 ### Future Directions
 
 Research extensions not pursued within this repository (cross-asset generalization, intraday/per-strike analysis, GNN-based cross-asset hedging networks): [`docs/papers/extensions/`](docs/papers/extensions/).
@@ -148,7 +140,6 @@ gex-llm-patterns/
 │   ├── papers/
 │   │   ├── paper1/          # Single-day obfuscation (IEEE BigData 2025, published)
 │   │   ├── paper2/          # Regime detection (multi-venue — AIAI accepted, JRFM under review)
-│   │   ├── ieee_access/     # Combined journal paper (IEEE Access)
 │   │   └── extensions/      # Forward-looking research directions (snapshot)
 │   └── presentations/       # PhD symposium, fundamentals
 ├── reports/                  # Validation results (YAML)
