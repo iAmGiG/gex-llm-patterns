@@ -65,7 +65,7 @@
     "latex-workshop.latex.tools": [
         {
             "name": "pdflatex",
-            "command": "/mnt/bst/a100/yxie2/cregan1/texlive/2026/bin/x86_64-linux/pdflatex",
+            "command": "C:/Users/gigac/AppData/Local/Programs/MiKTeX/miktex/bin/x64/pdflatex.exe",
             "args": [
                 "-synctex=1",
                 "-interaction=nonstopmode",
@@ -75,7 +75,7 @@
         },
         {
             "name": "bibtex",
-            "command": "/mnt/bst/a100/yxie2/cregan1/texlive/2026/bin/x86_64-linux/bibtex",
+            "command": "C:/Users/gigac/AppData/Local/Programs/MiKTeX/miktex/bin/x64/bibtex.exe",
             "args": [
                 "%DOCFILE%"
             ]

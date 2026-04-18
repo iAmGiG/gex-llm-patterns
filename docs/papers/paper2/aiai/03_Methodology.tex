@@ -23,7 +23,7 @@ Windows meeting all three criteria are classified as \textbf{persistent positive
 Following standard market microstructure practice~\cite{anderegg2022impact,spotgamma2021}, we calculate dealer gamma exposure from end-of-day open interest:
 
 \begin{equation}
-\text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
+\text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100,
 \end{equation}
 
 \noindent where $\Gamma_i$ is Black-Scholes gamma at strike $i$, $\text{OI}_i$ is open interest, $S^2$ scales gamma to dollar exposure, and call gamma enters positively while put gamma enters negatively. This open interest-based approach (GEX\_OI) measures dealer inventory positioning. Our 30-day temporal aggregation smooths daily measurement noise, and negative controls (Phase 2) validate framework robustness to measurement method.

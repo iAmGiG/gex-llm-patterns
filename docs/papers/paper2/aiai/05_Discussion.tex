@@ -9,6 +9,10 @@ Three findings support this interpretation. First, the LLM maintained 98\% mecha
 
 This selectivity contrasts with earlier 5-day trajectory testing~\cite{regan2025obfuscation}, which achieved 98--100\% detection across all market conditions by identifying universal daily hedging flows. The deliberate shift to 30-day windows with strict criteria transformed the task from universal pattern matching to selective regime identification---a critical distinction for validating genuine structural reasoning.
 
+\subsection{Structural Reasoning versus Rule Execution}
+
+A reasonable concern is whether 98\% mechanical accuracy indicates rule execution rather than reasoning. We address this directly. The 69.1pp discrimination between 2020 and 2024 is a property of the temporal data, reproducible by any classifier applying our thresholds. Our contribution is not that the LLM outperforms a rule-based baseline; it is that temporal obfuscation validates whether the LLM can faithfully apply structural criteria under domain-specific contamination risk. Agreement with rule-based thresholds is the validation signal, not a weakness. Beyond binary classification, the LLM produces outputs rules cannot: continuous confidence calibration ($r = +0.501$ with persistence, $r = -0.549$ with stability) and interpretable reasoning traces, with 88\% of sampled detections explicitly verifying criterion satisfaction step-by-step. The 2\% mechanical-accuracy gap reflects boundary-aware behavior on ambiguous windows (persistence within $\pm$0.02 of threshold) where reasoning traces acknowledged threshold proximity rather than forcing deterministic cutoffs.
+
 \subsection{Market Structure Evolution}
 
 The multi-year temporal analysis (Phase 5) reveals gradual regime evolution tracking 0DTE options adoption rather than sharp structural breaks. Detection progressed from 12.2\% (2020) through borderline years (3.7\% in 2021, 32.4\% in 2022) to sustained 100\% detection in 2024--2025, with GEX magnitude growing 360\% (\$5B $\rightarrow$ \$23B).
@@ -30,16 +34,16 @@ Our obfuscation testing framework generalizes beyond financial applications. The
 
 Potential applications include medical time series analysis (removing patient identifiers and dates while preserving physiological patterns), climate data analysis (obfuscating location and temporal markers), and industrial anomaly detection (stripping equipment identifiers). In each case, temporal obfuscation could validate whether LLMs reason from structural properties or rely on memorized associations from training data.
 
-\subsection{Limitations}
+\subsection{Limitations and Future Work}
 
-Five limitations merit discussion.
+Five limitations merit discussion, each pointing to concrete next steps.
 
-\noindent\textbf{Single asset}: Testing focused on SPY; cross-asset generalization (individual equities) remains untested.
+\noindent\textbf{Single asset}: Testing focused on SPY; cross-asset generalization (individual equities) remains untested. Future work will extend the framework to high-volume equity options (e.g., AAPL, NVDA) and index alternatives (QQQ, IWM) to test whether regime detection reflects market-wide versus asset-specific dealer dynamics.
 
-\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures dealer inventory but not intraday gamma dynamics; high-frequency flow data could refine detection.
+\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures dealer inventory but not intraday gamma dynamics; integrating high-frequency order flow data would enable within-day regime transitions and sharpen the structural signal.
 
-\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by temporal coincidence and theoretical mechanism but remains circumstantial; observational data cannot exclude alternative explanations.
+\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by temporal coincidence and theoretical mechanism but remains circumstantial; observational data cannot exclude alternative explanations. Natural experiments around 0DTE rule changes or cross-market comparisons (SPX vs NDX expiration expansion) could provide quasi-experimental evidence.
 
-\noindent\textbf{Framework-dependent reasoning}: Ablation testing (n=84) confirmed identical classification accuracy with and without narrative scaffolding, suggesting the framework's value lies in interpretability rather than detection accuracy.
+\noindent\textbf{Framework-dependent reasoning}: Ablation testing (n=84) confirmed identical classification accuracy with and without narrative scaffolding. Future evaluation across multiple LLM architectures (Anthropic Claude, Google Gemini) would test whether obfuscated detection transfers across reasoning paradigms.
 
-\noindent\textbf{Threshold sensitivity}: All 25 tested parameter combinations maintained $>$72pp discrimination, but thresholds represent empirically validated design choices rather than first-principles derivations.
+\noindent\textbf{Threshold sensitivity}: All 25 tested parameter combinations maintained $>$72pp discrimination, but thresholds represent empirically validated design choices rather than first-principles derivations. Deriving thresholds from equilibrium dealer-hedging models would strengthen theoretical grounding.
