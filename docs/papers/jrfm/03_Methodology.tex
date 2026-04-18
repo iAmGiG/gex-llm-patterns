@@ -13,9 +13,9 @@ The core innovation of our methodology is temporal obfuscation---systematically 
 \item Eliminate day-of-week patterns (``Monday'', ``OpEx Friday'')
 \end{enumerate}
 
-Preserved information includes: net gamma exposure values, directional gamma (calls vs.\ puts), spot price and flip point levels, relative time progression, and concentration metrics. Fig.~\ref{fig:obfuscation} illustrates this transformation.
+Preserved information includes: net gamma exposure values, directional gamma (calls vs.\ puts), spot price and flip point levels, relative time progression, and concentration metrics. Figure~\ref{fig:obfuscation} illustrates this transformation.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig01_obfuscation.png}
 \caption{Temporal obfuscation process. Calendar dates, ticker symbols, and contextual markers are removed while preserving structural quantitative relationships. The transformation converts identifiable market data into anonymized numerical sequences.}
@@ -45,7 +45,7 @@ The quantitative values are identical; only contextual identifiers change. A mod
 \subsection{Causal Framework: \texorpdfstring{WHO$\rightarrow$WHOM$\rightarrow$WHAT}{WHO->WHOM->WHAT}}
 \label{subsec:causal}
 
-Beyond detecting patterns, we require models to articulate causal mechanisms:
+Beyond detecting patterns, we require models to articulate causal mechanisms. This WHO$\rightarrow$WHOM$\rightarrow$WHAT framework, introduced in our single-day validation study \citep{regan2025obfuscation} and extended here to multi-day regimes, structures the model's reasoning around three components:
 
 \textbf{WHO}: The economic actor with structural constraints (e.g., ``dealers with negative gamma exposure'').
 
@@ -53,7 +53,7 @@ Beyond detecting patterns, we require models to articulate causal mechanisms:
 
 \textbf{WHAT}: The forced action and mechanism (e.g., ``must sell rallies and buy dips to maintain delta neutrality, amplifying volatility'').
 
-This framework, derived from agent-based market microstructure theory \citep{grossman1988liquidity,garleanu2009demand}, prevents vague pattern claims and requires specific mechanical understanding. It implements a structured form of chain-of-thought prompting \citep{wei2022chain}, ensuring the model derives outcomes from mechanical constraints rather than recalling historical correlations.
+Grounded in agent-based market microstructure theory \citep{grossman1988liquidity,garleanu2009demand}, this framework prevents vague pattern claims by requiring specific mechanical understanding. It implements a structured form of chain-of-thought prompting \citep{wei2022chain}, ensuring the model derives outcomes from mechanical constraints rather than recalling historical correlations.
 
 A valid causal chain demonstrates the complete mechanism. For example: WHO---``Dealers accumulate net short gamma exposure of \$28B concentrated at the 520 strike.'' WHOM---``Market makers holding these positions are forced to continuously delta-hedge to maintain regulatory neutrality.'' WHAT---``As price rises toward 520, dealers must buy shares to offset negative delta, amplifying the upward move; as price falls, they must sell, amplifying downward moves. This creates a pro-cyclical feedback loop that persists until gamma exposure dissipates.''
 
@@ -62,7 +62,7 @@ A valid causal chain demonstrates the complete mechanism. For example: WHO---``D
 
 To ensure robustness, we test three narrative framings of the same underlying dealer constraint (Table~\ref{tab:patterns}). All reflect the same structural reality---dealers hedging option exposure---but use different conceptual lenses. Consistent detection across framings validates genuine understanding rather than keyword matching.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \caption{Three pattern framings of dealer hedging constraints. Each framing describes the same mechanical reality through a different conceptual lens.}
 \label{tab:patterns}
@@ -102,9 +102,9 @@ M = \frac{1}{30}\sum_{i=1}^{30} |\text{GEX}_i| \geq \$5\text{B}
 S = \text{count}(\text{sign}(\text{GEX}_{i+1}) \neq \text{sign}(\text{GEX}_i)) \leq 5
 \end{equation}
 
-Windows meeting all three criteria are classified as persistent regimes (positive or negative); others are transitional or low-conviction. The 70\% persistence threshold ensures detected regimes exceed random binomial variation ($\approx 2.2\sigma$), while the \$5B magnitude threshold reflects economically significant dealer positioning. Fig.~\ref{fig:regime_window} illustrates an example persistent regime.
+Windows meeting all three criteria are classified as persistent regimes (positive or negative); others are transitional or low-conviction. The 70\% persistence threshold ensures detected regimes exceed random binomial variation ($\approx 2.2\sigma$), while the \$5B magnitude threshold reflects economically significant dealer positioning. Figure~\ref{fig:regime_window} illustrates an example persistent regime.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig02_regime_window.png}
 \caption{30-day persistent negative regime example. Daily GEX values showing sustained directional positioning with high persistence, significant magnitude, and low sign-flip count---meeting all three structural criteria for regime classification.}
@@ -121,6 +121,8 @@ Following standard market microstructure practice \citep{anderegg2022impact,spot
 
 \noindent where $\Gamma_i$ is the Black-Scholes gamma \citep{black1973pricing} at strike $i$, $\text{OI}_i$ is open interest, $S$ is the underlying spot price, and the $S^2$ factor scales gamma to dollar exposure (since gamma measures $\partial^2 V / \partial S^2$, multiplying by $S^2$ produces dollar-denominated sensitivity). The sign convention reflects the dealer counterparty relationship: calls contribute positive GEX (dealers are typically long gamma on calls) and puts contribute negative GEX (dealers are typically short gamma on puts) \citep{anderegg2022impact}.
 
+This summation yields a single scalar---\textit{net GEX}---that captures the aggregate directional bias of dealer positioning. However, the per-strike components $\text{OI}_i \times \Gamma_i$ preserve richer structural information: the spatial distribution of open interest across strikes, implied volatility skew, and localized gamma concentrations at specific price levels. Our raw chain validation (Section~\ref{subsec:raw_chain}) provides the LLM with these per-strike inputs rather than the scalar aggregate, testing whether the model can reconstruct dealer positioning from the disaggregated surface. The 30.8 percentage point improvement over the net GEX baseline (Section~\ref{sec:single_day}) suggests that scalar aggregation discards structurally informative strike-level signal.
+
 The resulting aggregate GEX value has a direct mechanical interpretation. \textbf{Positive GEX} indicates dealers are net long gamma: they buy when prices fall and sell when prices rise, \textit{dampening} volatility. \textbf{Negative GEX} indicates dealers are net short gamma: they sell when prices fall and buy when prices rise, \textit{amplifying} volatility through pro-cyclical hedging flows. The magnitude determines the scale of forced hedging.
 
 This open interest-based approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX may better capture 0DTE dynamics, 30-day window aggregation smooths daily measurement noise, and the underlying hedging mechanism remains constant regardless of measurement method \citep{dim2025zero}.
@@ -129,19 +131,19 @@ This open interest-based approach (GEX\_OI) measures dealer inventory positionin
 
 For regime detection, we employ a five-phase protocol spanning 2020--2025:
 
-\textbf{Phase 1} (Q1 2024 Baseline, 52 windows): Establish baseline detection rate. Success criteria: 30--50\% (demonstrates selectivity, not universal matching).
+\textbf{Phase 1} (Q1 2024 Baseline, 52 windows): Establish baseline detection rate. Success criteria: detection substantially above chance while remaining selective---not universal matching, which would indicate base-rate guessing rather than structural discrimination.
 
-\textbf{Phase 2} (Negative Controls, 809 windows): Three synthetic control types, each violating a specific regime criterion:
+\textbf{Phase 2} (Negative Controls, 809 windows across 2024 and 2020): Three synthetic control types, each violating a specific regime criterion:
 \begin{itemize}
-    \item \textit{Shuffled} (404 windows): Randomize day order within real windows, destroying temporal structure while preserving aggregate statistics.
-    \item \textit{Transitional} (202 windows): Generate windows with frequent sign flips ($>$8 per window), violating the stability criterion.
-    \item \textit{Low-magnitude} (203 windows): Generate windows with magnitude below \$3B, violating the magnitude criterion.
+    \item \textit{Shuffled} (277 windows): Randomize day order within real windows, destroying temporal structure while preserving aggregate statistics.
+    \item \textit{Transitional} (255 windows): Generate windows with frequent sign flips ($>$8 per window), violating the stability criterion.
+    \item \textit{Low-magnitude} (277 windows): Generate windows with magnitude below \$3B, violating the magnitude criterion.
 \end{itemize}
-Expected: $<$10\% false positive rate across all control types.
+Expected: $<$10\% false positive rate on transitional and low-magnitude controls, which isolate individual criterion violations. The shuffle test serves a different diagnostic purpose: by preserving aggregate statistics while destroying temporal order, it measures whether detection depends on day sequencing or aggregate dominance---an important distinction discussed in Section~\ref{sec:regime}.
 
 \textbf{Phase 3} (Full 2024, 223 windows): Test Q1 generalization across all 252 trading days.
 
-\textbf{Phase 4} (2020 Comparison, 223 windows): Test pre-0DTE era (2020, $<$5\% 0DTE volume) against post-0DTE (2024, $\approx$48\%).
+\textbf{Phase 4} (2020 Comparison, 223 windows): Test pre-0DTE era (2020, $<$5\% 0DTE volume) against post-0DTE (2024, $\approx$46\% SPY).
 
 \textbf{Phase 5} (Multi-Year 2020--2025, 1,412 windows): Identify when structural market shift occurred.
 

@@ -1,0 +1,42 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+\signature{Christopher Regan \\ Ying Xie}
+\address{College of Computing and Software Engineering \\ Kennesaw State University \\ Marietta, GA 30060, USA \\ cregan1@kennesaw.edu}
+
+\begin{document}
+
+\begin{letter}{The Editors \\ Journal of Risk and Financial Management \\ MDPI}
+
+\opening{Dear Editors,}
+
+We are pleased to submit our manuscript, ``Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation,'' for consideration as an Original Research Article in the \textit{Journal of Risk and Financial Management}.
+
+\textbf{Context and importance.}
+A central challenge in deploying large language models for financial analysis is distinguishing genuine structural reasoning from training data memorization. We introduce \textit{temporal obfuscation testing}---systematically stripping dates, ticker symbols, and contextual markers from input sequences---as a general-purpose methodology to address this challenge. Applied to options dealer gamma exposure (GEX) data spanning 2020--2025, the framework validates LLM regime detection across 2,221 evaluations (1,412 real windows and 809 synthetic controls), achieving 81.2\% detection of persistent dealer regimes in 2024 versus 12.1\% in 2020, with 0\% false positives on negative controls.
+
+\textbf{Key contributions.}
+The manuscript offers three results of particular interest to the \textit{JRFM} readership:
+
+\begin{enumerate}
+\item \textbf{Raw data superiority over parametric compression.} When provided raw strike-level options chain data instead of pre-calculated GEX metrics, the LLM achieves 92.3\% detection versus 61.5\%---a 30.8 percentage point improvement---demonstrating that scalar aggregation represents lossy compression of structural signal.
+
+\item \textbf{0DTE-driven market structure evolution.} Multi-year analysis reveals regime evolution tracking zero-days-to-expiration options adoption, with detection progressing from 3.7\% (2021) to 100\% (2024) and GEX magnitude growing 360\%. This documents a structural reorganization of dealer positioning with direct implications for market risk management.
+
+\item \textbf{Detection--alpha orthogonality.} Stable pattern detection (68--74\% quarterly) persists as trading profitability collapses (Sharpe ratio 1.8 to 0.1), establishing that detected patterns represent structural market mechanics rather than exploitable inefficiencies---an important distinction for responsible AI deployment in finance.
+\end{enumerate}
+
+\textbf{Fit with JRFM.}
+The manuscript addresses risk management, financial market microstructure, and the validation of AI-driven analytical tools---all core areas of the journal's scope. The temporal obfuscation methodology generalizes beyond finance, but its application to options dealer positioning, 0DTE market structure evolution, and GEX-based regime detection addresses questions directly relevant to JRFM's readership.
+
+\textbf{Disclosures.}
+We confirm that neither the manuscript nor any parts of its content are currently under consideration for publication with or published in another journal. A companion single-day study was published at IEEE BigData 2025 (arXiv:2512.17923); the present work substantially extends that study with multi-day regime detection, negative controls, multi-year temporal analysis, and theoretical framing. All authors have approved the manuscript and agree with its submission to JRFM. The authors declare no conflicts of interest. All code and data are publicly available at \url{https://github.com/iAmGiG/gex-llm-patterns}.
+
+We believe this work will be of interest to \textit{JRFM} readers working at the intersection of AI validation, market risk, and financial data science. We look forward to your consideration.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

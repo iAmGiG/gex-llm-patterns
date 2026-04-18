@@ -1,0 +1,47 @@
+\section{Background and Related Work}
+\label{sec:related}
+
+\subsection{Dealer Hedging and Market Microstructure}
+
+Market makers face regulatory requirements to maintain delta-neutral positions, creating systematic hedging flows when gamma exposure accumulates. \citet{grossman1988liquidity} demonstrated how market maker inventory risk creates predictable hedging patterns, while \citet{frey1997market} formalized how dynamic hedging amplifies volatility through feedback effects.
+
+A critical principle underlying our methodology is the dealer counterparty framework: market makers serve as counterparties to customer option positions, such that dealer gamma equals the negative of aggregate customer gamma. \citet{anderegg2022impact} establish this relationship theoretically, while \citet{dim2025zero} validate it empirically by measuring market maker inventory from order flow.
+
+Empirically, \citet{ni2005stock} documented stock price clustering on option expiration dates, providing evidence that dealer hedging creates measurable price effects. \citet{garleanu2009demand} developed a demand-based option pricing model showing how dealer constraints affect both option prices and underlying stock dynamics. Practitioner research has operationalized gamma exposure through standardized GEX calculations \citep{spotgamma2021,anderegg2022impact}, though these aggregate scalar metrics function as lossy compression of the underlying strike-level distribution---a limitation our raw chain validation directly addresses (Section~\ref{subsec:raw_chain}).
+
+\subsection{Zero-Days-to-Expiration (0DTE) Options}
+
+The introduction of daily options expirations in 2022 fundamentally altered market structure \citep{cboe2024zero}. By 2023, 0DTE options accounted for 43\% of SPX options volume (up from $<$5\% in 2020), concentrating gamma exposure at very short maturities. \citet{dim2025zero} document that 0DTE proliferation increased intraday volatility and created more pronounced hedging-driven price dynamics.
+
+This structural shift has two consequences relevant to our framework. First, daily 0DTE rollovers may create more sustained directional gamma exposure than traditional monthly expiration cycles, as each day's new contracts concentrate gamma at near-the-money strikes before decaying to zero. Second, the sheer volume concentration means dealer hedging flows from 0DTE contracts dwarf those from traditional options, potentially creating persistent negative gamma environments where regime-switching dynamics---historically the norm \citep{ni2005stock}---give way to sustained directional positioning.
+
+\subsection{LLM Reasoning Evaluation}
+
+Evaluating LLM reasoning capabilities beyond surface-level pattern matching is an active research area. \citet{mccoy2023embers} demonstrate that LLMs are fundamentally shaped by training probability distributions, performing better on high-probability sequences---raising concerns about memorization versus genuine reasoning. Chain-of-thought prompting \citep{openai2024reasoning} enables transparent reasoning traces but does not inherently prevent training data leakage. \citet{wei2022chain} demonstrated that chain-of-thought enables complex multi-step reasoning, while \citet{kojima2022large} showed zero-shot reasoning without task-specific training. However, \citet{marcus2019rebooting} argues that distinguishing true reasoning from memorization remains challenging.
+
+\subsection{LLM Applications in Finance}
+
+LLMs have shown promise in financial analysis: \citet{lopez2023can} demonstrate GPT-4 extracts financial information with human-comparable accuracy, while \citet{kim2024financial} show LLMs can reason about market mechanisms given appropriate context. Recent work employs LLMs as trading agents \citep{yang2024tradingagents}, though validation of structural reasoning---rather than pattern recall---remains limited. Two critical challenges persist: \textit{temporal memorization} (recalling specific events from training data) and \textit{spurious pattern detection} (identifying statistically significant but mechanically meaningless patterns). Our obfuscation framework addresses both.
+
+\subsection{Regime Detection in Financial Markets}
+
+Regime detection has a rich history in financial econometrics. \citet{hamilton1989new} introduced Markov-switching models for identifying volatility regimes from return series. \citet{ang2002regime} applied regime-switching to asset pricing, demonstrating that accounting for regime shifts improves portfolio allocation and risk management. More recently, \citet{nystrup2020regime} survey machine learning approaches to regime detection, documenting improved performance over traditional econometric methods.
+
+However, these approaches detect regimes through statistical properties of \textit{observable outcomes} (volatility clustering, return distributions) rather than the structural market mechanics that \textit{produce} those outcomes. A Markov-switching model might identify a ``high-volatility regime'' but cannot explain \textit{why} volatility increased---whether from dealer hedging, macro uncertainty, or liquidity withdrawal. Our contribution detects regimes through \textit{dealer positioning constraints}---a microstructure-based signal with explicit causal interpretation.
+
+\subsection{Obfuscation Testing}
+
+Our companion paper \citep{regan2025obfuscation} introduced obfuscation testing for validating LLM structural reasoning by replacing calendar dates with relative labels and removing event context. This prior work demonstrated 71.5\% detection of single-day dealer constraints with 91.2\% predictive accuracy. \citet{ribeiro2020beyond} introduced behavioral testing for NLP models, but no prior work has developed validation methods specifically for structural reasoning in financial markets. Obfuscation testing fills this gap by removing all memorizable context while preserving mechanical relationships.
+
+We extend this methodology to \textbf{temporal domains} (30-day regimes vs single-day snapshots), with the key challenge being selectivity: discriminating persistent regimes from transitional periods validates structural reasoning, whereas detecting universal patterns proves only pattern matching.
+
+\subsection{Research Gap}
+
+Despite extensive literature on dealer hedging mechanics \citep{ni2005stock,garleanu2009demand}, 0DTE market structure \citep{dim2025zero}, and LLM financial reasoning \citep{lopez2023can,kim2024financial}, no prior work has:
+\begin{enumerate}
+\item demonstrated that raw options chain data outperforms parametric GEX for structural pattern detection,
+\item validated detection through obfuscation testing eliminating training data contamination,
+\item established detection-alpha orthogonality proving mechanism identification independent of profitability, or
+\item extended structural reasoning validation from single-day to persistent multi-day regimes.
+\end{enumerate}
+This work addresses all four gaps within a unified framework.

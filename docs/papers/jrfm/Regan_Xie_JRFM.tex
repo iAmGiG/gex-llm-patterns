@@ -1,0 +1,108 @@
+%  JRFM (Journal of Risk and Financial Management) - MDPI Format
+%  Validating LLM Structural Reasoning: Detecting Persistent Market Regimes
+%  Through Temporal Obfuscation
+%
+\documentclass[jrfm,article,submit,moreauthors,pdftex]{Definitions/mdpi}
+
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\history{Received: date; Accepted: date; Published: date}
+
+%% Additional packages
+\usepackage{placeins}  % for \FloatBarrier
+
+%% Commands not defined in this version of mdpi.cls
+\newcommand{\dataavailability}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Data Availability Statement:} {#1}\par}}
+\newcommand{\disclaimer}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Disclaimer/AI Statement:} {#1}\par}}
+\newcommand{\institutionalreview}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Institutional Review Board Statement:} {#1}\par}}
+\newcommand{\informedconsent}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Informed Consent Statement:} {#1}\par}}
+
+%=================================================================
+\Title{Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation}
+
+% Author ORCID IDs
+\newcommand{\orcidauthorA}{0009-0009-3777-6148}
+\newcommand{\orcidauthorB}{0000-0002-8661-8877}
+
+% Authors
+\Author{Christopher Regan $^{1,}$*\orcidA{} and Ying Xie $^{1}$\orcidB{}}
+
+% Authors for PDF metadata
+\AuthorNames{Christopher Regan and Ying Xie}
+
+% Affiliations
+\address{%
+$^{1}$ \quad College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060, USA}
+
+% Corresponding author
+\corres{Correspondence: cregan1@kennesaw.edu (C.R.)}
+
+% Abstract — IMRAD structure without headings, per MDPI guidelines
+\abstract{Deploying large language models (LLMs) for domain-specific analysis raises a critical validation challenge: distinguishing genuine structural reasoning from training data memorization. We address this through temporal obfuscation testing, which strips calendar dates, ticker symbols, and contextual markers from input sequences, forcing models to reason from numerical structure alone. Applying this framework to options dealer gamma exposure (GEX) patterns across two temporal scales, we validate detection using 2,221 evaluations (1,412 real windows plus 809 synthetic controls) spanning 2020--2025. At the single-day scale, obfuscation testing achieves 71.5\% detection of dealer hedging patterns with 91.2\% predictive accuracy; raw strike-level data outperforms pre-calculated GEX metrics by 30.8 percentage points (92.3\% vs.\ 61.5\%), establishing that parametric aggregation represents lossy compression of structural signal. At the multi-day scale, 30-day regime detection achieves 81.2\% detection in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals regime evolution tracking zero-days-to-expiration (0DTE) adoption---detection rising from 3.7\% (2021) to 100\% (2024)---with GEX magnitude growing from \$3.0B to \$20.3B. Stable detection despite collapsing profitability (Sharpe 1.8 $\rightarrow$ 0.1) confirms structural market mechanics rather than exploitable inefficiencies, establishing temporal obfuscation as a generalizable methodology for validating LLM reasoning in quantitative domains.}
+
+% Keywords (semicolon-separated per MDPI style)
+\keyword{LLM validation; structural reasoning; temporal obfuscation; regime detection; market microstructure; gamma exposure; zero-days-to-expiration options; options market structure}
+
+%=================================================================
+\begin{document}
+
+\input{01_Introduction}
+\input{02_Related_Work}
+\input{03_Methodology}
+\input{04_Results}
+\input{05_Discussion}
+\input{06_Conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{6pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\funding{This research received no external funding.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\conflictsofinterest{The authors declare no conflict of interest.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\dataavailability{All code, data preprocessing scripts, and validation results are publicly available at \url{https://github.com/iAmGiG/gex-llm-patterns}. Raw options data were obtained from Alpha Vantage under academic API access.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code, 2025) for the purposes of clarifying and refining the written presentation. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\institutionalreview{Not applicable. This study uses publicly available market data and does not involve human participants.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\informedconsent{Not applicable.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\abbreviations{The following abbreviations are used in this manuscript:\\
+
+\noindent
+\begin{tabular}{@{}ll}
+GEX & Gamma Exposure \\
+LLM & Large Language Model \\
+0DTE & Zero Days to Expiration \\
+OI & Open Interest \\
+\end{tabular}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\reftitle{References}
+
+\externalbibliography{yes}
+\bibliography{references}
+
+\end{document}
