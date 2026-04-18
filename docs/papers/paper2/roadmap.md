@@ -359,10 +359,9 @@
 
 **Papers**:
 
-- Paper #1: Pattern taxonomy (submitted Oct 2025)
-- Paper #2: Regime detection (current)
-- Paper #3: Sector rotation at regime boundaries
-- Paper #4: Multi-ticker generalization
+- Paper #1: Pattern taxonomy (published IEEE BigData 2025)
+- Paper #2: Regime detection (AIAI 2026 accepted, JRFM under review)
+- Forward-looking extensions: see `docs/papers/extensions/`
 
 **Dependencies**: Paper #2 completion
 

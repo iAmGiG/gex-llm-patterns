@@ -62,36 +62,26 @@ Stable detection (68–74% quarterly) persists while economic profitability coll
 - **LaTeX**: [`docs/papers/paper1/`](docs/papers/paper1/)
 - **Status**: Published, journal revision with 5 MC defenses complete
 
-### Paper 2: 30-Day Regime Detection ✅ Complete
+### Paper 2: 30-Day Regime Detection
 
 **Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
 
 - **Core finding**: 2023→2024 structural shift driven by 0DTE adoption
-- **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JFDS/Elsevier](docs/papers/paper2/jfds/), [JFQA/Cambridge](docs/papers/paper2/jfqa/)
+- **Status**: ✅ Accepted at AIAI 2026 (camera-ready May 2026) · 🔄 Under review at JRFM (MDPI)
+- **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JFQA/Cambridge](docs/papers/paper2/jfqa/)
 - **LaTeX**: [`docs/papers/paper2/`](docs/papers/paper2/)
-- **Status**: Ready for submission, multi-venue formats prepared
 
-### IEEE Access: Combined Paper 1+2 🔄 In Progress
+### IEEE Access: Combined Paper 1+2
 
 **Title**: *Validating LLM Structural Reasoning in Options Markets: From Single-Day Detection to Persistent Regime Identification*
 
-- **Format**: IEEE Access journal (single-column, ~20 pages)
+- **Format**: IEEE Access journal (single-column)
 - **LaTeX**: [`docs/papers/ieee_access/`](docs/papers/ieee_access/)
-- **Status**: 18 pages, sensitivity analysis complete, expanding
+- **Status**: 18 pages, sensitivity analysis complete
 
-### Digital Finance (Springer): Combined Paper 1+2 🔄 In Progress
+### Future Directions
 
-**Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
-
-- **Format**: Springer svjour3, author-year citations (6,000–10,000 words)
-- **LaTeX**: [`docs/papers/digital_finance/`](docs/papers/digital_finance/)
-- **Status**: 24 pages (~7,000 words), includes Hayek/Kirzner theoretical interpretation
-
-### Paper 3: Intraday Infrastructure 🔄 Data Collection
-
-- **Focus**: Intraday OI-to-volume pattern validation
-- **Status**: Monitor running since Jan 2026, collecting data (target: 60+ trading days)
-- **LaTeX**: [`docs/papers/paper3/`](docs/papers/paper3/)
+Research extensions not pursued within this repository (cross-asset generalization, intraday/per-strike analysis, GNN-based cross-asset hedging networks): [`docs/papers/extensions/`](docs/papers/extensions/).
 
 ---
 
@@ -156,11 +146,10 @@ gex-llm-patterns/
 │   └── data_collection/     # Intraday OI monitor
 ├── docs/
 │   ├── papers/
-│   │   ├── paper1/          # Single-day obfuscation (IEEE BigData)
-│   │   ├── paper2/          # Regime detection (multi-venue)
-│   │   ├── ieee_access/     # Combined journal paper
-│   │   ├── digital_finance/ # Springer journal paper
-│   │   └── paper3/          # Intraday infrastructure
+│   │   ├── paper1/          # Single-day obfuscation (IEEE BigData 2025, published)
+│   │   ├── paper2/          # Regime detection (multi-venue — AIAI accepted, JRFM under review)
+│   │   ├── ieee_access/     # Combined journal paper (IEEE Access)
+│   │   └── extensions/      # Forward-looking research directions (snapshot)
 │   └── presentations/       # PhD symposium, fundamentals
 ├── reports/                  # Validation results (YAML)
 └── config_defaults/          # Configuration templates
