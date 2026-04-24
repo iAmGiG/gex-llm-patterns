@@ -16,10 +16,11 @@ Three findings support this interpretation. First, the LLM maintained 98\% mecha
 This selectivity contrasts with earlier 5-day trajectory testing \citep{regan2025obfuscation}, which achieved 98--100\% detection across all market conditions by identifying universal daily hedging flows. The deliberate shift to 30-day windows with strict criteria transformed the task from universal pattern matching to selective regime identification---a critical distinction for validating genuine structural reasoning.
 
 \subsection{Market Structure Evolution and 0DTE Hypothesis}
+\label{sec:discussion:0dte}
 
 The multi-year temporal analysis (Phase 5) reveals gradual regime evolution tracking 0DTE options adoption rather than sharp structural breaks. Detection progressed from 12.2\% (2020) through borderline years (3.7\% in 2021, 32.4\% in 2022) to sustained 100\% detection in 2024--2025, with average GEX magnitude growing from \$3.0B to \$20.3B.
 
-The non-monotonic pattern (32.4\% in 2022 dipping to 20.2\% in 2023 before reaching 100\% in 2024) is informative: 2023's elevated volatility (FOMC uncertainty, banking stress) repeatedly disrupted regime formation despite growing 0DTE hedging pressure, suggesting regime persistence requires both sustained dealer pressure \textit{and} a volatility environment permitting consolidation. This tipping-point dynamic strengthens the structural interpretation.
+The non-monotonic pattern (32.4\% in 2022 dipping to 20.2\% in 2023 before reaching 100\% in 2024) is informative: 2023's elevated volatility (FOMC uncertainty, banking stress) appears to have disrupted regime formation despite growing 0DTE hedging pressure, consistent with the view that regime persistence requires both sustained dealer pressure \textit{and} a volatility environment permitting consolidation. We read this dynamic as consistent with, rather than proof of, a structural interpretation; deeper causal identification (see \S\ref{sec:limitations}) would require a natural experiment.
 
 While the temporal coincidence with 0DTE proliferation is consistent with a causal relationship, we acknowledge that concurrent factors---interest rate changes (0.25\% $\rightarrow$ 5.5\%), volatility regime shifts, quantitative trading growth, and market maker concentration---may contribute. However, the non-monotonic detection pattern argues against gradual secular trends as primary drivers: detection remained flat through 2023 despite continuous interest rate increases and technology diffusion, then jumped discontinuously in 2024 coinciding with 0DTE market saturation ($\approx$46\% SPY volume share).
 
@@ -37,22 +38,156 @@ The raw options chain preserves what Hayek termed ``knowledge of the particular 
 
 This interpretation extends beyond methodological curiosity. The alpha disappearance puzzle---stable detection (68--74\%) despite collapsing profitability (Sharpe 1.8 $\rightarrow$ 0.1)---parallels a core insight from Austrian capital theory: that structural knowledge of market coordination patterns differs fundamentally from actionable entrepreneurial knowledge \citep{kirzner1973competition}. Detecting that dealers are constrained to pro-cyclical hedging is structural knowledge; profiting from that detection requires entrepreneurial judgment about timing, magnitude, and competing market forces that our framework deliberately excludes. The orthogonality between detection and alpha is thus not a limitation but a feature: it confirms the framework identifies genuine structural mechanics rather than ephemeral trading opportunities.
 
-\subsection{Practitioner Implications}
+\subsection{Practical Implications}
+\label{sec:discussion:practical}
 
-For financial practitioners, our findings suggest four actionable insights. First, providing LLMs with raw structured data rather than pre-calculated summaries yields substantially better structural detection (92.3\% vs.\ 61.5\%), challenging common pipeline designs that aggregate data before analysis---an empirical vindication of preserving informational granularity over computational convenience. Second, the detection-alpha orthogonality result cautions against using structural pattern detection directly for trading; the value lies in risk management and market surveillance applications where mechanism identification matters more than profitability. Third, the 0DTE-driven regime shift suggests that market microstructure monitoring should evolve with product innovation---static models calibrated to pre-2022 data will miss the structural reorganization that our framework detects. Fourth, the dispersed knowledge interpretation suggests that financial AI systems may achieve better performance across domains by ingesting raw, granular data rather than pre-processed summaries---a design principle applicable to credit risk, fixed income analysis, and other areas where scalar metrics are standard.
+The results carry concrete implications along three axes that matter
+most to financial practitioners: risk management, market efficiency,
+and the design of quantitative research pipelines. We address each in
+turn.
 
-\subsection{Limitations}
+\subsubsection{Risk management}
 
-Six limitations merit discussion.
+Our dealer-gamma regime detection is best understood as a
+\textit{risk-regime indicator} rather than a trading signal. Because
+the framework achieves stable detection (68--74\% quarterly) even as
+Sharpe ratios collapse from 1.8 to 0.1, its output is a reading of
+whether the market is currently operating in a mechanically constrained
+state---not a forecast of directional return. Three specific risk-management
+applications follow.
 
-\noindent\textbf{Single asset}: Testing focused on SPY; cross-asset generalization (individual equities, other ETFs) remains untested. SPY's unique liquidity and 0DTE availability may limit transferability.
+First, for \textbf{intraday volatility budgeting}, a persistent negative
+gamma regime implies amplified dealer chase-hedging and elevated realised
+volatility clustering on high-volume days; sell-side risk desks can use
+the 30-day regime classification as a leading indicator for
+volatility-of-volatility exposure and size gamma-exposure limits
+accordingly. Second, for \textbf{option-book hedging under OpEx
+concentration}, the known pinning dynamic around large-OI strikes
+\citep{ni2005stock} is substantially more forceful under positive-gamma
+regimes that we now classify explicitly; book hedgers may increase
+hedging frequency around OpEx when the framework detects a persistent
+positive regime. Third, for \textbf{risk-scenario design}, 30-day
+regime history provides a natural conditioning variable for stress-test
+calibration: a 2020-style fragmented period and a 2024-style persistent
+negative period imply materially different joint distributions for
+realised volatility and spot-vol covariance.
 
-\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures dealer inventory but not intraday gamma dynamics; high-frequency flow data could refine detection, particularly for 0DTE contracts that expire within a single trading session.
+\subsubsection{Market efficiency}
 
-\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by temporal coincidence and theoretical mechanism but remains circumstantial; observational data cannot exclude alternative explanations. A natural experiment (e.g., 0DTE suspension) would provide stronger causal evidence.
+The detection-alpha orthogonality result---stable structural detection
+that does not translate into exploitable profit---contributes to the
+ongoing debate about efficiency in optionized equity markets. Our
+evidence is consistent with a weakly efficient market in which
+\textit{structural constraints} are reliably identifiable but already
+priced: arbitrageurs compete away the first-order profit from knowing a
+regime exists, yet the underlying mechanics that generate volatility
+clustering and OpEx pinning persist because they are mandatory, not
+opportunistic, actions by dealers. This reconciles two claims that are
+often treated as contradictory: that dealer-gamma positioning demonstrably
+influences short-horizon price dynamics \citep{anderegg2022impact}, and
+that systematic strategies exploiting that influence deteriorate as
+attention accumulates. The framework thus provides a positive account of
+why microstructure-aware research can be genuinely informative for risk
+without being genuinely informative for alpha.
 
-\noindent\textbf{Single LLM}: All experiments use OpenAI o4-mini; cross-model validation with alternative reasoning models would strengthen generalizability claims.
+\subsubsection{Practitioners: data-pipeline and model-deployment design}
 
-\noindent\textbf{Shuffle test asymmetry}: The 61\% false positive rate on 2024 shuffled data (versus 12.1\% on 2020 shuffled data) reflects extreme regime persistence rather than framework failure---2024 regimes exhibit such dominant same-sign positioning that randomizing day order rarely disrupts the aggregate signal. This asymmetry is itself informative, confirming that 2024 regimes are defined by aggregate dominance rather than temporal sequencing.
+Two practitioner-facing design implications follow directly from the
+experimental results. First, the 30.8-percentage-point advantage of raw
+strike-level data over pre-aggregated GEX (92.3\% versus 61.5\% at the
+single-day scale) is evidence that common pipeline designs---which
+compress option chains into scalar summaries before analysis---are
+discarding signal that an LLM can reconstruct when given the raw input.
+This challenges the default of parametric aggregation and suggests that
+practitioners deploying LLM-based analysis should ingest granular data
+wherever feasible. The design principle generalises beyond options
+dealer flow to any domain where scalar metrics are conventional summary
+of distributional inputs: credit risk (single probabilities from granular
+exposure tapes), fixed-income surveillance (duration summaries from
+granular curve positions), and equity factor research (single factor
+loadings from granular return-attribution inputs) are the obvious
+candidates.
 
-\noindent\textbf{Threshold sensitivity}: All 29 tested parameter configurations maintained $>$68pp discrimination, but thresholds represent empirically validated design choices rather than first-principles derivations. Future work should explore adaptive thresholding based on market conditions.
+Second, the 0DTE-driven regime shift detected in 2022--2024 implies
+that static microstructure models calibrated to pre-2022 data will miss
+a structural reorganisation that our framework picks up. Practitioners
+running surveillance, risk, or execution models should treat the
+2022--2024 period as a regime change requiring recalibration, not a
+drift-along-the-same-curve.
+
+\subsection{Limitations and Future Work}
+\label{sec:limitations}
+
+Seven limitations merit explicit discussion, and we describe the specific
+future work each motivates.
+
+\noindent\textbf{Single-asset scope}: All reported results concern SPY.
+SPY is deliberately chosen as the highest-liquidity and earliest 0DTE-enabled
+U.S.\ equity benchmark, but this choice leaves cross-asset generalization
+empirically untested. Dealer positioning in QQQ, IWM, single-name equities,
+and non-equity underliers (futures, rates, FX) may exhibit different
+regime dynamics because of differences in option chain depth, 0DTE
+availability, and the composition of end-users. Cross-asset replication is
+the single highest-priority item for future work; a pre-registered protocol
+applying the same obfuscation and regime-classification framework to at
+least one additional ETF (QQQ) and one individual equity (e.g., NVDA, AAPL)
+would directly test the transferability claim.
+
+\noindent\textbf{Single-LLM dependence}: All 2{,}221 evaluations were
+produced by a single reasoning model (OpenAI o4-mini). The detection
+rates reported here are therefore conditional on this specific model's
+prior distribution over market-structure reasoning. Model-swap
+validation with alternative reasoning families
+(e.g., Anthropic Claude, OpenAI o3, Google Gemini, open-source
+reasoning models) using identical prompts and the same obfuscated
+sequences is a direct and low-cost extension. A cross-model agreement
+analysis would sharpen the distinction between the framework's
+structural-reasoning claim and any o4-mini-specific artefacts.
+
+\noindent\textbf{Lack of independent external validation}: Our per-window
+ground-truth metrics (persistence, magnitude, sign flips) are computed
+from the same Alpha Vantage options feed used to construct the windows.
+We do not cross-validate detected regimes against an independent
+data source (CBOE DataShop, OPRA consolidated feed, or a commercial
+vendor such as SpotGamma or MenthorQ) or against an independent oracle
+of dealer positioning. External validation---both against a second
+options-data pipeline and against related microstructure observables
+(realised volatility, implied-realised spread, opening auction
+imbalance)---would strengthen the claim that the detected regimes
+correspond to a real, cross-verified phenomenon rather than an artefact
+of any single data provider.
+
+\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures
+dealer inventory at the close but not intraday gamma dynamics; high-frequency
+flow data could refine detection, particularly for 0DTE contracts that
+expire within a single trading session. Intraday GEX surface reconstruction
+from streaming OPRA is a natural extension.
+
+\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by
+temporal coincidence and a theoretical mechanism but remains
+circumstantial; observational data cannot exclude alternative explanations
+such as post-pandemic monetary-policy shifts, passive-flow concentration,
+or market-maker inventory changes. A natural experiment---for instance a
+temporary 0DTE suspension or a regulatory halt during a market stress
+episode---would provide stronger causal evidence. We treat the 0DTE
+correspondence as consistent with our structural-regime detection rather
+than as a demonstrated causal channel (see \S\ref{sec:discussion:0dte}).
+
+\noindent\textbf{Shuffle test asymmetry}: The 61\% false positive rate on
+2024 shuffled data (versus 12.1\% on 2020 shuffled data) reflects extreme
+regime persistence rather than framework failure---2024 regimes exhibit
+such dominant same-sign positioning that randomizing day order rarely
+disrupts the aggregate signal. This asymmetry is itself informative,
+confirming that 2024 regimes are defined by aggregate dominance rather
+than temporal sequencing, but it means the shuffle test's diagnostic
+power is lower in high-persistence regimes and should be interpreted
+accordingly.
+
+\noindent\textbf{Threshold sensitivity}: All tested parameter
+configurations maintained substantial 2024-versus-2020 discrimination
+(see \S\ref{sec:regime} sensitivity analysis), but the chosen thresholds
+(persistence $\geq$70\%, magnitude $\geq$\$5B, flips $\leq$5) represent
+empirically validated design choices rather than first-principles
+derivations. Future work should explore adaptive thresholding that
+responds to volatility regime, contract-maturity mix, or prevailing
+options notional.

@@ -11,7 +11,7 @@ We validate this framework at two temporal scales. The progression from single-d
 
 \textbf{Single-day validation.} Applied to 242 trading days (SPY, 2024), obfuscation testing achieves 71.5\% detection of dealer hedging patterns using unbiased prompts, with 90.9\% of detections materializing in forward returns. A \textbf{raw chain validation} removing all pre-calculated metrics achieves 92.3\% detection---outperforming the GEX-assisted baseline by 30.8 percentage points---demonstrating that LLMs reconstruct dealer positioning from first principles rather than matching parametric summaries \citep{regan2025obfuscation}.
 
-\textbf{Multi-day regime detection.} Extending to 30-day windows across six years (2020--2025), the framework achieves 81.2\% detection of persistent regimes in 2024 versus 12.1\% in 2020 (69.1 percentage point separation, $\varphi = 0.672$, $p < 0.0001$), with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking 0DTE adoption: detection rates rise from 3.7\% (2021) to 100\% (2024), with average GEX magnitude growing from \$3.0B to \$20.3B.
+\textbf{Multi-day regime detection.} Extending to 30-day windows across six years (2020--2025), the framework achieves 81.2\% detection of persistent regimes in 2024 (95\% CI [75.8, 86.1]\%) versus 12.1\% in 2020 (95\% CI [8.1, 16.6]\%) --- a 69.1 percentage point separation, $\varphi = 0.69$, Fisher's exact $p = 1.8 \times 10^{-52}$ --- with 0\% false positives on synthetic controls. Multi-year analysis reveals gradual regime evolution tracking 0DTE adoption: detection rates rise from 3.7\% (2021) to 100\% (2024), with average GEX magnitude growing from \$3.0B to \$20.3B.
 
 \subsection{Research Questions}
 
@@ -44,6 +44,39 @@ This work advances LLM validation methodology and financial market analysis thro
 
 \item \textbf{Detection-alpha orthogonality}: Stable detection (68--74\% quarterly) persists as economic profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), establishing detected patterns as risk management signals rather than alpha generators.
 \end{enumerate}
+
+\subsection{Positioning}
+\label{sec:introduction:positioning}
+
+The contribution is primarily \textit{methodological}. We propose
+temporal obfuscation testing---and the associated WHO$\rightarrow$WHOM
+$\rightarrow$WHAT causal framework and multi-scale validation
+protocol---as a generalizable procedure for validating whether an LLM
+is reasoning from structural relationships rather than from
+memorization of training-data surface patterns. Options dealer
+gamma-exposure regime detection is chosen as the empirical demonstration
+domain because it offers three features that an LLM validation study
+requires simultaneously: mechanical constraints that are theoretically
+grounded in microstructure, a large quantitative testbed (2,221
+evaluations across six years), and sharp temporal structure (the
+pre- versus post-0DTE contrast) that a genuinely reasoning system
+should distinguish from noise.
+
+The financial-market findings reported here---the 69.1 percentage
+point 2024-versus-2020 detection gap, the 0\% false-positive rate on
+transitional and low-magnitude synthetic controls, and the gradual
+2021--2024 regime evolution tracking 0DTE adoption---are therefore
+presented as \textit{downstream evidence} that the methodology
+discriminates between persistent and fragmented market structures in
+ways consistent with known microstructure dynamics, not as novel
+claims about options market microstructure per se. Readers interested
+primarily in the financial-markets angle will find the relevant
+observations in Sections~\ref{sec:regime} and~\ref{sec:discussion};
+readers interested primarily in LLM validation methodology will find
+the generalizable contribution in
+Sections~\ref{sec:methodology} and~\ref{sec:discussion}. This framing
+is maintained consistently through the Conclusion
+(Section~\ref{sec:conclusion}).
 
 \subsection{Paper Organization}
 
