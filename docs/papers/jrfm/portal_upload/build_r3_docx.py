@@ -22,7 +22,7 @@ Usage:
     python build_r3_docx.py
 
 Outputs:
-    response_R3_MDPI_template.docx  (upload this to the portal)
+    response_R3_MDPI.docx  (upload this to the portal)
 
 Requires: python-docx (installed via pip).
 """
@@ -41,8 +41,8 @@ import os
 
 # Default output; if the file is locked (likely open in Word), save to a
 # sibling with a _v2 suffix so the user can diff and replace manually.
-PRIMARY = HERE / "response_R3_MDPI_template.docx"
-FALLBACK = HERE / "response_R3_MDPI_template_v2.docx"
+PRIMARY = HERE / "response_R3_MDPI.docx"
+FALLBACK = HERE / "response_R3_MDPI_v2.docx"
 
 
 def _select_output() -> Path:
