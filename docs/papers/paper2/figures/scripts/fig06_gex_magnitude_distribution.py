@@ -127,7 +127,7 @@ def create_figure(data):
         mean_2020 + 0.3,
         y_max_2020 * 0.85,
         f"Mean\n${mean_2020:.1f}B",
-        fontsize=10,
+        fontsize=12,
         fontweight="bold",
         color=IEEE_THEME["year_2020"],
         ha="left",
@@ -137,16 +137,16 @@ def create_figure(data):
         5.2,
         y_max_2020 * 0.5,
         "$5B\nThreshold",
-        fontsize=9,
+        fontsize=12,
         fontweight="bold",
         color=IEEE_THEME["accent_positive"],
         ha="left",
         va="center",
     )
 
-    ax1.set_title("2020 Pre-0DTE Era", fontsize=13, fontweight="bold", color=IEEE_THEME["year_2020"], pad=10)
-    ax1.set_xlabel("GEX Magnitude ($B)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
-    ax1.set_ylabel("Number of 30-Day Windows", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_title("2020 Pre-0DTE Era", fontsize=15, fontweight="bold", color=IEEE_THEME["year_2020"], pad=10)
+    ax1.set_xlabel("GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax1.set_ylabel("Number of 30-Day Windows", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
     ax1.set_xlim(0, 10)
 
     # Stats box for 2020
@@ -155,7 +155,7 @@ def create_figure(data):
         0.95,
         f"n = {len(mag_2020)}\nAbove $5B: {pct_above_5b_2020:.0f}%",
         transform=ax1.transAxes,
-        fontsize=10,
+        fontsize=12,
         va="top",
         ha="right",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
@@ -185,15 +185,15 @@ def create_figure(data):
         mean_2024 + 0.3,
         y_max_2024 * 0.85,
         f"Mean\n${mean_2024:.1f}B",
-        fontsize=10,
+        fontsize=12,
         fontweight="bold",
         color=IEEE_THEME["year_2024"],
         ha="left",
         va="top",
     )
 
-    ax2.set_title("2024 Post-0DTE Era", fontsize=13, fontweight="bold", color=IEEE_THEME["year_2024"], pad=10)
-    ax2.set_xlabel("GEX Magnitude ($B)", fontsize=11, fontweight="bold", color=IEEE_THEME["text"])
+    ax2.set_title("2024 Post-0DTE Era", fontsize=15, fontweight="bold", color=IEEE_THEME["year_2024"], pad=10)
+    ax2.set_xlabel("GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
     ax2.set_xlim(12, 29)
 
     # Stats box for 2024
@@ -202,7 +202,7 @@ def create_figure(data):
         0.95,
         f"n = {len(mag_2024)}\nAbove $5B: {pct_above_5b_2024:.0f}%",
         transform=ax2.transAxes,
-        fontsize=10,
+        fontsize=12,
         va="top",
         ha="right",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=IEEE_THEME["dim"], alpha=0.9),
@@ -214,7 +214,7 @@ def create_figure(data):
     for ax in [ax1, ax2]:
         ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5, color=IEEE_THEME["grid"], zorder=0)
         ax.set_axisbelow(True)
-        ax.tick_params(colors=IEEE_THEME["text"], labelsize=10)
+        ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
         for spine in ax.spines.values():
             spine.set_linewidth(1.0)
             spine.set_color(IEEE_THEME["dim"])
@@ -222,7 +222,7 @@ def create_figure(data):
     # Add overall title with growth statistic
     fig.suptitle(
         f"GEX Magnitude Distribution: +{((mean_2024 / mean_2020) - 1) * 100:.0f}% Growth (2020 → 2024)",
-        fontsize=14,
+        fontsize=16,
         fontweight="bold",
         color=IEEE_THEME["text"],
         y=0.98,
