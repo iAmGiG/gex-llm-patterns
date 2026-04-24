@@ -309,8 +309,30 @@ and "p < 0.0001". Specifically:
   (the strongest and most defensible statistic here given the zero
   cell), instead of a single "p < 0.0001".
 
-**(c/d)** — Threshold / window sensitivity (R3.4b) and softened claim
-language (R3.5d) still to be completed in subsequent commits.
+**(c) Threshold robustness — DONE** (see R3.4b response above).
+
+**(d) Moderated claim language — DONE.** With CIs and the 45-configuration
+sensitivity sweep now in hand, we made two targeted moderations:
+
+- §6 Conclusion contribution 2 now reports the 69.1pp separation with
+  explicit CI brackets on each side and Fisher's exact p, and cites the
+  45-configuration robustness of the 50pp gap, rather than citing the
+  separation as a standalone point estimate.
+- §6 Conclusion contribution 3 replaces "0DTE-driven structural
+  reorganization" with language that identifies temporal coincidence and
+  explicitly acknowledges alternative contemporaneous factors (interest
+  rates, passive flow concentration, market-maker inventory), noting
+  that stronger causal evidence would require a natural experiment.
+- §5.3 "Market Structure Evolution" similarly softens the
+  "tipping-point dynamic strengthens the structural interpretation"
+  phrasing to "is consistent with, rather than proof of" and
+  cross-references §5.7 Limitations for the causal-identification
+  caveat.
+
+These moderations make the paper's causal claims about 0DTE match the
+quality of observational evidence available here; they do not weaken
+the statistical claims on 2020-vs-2024 separation, which the new
+χ² / Fisher / sensitivity results strengthen.
 
 **Change location:**
 
