@@ -153,6 +153,34 @@ For each LLM response, we extract stated metrics (persistence, magnitude, flips)
 
 We use OpenAI o4-mini \citep{openai2024reasoning} with temperature=1.0, max tokens=16,384, processed via Batch API (asynchronous, 100\% completion rate). The model receives a system message (``financial market analyst identifying persistent dealer gamma regimes''), a 30-day obfuscated GEX sequence with classification criteria, and outputs structured JSON with regime type, confidence (0--100), reasoning trace, and computed metrics. Total processing cost across all 2,221 evaluations was \$11.07. The complete prompt, API configuration, and output schema are reproduced verbatim in Appendix~\ref{app:prompt}.
 
+\subsection{Markov-Switching Benchmark}
+\label{sec:methodology:benchmark}
+
+To situate the LLM regime detector against a textbook alternative, we fit
+a two-state Markov-switching regression
+\citep{hamilton1989new,nystrup2020regime} to the daily SPY log-return
+series for each year under study using the standard
+\texttt{statsmodels.tsa.regime\_switching.MarkovRegression}
+implementation (switching intercept, switching variance, estimated by
+the standard EM algorithm to convergence). This is the conventional
+\textit{volatility-regime} benchmark: a low-variance state is interpreted
+as a stable regime, a high-variance state as transitional. For each
+30-day window in our Phase~3 (2024) and Phase~4 (2020) datasets we
+compute the majority smoothed state across the 30 days and record this
+as the benchmark's \emph{detected} label, taking the low-variance state
+as the ``regime'' analogue.
+
+Because the LLM explicitly targets dealer \emph{gamma} positioning rather
+than variance, we additionally fit the HMM on the daily net-GEX series
+directly (where the cached daily series is available, i.e.\ for 2024).
+This GEX-native fit is a more directly analogous benchmark: the LLM and
+the HMM are then both scoring regime structure in the same physical
+quantity, differing only in mechanism (sequence-level structural
+reasoning vs.\ parametric two-state Gaussian EM).
+
+Agreement between each benchmark and the LLM is quantified with Cohen's
+$\kappa$ on the per-window binary detection labels.
+
 \subsection{LLM Usage Disclosure}
 
 In accordance with journal policy, we disclose the following use of AI tools: (1) OpenAI's o4-mini model serves as the \textit{subject of investigation}---the system whose structural reasoning capabilities are being validated; (2) Anthropic's Claude assisted with code development, data pipeline construction, and manuscript preparation. All model outputs were independently verified by the authors. All scientific interpretations and conclusions are solely those of the authors.

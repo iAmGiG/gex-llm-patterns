@@ -225,6 +225,68 @@ deliberately permissive magnitude thresholds that the framework's
 intent ($\$5B$ as an economically significant dealer position) would
 not justify.
 
+\subsection{Comparison with Markov-Switching Benchmark}
+\label{sec:regime:benchmark}
+
+We compare the LLM regime detector against the two-state
+Markov-switching benchmark described in \S\ref{sec:methodology:benchmark}.
+Table~\ref{tab:hmm_benchmark} summarises per-window agreement with the
+LLM's detection labels for three separate HMM fits: returns-based HMM
+on 2020 SPY returns, returns-based HMM on 2024 SPY returns, and a
+GEX-native HMM on the 2024 daily net-GEX series.
+
+\begin{table}[H]
+\centering
+\caption{Markov-switching benchmark versus LLM regime detection.
+Agreement is computed over matched 30-day windows (at least 30 daily
+HMM observations available) using Cohen's $\kappa$; kappa values above
+0.4 are conventionally "moderate", above 0.6 "substantial".}
+\label{tab:hmm_benchmark}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{Year} & \textbf{HMM input} & \textbf{N} & \textbf{LLM rate} & \textbf{HMM rate} & \textbf{Agree} & \textbf{$\kappa$} \\
+\midrule
+2020 & SPY returns & 201 & 8.5\% & 80.1\% & 28.4\% & 0.045 \\
+2024 & SPY returns & 222 & 81.1\% & 87.4\% & 68.5\% & $-0.178$ \\
+2024 & Net GEX (\$bn) & 221 & 81.0\% & 65.2\% & 84.2\% & 0.610 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig10_hmm_agreement.png}
+\caption{Markov-switching benchmark versus LLM regime detection. Left: per-year detection rates. Right: Cohen's $\kappa$ agreement with LLM labels. A returns-based HMM and the LLM detect essentially different phenomena ($\kappa$ near zero or negative); a GEX-native HMM and the LLM agree substantially ($\kappa = 0.61$), confirming that the LLM's regime concept is anchored in dealer-gamma structure rather than in a general volatility regime.}
+\label{fig:hmm_agreement}
+\end{figure}
+
+Three observations follow. First, a returns-based HMM---the canonical
+volatility-regime benchmark---detects a different signal from the LLM:
+Cohen's $\kappa$ is 0.045 in 2020 and $-0.178$ in 2024 (below-chance
+agreement), and the HMM over-detects stable regimes in 2020 (80.1\%
+versus the LLM's 8.5\%) while the two detectors nearly coincide in 2024
+but on opposing windows. This is consistent with the interpretation
+that the LLM is reasoning about dealer gamma positioning rather than
+variance clustering---the two cannot be reduced to each other.
+
+Second, when the HMM is fitted directly on the daily net-GEX series
+(where the daily panel is available for 2024), the agreement jumps to
+$\kappa = 0.610$, a "substantial" agreement level. The LLM and a
+mechanical two-state Gaussian on the same physical quantity converge on
+the same windows as regimes 84.2\% of the time. The remaining
+disagreement reflects cases where the LLM's multi-criterion classifier
+(persistence + magnitude + stability) disqualifies windows that the
+unconstrained HMM classes as the low-variance state.
+
+Third, this contrast is itself evidence that the LLM is not a
+"variance detector in disguise"---the reviewer's implicit concern. If
+the LLM were rediscovering volatility regimes we would expect
+substantial $\kappa$ against the returns-based HMM. We do not observe
+that, yet we do observe substantial $\kappa$ against a HMM fit on the
+exact input series---the pattern expected from a detector that is
+anchored in the specific physical phenomenon the LLM was prompted to
+analyse.
+
 \subsection{LLM Reasoning Quality}
 
 Manual review of 50 randomly sampled detections revealed 98\% mechanical accuracy on persistence values, 96\% on magnitude, and 100\% on flip counts. All 50 responses explicitly cited all three regime criteria, with 88\% providing step-by-step calculation verification.

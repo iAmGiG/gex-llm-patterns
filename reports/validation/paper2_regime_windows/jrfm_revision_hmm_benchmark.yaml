@@ -1,0 +1,65 @@
+metadata:
+  script: scripts/validation/paper2/jrfm_revision/hmm_benchmark.py
+  purpose: Markov-switching regime benchmark (JRFM R3.3a)
+  rng_seed: 20260424
+  note: Returns-based benchmarks are the conventional comparison; the 2024 net_gex
+    benchmark is an additional, more directly analogous fit. HMM 'detected' = low-variance
+    (stable) state.
+results:
+- year: 2020
+  series: returns
+  n_windows_matched: 201
+  hmm_detection_rate_pct: 80.1
+  llm_detection_rate_pct: 8.46
+  agreement_rate_pct: 28.36
+  cohen_kappa: 0.045
+  contingency_tp_hmm_llm: 17
+  contingency_fp_hmm_only: 144
+  contingency_fn_llm_only: 0
+  contingency_tn_neither: 40
+  hmm_fit_summary:
+    llf: 637.6589468654976
+    high_variance_state: 1
+    low_variance_state: 0
+    sigma2_state_0: 0.00010783680488344133
+    sigma2_state_1: 0.0018013074106460365
+    const_state_0: 0.0024825488225209053
+    const_state_1: -0.006099302389097395
+- year: 2024
+  series: returns
+  n_windows_matched: 222
+  hmm_detection_rate_pct: 87.39
+  llm_detection_rate_pct: 81.08
+  agreement_rate_pct: 68.47
+  cohen_kappa: -0.178
+  contingency_tp_hmm_llm: 152
+  contingency_fp_hmm_only: 42
+  contingency_fn_llm_only: 28
+  contingency_tn_neither: 0
+  hmm_fit_summary:
+    llf: 797.9484955851121
+    high_variance_state: 1
+    low_variance_state: 0
+    sigma2_state_0: 3.380602378850055e-05
+    sigma2_state_1: 0.0001204587043300491
+    const_state_0: 0.0017070736875945392
+    const_state_1: -0.0004211867246636187
+- year: 2024
+  series: net_gex
+  n_windows_matched: 221
+  hmm_detection_rate_pct: 65.16
+  llm_detection_rate_pct: 81.0
+  agreement_rate_pct: 84.16
+  cohen_kappa: 0.61
+  contingency_tp_hmm_llm: 144
+  contingency_fp_hmm_only: 0
+  contingency_fn_llm_only: 35
+  contingency_tn_neither: 42
+  hmm_fit_summary:
+    llf: -612.8439785659211
+    high_variance_state: 1
+    low_variance_state: 0
+    sigma2_state_0: 6.4624746500855785
+    sigma2_state_1: 12.41572081077377
+    const_state_0: 2.478709389265337
+    const_state_1: -3.437113073652617

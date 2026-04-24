@@ -164,16 +164,64 @@ contribution.
 > causal interpretation related to 0DTE should be moderated or supported
 > with stronger empirical evidence.
 
-**Response:** *[to draft — plan: add a Markov-switching regression (HMM /
-statsmodels `MarkovRegression`) benchmark on the daily GEX series. Compare
-HMM regime labels against LLM-detected regime labels per window for 2020 and
-2024. Also moderate 0DTE causal language throughout.]*
+**Response (part a — benchmark): DONE.** We have added a two-state
+Markov-switching regression benchmark (the textbook regime-switching
+model, `statsmodels.tsa.regime_switching.MarkovRegression`) on the
+daily SPY return series for 2020 and 2024, and additionally on the
+2024 net-GEX daily panel where the cached series is available. Details
+in new §3.9 "Markov-Switching Benchmark" and new §4.7 "Comparison
+with Markov-Switching Benchmark" (with Table 6 + Figure 8,
+`fig10_hmm_agreement.png`).
 
-**Change location:** *§3 Methodology (benchmark subsection, new) + §4
-Results (HMM comparison table, new) + §5 Discussion (moderated causal
-language).*
+Three findings emerge:
 
-**Status:** todo — requires new analysis (HMM fit + label agreement table)
+| Year | HMM input | N | LLM rate | HMM rate | Agree | Cohen's κ |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2020 | SPY returns | 201 | 8.5% | 80.1% | 28.4% | 0.045 |
+| 2024 | SPY returns | 222 | 81.1% | 87.4% | 68.5% | −0.178 |
+| 2024 | Net GEX | 221 | 81.0% | 65.2% | 84.2% | 0.610 |
+
+1. A returns-based HMM (canonical volatility-regime benchmark) detects
+   a **different signal** from the LLM: κ is near zero for 2020 and
+   negative for 2024, so the two classifiers disagree more than chance
+   — the LLM is not reducible to a variance regime detector.
+2. When the HMM is fitted directly on the daily net-GEX series (2024),
+   agreement with the LLM jumps to **κ = 0.61** (substantial) — the
+   two converge on the same windows 84.2% of the time.
+3. Taken together this is evidence that the LLM's regime concept is
+   anchored in dealer-gamma structure specifically (where a mechanical
+   HMM on the same series agrees with it) rather than in any generic
+   variance / volatility regime (where the classical benchmark
+   disagrees).
+
+The benchmark fits and per-window analysis are produced deterministically
+by `scripts/validation/paper2/jrfm_revision/hmm_benchmark.py` with
+outputs at
+`reports/validation/paper2_regime_windows/jrfm_revision_hmm_benchmark.yaml`
+and `docs/papers/paper2/figures/output/fig10_hmm_agreement.png`.
+
+**Response (part b — causal language):** Moderated in the B4 commit
+(R3.5d) above. §6 Conclusion contribution 3 now describes the 0DTE
+correspondence as "coincides with" rather than "drove"; §5.3 softens
+the "tipping-point dynamic strengthens the structural interpretation"
+phrasing to "is consistent with, rather than proof of"; §5.7
+Limitations explicitly names interest-rate regime, passive-flow
+concentration, and market-maker inventory as alternative
+contemporaneous factors that cannot be excluded observationally.
+Deeper §5.3 revision is still scheduled in C2 below.
+
+**Change location:**
+
+- §3.9 Markov-Switching Benchmark (new subsection)
+- §4.7 Comparison with Markov-Switching Benchmark (new subsection,
+  Table 6, Figure 8)
+- `scripts/validation/paper2/jrfm_revision/hmm_benchmark.py` (new)
+- `docs/papers/paper2/figures/output/fig10_hmm_agreement.png` (new)
+  with local copy in `docs/papers/jrfm/figures/`
+- §6 Conclusion + §5.3 + §5.7 moderations as described under R3.5d
+
+**Status:** part (a) done; part (b) moderations applied in B4, fuller
+§5.3 revision still scheduled in C2.
 
 ---
 
