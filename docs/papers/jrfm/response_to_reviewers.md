@@ -230,20 +230,58 @@ a heat-map or table in a new §4.x subsection.]*
 > interpretations are too strong compared to the evidence and should be
 > moderated.
 
-**Response:** *[to draft — additions:
-  (a) Bootstrap 95% confidence intervals on each detection rate in Tables
-      and Phase summaries (Phase 1 baseline, full 2024, 2020 comparison,
-      multi-year panel).
-  (b) Fisher / χ² tests on contingency tables (already have φ = 0.672,
-      p < 0.0001; expand reporting with test statistic, df, exact p).
-  (c) Robustness to window length (30 / 45 / 60 days) and to the
-      persistence / magnitude thresholds (cross-reference R3.4 sensitivity).
-  (d) Moderate strong-claim language in §5 Discussion.]*
+**Response:** We agree. The revision addresses this comment in four
+parts; part (a) is complete, (b/c/d) are in progress.
 
-**Change location:** *§4 Results (CI columns in detection tables + new
-robustness paragraph); §5 Discussion (softened causal language).*
+**(a) Confidence intervals — DONE.** Every detection rate reported in
+§4 Results now carries a 95% confidence interval. Methodology:
 
-**Status:** todo — requires post-hoc bootstrap on existing results
+- For Phases 1--4 and all Phase 2 negative controls, per-window records
+  are available, so we report a 10,000-replicate percentile bootstrap
+  over windows (deterministic seed).
+- For Phase 5 per-year rates (2020--2025), where only aggregate counts
+  survive in the published pipeline, we report 95% Wilson score
+  intervals for binomial proportions, which have equivalent coverage
+  properties and are the standard recommendation in
+  \citet{brown2001interval}.
+
+The methodology is spelled out in a new "Statistical conventions"
+paragraph at the head of §4.1, and all CIs are produced deterministically
+by the new reprocessing script
+`scripts/validation/paper2/jrfm_revision/bootstrap_detection_ci.py`
+shipped with the code release.
+
+Key numerical landings (point-estimate [95% CI] N):
+
+| Phase | Rate (95% CI) |
+| --- | --- |
+| Phase 1 baseline 2024 Q1 | 71.2% [57.7, 82.7]% (37/52) |
+| Phase 3 full 2024 | 81.2% [75.8, 86.1]% (181/223) |
+| Phase 4 full 2020 | 12.1% [8.1, 16.6]% (27/223) |
+| Phase 2b transitional 2020 | 0.0% [0.0, 1.7]% (0/223) |
+| Phase 5 2020 | 12.2% [8.5, 17.3]% (26/213) |
+| Phase 5 2024 | 100% [98.4, 100.0]% (241/241) |
+| Phase 5 2025 | 100% [98.5, 100.0]% (245/245) |
+
+Critically, the 2020 upper CI bound (17.3%) does not overlap the 2024
+lower CI bound (98.4%), which directly supports the 69.1pp separation
+claim with bounded evidence rather than point estimates alone.
+
+**(b/c/d)** — Fisher/χ² expanded reporting, threshold / window
+sensitivity, and softened claim language still to be completed in
+separate commits.
+
+**Change location:**
+
+- `04_Results.tex` §4.1 new "Statistical conventions" paragraph
+- `04_Results.tex` Phase 1/3 inline rates in text
+- `04_Results.tex` Table 2 (negative controls) — CI column added
+- `04_Results.tex` Table 3 (Phase 4 comparison) — CIs on both rates
+- `04_Results.tex` Table 5 (Phase 5) — new CI column
+- `references.bib` — added `brown2001interval` for Wilson score cite
+- `scripts/validation/paper2/jrfm_revision/bootstrap_detection_ci.py` — new reprocessing script
+
+**Status:** (a) done; (b/c/d) todo
 
 ---
 
