@@ -45,6 +45,39 @@ This work advances LLM validation methodology and financial market analysis thro
 \item \textbf{Detection-alpha orthogonality}: Stable detection (68--74\% quarterly) persists as economic profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), establishing detected patterns as risk management signals rather than alpha generators.
 \end{enumerate}
 
+\subsection{Positioning}
+\label{sec:introduction:positioning}
+
+The contribution is primarily \textit{methodological}. We propose
+temporal obfuscation testing---and the associated WHO$\rightarrow$WHOM
+$\rightarrow$WHAT causal framework and multi-scale validation
+protocol---as a generalizable procedure for validating whether an LLM
+is reasoning from structural relationships rather than from
+memorization of training-data surface patterns. Options dealer
+gamma-exposure regime detection is chosen as the empirical demonstration
+domain because it offers three features that an LLM validation study
+requires simultaneously: mechanical constraints that are theoretically
+grounded in microstructure, a large quantitative testbed (2,221
+evaluations across six years), and sharp temporal structure (the
+pre- versus post-0DTE contrast) that a genuinely reasoning system
+should distinguish from noise.
+
+The financial-market findings reported here---the 69.1 percentage
+point 2024-versus-2020 detection gap, the 0\% false-positive rate on
+transitional and low-magnitude synthetic controls, and the gradual
+2021--2024 regime evolution tracking 0DTE adoption---are therefore
+presented as \textit{downstream evidence} that the methodology
+discriminates between persistent and fragmented market structures in
+ways consistent with known microstructure dynamics, not as novel
+claims about options market microstructure per se. Readers interested
+primarily in the financial-markets angle will find the relevant
+observations in Sections~\ref{sec:regime} and~\ref{sec:discussion};
+readers interested primarily in LLM validation methodology will find
+the generalizable contribution in
+Sections~\ref{sec:methodology} and~\ref{sec:discussion}. This framing
+is maintained consistently through the Conclusion
+(Section~\ref{sec:conclusion}).
+
 \subsection{Paper Organization}
 
 Section~\ref{sec:related} reviews related work. Section~\ref{sec:methodology} presents the unified methodology covering obfuscation testing, causal framework, and regime detection criteria. Section~\ref{sec:single_day} reports single-day validation results including raw chain analysis. Section~\ref{sec:regime} presents multi-day regime detection and market structure evolution. Section~\ref{sec:discussion} discusses implications and limitations. Section~\ref{sec:conclusion} concludes.

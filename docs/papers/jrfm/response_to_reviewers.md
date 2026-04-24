@@ -124,16 +124,34 @@ every change (page / section / paragraph) in the revised manuscript.
 > (market microstructure). This needs to be explicitly stated and
 > consistently reflected throughout the paper.
 
-**Response:** *[to draft — proposed stance: the contribution is primarily
-methodological (LLM validation through temporal obfuscation), with the GEX
-regime-detection study serving as the empirical demonstration domain.
-Market-microstructure observations are downstream findings, not the primary
-contribution.]*
+**Response:** We agree and have stated the positioning explicitly in
+two places to ensure the stance is consistent throughout the paper.
 
-**Change location:** *§1 Introduction final paragraph + §6 Conclusion
-opening; contribution restated consistently.*
+The primary contribution is **methodological**: temporal obfuscation
+testing (with the WHO→WHOM→WHAT causal framework and multi-scale
+validation protocol) as a generalizable procedure for validating LLM
+structural reasoning. Options dealer gamma-exposure regime detection is
+the **empirical demonstration domain** — selected because it combines
+theoretically grounded mechanical constraints, a large quantitative
+testbed, and the sharp pre-vs-post-0DTE temporal contrast — not because
+the paper is proposing novel claims about options microstructure. The
+financial-market findings (69.1pp detection gap, 0% FP rate on synthetic
+controls, 2021–2024 0DTE-tracking regime evolution) are downstream
+evidence that the methodology discriminates correctly, not the primary
+contribution.
 
-**Status:** todo
+**Change location:**
+
+- New §1.4 "Positioning" subsection (label
+  `sec:introduction:positioning`) between §1 Contributions and §1 Paper
+  Organization. Two paragraphs: first states the methodological primacy
+  and the rationale for GEX as the demonstration domain; second explains
+  that the financial findings are downstream evidence and provides a
+  reader-routing note for methodology-first vs finance-first readers.
+- §6 Conclusion opening rewritten to echo the same stance before listing
+  the four contributions, so that the stance frames the closing summary.
+
+**Status:** done
 
 ---
 

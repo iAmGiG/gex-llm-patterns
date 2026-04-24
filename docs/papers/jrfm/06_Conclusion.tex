@@ -1,7 +1,21 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented temporal obfuscation testing as a methodology for validating LLM structural reasoning in domain-specific applications. Applied to financial market analysis at two temporal scales, comprehensive validation across 2,221 evaluations spanning 2020--2025 demonstrates four primary contributions:
+The primary contribution of this work is \textit{methodological}: we
+presented temporal obfuscation testing as a generalizable procedure
+for validating LLM structural reasoning in domain-specific applications.
+Options dealer gamma-exposure regime detection served as the empirical
+demonstration domain---chosen because it combines theoretically
+grounded mechanical constraints, a large quantitative testbed, and a
+sharp pre-versus-post-0DTE temporal contrast---but the methodology is
+not specific to finance. The financial-market observations reported
+below are downstream evidence that the methodology discriminates
+persistent from fragmented structural regimes in ways consistent with
+known microstructure dynamics, and are not intended as novel claims
+about options market microstructure per se.
+
+With that positioning in mind, comprehensive validation across 2,221
+evaluations spanning 2020--2025 demonstrates four primary contributions:
 
 \begin{enumerate}
 \item \textbf{Single-day structural reasoning}: Temporal obfuscation achieves 71.5\% detection of dealer hedging patterns with 91.2\% predictive accuracy. Raw chain validation (92.3\% vs.\ 61.5\%) demonstrates that LLMs reconstruct dealer positioning from first principles, establishing that parametric GEX represents lossy compression of structural signal.
