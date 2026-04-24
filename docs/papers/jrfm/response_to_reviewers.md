@@ -267,9 +267,25 @@ Critically, the 2020 upper CI bound (17.3%) does not overlap the 2024
 lower CI bound (98.4%), which directly supports the 69.1pp separation
 claim with bounded evidence rather than point estimates alone.
 
-**(b/c/d)** — Fisher/χ² expanded reporting, threshold / window
-sensitivity, and softened claim language still to be completed in
-separate commits.
+**(b) Expanded χ² / Fisher reporting — DONE.** Every headline
+contingency now reports the full suite of statistics rather than just φ
+and "p < 0.0001". Specifically:
+
+- §4.4 Phase 4 (2020 vs 2024, 223 each): Pearson's χ² = 213.67 (df=1,
+  p = 2.2×10⁻⁴⁸), Yates-corrected χ² = 210.90 (p = 8.7×10⁻⁴⁸),
+  Fisher's exact two-sided p = 1.8×10⁻⁵² with odds ratio 31.3,
+  φ = 0.69 (refined from the previously rounded 0.672), and a risk
+  difference of 69.1pp with a 95% Wald CI of [62.4, 75.7]pp.
+- §4.5 Phase 5 (2023→2024 transition, 228 vs 241): χ² = 314.4
+  (p = 2.4×10⁻⁷⁰), Fisher's exact p = 9.9×10⁻⁸⁷ (OR diverges because
+  all 241 2024 windows are detected), φ = 0.82 (refined from 0.783).
+- Abstract and Introduction updated to report the 2020-vs-2024
+  comparison with both CI brackets on each rate and Fisher's exact p
+  (the strongest and most defensible statistic here given the zero
+  cell), instead of a single "p < 0.0001".
+
+**(c/d)** — Threshold / window sensitivity (R3.4b) and softened claim
+language (R3.5d) still to be completed in subsequent commits.
 
 **Change location:**
 

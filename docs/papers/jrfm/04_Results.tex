@@ -106,7 +106,7 @@ Phase 4 revealed a 69.1 percentage point detection difference between eras (Tabl
 
 \begin{table}[H]
 \centering
-\caption{Phase 4: 2020 vs.\ 2024 market structure comparison. The large effect size ($\varphi = 0.672$) confirms fundamentally different market structures.}
+\caption{Phase 4: 2020 vs.\ 2024 market structure comparison. The large effect size ($\varphi = 0.69$) confirms fundamentally different market structures; full test statistics in-text below the table.}
 \label{tab:phase4}
 \begin{tabular}{lrrr}
 \toprule
@@ -122,7 +122,12 @@ Dominant Sign & Negative & Positive & Flip \\
 \end{tabular}
 \end{table}
 
-The 2020 baseline (12.1\% detection) confirms framework selectivity: dealer gamma hedging was active but at lower magnitude (\$2.2B average for rejected windows vs.\ \$5.5B for the 27 detected), and 87.9\% of windows failed regime criteria. Notably, 2024 rejected windows had \textit{higher} average magnitude (\$31.8B) than detected windows (\$30.5B), confirming that rejection is driven by stability (sign flips), not magnitude---consistent with the February--March volatility noted in Phase 3. The large effect size ($\varphi = 0.672$, $p < 0.0001$) confirms fundamentally different market structures between pre-0DTE and post-0DTE eras.
+The 2020 baseline (12.1\% detection) confirms framework selectivity: dealer gamma hedging was active but at lower magnitude (\$2.2B average for rejected windows vs.\ \$5.5B for the 27 detected), and 87.9\% of windows failed regime criteria. Notably, 2024 rejected windows had \textit{higher} average magnitude (\$31.8B) than detected windows (\$30.5B), confirming that rejection is driven by stability (sign flips), not magnitude---consistent with the February--March volatility noted in Phase 3. The separation between the two eras is statistically overwhelming:
+Pearson's $\chi^2 = 213.67$ (df $= 1$, $p = 2.2 \times 10^{-48}$; Yates-corrected $\chi^2 = 210.90$, $p = 8.7 \times 10^{-48}$),
+Fisher's exact test gives a two-sided $p = 1.8 \times 10^{-52}$ with odds ratio 31.3 (detected-vs-not odds for 2024 are 31-fold higher than for 2020),
+the phi coefficient $\varphi = 0.69$ indicates a large effect by Cohen's convention,
+and the risk difference is 69.1 percentage points (95\% Wald CI [62.4, 75.7]~pp).
+Together these statistics confirm fundamentally different market structures between pre-0DTE and post-0DTE eras, not a marginal shift.
 
 \begin{figure}[H]
 \centering
@@ -156,7 +161,7 @@ Phase 5 extended analysis to 1,412 windows across six years, revealing gradual r
 \end{tabular}
 \end{table}
 
-Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation. The 2023$\rightarrow$2024 transition ($p < 0.0001$, $\varphi = 0.783$) marks a structural reorganization of dealer positioning. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure.
+Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation. The 2023$\rightarrow$2024 transition is statistically unambiguous: Pearson's $\chi^2 = 314.4$ ($\text{df} = 1$, $p = 2.4 \times 10^{-70}$), Fisher's exact $p = 9.9 \times 10^{-87}$ (odds ratio diverges because all 241 windows in 2024 are detected), and $\varphi = 0.82$. This marks a structural reorganization of dealer positioning rather than a gradual drift. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure.
 
 \begin{figure}[H]
 \centering
