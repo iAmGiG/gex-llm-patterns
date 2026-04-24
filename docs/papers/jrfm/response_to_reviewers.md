@@ -220,8 +220,17 @@ Deeper §5.3 revision is still scheduled in C2 below.
   with local copy in `docs/papers/jrfm/figures/`
 - §6 Conclusion + §5.3 + §5.7 moderations as described under R3.5d
 
-**Status:** part (a) done; part (b) moderations applied in B4, fuller
-§5.3 revision still scheduled in C2.
+**Status:** (a) done; (b) done (moderations in §5.3 applied in B4 plus a
+fuller §5.3 rewrite in the C2 commit). §5.3 now explicitly (i) frames
+the 0DTE correspondence as temporal coincidence supported by a
+plausible mechanical channel rather than a demonstrated causal
+relationship, (ii) enumerates four concurrent confounders (interest
+rates, short-vol flow, passive/index AUM, market-maker concentration),
+(iii) proposes three candidate causal-identification designs (0DTE
+suspension natural experiment, counterfactual non-SPY launch, IV
+design), and (iv) closes with an explicit acknowledgement that
+"less easily reconciled" is not "ruled out" and that disentangling the
+channels is beyond the scope of an LLM-validation paper.
 
 ---
 
