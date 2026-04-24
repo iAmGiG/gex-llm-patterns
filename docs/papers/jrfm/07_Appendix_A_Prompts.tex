@@ -29,21 +29,34 @@ reasoning model through the OpenAI Batch API (asynchronous, 24-hour SLA,
 
 \begin{itemize}
     \item \textbf{Model:} \texttt{o4-mini}
-    \item \textbf{Temperature:} 1.0 (OpenAI reasoning models require a
-          fixed temperature of 1; sampling-temperature adjustment is not
-          exposed for \texttt{o1}, \texttt{o3}, or \texttt{o4} model
-          families)
-    \item \textbf{Maximum completion tokens:} 16{,}384
-    \item \textbf{Response format:} JSON object (enforced via
-          \texttt{response\_format=\{"type":"json\_object"\}})
-    \item \textbf{Access mode:} OpenAI Batch API, batched 1{,}000 requests
-          per submission
+    \item \textbf{Temperature:} 1.0. OpenAI reasoning models
+          (\texttt{o1}, \texttt{o3}, \texttt{o4} families, and the newer
+          GPT-5 reasoning variants) reject user-supplied
+          \texttt{temperature} or \texttt{top\_p} values and run at the
+          default temperature of 1; our batch submission code does not
+          override this, so all 2{,}221 requests used temperature 1
+          implicitly.
+    \item \textbf{Maximum completion tokens:} not explicitly set in the
+          Batch API request body; the OpenAI API default for
+          \texttt{o4-mini} applies.
+    \item \textbf{Response format:} not enforced via the API
+          \texttt{response\_format} field; the model is instructed in
+          the prompt to return a JSON object with a specific schema and
+          complied in 100\% of the 2{,}221 responses (schema-validation
+          failure rate 0\%).
+    \item \textbf{Seed:} the OpenAI Batch API exposes a \texttt{seed}
+          parameter for best-effort reproducibility; we did not set a
+          seed in this study, so each evaluation reflects the model's
+          native sampling at temperature 1.
+    \item \textbf{Access mode:} OpenAI Batch API (asynchronous; 24-hour
+          SLA per batch submission).
 \end{itemize}
 
 \noindent\textbf{Reproducibility note.}
-Because the reasoning models do not accept a user-supplied
-\texttt{seed} parameter and run at a fixed \texttt{temperature}, exact
-bit-identical replication of any single response is not guaranteed.
+Exact bit-identical replication of any single response is not
+guaranteed: temperature is fixed at 1 on the server, and even with a
+seed the OpenAI documentation states that determinism is best-effort
+and can shift when the server \texttt{system\_fingerprint} changes.
 Reproducibility at the \emph{distributional} level is achieved by
 (i)~the large sample size (N = 2{,}221 evaluations) and
 (ii)~the mechanical criteria embedded in the prompt, which give the

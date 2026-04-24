@@ -313,19 +313,26 @@ channels is beyond the scope of an LLM-validation paper.
 **Response:** We have addressed this comment in three parts:
 
 **(a) Prompts.** The complete regime-detection prompt is now reproduced
-verbatim in a new Appendix A, together with the OpenAI Batch API
-configuration (o4-mini, temperature = 1.0, max completion tokens =
-16,384, JSON-object response format) and the output JSON schema used for
-parsing. The appendix is transcribed directly from
+verbatim in a new Appendix A, together with the actual OpenAI Batch API
+configuration we used (model `o4-mini`; temperature defaults to 1
+because reasoning models reject user-supplied temperature overrides;
+`max_completion_tokens` not explicitly set, so the OpenAI API default
+applies; JSON structure requested in the prompt rather than enforced
+via `response_format`) and the output JSON schema used for parsing.
+The appendix is transcribed directly from
 `src/llm/mechanics_prompt_builder.py::build_regime_prompt()` in the
 publicly released source code, so the reader has full prompt visibility
 from the manuscript alone.
 
-**(c) Temperature and reproducibility.** Appendix A also contains a
+**(c) Temperature and reproducibility.** Appendix A contains a
 Reproducibility note explaining that OpenAI reasoning models
-(o1, o3, o4-mini) run at a fixed temperature of 1 and do not accept a
-user-supplied seed parameter, so bit-identical reproduction of a single
-response is not guaranteed. Reproducibility at the distributional level
+(`o1`, `o3`, `o4-mini`, and GPT-5 reasoning variants) reject
+user-supplied `temperature` / `top_p` values and run at the default
+temperature of 1. The seed parameter is supported by `o4-mini`
+(OpenAI documents it as best-effort determinism that can shift when
+the server `system_fingerprint` changes), but we did not set a seed
+in this study. Bit-identical reproduction of any single response is
+therefore not guaranteed. Reproducibility at the distributional level
 is established through the N = 2,221 evaluation sample and the
 mechanical numerical thresholds embedded in the prompt itself, which
 anchor the model on concrete criteria rather than free-form judgment.
