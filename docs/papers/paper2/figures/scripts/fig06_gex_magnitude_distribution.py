@@ -121,7 +121,8 @@ def create_figure(data):
     # $5B threshold line
     ax1.axvline(x=5.0, color=IEEE_THEME["accent_positive"], linestyle="--", linewidth=2)
 
-    # Annotations for 2020
+    # Annotations for 2020 -- white background box for consistency with
+    # the 2024 Mean label treatment.
     y_max_2020 = ax1.get_ylim()[1]
     ax1.text(
         mean_2020 + 0.3,
@@ -132,6 +133,13 @@ def create_figure(data):
         color=IEEE_THEME["year_2020"],
         ha="left",
         va="top",
+        bbox=dict(
+            facecolor="white",
+            edgecolor=IEEE_THEME["year_2020"],
+            linewidth=0.8,
+            alpha=0.9,
+            boxstyle="round,pad=0.3",
+        ),
     )
     ax1.text(
         5.2,
@@ -179,7 +187,8 @@ def create_figure(data):
     # Mean line for 2024
     ax2.axvline(x=mean_2024, color=IEEE_THEME["year_2024"], linestyle="--", linewidth=2.5)
 
-    # Annotations for 2024
+    # Annotations for 2024 -- white background box so the blue label is
+    # legible against the blue histogram bars at the mean x-position.
     y_max_2024 = ax2.get_ylim()[1]
     ax2.text(
         mean_2024 + 0.3,
@@ -190,6 +199,13 @@ def create_figure(data):
         color=IEEE_THEME["year_2024"],
         ha="left",
         va="top",
+        bbox=dict(
+            facecolor="white",
+            edgecolor=IEEE_THEME["year_2024"],
+            linewidth=0.8,
+            alpha=0.9,
+            boxstyle="round,pad=0.3",
+        ),
     )
 
     ax2.set_title("2024 Post-0DTE Era", fontsize=15, fontweight="bold", color=IEEE_THEME["year_2024"], pad=10)

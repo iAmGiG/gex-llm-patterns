@@ -32,17 +32,19 @@ def create_figure():
     plt.style.use("default")
 
     # Create figure - slightly taller to fit legend
-    fig, ax = plt.subplots(figsize=(10, 6.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(10, 7.0), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax.set_facecolor(IEEE_THEME["background"])
     ax.set_xlim(0, 10)
-    ax.set_ylim(-0.3, 6)
+    ax.set_ylim(-0.3, 6.7)
     ax.axis("off")
 
-    # Title - repositioned for compact layout
+    # Title - nudged upward (with BEFORE/AFTER callouts bumped to fontsize 17,
+    # the previous layout clipped this subtitle horizontally against the
+    # callout labels; +0.5 units of vertical breathing room fixes it).
     ax.text(
         5,
-        5.7,
+        6.4,
         "Temporal Obfuscation Process",
         fontsize=18,
         fontweight="bold",
@@ -52,7 +54,7 @@ def create_figure():
     )
     ax.text(
         5,
-        5.3,
+        5.95,
         "Preventing LLM Memorization While Preserving Structural Information",
         fontsize=12,
         ha="center",
