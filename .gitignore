@@ -278,6 +278,12 @@ config/config.json
 *.tar.gz
 *.zip
 
+# AIAI 2026 camera-ready submission bundle (built locally, kept out of git)
+docs/papers/paper2/aiai/Regan_Xie_AIAI_CameraReady.zip
+
+# JRFM reviewer comment PDFs (confidential review material, addressed offline)
+docs/papers/jrfm/jrfm-*-review.pdf
+
 # IEEE Big Data 2025 figures (managed in Overleaf, local copies not needed)
 docs/papers/paper1/ieee_bigdata_2025/latex/figures/
 
