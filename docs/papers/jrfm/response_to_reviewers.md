@@ -236,19 +236,47 @@ robustness paragraph); §5 Discussion (softened causal language).*
 > developed. The current discussion is too general and sometimes
 > theoretical.
 
-**Response:** *[to draft — add a subsection "Practical Implications" with
-three angles:
-  (a) Risk management — dealer gamma regimes as a leading indicator for
-      realised volatility clustering; pinning behaviour at OpEx.
-  (b) Market efficiency — the coexistence of stable detection with
-      collapsing Sharpe (1.8 → 0.1) reinforces the structural-mechanics
-      interpretation over exploitable inefficiencies.
-  (c) Practitioners — how a regime-aware overlay could inform dealer-side
-      hedging and sell-side positioning, with caveats on single-asset scope.]*
+**Response:** We agree that the original discussion was too general on
+the practitioner side. The previous §5.6 "Practitioner Implications"
+subsection has been renamed "Practical Implications" and restructured
+into three explicit subsubsections exactly matching the three axes the
+reviewer identified:
 
-**Change location:** *§5 Discussion, new §5.x Practical Implications.*
+**(a) Risk management.** Three concrete applications developed:
+intraday volatility budgeting (regime as a leading indicator for
+volatility-of-volatility exposure sizing), option-book hedging under
+OpEx concentration (persistent-positive regimes amplify the OpEx
+pinning dynamic), and risk-scenario design (2020 fragmented vs 2024
+persistent-negative as natural conditioning variables for stress-test
+calibration).
 
-**Status:** todo — writing only
+**(b) Market efficiency.** A new positive account is offered: the
+detection-alpha orthogonality is consistent with a weakly efficient
+market in which structural constraints are reliably identifiable but
+already priced. This reconciles two claims often treated as
+contradictory — that dealer-gamma positioning measurably influences
+short-horizon price dynamics, and that systematic strategies exploiting
+it deteriorate as attention accumulates — and explains why
+microstructure-aware research can be genuinely informative for risk
+without being informative for alpha.
+
+**(c) Practitioners: pipeline design and model deployment.** Two
+design implications developed from the experimental results: (i) the
+30.8pp advantage of raw strike-level data over pre-aggregated GEX
+challenges the default of parametric aggregation in quantitative
+pipelines, with generalisations to credit risk, fixed-income
+surveillance, and equity factor research explicitly noted; (ii) the
+2022–2024 0DTE regime shift implies that static microstructure models
+calibrated to pre-2022 data need recalibration rather than drift
+correction.
+
+**Change location:** §5.6 "Practical Implications" (renamed from
+"Practitioner Implications"), with new `sec:discussion:practical` label
+and three new `\subsubsection` headings corresponding to the
+reviewer's three axes. The subsection expanded from one dense
+paragraph (4 insights) to three structured subsubsections (~1 page).
+
+**Status:** done
 
 ---
 

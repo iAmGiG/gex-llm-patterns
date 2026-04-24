@@ -38,9 +38,82 @@ The raw options chain preserves what Hayek termed ``knowledge of the particular 
 
 This interpretation extends beyond methodological curiosity. The alpha disappearance puzzle---stable detection (68--74\%) despite collapsing profitability (Sharpe 1.8 $\rightarrow$ 0.1)---parallels a core insight from Austrian capital theory: that structural knowledge of market coordination patterns differs fundamentally from actionable entrepreneurial knowledge \citep{kirzner1973competition}. Detecting that dealers are constrained to pro-cyclical hedging is structural knowledge; profiting from that detection requires entrepreneurial judgment about timing, magnitude, and competing market forces that our framework deliberately excludes. The orthogonality between detection and alpha is thus not a limitation but a feature: it confirms the framework identifies genuine structural mechanics rather than ephemeral trading opportunities.
 
-\subsection{Practitioner Implications}
+\subsection{Practical Implications}
+\label{sec:discussion:practical}
 
-For financial practitioners, our findings suggest four actionable insights. First, providing LLMs with raw structured data rather than pre-calculated summaries yields substantially better structural detection (92.3\% vs.\ 61.5\%), challenging common pipeline designs that aggregate data before analysis---an empirical vindication of preserving informational granularity over computational convenience. Second, the detection-alpha orthogonality result cautions against using structural pattern detection directly for trading; the value lies in risk management and market surveillance applications where mechanism identification matters more than profitability. Third, the 0DTE-driven regime shift suggests that market microstructure monitoring should evolve with product innovation---static models calibrated to pre-2022 data will miss the structural reorganization that our framework detects. Fourth, the dispersed knowledge interpretation suggests that financial AI systems may achieve better performance across domains by ingesting raw, granular data rather than pre-processed summaries---a design principle applicable to credit risk, fixed income analysis, and other areas where scalar metrics are standard.
+The results carry concrete implications along three axes that matter
+most to financial practitioners: risk management, market efficiency,
+and the design of quantitative research pipelines. We address each in
+turn.
+
+\subsubsection{Risk management}
+
+Our dealer-gamma regime detection is best understood as a
+\textit{risk-regime indicator} rather than a trading signal. Because
+the framework achieves stable detection (68--74\% quarterly) even as
+Sharpe ratios collapse from 1.8 to 0.1, its output is a reading of
+whether the market is currently operating in a mechanically constrained
+state---not a forecast of directional return. Three specific risk-management
+applications follow.
+
+First, for \textbf{intraday volatility budgeting}, a persistent negative
+gamma regime implies amplified dealer chase-hedging and elevated realised
+volatility clustering on high-volume days; sell-side risk desks can use
+the 30-day regime classification as a leading indicator for
+volatility-of-volatility exposure and size gamma-exposure limits
+accordingly. Second, for \textbf{option-book hedging under OpEx
+concentration}, the known pinning dynamic around large-OI strikes
+\citep{ni2005stock} is substantially more forceful under positive-gamma
+regimes that we now classify explicitly; book hedgers may increase
+hedging frequency around OpEx when the framework detects a persistent
+positive regime. Third, for \textbf{risk-scenario design}, 30-day
+regime history provides a natural conditioning variable for stress-test
+calibration: a 2020-style fragmented period and a 2024-style persistent
+negative period imply materially different joint distributions for
+realised volatility and spot-vol covariance.
+
+\subsubsection{Market efficiency}
+
+The detection-alpha orthogonality result---stable structural detection
+that does not translate into exploitable profit---contributes to the
+ongoing debate about efficiency in optionized equity markets. Our
+evidence is consistent with a weakly efficient market in which
+\textit{structural constraints} are reliably identifiable but already
+priced: arbitrageurs compete away the first-order profit from knowing a
+regime exists, yet the underlying mechanics that generate volatility
+clustering and OpEx pinning persist because they are mandatory, not
+opportunistic, actions by dealers. This reconciles two claims that are
+often treated as contradictory: that dealer-gamma positioning demonstrably
+influences short-horizon price dynamics \citep{anderegg2022impact}, and
+that systematic strategies exploiting that influence deteriorate as
+attention accumulates. The framework thus provides a positive account of
+why microstructure-aware research can be genuinely informative for risk
+without being genuinely informative for alpha.
+
+\subsubsection{Practitioners: data-pipeline and model-deployment design}
+
+Two practitioner-facing design implications follow directly from the
+experimental results. First, the 30.8-percentage-point advantage of raw
+strike-level data over pre-aggregated GEX (92.3\% versus 61.5\% at the
+single-day scale) is evidence that common pipeline designs---which
+compress option chains into scalar summaries before analysis---are
+discarding signal that an LLM can reconstruct when given the raw input.
+This challenges the default of parametric aggregation and suggests that
+practitioners deploying LLM-based analysis should ingest granular data
+wherever feasible. The design principle generalises beyond options
+dealer flow to any domain where scalar metrics are conventional summary
+of distributional inputs: credit risk (single probabilities from granular
+exposure tapes), fixed-income surveillance (duration summaries from
+granular curve positions), and equity factor research (single factor
+loadings from granular return-attribution inputs) are the obvious
+candidates.
+
+Second, the 0DTE-driven regime shift detected in 2022--2024 implies
+that static microstructure models calibrated to pre-2022 data will miss
+a structural reorganisation that our framework picks up. Practitioners
+running surveillance, risk, or execution models should treat the
+2022--2024 period as a regime change requiring recalibration, not a
+drift-along-the-same-curve.
 
 \subsection{Limitations and Future Work}
 \label{sec:limitations}
