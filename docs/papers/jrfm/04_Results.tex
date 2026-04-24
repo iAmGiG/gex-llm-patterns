@@ -71,7 +71,7 @@ Figure~\ref{fig:validation_pipeline} summarizes detection rates across all valid
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig03_validation_pipeline.png}
-\caption{Multi-phase validation pipeline. Detection rates progress from Phase 1 baseline (71.2\%) through negative controls, full 2024 validation (81.2\%), and 2020 pre-0DTE comparison (12.1\%).}
+\caption{Multi-phase validation pipeline. Each box reports the phase name, the number of 30-day windows evaluated, and the detection rate with 95\% bootstrap confidence interval. Phase~1 (Q1 2024 baseline) anchors the framework at 71.2\% detection; Phase~2 synthetic controls (shuffle/transitional/low-magnitude) test false-positive discipline; Phase~3 (full 2024) confirms 81.2\% generalisation; Phase~4 (full 2020) is the pre-0DTE baseline at 12.1\%; Phase~5 extends to a 2020--2025 panel. \textbf{Read this figure as:} the phase-by-phase progression from narrow baseline to full multi-year panel, with rate separation preserved at every stage.}
 \label{fig:validation_pipeline}
 \end{figure}
 
@@ -132,7 +132,7 @@ Together these statistics confirm fundamentally different market structures betw
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig04_selectivity.png}
-\caption{Framework selectivity. Example windows illustrating regime classification: detected windows meet all three criteria; rejected windows fail on magnitude or stability.}
+\caption{Framework selectivity illustrated on four example 30-day windows. \textbf{Top row (detected):} a 2024-Q2 persistent negative regime (28/30 days negative, \$30B average magnitude, 3 sign flips) and a 2024-Q4 persistent negative regime (27/30, \$25B, 2 flips); both meet all three criteria. \textbf{Bottom row (rejected):} a February 2024 window rejected for stability (only 55\% persistence with 8 sign flips despite high magnitude) and a 2020-Q2 window rejected for magnitude (90\% persistence but only \$2.8B average). \textbf{Read this figure as:} detection is not a function of a single criterion but of all three acting jointly --- high magnitude alone or high persistence alone is not sufficient.}
 \label{fig:selectivity}
 \end{figure}
 
@@ -166,7 +166,7 @@ Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\%
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig05_gex_magnitude_distribution.png}
-\caption{GEX magnitude distribution: 2020 vs.\ 2024. Clear separation between 2020 (mean \$3.0B) and 2024 (mean \$20.3B). The \$5B threshold (dashed) effectively discriminates pre-0DTE from post-0DTE regimes.}
+\caption{Distribution of 30-day window average absolute GEX magnitude for 2020 (blue) and 2024 (orange), with the \$5B classification threshold shown as a dashed vertical line. The 2020 distribution (mean \$3.0B) lies almost entirely below the threshold; the 2024 distribution (mean \$20.3B) lies almost entirely above it. \textbf{Read this figure as:} the magnitude criterion alone --- before persistence or stability are even checked --- already separates the two eras, and the chosen \$5B threshold is positioned in the trough between the two distributions rather than in the bulk of either.}
 \label{fig:gex_magnitude}
 \end{figure}
 
@@ -296,6 +296,6 @@ LLM confidence scores discriminated detection outcomes: detected regimes average
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig06_detection_progression.png}
-\caption{Temporal progression of regime detection (2020--2025). Detection rates evolved from pre-regime baseline through growing adoption to structural shift at 100\% in 2024--2025. Average GEX magnitude grew from \$3.0B to \$20.3B, far exceeding inflation.}
+\caption{Per-year regime detection rate (bars) and average absolute GEX magnitude (line) for SPY 2020--2025. Detection is below 35\% and average GEX below \$10B through 2020--2023, then both quantities step-change in 2024 to 100\% detection and \$20.3B average GEX and remain there in 2025. The 2022--2023 non-monotonic dip (32.4\%~$\rightarrow$~20.2\%) coincides with the 2023 FOMC / banking-stress volatility episode. \textbf{Read this figure as:} the LLM regime-detection signal is not a smooth secular trend but a discrete step-change, coincident with the maturation of the 0DTE options market; it is not a proof of causation but is less easily reconciled with gradual drift.}
 \label{fig:progression}
 \end{figure}
