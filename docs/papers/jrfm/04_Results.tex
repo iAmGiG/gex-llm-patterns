@@ -170,6 +170,61 @@ Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\%
 \label{fig:gex_magnitude}
 \end{figure}
 
+\subsection{Threshold Sensitivity}
+\label{sec:regime:sensitivity}
+
+The three regime-classification thresholds (persistence $\geq$ 70\%,
+average magnitude $\geq$ \$5B, sign flips $\leq$ 5) represent empirically
+validated design choices. To test whether the headline 2024-vs-2020
+separation depends on these specific values, we re-scored the 223 Phase~3
+(2024) and 220 Phase~4 (2020) windows\footnote{Phase~4 here uses the 220
+windows with complete per-window metric records; the three excluded 2020
+windows do not change the point estimates.} under a 5$\times$3$\times$3
+grid of alternative threshold combinations (persistence
+$\in \{60, 65, 70, 75, 80\}$\%, magnitude
+$\in \{\$3\text{B}, \$5\text{B}, \$7\text{B}\}$, flips
+$\leq \{3, 5, 7\}$; 45 configurations in total). The full sweep was
+produced deterministically by
+\texttt{scripts/validation/paper2/jrfm\_revision/threshold\_sensitivity.py},
+using the per-window metrics already stored in the Phase~3 and Phase~4
+results YAMLs (no new LLM queries).
+
+Figure~\ref{fig:threshold_sensitivity} shows the 2024-minus-2020 detection
+gap at each grid point. The gap ranges from 34.1 to 85.2 percentage
+points across the 45 configurations (median 63.2 pp), and
+\textbf{exceeds 50 pp in 40 of 45 configurations}. The five configurations
+that fail the 50-pp bar are all at the most permissive magnitude
+threshold (\$3B) combined with the strictest flip threshold
+($\leq$3), i.e.\ deliberately degenerate settings that let more 2020
+windows qualify while removing many 2024 regime windows on stability.
+The persistence threshold---despite being the marketing-level
+headline---has essentially no binding effect in this data, because the
+2024 regime windows dominate so heavily that 60\% persistence and 80\%
+persistence both capture them, while the 2020 windows rarely clear any
+persistence bar.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig09_threshold_sensitivity.png}
+\caption{Threshold sensitivity of the 2024-vs-2020 detection gap across 45
+alternative threshold combinations. Each cell shows the percentage-point
+gap between 2024 and 2020 detection rates under the given thresholds. The
+red box marks the paper default. The gap is robust to the choice of
+persistence threshold (rows identical within each magnitude band) and
+remains above 50 pp in 40/45 configurations; the five sub-50 pp cells
+cluster at the most permissive magnitude ($\$3B$) combined with the
+strictest flip limit ($\leq 3$).}
+\label{fig:threshold_sensitivity}
+\end{figure}
+
+This robustness result directly addresses the concern that the reported
+69.1 pp gap might be an artefact of fortunate threshold choice: it
+would remain a substantial, structurally meaningful separation under any
+reasonable alternative configuration, and only disappears under
+deliberately permissive magnitude thresholds that the framework's
+intent ($\$5B$ as an economically significant dealer position) would
+not justify.
+
 \subsection{LLM Reasoning Quality}
 
 Manual review of 50 randomly sampled detections revealed 98\% mechanical accuracy on persistence values, 96\% on magnitude, and 100\% on flip counts. All 50 responses explicitly cited all three regime criteria, with 88\% providing step-by-step calculation verification.

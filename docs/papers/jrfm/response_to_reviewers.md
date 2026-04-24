@@ -205,20 +205,45 @@ is established through the N = 2,221 evaluation sample and the
 mechanical numerical thresholds embedded in the prompt itself, which
 anchor the model on concrete criteria rather than free-form judgment.
 
-**(b) Threshold sensitivity.** *[still to draft — post-hoc sensitivity
-sweep of persistence ∈ {60, 65, 70, 75, 80}%, magnitude ∈ {$3B, $5B,
-$7B}, flips ≤ {3, 5, 7} on the existing 2,221 evaluations, presented as
-a heat-map or table in a new §4.x subsection.]*
+**(b) Threshold sensitivity — DONE.** A post-hoc sensitivity sweep has
+been added as new §4.6 "Threshold Sensitivity" with Figure 7
+(`fig09_threshold_sensitivity.png`). The sweep spans a 5×3×3 grid
+(persistence ∈ {60, 65, 70, 75, 80}%, magnitude ∈ {$3B, $5B, $7B},
+flips ≤ {3, 5, 7}; 45 configurations in total) applied to the 223
+Phase 3 (2024) and 220 Phase 4 (2020) per-window records already on
+disk — no new LLM queries required.
+
+Key findings reported in §4.6:
+
+- The 2024-vs-2020 detection gap ranges from 34.1 to 85.2 pp across
+  the 45 configurations (median 63.2 pp).
+- The gap exceeds 50 pp in 40 of 45 configurations.
+- The five sub-50 pp cells all occur at the most permissive magnitude
+  threshold ($3B) combined with the strictest flip limit (≤3) —
+  deliberately degenerate settings.
+- The persistence threshold has essentially no binding effect in this
+  data because 2024 regime windows saturate ≥60% persistence and 2020
+  windows rarely clear any persistence bar — so choosing 60%, 70%, or
+  80% produces identical detection rates.
+- Magnitude is the binding threshold; flip tolerance is the secondary
+  lever.
+
+The analysis is produced deterministically by the new
+`scripts/validation/paper2/jrfm_revision/threshold_sensitivity.py`
+(YAML summary at
+`reports/validation/paper2_regime_windows/jrfm_revision_threshold_sensitivity.yaml`,
+heatmap at `docs/papers/paper2/figures/output/fig09_threshold_sensitivity.png`
+with a local copy at `docs/papers/jrfm/figures/fig09_threshold_sensitivity.png`
+for LaTeX compilation).
 
 **Change location:**
 
-- New Appendix A on pp. TBD (parts (a) and (c) above).
+- New Appendix A on pp. 20–25 (parts (a) and (c) above).
 - Main text §3 Methodology: brief cross-reference added to Appendix A
   where prompts were previously described in prose.
-- Threshold sensitivity (part (b)): new subsection in §4 Results, pp.
-  TBD.
+- New §4.6 "Threshold Sensitivity" subsection with Figure 7 (part (b)).
 
-**Status:** (a) done; (c) done; (b) todo — post-hoc reprocessing
+**Status:** done
 
 ---
 
