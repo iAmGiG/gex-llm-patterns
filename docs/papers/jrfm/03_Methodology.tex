@@ -151,7 +151,7 @@ For each LLM response, we extract stated metrics (persistence, magnitude, flips)
 
 \subsection{LLM Configuration}
 
-We use OpenAI o4-mini \citep{openai2024reasoning} with temperature=1.0, max tokens=16,384, processed via Batch API (asynchronous, 100\% completion rate). The model receives a system message (``financial market analyst identifying persistent dealer gamma regimes''), a 30-day obfuscated GEX sequence with classification criteria, and outputs structured JSON with regime type, confidence (0--100), reasoning trace, and computed metrics. Total processing cost across all 2,221 evaluations was \$11.07.
+We use OpenAI o4-mini \citep{openai2024reasoning} with temperature=1.0, max tokens=16,384, processed via Batch API (asynchronous, 100\% completion rate). The model receives a system message (``financial market analyst identifying persistent dealer gamma regimes''), a 30-day obfuscated GEX sequence with classification criteria, and outputs structured JSON with regime type, confidence (0--100), reasoning trace, and computed metrics. Total processing cost across all 2,221 evaluations was \$11.07. The complete prompt, API configuration, and output schema are reproduced verbatim in Appendix~\ref{app:prompt}.
 
 \subsection{LLM Usage Disclosure}
 

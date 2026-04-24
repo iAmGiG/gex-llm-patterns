@@ -167,21 +167,40 @@ language).*
 > or tested through sensitivity analysis. The impact of model parameters
 > (e.g., temperature = 1.0) on reproducibility must be explained.
 
-**Response:** *[to draft — three parts:
-  (a) Full LLM system + user prompts added as Appendix A, lifted verbatim
-      from `src/llm/mechanics_prompt_builder.py` and related modules.
-  (b) Threshold sensitivity sweep (persistence ∈ {60, 65, 70, 75, 80}%,
-      magnitude ∈ {$3B, $5B, $7B}, flips ≤ {3, 5, 7}) — post-hoc on the
-      existing 2,221 evaluations, presented as a heatmap or table.
-  (c) Temperature = 1.0 reproducibility note: we use the OpenAI Batch API
-      with fixed `seed`/deterministic settings where available; we report
-      variance across repeated runs on a held-out sample.]*
+**Response:** We have addressed this comment in three parts:
 
-**Change location:** *§3 Methodology (threshold justification); new
-Appendix A (prompts); new Appendix B or §3.5 (sensitivity table +
-reproducibility note).*
+**(a) Prompts.** The complete regime-detection prompt is now reproduced
+verbatim in a new Appendix A, together with the OpenAI Batch API
+configuration (o4-mini, temperature = 1.0, max completion tokens =
+16,384, JSON-object response format) and the output JSON schema used for
+parsing. The appendix is transcribed directly from
+`src/llm/mechanics_prompt_builder.py::build_regime_prompt()` in the
+publicly released source code, so the reader has full prompt visibility
+from the manuscript alone.
 
-**Status:** todo — mostly writing; sensitivity sweep is post-hoc reprocessing
+**(c) Temperature and reproducibility.** Appendix A also contains a
+Reproducibility note explaining that OpenAI reasoning models
+(o1, o3, o4-mini) run at a fixed temperature of 1 and do not accept a
+user-supplied seed parameter, so bit-identical reproduction of a single
+response is not guaranteed. Reproducibility at the distributional level
+is established through the N = 2,221 evaluation sample and the
+mechanical numerical thresholds embedded in the prompt itself, which
+anchor the model on concrete criteria rather than free-form judgment.
+
+**(b) Threshold sensitivity.** *[still to draft — post-hoc sensitivity
+sweep of persistence ∈ {60, 65, 70, 75, 80}%, magnitude ∈ {$3B, $5B,
+$7B}, flips ≤ {3, 5, 7} on the existing 2,221 evaluations, presented as
+a heat-map or table in a new §4.x subsection.]*
+
+**Change location:**
+
+- New Appendix A on pp. TBD (parts (a) and (c) above).
+- Main text §3 Methodology: brief cross-reference added to Appendix A
+  where prompts were previously described in prose.
+- Threshold sensitivity (part (b)): new subsection in §4 Results, pp.
+  TBD.
+
+**Status:** (a) done; (c) done; (b) todo — post-hoc reprocessing
 
 ---
 

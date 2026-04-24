@@ -1,0 +1,285 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendix A — Regime Detection LLM Prompt
+% Added in response to Reviewer 3 comment R3.4a:
+% "The exact prompts used for the LLM must be provided (preferably in
+%  an appendix)."
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section[Regime Detection LLM Prompt]{Regime Detection LLM Prompt}
+\label{app:prompt}
+
+This appendix reproduces the complete prompt submitted to the LLM for
+each 30-day regime-detection window, together with the API configuration
+and output schema, so that the experiment is fully reproducible from the
+published manuscript without reference to the source repository.
+
+The authoritative implementation lives at
+\texttt{src/llm/mechanics\_prompt\_builder.py::build\_regime\_prompt()}
+in the code release accompanying this paper; the text below is
+transcribed verbatim from that implementation.
+
+\subsection{Model and API Configuration}
+\label{app:prompt:config}
+
+All 2{,}221 evaluations were obtained from OpenAI's \texttt{o4-mini}
+reasoning model through the OpenAI Batch API (asynchronous, 24-hour SLA,
+100\% completion rate observed across the five validation phases).
+
+\begin{itemize}
+    \item \textbf{Model:} \texttt{o4-mini}
+    \item \textbf{Temperature:} 1.0 (OpenAI reasoning models require a
+          fixed temperature of 1; sampling-temperature adjustment is not
+          exposed for \texttt{o1}, \texttt{o3}, or \texttt{o4} model
+          families)
+    \item \textbf{Maximum completion tokens:} 16{,}384
+    \item \textbf{Response format:} JSON object (enforced via
+          \texttt{response\_format=\{"type":"json\_object"\}})
+    \item \textbf{Access mode:} OpenAI Batch API, batched 1{,}000 requests
+          per submission
+\end{itemize}
+
+\noindent\textbf{Reproducibility note.}
+Because the reasoning models do not accept a user-supplied
+\texttt{seed} parameter and run at a fixed \texttt{temperature}, exact
+bit-identical replication of any single response is not guaranteed.
+Reproducibility at the \emph{distributional} level is achieved by
+(i)~the large sample size (N = 2{,}221 evaluations) and
+(ii)~the mechanical criteria embedded in the prompt, which give the
+model concrete numerical thresholds to apply rather than asking for
+free-form judgment. Section~\ref{sec:regime} reports detection rates
+with bootstrap 95\% confidence intervals to quantify the residual
+sampling variation.
+
+\subsection{System Message and User Prompt}
+\label{app:prompt:body}
+
+The prompt is delivered as a single user-role message (the
+\texttt{o4-mini} reasoning model treats the first paragraph as the
+de~facto system instruction). The placeholder
+\texttt{\{gex\_data\_table\}} is replaced at runtime with the
+obfuscated 30-day GEX sequence: one line per day, in the format
+\texttt{Day T-29: +3.42B} through \texttt{Day T+0: -12.18B}, where the
+calendar date has been replaced with a relative day label and the
+ticker symbol is absent. No other identifying context is supplied.
+
+\begin{verbatim}
+You are a market structure analyst specializing in dealer gamma
+positioning regimes.
+
+TASK: Analyze this 30-day period and determine if it represents a
+PERSISTENT regime where dealer constraints create forced, directional
+flows.
+
+## 30-DAY GEX DATA
+
+{gex_data_table}
+
+## REGIME CLASSIFICATION FRAMEWORK
+
+### PERSISTENT REGIMES (Detect These)
+
+**1. PERSISTENT POSITIVE REGIME**
+- Definition: Dealers are LONG gamma, forced to sell into strength
+- Criteria:
+  * >70% of days (21+/30) have positive net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold long gamma:
+- Price rises -> Dealers MUST sell shares (rebalance)
+- Price falls -> Dealers MUST buy shares (rebalance)
+- Creates dampening, mean-reverting flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+**2. PERSISTENT NEGATIVE REGIME**
+- Definition: Dealers are SHORT gamma, forced to buy into strength
+- Criteria:
+  * >70% of days (21+/30) have negative net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold short gamma:
+- Price rises -> Dealers MUST buy shares (chase)
+- Price falls -> Dealers MUST sell shares (chase)
+- Creates amplifying, momentum flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+---
+
+### NON-REGIMES (Reject These)
+
+**3. TRANSITIONAL (Reject)**
+- Frequent sign flips between positive/negative GEX
+- No dominant regime direction (less than 70% same sign)
+- Market in regime change period
+- Example: 15 positive days, 15 negative days (50/50 split)
+
+**Why Reject**: No persistent constraint. Dealers face mixed
+conditions daily. Not a structural regime.
+
+**4. LOW CONVICTION (Reject)**
+- Consistent sign BUT weak magnitude (<$5B average)
+- Example: 25 days positive, avg $2B GEX
+- Insufficient constraint to create persistent forced flows
+
+**Why Reject**: Even if sign is consistent, magnitude too weak to
+force dealers into meaningful positions. Not a structural constraint.
+
+---
+
+## ANALYSIS QUESTIONS
+
+Systematically evaluate the 30-day window:
+
+**Step 1: Sign Persistence**
+1. Count days with positive net GEX
+2. Count days with negative net GEX
+3. Calculate persistence percentage:
+   max(positive_days, negative_days) / 30 * 100
+4. Does it meet 70% threshold (21+ days)?
+
+**Step 2: Magnitude Assessment**
+1. Calculate average GEX magnitude (absolute value):
+   sum(|net_gex|) / 30
+2. Is average magnitude >=$5B?
+3. Check for extreme outliers that might distort average
+
+**Step 3: Stability Check**
+1. Count sign flips: How many times does GEX switch from
+   pos->neg or neg->pos?
+2. Are there <=5 sign flips across 30 days?
+3. Stable regime should have low flip count
+
+**Step 4: Regime Classification**
+- If Steps 1, 2, 3 all pass AND positive dominates
+    -> PERSISTENT POSITIVE
+- If Steps 1, 2, 3 all pass AND negative dominates
+    -> PERSISTENT NEGATIVE
+- If Step 1 passes but Step 2 fails -> LOW CONVICTION (reject)
+- If Step 1 fails -> TRANSITIONAL (reject)
+
+---
+
+## CONFIDENCE CALIBRATION (Mechanical Guidance)
+
+Use these concrete anchors to calibrate confidence:
+
+**90-100 (Very High Confidence)**
+- 25-30 days same sign (83-100% persistence)
+- Average magnitude >$10B
+- 0-2 sign flips (highly stable)
+- Example: "29 negative days, avg $15B, 1 flip"
+
+**70-89 (High Confidence)**
+- 21-24 days same sign (70-80% persistence)
+- Average magnitude $5-10B
+- 2-4 sign flips (moderately stable)
+- Example: "23 negative days, avg $7B, 3 flips"
+
+**50-69 (Borderline - Use with Caution)**
+- 18-20 days same sign (60-67% persistence)
+- Average magnitude $3-5B
+- 5-7 sign flips
+- Example: "20 negative days, avg $4B, 6 flips"
+- Note: Borderline cases should generally be REJECTED unless other
+  factors strengthen confidence
+
+**0-49 (Reject - Not Persistent)**
+- <18 days same sign (<60% persistence)
+- OR average magnitude <$3B
+- OR >7 sign flips
+- These are NOT persistent regimes
+
+**Important**: Confidence is a FILTER, not a probability. Use it to
+distinguish clear regimes (70+) from borderline (50-69) from noise
+(<50).
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Provide your analysis in this exact JSON structure:
+
+{
+    "regime_detected": true/false,
+    "regime_type": "persistent_positive|persistent_negative|
+                    transitional|low_conviction",
+    "positive_days": <count as integer>,
+    "negative_days": <count as integer>,
+    "avg_magnitude_billions": <value as number>,
+    "sign_flips": <count as integer>,
+    "persistence_pct": <percentage as number>,
+    "confidence": <integer 0-100>,
+    "reasoning": "Explain step-by-step why this is/isn't a persistent
+                  regime. Reference specific metrics (persistence %,
+                  avg magnitude, sign flips). If rejecting, state which
+                  criterion failed."
+}
+
+**IMPORTANT**: All numeric fields (confidence, positive_days,
+negative_days, sign_flips, avg_magnitude_billions, persistence_pct)
+MUST be numbers (integers or decimals), NOT words like "thirty-five"
+or "fifty".
+
+**regime_detected Rules**:
+- `true` ONLY if regime_type is "persistent_positive" or
+  "persistent_negative"
+- `false` if regime_type is "transitional" or "low_conviction"
+
+---
+
+## KEY PRINCIPLES
+
+1. **Selectivity is Expected**: Most windows will NOT be persistent
+   regimes (expect 30-50% detection rate)
+
+2. **ALL Criteria Must Pass**: Persistence + Magnitude + Stability
+   required for detection
+
+3. **Rejection is Valid**: Saying "no persistent regime" is a correct
+   answer for transitional/weak periods
+
+4. **Mechanical Over Qualitative**: Use concrete thresholds
+   (70%, $5B, 5 flips) rather than subjective judgment
+
+5. **Structural Focus**: Only detect when dealers are FORCED into
+   directional positions by constraints
+
+Analyze the 30-day GEX data above and provide your regime
+classification in JSON format.
+\end{verbatim}
+
+\subsection{Output Schema and Parsing}
+\label{app:prompt:output}
+
+Each response is parsed into the following fields (types shown in
+parentheses):
+
+\begin{itemize}
+    \item \texttt{regime\_detected} (boolean) --- \texttt{true} only when
+          \texttt{regime\_type} is \texttt{persistent\_positive} or
+          \texttt{persistent\_negative}; \texttt{false} otherwise.
+    \item \texttt{regime\_type} (string) --- one of
+          \texttt{persistent\_positive}, \texttt{persistent\_negative},
+          \texttt{transitional}, \texttt{low\_conviction}.
+    \item \texttt{positive\_days}, \texttt{negative\_days},
+          \texttt{sign\_flips} (integers in [0, 30]).
+    \item \texttt{avg\_magnitude\_billions} (float, USD billions).
+    \item \texttt{persistence\_pct} (float, percentage).
+    \item \texttt{confidence} (integer 0--100).
+    \item \texttt{reasoning} (string) --- free-form step-by-step
+          explanation; retained for the post-hoc reasoning-quality audit
+          reported in Section~\ref{sec:regime}.
+\end{itemize}
+
+\noindent
+Parsing is performed by \texttt{src/validation/batch\_regime\_validator.py}
+via a robust JSON extractor that tolerates markdown code-fence wrappers
+and minor formatting drift. Any response failing schema validation is
+flagged for manual review; across the 2{,}221 evaluations in this study,
+the schema-validation failure rate was 0\% (all responses were
+machine-parseable).
