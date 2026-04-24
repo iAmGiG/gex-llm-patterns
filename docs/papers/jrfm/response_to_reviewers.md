@@ -258,18 +258,43 @@ three angles:
 > use of a single asset (SPY), the dependence on one LLM model, and the
 > lack of external validation.
 
-**Response:** *[to draft — expand §5 Limitations to explicitly cover:
-  (a) Single-asset scope: SPY only; future work covers cross-asset
-      (QQQ / IWM / individual names) validation.
-  (b) Single-model dependence: o4-mini only; future work covers
-      GPT-4o / Claude / open-source LLM replication with identical prompts.
-  (c) No external validation: no held-out dataset from an independent
-      source; future work covers CBOE / OPRA cross-check and replication on
-      additional years.]*
+**Response:** We thank the reviewer for flagging these specific omissions.
+We have renamed §5.7 to "Limitations and Future Work" and expanded it
+from six limitations to seven, with each item now explicitly tied to a
+concrete follow-up study. The three items the reviewer named are now
+addressed as follows:
 
-**Change location:** *§5.x Limitations and Future Work.*
+**(a) Single-asset scope.** The first limitation item (now titled
+"Single-asset scope") explicitly acknowledges that all results concern
+SPY, lists QQQ, IWM, individual equities, and non-equity underliers as
+relevant but untested targets, and identifies cross-asset replication as
+the single highest-priority item for future work. A pre-registered
+protocol applying the same framework to at least QQQ and one individual
+equity (e.g., NVDA or AAPL) is proposed.
 
-**Status:** todo — writing only
+**(b) Single-LLM dependence.** A dedicated second item ("Single-LLM
+dependence") acknowledges that all 2,221 evaluations used one reasoning
+model (o4-mini), so the reported detection rates are conditional on
+that model's priors. We propose a model-swap protocol covering Anthropic
+Claude, OpenAI o3, Google Gemini, and open-source reasoning models
+using identical prompts and obfuscated sequences, with cross-model
+agreement analysis as the diagnostic.
+
+**(c) Lack of independent external validation.** A new third item
+("Lack of independent external validation") acknowledges that per-window
+ground-truth metrics are computed from the same Alpha Vantage feed used
+to construct the windows, and proposes cross-validation against CBOE
+DataShop / OPRA / commercial vendors (SpotGamma, MenthorQ) and against
+related microstructure observables (realised volatility,
+implied-realised spread, opening auction imbalance).
+
+**Change location:** §5.7 Limitations and Future Work (p.\ 17 in the
+revised PDF). The subsection was relabelled from "Limitations" to
+"Limitations and Future Work" and expanded from 6 to 7 items. Each item
+now includes an explicit future-work sentence indicating how it could
+be addressed.
+
+**Status:** done
 
 ---
 

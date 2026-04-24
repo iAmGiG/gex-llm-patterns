@@ -16,6 +16,7 @@ Three findings support this interpretation. First, the LLM maintained 98\% mecha
 This selectivity contrasts with earlier 5-day trajectory testing \citep{regan2025obfuscation}, which achieved 98--100\% detection across all market conditions by identifying universal daily hedging flows. The deliberate shift to 30-day windows with strict criteria transformed the task from universal pattern matching to selective regime identification---a critical distinction for validating genuine structural reasoning.
 
 \subsection{Market Structure Evolution and 0DTE Hypothesis}
+\label{sec:discussion:0dte}
 
 The multi-year temporal analysis (Phase 5) reveals gradual regime evolution tracking 0DTE options adoption rather than sharp structural breaks. Detection progressed from 12.2\% (2020) through borderline years (3.7\% in 2021, 32.4\% in 2022) to sustained 100\% detection in 2024--2025, with average GEX magnitude growing from \$3.0B to \$20.3B.
 
@@ -41,18 +42,79 @@ This interpretation extends beyond methodological curiosity. The alpha disappear
 
 For financial practitioners, our findings suggest four actionable insights. First, providing LLMs with raw structured data rather than pre-calculated summaries yields substantially better structural detection (92.3\% vs.\ 61.5\%), challenging common pipeline designs that aggregate data before analysis---an empirical vindication of preserving informational granularity over computational convenience. Second, the detection-alpha orthogonality result cautions against using structural pattern detection directly for trading; the value lies in risk management and market surveillance applications where mechanism identification matters more than profitability. Third, the 0DTE-driven regime shift suggests that market microstructure monitoring should evolve with product innovation---static models calibrated to pre-2022 data will miss the structural reorganization that our framework detects. Fourth, the dispersed knowledge interpretation suggests that financial AI systems may achieve better performance across domains by ingesting raw, granular data rather than pre-processed summaries---a design principle applicable to credit risk, fixed income analysis, and other areas where scalar metrics are standard.
 
-\subsection{Limitations}
+\subsection{Limitations and Future Work}
+\label{sec:limitations}
 
-Six limitations merit discussion.
+Seven limitations merit explicit discussion, and we describe the specific
+future work each motivates.
 
-\noindent\textbf{Single asset}: Testing focused on SPY; cross-asset generalization (individual equities, other ETFs) remains untested. SPY's unique liquidity and 0DTE availability may limit transferability.
+\noindent\textbf{Single-asset scope}: All reported results concern SPY.
+SPY is deliberately chosen as the highest-liquidity and earliest 0DTE-enabled
+U.S.\ equity benchmark, but this choice leaves cross-asset generalization
+empirically untested. Dealer positioning in QQQ, IWM, single-name equities,
+and non-equity underliers (futures, rates, FX) may exhibit different
+regime dynamics because of differences in option chain depth, 0DTE
+availability, and the composition of end-users. Cross-asset replication is
+the single highest-priority item for future work; a pre-registered protocol
+applying the same obfuscation and regime-classification framework to at
+least one additional ETF (QQQ) and one individual equity (e.g., NVDA, AAPL)
+would directly test the transferability claim.
 
-\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures dealer inventory but not intraday gamma dynamics; high-frequency flow data could refine detection, particularly for 0DTE contracts that expire within a single trading session.
+\noindent\textbf{Single-LLM dependence}: All 2{,}221 evaluations were
+produced by a single reasoning model (OpenAI o4-mini). The detection
+rates reported here are therefore conditional on this specific model's
+prior distribution over market-structure reasoning. Model-swap
+validation with alternative reasoning families
+(e.g., Anthropic Claude, OpenAI o3, Google Gemini, open-source
+reasoning models) using identical prompts and the same obfuscated
+sequences is a direct and low-cost extension. A cross-model agreement
+analysis would sharpen the distinction between the framework's
+structural-reasoning claim and any o4-mini-specific artefacts.
 
-\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by temporal coincidence and theoretical mechanism but remains circumstantial; observational data cannot exclude alternative explanations. A natural experiment (e.g., 0DTE suspension) would provide stronger causal evidence.
+\noindent\textbf{Lack of independent external validation}: Our per-window
+ground-truth metrics (persistence, magnitude, sign flips) are computed
+from the same Alpha Vantage options feed used to construct the windows.
+We do not cross-validate detected regimes against an independent
+data source (CBOE DataShop, OPRA consolidated feed, or a commercial
+vendor such as SpotGamma or MenthorQ) or against an independent oracle
+of dealer positioning. External validation---both against a second
+options-data pipeline and against related microstructure observables
+(realised volatility, implied-realised spread, opening auction
+imbalance)---would strengthen the claim that the detected regimes
+correspond to a real, cross-verified phenomenon rather than an artefact
+of any single data provider.
 
-\noindent\textbf{Single LLM}: All experiments use OpenAI o4-mini; cross-model validation with alternative reasoning models would strengthen generalizability claims.
+\noindent\textbf{End-of-day measurement}: Our GEX\_OI approach captures
+dealer inventory at the close but not intraday gamma dynamics; high-frequency
+flow data could refine detection, particularly for 0DTE contracts that
+expire within a single trading session. Intraday GEX surface reconstruction
+from streaming OPRA is a natural extension.
 
-\noindent\textbf{Shuffle test asymmetry}: The 61\% false positive rate on 2024 shuffled data (versus 12.1\% on 2020 shuffled data) reflects extreme regime persistence rather than framework failure---2024 regimes exhibit such dominant same-sign positioning that randomizing day order rarely disrupts the aggregate signal. This asymmetry is itself informative, confirming that 2024 regimes are defined by aggregate dominance rather than temporal sequencing.
+\noindent\textbf{Causal attribution}: The 0DTE hypothesis is supported by
+temporal coincidence and a theoretical mechanism but remains
+circumstantial; observational data cannot exclude alternative explanations
+such as post-pandemic monetary-policy shifts, passive-flow concentration,
+or market-maker inventory changes. A natural experiment---for instance a
+temporary 0DTE suspension or a regulatory halt during a market stress
+episode---would provide stronger causal evidence. We treat the 0DTE
+correspondence as consistent with our structural-regime detection rather
+than as a demonstrated causal channel (see \S\ref{sec:discussion:0dte}).
 
-\noindent\textbf{Threshold sensitivity}: All 29 tested parameter configurations maintained $>$68pp discrimination, but thresholds represent empirically validated design choices rather than first-principles derivations. Future work should explore adaptive thresholding based on market conditions.
+\noindent\textbf{Shuffle test asymmetry}: The 61\% false positive rate on
+2024 shuffled data (versus 12.1\% on 2020 shuffled data) reflects extreme
+regime persistence rather than framework failure---2024 regimes exhibit
+such dominant same-sign positioning that randomizing day order rarely
+disrupts the aggregate signal. This asymmetry is itself informative,
+confirming that 2024 regimes are defined by aggregate dominance rather
+than temporal sequencing, but it means the shuffle test's diagnostic
+power is lower in high-persistence regimes and should be interpreted
+accordingly.
+
+\noindent\textbf{Threshold sensitivity}: All tested parameter
+configurations maintained substantial 2024-versus-2020 discrimination
+(see \S\ref{sec:regime} sensitivity analysis), but the chosen thresholds
+(persistence $\geq$70\%, magnitude $\geq$\$5B, flips $\leq$5) represent
+empirically validated design choices rather than first-principles
+derivations. Future work should explore adaptive thresholding that
+responds to volatility regime, contract-maturity mix, or prevailing
+options notional.
