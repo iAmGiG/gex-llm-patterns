@@ -173,7 +173,7 @@ reasoning} via obfuscation.
 **Change location:**
 
 - `01_Introduction.tex`: paragraphs 1–4 of §1 fully rewritten; §1.1
-  Research Questions, §1.2 Contributions, §1.4 Positioning, §1.5 Paper
+  Research Questions, §1.2 Contributions, §1.3 Positioning, §1.5 Paper
   Organization retained unchanged from the prior revision commits.
 - `02_Related_Work.tex`: §2.2 "Zero-Days-to-Expiration Options"
   expanded to include `dim2023odtes` critical discussion alongside the
@@ -210,13 +210,13 @@ contribution.
 
 **Change location:**
 
-- New §1.4 "Positioning" subsection (label
+- New §1.3 "Positioning" subsection (label
   `sec:introduction:positioning`) between §1 Contributions and §1 Paper
   Organization. Two paragraphs: first states the methodological primacy
   and the rationale for GEX as the demonstration domain; second explains
   that the financial findings are downstream evidence and provides a
   reader-routing note for methodology-first vs finance-first readers.
-- §6 Conclusion opening rewritten to echo the same stance before listing
+- §7 Conclusion opening rewritten to echo the same stance before listing
   the four contributions, so that the stance frames the closing summary.
 
 **Status:** done
@@ -237,7 +237,7 @@ Markov-switching regression benchmark (the textbook regime-switching
 model, `statsmodels.tsa.regime_switching.MarkovRegression`) on the
 daily SPY return series for 2020 and 2024, and additionally on the
 2024 net-GEX daily panel where the cached series is available. Details
-in new §3.9 "Markov-Switching Benchmark" and new §4.7 "Comparison
+in new §3.8 "Markov-Switching Benchmark" and new §5.6 "Comparison
 with Markov-Switching Benchmark" (with Table 6 + Figure 8,
 `fig10_hmm_agreement.png`).
 
@@ -269,27 +269,27 @@ outputs at
 and `docs/papers/paper2/figures/output/fig10_hmm_agreement.png`.
 
 **Response (part b — causal language):** Moderated in the B4 commit
-(R3.5d) above. §6 Conclusion contribution 3 now describes the 0DTE
-correspondence as "coincides with" rather than "drove"; §5.3 softens
+(R3.5d) above. §7 Conclusion contribution 3 now describes the 0DTE
+correspondence as "coincides with" rather than "drove"; §6.3 softens
 the "tipping-point dynamic strengthens the structural interpretation"
 phrasing to "is consistent with, rather than proof of"; §5.7
 Limitations explicitly names interest-rate regime, passive-flow
 concentration, and market-maker inventory as alternative
 contemporaneous factors that cannot be excluded observationally.
-Deeper §5.3 revision is still scheduled in C2 below.
+Deeper §6.3 revision is still scheduled in C2 below.
 
 **Change location:**
 
-- §3.9 Markov-Switching Benchmark (new subsection)
-- §4.7 Comparison with Markov-Switching Benchmark (new subsection,
+- §3.8 Markov-Switching Benchmark (new subsection)
+- §5.6 Comparison with Markov-Switching Benchmark (new subsection,
   Table 6, Figure 8)
 - `scripts/validation/paper2/jrfm_revision/hmm_benchmark.py` (new)
 - `docs/papers/paper2/figures/output/fig10_hmm_agreement.png` (new)
   with local copy in `docs/papers/jrfm/figures/`
-- §6 Conclusion + §5.3 + §5.7 moderations as described under R3.5d
+- §7 Conclusion + §6.3 + §6.7 moderations as described under R3.5d
 
-**Status:** (a) done; (b) done (moderations in §5.3 applied in B4 plus a
-fuller §5.3 rewrite in the C2 commit). §5.3 now explicitly (i) frames
+**Status:** (a) done; (b) done (moderations in §6.3 applied in B4 plus a
+fuller §6.3 rewrite in the C2 commit). §6.3 now explicitly (i) frames
 the 0DTE correspondence as temporal coincidence supported by a
 plausible mechanical channel rather than a demonstrated causal
 relationship, (ii) enumerates four concurrent confounders (interest
@@ -338,14 +338,14 @@ mechanical numerical thresholds embedded in the prompt itself, which
 anchor the model on concrete criteria rather than free-form judgment.
 
 **(b) Threshold sensitivity — DONE.** A post-hoc sensitivity sweep has
-been added as new §4.6 "Threshold Sensitivity" with Figure 7
+been added as new §5.5 "Threshold Sensitivity" with Figure 7
 (`fig09_threshold_sensitivity.png`). The sweep spans a 5×3×3 grid
 (persistence ∈ {60, 65, 70, 75, 80}%, magnitude ∈ {$3B, $5B, $7B},
 flips ≤ {3, 5, 7}; 45 configurations in total) applied to the 223
 Phase 3 (2024) and 220 Phase 4 (2020) per-window records already on
 disk — no new LLM queries required.
 
-Key findings reported in §4.6:
+Key findings reported in §5.5:
 
 - The 2024-vs-2020 detection gap ranges from 34.1 to 85.2 pp across
   the 45 configurations (median 63.2 pp).
@@ -370,10 +370,10 @@ for LaTeX compilation).
 
 **Change location:**
 
-- New Appendix A on pp. 20–25 (parts (a) and (c) above).
+- New Appendix A on pp. 24–29 (parts (a) and (c) above).
 - Main text §3 Methodology: brief cross-reference added to Appendix A
   where prompts were previously described in prose.
-- New §4.6 "Threshold Sensitivity" subsection with Figure 7 (part (b)).
+- New §5.5 "Threshold Sensitivity" subsection with Figure 7 (part (b)).
 
 **Status:** done
 
@@ -428,12 +428,12 @@ claim with bounded evidence rather than point estimates alone.
 contingency now reports the full suite of statistics rather than just φ
 and "p < 0.0001". Specifically:
 
-- §4.4 Phase 4 (2020 vs 2024, 223 each): Pearson's χ² = 213.67 (df=1,
+- §5.3 Phase 4 (2020 vs 2024, 223 each): Pearson's χ² = 213.67 (df=1,
   p = 2.2×10⁻⁴⁸), Yates-corrected χ² = 210.90 (p = 8.7×10⁻⁴⁸),
   Fisher's exact two-sided p = 1.8×10⁻⁵² with odds ratio 31.3,
   φ = 0.69 (refined from the previously rounded 0.672), and a risk
   difference of 69.1pp with a 95% Wald CI of [62.4, 75.7]pp.
-- §4.5 Phase 5 (2023→2024 transition, 228 vs 241): χ² = 314.4
+- §5.4 Phase 5 (2023→2024 transition, 228 vs 241): χ² = 314.4
   (p = 2.4×10⁻⁷⁰), Fisher's exact p = 9.9×10⁻⁸⁷ (OR diverges because
   all 241 2024 windows are detected), φ = 0.82 (refined from 0.783).
 - Abstract and Introduction updated to report the 2020-vs-2024
@@ -446,19 +446,19 @@ and "p < 0.0001". Specifically:
 **(d) Moderated claim language — DONE.** With CIs and the 45-configuration
 sensitivity sweep now in hand, we made two targeted moderations:
 
-- §6 Conclusion contribution 2 now reports the 69.1pp separation with
+- §7 Conclusion contribution 2 now reports the 69.1pp separation with
   explicit CI brackets on each side and Fisher's exact p, and cites the
   45-configuration robustness of the 50pp gap, rather than citing the
   separation as a standalone point estimate.
-- §6 Conclusion contribution 3 replaces "0DTE-driven structural
+- §7 Conclusion contribution 3 replaces "0DTE-driven structural
   reorganization" with language that identifies temporal coincidence and
   explicitly acknowledges alternative contemporaneous factors (interest
   rates, passive flow concentration, market-maker inventory), noting
   that stronger causal evidence would require a natural experiment.
-- §5.3 "Market Structure Evolution" similarly softens the
+- §6.3 "Market Structure Evolution" similarly softens the
   "tipping-point dynamic strengthens the structural interpretation"
   phrasing to "is consistent with, rather than proof of" and
-  cross-references §5.7 Limitations for the causal-identification
+  cross-references §6.7 Limitations for the causal-identification
   caveat.
 
 These moderations make the paper's causal claims about 0DTE match the
@@ -468,8 +468,8 @@ the statistical claims on 2020-vs-2024 separation, which the new
 
 **Change location:**
 
-- `04_Results.tex` §4.1 new "Statistical conventions" paragraph
-- `04_Results.tex` Phase 1/3 inline rates in text
+- `04_Results.tex` §5 opening "Statistical conventions" paragraph
+- `04_Results.tex` §5.1 Phase 1/3 inline rates in text
 - `04_Results.tex` Table 2 (negative controls) — CI column added
 - `04_Results.tex` Table 3 (Phase 4 comparison) — CIs on both rates
 - `04_Results.tex` Table 5 (Phase 5) — new CI column
@@ -477,8 +477,8 @@ the statistical claims on 2020-vs-2024 separation, which the new
 - `scripts/validation/paper2/jrfm_revision/bootstrap_detection_ci.py` — new reprocessing script
 
 **Status:** done — all four parts (CIs, χ²/Fisher expansion,
-window/threshold robustness in §4.6, moderated claim language in §5.3
-and §6) landed across the B1, B2, B3, B4, C2 revision commits.
+window/threshold robustness in §5.5, moderated claim language in §6.3
+and §7) landed across the B1, B2, B3, B4, C2 revision commits.
 
 ---
 
@@ -490,7 +490,7 @@ and §6) landed across the B1, B2, B3, B4, C2 revision commits.
 > theoretical.
 
 **Response:** We agree that the original discussion was too general on
-the practitioner side. The previous §5.6 "Practitioner Implications"
+the practitioner side. The previous §6.6 "Practitioner Implications"
 subsection has been renamed "Practical Implications" and restructured
 into three explicit subsubsections exactly matching the three axes the
 reviewer identified:
@@ -523,7 +523,7 @@ surveillance, and equity factor research explicitly noted; (ii) the
 calibrated to pre-2022 data need recalibration rather than drift
 correction.
 
-**Change location:** §5.6 "Practical Implications" (renamed from
+**Change location:** §6.6 "Practical Implications" (renamed from
 "Practitioner Implications"), with new `sec:discussion:practical` label
 and three new `\subsubsection` headings corresponding to the
 reviewer's three axes. The subsection expanded from one dense
@@ -569,7 +569,7 @@ DataShop / OPRA / commercial vendors (SpotGamma, MenthorQ) and against
 related microstructure observables (realised volatility,
 implied-realised spread, opening auction imbalance).
 
-**Change location:** §5.7 Limitations and Future Work (p.\ 17 in the
+**Change location:** §6.7 Limitations and Future Work (p.\ 17 in the
 revised PDF). The subsection was relabelled from "Limitations" to
 "Limitations and Future Work" and expanded from 6 to 7 items. Each item
 now includes an explicit future-work sentence indicating how it could
@@ -651,7 +651,7 @@ direct register. No changes were required on this axis.
 
 **(b) Long-sentence decomposition.** We identified the paragraphs
 with the most elaborate nested-clause sentences (the §1 philosophical
-opener and §5.5 Dispersed Knowledge were the two heaviest) and rewrote
+opener and §6.5 Dispersed Knowledge were the two heaviest) and rewrote
 them for directness. The §1 opener was fully replaced in the R3.1
 rewrite above (which removed roughly 120 words of philosophical prose).
 §5.5 was tightened in this commit by breaking three >40-word sentences
@@ -671,8 +671,8 @@ binary outcome, "dealer gamma positioning" (not "dealer gamma
 exposure" in the context of the detection task), "obfuscation"
 (not "anonymisation"). No ad-hoc substitutions were made.
 
-**Change location:** targeted tightening in §5.5 Dispersed Knowledge
-(sentences broken up); §1 opener and §5.3 Market Structure Evolution
+**Change location:** targeted tightening in §6.5 Dispersed Knowledge
+(sentences broken up); §1 opener and §6.3 Market Structure Evolution
 rewrites landed in the earlier D1 and C2 commits. Technical-term
 consistency verified throughout.
 

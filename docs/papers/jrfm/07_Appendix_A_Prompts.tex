@@ -41,9 +41,11 @@ reasoning model through the OpenAI Batch API (asynchronous, 24-hour SLA,
           \texttt{o4-mini} applies.
     \item \textbf{Response format:} not enforced via the API
           \texttt{response\_format} field; the model is instructed in
-          the prompt to return a JSON object with a specific schema and
-          complied in 100\% of the 2{,}221 responses (schema-validation
-          failure rate 0\%).
+          the prompt to return a JSON object with a specific schema. Of
+          the 1{,}307 per-window records for which raw JSON responses
+          are retained, 1{,}301 parsed cleanly (99.54\%); six failed
+          JSON parsing and are recorded with an explicit \texttt{error}
+          field and treated as non-detections.
     \item \textbf{Seed:} the OpenAI Batch API exposes a \texttt{seed}
           parameter for best-effort reproducibility; we did not set a
           seed in this study, so each evaluation reflects the model's
@@ -198,7 +200,7 @@ Use these concrete anchors to calibrate confidence:
 - Average magnitude $3-5B
 - 5-7 sign flips
 - Example: "20 negative days, avg $4B, 6 flips"
-- Note: Borderline cases should generally be REJECTED unless other
+- **Note**: Borderline cases should generally be REJECTED unless other
   factors strengthen confidence
 
 **0-49 (Reject - Not Persistent)**
@@ -217,21 +219,19 @@ distinguish clear regimes (70+) from borderline (50-69) from noise
 
 Provide your analysis in this exact JSON structure:
 
+```json
 {
     "regime_detected": true/false,
-    "regime_type": "persistent_positive|persistent_negative|
-                    transitional|low_conviction",
+    "regime_type": "persistent_positive|persistent_negative|transitional|low_conviction",
     "positive_days": <count as integer>,
     "negative_days": <count as integer>,
     "avg_magnitude_billions": <value as number>,
     "sign_flips": <count as integer>,
     "persistence_pct": <percentage as number>,
     "confidence": <integer 0-100>,
-    "reasoning": "Explain step-by-step why this is/isn't a persistent
-                  regime. Reference specific metrics (persistence %,
-                  avg magnitude, sign flips). If rejecting, state which
-                  criterion failed."
+    "reasoning": "Explain step-by-step why this is/isn't a persistent regime. Reference specific metrics (persistence %, avg magnitude, sign flips). If rejecting, state which criterion failed."
 }
+```
 
 **IMPORTANT**: All numeric fields (confidence, positive_days,
 negative_days, sign_flips, avg_magnitude_billions, persistence_pct)
@@ -292,7 +292,12 @@ parentheses):
 \noindent
 Parsing is performed by \texttt{src/validation/batch\_regime\_validator.py}
 via a robust JSON extractor that tolerates markdown code-fence wrappers
-and minor formatting drift. Any response failing schema validation is
-flagged for manual review; across the 2{,}221 evaluations in this study,
-the schema-validation failure rate was 0\% (all responses were
-machine-parseable).
+and minor formatting drift. Across the 1{,}307 per-window records for
+which the raw responses are retained in the results YAML files (Phases
+1--4 and the Phase 2 negative-control suite), the JSON parse-failure
+rate was 0.46\% (6~windows failed to parse as valid JSON and are
+recorded with an explicit \texttt{error} field; these windows are
+treated as non-detections in all aggregate rates reported in
+Section~\ref{sec:regime}). Phase 5 multi-year per-window records were
+not retained in the published pipeline; Table~\ref{tab:phase5} reports
+only the aggregate count per year.

@@ -249,7 +249,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                'Change location: new Section 1.4 "Positioning" subsection (between Contributions and Paper Organization) and Section 6 Conclusion opening (rewritten to echo the same stance before the four numbered contributions).',
+                'Change location: new Section 1.3 "Positioning" subsection (between Contributions and Paper Organization) and Section 7 Conclusion opening (rewritten to echo the same stance before the four numbered contributions).',
                 True,
             ),
         ],
@@ -284,7 +284,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         [
             ("(b) Moderated 0DTE causal language. ", True),
             (
-                'Section 5.3 "Market Structure Evolution and 0DTE Hypothesis" '
+                'Section 6.3 "Market Structure Evolution and 0DTE Hypothesis" '
                 "has been rewritten with explicit causal-inference hygiene: "
                 "the 0DTE correspondence is framed as temporal coincidence "
                 "supported by a plausible mechanical channel rather than a "
@@ -304,7 +304,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                "Change location: new Section 3.9 Markov-Switching Benchmark, new Section 4.7 Comparison with Markov-Switching Benchmark (Table 6 + Figure 8), Section 5.3 rewrite, Section 6 Conclusion contribution 3 rewrite.",
+                "Change location: new Section 3.8 Markov-Switching Benchmark, new Section 5.6 Comparison with Markov-Switching Benchmark (Table 6 + Figure 8), Section 6.3 rewrite, Section 7 Conclusion contribution 3 rewrite.",
                 True,
             ),
         ],
@@ -340,7 +340,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
                 "on disk. Results: the 2024-vs-2020 detection gap ranges "
                 "[34.1, 85.2] pp across configurations (median 63.2 pp) and "
                 "exceeds 50 pp in 40/45 configurations. Reported in new "
-                "Section 4.6 Threshold Sensitivity with Figure 7 heatmap.",
+                "Section 5.5 Threshold Sensitivity with Figure 7 heatmap.",
                 False,
             ),
         ],
@@ -364,7 +364,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                "Change location: new Appendix A (pp. 20-25 in the revised PDF), new Section 4.6 Threshold Sensitivity, cross-reference added in Section 3.5 LLM Configuration pointing to Appendix A.",
+                "Change location: new Appendix A (pp. 24-29 in the revised PDF), new Section 5.5 Threshold Sensitivity, cross-reference added in Section 3.5 LLM Configuration pointing to Appendix A.",
                 True,
             ),
         ],
@@ -418,11 +418,11 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         [
             ("(d) Moderated claim language. ", True),
             (
-                "Section 6 Conclusion contribution 2 now reports the 69.1 pp "
+                "Section 7 Conclusion contribution 2 now reports the 69.1 pp "
                 "separation with explicit CI brackets on each rate and "
                 "Fisher's exact p, and cites the 45-configuration robustness "
                 "of the 50 pp gap. Contribution 3 moderates the 0DTE-causal "
-                "language (see comment 3(b) above). Section 5.3 similarly "
+                "language (see comment 3(b) above). Section 6.3 similarly "
                 'softens "tipping-point dynamic strengthens the structural '
                 'interpretation" to "is consistent with, rather than proof '
                 'of". Statistical claims on the 2020-vs-2024 separation are '
@@ -444,7 +444,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                'The previous Section 5.6 "Practitioner Implications" has '
+                'The previous Section 6.6 "Practitioner Implications" has '
                 'been renamed "Practical Implications" and restructured '
                 "into three explicit subsubsections matching the three axes "
                 "the reviewer identified:",
@@ -488,7 +488,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                'Change location: Section 5.6 "Practical Implications" (renamed from "Practitioner Implications"), three new subsubsections.',
+                'Change location: Section 6.6 "Practical Implications" (renamed from "Practitioner Implications"), three new subsubsections.',
                 True,
             ),
         ],
@@ -499,7 +499,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                'Section 5.7 has been renamed "Limitations and Future Work" '
+                'Section 6.7 has been renamed "Limitations and Future Work" '
                 "and expanded from six limitations to seven. Each item is "
                 "now explicitly tied to a concrete follow-up study. The "
                 "three items the reviewer named are now addressed as:",
@@ -541,7 +541,7 @@ R: dict[str, list[list[tuple[str, bool]]]] = {
         ],
         [
             (
-                "Change location: Section 5.7 Limitations and Future Work (renamed, expanded 6 -> 7 items, each with explicit future-work sentence).",
+                "Change location: Section 6.7 Limitations and Future Work (renamed, expanded 6 -> 7 items, each with explicit future-work sentence).",
                 True,
             ),
         ],
@@ -658,7 +658,7 @@ ENGLISH_RESPONSE: list[list[tuple[str, bool]]] = [
     ],
     [
         (
-            "Change location: targeted tightening in Section 5.5 Dispersed Knowledge; Section 1 opener and Section 5.3 Market Structure Evolution rewrites landed in the earlier comments 1 and 3 commits; technical-term consistency verified throughout.",
+            "Change location: targeted tightening in Section 6.5 Dispersed Knowledge; Section 1 opener and Section 6.3 Market Structure Evolution rewrites landed in the earlier comments 1 and 3 commits; technical-term consistency verified throughout.",
             True,
         ),
     ],
@@ -752,12 +752,12 @@ def build() -> None:
         (
             "Is the research design appropriate?",
             "Can be improved",
-            "Addressed in Comment 3: new Markov-switching benchmark (Section 3.9 + Section 4.7) demonstrates the framework is not reducible to a volatility-regime classifier.",
+            "Addressed in Comment 3: new Markov-switching benchmark (Section 3.8 + Section 5.6) demonstrates the framework is not reducible to a volatility-regime classifier.",
         ),
         (
             "Are the methods adequately described?",
             "Can be improved",
-            "Addressed in Comment 4: new Appendix A reproduces the full LLM prompt verbatim; new Section 4.6 reports a 45-configuration threshold-sensitivity sweep; reproducibility posture documented.",
+            "Addressed in Comment 4: new Appendix A reproduces the full LLM prompt verbatim; new Section 5.5 reports a 45-configuration threshold-sensitivity sweep; reproducibility posture documented.",
         ),
         (
             "Are the results clearly presented?",
@@ -767,7 +767,7 @@ def build() -> None:
         (
             "Are the conclusions supported by the results?",
             "Can be improved",
-            "Addressed in Comments 2 and 5(d): positioning statement added to Section 1.4 and echoed in Section 6 opening; strong-claim language moderated where CIs or sensitivity warranted.",
+            "Addressed in Comments 2 and 5(d): positioning statement added to Section 1.3 and echoed in Section 7 opening; strong-claim language moderated where CIs or sensitivity warranted.",
         ),
         (
             "Are all figures and tables clear and well-presented?",
