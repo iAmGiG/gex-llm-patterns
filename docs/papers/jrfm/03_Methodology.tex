@@ -18,7 +18,7 @@ Preserved information includes: net gamma exposure values, directional gamma (ca
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig01_obfuscation.png}
-\caption{Temporal obfuscation process. Calendar dates, ticker symbols, and contextual markers are removed while preserving structural quantitative relationships. The transformation converts identifiable market data into anonymized numerical sequences.}
+\caption{Temporal obfuscation transformation. \textbf{Left:} a raw market-data record with identifying information (calendar date, ticker, and event context) visible to any LLM. \textbf{Right:} the obfuscated version that the LLM actually sees during the detection experiment --- the calendar date is replaced with a relative day label ("Day T+0"), the ticker with a generic identifier ("INDEX\_1"), and all event context is removed, while the numerical GEX, spot-price, and days-to-expiration relationships are preserved exactly. \textbf{Read this figure as:} anything the LLM correctly infers from the right-hand input must come from the numerical structure alone, not from memorised date-specific context in the training corpus.}
 \label{fig:obfuscation}
 \end{figure}
 

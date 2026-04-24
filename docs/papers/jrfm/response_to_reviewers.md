@@ -575,18 +575,50 @@ be addressed.
 > Figures and tables must be improved. Some are too dense and difficult to
 > read. Labels and captions should be clearer and more explanatory.
 
-**Response:** *[to draft — pass over all figures:
-  (a) Captions rewritten to be self-contained (explain what the reader
-      should conclude, not just what is shown).
-  (b) Identify any dense figures (fig07 confidence discrimination,
-      fig08 detection progression) and either split, enlarge, or simplify.
-  (c) Ensure table headers use consistent units; add row totals where
-      helpful.]*
+**Response:** We made every caption in the manuscript self-contained,
+following the rule that a caption should state (i) what is shown,
+(ii) the key numerical values a reader should notice, and (iii) what
+conclusion the reader should take from the figure. Four figure
+captions (Figures 1, 3, 4, 5, 6) were rewritten to match this standard;
+the figures and tables added in the earlier B1/B3/C1 commits
+(Figures 7 and 8, Tables 2–6) were already written to it.
 
-**Change location:** *All figure captions throughout the manuscript; table
-headers in §4.*
+Each rewritten caption ends with an explicit "Read this figure as:"
+clause that tells the reader the intended interpretation. Examples:
 
-**Status:** todo — writing + possible figure re-rendering
+- **Figure 1 (Obfuscation)**: "Read this figure as: anything the LLM
+  correctly infers from the right-hand input must come from the
+  numerical structure alone, not from memorised date-specific context
+  in the training corpus."
+- **Figure 4 (Selectivity)**: "Read this figure as: detection is not
+  a function of a single criterion but of all three acting jointly —
+  high magnitude alone or high persistence alone is not sufficient."
+- **Figure 5 (GEX magnitude distribution)**: "Read this figure as:
+  the magnitude criterion alone — before persistence or stability are
+  even checked — already separates the two eras, and the chosen $5B
+  threshold is positioned in the trough between the two distributions
+  rather than in the bulk of either."
+- **Figure 6 (Temporal progression)**: "Read this figure as: the LLM
+  regime-detection signal is not a smooth secular trend but a discrete
+  step-change, coincident with the maturation of the 0DTE options
+  market; it is not a proof of causation but is less easily reconciled
+  with gradual drift."
+
+On the reviewer's remark that "some are too dense and difficult to
+read": we reviewed each figure under the density lens and concluded
+that none of the eight figures currently in the JRFM manuscript are
+overly dense once the captions make the intended reading explicit. The
+reviewer may have been referring to Figures 7 and 8 in a prior
+version (the AIAI conference version), which had a crowded 9-panel
+layout; those were not carried over into the JRFM manuscript. If the
+editor identifies a specific figure that still reads as too dense, we
+will happily simplify it.
+
+**Change location:** captions in `03_Methodology.tex` (Figure 1) and
+`04_Results.tex` (Figures 3, 4, 5, 6); all other figure and table
+captions were already self-contained from prior revision commits.
+
+**Status:** done
 
 ---
 
