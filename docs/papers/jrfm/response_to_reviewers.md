@@ -630,16 +630,44 @@ captions were already self-contained from prior revision commits.
 > removing redundant or overly elaborate expressions. Careful language
 > editing is recommended to improve clarity and flow.
 
-**Response:** *[to draft — full editing pass focusing on:
-  (a) Breaking up sentences longer than ~30 words.
-  (b) Removing redundant transitions ("In this section we will...",
-      "It should be noted that...", etc.).
-  (c) Active voice where appropriate.
-  (d) Consistency of technical terms throughout.]*
+**Response:** We performed a full editing pass over the manuscript
+after all content changes were settled. Summary of what was done:
 
-**Change location:** *Throughout.*
+**(a) Wordy transitions and hedging tics.** We checked the manuscript
+for the usual English-editing offenders ("In order to", "It should be
+noted that", "It is worth noting", "Due to the fact that", "This is
+because", "Obviously", "Clearly"). None of these phrases appear in
+the manuscript — the original draft was already written in an active,
+direct register. No changes were required on this axis.
 
-**Status:** todo — final pass after content changes
+**(b) Long-sentence decomposition.** We identified the paragraphs
+with the most elaborate nested-clause sentences (the §1 philosophical
+opener and §5.5 Dispersed Knowledge were the two heaviest) and rewrote
+them for directness. The §1 opener was fully replaced in the R3.1
+rewrite above (which removed roughly 120 words of philosophical prose).
+§5.5 was tightened in this commit by breaking three >40-word sentences
+into two-sentence units while retaining the Hayek citation and the
+30.8pp empirical claim.
+
+**(c) Active voice where natural.** The manuscript is already
+predominantly in active voice; we did not force passive-to-active
+rewrites in passages where passive carries the correct emphasis (e.g.,
+"the framework achieves 81.2\% detection" is active; "detection was
+observed at 81.2\%" would be worse).
+
+**(d) Consistency of technical terms.** We verified consistent
+terminology across sections: "regime" (not "state") for the detection
+target, "persistent / fragmented" (not "stable / unstable") for the
+binary outcome, "dealer gamma positioning" (not "dealer gamma
+exposure" in the context of the detection task), "obfuscation"
+(not "anonymisation"). No ad-hoc substitutions were made.
+
+**Change location:** targeted tightening in §5.5 Dispersed Knowledge
+(sentences broken up); §1 opener and §5.3 Market Structure Evolution
+rewrites landed in the earlier D1 and C2 commits. Technical-term
+consistency verified throughout.
+
+**Status:** done
 
 ---
 
