@@ -7,7 +7,7 @@ Regimes Through Temporal Obfuscation*
 
 **Submitted:** 29 March 2026
 **Reviews received:** 18 April 2026
-**Response drafted:** in progress
+**Response drafted:** 24 April 2026 (point-by-point complete; ready for portal upload)
 
 ---
 
@@ -469,7 +469,9 @@ the statistical claims on 2020-vs-2024 separation, which the new
 - `references.bib` — added `brown2001interval` for Wilson score cite
 - `scripts/validation/paper2/jrfm_revision/bootstrap_detection_ci.py` — new reprocessing script
 
-**Status:** (a) done; (b/c/d) todo
+**Status:** done — all four parts (CIs, χ²/Fisher expansion,
+window/threshold robustness in §4.6, moderated claim language in §5.3
+and §6) landed across the B1, B2, B3, B4, C2 revision commits.
 
 ---
 
