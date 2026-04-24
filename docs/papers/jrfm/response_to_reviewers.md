@@ -109,11 +109,79 @@ every change (page / section / paragraph) in the revised manuscript.
 > (especially 2022–2025) on options market microstructure, gamma exposure,
 > and 0DTE dynamics must be added and critically discussed.
 
-**Response:** *[to draft]*
+**Response:** We rewrote §1 Introduction to address each element the
+reviewer asked for:
 
-**Change location:** *§1 Introduction, pp. TBD. Revised text shown in red.*
+**(i) Shortened and less philosophical.** The original paragraph-1
+opener ("The decisive question confronting any deployment of large
+language models ...") has been removed. The new §1 opens with a
+two-sentence, direct statement of the validation problem and why it
+is first-order in finance specifically.
 
-**Status:** todo
+**(ii) Explicit research gap.** A new paragraph titled "Research gap"
+(in bold) follows the opener. It names what prior literature has done
+independently — dealer-gamma microstructure
+\citep{ni2005stock,garleanu2009demand,anderegg2022impact,dim2023odtes,dim2025zero},
+0DTE growth and volatility impact
+\citep{cboe2024zero,fishman2023gamma,cboe2025spx0dte}, and LLM-reasoning
+probing in non-financial domains
+\citep{wei2022chain,kojima2022large,mccoy2023embers} — and states
+precisely which combination has not been attempted: an LLM
+structural-reasoning validation method that (a) controls for
+training-data memorisation of specific events and dates, (b) is tested
+at a scale comparable to the target domain, and (c) discriminates
+genuine structural detection from reproduction of a volatility-regime
+classifier. The Markov-switching benchmark added per R3.3a
+(§\ref{sec:regime:benchmark}) is then introduced as the direct test of
+element (c).
+
+**(iii) Why 0DTE matters here.** A new "Why 0DTE matters here"
+paragraph replaces the previous "practical urgency" framing. It
+explains that 0DTE growth is a natural setting for an obfuscation study
+because it created an observable structural shift \emph{within the
+training horizon of modern LLMs} — so if the LLM reports 2024 as
+persistent-regime and 2020 as fragmented-regime after dates/tickers are
+stripped, it cannot be recalling that 2024 contained the word "0DTE".
+
+**(iv) 2022–2025 references added and critically discussed.** The
+key addition is \citet{dim2023odtes} ("0DTEs: Trading, Gamma Risk and
+Volatility Propagation", SSRN 4692190), which provides the first
+systematic empirical study of 0DTE dealer inventory and is now cited in
+§1 and critically discussed in §2.2 alongside \citet{dim2025zero}. The
+new discussion notes that Dim, Eraker & Vilkov (2023) establishes
+dealer-hedging rather than information flow as the dominant channel
+through which 0DTE trading affects the underlying, and that this
+characterisation is consistent with our multi-year empirical panel in
+§4 (detection of persistent dealer-gamma regimes growing from 3.7% in
+2021 to 100% in 2024–2025). We retain the existing 2022–2025 refs
+already cited (Anderegg et al.\ 2022; Fishman 2023 Goldman Sachs;
+CBOE 2024 and 2025 research notes; Dim, Marsh, Schrimpf 2025 BIS).
+
+**(v) Differentiation from financial-econometrics literature.** §2.5
+"Regime Detection in Financial Markets" and §2.7 "Research Gap"
+already state the differentiation from Hamilton (1989),
+Ang & Bekaert (2002), and Nystrup et al. (2018) regime-detection
+traditions. The new §1 Research Gap paragraph restates this in terms
+the LLM-validation reader will recognise: prior regime detection
+detects regimes through \emph{statistical properties of observable
+outcomes} (volatility clustering, return distributions); our
+contribution detects regimes through \emph{dealer positioning
+constraints} (a microstructure-grounded signal with explicit causal
+interpretation) \emph{while holding the LLM accountable for its own
+reasoning} via obfuscation.
+
+**Change location:**
+
+- `01_Introduction.tex`: paragraphs 1–4 of §1 fully rewritten; §1.1
+  Research Questions, §1.2 Contributions, §1.4 Positioning, §1.5 Paper
+  Organization retained unchanged from the prior revision commits.
+- `02_Related_Work.tex`: §2.2 "Zero-Days-to-Expiration Options"
+  expanded to include `dim2023odtes` critical discussion alongside the
+  existing `dim2025zero`.
+- `references.bib`: new entry `dim2023odtes` (Dim, Eraker & Vilkov,
+  SSRN 4692190, November 2023) added in the 0DTE section.
+
+**Status:** done
 
 ---
 
