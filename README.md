@@ -2,9 +2,9 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Paper 1](https://img.shields.io/badge/Paper%201-IEEE%20BigData%202025-success.svg)](https://arxiv.org/abs/2512.17923)
-[![Paper 2 (AIAI)](https://img.shields.io/badge/Paper%202-AIAI%202026%20Accepted-success.svg)](docs/papers/paper2/aiai/)
-[![Paper 2 (JRFM)](https://img.shields.io/badge/Paper%202-JRFM%20Under%20Review-yellow.svg)](docs/papers/jrfm/)
+[![IEEE BigData 2025](https://img.shields.io/badge/IEEE%20BigData-2025%20Published-success.svg)](https://arxiv.org/abs/2512.17923)
+[![AIAI 2026](https://img.shields.io/badge/AIAI-2026%20Accepted-success.svg)](docs/papers/paper2/aiai/)
+[![JRFM (MDPI)](https://img.shields.io/badge/JRFM%20(MDPI)-Under%20Review-yellow.svg)](docs/papers/jrfm/)
 [![Research](https://img.shields.io/badge/Research-PhD%20Dissertation-purple.svg)](docs/papers/research_roadmap.md)
 
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2018.1-336791.svg)](https://www.postgresql.org/)
@@ -24,7 +24,7 @@ PhD research investigating whether Large Language Models can detect structural c
 
 ## Key Results
 
-### Single-Day Detection (Paper 1)
+### Single-Day Detection (IEEE BigData 2025)
 
 | Metric | Result |
 |--------|--------|
@@ -35,7 +35,7 @@ PhD research investigating whether Large Language Models can detect structural c
 
 **Finding**: LLMs reconstruct dealer positioning from raw strike-level data, outperforming pre-calculated metrics — empirical evidence that scalar GEX aggregation discards structural signal.
 
-### Multi-Day Regime Detection (Paper 2)
+### Multi-Day Regime Detection (AIAI 2026)
 
 | Metric | Result |
 |--------|--------|
@@ -55,23 +55,32 @@ Stable detection (68–74% quarterly) persists while economic profitability coll
 
 ## Research Papers
 
-### Paper 1: Single-Day Obfuscation Testing ✅ Published
+### IEEE BigData 2025 ✅ Published — Single-Day Obfuscation Testing
 
 **Title**: *Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing*
 
 - **arXiv**: [2512.17923](https://arxiv.org/abs/2512.17923)
-- **Venue**: IEEE LLM-Finance 2025 (IEEE BigData, Macau)
+- **Venue**: 2nd IEEE Workshop on LLMs for Finance @ IEEE BigData 2025 (Dec 2025, Macau)
 - **LaTeX**: [`docs/papers/paper1/`](docs/papers/paper1/)
-- **Status**: Published, journal revision with 5 MC defenses complete
+- **Headline**: 71.5% obfuscated detection, 90.9% predictive accuracy on forward returns
 
-### Paper 2: 30-Day Regime Detection
+### AIAI 2026 ✅ Accepted — 30-Day Regime Detection
 
 **Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
 
-- **Core finding**: 2023→2024 structural shift driven by 0DTE adoption
-- **Status**: ✅ Accepted at AIAI 2026 (camera-ready May 2026) · 🔄 Under review at JRFM (MDPI)
-- **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JRFM/MDPI](docs/papers/jrfm/)
-- **LaTeX**: [`docs/papers/paper2/`](docs/papers/paper2/) (AIAI), [`docs/papers/jrfm/`](docs/papers/jrfm/) (JRFM)
+- **Venue**: IFIP International Conference on AI Applications and Innovations (Springer LNCS; camera-ready May 2026)
+- **LaTeX**: [`docs/papers/paper2/aiai/`](docs/papers/paper2/aiai/)
+- **Headline**: 81.2% detection (2024) vs 12.1% (2020) — 69.1pp separation, φ = 0.672, p < 0.0001 over 2,221 evaluations
+
+### JRFM (MDPI) 🔄 Under Review — Combined Methodology + Regime Detection
+
+**Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
+
+A journal-length submission that combines the obfuscation methodology validated at IEEE BigData 2025 with the multi-day regime-detection results from the AIAI 2026 paper, plus reviewer-driven additions: full prompt reproducibility, bootstrap CIs, χ² + Fisher contingency tests, threshold sensitivity, and a Markov-switching benchmark.
+
+- **Venue**: Journal of Risk and Financial Management (MDPI)
+- **LaTeX**: [`docs/papers/jrfm/`](docs/papers/jrfm/)
+- **Status**: Major revision (R3 round) submitted April 2026
 
 ### Future Directions
 
@@ -139,13 +148,14 @@ gex-llm-patterns/
 │   ├── validation/          # Obfuscation & regime classification
 │   └── data_sources/        # Alpha Vantage, Polygon clients
 ├── scripts/
-│   ├── validation/          # Paper 1 & 2 validation pipelines
+│   ├── validation/          # IEEE BigData + AIAI/JRFM validation pipelines
 │   ├── analysis/            # Sensitivity analysis, figures
 │   └── data_collection/     # Intraday OI monitor
 ├── docs/
 │   ├── papers/
-│   │   ├── paper1/          # Single-day obfuscation (IEEE BigData 2025, published)
-│   │   ├── paper2/          # Regime detection (multi-venue — AIAI accepted, JRFM under review)
+│   │   ├── paper1/          # Single-day obfuscation source — IEEE BigData 2025 (published)
+│   │   ├── paper2/          # Regime detection source — AIAI 2026 (accepted)
+│   │   ├── jrfm/            # Combined journal submission — JRFM/MDPI (under review)
 │   │   └── extensions/      # Forward-looking research directions (snapshot)
 │   └── presentations/       # PhD symposium, fundamentals
 ├── reports/                  # Validation results (YAML)
