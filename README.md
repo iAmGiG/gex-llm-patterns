@@ -2,7 +2,9 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Paper 1](https://img.shields.io/badge/Paper%201-arXiv%3A2512.17923-b31b1b.svg)](https://arxiv.org/abs/2512.17923)
+[![Paper 1](https://img.shields.io/badge/Paper%201-IEEE%20BigData%202025-success.svg)](https://arxiv.org/abs/2512.17923)
+[![Paper 2 (AIAI)](https://img.shields.io/badge/Paper%202-AIAI%202026%20Accepted-success.svg)](docs/papers/paper2/aiai/)
+[![Paper 2 (JRFM)](https://img.shields.io/badge/Paper%202-JRFM%20Under%20Review-yellow.svg)](docs/papers/jrfm/)
 [![Research](https://img.shields.io/badge/Research-PhD%20Dissertation-purple.svg)](docs/papers/research_roadmap.md)
 
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2018.1-336791.svg)](https://www.postgresql.org/)
@@ -68,8 +70,8 @@ Stable detection (68–74% quarterly) persists while economic profitability coll
 
 - **Core finding**: 2023→2024 structural shift driven by 0DTE adoption
 - **Status**: ✅ Accepted at AIAI 2026 (camera-ready May 2026) · 🔄 Under review at JRFM (MDPI)
-- **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JFQA/Cambridge](docs/papers/paper2/jfqa/)
-- **LaTeX**: [`docs/papers/paper2/`](docs/papers/paper2/)
+- **Formats**: [AIAI/Springer LNCS](docs/papers/paper2/aiai/), [JRFM/MDPI](docs/papers/jrfm/)
+- **LaTeX**: [`docs/papers/paper2/`](docs/papers/paper2/) (AIAI), [`docs/papers/jrfm/`](docs/papers/jrfm/) (JRFM)
 
 ### Future Directions
 
@@ -81,7 +83,7 @@ Research extensions not pursued within this repository (cross-asset generalizati
 
 ### Obfuscation Testing
 
-```
+```text
 Raw:        SPY, 2024-03-15: Net GEX: -$32.9B, Flip: $485.00
 Obfuscated: Day T+0, INDEX_1: Net GEX: -$32.9B, Flip: $485.00
 ```
@@ -91,6 +93,7 @@ Remove dates, tickers, events → preserve only quantitative structure → force
 ### WHO → WHOM → WHAT Causal Framework
 
 Every detection must specify:
+
 - **WHO**: The constrained actor (e.g., dealers with negative gamma)
 - **WHOM**: The affected parties (e.g., directional traders)
 - **WHAT**: The forced mechanism (e.g., pro-cyclical hedging amplifying volatility)
@@ -100,7 +103,7 @@ Every detection must specify:
 | Criterion | Threshold | Purpose |
 |-----------|-----------|---------|
 | Persistence | ≥ 70% days same sign | Exceeds random binomial (~2.2σ) |
-| Magnitude | ≥ $5B average |GEX| | Economically significant positioning |
+| Magnitude | ≥ $5B average \|GEX\| | Economically significant positioning |
 | Stability | ≤ 5 sign flips | Sustained directional bias |
 
 ---
@@ -108,14 +111,17 @@ Every detection must specify:
 ## Infrastructure
 
 ### Database
+
 - **PostgreSQL 18.1**: 81.8M contracts, 50 symbols, 2020–2025 (20.58 GB)
 - **Intraday snapshots**: Yearly-partitioned table, 21 snapshots/day
 
 ### Data Sources
+
 - **Alpha Vantage Premium**: Historical options chains (1000 calls/min)
 - **Polygon.io**: Stock price data (free tier)
 
 ### LLM
+
 - **OpenAI o4-mini**: Reasoning model via Batch API
 - **Cost**: $11.07 for all 2,221 evaluations
 
@@ -123,7 +129,7 @@ Every detection must specify:
 
 ## Project Structure
 
-```
+```text
 gex-llm-patterns/
 ├── src/
 │   ├── agents/              # LLM market mechanics agent
@@ -191,6 +197,6 @@ GNU Affero General Public License v3.0 — see [LICENSE](LICENSE).
 
 ---
 
-**Last Updated**: March 2026
+**Last Updated**: April 2026
 **Contact**: Christopher Regan (`cregan1@kennesaw.edu`) · Ying Xie (`yxie2@kennesaw.edu`)
 **Institution**: Kennesaw State University, College of Computing and Software Engineering
