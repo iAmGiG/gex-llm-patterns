@@ -277,8 +277,8 @@ def plot_agreement(results: list[dict]) -> None:
     ax1.legend(loc="upper left")
     ax1.set_title("Detection rate: LLM vs Markov-switching")
     for i, (l, h) in enumerate(zip(llm_rates, hmm_rates)):
-        ax1.text(i - w / 2, l + 1.5, f"{l:.1f}%", ha="center", fontsize=9)
-        ax1.text(i + w / 2, h + 1.5, f"{h:.1f}%", ha="center", fontsize=9)
+        ax1.text(i - w / 2, l + 1.5, f"{l:.1f}%", ha="center", fontsize=12)
+        ax1.text(i + w / 2, h + 1.5, f"{h:.1f}%", ha="center", fontsize=12)
 
     colors = ["#2ca02c" if k > 0.4 else "#d62728" if k < 0.2 else "#bcbd22" for k in kappas]
     ax2.bar(x, kappas, color=colors)
@@ -290,13 +290,13 @@ def plot_agreement(results: list[dict]) -> None:
     ax2.set_ylabel("Cohen's κ")
     ax2.set_ylim(-0.3, 1.0)
     ax2.set_title("Agreement (LLM vs Markov-switching)")
-    ax2.legend(loc="upper right", fontsize=8)
+    ax2.legend(loc="upper right", fontsize=12)
     for i, k in enumerate(kappas):
-        ax2.text(i, k + 0.02 if k >= 0 else k - 0.06, f"{k:.2f}", ha="center", fontsize=9)
+        ax2.text(i, k + 0.02 if k >= 0 else k - 0.06, f"{k:.2f}", ha="center", fontsize=12)
 
     fig.suptitle(
         "Markov-switching benchmark versus LLM regime detection",
-        fontsize=11,
+        fontsize=13,
     )
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUTPUT_PNG, dpi=150, bbox_inches="tight")

@@ -32,19 +32,21 @@ def create_figure():
     plt.style.use("default")
 
     # Create figure - slightly taller to fit legend
-    fig, ax = plt.subplots(figsize=(10, 6.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(10, 7.0), dpi=300)
     fig.patch.set_facecolor(IEEE_THEME["background"])
     ax.set_facecolor(IEEE_THEME["background"])
     ax.set_xlim(0, 10)
-    ax.set_ylim(-0.3, 6)
+    ax.set_ylim(-0.3, 6.7)
     ax.axis("off")
 
-    # Title - repositioned for compact layout
+    # Title - nudged upward (with BEFORE/AFTER callouts bumped to fontsize 17,
+    # the previous layout clipped this subtitle horizontally against the
+    # callout labels; +0.5 units of vertical breathing room fixes it).
     ax.text(
         5,
-        5.7,
+        6.4,
         "Temporal Obfuscation Process",
-        fontsize=16,
+        fontsize=18,
         fontweight="bold",
         ha="center",
         va="top",
@@ -52,9 +54,9 @@ def create_figure():
     )
     ax.text(
         5,
-        5.3,
+        5.95,
         "Preventing LLM Memorization While Preserving Structural Information",
-        fontsize=10,
+        fontsize=12,
         ha="center",
         va="top",
         color=IEEE_THEME["dim"],
@@ -73,7 +75,7 @@ def create_figure():
         before_x + 1.6,
         before_y + 0.65,
         "BEFORE",
-        fontsize=15,
+        fontsize=17,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -83,7 +85,7 @@ def create_figure():
         before_x + 1.6,
         before_y + 0.35,
         "Original Data",
-        fontsize=11,
+        fontsize=13,
         ha="center",
         va="bottom",
         color=IEEE_THEME["dim"],
@@ -116,14 +118,14 @@ def create_figure():
     data_y = before_y - 0.5
     for label, value, is_redacted in original_data:
         ax.text(
-            before_x + 0.2, data_y, label, fontsize=10, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
+            before_x + 0.2, data_y, label, fontsize=12, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
         )
         color = OBFUSCATION_COLORS["redact"] if is_redacted else OBFUSCATION_COLORS["preserve"]
         ax.text(
             before_x + 1.5,
             data_y,
             value,
-            fontsize=10,
+            fontsize=12,
             ha="left",
             va="top",
             fontweight="bold",
@@ -149,7 +151,7 @@ def create_figure():
         5.0,
         3.7,
         "OBFUSCATION",
-        fontsize=10,
+        fontsize=12,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -168,7 +170,7 @@ def create_figure():
         5.0,
         2.3,
         transform_text,
-        fontsize=8,
+        fontsize=12,
         ha="center",
         va="top",
         color=IEEE_THEME["text"],
@@ -193,7 +195,7 @@ def create_figure():
         after_x + 1.6,
         after_y + 0.65,
         "AFTER",
-        fontsize=15,
+        fontsize=17,
         fontweight="bold",
         ha="center",
         va="bottom",
@@ -203,7 +205,7 @@ def create_figure():
         after_x + 1.6,
         after_y + 0.35,
         "Obfuscated Data",
-        fontsize=11,
+        fontsize=13,
         ha="center",
         va="bottom",
         color=IEEE_THEME["dim"],
@@ -236,7 +238,7 @@ def create_figure():
     data_y = after_y - 0.5
     for label, value, is_placeholder in obfuscated_data:
         ax.text(
-            after_x + 0.2, data_y, label, fontsize=10, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
+            after_x + 0.2, data_y, label, fontsize=12, ha="left", va="top", color=IEEE_THEME["dim"], family="monospace"
         )
         if is_placeholder:
             color = IEEE_THEME["dim"]
@@ -248,7 +250,7 @@ def create_figure():
             after_x + 1.5,
             data_y,
             value,
-            fontsize=10,
+            fontsize=12,
             ha="left",
             va="top",
             fontweight="bold",
@@ -280,7 +282,7 @@ def create_figure():
         1.45,
         legend_y,
         "REMOVED: Temporal identifiers that could enable memorization",
-        fontsize=8,
+        fontsize=12,
         ha="left",
         va="center",
         color=IEEE_THEME["text"],
@@ -301,7 +303,7 @@ def create_figure():
         1.45,
         legend_y - 0.4,
         "PRESERVED: Structural metrics required for regime detection",
-        fontsize=8,
+        fontsize=12,
         ha="left",
         va="center",
         color=IEEE_THEME["text"],
