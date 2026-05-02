@@ -7,7 +7,7 @@ Before extending to multi-day regimes, we establish that LLMs can detect single-
 
 Applied to 242 trading days (SPY, 2024), the obfuscation framework achieved 71.5\% detection of dealer hedging patterns using unbiased prompts, with 91.2\% predictive accuracy on forward returns. The WHO$\rightarrow$WHOM$\rightarrow$WHAT causal framework achieved $>$90\% correct specification across all three components, confirming the model articulates mechanical reasoning rather than pattern labels.
 
-Detection remained stable across quarters: 68.2\% (Q1), 70.5\% (Q2), 72.8\% (Q3), and 73.6\% (Q4), with no statistically significant seasonal variation ($p = 0.84$). This temporal stability is critical---it confirms the framework identifies structural properties rather than period-specific memorization.
+Detection remained stable across quarters: 68.2\% (Q1), 70.5\% (Q2), 72.8\% (Q3), and 73.6\% (Q4), with no statistically significant seasonal variation ($p = 0.84$). This temporal stability is critical---it confirms the framework identifies structural properties rather than period-specific memorization. \textit{This addresses RQ1: structural reasoning persists when memorizable cues are removed.}
 
 \subsection{Raw Chain Validation}
 \label{subsec:raw_chain}
@@ -36,7 +36,7 @@ Avg reasoning score & 5.5/6 \\
 \end{tabular}
 \end{table}
 
-This result establishes that parametric GEX represents \textit{lossy compression} of structural signal: the scalar aggregation discards strike-level distribution information that enables the model to identify dealer positioning with higher fidelity. The finding has practical implications for financial data pipeline design---providing LLMs with raw, structured data rather than pre-processed summaries may yield superior analytical performance across domains.
+This result establishes that parametric GEX represents \textit{lossy compression} of structural signal: the scalar aggregation discards strike-level distribution information that enables the model to identify dealer positioning with higher fidelity. The finding has practical implications for financial data pipeline design---providing LLMs with raw, structured data rather than pre-processed summaries may yield superior analytical performance across domains. \textit{This addresses RQ2: scalar GEX is dominated by raw strike-level data for structural detection.}
 
 \subsection{Detection-Alpha Orthogonality}
 
@@ -77,7 +77,7 @@ Figure~\ref{fig:validation_pipeline} summarizes detection rates across all valid
 
 \subsection{Phase 1--3: Baseline and Full-Year Validation}
 
-Phase 1 established a 71.2\% detection rate on Q1 2024 (37/52 windows; 95\% CI [57.7, 82.7]\%), with strong discrimination: detected windows averaged 95.8\% persistence versus 58.0\% for rejected windows (+37.8 pp gap), and \$13.1B versus \$5.9B magnitude (+\$7.2B gap). Phase 3 extended to full 2024 (223 windows), finding 81.2\% detection (181/223; 95\% CI [75.8, 86.1]\%)---100\% persistent negative regimes with no false classifications on regime type. The framework correctly rejected 42 windows (18.8\%) exhibiting February--March volatility (6--10 sign flips).
+Phase 1 established a 71.2\% detection rate on Q1 2024 (37/52 windows; 95\% CI [57.7, 82.7]\%), with strong discrimination: detected windows averaged 95.8\% persistence versus 58.0\% for rejected windows (+37.8 pp gap), and \$13.1B versus \$5.9B magnitude (+\$7.2B gap). Phase 3 extended to full 2024 (223 windows), finding 81.2\% detection (181/223; 95\% CI [75.8, 86.1]\%)---100\% persistent negative regimes with no false classifications on regime type. The framework correctly rejected 42 windows (18.8\%) exhibiting February--March volatility (6--10 sign flips). \textit{This addresses RQ3: 81.2\% detection paired with 18.8\% principled rejection demonstrates criterion-based discrimination, not base-rate guessing.}
 
 \subsection{Phase 2: Negative Controls}
 
@@ -161,7 +161,7 @@ Phase 5 extended analysis to 1,412 windows across six years, revealing gradual r
 \end{tabular}
 \end{table}
 
-Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation. The 2023$\rightarrow$2024 transition is statistically unambiguous: Pearson's $\chi^2 = 314.4$ ($\text{df} = 1$, $p = 2.4 \times 10^{-70}$), Fisher's exact $p = 9.9 \times 10^{-87}$ (odds ratio diverges because all 241 windows in 2024 are detected), and $\varphi = 0.82$. This marks a structural reorganization of dealer positioning rather than a gradual drift. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure.
+Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation. The 2023$\rightarrow$2024 transition is statistically unambiguous: Pearson's $\chi^2 = 314.4$ ($\text{df} = 1$, $p = 2.4 \times 10^{-70}$), Fisher's exact $p = 9.9 \times 10^{-87}$ (odds ratio diverges because all 241 windows in 2024 are detected), and $\varphi = 0.82$. This marks a structural reorganization of dealer positioning rather than a gradual drift. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure. \textit{This addresses RQ4: the 2023$\rightarrow$2024 discontinuity is consistent with 0DTE-driven structural reorganization, not gradual secular drift.}
 
 \begin{figure}[H]
 \centering

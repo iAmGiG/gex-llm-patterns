@@ -691,3 +691,86 @@ consistency verified throughout.
 - [ ] R3.8 — Figure / table caption pass
 - [ ] R3.9 — English editing pass (last)
 - [ ] Final: regenerate `Regan_Xie_JRFM.pdf`, update submission zip
+
+---
+
+# Round 2 — Editor + Reviewer 2 + Reviewer 4 (post-jrfm-4256551 submission)
+
+After the round-1 close-out submission, the journal returned a new round of reviews from the Editor and two additional reviewers (labelled **Reviewer 2** and **Reviewer 4** in the new round). This section summarizes how each round-2 comment is addressed; the round-1 R1/R2/R3 responses above are unchanged.
+
+## Editor — reference audit
+
+> *"Some of the references were taken from arXiv and you should carefully check whether you can still use them as a valid reference. In addition, we would like to ask you to verify whether (Anderegg et al., 2022) is a valid reference. If it is not, please correct it during the revision process."*
+
+Audit conducted across all references. Findings and actions:
+
+1. **`anderegg2022impact` was materially incorrect.** The submitted bib entry listed authors "Anderegg, Cem and Sokolov, Kris" with title "The Impact of Gamma Hedging on the Market" and venue "SqueezeMetrics Technical Report" — none of which are the actual paper. The correct citation is Anderegg, Benjamin and Ulmann, Florian and Sornette, Didier (2022), "The Impact of Option Hedging on the Spot Market Volatility," *Journal of International Money and Finance*, vol. 124, art. 102627, DOI `10.1016/j.jimonfin.2022.102627`. The bib entry has been replaced with the correct peer-reviewed `@article` form. We additionally verified that each citation site is supported by the JIMF paper's content (counterparty framework, gamma-hedging-driven volatility); the one site that referenced an equity-specific call/put sign convention not covered by the JIMF (FX) paper has been re-routed to `\citep{garleanu2009demand,spotgamma2021}` (Methodology, Section 3.5).
+
+2. **`kim2024financial` (Kim/Muhn/Nikolaev 2024) was withdrawn by the authors for data-integrity reasons.** Citing a withdrawn paper as evidence in the literature review is no longer appropriate. The bib entry has been removed and the two body citation sites (Section 2.4 LLMs in Finance; Section 2.7 Research Gap) have been rewritten to cite `lopezlira2025memorization` and `dong2024generalization` instead, which preserve the memorization-risk framing with peer-reviewed/replicated sources.
+
+3. **`dim2025zero` did not exist in the form cited.** The bib entry referenced "Dim, Marsh, Schrimpf — BIS Working Paper, forthcoming"; web verification could not confirm such a paper exists. The actual current Dim et al. 0DTE work is Adams, Dim, Eraker, Fontaine, Ornthanalai, Vilkov (2025) *Do S\&P500 Options Increase Market Volatility? Evidence from 0DTEs*, SSRN id 5641974. The bib entry has been replaced (renamed to `adams2025zerodte`) and all six body citation sites updated. Where the previous text claimed the source documented an *increase* in volatility, the wording has been softened to reflect Adams et al.'s actual finding that 0DTE proliferation has *fundamentally restructured* dealer hedging dynamics, with positions in longer-dated options that subsequently become 0DTE driving the bulk of the structural shift.
+
+4. **arXiv preprints labelled explicitly.** `lopez2023can` and `yang2024tradingagents` are still arXiv-only; both have been reformatted from `@article` to `@misc` with explicit `howpublished = {arXiv preprint arXiv:NNNN.NNNNN}` and `note = {Preprint}` so the preprint status is unambiguous in the rendered bibliography.
+
+## Reviewer 2 — compactness and p-value verification
+
+> *"Over all the manuscript is too long and very wide, whether it is possible to present the form in a compact form."*
+
+A compactness pass has been applied throughout, taking the manuscript from 31 pages to 29 pages while preserving every R3.x reviewer-mandated addition (HMM benchmark, threshold-sensitivity sweep, confidence intervals, Appendix A, expanded Limitations, Practical Implications subsubsections). Specific reductions:
+
+- **Section 5.4** ("Temporal Obfuscation as Generalizable Methodology") removed; the cross-domain generalization point is preserved in the Conclusion's Future Directions paragraph.
+- **Section 5.5** (Hayek/dispersed-knowledge) compressed from three paragraphs to one, retaining the core Hayek-grounded reading of the raw-chain superiority and the parallel Kirzner-cited orthogonality interpretation.
+- **Sections 5.1 and 5.2** (bridge and "Validating Structural Reasoning") condensed from four paragraphs to two.
+- **Methodology dedupe**: the WHO→WHOM→WHAT worked example (redundant with the framework definition immediately preceding it) has been removed; the GEX positive/negative interpretation paragraph has been compressed to one sentence; the obfuscation five-step list has been converted from a numbered list to inline enumeration; the obfuscation example block has been collapsed from a two-block verbatim layout to a single inline example.
+- **Introduction**: the opening epistemological framing has been tightened, the four Research Questions have been de-prosed (the "this tests whether..." trailing elaborations have been removed), and the Contributions list has been collapsed from six enumerated items to a four-item inline contribution paragraph.
+- **Conclusion**: the four numbered contributions have been tightened to a single sentence each, and a redundant footnote duplicating the Data Availability statement has been removed.
+- **Positioning subsection** (§1.4) compressed from two paragraphs to one while preserving the methodological-versus-empirical framing requested by R3.2.
+
+> *"I am also eager to know whether your p values are correct: such as p = 2.4 × 10⁻⁷⁰ or Fisher's exact p = 9.9 × 10⁻⁸⁷, please check carefully."*
+
+We thank the reviewer for prompting the audit. Both values are correct as reported in Section 5 (Phase 5). They derive from the 2023→2024 contingency table (228 windows, 46 detected in 2023; 241 windows, 241 detected in 2024); the test statistics are recomputed deterministically by `scripts/validation/paper2/jrfm_revision/bootstrap_detection_ci.py` as part of the released replication code:
+
+- Pearson's χ² = 314.4, df = 1, *p* = 2.4 × 10⁻⁷⁰
+- Fisher's exact two-tailed *p* = 9.9 × 10⁻⁸⁷ (odds ratio diverges since 2024 has 0 non-detections)
+- φ = 0.82
+
+For the related Phase 4 (2024 vs. 2020) contingency, Fisher's exact two-tailed *p* ≈ 1.8 × 10⁻⁵² and Pearson's χ² *p* ≈ 8.7 × 10⁻⁴⁸; both have been verified.
+
+## Reviewer 4 — gap statement, justifications, results-RQ link, captions, language
+
+> *"Introduction: Clearly state the research gap and contribution in the last paragraph. Add 1–2 recent references (2023–2025)."*
+
+The Introduction's `\paragraph{Research gap}` (added in R3.1) explicitly states the gap and the contribution. To strengthen the framing on the memorization-vs-reasoning side, two additional 2024–2025 references have been added in Section 2.4 (LLMs in Finance): Dong et al. (2024) "Generalization or Memorization: Data Contamination and Trustworthy Evaluation for Large Language Models" (Findings of ACL 2024, peer-reviewed) and Lopez-Lira, Tang & Zhu (2025) "The Memorization Problem: Can We Trust LLMs' Economic Forecasts?" (arXiv 2504.14765). Together with the existing `dim2023odtes` and `adams2025zerodte` 0DTE-microstructure citations and the `mccoy2023embers` PNAS 2024 reasoning-capability reference, the related work now explicitly cites multiple 2023–2025 sources directly relevant to the gap.
+
+> *"Methodology: Clarify model assumptions and justify parameter choices (e.g., thresholds, sample selection, model specification)."*
+
+Methodology already contains, from round 1: (a) the threshold-sensitivity sweep across 45 alternative configurations (§4.6, Figure 9) showing the 2024-vs-2020 separation is robust to the specific 70%/$5B/≤5-flip choices; (b) the Markov-switching benchmark (§4.7, Table 6, Figure 10) demonstrating that the LLM detection is not reducible to a generic volatility-regime classifier; (c) Appendix A documenting the full prompt, OpenAI o4-mini configuration (temperature, batch protocol, JSON schema), and the reproducibility statement. Sample selection rationale (the 2020–2025 panel reflects Alpha Vantage SPY end-of-day options-chain coverage and 2020 predates the May 2022 introduction of daily SPY expirations, providing a pre-treatment baseline) is now stated explicitly in §3 Phase 5.
+
+> *"Results: Highlight key findings more explicitly and link them directly to the research questions."*
+
+An italicized one-sentence RQ-linkage tag has been added to the end of each main results subsection in Section 4: §4.1 → RQ1 (single-day detection), §4.2 → RQ2 (raw chain superiority), Phase 1–3 baseline → RQ3 (regime selectivity), Phase 5 multi-year → RQ4 (market structure evolution). Each tag explicitly ties the empirical result back to the corresponding question stated in §1.1.
+
+> *"Figures/Tables: Improve captions (make them self-contained), increase readability of labels, and ensure consistency in formatting."*
+
+R3.8 in the round-1 response established self-contained captions across all figures and tables; this has not been undone in the round-2 revision.
+
+> *"Language: Revise some sentences for clarity and conciseness (minor editing)."*
+
+The compactness pass described above operates as a sentence-level revision pass: opening epistemological framing tightened, RQ list de-prosed, Contributions inlined, methodology worked-example removed, Hayek subsection compressed, Conclusion contributions tightened. The R3.9 English-editing pass from round 1 has been preserved.
+
+## Round-2 changes by file
+
+- `references.bib` — 1 entry corrected (anderegg), 1 removed (kim2024), 1 replaced (dim2025zero → adams2025zerodte), 2 reformatted as preprints (lopez2023can, yang2024tradingagents), 2 added (lopezlira2025memorization, dong2024generalization).
+- `01_Introduction.tex` — opening tightened; Research Questions de-prosed; Contributions collapsed to inline paragraph; Positioning compressed; dim2025zero → adams2025zerodte at three sites.
+- `02_Related_Work.tex` — kim2024 citation rewritten with lopezlira2025+dong2024; counterparty paragraph updated; 0DTE-volatility paragraph wording softened to match Adams et al.'s actual finding; Research Gap citation list updated.
+- `03_Methodology.tex` — sign-convention citation swapped from anderegg→garleanu+spotgamma; obfuscation list inlined; obfuscation example collapsed; WHO→WHOM worked example removed; GEX positive/negative paragraph compressed; dim2025zero→adams2025zerodte.
+- `04_Results.tex` — RQ1–RQ4 italicized linkage tags added to four subsections.
+- `05_Discussion.tex` — §5.4 Generalizable Methodology subsection removed; Hayek subsection compressed; §5.1 and §5.2 paragraphs tightened.
+- `06_Conclusion.tex` — four contributions tightened to single sentences each; redundant code-availability footnote removed.
+
+## Page count
+
+- Round-1 close-out (F): 31 pages.
+- Round-2 close-out (this revision): 29 pages.
+
+The two-page reduction is achieved entirely through redundancy removal and language tightening; no R3.x reviewer-mandated content (HMM benchmark, threshold sensitivity sweep, CIs, Appendix A, expanded Limitations, Practical Implications) has been removed.

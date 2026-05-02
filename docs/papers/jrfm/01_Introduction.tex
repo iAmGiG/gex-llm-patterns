@@ -6,10 +6,10 @@ Deploying large language models (LLMs) for domain-specific quantitative analysis
 This paper proposes \textbf{temporal obfuscation testing} as a validation methodology for this problem and applies it to options dealer gamma-exposure (GEX) regimes. The method strips calendar dates, ticker symbols, and any contextual identifiers from input sequences, and re-evaluates an LLM on the stripped input. When obfuscated detection rates remain high and discriminate persistent regimes from synthetic controls, the model's performance cannot be attributed to memorization of the underlying dates; when they collapse, memorization is the parsimonious explanation. We use dealer GEX as the demonstration domain because it combines mechanically grounded constraints (dealers \emph{must} hedge delta under regulatory and risk-management rules) with a sharp natural contrast---2020 (pre-0DTE, episodic dealer positioning) versus 2024 (post-0DTE, sustained structural dealer positioning)---that a genuinely reasoning system should separate on structural grounds alone \citep{ni2005stock,garleanu2009demand,dim2023odtes}.
 
 \paragraph{Research gap.}
-Prior work has, independently, (i)~characterised dealer-gamma hedging and its microstructure effects (\citealp{ni2005stock,garleanu2009demand,anderegg2022impact,dim2023odtes,dim2025zero}; among others); (ii)~documented the rapid growth of zero-days-to-expiration (0DTE) options between 2022 and 2025 and its implications for intraday volatility \citep{cboe2024zero,fishman2023gamma,cboe2025spx0dte}; and (iii)~evaluated LLM reasoning with probing and chain-of-thought techniques in non-financial domains \citep{wei2022chain,kojima2022large,mccoy2023embers}. What is missing is a method for validating LLM structural reasoning \emph{within} financial microstructure that (a)~controls for training-data memorisation of specific events and dates, (b)~is empirically tested at a scale comparable to the domain it targets, and (c)~distinguishes genuine structural detection from reproduction of a volatility-regime classifier. Temporal obfuscation testing, in combination with the multi-scale validation design in this paper and the Markov-switching benchmark comparison in \S\ref{sec:regime:benchmark}, is designed precisely for this gap.
+Prior work has, independently, (i)~characterised dealer-gamma hedging and its microstructure effects (\citealp{ni2005stock,garleanu2009demand,anderegg2022impact,dim2023odtes,adams2025zerodte}; among others); (ii)~documented the rapid growth of zero-days-to-expiration (0DTE) options between 2022 and 2025 and its implications for intraday volatility \citep{cboe2024zero,fishman2023gamma,cboe2025spx0dte}; and (iii)~evaluated LLM reasoning with probing and chain-of-thought techniques in non-financial domains \citep{wei2022chain,kojima2022large,mccoy2023embers}. What is missing is a method for validating LLM structural reasoning \emph{within} financial microstructure that (a)~controls for training-data memorisation of specific events and dates, (b)~is empirically tested at a scale comparable to the domain it targets, and (c)~distinguishes genuine structural detection from reproduction of a volatility-regime classifier. Temporal obfuscation testing, in combination with the multi-scale validation design in this paper and the Markov-switching benchmark comparison in \S\ref{sec:regime:benchmark}, is designed precisely for this gap.
 
 \paragraph{Why 0DTE matters here.}
-The 2022--2025 growth of 0DTE options in SPY and SPX is a natural setting for an obfuscation study because it created an observable structural shift in dealer positioning within the training horizon of modern LLMs. By 2024, 0DTE volume had risen to approximately 46\% of total SPY options volume and 59\% of SPX volume by 2025 \citep{cboe2024zero,cboe2025spx0dte,dim2023odtes,dim2025zero}, concentrating gamma exposure at ultra-short maturities. If an LLM reports 2024 as a persistent-regime year and 2020 as a fragmented-regime year \emph{after} all dates and tickers are stripped, it is detecting a structural property of the numerical sequence, not recalling that 2024 contained the word ``0DTE'' in the training corpus. That is the epistemic move temporal obfuscation is designed to enable.
+The 2022--2025 growth of 0DTE options in SPY and SPX is a natural setting for an obfuscation study because it created an observable structural shift in dealer positioning within the training horizon of modern LLMs. By 2024, 0DTE volume had risen to approximately 46\% of total SPY options volume and 59\% of SPX volume by 2025 \citep{cboe2024zero,cboe2025spx0dte,dim2023odtes,adams2025zerodte}, concentrating gamma exposure at ultra-short maturities. If an LLM reports 2024 as a persistent-regime year and 2020 as a fragmented-regime year \emph{after} all dates and tickers are stripped, it is detecting a structural property of the numerical sequence, not recalling that 2024 contained the word ``0DTE'' in the training corpus. That is the epistemic move temporal obfuscation is designed to enable.
 
 We validate the framework at two temporal scales, moving from single-day pattern detection to persistent 30-day regime identification---a qualitative strengthening of the validation problem, not merely a change in window length.
 
@@ -19,68 +19,22 @@ We validate the framework at two temporal scales, moving from single-day pattern
 
 \subsection{Research Questions}
 
-The problem, stated in its most general form, is this: under what conditions can we be satisfied that an artificial system has attained genuine understanding of the structural order governing a complex market process, rather than merely reproducing surface regularities encountered during training? We decompose this into four specific questions:
-
+We address four questions:
 \begin{enumerate}
-\item \textbf{Single-Day Detection}: Can LLMs identify dealer hedging patterns when all temporal context is removed through obfuscation? This tests whether structural reasoning persists without memorizable cues, establishing a baseline for genuine mechanical understanding.
-
-\item \textbf{Raw Chain Superiority}: Does unstructured strike-level data outperform parametric GEX compression for structural pattern detection? If so, the implication is that the attempt to compress dispersed market information into a single scalar---however convenient for the analyst---necessarily destroys precisely those local signals upon which genuine structural understanding depends.
-
-\item \textbf{Regime Selectivity}: Can LLMs identify persistent 30-day regimes while discriminating them from transitional periods? Selective detection (rejecting noise) is more informative than universal detection, as it demonstrates criterion-based evaluation rather than base-rate guessing.
-
-\item \textbf{Market Structure Evolution}: Did 0DTE proliferation create detectable structural change in dealer positioning regimes? Answering this connects microstructure innovation to measurable regime shifts, providing evidence for the 0DTE structural hypothesis \citep{dim2025zero}.
+\item \textbf{Single-Day Detection}: Can LLMs identify dealer hedging patterns when all temporal context is removed through obfuscation?
+\item \textbf{Raw Chain Superiority}: Does strike-level data outperform parametric GEX summaries for structural detection?
+\item \textbf{Regime Selectivity}: Can LLMs identify persistent 30-day regimes while rejecting transitional periods?
+\item \textbf{Market Structure Evolution}: Did 0DTE proliferation create detectable structural change in dealer positioning regimes \citep{adams2025zerodte}?
 \end{enumerate}
 
 \subsection{Contributions}
 
-This work advances LLM validation methodology and financial market analysis through six contributions:
-
-\begin{enumerate}
-\item \textbf{Temporal obfuscation testing}: A generalizable methodology for distinguishing LLM structural reasoning from training data memorization, applicable beyond finance to any domain with structural constraints.
-
-\item \textbf{Raw chain validation}: First demonstration that LLMs achieve superior pattern detection (92.3\% vs.\ 61.5\%) from raw strike-level data compared to pre-calculated metrics, establishing that parametric GEX represents lossy compression of structural signal.
-
-\item \textbf{WHO$\rightarrow$WHOM$\rightarrow$WHAT causal framework}: A structured prompt design requiring explicit identification of economic actors, affected parties, and forced mechanisms, preventing vague pattern claims.
-
-\item \textbf{Multi-scale regime detection}: Extension of obfuscation testing from single-day snapshots to 30-day persistent regimes, validated across 2,221 evaluations (1,412 real windows, 809 synthetic controls) spanning six years.
-
-\item \textbf{Selectivity validation with negative controls}: Framework achieves 69.1 percentage point discrimination between persistent and fragmented markets, with 0\% false positives on transitional and low-magnitude synthetic controls.
-
-\item \textbf{Detection-alpha orthogonality}: Stable detection (68--74\% quarterly) persists as economic profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), establishing detected patterns as risk management signals rather than alpha generators.
-\end{enumerate}
+This work makes four contributions: (i) \textbf{temporal obfuscation testing}, a generalizable methodology for distinguishing LLM structural reasoning from training-data memorization, validated through 2{,}221 evaluations across single-day and 30-day regime scales (1{,}412 real windows, 809 synthetic controls, 2020--2025); (ii) \textbf{raw-chain validation}, the first demonstration that LLMs detect dealer positioning more accurately from raw strike-level data than from pre-calculated GEX summaries (92.3\% vs.\ 61.5\%), establishing that scalar GEX is lossy compression of structural signal; (iii) \textbf{regime selectivity with negative controls}, with 69.1 percentage-point discrimination between 2024 persistent and 2020 fragmented markets and 0\% false positives on transitional and low-magnitude synthetic controls; and (iv) \textbf{detection-alpha orthogonality}, with detection stable at 68--74\% quarterly while economic profitability collapses (Sharpe 1.8 $\rightarrow$ 0.1), positioning the framework as a risk-management and surveillance tool rather than an alpha generator.
 
 \subsection{Positioning}
 \label{sec:introduction:positioning}
 
-The contribution is primarily \textit{methodological}. We propose
-temporal obfuscation testing---and the associated WHO$\rightarrow$WHOM
-$\rightarrow$WHAT causal framework and multi-scale validation
-protocol---as a generalizable procedure for validating whether an LLM
-is reasoning from structural relationships rather than from
-memorization of training-data surface patterns. Options dealer
-gamma-exposure regime detection is chosen as the empirical demonstration
-domain because it offers three features that an LLM validation study
-requires simultaneously: mechanical constraints that are theoretically
-grounded in microstructure, a large quantitative testbed (2,221
-evaluations across six years), and sharp temporal structure (the
-pre- versus post-0DTE contrast) that a genuinely reasoning system
-should distinguish from noise.
-
-The financial-market findings reported here---the 69.1 percentage
-point 2024-versus-2020 detection gap, the 0\% false-positive rate on
-transitional and low-magnitude synthetic controls, and the gradual
-2021--2024 regime evolution tracking 0DTE adoption---are therefore
-presented as \textit{downstream evidence} that the methodology
-discriminates between persistent and fragmented market structures in
-ways consistent with known microstructure dynamics, not as novel
-claims about options market microstructure per se. Readers interested
-primarily in the financial-markets angle will find the relevant
-observations in Sections~\ref{sec:regime} and~\ref{sec:discussion};
-readers interested primarily in LLM validation methodology will find
-the generalizable contribution in
-Sections~\ref{sec:methodology} and~\ref{sec:discussion}. This framing
-is maintained consistently through the Conclusion
-(Section~\ref{sec:conclusion}).
+The contribution is primarily \textit{methodological}: temporal obfuscation testing, together with the WHO$\rightarrow$WHOM$\rightarrow$WHAT causal framework and the multi-scale validation protocol, is offered as a generalizable procedure for distinguishing LLM structural reasoning from training-data memorization. Options dealer gamma-exposure regime detection is the empirical demonstration domain because it combines mechanically grounded microstructure constraints, a large quantitative testbed (2{,}221 evaluations across six years), and a sharp pre- versus post-0DTE temporal contrast. The financial-market findings reported here---the 69.1 percentage-point 2024-vs-2020 detection gap, the 0\% false-positive rate on synthetic controls, and the gradual 2021--2024 regime evolution---are therefore presented as \textit{downstream evidence} that the methodology discriminates between persistent and fragmented market structures, not as novel claims about options market microstructure per se.
 
 \subsection{Paper Organization}
 

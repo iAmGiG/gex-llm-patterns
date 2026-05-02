@@ -3,17 +3,7 @@
 
 \subsection{Obfuscation Testing Protocol}
 
-The core innovation of our methodology is temporal obfuscation---systematically removing temporal and contextual information while preserving structural market mechanics. The protocol involves five transformations:
-
-\begin{enumerate}
-\item Convert absolute dates (``2024-01-16'') to relative format (``Day T+0'')
-\item Replace ticker symbols (``SPY'') with generic identifiers (``INDEX\_1'')
-\item Remove market events (``Fed meeting'', ``earnings'')
-\item Strip volatility regime context (``VIX at 14'')
-\item Eliminate day-of-week patterns (``Monday'', ``OpEx Friday'')
-\end{enumerate}
-
-Preserved information includes: net gamma exposure values, directional gamma (calls vs.\ puts), spot price and flip point levels, relative time progression, and concentration metrics. Figure~\ref{fig:obfuscation} illustrates this transformation.
+The core innovation is temporal obfuscation---systematically stripping identifying context while preserving structural market mechanics. Five transformations are applied: (i) absolute dates (``2024-01-16'') are mapped to relative labels (``Day T+0''); (ii) ticker symbols (``SPY'') are replaced with generic identifiers (``INDEX\_1''); (iii) market-event annotations (``Fed meeting,'' ``earnings'') are removed; (iv) volatility-regime context (``VIX at 14'') is stripped; (v) day-of-week patterns (``Monday,'' ``OpEx Friday'') are eliminated. Preserved fields include net gamma exposure, directional gamma (calls vs.\ puts), spot and flip-point levels, relative time progression, and concentration metrics. Figure~\ref{fig:obfuscation} illustrates the transformation.
 
 \begin{figure}[H]
 \centering
@@ -22,25 +12,7 @@ Preserved information includes: net gamma exposure values, directional gamma (ca
 \label{fig:obfuscation}
 \end{figure}
 
-As a concrete example, the transformation converts raw market data:
-
-\begin{small}
-\begin{verbatim}
-SPY, 2024-03-15: Net GEX: -$32.9B, Flip: $485.00
-SPY, 2024-03-18: Net GEX: -$28.4B, Flip: $487.50
-\end{verbatim}
-\end{small}
-
-\noindent into obfuscated format:
-
-\begin{small}
-\begin{verbatim}
-Day T+0, INDEX_1: Net GEX: -$32.9B, Flip: $485.00
-Day T+1, INDEX_1: Net GEX: -$28.4B, Flip: $487.50
-\end{verbatim}
-\end{small}
-
-The quantitative values are identical; only contextual identifiers change. A model memorizing ``January 2024 SPY negative gamma'' cannot succeed when presented with ``Day T+0 INDEX\_1 GEX: $-$\$32B''. Only genuine structural understanding enables detection under these conditions.
+Concretely, the row \texttt{SPY, 2024-03-15: Net GEX: -\$32.9B, Flip: \$485.00} becomes \texttt{Day T+0, INDEX\_1: Net GEX: -\$32.9B, Flip: \$485.00}: quantitative values are unchanged, only the contextual identifiers change. A model memorising ``January 2024 SPY negative gamma'' cannot recover that association from the obfuscated form, so detection must come from numerical structure alone.
 
 \subsection{Causal Framework: \texorpdfstring{WHO$\rightarrow$WHOM$\rightarrow$WHAT}{WHO->WHOM->WHAT}}
 \label{subsec:causal}
@@ -55,7 +27,6 @@ Beyond detecting patterns, we require models to articulate causal mechanisms. Th
 
 Grounded in agent-based market microstructure theory \citep{grossman1988liquidity,garleanu2009demand}, this framework prevents vague pattern claims by requiring specific mechanical understanding. It implements a structured form of chain-of-thought prompting \citep{wei2022chain}, ensuring the model derives outcomes from mechanical constraints rather than recalling historical correlations.
 
-A valid causal chain demonstrates the complete mechanism. For example: WHO---``Dealers accumulate net short gamma exposure of \$28B concentrated at the 520 strike.'' WHOM---``Market makers holding these positions are forced to continuously delta-hedge to maintain regulatory neutrality.'' WHAT---``As price rises toward 520, dealers must buy shares to offset negative delta, amplifying the upward move; as price falls, they must sell, amplifying downward moves. This creates a pro-cyclical feedback loop that persists until gamma exposure dissipates.''
 
 \subsection{Single-Day Pattern Detection}
 \label{subsec:single_day_method}
@@ -119,13 +90,13 @@ Following standard market microstructure practice \citep{anderegg2022impact,spot
 \text{GEX} = \sum_i \pm \text{OI}_i \times \Gamma_i \times S^2 \times 0.01 \times 100
 \end{equation}
 
-\noindent where $\Gamma_i$ is the Black-Scholes gamma \citep{black1973pricing} at strike $i$, $\text{OI}_i$ is open interest, $S$ is the underlying spot price, and the $S^2$ factor scales gamma to dollar exposure (since gamma measures $\partial^2 V / \partial S^2$, multiplying by $S^2$ produces dollar-denominated sensitivity). The sign convention reflects the dealer counterparty relationship: calls contribute positive GEX (dealers are typically long gamma on calls) and puts contribute negative GEX (dealers are typically short gamma on puts) \citep{anderegg2022impact}.
+\noindent where $\Gamma_i$ is the Black-Scholes gamma \citep{black1973pricing} at strike $i$, $\text{OI}_i$ is open interest, $S$ is the underlying spot price, and the $S^2$ factor scales gamma to dollar exposure (since gamma measures $\partial^2 V / \partial S^2$, multiplying by $S^2$ produces dollar-denominated sensitivity). The sign convention reflects the dealer counterparty relationship: calls contribute positive GEX (dealers are typically long gamma on calls) and puts contribute negative GEX (dealers are typically short gamma on puts) \citep{garleanu2009demand,spotgamma2021}.
 
 This summation yields a single scalar---\textit{net GEX}---that captures the aggregate directional bias of dealer positioning. However, the per-strike components $\text{OI}_i \times \Gamma_i$ preserve richer structural information: the spatial distribution of open interest across strikes, implied volatility skew, and localized gamma concentrations at specific price levels. Our raw chain validation (Section~\ref{subsec:raw_chain}) provides the LLM with these per-strike inputs rather than the scalar aggregate, testing whether the model can reconstruct dealer positioning from the disaggregated surface. The 30.8 percentage point improvement over the net GEX baseline (Section~\ref{sec:single_day}) suggests that scalar aggregation discards structurally informative strike-level signal.
 
-The resulting aggregate GEX value has a direct mechanical interpretation. \textbf{Positive GEX} indicates dealers are net long gamma: they buy when prices fall and sell when prices rise, \textit{dampening} volatility. \textbf{Negative GEX} indicates dealers are net short gamma: they sell when prices fall and buy when prices rise, \textit{amplifying} volatility through pro-cyclical hedging flows. The magnitude determines the scale of forced hedging.
+Mechanically: \textbf{positive GEX} (dealers net long gamma) implies counter-cyclical hedging that \textit{dampens} volatility, whereas \textbf{negative GEX} (dealers net short gamma) implies pro-cyclical hedging that \textit{amplifies} volatility; magnitude scales the forced hedging.
 
-This open interest-based approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX may better capture 0DTE dynamics, 30-day window aggregation smooths daily measurement noise, and the underlying hedging mechanism remains constant regardless of measurement method \citep{dim2025zero}.
+This open interest-based approach (GEX\_OI) measures dealer inventory positioning rather than intraday flow. While volume-based GEX may better capture 0DTE dynamics, 30-day window aggregation smooths daily measurement noise, and the underlying hedging mechanism remains constant regardless of measurement method \citep{adams2025zerodte}.
 
 \subsection{Multi-Phase Validation Strategy}
 
