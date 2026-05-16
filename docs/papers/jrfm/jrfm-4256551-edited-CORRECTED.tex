@@ -468,7 +468,7 @@ Dominant Sign & Negative & Positive & Flip \\
 	\end{adjustwidth}
 \end{table}
 
-The 2020 baseline (12.1\% detection) confirms the framework selectivity: dealer gamma hedging was active but at a lower magnitude (\$2.2B average for rejected windows vs.\ \$5.5B for the 27 detected), and 87.9\% of windows failed the regime criteria. Notably, 2024 rejected windows had a \textit{higher} average magnitude (\$31.8B) than detected windows (\$30.5B), confirming that rejection is driven by stability (sign flips) and not magnitude---consistent with the February--March volatility noted in Phase 3. The separation between the two eras is statistically overwhelming:
+The 2020 baseline (12.1\% detection) confirms the framework selectivity (illustrated on representative windows in Figure~\ref{fig:selectivity}): dealer gamma hedging was active but at a lower magnitude (\$2.2B average for rejected windows vs.\ \$5.5B for the 27 detected), and 87.9\% of windows failed the regime criteria. Notably, 2024 rejected windows had a \textit{higher} average magnitude (\$31.8B) than detected windows (\$30.5B), confirming that rejection is driven by stability (sign flips) and not magnitude---consistent with the February--March volatility noted in Phase 3. The separation between the two eras is statistically overwhelming:
 Pearson's $\chi^2 = 213.67$ (df $= 1$, $p = 2.2 \times 10^{-48}$; Yates-corrected $\chi^2 = 210.90$, $p = 8.7 \times 10^{-48}$),
 Fisher's exact test gives a two-sided $p = 1.8 \times 10^{-52}$ with odds ratio 31.3 (detected-vs-not odds for 2024 are 31-fold higher than for 2020),
 the phi coefficient $\varphi = 0.69$ indicates a large effect by Cohen's convention,
@@ -513,7 +513,7 @@ Phase 5 extended the analysis to 1412 windows across six years, revealing gradua
 \end{tabularx}
 \end{table}
 
-Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with the average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation. The 2023$\rightarrow$2024 transition is statistically unambiguous: Pearson's $\chi^2 = 314.4$ ($\text{df} = 1$, $p = 2.4 \times 10^{-70}$), Fisher's exact \mbox{$p = 9.9 \times 10^{-87}$} (odds ratio diverges, because all 241 windows in 2024 are detected), and $\varphi = 0.82$. This marks a structural reorganization of dealer positioning rather than a gradual drift. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure. \textit{This addresses RQ4: the 2023 $\rightarrow$ 2024 discontinuity is consistent with 0DTE-driven structural reorganization, not gradual secular drift.}
+Detection rates track 0DTE market penetration (3.7\% in 2021 $\rightarrow$ 100\% in 2024), with the average GEX magnitude growing from \$3.0B (2020) to \$20.3B (2024)---a roughly 577\% increase far exceeding cumulative inflation; the two eras' magnitude distributions are essentially disjoint about the \$5B criterion (Figure~\ref{fig:gex_magnitude}). The 2023$\rightarrow$2024 transition is statistically unambiguous: Pearson's $\chi^2 = 314.4$ ($\text{df} = 1$, $p = 2.4 \times 10^{-70}$), Fisher's exact \mbox{$p = 9.9 \times 10^{-87}$} (odds ratio diverges, because all 241 windows in 2024 are detected), and $\varphi = 0.82$. This marks a structural reorganization of dealer positioning rather than a gradual drift. Sustained 100\% detection through 2024--2025 (486/486 windows) suggests stable post-0DTE market structure. \textit{This addresses RQ4: the 2023 $\rightarrow$ 2024 discontinuity is consistent with 0DTE-driven structural reorganization, not gradual secular drift.}
 
 \begin{figure}[H]
 %\centering
@@ -587,7 +587,7 @@ not justify.
 We compare the LLM regime detector against the two-state
 Markov-switching benchmark described in \hl{Section} %MDPI: We changed symbol to Section. Please confirm this revision.
  \ref{sec:methodology:benchmark}.
-Table~\ref{tab:hmm_benchmark} summarises the per-window agreement with the
+Table~\ref{tab:hmm_benchmark} and Figure~\ref{fig:hmm_agreement} summarise the per-window agreement with the
 LLM's detection labels for three separate HMM fits: returns-based HMM
 on 2020 SPY returns, returns-based HMM on 2024 SPY returns, and a
 GEX-native HMM on the 2024 daily net-GEX series.
@@ -650,7 +650,7 @@ analyze.
 
 Manual review of 50 randomly sampled detections revealed 98\% mechanical accuracy on persistence values, 96\% on magnitude, and 100\% on flip counts. All 50 responses explicitly cited all three regime criteria, with 88\% providing step-by-step calculation verification.
 
-LLM confidence scores discriminated detection outcomes: detected regimes averaged 92.8\% confidence versus 52.1\% for rejected windows (40.7 pp gap), with strong correlations to regime quality ($r = +0.719$ with persistence, $r = -0.705$ with sign flips, both $p < 0.001$; $n = 1412$). This continuous confidence discrimination beyond binary classification suggests the model tracks regime robustness and not just threshold crossing.
+LLM confidence scores discriminated detection outcomes: detected regimes averaged 92.8\% confidence versus 52.1\% for rejected windows (40.7 pp gap), with strong correlations to regime quality ($r = +0.719$ with persistence, $r = -0.705$ with sign flips, both $p < 0.001$; $n = 1412$). This continuous confidence discrimination beyond binary classification suggests the model tracks regime robustness and not just threshold crossing. Figure~\ref{fig:progression} visualises the full 2020--2025 detection-rate and average-GEX-magnitude trajectory underlying these results.
 
 \begin{figure}[H]
 \centering
