@@ -65,25 +65,32 @@ We believe this constitutes a substantial extension consistent with the
 conference-to-journal norm, but we prefer the editor to make that
 determination with the complete picture rather than infer it.
 
-## 3. Proposed title change
+## 3. Title change (applied in the returned proof)
 
-We request that the journal article be retitled to differentiate it from
-the AIAI 2026 conference paper and to signal its broader, multi-scale
-scope. Our preferred option is the first; we defer to editorial preference:
+To differentiate the journal article from the AIAI 2026 conference paper
+and signal its broader, multi-scale scope, we have **retitled the article
+in the returned proof** to:
 
-- **(A, preferred)** "Temporal Obfuscation Testing for LLM Structural
+- **(applied)** "Temporal Obfuscation Testing for LLM Structural
   Reasoning: From Single-Day Dealer Constraints to Persistent Market
   Regimes"
+
+If the editorial office would prefer a different title, we are glad to
+adopt either alternative below (or any wording you suggest):
+
 - **(B)** "Validating LLM Structural Reasoning Across Temporal Scales: A
   Multi-Scale Obfuscation Study of Dealer-Gamma Market Regimes"
 - **(C)** "Distinguishing Reasoning from Memorization in Financial LLMs: A
   Multi-Scale Temporal-Obfuscation Validation of Dealer-Gamma Regime
   Detection"
 
-## 4. Disclosure statement to be added to the article
+## 4. Disclosure statement (applied in the returned proof)
 
-With the editor's approval, we will add the following statement (placement
-at the editor's discretion — title footnote or end of Section 1):
+We have added the following disclosure to the article (at the end of the
+Obfuscation Testing subsection of the Related Work section, where the
+copyedited proof carried the editorial query on this point). We are happy
+to move it to a title footnote or the end of Section 1 if the editorial
+office prefers a different placement:
 
 > *This article is an extended journal version that consolidates and
 > substantially extends two of the authors' prior conference papers:
@@ -106,8 +113,9 @@ paper to the editorial office for the overlap/originality assessment on
 request. We are happy to adjust the disclosure wording or title to meet
 JRFM and MDPI editorial-policy requirements.
 
-We appreciate your guidance on the preferred title and disclosure
-placement, and we will incorporate both into the proof before returning it.
+The retitle and disclosure are already incorporated in the proof we are
+returning; we will gladly adjust either the title wording or the disclosure
+placement should the editorial office prefer.
 
 With thanks,
 Christopher Regan (corresponding author), on behalf of both authors
@@ -128,8 +136,11 @@ cregan1@kennesaw.edu
 - **Reuse rights.** Confirm the IEEE and Springer (IFIP AICT) copyright /
   author-reuse terms permit an extended journal version with citation
   before final submission.
-- The AIAI bib entry has been added to `references.bib` as
-  `regan2026regimes`. The disclosure text and title change are **staged but
-  not yet applied** to `jrfm-4256551-edited-CORRECTED.tex` or the repo
-  source — they go in only after the editor confirms the title and
-  placement.
+- The AIAI bib entry (`regan2026regimes`) is in `references.bib`. The
+  Option-A title change and the two-paper disclosure are **applied** to
+  both `jrfm-4256551-edited-CORRECTED.tex` (the returnable proof) and the
+  repo modular source (`Regan_Xie_JRFM.tex` title; `02_Related_Work.tex`
+  disclosure). Rebuilt PDF: 29 pages, 0 undefined citations, AIAI entry
+  renders in the bibliography. If the editor prefers title B/C or a
+  different disclosure placement, it is a one-line change in each of the
+  two files.
