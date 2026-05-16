@@ -28,23 +28,32 @@ reasoning model through the OpenAI Batch API (asynchronous, 24-hour SLA,
 100\% completion rate observed across the five validation phases).
 
 \begin{itemize}
-    \item \textbf{Model:} \texttt{o4-mini}
-    \item \textbf{Temperature:} 1.0 (OpenAI reasoning models require a
-          fixed temperature of 1; sampling-temperature adjustment is not
-          exposed for \texttt{o1}, \texttt{o3}, or \texttt{o4} model
-          families)
-    \item \textbf{Maximum completion tokens:} 16{,}384
-    \item \textbf{Response format:} JSON object (enforced via
-          \texttt{response\_format=\{"type":"json\_object"\}})
-    \item \textbf{Access mode:} OpenAI Batch API, batched 1{,}000 requests
-          per submission
+    \item \textbf{Model:} \texttt{o4-mini} (snapshot
+          \texttt{o4-mini-2025-04-16})
+    \item \textbf{Temperature:} not supplied. \texttt{o4-mini} is a
+          reasoning model that runs at a fixed internal sampling
+          temperature; the sampling-temperature parameter is not
+          exposed for the \texttt{o1}/\texttt{o3}/\texttt{o4} families,
+          so no temperature value is sent in the request.
+    \item \textbf{Maximum completion tokens:} not set; the OpenAI
+          default applies. Observed completion lengths across the
+          1{,}412 windows ranged from 2{,}457 to 5{,}924 tokens, so
+          no response was truncated.
+    \item \textbf{Response format:} JSON is requested in the prompt
+          text (Appendix~\ref{app:prompt:body}); no API-level
+          \texttt{response\_format} constraint is applied.
+    \item \textbf{Access mode:} OpenAI Batch API,
+          \texttt{/v1/chat/completions} endpoint, 24-hour asynchronous
+          completion window. Submissions are sized per validation
+          phase rather than at a fixed per-batch count.
 \end{itemize}
 
 \noindent\textbf{Reproducibility note.}
-Because the reasoning models do not accept a user-supplied
-\texttt{seed} parameter and run at a fixed \texttt{temperature}, exact
-bit-identical replication of any single response is not guaranteed.
-Reproducibility at the \emph{distributional} level is achieved by
+Because \texttt{o4-mini} runs at a fixed internal temperature and we do
+not pass a \texttt{seed}, exact bit-identical replication of any single
+response is not guaranteed. (The Batch API does expose a \texttt{seed}
+parameter; we did not set one.) Reproducibility at the \emph{distributional}
+level is achieved by
 (i)~the large sample size (N = 2{,}221 evaluations) and
 (ii)~the mechanical criteria embedded in the prompt, which give the
 model concrete numerical thresholds to apply rather than asking for
@@ -280,6 +289,8 @@ parentheses):
 Parsing is performed by \texttt{src/validation/batch\_regime\_validator.py}
 via a robust JSON extractor that tolerates markdown code-fence wrappers
 and minor formatting drift. Any response failing schema validation is
-flagged for manual review; across the 2{,}221 evaluations in this study,
-the schema-validation failure rate was 0\% (all responses were
-machine-parseable).
+flagged for manual review; across the 2{,}221 evaluations in this study
+(the 1{,}412 real-window detections retained in the published results
+cache plus the 809 synthetic-control evaluations), the schema-validation
+failure rate was 0\%---every retained response parsed cleanly into the
+output schema.

@@ -122,7 +122,7 @@ For each LLM response, we extract stated metrics (persistence, magnitude, flips)
 
 \subsection{LLM Configuration}
 
-We use OpenAI o4-mini \citep{openai2024reasoning} with temperature=1.0, max tokens=16,384, processed via Batch API (asynchronous, 100\% completion rate). The model receives a system message (``financial market analyst identifying persistent dealer gamma regimes''), a 30-day obfuscated GEX sequence with classification criteria, and outputs structured JSON with regime type, confidence (0--100), reasoning trace, and computed metrics. Total processing cost across all 2,221 evaluations was \$11.07. The complete prompt, API configuration, and output schema are reproduced verbatim in Appendix~\ref{app:prompt}.
+We use OpenAI o4-mini \citep{openai2024reasoning}, a reasoning model that runs at a fixed internal sampling temperature; the request supplies neither a temperature, a \texttt{max\_completion\_tokens}, nor a \texttt{seed} parameter, so OpenAI defaults apply. Evaluations are processed via the OpenAI Batch API (\texttt{/v1/chat/completions}, asynchronous 24-hour completion window, 100\% completion rate). Each request is a single user message containing the role instruction (``financial market analyst identifying persistent dealer gamma regimes''), the 30-day obfuscated GEX sequence, and the classification criteria; the prompt asks the model to return JSON with regime type, confidence (0--100), reasoning trace, and computed metrics. Total processing cost across all 2,221 evaluations was \$11.07. The complete prompt, API configuration, and output schema are reproduced verbatim in Appendix~\ref{app:prompt}.
 
 \subsection{Markov-Switching Benchmark}
 \label{sec:methodology:benchmark}
