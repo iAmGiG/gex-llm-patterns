@@ -1,9 +1,36 @@
-# Editorial Notice — jrfm-4256551: Proactive Disclosure + Proposed Title Change
+# Editorial Notice — jrfm-4256551: Proactive Disclosure + Title Change
 
 **To:** JRFM Editorial Office; Avery Li (MDPI Assigned Editor)
 **From:** Christopher Regan (corresponding author), Ying Xie
-**Re:** Manuscript jrfm-4256551 — "Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation"
+**Re:** Manuscript jrfm-4256551
 **Date:** <fill on send>
+
+---
+
+## RESOLVED — Editorial decision (Avery Li, email reply)
+
+The editor responded with the following ruling, which is now implemented:
+
+- **Title change: APPROVED.** Use the preferred option:
+  *"Temporal Obfuscation Testing for LLM Structural Reasoning: From
+  Single-Day Dealer Constraints to Persistent Market Regimes."* Applied in
+  both the returnable proof (`jrfm-4256551-edited-CORRECTED.tex`) and the
+  repo source (`Regan_Xie_JRFM.tex`).
+- **Disclosure: DECLINED by the editor.** Avery Li explicitly advised
+  *against* adding any explanation about the two conference papers,
+  reasoning that the title change alone removes the duplicate-submission
+  confusion, that the manuscript is substantially different with no
+  copyright issue, and that the JRFM manuscript was submitted earlier than
+  the AIAI conference paper. Accordingly, the two-paper disclosure paragraph
+  has been **removed** from both the proof and the repo source, and the
+  now-unused `regan2026regimes` (AIAI) bib entry has been removed from
+  `references.bib`. The original IEEE-only companion-paper sentence is
+  restored; the MDPI line-158 copyedit query is resolved by this editorial
+  instruction (title revised, no disclosure added).
+
+Net final state: **title changed, no disclosure**. The text of the original
+notice below is retained as the historical record of what was sent to the
+editor; it is superseded by the decision above.
 
 ---
 
