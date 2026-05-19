@@ -5,9 +5,9 @@
 %
 \documentclass[jrfm,article,accept,moreauthors,pdftex]{Definitions/mdpi}
 
-\firstpage{1} 
-\makeatletter 
-\setcounter{page}{\@firstpage} 
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
 \makeatother
 \pubvolume{1}
 \issuenum{1}
@@ -15,10 +15,10 @@
 \pubyear{2026}
 \copyrightyear{2026}
 \externaleditor{ } % More than 1 editor, please add `` and '' before the last editor name
-\datereceived{29 March 2026} 
+\datereceived{29 March 2026}
 \daterevised{2 May 2026} % Comment out if no revised date
-\dateaccepted{14 May 2026} 
-\datepublished{ } 
+\dateaccepted{14 May 2026}
+\datepublished{ }
 
 %% Additional packages
 \usepackage{placeins}  % for \FloatBarrier
@@ -134,7 +134,7 @@ Empirically, \citet{ni2005stock} documented stock price clustering on option exp
 
 \subsection{Zero-Days-to-Expiration (0DTE) Options}
 
-The introduction of daily options expirations in 2022 fundamentally altered the market structure \citep{cboe2024zero}. By 2023, 0DTE options accounted for 43\% of SPX options volume (up from $<$5\% in 2020), concentrating gamma exposure at very short maturities. \citet{dim2023odtes} provide the first systematic empirical study of 0DTE dealer inventory: market-maker net gamma is on average positive and negatively related to future intraday volatility, with delta-hedging-consistent price dynamics that are inconsistent with information-based trading, establishing dealer-hedging rather than information flow as the dominant channel through which 0DTE trading affects the underlying market. %Please confirm meaning is retained. 
+The introduction of daily options expirations in 2022 fundamentally altered the market structure \citep{cboe2024zero}. By 2023, 0DTE options accounted for 43\% of SPX options volume (up from $<$5\% in 2020), concentrating gamma exposure at very short maturities. \citet{dim2023odtes} provide the first systematic empirical study of 0DTE dealer inventory: market-maker net gamma is on average positive and negatively related to future intraday volatility, with delta-hedging-consistent price dynamics that are inconsistent with information-based trading, establishing dealer-hedging rather than information flow as the dominant channel through which 0DTE trading affects the underlying market. %Please confirm meaning is retained.
  \citet{adams2025zerodte} extend this empirical characterization by reconstructing market-maker hedging needs from intraday flow and documenting that 0DTE proliferation has fundamentally restructured dealer hedging dynamics, with positions in longer-dated options that subsequently become 0DTE driving the bulk of the structural shift. Our 2022--2025 multi-year panel (Section~\ref{sec:regime}) is consistent with this characterisation: detection of persistent dealer-gamma regimes grows from 3.7\% of 30-day windows in 2021 to 100\% in 2024--2025, coincident with but not a proof of the 0DTE mechanism.
 
 This structural shift has two consequences relevant to our framework. First, daily 0DTE rollovers may create more sustained directional gamma exposure than traditional monthly expiration cycles, as each day's new contracts concentrate gamma at near-the-money strikes before decaying to zero. Second, the sheer volume concentration means dealer hedging flows from 0DTE contracts dwarf those from traditional options, potentially creating persistent negative gamma environments where regime-switching \mbox{dynamics---historically} the norm \citep{ni2005stock}---give way to sustained directional positioning.
@@ -165,7 +165,7 @@ Despite extensive literature on dealer hedging mechanics \citep{ni2005stock,garl
 \begin{enumerate}
 \item Demonstrated that raw options chain data outperforms parametric GEX for structural pattern detection,
 \item \textls[-15]{Validated detection through obfuscation testing, eliminating training data contamination,}
-\item Established detection-alpha orthogonality proving mechanism identification independent of profitability, 
+\item Established detection-alpha orthogonality proving mechanism identification independent of profitability,
 \item \textls[-15]{Extended structural reasoning validation from single-day to persistent multi-day regimes.}
 \end{enumerate}
 
@@ -184,7 +184,7 @@ The core innovation is temporal obfuscation---systematically stripping identifyi
 %\centering
 \includegraphics[width=\textwidth]{figures/fig01_obfuscation.png}
 \caption{\hl{Temporal} %MDPI: Please change the hyphen (-) into a minus sign (−, “U+2212”) in the figure, e.g., “-1” should be “−1”.
- obfuscation transformation. \textbf{Left:} A raw market-data record with identifying information (calendar date, ticker, and event context) visible to any LLM. \textbf{Right:} The obfuscated version that the LLM actually sees during the detection experiment---the calendar date is replaced with a relative day label (``Day T + 0''), the ticker with a generic identifier (``INDEX\_1''), and all event context is removed, while the numerical GEX, spot-price, and days-to-expiration relationships are preserved exactly. \textbf{\hl{Read this figure as} %MDPI: Please confirm if the bold formatting is necessary; if not, please remove it. 
+ obfuscation transformation. \textbf{Left:} A raw market-data record with identifying information (calendar date, ticker, and event context) visible to any LLM. \textbf{Right:} The obfuscated version that the LLM actually sees during the detection experiment---the calendar date is replaced with a relative day label (``Day T + 0''), the ticker with a generic identifier (``INDEX\_1''), and all event context is removed, while the numerical GEX, spot-price, and days-to-expiration relationships are preserved exactly. \textbf{\hl{Read this figure as} %MDPI: Please confirm if the bold formatting is necessary; if not, please remove it.
 } anything the LLM correctly infers from the right-hand input must come from the numerical structure alone and not from memorized date-specific context in the training corpus.}
 \label{fig:obfuscation}
 \end{figure}
@@ -414,7 +414,7 @@ Figure~\ref{fig:validation_pipeline} summarizes the detection rates across all v
 \begin{figure}[H]
 %\centering
 \includegraphics[width=\textwidth]{figures/fig03_validation_pipeline.png}
-\caption{Multi-phase validation pipeline. Each box reports the phase name, the number of 30-day windows evaluated, and the detection rate with 95\% bootstrap confidence interval. Phase~1 (Q1 2024 baseline) anchors the framework at 71.2\% detection; Phase~2 synthetic controls (shuffle/transitional/low-magnitude) test false-positive discipline; Phase~3 (full 2024) confirms 81.2\% generalization; Phase~4 (full 2020) is the pre-0DTE baseline at 12.1\%; Phase~5 extends to a 2020--2025 panel. \textbf{\hl{Read this figure as} %MDPI: Please confirm if the bold formatting is necessary; if not, please remove it. 
+\caption{Multi-phase validation pipeline. Each box reports the phase name, the number of 30-day windows evaluated, and the detection rate with 95\% bootstrap confidence interval. Phase~1 (Q1 2024 baseline) anchors the framework at 71.2\% detection; Phase~2 synthetic controls (shuffle/transitional/low-magnitude) test false-positive discipline; Phase~3 (full 2024) confirms 81.2\% generalization; Phase~4 (full 2020) is the pre-0DTE baseline at 12.1\%; Phase~5 extends to a 2020--2025 panel. \textbf{\hl{Read this figure as} %MDPI: Please confirm if the bold formatting is necessary; if not, please remove it.
 } the phase-by-phase progression from narrow baseline to full multi-year panel, with rate separation preserved at every stage.}
 \label{fig:validation_pipeline}
 \end{figure}
@@ -769,7 +769,7 @@ Seven limitations merit explicit discussion, and we describe the specific
 future work each motivates.
 
 \begin{enumerate}[leftmargin=*,labelsep=4.5mm]
-\item \textbf{\hl{Single-asset scope}}: %MDPI: We formatted the following cotntent as a list and added label. Please confirm. 
+\item \textbf{\hl{Single-asset scope}}: %MDPI: We formatted the following cotntent as a list and added label. Please confirm.
  All reported results concern SPY.
 SPY is deliberately chosen as the highest-liquidity and earliest 0DTE-enabled
 U.S.\ equity benchmark, but this choice leaves cross-asset generalization
@@ -911,7 +911,7 @@ Cross-asset replication (QQQ, individual equities), cross-model validation (alte
 GEX & Gamma Exposure \\
 LLM & Large Language Model \\
 0DTE & Zero Days to Expiration \\
-OI & Open Interest 
+OI & Open Interest
 \end{tabular}}
 
 
@@ -1282,8 +1282,8 @@ Brown, L. D., Cai, T. T., \& DasGupta, A. (2001).
 {CBOE Global Markets}. (2024).
 \newblock \textit{Zero days to expiration options (0dte): Market structure and trading
   activity} \hl{(CBOE Research Report).} %MDPI: Please add the name of the publisher.
- 
-%\newblock 
+
+%\newblock
 
 \bibitem[\protect\citeauthoryear{{CBOE Global Markets}}{{CBOE Global
   Markets}}{{2025}}]{cboe2025spx0dte}
@@ -1313,8 +1313,8 @@ Dong, Y., Jiang, X., Liu, H., Jin, Z., Gu, B., Yang, M., \& Li, G.
 Fishman, R. (2023).
 \newblock \textit{All you ever wanted to know about gamma, op-ex, and option-driven
   equity flows} (Technical report, Goldman Sachs Equity Derivatives Strategy).
-%\newblock 
-\newblock \hl{SpotGamma.} %MDPI: We removed the Republished by. Please confirm this revision.
+%\newblock
+\newblock \hl{Republished by SpotGamma.} %MDPI: We removed the Republished by. Please confirm this revision.
 
 
 \bibitem[\protect\citeauthoryear{Frey}{Frey}{1997}]{frey1997market}
@@ -1387,7 +1387,7 @@ Marcus, G., \& Davis, E. (2019).
 
 \bibitem[\protect\citeauthoryear{McCoy, Yao, Friedman, Hardy, and
   Griffiths}{McCoy et~al.}{2024}]{mccoy2023embers}
-McCoy, R.~T., Yao, S., Friedman, D., Hardy, M., \& Griffiths, T. L. 
+McCoy, R.~T., Yao, S., Friedman, D., Hardy, M., \& Griffiths, T. L.
 (2024).
 \newblock Embers of autoregression: Understanding large language models through
   the problem they are trained to solve.
@@ -1424,9 +1424,9 @@ Regan, C., \& Xie, Y. (2025).
   exposure patterns via obfuscation testing.
 \newblock In {\em 2nd IEEE international workshop on large language models for
   finance (LLM-Finance), IEEE international conference on big data (BigData),
-  Macau, China}. \hl{IEEE.} %MDPI: We removed the arXiv:2512.17923. Please confirm this revision.
+  Macau, China}. \hl{IEEE. arXiv:2512.17923.} %MDPI: We removed the arXiv:2512.17923. Please confirm this revision.
 
-%\newblock 
+%\newblock
 
 \bibitem[\protect\citeauthoryear{Ribeiro, Wu, Guestrin, and Singh}{Ribeiro
   et~al.}{2020}]{ribeiro2020beyond}
