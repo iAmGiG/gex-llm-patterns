@@ -108,7 +108,7 @@ def create_figure():
         ("Date:", "2024-03-15", True),
         ("Ticker:", "SPY", True),
         ("Day Type:", "Friday", True),
-        ("GEX:", "-$12.3B", False),
+        ("GEX:", "−$12.3B", False),
         ("Persistence:", "93%", False),
         ("Sign Flips:", "2", False),
     ]
@@ -228,7 +228,7 @@ def create_figure():
         ("Date:", "Day 15", False),
         ("Ticker:", "[REDACTED]", True),
         ("Day Type:", "[REMOVED]", True),
-        ("GEX:", "-$12.3B", False),
+        ("GEX:", "−$12.3B", False),
         ("Persistence:", "93%", False),
         ("Sign Flips:", "2", False),
     ]
