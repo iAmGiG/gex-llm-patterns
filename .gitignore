@@ -306,3 +306,13 @@ tmpclaude*
 # Windows-specific LaTeX build scripts (local only)
 docs/papers/paper2/jfqa/build.bat
 .vscode/tasks.json
+
+# Electronics extension (issue #261): raw OpenAI batch files and the large parquet copies
+# stay on disk under data/backups/gex_llm/ (three-copy rule, docs/009 of the DB repo) but not
+# in git; manifests, run metadata, detections per run and docs/papers/electronics/results/ are tracked.
+data/backups/gex_llm/*/input*.jsonl
+data/backups/gex_llm/*/output*.jsonl
+data/backups/gex_llm/*/errors*.jsonl
+data/backups/gex_llm/tables/series/
+data/backups/gex_llm/tables/windows/
+!docs/papers/electronics/build.sh
