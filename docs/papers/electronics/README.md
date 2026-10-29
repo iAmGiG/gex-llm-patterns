@@ -20,7 +20,7 @@ published 2024-versus-2020 baselines turned out to carry calendar dates. The art
 | Results, `results/` | Empty (an empty directory, so git does not track it yet). Written by `scripts/validation/electronics/05_report.py` once series, windows and model runs exist. |
 | Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms, extended on 2026-10-29 with the Phase 3/4 date-effect arms and the scaled QQQ/IWM series), scripts 00 to 05, the schema SQL and a runbook README. A first build of the SPY series and windows and the January backfill exist as parquet under `data/backups/gex_llm/`. The pipeline has submitted no `gpt-6-luna` request; the only calls so far were the probe of 2026-10-28. |
 | Database tables | `backups.gex_llm_regime_*` do **not** exist. The DDL waits for the documentation pull request in the database repository and the maintainer's approval; until then every script writes parquet only. |
-| Corrections | The public record is [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md), tracked in [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262). Whether and how AIAI and JRFM are corrected is for the authors and the editors; nothing in this folder edits `docs/papers/jrfm/`. |
+| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notices are filed: this paper carries the corrected analysis on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
 | Submission | Not submitted. Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). The bibliography entry of the JRFM article still says "in production" and needs volume, article number and DOI. |
 
 ## What is new relative to AIAI 2026 and the JRFM article
@@ -73,8 +73,8 @@ baselines, synthetic figures, headline numbers).
   `common.obfuscate(..., labels="dated")` plus `build_prompt()` reproduces all 223 + 223 dated prompts byte for byte
   (checked 2026-10-29), so the dated and the obfuscated arms differ in the day labels only.
 
-How the article words all of this, and what is sent to the editors of AIAI and JRFM, is for the authors to decide
-(see the decisions log, Q-02, and issue #262).
+The article states the defect and the convention differences in its data section and reports the re-run on its own
+terms; no notice goes to the editors of AIAI or JRFM (decisions log D-20 and Q-02, 2026-10-29).
 
 ## Layout
 
@@ -185,10 +185,10 @@ ledger.
 - [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261): this extension (corrections to its first post are in
   its comments).
 - [#260](https://github.com/iAmGiG/gex-llm-patterns/issues/260): upstream notice that the daily GEX convention changed
-  on 2026-10-08 (same-day expiries now included); it stays open until the authors decide how the published papers are
-  corrected.
-- [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262): tracking issue for the corrections to the published
-  results (IEEE BigData 2025, AIAI 2026, JRFM 2026); the public record is [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md).
+  on 2026-10-08 (same-day expiries now included); it stays open until the data section of this paper is
+  final.
+- [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262): record of the findings about the published results
+  (IEEE BigData 2025, AIAI 2026, JRFM 2026), closed 2026-10-29; the public record is [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md).
 - gex-database-infrastructure (private repository): [#164](https://github.com/iAmGiG/gex-database-infrastructure/issues/164),
   the follow-up from this side (the archive daily tables are put-less for SPY 2023-10 to 2025-12; proposes a put and
   call balance check at load); [#24](https://github.com/iAmGiG/gex-database-infrastructure/issues/24), the root cause of

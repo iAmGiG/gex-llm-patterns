@@ -1,7 +1,7 @@
 # Decisions log: Electronics extension (issue #261)
 
 - Status: third revision, 2026-10-29, reconciled with design memo v2, with the pipeline contract of 2026-10-29 (eleven series, eighteen arms, the test-retest and budget conventions) and with the authors' decisions of 2026-10-28 and 2026-10-29; not committed yet. From the first commit on this is a living document: add entries, do not rewrite history.
-- Tracking: gex-llm-patterns issue #261 (upstream context: #260; upstream root cause: gex-database-infrastructure #24). The corrections to the published papers are tracked in issue #262 and in [docs/papers/CORRECTIONS.md](../../CORRECTIONS.md). Branch: `paper/electronics`.
+- Tracking: gex-llm-patterns issue #261 (upstream context: #260; upstream root cause: gex-database-infrastructure #24). The findings about the published results are recorded in `docs/papers/CORRECTIONS.md` (issue #262, closed 2026-10-29: no notices are filed; the Electronics paper carries the corrected analysis).
 - Companion documents: [00_design.md](00_design.md) (design memo v2, authoritative for the plan except for the points listed in section 5), [01_issue_261_archive.md](01_issue_261_archive.md) (issue text), the forensic memos [2026-10-28_memo_published_inputs.md](forensics/2026-10-28_memo_published_inputs.md) and [2026-10-28_memo_second_audit.md](forensics/2026-10-28_memo_second_audit.md) (evidence), [scripts/validation/electronics/README.md](../../../../scripts/validation/electronics/README.md) (the pipeline runbook) and `scripts/validation/electronics/common.py` (the contract; every constant named below lives there unless the entry names another file).
 
 ## How to read this log
@@ -36,7 +36,7 @@
 | D-17 | 2026-10-28 | Git policy for raw backups | Raw OpenAI batch files and the series and windows parquet stay on disk and are git-ignored; manifests, runs and detections parquet and the report outputs are tracked |
 | D-18 | 2026-10-29 | QQQ and IWM, both variants | Run the unscaled arms (the floor effect as it is) and an open-interest-notional scaled variant (inputs scaled, prompt and thresholds unchanged); closes Q-01 |
 | D-19 | 2026-10-29 | Phase 3/4 baselines | Four luna arms rerun the November 2025 inputs with Day-T labels and with the dates actually sent (892 requests); the published o4-mini answers are backfilled for comparison |
-| D-20 | 2026-10-29 | Publication status and corrections | JRFM is published, so no hold request; the findings are public (`CORRECTIONS.md`, issue #262); notices for AIAI, JRFM, IEEE BigData and arXiv are in preparation |
+| D-20 | 2026-10-29 | Publication status and corrections | JRFM is published, so no hold request; the findings are public (`CORRECTIONS.md`); revised the same day: no correction notices are filed, the Electronics paper carries the corrected analysis without calling itself a correction, issue #262 closed |
 | D-21 | 2026-10-29 | API keys | Left as they are: no rotation; read from the git-ignored config, never printed or committed |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
@@ -255,12 +255,12 @@
 
 - Date: 2026-10-29. Decided by Chris; instructions of 2026-10-28 (evening).
 - Decision:
-  1. The JRFM article is already published, so there is no hold request; what remains is a correction notice.
-  2. The findings are made public now, not after the notices. The corrections page `docs/papers/CORRECTIONS.md` and the evidence in `planning/forensics/` are on the public branch `paper/electronics` (commit e27bdc7 of 2026-10-28, on `origin/paper/electronics`); the corrections are tracked in issue #262 ("Corrections to published results (IEEE BigData 2025, AIAI 2026, JRFM 2026) - tracking", opened 2026-10-28, open).
-  3. Notices are in preparation for each venue: a corrigendum for AIAI 2026 (Springer LNCS), a correction for the JRFM article (MDPI), and a note for the IEEE BigData 2025 paper with a new version of arXiv 2512.17923. `CORRECTIONS.md` places the drafts in `docs/papers/corrections/`; that folder does not exist yet.
+  1. The JRFM article is already published, so there is no hold request. Revised 2026-10-29: no correction notice is filed either (item 3).
+  2. The findings are made public now. The corrections page `docs/papers/CORRECTIONS.md` and the evidence in `planning/forensics/` are on the public branch `paper/electronics` (commit e27bdc7 of 2026-10-28, on `origin/paper/electronics`); the corrections are tracked in issue #262 ("Corrections to published results (IEEE BigData 2025, AIAI 2026, JRFM 2026) - tracking", opened 2026-10-28, open).
+  3. Revised 2026-10-29 (Chris, after the message to Dr. Xie): the authors do not file notices with the venues. The Electronics paper is where the corrected analysis appears: it re-runs the test on the complete data, states the data defect and the convention differences in its data section, and does not present itself as a correction. `CORRECTIONS.md` stays as the public record of the findings (its wording no longer announces notices); the drafts folder `docs/papers/corrections/` was removed and issue #262 is closed with that note.
   4. The tone is factual and technical, because the repository and its issues are public.
 - Why: academic integrity. Readers of the papers should not have to find the problems from the code (first paragraph of `CORRECTIONS.md`).
-- Supersedes: design memo v2 s9 item 1 and the first form of Q-02, which assumed JRFM was in production and asked whether to request a hold. What the Electronics paper says and when the notices are sent is still open (Q-02).
+- Supersedes: design memo v2 s9 item 1 and the first form of Q-02, which assumed JRFM was in production and asked whether to request a hold; and, since the revision of item 3, every earlier mention of notices in this log. What the Electronics paper says about the defect, and where, is settled in Q-02.
 - Encoded in: wording only (`docs/papers/CORRECTIONS.md`, issue #262).
 
 ### D-21 API keys: left as they are
@@ -293,10 +293,10 @@
 ### Q-02 Wording of the data defect, and the notices to the venues
 
 - Fact: the published 2024 and 2025 detection rates (100% for both, 486 of 486 windows) rest on inputs that equal the call leg only (D-04); the same rule on the corrected series gives 10.3% and 13.6% (deterministic replay; no corrected LLM result exists yet). The "USD 5B to USD 23B, +360%" statement matches no stored series: the LLM-reported window means are 3.0, 4.9, 5.5, 9.6, 20.3 and 19.0 billion for 2020 to 2025 (research cache; JRFM Table 5), so 2021 to 2024 is +317% and 2020 to 2024 is +585%, and the 2024 and 2025 magnitudes are call-only in any case (`forensics/published_claim_inventory.md`, rows A27 to A30; second-audit memo, s5).
-- Settled (D-20): JRFM is published, so there is no hold request; the findings are public in `docs/papers/CORRECTIONS.md` and tracked in issue #262; the notices are in preparation.
-- Question: (a) what the Electronics paper says about the defect and where (introduction, data section, discussion), and how it cites the corrections page and the notices; (b) which notices go to which venue and when: a corrigendum for AIAI 2026 (Springer LNCS), a correction for the JRFM article (MDPI), and a note for the IEEE BigData 2025 paper with a new version of arXiv 2512.17923, and whether the Electronics submission waits for them; (c) the status of AIAI: the forensic memo and commit fd2f8d4 say "in press at Springer", design memo v2 says "published"; confirm with the proceedings contact what is still editable. Issue #260 stays open until (b) is decided.
+- Settled (D-20, revised 2026-10-29): JRFM is published, so there is no hold request; the findings are public in `docs/papers/CORRECTIONS.md`; no notices are filed; the Electronics paper carries the corrected analysis without calling itself a correction; issue #262 is closed.
+- Settled (2026-10-29): (a) the paper states the defect and the convention differences in its data section (what the published inputs were, what the complete series is, why the rates differ), reports the re-run on its own terms and cites `CORRECTIONS.md` only as the public record of the evidence; (b) no notice goes to any venue and the Electronics submission waits for nothing; (c) the status of AIAI is immaterial to the paper's wording. Remaining editorial point: the exact wording of the data section once the LLM results are in.
 - Scope: design memo v2 s9 asked for the second audit to finish first. It has (second-audit memo, 2026-10-28). Besides the put-row loss it verifies that the Phase 3 and Phase 4 prompts carried calendar dates, that the 81.2% versus 12.1% contrast rests on two sign conventions, that three figures are synthetic, and that phi is 0.692, not the 0.672 printed in AIAI. The caveat "do not repeat until verified" in design memo v2 s2 predates that audit.
-- Framing: design memo v2 s1 frames the paper as a data-integrity correction with a controlled LLM re-test; that is the working framing and the authors confirm it.
+- Framing: design memo v2 s1 framed the paper as a data-integrity correction with a controlled LLM re-test; since 2026-10-29 the framing is a re-run on the complete data with a controlled LLM re-test and a plain data statement, not a correction.
 - Needs: Chris and Dr. Xie.
 
 ### Q-03 Spend confirmation
@@ -380,3 +380,4 @@
   - Q-01 closed; Q-02 reworded for the published JRFM (issue #262, `CORRECTIONS.md`); Q-03: new request counts and costs, the upper estimate above the hard stop; Q-04: `call_only` is registered; Q-05: the window set has a default; Q-06: the primary cross-asset variant; Q-07: `#rep1`; Q-08: `missing_master_days`; Q-09: sizes and the preservation argument;
   - section 4: the quiet-window functions and the commit policy; section 5: the differences from v2 brought up to date.
 - 2026-10-29 (later): D-22 added (pilot outcome, the submission of priority 1 and 2 plus the intraday arm, Q-07 applied as the 5% default, the deferred arms); D-09's interim sentence on `--repeat-fraction 0` is superseded by D-22.
+- 2026-10-29 (later): D-20 revised and Q-02 settled after the authors' decision not to file correction notices; the drafts folder was removed; `CORRECTIONS.md`, the paper README and design memo v2 s9 reworded accordingly.

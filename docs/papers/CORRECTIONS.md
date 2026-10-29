@@ -1,10 +1,10 @@
 # Corrections to published results
 
-**Maintained by the authors (C. Regan, Y. Xie). Last updated 2026-10-28.**
+**Maintained by the authors (C. Regan, Y. Xie). Last updated 2026-10-29.**
 
-This page records problems found in our published results, what caused them, what the corrected numbers are, and the status of formal corrections. It exists because the repository is public and readers of the papers should not have to find these things out from the code. Evidence for every item is in `docs/papers/electronics/planning/forensics/` (two memos with command-level evidence, the recovered inputs, per-day comparisons, and a claim inventory with file:line anchors). Items were established by automated forensic passes and then tested by independent adversarial re-analysis against the primary files; nothing below rests on a single reading.
+This page records problems found in our published results, what caused them, and what the corrected numbers are. It exists because the repository is public and readers of the papers should not have to find these things out from the code. Evidence for every item is in `docs/papers/electronics/planning/forensics/` (two memos with command-level evidence, the recovered inputs, per-day comparisons, and a claim inventory with file:line anchors). Items were established by automated forensic passes and then tested by independent adversarial re-analysis against the primary files; nothing below rests on a single reading.
 
-Formal corrections (a corrigendum for the AIAI 2026 paper, a correction for the JRFM article, a note for the IEEE BigData 2025 paper and its arXiv version) are in preparation; drafts live in `docs/papers/corrections/`. The extension study tracked in issue #261 re-runs the analysis on corrected data with every input and label stored.
+The authors do not file separate correction notices with the venues. The extension study tracked in issue #261 re-runs the analysis on the complete data with every input and label stored, and reports the results on their own terms; the numbers below supersede the affected published figures until that paper appears.
 
 ## Paper 2 — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* (AIAI 2026, Springer LNCS) and the combined article in JRFM (MDPI, 2026)
 
@@ -43,4 +43,4 @@ Formal corrections (a corrigendum for the AIAI 2026 paper, a correction for the 
 
 1. All inputs, deterministic labels and model answers of the re-analysis are stored (`backups.gex_llm_regime_*` in the research database, with parquet and raw JSONL copies), so every number in the correction and in the extension paper is reproducible from SQL.
 2. The re-analysis uses obfuscated prompts throughout, one signed GEX convention, the complete chain, and reports the deterministic rule next to every model rate; it includes an obfuscated-vs-dated rerun of the 2024/2020 baselines to measure the effect of item B.
-3. Formal correction notices are being drafted for the three venues; this page will link them when submitted.
+3. The extension paper (MDPI *Electronics* special issue, in preparation) reports the re-analysis; no separate correction notices are filed.

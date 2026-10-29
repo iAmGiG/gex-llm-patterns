@@ -83,7 +83,7 @@ Reused from `src/`: `MechanicsPromptBuilder.build_regime_prompt`, `RegimeClassif
 
 ## 9. Decisions still open for the authors
 
-1. **JRFM (in production) and AIAI (published):** whether to request a hold/correction and a corrigendum. Decide with the verified memo; the second audit of the additional figure/lineage findings should finish first.
+1. **JRFM (in production) and AIAI (published):** whether to request a hold/correction and a corrigendum. Decide with the verified memo; the second audit of the additional figure/lineage findings should finish first. *Settled 2026-10-29 (decisions log D-20): JRFM is published; no hold, no corrigendum, no notice; this paper carries the corrected analysis and does not present itself as a correction.*
 2. **QQQ/IWM floor effect:** the fixed $5 B threshold yields zero persistent windows for both in every year. Options: report it as the result, or a disclosed per-symbol scaling of the input series (prompt unchanged). Priority-2 arms wait for this.
 3. **Tracking large artefacts:** raw JSONL and series/windows parquet stay on disk (git-ignored); whether to add git-LFS.
 4. "2026" is the *post-publication period*, not out-of-sample: luna was created 2026-09-14 and its training cutoff is undocumented.
