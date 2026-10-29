@@ -117,7 +117,7 @@ COMMENT ON COLUMN backups.gex_llm_regime_windows.symbol IS 'Underlying ETF ticke
 COMMENT ON COLUMN backups.gex_llm_regime_windows.window_end IS 'trading_date of day T+0 (the last day of the window)';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.window_start IS 'trading_date of day T-29';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.n_days IS 'Always 30';
-COMMENT ON COLUMN backups.gex_llm_regime_windows.window_rule IS 'A = 30 consecutive series rows (Phase 4A convention); B = additionally no missing day against the symbol''s gex.options_daily_summary calendar; J = January 2026 calendar (jan2026_phase4a only)';
+COMMENT ON COLUMN backups.gex_llm_regime_windows.window_rule IS 'A = 30 consecutive series rows (Phase 4A convention), with window_metadata.calendar_gap_days and missing_master_days recording holes; J = the series'' own calendar (jan2026_phase4a, p3_2024*, p4_2020*); T0 = composite intraday_t0 windows (new_full T-29..T-1, intraday_late at T+0); C reserved for a strict NYSE calendar';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.gex_sequence IS 'JSON array of 30 objects {"date": "Day T-29".."Day T+0", "net_gex_usd": <float>} exactly as passed to MechanicsPromptBuilder.build_regime_prompt (dates and ticker removed)';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.input_sha256 IS 'sha256 of the canonical gex_sequence JSON; identical windows across series share it';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.clf_regime_type IS 'persistent_positive | persistent_negative | low_conviction | transitional';

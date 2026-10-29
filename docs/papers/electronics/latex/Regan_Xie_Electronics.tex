@@ -1,0 +1,169 @@
+%  Electronics (MDPI), Special Issue "Timely AI Advancements and Interdisciplinary Synergies for Intelligent Modeling".
+%  Extended version of the AIAI 2026 paper (gex-llm-patterns issue #261).
+%
+%  Build with ../build.sh: it exports TEXINPUTS/BSTINPUTS=".:../../jrfm:" so that Definitions/ resolves to
+%  docs/papers/jrfm/Definitions (mdpi.cls hard-codes Definitions/... paths relative to the working directory).
+%  For Overleaf or the MDPI submission zip, copy Definitions/ next to this file and point \figdir at the figure folder.
+%
+%  Conventions of this skeleton
+%    - "% TODO(tag): ..." comments carry the guidance for each heading (1-3 sentences).  \tbd marks what is still
+%      missing in the typeset text (unwritten prose, numbers to be filled from the 05_report.py output);
+%      "../build.sh --strict" fails while any \tbd remains in this file or in 01-07 and while the working title
+%      stands; it only counts the open TODO markers.
+%    - The sections are pulled in as ./NN_Name on purpose.  build.sh puts ../../jrfm on TEXINPUTS, and the JRFM folder has
+%      files of the same names (01_Introduction, 02_Related_Work, 04_Results, 05_Discussion, 06_Conclusion); a bare name
+%      would silently typeset the JRFM text if a local file were renamed or deleted.
+%    - Figures are the PNGs written by ../figures/scripts into ../figures/output (300 dpi, 6.14 in wide).  \resultfigure
+%      draws a boxed placeholder and writes a "Missing figure file" warning to the log while a PNG does not exist yet,
+%      so the skeleton compiles before the figures do.  The stems are registered once, below.
+%    - Labels: sec: / tab: / fig: / eq: / app:.  Citation keys live in references.bib (the JRFM bib plus regan2026regimes
+%      and regan2026jrfm).  Numbers in the text must come from results/ or the backups.gex_llm_regime_* tables.
+\documentclass[electronics,article,submit,moreauthors,pdftex]{Definitions/mdpi}
+
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\history{Received: date; Accepted: date; Published: date}
+
+%% Additional packages
+\usepackage{tabularx}  % wrapped text columns in the tables
+\usepackage{listings}  % prompt, schema and SQL listings of the appendices (the styles are defined in 07_Appendix.tex)
+
+%% Commands not defined in this version of mdpi.cls (same block as Regan_Xie_JRFM.tex)
+\newcommand{\dataavailability}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Data Availability Statement:} {#1}\par}}
+\newcommand{\institutionalreview}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Institutional Review Board Statement:} {#1}\par}}
+\newcommand{\informedconsent}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Informed Consent Statement:} {#1}\par}}
+
+%% Local macros ---------------------------------------------------------------
+% \tbd{}: visible marker for text or numbers that are still missing.
+\DeclareRobustCommand{\tbd}{\textbf{TBD}}
+% \ident{some_key}: typewriter identifier (series key, arm, column, table) with literal underscores.
+\DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
+
+% Figure registry: manuscript figures in order of first citation -> stems of ../figures/output/<stem>.png.
+% File numbers follow the figure list of the data audit (design memo, issue #261); manuscript numbers follow the text,
+% so Figures 5, 7 and 12 sit at file numbers 12, 05 and 07.  Keep this block in step with ../figures/scripts.
+\newcommand{\figDesign}{fig01_study_design}
+\newcommand{\figWindow}{fig02_convention_window}
+\newcommand{\figSeries}{fig03_series_comparison}
+\newcommand{\figReplay}{fig04_classifier_replay}
+\newcommand{\figThresholds}{fig12_threshold_sensitivity}
+\newcommand{\figBridge}{fig06_bridge_agreement}
+\newcommand{\figCorrected}{fig05_llm_arms_by_year}
+\newcommand{\figDeep}{fig08_deep_baseline}
+\newcommand{\figCross}{fig09_cross_asset}
+\newcommand{\figPost}{fig10_post_publication_2026}
+\newcommand{\figIntraday}{fig11_intraday_vs_eod}
+\newcommand{\figFidelity}{fig07_llm_classifier_fidelity}
+
+% \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
+\newcommand{\figdir}{../figures/output}
+\newcommand{\resultfigure}[1]{%
+  \begingroup
+  \edef\figstem{#1}%
+  \IfFileExists{\figdir/\figstem.png}%
+    {\includegraphics[width=\textwidth]{\figdir/\figstem.png}}%
+    {\GenericWarning{}{Missing figure file \figdir/\figstem.png}%
+     \fbox{\parbox[c][4cm][c]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{\centering\ttfamily
+       Missing figure file\\\expandafter\detokenize\expandafter{\figstem}.png}}}%
+  \endgroup}
+
+%=================================================================
+% Suggestion from the data audit (must differ from the AIAI and JRFM titles): "Convention Sensitivity of LLM Regime
+% Detection: Re-Running Temporal Obfuscation Tests Across Gamma-Exposure Definitions, Assets and Time (2008--2026)".
+\Title{Working title: Convention Sensitivity of LLM Regime Detection \ldots}
+
+% Author ORCID IDs
+\newcommand{\orcidauthorA}{0009-0009-3777-6148}
+\newcommand{\orcidauthorB}{0000-0002-8661-8877}
+
+% Authors
+\Author{Christopher Regan $^{1,}$*\orcidA{} and Ying Xie $^{1}$\orcidB{}}
+
+% Authors for PDF metadata
+\AuthorNames{Christopher Regan and Ying Xie}
+
+% Affiliations
+\address{%
+$^{1}$ \quad College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060, USA}
+
+% Corresponding author
+% TODO(authors): MDPI recorded both authors as corresponding for JRFM; decide whether Electronics repeats that.
+\corres{Correspondence: cregan1@kennesaw.edu (C.R.)}
+
+% Prints "$\dagger$ This paper is an extended version of our paper published in <text>." on page 1.
+% TODO(authors): the AIAI 2026 proceedings are in press; rephrase the class sentence if MDPI objects to "published in".
+\conference{the 22nd IFIP WG 12.5 International Conference on Artificial Intelligence Applications and Innovations
+(AIAI 2026), Chania, Crete, Greece, 16--19 July 2026 \cite{regan2026regimes}}
+
+% Abstract: one paragraph, IMRaD without headings, at most 200 words (MDPI).
+% TODO(abstract): background (obfuscation test, published 30-day result), method (six daily series, deterministic replay,
+% gpt-6-luna bridge and re-runs, dated-versus-obfuscated rerun of the 2024 and 2020 baselines), results (what changes with the
+% corrected inputs, with 2-3 numbers), conclusion.
+\abstract{\tbd{} Abstract pending.}
+
+% Keywords (semicolon-separated per MDPI style, 3--10)
+\keyword{LLM validation; regime detection; gamma exposure; 0DTE options; temporal obfuscation; data provenance; reproducibility}
+
+%=================================================================
+\begin{document}
+
+\input{./01_Introduction}
+\input{./02_Related_Work}
+\input{./03_Methods}
+\input{./04_Results}
+\input{./05_Discussion}
+\input{./06_Conclusion}
+
+% Appendices precede the back matter, as in the JRFM source.
+\input{./07_Appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{6pt}
+
+% TODO(authors): confirm the CRediT roles; the text below is the JRFM statement.
+\authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
+
+\funding{This research received no external funding.}
+
+\conflictsofinterest{The authors declare no conflict of interest.}
+
+% TODO(data): repository URL with access date; release of the four result tables as parquet (DOI/archive) and of results/; name the
+% authoritative copy (the parquet files, or the backups.gex_llm_regime_* tables once the schema is approved); vendor licence note
+% (Alpha Vantage academic access until 2026-10-09, Cboe delayed quotes from 2026-10-12).
+\dataavailability{All code and validation results are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on \tbd{}). The four result tables (daily series, windows, runs and detections) are released as parquet files (\tbd{}). Raw options data were obtained from Alpha Vantage under academic API access and are subject to the vendor's licence.}
+
+% TODO(ack): update the AI-use sentence to the current MDPI generative-AI policy (tool, version, purpose).
+\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data. OpenAI's gpt-6-luna is the subject of investigation in this study and was accessed through the OpenAI Batch API. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code) for the purposes of clarifying and refining the written presentation and for assisting with software development. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
+
+\institutionalreview{Not applicable.}
+
+\informedconsent{Not applicable.}
+
+\abbreviations{The following abbreviations are used in this manuscript:\\
+
+\noindent
+\begin{tabular}{@{}ll}
+0DTE & Zero Days to Expiration \\
+EOD & End of Day \\
+GEX & Gamma Exposure \\
+LLM & Large Language Model \\
+OI & Open Interest \\
+\end{tabular}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\reftitle{References}
+
+\externalbibliography{yes}
+\bibliography{references}
+
+\end{document}

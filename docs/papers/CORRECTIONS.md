@@ -4,7 +4,7 @@
 
 This page records problems found in our published results, what caused them, what the corrected numbers are, and the status of formal corrections. It exists because the repository is public and readers of the papers should not have to find these things out from the code. Evidence for every item is in `docs/papers/electronics/planning/forensics/` (two memos with command-level evidence, the recovered inputs, per-day comparisons, and a claim inventory with file:line anchors). Items were established by automated forensic passes and then tested by independent adversarial re-analysis against the primary files; nothing below rests on a single reading.
 
-Formal corrections (a corrigendum for the AIAI 2026 paper, a correction for the JRFM article, a note for the IEEE BigData 2025 paper and its arXiv version) are in preparation; drafts live next to each paper's sources under `corrections/`. The extension study tracked in issue #261 re-runs the analysis on corrected data with every input and label stored.
+Formal corrections (a corrigendum for the AIAI 2026 paper, a correction for the JRFM article, a note for the IEEE BigData 2025 paper and its arXiv version) are in preparation; drafts live in `docs/papers/corrections/`. The extension study tracked in issue #261 re-runs the analysis on corrected data with every input and label stored.
 
 ## Paper 2 — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* (AIAI 2026, Springer LNCS) and the combined article in JRFM (MDPI, 2026)
 

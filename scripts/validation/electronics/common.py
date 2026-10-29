@@ -120,6 +120,24 @@ class Series:
     calendar: str = "master"  # 'master' = gex.options_daily_summary dates; 'self' = the series' own dates
     start: Optional[date] = None  # overrides SYMBOL_START when set
     end: date = WINDOW_END_CAP
+    labels: str = "obfuscated"  # 'obfuscated' = Day T-29..T+0 (Phase 4A); 'dated' = ISO dates as in the Nov-2025 Phase 3/4 runs
+    scale: Optional[str] = None  # 'oi_notional' = multiply by the SPY/symbol open-interest-notional ratio (QQQ/IWM only)
+
+
+# November 2025 Phase 3 (2024 full year) and Phase 4 (2020 baseline) runs: the inputs behind the
+# published 81.2% vs 12.1% contrast.  Their prompts carried calendar dates (not obfuscated); the
+# 2024 series is the gross magnitude (call+put, ex-0DTE) with a negative sign imposed and the 2020
+# series is magnitude-only.  Kept verbatim so the date effect can be measured.
+PHASE3_INPUT_JSONL = PHASE4A_DIR / "phase3_full_2024_baseline_v2.jsonl"
+PHASE3_OUTPUT_JSONL = PHASE4A_DIR / "results_batch_691ea7f7b79481909f4667eaff640f26.jsonl"
+PHASE3_BATCH_ID = "batch_691ea7f7b79481909f4667eaff640f26"
+PHASE4_INPUT_JSONL = PHASE4A_DIR / "batch_regime_20251120_104630.jsonl"
+PHASE4_OUTPUT_JSONL = PHASE4A_DIR / "results_batch_691f37d94ef0819099136e88a69bef82.jsonl"
+PHASE4_BATCH_ID = "batch_691f37d94ef0819099136e88a69bef82"
+PHASE34_FILES = {  # series_key -> (input, output, batch id)
+    "p3_2024": (PHASE3_INPUT_JSONL, PHASE3_OUTPUT_JSONL, PHASE3_BATCH_ID),
+    "p4_2020": (PHASE4_INPUT_JSONL, PHASE4_OUTPUT_JSONL, PHASE4_BATCH_ID),
+}
 
 
 SERIES: Dict[str, Series] = {
@@ -149,6 +167,40 @@ SERIES: Dict[str, Series] = {
         description="gex.intraday_gex_summary snapshot_type=final_rush (19:55:59 UTC), the last independent late-session observation",
         source_table="gex.intraday_gex_summary", symbols=("SPY",), start=INTRADAY_START,
     ),
+    "call_only": Series(
+        key="call_only",
+        description="Diagnostic: call leg only (0DTE included) from raw chains; reproduces the put-less published inputs from clean data",
+        source_table="gex.options_chains_partitioned", symbols=("SPY",), start=date(2020, 1, 1),
+    ),
+    "new_full_scaled": Series(
+        key="new_full_scaled",
+        description="new_full multiplied by a fixed per-symbol factor = median(2020-01..2026-10-09) of SPY / symbol open-interest notional (total_weighted_oi * 100 * underlying_price); makes the $5B criterion comparable across ETFs without touching the prompt",
+        source_table="gex.options_daily_summary", symbols=("QQQ", "IWM"), start=date(2020, 1, 1), scale="oi_notional",
+    ),
+    "p3_2024": Series(
+        key="p3_2024",
+        description="Nov-2025 Phase 3 input series (SPY 2024, 252 values): gross call+put magnitude ex-0DTE with a negative sign imposed; obfuscated labels",
+        source_table=str(PHASE3_INPUT_JSONL.relative_to(REPO_ROOT)), symbols=("SPY",), calendar="self",
+        start=date(2024, 1, 2), end=date(2024, 12, 31),
+    ),
+    "p3_2024_dated": Series(
+        key="p3_2024_dated",
+        description="Same values as p3_2024 with the calendar-date labels actually sent in Nov 2025",
+        source_table=str(PHASE3_INPUT_JSONL.relative_to(REPO_ROOT)), symbols=("SPY",), calendar="self",
+        start=date(2024, 1, 2), end=date(2024, 12, 31), labels="dated",
+    ),
+    "p4_2020": Series(
+        key="p4_2020",
+        description="Nov-2025 Phase 4 input series (SPY 2020, 252 values): magnitude-only (always positive); obfuscated labels",
+        source_table=str(PHASE4_INPUT_JSONL.relative_to(REPO_ROOT)), symbols=("SPY",), calendar="self",
+        start=date(2020, 1, 2), end=date(2020, 12, 31),
+    ),
+    "p4_2020_dated": Series(
+        key="p4_2020_dated",
+        description="Same values as p4_2020 with the calendar-date labels actually sent in Nov 2025",
+        source_table=str(PHASE4_INPUT_JSONL.relative_to(REPO_ROOT)), symbols=("SPY",), calendar="self",
+        start=date(2020, 1, 2), end=date(2020, 12, 31), labels="dated",
+    ),
 }
 
 
@@ -162,20 +214,37 @@ class Arm:
     start: Optional[date] = None
     end: Optional[date] = None
     llm: bool = True  # False = classifier/backfill only, never submitted to a model
+    window_series_key: Optional[str] = None  # windows are read from this series when it differs (composites)
+
+
+def arm_window_series(arm: "Arm") -> str:
+    """Series key under which the arm's windows are stored (composites differ from the detection series)."""
+    return arm.window_series_key or arm.series_key
 
 
 ARMS: Dict[str, Arm] = {
     "r1_o4mini": Arm("r1_o4mini", "jan2026_phase4a", "SPY", 0,
                      "Published Phase 4A results (o4-mini, Jan 2026) backfilled from the original batch output", llm=False),
+    "r1_p3_o4mini": Arm("r1_p3_o4mini", "p3_2024_dated", "SPY", 0,
+                        "Published Phase 3 results (o4-mini, Nov 2025, dated prompts) backfilled from the batch output", llm=False),
+    "r1_p4_o4mini": Arm("r1_p4_o4mini", "p4_2020_dated", "SPY", 0,
+                        "Published Phase 4 results (o4-mini, Nov 2025, dated prompts) backfilled from the batch output", llm=False),
     "bridge_jan": Arm("bridge_jan", "jan2026_phase4a", "SPY", 1,
                       "gpt-6-luna on the exact published inputs: model-agreement bridge to o4-mini"),
     "full_spy": Arm("full_spy", "new_full", "SPY", 1, "Rebuilt 0DTE-inclusive series, SPY 2008-2026"),
     "ex0dte_spy": Arm("ex0dte_spy", "new_ex0dte", "SPY", 1, "0DTE-excluded ablation, SPY 2008-2026"),
-    "full_qqq": Arm("full_qqq", "new_full", "QQQ", 2, "Cross-asset, QQQ 2011-2026"),
-    "full_iwm": Arm("full_iwm", "new_full", "IWM", 2, "Cross-asset, IWM 2008-2026"),
+    "p34_obf_2024": Arm("p34_obf_2024", "p3_2024", "SPY", 1, "Phase 3 inputs with Day-T labels (obfuscated rerun)"),
+    "p34_dated_2024": Arm("p34_dated_2024", "p3_2024_dated", "SPY", 1, "Phase 3 inputs with the dates actually sent"),
+    "p34_obf_2020": Arm("p34_obf_2020", "p4_2020", "SPY", 1, "Phase 4 inputs with Day-T labels (obfuscated rerun)"),
+    "p34_dated_2020": Arm("p34_dated_2020", "p4_2020_dated", "SPY", 1, "Phase 4 inputs with the dates actually sent"),
+    "full_qqq": Arm("full_qqq", "new_full", "QQQ", 2, "Cross-asset, QQQ 2011-2026 (unscaled; floor effect expected)"),
+    "full_iwm": Arm("full_iwm", "new_full", "IWM", 2, "Cross-asset, IWM 2008-2026 (unscaled; floor effect expected)"),
+    "full_qqq_scaled": Arm("full_qqq_scaled", "new_full_scaled", "QQQ", 2, "Cross-asset, QQQ 2020-2026, OI-notional scaled"),
+    "full_iwm_scaled": Arm("full_iwm_scaled", "new_full_scaled", "IWM", 2, "Cross-asset, IWM 2020-2026, OI-notional scaled"),
     "ex0dte_qqq": Arm("ex0dte_qqq", "new_ex0dte", "QQQ", 3, "0DTE-excluded, QQQ 2020-2026", start=date(2020, 1, 1)),
     "ex0dte_iwm": Arm("ex0dte_iwm", "new_ex0dte", "IWM", 3, "0DTE-excluded, IWM 2020-2026", start=date(2020, 1, 1)),
-    "intraday_spy": Arm("intraday_spy", "intraday_late", "SPY", 3, "Late-session intraday snapshot vs EOD, SPY 2026"),
+    "intraday_spy": Arm("intraday_spy", "intraday_late", "SPY", 3, "Late-session intraday snapshot at T+0 vs EOD, SPY 2026",
+                        window_series_key="intraday_t0"),
     "bridge_old": Arm("bridge_old", "old_bs", "SPY", 4, "Optional: pre-rebuild daily-table convention, SPY"),
 }
 
@@ -235,16 +304,26 @@ def estimate_cost_usd(model: str, mode: str, prompt_tokens: int, completion_toke
 
 
 # --------------------------------------------------------------------------- obfuscation / prompt / classifier
-def obfuscate(values_usd: Sequence[float]) -> List[Dict[str, Any]]:
-    """Relabel a 30-day sequence exactly as Phase 4A did ("Day T-29" .. "Day T+0")."""
+def obfuscate(values_usd: Sequence[float], dates: Optional[Sequence[date]] = None,
+              labels: str = "obfuscated") -> List[Dict[str, Any]]:
+    """Build the prompt-builder input for a 30-day sequence.
+
+    labels='obfuscated' relabels exactly as Phase 4A did ("Day T-29" .. "Day T+0");
+    labels='dated' reproduces the Nov-2025 Phase 3/4 prompts (ISO dates as labels) and needs ``dates``.
+    """
     if len(values_usd) != WINDOW_DAYS:
         raise ValueError(f"expected {WINDOW_DAYS} values, got {len(values_usd)}")
+    if labels == "dated" and (dates is None or len(dates) != WINDOW_DAYS):
+        raise ValueError("labels='dated' needs the 30 dates")
     seq = []
     for j, v in enumerate(values_usd):
         if v is None or v != v:  # None / NaN would reach the model as the text 'nanB'
             raise ValueError(f"value {j} is missing or NaN")
-        offset = j - (WINDOW_DAYS - 1)
-        label = f"Day T{offset:+d}" if offset != 0 else "Day T+0"
+        if labels == "dated":
+            label = dates[j].isoformat()
+        else:
+            offset = j - (WINDOW_DAYS - 1)
+            label = f"Day T{offset:+d}" if offset != 0 else "Day T+0"
         seq.append({"date": label, "net_gex_usd": float(v)})
     return seq
 
@@ -318,13 +397,46 @@ def windows_over(dates: Sequence[date], values: Sequence[float], calendar: Seque
 
 
 # --------------------------------------------------------------------------- ids, keys, hashing
-def custom_id(arm: str, symbol: str, window_end: date) -> str:
-    return f"{arm}|{symbol}|{window_end.isoformat()}"
+REPEAT_MARK = "#rep"  # test-retest repeats: arm '<arm>#rep1' and custom_id '<arm>|SYM|DATE#rep1' (04 writes, 05 reads)
+REPEAT_ARM_SUFFIX = REPEAT_MARK + "1"
+
+
+def custom_id(arm: str, symbol: str, window_end: date, repeat: int = 0) -> str:
+    base = f"{arm}|{symbol}|{window_end.isoformat()}"
+    return f"{base}{REPEAT_MARK}{repeat}" if repeat else base
 
 
 def parse_custom_id(cid: str) -> Tuple[str, str, date]:
+    """(arm, symbol, window_end); a trailing '#rep<k>' is removed (use custom_id_repeat for k)."""
     arm, symbol, d = cid.split("|")
+    d = d.split(REPEAT_MARK)[0]
     return arm, symbol, date.fromisoformat(d)
+
+
+def custom_id_repeat(cid: str) -> int:
+    """Repeat index k of '<...>#rep<k>' (0 for an original request)."""
+    return int(cid.rsplit(REPEAT_MARK, 1)[1] or 1) if REPEAT_MARK in cid else 0
+
+
+def base_arm(arm: str) -> str:
+    """'bridge_jan#rep1' -> 'bridge_jan'."""
+    return arm.split(REPEAT_MARK)[0]
+
+
+def counts_toward_budget(run: Dict[str, Any]) -> bool:
+    """Only runs paid from the current balance count: live model, LLM arm, not a backfill."""
+    arm = ARMS.get(base_arm(str(run.get("arm", ""))))
+    if arm is not None and not arm.llm:
+        return False
+    if str(run.get("model", "")) != MODEL:
+        return False
+    meta = run.get("run_metadata") or {}
+    if isinstance(meta, str):
+        try:
+            meta = json.loads(meta)
+        except Exception:
+            meta = {}
+    return not bool(meta.get("backfill"))
 
 
 def make_run_id(arm: str, model: str, mode: str, when: Optional[datetime] = None) -> str:
@@ -472,6 +584,12 @@ def parse_llm_content(content: Optional[str]) -> Tuple[Optional[Dict[str, Any]],
             return normalize_payload(data), "ok"
     except Exception:
         pass
+    try:  # raw control characters inside strings (one Phase 4A answer); still a direct parse
+        data = json.loads(content, strict=False)
+        if isinstance(data, dict):
+            return normalize_payload(data), "ok"
+    except Exception:
+        pass
     try:
         from src.utils.json_parser import extract_json
 
@@ -496,8 +614,27 @@ def usage_fields(usage: Optional[Dict[str, Any]]) -> Tuple[Optional[int], Option
 # A = 30 consecutive series rows (Phase 4A convention) with a flag when a span covers a calendar gap;
 # J = the January 2026 calendar (jan2026_phase4a only).  Rule B of the data audit equals A for the new series.
 WINDOW_RULE = "A"
-CALENDAR_GAP_FLAG_DAYS = 3  # flag a window when consecutive series rows are more than this many calendar days apart
+WINDOW_RULE_COMPOSITE = "T0"  # composite windows (intraday_t0); 'C' is reserved for a strict NYSE calendar
+# Two complementary hole detectors: calendar_gap_days > 4 (a 5+ day gap is never a plain holiday
+# weekend) and missing_master_days (trading dates of gex.options_daily_summary absent from the series,
+# which catches a single skipped weekday such as 2023-07-12 in the January calendar).
+CALENDAR_GAP_FLAG_DAYS = 4
 INTRADAY_T0_KEY = "intraday_t0"  # composite windows: new_full for T-29..T-1, intraday_late (final_rush) at T+0
+
+QUIET_WINDOW_UTC = ((21, 50), (22, 45))  # daily ingest + daily-summary cron; no DDL, loads or raw scans inside it
+
+
+def in_quiet_window(now: Optional[datetime] = None) -> bool:
+    now = now or datetime.now(timezone.utc)
+    (h0, m0), (h1, m1) = QUIET_WINDOW_UTC
+    t = now.hour * 60 + now.minute
+    return h0 * 60 + m0 <= t <= h1 * 60 + m1
+
+
+def assert_not_quiet(ignore: bool = False) -> None:
+    """Refuse DB writes / raw scans during the upstream cron window unless explicitly overridden."""
+    if in_quiet_window() and not ignore:
+        raise RuntimeError("inside the 21:50-22:45 UTC quiet window; pass --ignore-busy-window to override")
 BUDGET_USD_HARD_STOP = 12.0  # refuse to submit when projected + ledger spend would exceed this (balance $16.86 on 2026-10-28)
 PILOT_WINDOWS = 40  # balanced on clf_should_detect
 REPEAT_FRACTION = 0.05  # duplicate windows per arm for test-retest (or a full repeat of bridge_jan)
@@ -555,6 +692,54 @@ def phase4a_daily_series(raw_calendar: Sequence[date]) -> Dict[date, float]:
     for e in ends:
         series[e] = wins[e][-1]
     return series
+
+
+_DATED_LINE = None
+
+
+def load_phase34_inputs(series_key: str) -> Dict[date, List[Tuple[date, float]]]:
+    """{window_end: [(date, value_usd) x 30]} parsed from a Nov-2025 Phase 3/4 input file (dated prompts)."""
+    import re
+
+    global _DATED_LINE
+    if _DATED_LINE is None:
+        _DATED_LINE = re.compile(r"^(\d{4}-\d{2}-\d{2}): ([+-]?\d+\.\d+)B$", re.M)
+    base = series_key.replace("_dated", "")
+    path = PHASE34_FILES[base][0]
+    out: Dict[date, List[Tuple[date, float]]] = {}
+    with open(path) as fh:
+        for line in fh:
+            j = json.loads(line)
+            end = date.fromisoformat(j["custom_id"].replace("window-", ""))
+            rows = [(date.fromisoformat(d), float(v) * 1e9)
+                    for d, v in _DATED_LINE.findall(j["body"]["messages"][0]["content"])]
+            if len(rows) != WINDOW_DAYS:
+                raise ValueError(f"{path.name} {j['custom_id']}: parsed {len(rows)} values")
+            out[end] = rows
+    return out
+
+
+def phase34_daily_series(series_key: str) -> Dict[date, float]:
+    """Daily series (USD) implied by a Phase 3/4 input file; consecutive windows are checked for consistency."""
+    wins = load_phase34_inputs(series_key)
+    series: Dict[date, float] = {}
+    for end, rows in wins.items():
+        for d, v in rows:
+            if d in series and abs(series[d] - v) > 0.006e9:
+                raise ValueError(f"{series_key}: inconsistent value for {d} ({series[d]} vs {v})")
+            series[d] = v
+    return series
+
+
+def load_phase34_outputs(series_key: str) -> Dict[date, Dict[str, Any]]:
+    """{window_end: raw batch output line} of the Nov-2025 Phase 3/4 o4-mini run."""
+    base = series_key.replace("_dated", "")
+    out: Dict[date, Dict[str, Any]] = {}
+    with open(PHASE34_FILES[base][1]) as fh:
+        for line in fh:
+            j = json.loads(line)
+            out[date.fromisoformat(j["custom_id"].replace("window-", ""))] = j
+    return out
 
 
 def load_phase4a_outputs() -> Dict[date, Dict[str, Any]]:

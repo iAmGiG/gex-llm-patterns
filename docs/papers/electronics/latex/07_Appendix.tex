@@ -1,0 +1,554 @@
+%  Appendices A-C of the Electronics manuscript (labels app:prompt, app:series, app:tables).
+%
+%  A is transcribed from the code, not typed.  The prompt is MechanicsPromptBuilder.build_regime_prompt with the 30 data lines
+%  replaced by the placeholder {gex_data_table}; the schema and the request are common.REGIME_JSON_SCHEMA and common.chat_body.
+%  The three typographic symbols of the prompt (U+2264, U+2265, U+2192) are written in ASCII (<=, >=, ->) in this file and
+%  typeset as symbols by the "prompt" listing style, which keeps the sources ASCII.
+%  B.1 to B.4 are the four statements of the data audit of 2026-10-28 (sql_series_a_frozen, _b_new, _c_ex0dte and
+%  _d_intraday.sql) VERBATIM, comments included; B.5 adds the statement of the scaling factor (tested read-only on 2026-10-29)
+%  and describes the recovered series.  Do not edit the SQL lines by hand: change the statement and say so in the text.
+%  Re-check the listings against the code whenever the prompt, the schema or the model configuration changes
+%  (README.md, section "Keeping Appendices A and B in step with the code").
+%  Appendix C holds placeholders (\tbd) until 05_report.py has written results/; "../build.sh --strict" fails until
+%  they are filled.
+\appendixtitles{yes}
+\appendix
+
+% Listing styles (the listings package is loaded in the main file).  "prompt" typesets <=, >= and -> as symbols; it is
+% used for the prompt only, because the SQL contains the operators literally.  The two penalties are set to 0 inside the
+% listing because mdpi.cls loads hyphenat[none], which makes both infinite and so forbids the discretionary breaks that
+% listings uses for breaklines (without this the long prompt and SQL lines run into the margin).
+\lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
+  columns=fixed, keepspaces=true, showstringspaces=false, upquote=true,
+  breaklines=true, breakindent=0pt, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
+\lstdefinestyle{prompt}{style=appcode, breakatwhitespace=true,
+  literate={<=}{{$\leq$}}1 {>=}{{$\geq$}}1 {->}{{$\rightarrow$}}1}
+
+%=================================================================
+\section{Prompt, Schema and API Configuration}
+\label{app:prompt}
+
+This appendix reproduces the complete request sent to the model for each 30-day window, so that the experiment can be repeated from the manuscript alone. The prompt text is the output of \ident{MechanicsPromptBuilder.build_regime_prompt} (file \path{src/llm/mechanics_prompt_builder.py}); the schema and the request body are the constant \ident{REGIME_JSON_SCHEMA} and the function \ident{chat_body} of \path{scripts/validation/electronics/common.py}. The listings were generated from these objects and compared with them.
+
+\subsection{Model and API Configuration}
+\label{app:prompt:config}
+
+\begin{itemize}[leftmargin=*,labelsep=5.5mm]
+\item \textbf{Model:} \ident{gpt-6-luna}, an OpenAI model alias without a dated snapshot. The creation timestamp of the model object (2026-09-14) is stored with every run and the response identifier with every answer. The published run used \ident{o4-mini-2025-04-16}.
+\item \textbf{Access:} OpenAI Batch API, endpoint \path{/v1/chat/completions}, completion window of 24 hours, at most 1{,}500 requests per batch job. Each input line is one request that carries the key \texttt{<arm>|<symbol>|<window\_end>} in \ident{custom_id}; a test-retest duplicate adds the suffix \texttt{\#rep1}, and its arm is stored as \texttt{<arm>\#rep1}.
+\item \textbf{Reasoning effort:} \ident{medium}, the default effort of o4-mini in the published run.
+\item \textbf{Maximum completion tokens:} 4{,}000; reasoning tokens count against the limit. An answer that ends with \ident{finish_reason} = \ident{length} is requested once more with 8{,}000.
+\item \textbf{Response format:} the strict JSON schema of Appendix~\ref{app:prompt:schema}. The earlier runs requested the same nine fields in the prompt text only; this is the one protocol change of the study.
+\item \textbf{Not sent:} temperature, seed, system message, tools and stop sequences.
+\item \textbf{Parsing:} an answer is parsed as JSON; a second attempt tolerates raw control characters inside strings, and a last fallback extracts the JSON object from free text. The parse status of every answer (\ident{ok}, \ident{fallback}, \ident{failed} or \ident{missing}) is stored.
+\item \textbf{Prices:} USD 0.05 per million input tokens and USD 0.25 per million output tokens on Batch, twice that on the standard API.
+\end{itemize}
+
+Identical requests need not return identical answers, because no seed is set. The test-retest duplicates of Section~\ref{sec:methods:arms} measure this variation, and the deterministic classifier, not the model, supplies the reference label of each window.
+
+\subsection{Prompt Text}
+\label{app:prompt:body}
+
+The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
+
+\begin{lstlisting}[style=prompt]
+You are a market structure analyst specializing in dealer gamma positioning regimes.
+
+TASK: Analyze this 30-day period and determine if it represents a PERSISTENT regime where dealer constraints create forced, directional flows.
+
+## 30-DAY GEX DATA
+
+{gex_data_table}
+
+## REGIME CLASSIFICATION FRAMEWORK
+
+### PERSISTENT REGIMES (Detect These)
+
+**1. PERSISTENT POSITIVE REGIME**
+- Definition: Dealers are LONG gamma, forced to sell into strength
+- Criteria:
+  * >70% of days (21+/30) have positive net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold long gamma:
+- Price rises -> Dealers MUST sell shares (rebalance)
+- Price falls -> Dealers MUST buy shares (rebalance)
+- Creates dampening, mean-reverting flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+**2. PERSISTENT NEGATIVE REGIME**
+- Definition: Dealers are SHORT gamma, forced to buy into strength
+- Criteria:
+  * >70% of days (21+/30) have negative net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold short gamma:
+- Price rises -> Dealers MUST buy shares (chase)
+- Price falls -> Dealers MUST sell shares (chase)
+- Creates amplifying, momentum flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+---
+
+### NON-REGIMES (Reject These)
+
+**3. TRANSITIONAL (Reject)**
+- Frequent sign flips between positive/negative GEX
+- No dominant regime direction (less than 70% same sign)
+- Market in regime change period
+- Example: 15 positive days, 15 negative days (50/50 split)
+
+**Why Reject**: No persistent constraint. Dealers face mixed conditions daily. Not a structural regime.
+
+**4. LOW CONVICTION (Reject)**
+- Consistent sign BUT weak magnitude (<$5B average)
+- Example: 25 days positive, avg $2B GEX
+- Insufficient constraint to create persistent forced flows
+
+**Why Reject**: Even if sign is consistent, magnitude too weak to force dealers into meaningful positions. Not a structural constraint.
+
+---
+
+## ANALYSIS QUESTIONS
+
+Systematically evaluate the 30-day window:
+
+**Step 1: Sign Persistence**
+1. Count days with positive net GEX
+2. Count days with negative net GEX
+3. Calculate persistence percentage: max(positive_days, negative_days) / 30 * 100
+4. Does it meet 70% threshold (21+ days)?
+
+**Step 2: Magnitude Assessment**
+1. Calculate average GEX magnitude (absolute value): sum(|net_gex|) / 30
+2. Is average magnitude >=$5B?
+3. Check for extreme outliers that might distort average
+
+**Step 3: Stability Check**
+1. Count sign flips: How many times does GEX switch from pos->neg or neg->pos?
+2. Are there <=5 sign flips across 30 days?
+3. Stable regime should have low flip count
+
+**Step 4: Regime Classification**
+- If Steps 1, 2, 3 all pass AND positive dominates -> PERSISTENT POSITIVE
+- If Steps 1, 2, 3 all pass AND negative dominates -> PERSISTENT NEGATIVE
+- If Step 1 passes but Step 2 fails -> LOW CONVICTION (reject)
+- If Step 1 fails -> TRANSITIONAL (reject)
+
+---
+
+## CONFIDENCE CALIBRATION (Mechanical Guidance)
+
+Use these concrete anchors to calibrate confidence:
+
+**90-100 (Very High Confidence)**
+- 25-30 days same sign (83-100% persistence)
+- Average magnitude >$10B
+- 0-2 sign flips (highly stable)
+- Example: "29 negative days, avg $15B, 1 flip"
+
+**70-89 (High Confidence)**
+- 21-24 days same sign (70-80% persistence)
+- Average magnitude $5-10B
+- 2-4 sign flips (moderately stable)
+- Example: "23 negative days, avg $7B, 3 flips"
+
+**50-69 (Borderline - Use with Caution)**
+- 18-20 days same sign (60-67% persistence)
+- Average magnitude $3-5B
+- 5-7 sign flips
+- Example: "20 negative days, avg $4B, 6 flips"
+- **Note**: Borderline cases should generally be REJECTED unless other factors strengthen confidence
+
+**0-49 (Reject - Not Persistent)**
+- <18 days same sign (<60% persistence)
+- OR average magnitude <$3B
+- OR >7 sign flips
+- These are NOT persistent regimes
+
+**Important**: Confidence is a FILTER, not a probability. Use it to distinguish clear regimes (70+) from borderline (50-69) from noise (<50).
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Provide your analysis in this exact JSON structure:
+
+```json
+{
+    "regime_detected": true/false,
+    "regime_type": "persistent_positive|persistent_negative|transitional|low_conviction",
+    "positive_days": <count as integer>,
+    "negative_days": <count as integer>,
+    "avg_magnitude_billions": <value as number>,
+    "sign_flips": <count as integer>,
+    "persistence_pct": <percentage as number>,
+    "confidence": <integer 0-100>,
+    "reasoning": "Explain step-by-step why this is/isn't a persistent regime. Reference specific metrics (persistence %, avg magnitude, sign flips). If rejecting, state which criterion failed."
+}
+```
+
+**IMPORTANT**: All numeric fields (confidence, positive_days, negative_days, sign_flips, avg_magnitude_billions, persistence_pct) MUST be numbers (integers or decimals), NOT words like "thirty-five" or "fifty".
+
+**regime_detected Rules**:
+- `true` ONLY if regime_type is "persistent_positive" or "persistent_negative"
+- `false` if regime_type is "transitional" or "low_conviction"
+
+---
+
+## KEY PRINCIPLES
+
+1. **Selectivity is Expected**: Most windows will NOT be persistent regimes (expect 30-50% detection rate)
+
+2. **ALL Criteria Must Pass**: Persistence + Magnitude + Stability required for detection
+
+3. **Rejection is Valid**: Saying "no persistent regime" is a correct answer for transitional/weak periods
+
+4. **Mechanical Over Qualitative**: Use concrete thresholds (70%, $5B, 5 flips) rather than subjective judgment
+
+5. **Structural Focus**: Only detect when dealers are FORCED into directional positions by constraints
+
+Analyze the 30-day GEX data above and provide your regime classification in JSON format.
+\end{lstlisting}
+
+\subsection{Output Schema}
+\label{app:prompt:schema}
+
+The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the deterministic classifier (Section~\ref{sec:results:fidelity}).
+
+\begin{lstlisting}[style=appcode]
+{
+  "type": "json_schema",
+  "json_schema": {
+    "name": "regime_classification",
+    "strict": true,
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "regime_detected": {
+          "type": "boolean"
+        },
+        "regime_type": {
+          "type": "string",
+          "enum": [
+            "persistent_positive",
+            "persistent_negative",
+            "transitional",
+            "low_conviction"
+          ]
+        },
+        "positive_days": {
+          "type": "integer"
+        },
+        "negative_days": {
+          "type": "integer"
+        },
+        "avg_magnitude_billions": {
+          "type": "number"
+        },
+        "sign_flips": {
+          "type": "integer"
+        },
+        "persistence_pct": {
+          "type": "number"
+        },
+        "confidence": {
+          "type": "integer"
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "regime_detected",
+        "regime_type",
+        "positive_days",
+        "negative_days",
+        "avg_magnitude_billions",
+        "sign_flips",
+        "persistence_pct",
+        "confidence",
+        "reasoning"
+      ]
+    }
+  }
+}
+\end{lstlisting}
+
+\subsection{Request Body}
+\label{app:prompt:request}
+
+Each line of a batch input file is one request of the following form.
+
+\begin{lstlisting}[style=appcode]
+{
+  "custom_id": "<arm>|<symbol>|<window_end>",
+  "method": "POST",
+  "url": "/v1/chat/completions",
+  "body": {
+    "model": "gpt-6-luna",
+    "messages": [
+      {
+        "role": "user",
+        "content": "<prompt text of Appendix A.2>"
+      }
+    ],
+    "max_completion_tokens": 4000,
+    "reasoning_effort": "medium",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": "<schema of Appendix A.3>"
+    }
+  }
+}
+\end{lstlisting}
+
+%=================================================================
+\section{Series Definitions in SQL}
+\label{app:series}
+
+The daily series of Table~\ref{tab:series} are defined by the four read-only statements of Appendices~\ref{app:series:old} to~\ref{app:series:intraday}, which are reproduced verbatim from the data audit of 2026-10-28 on the project database; Appendix~\ref{app:series:derived} defines the derived and recovered series. The comments and the file names in the usage lines are those of the audit files. The audit calls the archive table ``frozen'' and its convention ``old''; Section~\ref{sec:methods:lineage} shows that this table is put-less from October 2023, so it is not a clean old convention (series key \ident{old_bs}). In the statements \texttt{:sym} is the symbol (SPY, QQQ or IWM) and \texttt{:y0}, \texttt{:y1} bound one calendar year, because the raw table is read one symbol-year per statement. Every statement stops at 2026-10-09, the last day before the vendor switch (Section~\ref{sec:methods:lineage}). The first two statements return the 30 daily values of every window. The pipeline stores the daily rows and cuts the windows in a second step (Section~\ref{sec:methods:windows}); unlike that step, the first statement drops a window when one of its 30 days of the \path{gex.options_daily_summary} calendar is missing from the archive table.
+
+\subsection{Pre-Rebuild Archive Table (\texttt{old\_bs})}
+\label{app:series:old}
+
+\begin{lstlisting}[style=appcode]
+-- SERIES (a) FROZEN old convention (read-only archive). usage: psql -v sym=SPY -f sql_series_a_frozen.sql
+-- Calendar = NEW table calendar for the symbol; a 30-day window is valid only if all 30 consecutive NEW-calendar days exist in the frozen table.
+-- (frozen max trading_date = 2026-10-02, so the last window ends 2026-10-02; IWM/QQQ have no rows 2020-12-03..2025-12-30)
+WITH cal AS (SELECT trading_date, row_number() OVER (ORDER BY trading_date) AS rn
+             FROM gex.options_daily_summary WHERE symbol = :'sym' AND trading_date <= DATE '2026-10-09'),
+     f AS (SELECT c.rn, c.trading_date, z.total_gex, z.net_call_gex, z.net_put_gex, z.underlying_price
+           FROM cal c JOIN backups.options_daily_summary_pre_rebuild_20261004 z
+             ON z.symbol = :'sym' AND z.trading_date = c.trading_date)
+SELECT e.trading_date AS window_end,
+       array_agg(w.total_gex     ORDER BY w.rn) AS total_gex_30,
+       array_agg(w.net_call_gex  ORDER BY w.rn) AS call_gex_30,
+       array_agg(w.net_put_gex   ORDER BY w.rn) AS put_gex_30
+FROM f e JOIN f w ON w.rn BETWEEN e.rn - 29 AND e.rn
+GROUP BY e.trading_date, e.rn
+HAVING count(*) = 30          -- hole-free window
+ORDER BY e.rn;
+\end{lstlisting}
+
+\subsection{Rebuilt Daily Table (\texttt{new\_full})}
+\label{app:series:full}
+
+\begin{lstlisting}[style=appcode]
+-- SERIES (b) NEW 0DTE-inclusive stored-gamma convention (gex.options_daily_summary, rebuilt 2026-10-08). usage: psql -v sym=SPY -f sql_series_b_new.sql
+WITH s AS (SELECT trading_date, total_gex, net_call_gex, net_put_gex, underlying_price,
+                  row_number() OVER (ORDER BY trading_date) AS rn
+           FROM gex.options_daily_summary
+           WHERE symbol = :'sym' AND trading_date <= DATE '2026-10-09')      -- alpha_vantage ends 2026-10-09; cboe_delayed starts 2026-10-12
+SELECT e.trading_date AS window_end,
+       array_agg(w.total_gex    ORDER BY w.rn) AS total_gex_30,
+       array_agg(w.net_call_gex ORDER BY w.rn) AS call_gex_30,
+       array_agg(w.net_put_gex  ORDER BY w.rn) AS put_gex_30
+FROM s e JOIN s w ON w.rn BETWEEN e.rn - 29 AND e.rn
+WHERE e.rn >= 30
+GROUP BY e.trading_date, e.rn
+HAVING count(*) = 30
+ORDER BY e.rn;
+\end{lstlisting}
+
+\subsection{Raw Chains Without Same-Day Expiries (\texttt{new\_ex0dte})}
+\label{app:series:ex0dte}
+
+\begin{lstlisting}[style=appcode]
+-- SERIES (c) NEW ex-0DTE from raw chains. ONE symbol-year per call (never wider). usage:
+--   psql -v sym=SPY -v y0=2024-01-01 -v y1=2025-01-01 -f sql_series_c_ex0dte.sql      (loop y0/y1 over years; SPY/IWM 2008..2026, QQQ 2011..2026)
+-- enable_seqscan=off is a SESSION planner setting (no writes): the default plan seq-scans the whole yearly partition (~4.5 s warm / 8.9 s cold per symbol-year);
+-- the (symbol, trading_date) index/bitmap plan takes 0.5-1.8 s and returns identical numbers (max rel diff 5e-13).
+SET enable_seqscan = off;
+SELECT trading_date,
+       count(*)                                                 AS n_contracts,
+       count(*) FILTER (WHERE expiration = trading_date)        AS n_0dte,
+       sum(CASE WHEN option_type = 'call' THEN g END)  FILTER (WHERE expiration > trading_date) AS call_gex_ex0dte,
+      -sum(CASE WHEN option_type = 'put'  THEN g END)  FILTER (WHERE expiration > trading_date) AS put_gex_ex0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration > trading_date) AS total_gex_ex0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration = trading_date) AS total_gex_0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END)                                          AS total_gex_all  -- ties to gex.options_daily_summary.total_gex (<=2e-7 rel)
+FROM (SELECT trading_date, option_type, expiration,
+             gamma::float8 * open_interest::float8 * 100.0 * underlying_price::float8 * underlying_price::float8 * 0.01 AS g   -- float8: real*int would stay float4
+      FROM gex.options_chains_partitioned
+      WHERE symbol = :'sym' AND trading_date >= :'y0' AND trading_date < :'y1'
+        AND trading_date <= DATE '2026-10-09'                     -- vendor cap: alpha_vantage ends 2026-10-09, cboe_delayed starts 2026-10-12
+        AND gamma IS NOT NULL AND open_interest > 0 AND underlying_price > 0) t
+GROUP BY trading_date
+ORDER BY trading_date;
+\end{lstlisting}
+
+\subsection{Late-Session Intraday Snapshot (\texttt{intraday\_late})}
+\label{app:series:intraday}
+
+The statement is the one tested in the audit and returns Variant~1 of its comments, the \ident{market_close} slot, which equals the end-of-day row. The series of the study is Variant~2: the filter on the clock time is replaced by a filter on the snapshot type (\ident{snapshot_type} equal to \ident{final_rush}, 19:55:59 UTC), so that the snapshot is selected by type and not by clock time, and the three irregular days 2026-07-29, 2026-08-03 and 2026-09-14 are dropped when the series is built.
+
+\begin{lstlisting}[style=appcode]
+-- SERIES (d) INTRADAY late-session snapshot, SPY. Valid for 2026-07-27..2026-10-09 (EDT: 20:00 UTC = 16:00 ET; re-derive the cut after 2026-11-01 DST end).
+-- Variant 1 'late' = last snapshot with timestamp < 20:01:00 UTC  -> the market_close slot (20:00:59), which EQUALS the daily summary row (not independent).
+-- Variant 2 (independent of the EOD row): add  AND snapshot_type = 'final_rush'  (19:55:59 UTC).
+SELECT DISTINCT ON (d)
+       d AS trading_date, snapshot_timestamp, snapshot_type, total_gex, net_call_gex, net_put_gex, underlying_price, total_contracts
+FROM (SELECT *, (snapshot_timestamp AT TIME ZONE 'America/New_York')::date AS d
+      FROM gex.intraday_gex_summary
+      WHERE symbol = 'SPY'
+        AND snapshot_timestamp >= TIMESTAMPTZ '2026-07-27 00:00+00' AND snapshot_timestamp < TIMESTAMPTZ '2026-10-10 00:00+00'
+        AND snapshot_type <> 'test'
+        AND (snapshot_timestamp AT TIME ZONE 'UTC')::time < TIME '20:01:00') x
+ORDER BY d, snapshot_timestamp DESC;
+\end{lstlisting}
+
+\subsection{Derived and Recovered Series}
+\label{app:series:derived}
+
+\textbf{Call leg only (\ident{call_only}).} The sum of the call terms \texttt{g} of the third statement over all expiries, same-day expiries included, with the put terms dropped. In the rebuilt summary table this is \ident{net_call_gex} (up to the float4 rounding of the stored column), which the second statement returns as \texttt{call\_gex\_30}.
+
+\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol, which the following statement computes (tested read-only on 2026-10-29). The factor and the number of days are stored with the series.
+
+\begin{lstlisting}[style=appcode]
+-- new_full_scaled: factor of one symbol = median over 2020-01-01..2026-10-09 of the ratio of SPY's open-interest notional to the symbol's.
+-- usage: psql -v sym=QQQ     (QQQ or IWM; the scaled values are the new_full values of the symbol times this factor)
+WITH n AS (SELECT symbol, trading_date, total_weighted_oi::float8 * 100.0 * underlying_price::float8 AS notional
+           FROM gex.options_daily_summary
+           WHERE symbol IN ('SPY', :'sym') AND trading_date BETWEEN DATE '2020-01-01' AND DATE '2026-10-09')
+SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY s.notional / q.notional) AS factor,
+       count(*) AS n_days
+FROM n s JOIN n q ON q.trading_date = s.trading_date AND s.symbol = 'SPY' AND q.symbol = :'sym'
+WHERE q.notional > 0;
+\end{lstlisting}
+
+\textbf{Recovered input series.} The series \ident{jan2026_phase4a}, \ident{p3_2024} and \ident{p4_2020} (and the dated twins of the last two) are not defined by SQL. They are the daily values parsed from the data lines of the surviving batch input files \path{phase4a_postgresql_20260104_184832.jsonl}, \path{phase3_full_2024_baseline_v2.jsonl} and \path{batch_regime_20251120_104630.jsonl} (folder \path{reports/validation/paper2_regime_windows/batch_jobs/}); overlapping windows are checked for consistent values (Section~\ref{sec:results:inputs}).
+
+%=================================================================
+\section{Per-Year Tables}
+\label{app:tables}
+
+Tables~\ref{tab:app:series}--\ref{tab:ledger} give the numbers behind the figures of Section~\ref{sec:results} for every year, taken from the files that \path{scripts/validation/electronics/05_report.py} writes to \path{docs/papers/electronics/results/}. The years are the calendar years of the window end, and rates are percentages of parsed windows. The tables are placeholders until that script has run on the final tables; Wilson and block-bootstrap intervals accompany every rate in the results files.
+
+\begin{table}[H]
+\centering
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Days are the trading days with a value in \ident{new_full}.}
+\label{tab:app:series}
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Year & Days & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
+\midrule
+2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Detection rate of the deterministic classifier by series and window-end year, SPY, in percent of windows. Windows are the windows of \ident{new_full}.}
+\label{tab:app:replay}
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Year & Windows & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
+\midrule
+2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Detection rate of gpt-6-luna by arm and window-end year, in percent of parsed windows. The columns are the arms \ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq}, \ident{full_qqq_scaled}, \ident{ex0dte_qqq}, \ident{full_iwm}, \ident{full_iwm_scaled} and \ident{ex0dte_iwm} of Table~\ref{tab:arms} (full = \ident{new_full}, scaled = \ident{new_full_scaled}, ex-0DTE = \ident{new_ex0dte}); the bridge, intraday and Phase 3/4 arms are reported in Sections~\ref{sec:results:bridge}, \ref{sec:results:intraday} and~\ref{sec:results:dated}.}
+\label{tab:app:llm}
+\footnotesize
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{SPY} & \multicolumn{3}{c}{QQQ} & \multicolumn{3}{c}{IWM} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}
+Year & full & ex-0DTE & full & scaled & ex-0DTE & full & scaled & ex-0DTE \\
+\midrule
+2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% TODO(tables): typeset the run identifiers with \path{...} (it breaks at underscores) so that they wrap in the first column.
+\begin{table}[H]
+\centering
+\caption{Run ledger: one row per Batch job, with the token usage and the cost priced at Batch rates. The identifier has the form \ident{<arm>_<model>_<mode>_<UTC timestamp>_c<chunk>}. Only runs paid in this study enter the total; the three backfilled o4-mini runs are listed below it, as stored answers of earlier runs that are not spend of this study.}
+\label{tab:ledger}
+\footnotesize
+\begin{tabular}{@{}p{4.6cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Status \\
+\midrule
+\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\midrule
+Total (this study) & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \\
+\midrule
+\multicolumn{6}{@{}l}{Backfilled o4-mini runs (not spend of this study)} \\
+\path{r1_o4mini_phase4a_20260104} & 1{,}476 & \tbd{} & \tbd{} & \tbd{} & backfill \\
+\path{r1_p3_o4mini_20251120} & 223 & \tbd{} & \tbd{} & \tbd{} & backfill \\
+\path{r1_p4_o4mini_20251120} & 223 & \tbd{} & \tbd{} & \tbd{} & backfill \\
+\bottomrule
+\end{tabular}
+\end{table}

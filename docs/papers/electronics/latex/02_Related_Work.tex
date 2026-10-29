@@ -1,0 +1,30 @@
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{Dealer Gamma Exposure and 0DTE Options}
+\label{sec:background:gex}
+
+Dealer hedging of option exposure has measurable price effects \cite{ni2005stock,garleanu2009demand,anderegg2022impact}, and the growth of zero-days-to-expiration (0DTE) options since 2022 concentrates gamma at very short maturities \cite{cboe2024zero,dim2023odtes,adams2025zerodte}.
+% TODO(background/gex): 3-4 sentences, shortened from jrfm/02_Related_Work.tex ("Dealer Hedging and Market Microstructure" and
+% "Zero-Days-to-Expiration (0DTE) Options"). Add the two facts this paper depends on: a daily GEX figure is a modelling choice
+% (which gamma, which contracts, which expiries), and 0DTE inclusion changes the sign of the daily figure on some days.
+% Regime-detection baselines (Hamilton 1989; Ang and Bekaert 2002; the Markov-switching benchmark of the JRFM article) fit
+% here or in Section 2.2 if the page budget allows.
+
+\subsection{Validating LLM Reasoning via Obfuscation}
+\label{sec:background:validation}
+
+Concern that LLM performance reflects memorized rather than inferred structure \cite{mccoy2023embers,lopezlira2025memorization,dong2024generalization} motivates behavioral tests of the CheckList type \cite{ribeiro2020beyond}; temporal obfuscation, which removes dates, tickers and event context so that only numerical structure remains, is one such test \cite{regan2025obfuscation}.
+% TODO(background/validation): 3-4 sentences on what obfuscation can and cannot establish. It tests whether the model's answer depends
+% on memorized context; it says nothing about whether the numbers shown to the model mean what the prompt says they mean
+% (Section 2.3). Reuse the JRFM wording on memorization and contamination.
+
+\subsection{Construct Validity of Financial Inputs}
+\label{sec:background:construct}
+
+% TODO(background/construct): 3-4 sentences. An LLM validation inherits the construct validity of its inputs: a daily GEX
+% series is a derived quantity whose definition (gamma model, contract filters, 0DTE treatment, put and call legs) and
+% provenance (vendor, load date, rebuild date) are part of the experiment. Cover data-definition drift, silent upstream
+% rebuilds and model deprecation as threats to the reproducibility of LLM studies.
+% Candidate references to add to references.bib when cited: Cronbach and Meehl (1955) on construct validity.
+\tbd{} Subsection pending.
