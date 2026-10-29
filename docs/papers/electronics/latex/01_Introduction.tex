@@ -31,7 +31,7 @@ This article is the extended version of the AIAI~2026 conference paper \cite{reg
 % TODO(intro/rqs): refine the wording with the co-author; keep one question per results subsection.
 We address seven questions:
 \begin{enumerate}[label=RQ\arabic*.,leftmargin=*]
-\item Which daily series were the published inputs, and how do the deterministic labels change on the corrected series?
+\item Which daily series were the published inputs, and how do the deterministic labels change on the complete series?
 \item Does gpt-6-luna reproduce the o4-mini labels on the exact published inputs?
 \item Does the model's regime call follow the input series and the stated criteria?
 \item How much of the persistence signal lives in same-day-expiry (0DTE) gamma?
@@ -44,11 +44,11 @@ We address seven questions:
 \label{sec:introduction:contributions}
 
 % TODO(intro/contributions): one sentence per item with its headline number taken from the results (never typed by hand).
-% The first item is the data-integrity correction: the published 2024-2025 inputs lacked the put leg of GEX, which this
-% article reconstructs and corrects; say so plainly and point to Section 4.1.
+% The first item is the data statement: the published 2024-2025 inputs lacked the put leg of GEX; this article
+% reconstructs them and recomputes everything on the complete series. Say so plainly (not as a correction) and point to Section 4.1.
 % TODO(storage): contribution (v) names result tables, not a database: until the schema of the project database is approved they are
 % parquet files (Section 3.7). Name the authoritative copy here and in the Data Availability Statement once that is settled.
-This article makes six contributions: (i)~a reconstruction of the published inputs and a correction of the data-integrity defect they carried (Section~\ref{sec:results:inputs}); (ii)~a convention-sensitivity analysis of the deterministic regime labels across six daily series (one of them a call-only diagnostic), three assets and 2008--2026 (Sections~\ref{sec:results:replay} and~\ref{sec:results:ablation}--\ref{sec:results:cross}); (iii)~a model-agreement bridge between o4-mini and gpt-6-luna on identical inputs (Sections~\ref{sec:results:bridge} and~\ref{sec:results:corrected}); (iv)~overlap-aware statistics for stride-one windows (Section~\ref{sec:methods:statistics}); (v)~storage of every input, prompt and response in result tables, from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}); and (vi)~an obfuscated-versus-dated rerun of the Phase 3 and 4 baselines, which separates the effect of visible calendar dates from the effect of the model and of the input values (Section~\ref{sec:results:dated}).
+This article makes six contributions: (i)~a reconstruction of the published inputs and an account of the data defect they carried, with the deterministic labels recomputed on the complete series (Section~\ref{sec:results:inputs}); (ii)~a convention-sensitivity analysis of the deterministic regime labels across six daily series (one of them a call-only diagnostic), three assets and 2008--2026 (Sections~\ref{sec:results:replay} and~\ref{sec:results:ablation}--\ref{sec:results:cross}); (iii)~a model-agreement bridge between o4-mini and gpt-6-luna on identical inputs (Sections~\ref{sec:results:bridge} and~\ref{sec:results:corrected}); (iv)~overlap-aware statistics for stride-one windows (Section~\ref{sec:methods:statistics}); (v)~storage of every input, prompt and response in result tables, from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}); and (vi)~an obfuscated-versus-dated rerun of the Phase 3 and 4 baselines, which separates the effect of visible calendar dates from the effect of the model and of the input values (Section~\ref{sec:results:dated}).
 
 \subsection{Organization}
 \label{sec:introduction:organization}

@@ -35,7 +35,7 @@ where $\mathcal{C}_t$ is the set of contracts listed on day $t$ with a defined g
 
 \begin{table}[H]
 \centering
-\caption{Daily GEX series. The first block holds the series of the published result and its diagnostics, the second the corrected series, the third the intraday check, the fourth the derived inputs of the rerun arms (Section~\ref{sec:methods:arms}).}
+\caption{Daily GEX series. The first block holds the series of the published result and its diagnostics, the second the complete series, the third the intraday check, the fourth the derived inputs of the rerun arms (Section~\ref{sec:methods:arms}).}
 \label{tab:series}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{2.6cm}@{}}
@@ -46,7 +46,7 @@ Series key & Source and gamma convention & Symbols and span & Role \\
 \ident{call_only} & Raw \path{gex.options_chains_partitioned}: call leg of every contract, same-day expiries included, put leg dropped & SPY, 2020 to 2026-10-09 & Reproduces the put-less inputs; no model arm \\
 \ident{old_bs} & Archive \path{backups.options_daily_summary_pre_rebuild_20261004}: Black--Scholes gamma on integer day counts, same-day expiries zeroed; put-less from about October 2023 & SPY, 2008-01-02 to 2026-10-02, with holes & Diagnostic bridge to the pre-rebuild table \\
 \midrule
-\ident{new_full} & \path{gex.options_daily_summary} after the 2026-10-08 rebuild: stored per-contract gamma, same-day expiries included, both legs & SPY, QQQ, IWM; 2008 (QQQ 2011) to 2026-10-09 & Primary corrected series \\
+\ident{new_full} & \path{gex.options_daily_summary} after the 2026-10-08 rebuild: stored per-contract gamma, same-day expiries included, both legs & SPY, QQQ, IWM; 2008 (QQQ 2011) to 2026-10-09 & Primary complete series \\
 \ident{new_ex0dte} & Raw \path{gex.options_chains_partitioned}, contracts with \ident{expiration > trading_date}; otherwise as \ident{new_full} & As \ident{new_full} & 0DTE ablation \\
 \midrule
 \ident{intraday_late} & \path{gex.intraday_gex_summary}, snapshot type \ident{final_rush} (19:55:59 UTC), stored gamma & SPY, 2026-07-27 to 2026-10-09 & Intraday check \\
@@ -104,13 +104,13 @@ All model calls use OpenAI's \ident{gpt-6-luna} through the Batch API (\path{/v1
 % TODO(methods/model): add (i) the 40-window pilot (balanced on the classifier label) that measured completion length and cost,
 % (ii) the gate on the bridge: Cohen's kappa between gpt-6-luna and the stored o4-mini labels on bridge_jan of at least about 0.6,
 % (iii) the probe results (31/31 verdicts equal to the deterministic rule; sign_flips undercounted in 7 of 32; about 1,911 prompt and
-% 814 completion tokens per request; $0.30 per 1,000 requests on Batch) once re-measured on the pilot, and (iv) the correction of the
+% 814 completion tokens per request; $0.30 per 1,000 requests on Batch) once re-measured on the pilot, and (iv) the removal of the
 % AIAI Methods wording (temperature 1.0, 16,384 tokens), which the JRFM appendix replaced: no temperature or token limit was sent.
 
 \subsection{Experimental Arms}
 \label{sec:methods:arms}
 
-Table~\ref{tab:arms} lists the arms. The arm \ident{r1_o4mini} holds the published o4-mini answers, backfilled from the surviving Phase 4A output file without an API call; 64 of its 1{,}476 answers were lost to a parsing error in January 2026 and are re-parsed from the stored raw output. Every headline number uses the 1{,}412 answers of the published result; the 64 re-parsed answers are reported separately (as \ident{r1_o4mini_all}). The arms \ident{r1_p3_o4mini} and \ident{r1_p4_o4mini} are backfilled in the same way from the 223 stored answers of each November 2025 baseline run. The arm \ident{bridge_jan} sends the exact published inputs to gpt-6-luna, which separates the effect of the model from the effect of the inputs. The other arms run gpt-6-luna on the corrected series of each symbol; the ex-0DTE arms of QQQ and IWM start in 2020. The intraday arm uses composite windows whose last day is the late-session snapshot.
+Table~\ref{tab:arms} lists the arms. The arm \ident{r1_o4mini} holds the published o4-mini answers, backfilled from the surviving Phase 4A output file without an API call; 64 of its 1{,}476 answers were lost to a parsing error in January 2026 and are re-parsed from the stored raw output. Every headline number uses the 1{,}412 answers of the published result; the 64 re-parsed answers are reported separately (as \ident{r1_o4mini_all}). The arms \ident{r1_p3_o4mini} and \ident{r1_p4_o4mini} are backfilled in the same way from the 223 stored answers of each November 2025 baseline run. The arm \ident{bridge_jan} sends the exact published inputs to gpt-6-luna, which separates the effect of the model from the effect of the inputs. The other arms run gpt-6-luna on the complete series of each symbol; the ex-0DTE arms of QQQ and IWM start in 2020. The intraday arm uses composite windows whose last day is the late-session snapshot.
 
 Two further groups of arms test the earlier results more directly. The Phase 3 (2024) and Phase 4 (2020) baselines of the earlier studies \cite{regan2026regimes,regan2026jrfm}, the 81.2\% versus 12.1\% contrast, were run on o4-mini in November 2025 with ISO calendar dates as day labels instead of relative labels. The arms \ident{p34_dated_2024} and \ident{p34_dated_2020} send the same 252 values per year, with the dates that were actually sent, to gpt-6-luna; the arms \ident{p34_obf_2024} and \ident{p34_obf_2020} send the identical values with Day-T labels. Within a year the two arms differ in the labels only, which isolates the effect of visible dates, and each is compared with the stored o4-mini answers. The two baselines are not on one convention (Table~\ref{tab:series}): the 2024 series is a gross call-plus-put magnitude with a negative sign imposed and the 2020 series is a magnitude without sign. We keep them verbatim because the aim is to replay the published contrast, which therefore cannot be read as one between a negative and a positive regime.
 

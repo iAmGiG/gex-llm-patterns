@@ -127,10 +127,10 @@ Median reported / computed mean $|\mathrm{GEX}|$ & \tbd{} & \tbd{} & -- \\
 \label{fig:bridge}
 \end{figure}
 
-\subsection{gpt-6-luna on the Corrected Series}
+\subsection{gpt-6-luna on the Complete Series}
 \label{sec:results:corrected}
 
-Figure~\ref{fig:corrected} shows the detection rate of gpt-6-luna by year on each SPY series, from the published inputs to the corrected series, next to the classifier. \tbd{}
+Figure~\ref{fig:corrected} shows the detection rate of gpt-6-luna by year on each SPY series, from the published inputs to the complete series, next to the classifier. \tbd{}
 % TODO(results/corrected): arms full_spy and ex0dte_spy, 2008-2026, by year with Wilson intervals and block-bootstrap intervals; list
 % windows where model and classifier disagree; give parse statistics (finish_reason, retries) in one sentence.
 
@@ -175,7 +175,7 @@ Year & of $|\mathrm{GEX}|$ & full & ex-0DTE & full & ex-0DTE & p-value \\
 \label{sec:results:deep}
 
 Figure~\ref{fig:deep} extends the analysis to 2008--2019, before the growth of weekly and daily expirations. \tbd{}
-% TODO(results/deep): classifier and model rates by year for SPY on the three corrected/diagnostic series; mark the 2008-2009 financial
+% TODO(results/deep): classifier and model rates by year for SPY on the three complete/diagnostic series; mark the 2008-2009 financial
 % crisis and the 2018 volatility episode in the figure; report the gap between new_full and new_ex0dte over time as a consistency
 % check of the ablation arm.
 
@@ -248,7 +248,7 @@ Series & Windows & Classifier detects (\%) & gpt-6-luna detects (\%) & Agreement
 \begin{figure}[H]
 \centering
 \resultfigure{\figPost}
-\caption{Post-publication period (windows ending in 2026 up to 2026-10-09): per-window classifier and gpt-6-luna labels for SPY under the corrected series; the windows that still contain days of 2025 are set apart. \textbf{Read this figure as:} \tbd{}}
+\caption{Post-publication period (windows ending in 2026 up to 2026-10-09): per-window classifier and gpt-6-luna labels for SPY under the complete series; the windows that still contain days of 2025 are set apart. \textbf{Read this figure as:} \tbd{}}
 \label{fig:post}
 \end{figure}
 
