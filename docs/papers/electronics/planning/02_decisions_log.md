@@ -140,6 +140,8 @@
 - Why: equity intraday rows before 2026-07-25 carried the previous day's chain (upstream #64), so an all-intraday 30-day series would give very few windows (25 in the data audit; 5 if every day also needs a snapshot at or after 19:50 UTC). The `market_close` slot (20:00:59 UTC) equals the end-of-day row itself (identical on 51 of 54 days) and is not an independent observation; `final_rush` is the last independent late-session one.
 - Encoded in: `INTRADAY_T0_KEY`, `INTRADAY_SNAPSHOT_TYPE`, `INTRADAY_START`, `INTRADAY_EXCLUDE_DAYS`, `WINDOW_RULE_COMPOSITE` and `arm_window_series()` in `common.py`; `composite_windows()` and `drop_irregular_intraday_days()` in `02_build_windows.py`.
 
+- Addendum 2026-10-30 (D-08, storage): the runs and detections rows of every arm carry the series key its windows are stored under (`common.arm_window_series`), so `intraday_spy` rows say `intraday_t0` rather than `intraday_late`; the one stored intraday run was relabelled and the database document rebuilt. Reason: the rates view and any SQL reader join detections to windows on (`series_key`, `symbol`, `window_end`) without a registry; with the arm's daily-series key stored instead, the composite arm's classifier columns came back empty.
+
 ### D-09 Test-retest: full repeat of bridge_jan
 
 - Date: 2026-10-28 (revised 2026-10-29: `#rep1` keys, the duplicate sample is optional).
@@ -381,3 +383,4 @@
   - section 4: the quiet-window functions and the commit policy; section 5: the differences from v2 brought up to date.
 - 2026-10-29 (later): D-22 added (pilot outcome, the submission of priority 1 and 2 plus the intraday arm, Q-07 applied as the 5% default, the deferred arms); D-09's interim sentence on `--repeat-fraction 0` is superseded by D-22.
 - 2026-10-29 (later): D-20 revised and Q-02 settled after the authors' decision not to file correction notices; the drafts folder was removed; `CORRECTIONS.md`, the paper README and design memo v2 s9 reworded accordingly.
+- 2026-10-30: D-08 addendum (runs/detections carry the window series key); D-22 stands; the fix workflow's remaining items were worked through (schema comments, figure runner freshness on NFS, forensics folder flattened).
