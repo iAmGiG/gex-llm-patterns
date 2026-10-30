@@ -142,8 +142,9 @@ with the exact input vector, its sha256 and the deterministic label), `_runs` (o
 written at submit time so the batch id is never lost), `_detections` (one row per window and run) and the view
 `_rates_summary`. They are standalone: no foreign keys into the core tables. Until the DDL is approved the same columns
 are written as parquet to `data/backups/gex_llm/tables/{series,windows,runs,detections}/`; raw batch files and manifests
-per run are in `data/backups/gex_llm/<run_id>/` (the raw JSONL and the large parquet files are git-ignored, see the
-decisions log D-17). The archive tables `backups.*_pre_rebuild_20261004` are read, never written.
+per run are in `data/backups/gex_llm/<run_id>/`. Nothing raw goes to the remote: every JSONL and the full series, windows
+and detections tables are git-ignored and loaded into the database; git keeps run provenance, `data/backups/gex_llm/condensed/`
+(verdicts and labels without text, from `06_condense.py`) and `results/` (decisions log D-17). The archive tables `backups.*_pre_rebuild_20261004` are read, never written.
 
 **Series and arms.** `common.SERIES` holds 11 series: the six of the study (`jan2026_phase4a`, `call_only`, `old_bs`,
 `new_full`, `new_ex0dte`, `intraday_late`) and the derived inputs of the rerun arms (`new_full_scaled`, `p3_2024`,
@@ -224,8 +225,9 @@ ledger.
 3. State the authoritative copy of the result tables (parquet release, and the `backups` schema once the DDL is
    approved) in Section 3.7 and in the Data Availability Statement. The raw batch files (the Phase 3, 4 and 4A inputs
    and answers included: `reports/validation/paper2_regime_windows/batch_jobs/` and `data/backups/gex_llm/<run_id>/`) and
-   the series and windows parquet are git-ignored and exist on this machine only; decide how they are released
-   (decisions log, Q-09).
+   the full series, windows and detections tables are git-ignored (authors' rule of 2026-10-30: nothing raw on the
+   remote); they live in the database and on this machine, and `data/backups/gex_llm/condensed/` plus `results/` carry
+   what the paper needs (decisions log, D-17 and Q-09).
 4. `build.sh --strict` must end with `STRICT: ok`; commit from `paper/electronics` (no attribution lines).
 
 ## Keeping Appendices A and B in step with the code

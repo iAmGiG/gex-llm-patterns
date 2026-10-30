@@ -46,7 +46,7 @@
 | Q-06 | open | Primary analyses | Window range, primary comparisons, primary cross-asset variant |
 | Q-07 | open | Duplicate sample | Add the optional 5% duplicate sample to the other arms, or only the `bridge_jan` repeat |
 | Q-08 | open | `bridge_old` | Run the optional priority-4 arm or drop it |
-| Q-09 | open | Large artefacts | git-LFS for the raw JSONL and the series and windows parquet, yes or no |
+| Q-09 | settled 2026-10-30 | Large artefacts | no git-LFS: nothing raw on the remote; full tables and JSONL go to the database, git keeps the condensed copies (D-17) |
 
 ## 2. Decisions taken
 
@@ -221,6 +221,8 @@
 - Consequence: until the Postgres tables exist (D-14), the series and windows parquet are stored only on this machine's disk; Q-09 asks whether the large files should go under git-LFS.
 - Encoded in: the `.gitignore` block headed "Electronics extension (issue #261)" (lines 310 to 318 of `.gitignore`, committed in e27bdc7), `run_backup_dir()`, `parquet_path()`.
 
+- Revised 2026-10-30 (Chris): nothing raw goes to the remote. Every JSONL (`data/backups/gex_llm/**/*.jsonl`) and the full tables `tables/{series,windows,detections}/` are git-ignored; the detections parquet (model text) joined the ignored set and the one tracked copy was untracked. The repository keeps the condensed material: `tables/runs/` (provenance), `manifest.json` and `batch_<k>.json`, `data/backups/gex_llm/condensed/` (`detections.csv.gz` without reasoning or raw text, `windows.csv.gz` without sequences, `series_index.csv`; written by `06_condense.py` after each ingest) and `docs/papers/electronics/results/`. The rest is loaded into `backups.gex_llm_regime_*` once the schema is approved and stays on this machine's disk meanwhile. This settles Q-09 (no git-LFS) and the three-copy question put to the database maintainer in PR #165.
+
 ### D-18 QQQ and IWM: run both the unscaled and a scaled variant
 
 - Date: 2026-10-29. Decided by Chris; on 2026-10-28 (evening) he had asked for a disclosed per-symbol scaled variant next to the unscaled one. This closes Q-01.
@@ -333,6 +335,8 @@
 
 ### Q-09 Large artefacts and git-LFS
 
+- Settled 2026-10-30 (D-17 revised): no git-LFS. Nothing raw goes to the remote; the full tables and every JSONL are loaded into the database and kept on this machine, and git keeps `data/backups/gex_llm/condensed/`, the run provenance and `results/`.
+
 - Question: keep the raw OpenAI batch files and the series and windows parquet on disk and git-ignored, as in D-17 (design memo v2 s9, item 3), or add git-LFS for them? Sizes: roughly 270 MB of raw JSONL for the planned 33,160 requests (the Phase 4A files are 9.9 MB and 2.3 MB for 1,476 requests; the three published runs together are about 16 MB). The figure loader (`figdata.Inputs.table`) can read the series and windows parquet, so on a fresh clone these files have to be rebuilt with `01_build_series.py` and `02_build_windows.py` (read-only queries, no LLM cost) or restored. The published batch files under `reports/validation/paper2_regime_windows/batch_jobs/` are git-ignored too, and the January OpenAI batch files have expired, so those files and their copies under `data/backups/gex_llm/` are the only exact record of what was sent; the tracked forensics folder keeps the extracted January series and the per-day comparisons. The forensic memo (s9, part D) asks for a durable copy. docs/009 puts the second and third copies "in project repo" (`data/backups/*.parquet` and `*.jsonl`); whether files on disk but outside git satisfy that is for the database maintainer to say.
 - Default until decided: D-17 as it stands.
 - Needs: Chris; the maintainer's reading of docs/009.
@@ -385,3 +389,4 @@
 - 2026-10-29 (later): D-20 revised and Q-02 settled after the authors' decision not to file correction notices; the drafts folder was removed; `CORRECTIONS.md`, the paper README and design memo v2 s9 reworded accordingly.
 - 2026-10-30: D-08 addendum (runs/detections carry the window series key); D-22 stands; the fix workflow's remaining items were worked through (schema comments, figure runner freshness on NFS, forensics folder flattened).
 - 2026-10-30: the three deferred arms of D-22 submitted (every registered LLM arm is now in flight or stored).
+- 2026-10-30: D-17 revised (nothing raw on the remote; condensed copies via `06_condense.py`); Q-09 settled.

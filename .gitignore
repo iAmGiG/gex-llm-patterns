@@ -307,12 +307,15 @@ tmpclaude*
 docs/papers/paper2/jfqa/build.bat
 .vscode/tasks.json
 
-# Electronics extension (issue #261): raw OpenAI batch files and the large parquet copies
-# stay on disk under data/backups/gex_llm/ (three-copy rule, docs/009 of the DB repo) but not
-# in git; manifests, run metadata, detections per run and docs/papers/electronics/results/ are tracked.
-data/backups/gex_llm/*/input*.jsonl
-data/backups/gex_llm/*/output*.jsonl
-data/backups/gex_llm/*/errors*.jsonl
+# Electronics extension (issue #261): nothing raw goes to the remote.  The OpenAI batch files
+# (every JSONL) and the full tables (series, windows, detections with the model's text) stay on
+# disk under data/backups/gex_llm/ and are loaded into the research database
+# (backups.gex_llm_regime_*).  Git keeps the condensed material only: run provenance
+# (tables/runs, manifests, batch objects), data/backups/gex_llm/condensed/ (per-window
+# verdicts and labels without text, written by scripts/validation/electronics/06_condense.py)
+# and docs/papers/electronics/results/ (the report).
+data/backups/gex_llm/**/*.jsonl
 data/backups/gex_llm/tables/series/
 data/backups/gex_llm/tables/windows/
+data/backups/gex_llm/tables/detections/
 !docs/papers/electronics/build.sh

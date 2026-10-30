@@ -1,0 +1,17 @@
+series_key,symbol,n_rows,first_date,last_date,source_table,builder_sha256
+call_only,SPY,1700,2020-01-02,2026-10-09,gex.options_chains_partitioned,286bdc1a5eb2
+intraday_late,SPY,51,2026-07-27,2026-10-09,gex.intraday_gex_summary,286bdc1a5eb2
+jan2026_phase4a,SPY,1505,2020-01-02,2025-12-31,reports/validation/paper2_regime_windows/batch_jobs/phase4a_postgresql_20260104_184832.jsonl,286bdc1a5eb2
+new_ex0dte,IWM,4707,2008-01-02,2026-10-09,gex.options_chains_partitioned,286bdc1a5eb2
+new_ex0dte,QQQ,3896,2011-03-23,2026-10-09,gex.options_chains_partitioned,286bdc1a5eb2
+new_ex0dte,SPY,4700,2008-01-02,2026-10-09,gex.options_chains_partitioned,286bdc1a5eb2
+new_full,IWM,4707,2008-01-02,2026-10-09,gex.options_daily_summary,286bdc1a5eb2
+new_full,QQQ,3896,2011-03-23,2026-10-09,gex.options_daily_summary,286bdc1a5eb2
+new_full,SPY,4700,2008-01-02,2026-10-09,gex.options_daily_summary,286bdc1a5eb2
+new_full_scaled,IWM,1700,2020-01-02,2026-10-09,gex.options_daily_summary,286bdc1a5eb2
+new_full_scaled,QQQ,1699,2020-01-02,2026-10-09,gex.options_daily_summary,286bdc1a5eb2
+old_bs,SPY,4667,2008-01-02,2026-10-02,backups.options_daily_summary_pre_rebuild_20261004,286bdc1a5eb2
+p3_2024,SPY,252,2024-01-02,2024-12-31,reports/validation/paper2_regime_windows/batch_jobs/phase3_full_2024_baseline_v2.jsonl,286bdc1a5eb2
+p3_2024_dated,SPY,252,2024-01-02,2024-12-31,reports/validation/paper2_regime_windows/batch_jobs/phase3_full_2024_baseline_v2.jsonl,286bdc1a5eb2
+p4_2020,SPY,252,2020-01-02,2020-12-31,reports/validation/paper2_regime_windows/batch_jobs/batch_regime_20251120_104630.jsonl,286bdc1a5eb2
+p4_2020_dated,SPY,252,2020-01-02,2020-12-31,reports/validation/paper2_regime_windows/batch_jobs/batch_regime_20251120_104630.jsonl,286bdc1a5eb2

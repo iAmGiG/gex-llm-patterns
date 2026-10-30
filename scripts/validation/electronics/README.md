@@ -740,18 +740,24 @@ psql -h 127.0.0.1 -d gex_options -X -At -c "select relname from pg_class where r
 ### 5.5 Three copies and the git policy
 
 `docs/009` asks for three copies of everything a project stores: Postgres, parquet and raw files in the project
-repository. Here:
+repository. The authors' rule (2026-10-30): **nothing raw goes to the remote**. Every JSONL and every full table
+(series, windows, detections with the model's text) stays on this machine's disk and is loaded into the research
+database; git keeps the condensed material only.
 
 | Copy | Location | In git |
 |------|----------|--------|
 | 1. Postgres | `backups.gex_llm_regime_*` after approval (the database repository dumps the whole database weekly) | n/a |
-| 2. Parquet | `data/backups/gex_llm/tables/{detections,runs}/` | tracked |
-| | `data/backups/gex_llm/tables/{series,windows}/` | ignored: large and rebuildable from the sources |
-| 3. Raw files | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | tracked |
-| | `data/backups/gex_llm/<run_id>/input*.jsonl`, `output*.jsonl`, `errors*.jsonl` | ignored: size |
+| 2. Parquet (full tables) | `data/backups/gex_llm/tables/{series,windows,detections}/` | ignored: loaded into Postgres, rebuilt by 01-04 |
+| | `data/backups/gex_llm/tables/runs/` (run provenance: batch ids, file ids, sha256, tokens, cost) | tracked |
+| 3. Raw files | `data/backups/gex_llm/<run_id>/input*.jsonl`, `output*.jsonl`, `errors*.jsonl` | ignored: never on the remote |
+| | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | tracked |
+| Condensed | `data/backups/gex_llm/condensed/detections.csv.gz` (verdicts and metrics, no text), `windows.csv.gz` (labels and input sha256, no sequences), `series_index.csv`; written by `06_condense.py` | tracked |
 | Results | `docs/papers/electronics/results/`, `docs/papers/electronics/figures/output/` | tracked |
 | Inputs with one copy | `reports/validation/paper2_regime_windows/batch_jobs/` (January and November batch files and their `batch_*_metadata.json`), `.cache/research_cache.db`, `config/` | ignored |
 | Published result records | `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`, `phase4_baseline_2020.yaml` | tracked |
+
+Every number of the paper is reproducible from the condensed detections and windows alone (join on `series_key`,
+`symbol`, `window_end`); the inputs themselves come from the database or from the series builders.
 
 Layout on disk:
 
@@ -761,7 +767,8 @@ data/backups/gex_llm/
 |   |-- series/        <series>_<symbol>.parquet                  (copy 2, ignored)
 |   |-- windows/       <series>_<symbol>.parquet                  (copy 2, ignored)
 |   |-- runs/          r1_o4mini.parquet, r1_p3_o4mini.parquet, r1_p4_o4mini.parquet, <run_id>_c<k>.parquet   (copy 2, tracked)
-|   `-- detections/    the same names                                                                          (copy 2, tracked)
+|   `-- detections/    the same names                                                                          (copy 2, ignored)
+|-- condensed/         detections.csv.gz, windows.csv.gz, series_index.csv                                      (tracked)
 |-- r1_o4mini_phase4a_20260104/   r1_p3_o4mini_20251120/   r1_p4_o4mini_20251120/
 |                      input.jsonl, output.jsonl (ignored), manifest.json (tracked)
 `-- <arm>_gpt-6-luna_batch_<UTC stamp>/
