@@ -43,8 +43,9 @@ Conventions shared with 02, 03 and 05 (all defined in ``common.py``): a test-ret
 ``<arm>|<symbol>|<window_end>#rep1`` (``common.custom_id(..., repeat=1)``) and is stored under arm ``<arm>#rep1``
 (``common.REPEAT_ARM_SUFFIX``; 05 maps it back with ``common.base_arm``); ``--repeat-fraction`` defaults to
 ``common.REPEAT_FRACTION`` (5 %, decision D-09) and warns when it is 0.  The windows of an arm are read from
-``common.arm_window_series(arm)``: ``intraday_spy`` keeps series_key ``intraday_late`` on its runs and detections
-while its windows are the composite ``intraday_t0`` windows written by ``02_build_windows.py --composite``.  Arms
+``common.arm_window_series(arm)``, and runs and detections carry that same key, so ``intraday_spy`` rows say
+``intraday_t0`` (the composite windows written by ``02_build_windows.py --composite``) and join to their windows
+by value in SQL.  Arms
 on a series with ``labels='dated'`` (``p34_dated_2024``, ``p34_dated_2020``) need nothing special: their windows
 already carry the dated ``gex_sequence``, which is sent verbatim.
 
@@ -1049,7 +1050,7 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
                  "n_awaiting_retry": len(awaiting), "n_in_flight": len(in_flight), "n_originals": len(originals),
                  "n_repeats": len(repeats), "repeat_target": target, "repeats_already_requested": requested,
                  "windows_source": "db" if args.from_db else str(common.parquet_path("windows", window_series, arm.symbol))}
-    rows = create_run(store, arm=arm.key, series_key=arm.series_key, symbol=arm.symbol, requests=requests,
+    rows = create_run(store, arm=arm.key, series_key=window_series, symbol=arm.symbol, requests=requests,
                       mode="batch", max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=args.chunk_size,
                       metadata={"selection": selection}, model_created_at=created)  # fmt: skip
     print_generated(rows)
@@ -1383,7 +1384,7 @@ def cmd_pilot(store: Store, args: argparse.Namespace) -> int:
     per_request = common.estimate_cost_usd(common.MODEL, "standard", PROJECTED_PROMPT_TOKENS, PROJECTED_COMPLETION_TOKENS)
     check_budget(store, per_request * len(requests), args.budget, args.force, f"pilot of {len(requests)} synchronous calls")
     client = common.openai_client()
-    run = create_run(store, arm=pilot_arm, series_key=arm.series_key, symbol=arm.symbol, requests=requests, mode="sync",
+    run = create_run(store, arm=pilot_arm, series_key=window_series, symbol=arm.symbol, requests=requests, mode="sync",
                      max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=len(requests),
                      metadata={"selection": {"n": len(requests), "seed": args.seed, "workers": args.workers,
                                              "balanced_on": "clf_should_detect"}},

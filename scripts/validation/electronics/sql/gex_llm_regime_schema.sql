@@ -9,12 +9,14 @@
 --   series, an ex-0DTE series, the pre-rebuild archive, an intraday slot) for
 --   SPY/QQQ/IWM 2008-2026.  Every input shown to the model, every deterministic
 --   classifier verdict and every model answer is stored here so the paper's
---   tables and figures are reproducible from SQL alone.  The 1,412 published
---   o4-mini results (Jan 2026) are backfilled as arm r1_o4mini.
+--   tables and figures are reproducible from SQL alone.  The published o4-mini
+--   answers are backfilled: the 1,476 Phase 4A answers of 2026-01-04 (1,412 parsed
+--   then, 64 recovered in 2026) as arm r1_o4mini, and the November 2025 Phase 3 /
+--   Phase 4 baselines (223 windows each) as r1_p3_o4mini / r1_p4_o4mini.
 --
 -- LOADERS   scripts/validation/electronics/01_build_series.py   -> gex_llm_regime_series
 --           scripts/validation/electronics/02_build_windows.py  -> gex_llm_regime_windows
---           scripts/validation/electronics/03_backfill_round1.py-> gex_llm_regime_detections (r1_o4mini)
+--           scripts/validation/electronics/03_backfill_round1.py-> gex_llm_regime_detections (r1_o4mini, r1_p3_o4mini, r1_p4_o4mini)
 --           scripts/validation/electronics/04_llm_runner.py     -> gex_llm_regime_runs, _detections
 -- DOCS      gex-database-infrastructure/docs/gex-llm-patterns/backup-schema.md
 -- CLEANUP   DROP VIEW backups.gex_llm_regime_rates_summary;
@@ -65,7 +67,7 @@ COMMENT ON TABLE backups.gex_llm_regime_series IS
     '[gex-llm-patterns regime] Daily net dealer GEX series used to build the 30-day windows of the Electronics extension (iAmGiG/gex-llm-patterns#261). One row per (series_key, symbol, trading_date). Conventions differ by series_key (see column comment). Written only by scripts/validation/electronics/01_build_series.py; never by the monitors.';
 COMMENT ON COLUMN backups.gex_llm_regime_series.series_id IS 'Surrogate key';
 COMMENT ON COLUMN backups.gex_llm_regime_series.series_key IS
-    'jan2026_phase4a = exact Phase 4A inputs recovered from the 2026-01-04 batch file (SPY 2020-2025, values at 0.01B precision, January calendar which lacks 2023-07-12 and 2024-03-11); old_bs = archive backups.options_daily_summary_pre_rebuild_20261004 (pre-2026-10-08 daily path: Black-Scholes gamma on integer DTE, same-day expiries zeroed); new_full = gex.options_daily_summary after the 2026-10-08 rebuild (stored per-contract gamma, 0DTE included); new_ex0dte = recomputed from gex.options_chains_partitioned with expiration > trading_date; intraday_late = gex.intraday_gex_summary snapshot_type final_rush (19:55:59 UTC)';
+    'jan2026_phase4a = exact Phase 4A inputs recovered from the 2026-01-04 batch file (SPY 2020-2025, values at 0.01B precision, January calendar which lacks 2023-07-12 and 2024-03-11); old_bs = archive backups.options_daily_summary_pre_rebuild_20261004 (pre-2026-10-08 daily path: Black-Scholes gamma on integer DTE, same-day expiries zeroed); new_full = gex.options_daily_summary after the 2026-10-08 rebuild (stored per-contract gamma, 0DTE included); new_ex0dte = recomputed from gex.options_chains_partitioned with expiration > trading_date; intraday_late = gex.intraday_gex_summary snapshot_type final_rush (19:55:59 UTC); call_only = call leg of every contract with the put leg dropped, same-day expiries included (the shape of the January inputs from 2023-09-29; SPY 2020-2026); new_full_scaled = new_full of QQQ or IWM times one fixed per-symbol factor, the median daily SPY/symbol ratio of gex.options_daily_summary.total_weighted_oi over 2020-2026 (QQQ 4.22, IWM 11.43; 2020-2026); p3_2024 and p3_2024_dated = the SPY 2024 series of the November 2025 Phase 3 baseline batch (gross call+put magnitude excluding same-day expiries with a negative sign imposed; 10 placeholder rows are positive), Day-T and ISO-date labels; p4_2020 and p4_2020_dated = the SPY 2020 series of the November 2025 Phase 4 baseline batch (magnitude only, positive), Day-T and ISO-date labels. series_metadata carries the convention and caveats of every row';
 COMMENT ON COLUMN backups.gex_llm_regime_series.symbol IS 'Underlying ETF ticker (SPY, QQQ, IWM); joins to core tables by value';
 COMMENT ON COLUMN backups.gex_llm_regime_series.trading_date IS 'Trading date the value belongs to; joins to core tables by value';
 COMMENT ON COLUMN backups.gex_llm_regime_series.net_gex IS 'Net dealer gamma exposure in USD, calls positive, puts negative. Where recomputed: SUM(sign * gamma * open_interest * 100 * underlying_price^2 * 0.01) over contracts with gamma IS NOT NULL AND open_interest > 0 AND underlying_price > 0';
@@ -90,7 +92,7 @@ CREATE TABLE IF NOT EXISTS backups.gex_llm_regime_windows (
     window_end          date             NOT NULL,
     window_start        date             NOT NULL,
     n_days              integer          NOT NULL DEFAULT 30,
-    window_rule         varchar(8)       NOT NULL DEFAULT 'B',
+    window_rule         varchar(8)       NOT NULL DEFAULT 'A',
     gex_sequence        jsonb            NOT NULL,
     input_sha256        char(64)         NOT NULL,
     clf_regime_type     varchar(24)      NOT NULL,
@@ -118,8 +120,8 @@ COMMENT ON COLUMN backups.gex_llm_regime_windows.window_end IS 'trading_date of 
 COMMENT ON COLUMN backups.gex_llm_regime_windows.window_start IS 'trading_date of day T-29';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.n_days IS 'Always 30';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.window_rule IS 'A = 30 consecutive series rows (Phase 4A convention), with window_metadata.calendar_gap_days and missing_master_days recording holes; J = the series'' own calendar (jan2026_phase4a, p3_2024*, p4_2020*); T0 = composite intraday_t0 windows (new_full T-29..T-1, intraday_late at T+0); C reserved for a strict NYSE calendar';
-COMMENT ON COLUMN backups.gex_llm_regime_windows.gex_sequence IS 'JSON array of 30 objects {"date": "Day T-29".."Day T+0", "net_gex_usd": <float>} exactly as passed to MechanicsPromptBuilder.build_regime_prompt (dates and ticker removed)';
-COMMENT ON COLUMN backups.gex_llm_regime_windows.input_sha256 IS 'sha256 of the canonical gex_sequence JSON; identical windows across series share it';
+COMMENT ON COLUMN backups.gex_llm_regime_windows.gex_sequence IS 'JSON array of 30 objects {"date": <label>, "net_gex_usd": <float>} exactly as passed to MechanicsPromptBuilder.build_regime_prompt; the labels are "Day T-29".."Day T+0" for the obfuscated series (ticker and dates removed) and ISO dates for p3_2024_dated and p4_2020_dated';
+COMMENT ON COLUMN backups.gex_llm_regime_windows.input_sha256 IS 'sha256 of the canonical gex_sequence JSON (labels and values); windows with the same labels and values share it across series, so the dated twins (p3_2024_dated, p4_2020_dated) differ from their Day-T counterparts';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.clf_regime_type IS 'persistent_positive | persistent_negative | low_conviction | transitional';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.clf_should_detect IS 'TRUE for persistent_positive / persistent_negative';
 COMMENT ON COLUMN backups.gex_llm_regime_windows.clf_positive_days IS 'Days with net_gex > 0';
@@ -177,10 +179,10 @@ CREATE INDEX IF NOT EXISTS idx_gex_llm_regime_runs_arm ON backups.gex_llm_regime
 COMMENT ON TABLE backups.gex_llm_regime_runs IS
     '[gex-llm-patterns regime] One row per LLM run: an OpenAI Batch job (mode batch) or a synchronous pilot (mode sync). The row is written at submit time so the batch id is never lost; raw input/output JSONL plus a parquet copy of the detections live under backup_dir in the gex-llm-patterns repo (data/backups/gex_llm/<run_id>/).';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.run_id IS '<arm>_<model>_<mode>_<UTC timestamp>';
-COMMENT ON COLUMN backups.gex_llm_regime_runs.arm IS 'Experiment arm, e.g. bridge_jan, full_spy, ex0dte_spy, full_qqq, full_iwm, intraday_spy, pilot_*';
+COMMENT ON COLUMN backups.gex_llm_regime_runs.arm IS 'Experiment arm: bridge_jan, full_spy, ex0dte_spy, p34_obf_2024, p34_dated_2024, p34_obf_2020, p34_dated_2020, full_qqq, full_iwm, full_qqq_scaled, full_iwm_scaled, ex0dte_qqq, ex0dte_iwm, intraday_spy, bridge_old; pilot_<arm> for a synchronous pilot; r1_o4mini, r1_p3_o4mini, r1_p4_o4mini for the backfills; a test-retest repeat of an arm is stored as <arm>#rep1';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.series_key IS 'Series the arm reads (see gex_llm_regime_series.series_key)';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.symbol IS 'Underlying ETF ticker';
-COMMENT ON COLUMN backups.gex_llm_regime_runs.model IS 'Model alias sent to the API (gpt-6-luna); the alias carries no dated snapshot';
+COMMENT ON COLUMN backups.gex_llm_regime_runs.model IS 'Model alias sent to the API (gpt-6-luna; the alias carries no dated snapshot, see model_created_at); backfills: o4-mini-2025-04-16 (r1_o4mini), o4-mini (r1_p3_o4mini, r1_p4_o4mini, as the November files record it)';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.model_created_at IS 'created timestamp of the model object as returned by GET /v1/models/<model> at submit time';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.prompt_version IS 'v2.0_postgresql = the unchanged Phase 4A prompt text';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.reasoning_effort IS 'reasoning_effort request field (medium for all arms)';
@@ -251,16 +253,16 @@ CREATE INDEX IF NOT EXISTS idx_gex_llm_regime_detections_run ON backups.gex_llm_
 CREATE INDEX IF NOT EXISTS idx_gex_llm_regime_detections_series_symbol_end ON backups.gex_llm_regime_detections (series_key, symbol, window_end);
 
 COMMENT ON TABLE backups.gex_llm_regime_detections IS
-    '[gex-llm-patterns regime] LLM regime verdict per window and run. Arm r1_o4mini holds the 1,412 published Phase 4A results (o4-mini-2025-04-16, batch of 2026-01-04) backfilled from the surviving output file; other arms are gpt-6-luna re-runs. Join to gex_llm_regime_windows on (series_key, symbol, window_end) for the deterministic reference label.';
+    '[gex-llm-patterns regime] LLM regime verdict per window and run. Arms r1_o4mini (the 1,476 Phase 4A answers of 2026-01-04 by o4-mini-2025-04-16: 1,412 parsed in January plus 64 recovered in 2026, flagged in detection_metadata), r1_p3_o4mini and r1_p4_o4mini (the November 2025 baselines, 223 windows each) hold the published o4-mini answers backfilled from the surviving output files; the other arms are gpt-6-luna re-runs, and <arm>#rep1 holds a test-retest repeat. Join to gex_llm_regime_windows on (series_key, symbol, window_end) for the deterministic reference label.';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.detection_id IS 'Surrogate key';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.run_id IS 'gex_llm_regime_runs.run_id (no FK by design; join by value)';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.arm IS 'Experiment arm (see gex_llm_regime_runs.arm)';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.series_key IS 'Series of the window';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.symbol IS 'Underlying ETF ticker';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.window_end IS 'trading_date of day T+0 of the window';
-COMMENT ON COLUMN backups.gex_llm_regime_detections.model IS 'Model alias (gpt-6-luna) or dated id for the backfill (o4-mini-2025-04-16)';
+COMMENT ON COLUMN backups.gex_llm_regime_detections.model IS 'Model alias (gpt-6-luna) or the id of a backfill (o4-mini-2025-04-16 for r1_o4mini; o4-mini for r1_p3_o4mini and r1_p4_o4mini)';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.prompt_version IS 'v2.0_postgresql';
-COMMENT ON COLUMN backups.gex_llm_regime_detections.custom_id IS 'Batch custom_id: <arm>|<symbol>|<window_end>; window-<date> for r1_o4mini';
+COMMENT ON COLUMN backups.gex_llm_regime_detections.custom_id IS 'Batch custom_id: <arm>|<symbol>|<window_end>, with the suffix #rep1 on a test-retest repeat; window-<date> for r1_o4mini; the November 2025 custom_ids for r1_p3_o4mini and r1_p4_o4mini';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.response_id IS 'OpenAI response id (chatcmpl-...) when available';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.regime_detected IS 'Model verdict';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.regime_type IS 'persistent_positive | persistent_negative | transitional | low_conviction (model vocabulary)';
