@@ -1,0 +1,119 @@
+{
+  "argv": [
+    "fig06_bridge_agreement.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig06_bridge_agreement.py",
+      "sha256": "4a8e54ed90408f5dae5cff36ba61ddf2787f12570e60589a06cf6026a659fb5b"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "bridge_arm": "bridge_jan",
+    "gate_threshold": 0.6,
+    "interval_all": [
+      "bootstrap",
+      "bootstrap"
+    ],
+    "kappa_undefined_years": [
+      2024,
+      2025
+    ],
+    "n_pairs": 1412,
+    "reference_arm": "r1_o4mini",
+    "test_retest_arm": "bridge_jan#rep1",
+    "years": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "figure": "fig06_bridge_agreement",
+  "generated_utc": "2026-10-30T19:18:03+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 19650,
+      "path": "docs/papers/electronics/figures/output/fig06_bridge_agreement.pdf",
+      "sha256": "24d809ccbba11ae4e6bc8e0f3a4226717b6cf3810afbab04140597ea56346b4b"
+    },
+    "png": {
+      "bytes": 221479,
+      "path": "docs/papers/electronics/figures/output/fig06_bridge_agreement.png",
+      "pixels": [
+        1842,
+        1170
+      ],
+      "sha256": "68b3a7c7d19acb60ee9f223adb230c06bdca619f657e014dd92f651a7a5f24dc"
+    }
+  },
+  "results": {
+    "files": {
+      "bridge_agreement.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "0f1e9d08281314d9cefaa2ebdc527427efb173d041d2e2ab396f17dda55baaab"
+      },
+      "bridge_agreement.yaml": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "e30ebb9aeffaff6b17f38fbfcd563874d31ba1a9b8cafca2dbbe2b2b160ede64"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/bridge_agreement.csv": 133,
+    "docs/papers/electronics/results/bridge_agreement.yaml": 10
+  },
+  "sources": [
+    {
+      "bytes": 28548,
+      "path": "docs/papers/electronics/results/bridge_agreement.csv",
+      "sha256": "0f1e9d08281314d9cefaa2ebdc527427efb173d041d2e2ab396f17dda55baaab"
+    },
+    {
+      "bytes": 96491,
+      "path": "docs/papers/electronics/results/bridge_agreement.yaml",
+      "sha256": "e30ebb9aeffaff6b17f38fbfcd563874d31ba1a9b8cafca2dbbe2b2b160ede64"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

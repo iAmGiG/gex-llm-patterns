@@ -1,0 +1,301 @@
+currency: USD
+pricing_usd_per_mtok:
+  gpt-6-luna:
+    standard:
+      input: 0.1
+      output: 0.5
+    batch:
+      input: 0.05
+      output: 0.25
+  o4-mini:
+    standard:
+      input: 1.1
+      output: 4.4
+    batch:
+      input: 0.55
+      output: 2.2
+  o4-mini-2025-04-16:
+    standard:
+      input: 1.1
+      output: 4.4
+    batch:
+      input: 0.55
+      output: 2.2
+budget:
+  rule: a run is spend when common.counts_toward_budget(run) holds (model gpt-6-luna, an LLM arm or an arm outside
+    the registry, no run_metadata 'backfill') and it has left the machine (status not 'generated'); the backfill
+    of the published o4-mini batch of January 2026 (arm r1_o4mini; likewise r1_p3_o4mini and r1_p4_o4mini) is shown
+    separately under not_spend and is never counted
+  hard_stop_usd: 12.0
+  spent_usd: 7.63677
+  in_flight_projected_usd: 2.419191
+  committed_usd: 10.055961
+  remaining_to_hard_stop_usd: 1.944039
+  generated_not_sent_projected_usd: 0.0
+  not_spend:
+    historical_backfill_usd: 9.967462
+    historical_backfill_runs:
+    - r1_o4mini_phase4a_20260104
+    - r1_p3_o4mini_20251120
+    - r1_p4_o4mini_20251120
+    other_model_usd: 0.0
+    other_model_runs: []
+totals:
+  counted:
+    runs: 35
+    n_requests: 34712
+    prompt_tokens: 51994725.0
+    completion_tokens: 20104818.0
+    reasoning_tokens: 15033811.0
+    est_cost_usd: 7.63677
+    cost_per_request_usd: 0.000281125
+  backfill:
+    runs: 3
+    n_requests: 1922
+    prompt_tokens: 3484438.0
+    completion_tokens: 3659555.0
+    reasoning_tokens: 3256832.0
+    est_cost_usd: 9.967462
+    cost_per_request_usd: 0.005186
+  other_model:
+    runs: 0
+    n_requests: 0
+    prompt_tokens: 0.0
+    completion_tokens: 0.0
+    reasoning_tokens: 0.0
+    est_cost_usd: 0.0
+    cost_per_request_usd: null
+  all_stored_runs:
+    runs: 38
+    n_requests: 36634
+    prompt_tokens: 55479163.0
+    completion_tokens: 23764373.0
+    reasoning_tokens: 18290643.0
+    est_cost_usd: 17.604232
+    cost_per_request_usd: 0.000605227
+by_arm:
+- arm: bridge_jan
+  runs: 2
+  n_requests: 2952
+  prompt_tokens: 5647176.0
+  completion_tokens: 2168992.0
+  est_cost_usd: 0.824607
+  est_cost_usd_counted: 0.824607
+  cost_per_request_usd: 0.000279338
+- arm: bridge_old
+  runs: 4
+  n_requests: 4870
+  prompt_tokens: 0.0
+  completion_tokens: 0.0
+  est_cost_usd: null
+  est_cost_usd_counted: null
+  cost_per_request_usd: null
+- arm: ex0dte_iwm
+  runs: 2
+  n_requests: 1785
+  prompt_tokens: 0.0
+  completion_tokens: 0.0
+  est_cost_usd: null
+  est_cost_usd_counted: null
+  cost_per_request_usd: null
+- arm: ex0dte_qqq
+  runs: 2
+  n_requests: 1784
+  prompt_tokens: 1706396.0
+  completion_tokens: 680360.0
+  est_cost_usd: 0.25541
+  est_cost_usd_counted: 0.25541
+  cost_per_request_usd: 0.000143167
+- arm: ex0dte_spy
+  runs: 4
+  n_requests: 4905
+  prompt_tokens: 9383265.0
+  completion_tokens: 3742783.0
+  est_cost_usd: 1.404859
+  est_cost_usd_counted: 1.404859
+  cost_per_request_usd: 0.000286414
+- arm: full_iwm
+  runs: 4
+  n_requests: 4912
+  prompt_tokens: 9396656.0
+  completion_tokens: 3164878.0
+  est_cost_usd: 1.261052
+  est_cost_usd_counted: 1.261052
+  cost_per_request_usd: 0.000256729
+- arm: full_iwm_scaled
+  runs: 2
+  n_requests: 1755
+  prompt_tokens: 3357315.0
+  completion_tokens: 1309924.0
+  est_cost_usd: 0.495347
+  est_cost_usd_counted: 0.495347
+  cost_per_request_usd: 0.000282249
+- arm: full_qqq
+  runs: 3
+  n_requests: 4060
+  prompt_tokens: 7766780.0
+  completion_tokens: 3074113.0
+  est_cost_usd: 1.156867
+  est_cost_usd_counted: 1.156867
+  cost_per_request_usd: 0.000284943
+- arm: full_qqq_scaled
+  runs: 2
+  n_requests: 1754
+  prompt_tokens: 3355402.0
+  completion_tokens: 1445329.0
+  est_cost_usd: 0.529102
+  est_cost_usd_counted: 0.529102
+  cost_per_request_usd: 0.000301655
+- arm: full_spy
+  runs: 4
+  n_requests: 4905
+  prompt_tokens: 9383265.0
+  completion_tokens: 3870509.0
+  est_cost_usd: 1.436791
+  est_cost_usd_counted: 1.436791
+  cost_per_request_usd: 0.000292924
+- arm: intraday_spy
+  runs: 1
+  n_requests: 54
+  prompt_tokens: 103302.0
+  completion_tokens: 45525.0
+  est_cost_usd: 0.016546
+  est_cost_usd_counted: 0.016546
+  cost_per_request_usd: 0.000306414
+- arm: p34_dated_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 461682.0
+  completion_tokens: 130805.0
+  est_cost_usd: 0.055785
+  est_cost_usd_counted: 0.055785
+  cost_per_request_usd: 0.000238399
+- arm: p34_dated_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 461682.0
+  completion_tokens: 154330.0
+  est_cost_usd: 0.061667
+  est_cost_usd_counted: 0.061667
+  cost_per_request_usd: 0.000263532
+- arm: p34_obf_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 447642.0
+  completion_tokens: 132619.0
+  est_cost_usd: 0.055537
+  est_cost_usd_counted: 0.055537
+  cost_per_request_usd: 0.000237337
+- arm: p34_obf_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 447642.0
+  completion_tokens: 156636.0
+  est_cost_usd: 0.061541
+  est_cost_usd_counted: 0.061541
+  cost_per_request_usd: 0.000262996
+- arm: pilot_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 76520.0
+  completion_tokens: 28015.0
+  est_cost_usd: 0.02166
+  est_cost_usd_counted: 0.02166
+  cost_per_request_usd: 0.000541488
+- arm: r1_o4mini
+  runs: 1
+  n_requests: 1476
+  prompt_tokens: 2655324.0
+  completion_tokens: 2928992.0
+  est_cost_usd: 7.904211
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.005355
+- arm: r1_p3_o4mini
+  runs: 1
+  n_requests: 223
+  prompt_tokens: 414557.0
+  completion_tokens: 405127.0
+  est_cost_usd: 1.119286
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.005019
+- arm: r1_p4_o4mini
+  runs: 1
+  n_requests: 223
+  prompt_tokens: 414557.0
+  completion_tokens: 325436.0
+  est_cost_usd: 0.943966
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.004233
+by_model:
+- model: gpt-6-luna
+  runs: 35
+  n_requests: 34712
+  prompt_tokens: 51994725.0
+  completion_tokens: 20104818.0
+  est_cost_usd: 7.63677
+  est_cost_usd_counted: 7.63677
+  cost_per_request_usd: 0.000220004
+- model: o4-mini
+  runs: 2
+  n_requests: 446
+  prompt_tokens: 829114.0
+  completion_tokens: 730563.0
+  est_cost_usd: 2.063251
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.004626
+- model: o4-mini-2025-04-16
+  runs: 1
+  n_requests: 1476
+  prompt_tokens: 2655324.0
+  completion_tokens: 2928992.0
+  est_cost_usd: 7.904211
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.005355
+by_mode:
+- mode: batch
+  runs: 37
+  n_requests: 36594
+  prompt_tokens: 55402643.0
+  completion_tokens: 23736358.0
+  est_cost_usd: 17.582573
+  est_cost_usd_counted: 7.615111
+  cost_per_request_usd: 0.000480477
+- mode: sync
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 76520.0
+  completion_tokens: 28015.0
+  est_cost_usd: 0.02166
+  est_cost_usd_counted: 0.02166
+  cost_per_request_usd: 0.000541488
+by_status:
+- status: in_progress
+  runs: 7
+  n_requests: 7547
+  prompt_tokens: 0.0
+  completion_tokens: 0.0
+  est_cost_usd: null
+  est_cost_usd_counted: null
+  cost_per_request_usd: null
+- status: ingested
+  runs: 31
+  n_requests: 29087
+  prompt_tokens: 55479163.0
+  completion_tokens: 23764373.0
+  est_cost_usd: 17.604232
+  est_cost_usd_counted: 7.63677
+  cost_per_request_usd: 0.000605227
+runs_without_est_cost:
+- ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0
+- ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0
+- ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1
+- bridge_old_gpt-6-luna_batch_20261030T010455Z_c0
+- bridge_old_gpt-6-luna_batch_20261030T010455Z_c1
+- bridge_old_gpt-6-luna_batch_20261030T010455Z_c2
+- bridge_old_gpt-6-luna_batch_20261030T010455Z_c3
+reconciliation:
+  runs_compared_with_detection_usage: 31
+  runs_with_token_gap: 0
+  max_abs_cost_gap_usd: 0.0
+  note: gaps compare the run totals with the sum over that run's detection rows; cost_gap_usd compares est_cost_usd
+    with the token usage priced by common.PRICING_USD_PER_MTOK

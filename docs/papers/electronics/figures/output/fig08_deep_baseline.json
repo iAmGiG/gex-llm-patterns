@@ -1,0 +1,281 @@
+{
+  "argv": [
+    "fig08_deep_baseline.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig08_deep_baseline.py",
+      "sha256": "3d0e0064be766342e9ce2c5d74ed868b2cc2a73ae9ce31cec737682f2db354c1"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "events": {
+      "2018 volatility": [
+        2018,
+        2018
+      ],
+      "Financial crisis": [
+        2008,
+        2009
+      ]
+    },
+    "gap_pp_by_year": {
+      "llm": {
+        "2008": 0.0,
+        "2009": 0.0,
+        "2010": 0.0,
+        "2011": 0.0,
+        "2012": 0.0,
+        "2013": 0.0,
+        "2014": 0.793651,
+        "2015": 6.349206,
+        "2016": 5.6,
+        "2017": 12.5,
+        "2018": 12.048193,
+        "2019": 6.772908
+      },
+      "rule": {
+        "2008": 0.0,
+        "2009": 0.0,
+        "2010": 0.0,
+        "2011": 0.0,
+        "2012": 0.0,
+        "2013": 0.0,
+        "2014": 0.793651,
+        "2015": 6.349206,
+        "2016": 6.0,
+        "2017": 12.5,
+        "2018": 10.843373,
+        "2019": 6.772908
+      }
+    },
+    "interval": "Wilson 95% (figdata.ci_columns) on the first series' gpt-6-luna rates; overlapping windows treated as independent",
+    "llm_arms_drawn": [
+      "full_spy",
+      "ex0dte_spy"
+    ],
+    "llm_arms_missing": [
+      "bridge_old"
+    ],
+    "max_abs_gap_pp": {
+      "llm": 12.5,
+      "rule": 12.5
+    },
+    "median_independent_windows_per_year": 9,
+    "pooled_new_full": {
+      "llm": {
+        "n": 2971,
+        "n_detect": 300,
+        "rate_pct": 10.097610232245035
+      },
+      "rule": {
+        "n": 2971,
+        "n_detect": 301,
+        "rate_pct": 10.131268933019186
+      }
+    },
+    "rate_pct_by_year": {
+      "new_ex0dte": {
+        "llm": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 8.333333,
+          "2015": 1.5873020000000002,
+          "2016": 22.0,
+          "2017": 19.166667,
+          "2018": 22.891566,
+          "2019": 3.187251
+        },
+        "rule": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 8.333333,
+          "2015": 1.5873020000000002,
+          "2016": 22.0,
+          "2017": 19.583333,
+          "2018": 23.694779,
+          "2019": 3.187251
+        }
+      },
+      "new_full": {
+        "llm": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 9.126984,
+          "2015": 7.936508000000001,
+          "2016": 27.6,
+          "2017": 31.666666999999997,
+          "2018": 34.939759,
+          "2019": 9.960159
+        },
+        "rule": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 9.126984,
+          "2015": 7.936508000000001,
+          "2016": 28.000000000000004,
+          "2017": 32.083333,
+          "2018": 34.538153,
+          "2019": 9.960159
+        }
+      },
+      "old_bs": {
+        "llm": null,
+        "rule": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 13.492062999999998,
+          "2015": 0.396825,
+          "2016": 26.400000000000002,
+          "2017": 38.75,
+          "2018": 32.128514,
+          "2019": 7.171315
+        }
+      }
+    },
+    "same_day_share_pct_by_year": {
+      "2008": 0.878528,
+      "2009": 0.13879,
+      "2010": 5.042116,
+      "2011": 5.32703,
+      "2012": 6.969756,
+      "2013": 11.478045,
+      "2014": 10.51321,
+      "2015": 16.563882,
+      "2016": 13.527756,
+      "2017": 13.138046,
+      "2018": 16.41563,
+      "2019": 22.072511
+    },
+    "series_drawn": [
+      "new_full",
+      "new_ex0dte",
+      "old_bs"
+    ],
+    "symbol": "SPY",
+    "years": [
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ]
+  },
+  "figure": "fig08_deep_baseline",
+  "generated_utc": "2026-10-30T19:18:11+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 23393,
+      "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.pdf",
+      "sha256": "217161f48d5506f9feb07dc3f54090bac18f06b48943aeceb0993358e0cc05d7"
+    },
+    "png": {
+      "bytes": 292717,
+      "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.png",
+      "pixels": [
+        1842,
+        1605
+      ],
+      "sha256": "ed27e8019c890f22b9c8a6f622bdfa88f99a803798c0fc29390b458eb7ba1401"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      },
+      "ex0dte_decomposition.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 433,
+    "docs/papers/electronics/results/ex0dte_decomposition.csv": 57
+  },
+  "sources": [
+    {
+      "bytes": 57298,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+    },
+    {
+      "bytes": 7431,
+      "path": "docs/papers/electronics/results/ex0dte_decomposition.csv",
+      "sha256": "13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

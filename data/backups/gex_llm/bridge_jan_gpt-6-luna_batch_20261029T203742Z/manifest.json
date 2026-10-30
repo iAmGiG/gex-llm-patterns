@@ -1,0 +1,72 @@
+{
+  "arm": "bridge_jan",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "8349513c78385e805f09cd2902ad8282eeb3a6cf6985817874b668af2771106f",
+      "n_requests": 1476,
+      "run_id": "bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0",
+      "window_end_max": "2025-12-31",
+      "window_end_min": "2020-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "845abefb0671345767ece5bb2d7e21dfd10a973fb284c2d9c04d170277d7d195",
+      "n_requests": 1476,
+      "run_id": "bridge_jan_gpt-6-luna_batch_20261029T203742Z_c1",
+      "window_end_max": "2025-12-31",
+      "window_end_min": "2020-02-13"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "fac5e05b149bc5f47eb97c287fc817a9b7bb136380fa8c59460a2c92dd39f9d1",
+    "common.py": "cb0b1c45feffbc4d69961facb152979ab4bb5aa10634c746e6fadf926e80c121"
+  },
+  "generated_at": "2026-10-29T20:37:42.622325+00:00",
+  "git_sha": "e27bdc749ff0db58f7e0028df11e0c66b6a1abb4",
+  "infra_git_sha": "231aa64d76af0771fe02fd0fec228d9a1b12fd87",
+  "max_completion_tokens": 4000,
+  "mode": "batch",
+  "model": "gpt-6-luna",
+  "n_chunks": 2,
+  "package_versions": {
+    "numpy": "2.4.0",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.11",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "bridge_jan_gpt-6-luna_batch_20261029T203742Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "batch",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "bridge_jan_gpt-6-luna_batch_20261029T203742Z",
+  "selection": {
+    "end_max": "2025-12-31",
+    "end_min": "2020-01-02",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 1476,
+    "n_repeats": 1476,
+    "n_windows_in_range": 1476,
+    "pool_window_end_max": "2025-12-31",
+    "pool_window_end_min": "2020-02-13",
+    "repeat_fraction": 1.0,
+    "repeat_target": 1476,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "jan2026_phase4a",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet"
+  },
+  "series_key": "jan2026_phase4a",
+  "symbol": "SPY"
+}

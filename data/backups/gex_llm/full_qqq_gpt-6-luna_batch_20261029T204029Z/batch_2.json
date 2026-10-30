@@ -1,0 +1,42 @@
+{
+  "cancelled_at": null,
+  "cancelling_at": null,
+  "completed_at": 1793336027,
+  "completion_window": "24h",
+  "created_at": 1793316339,
+  "endpoint": "/v1/chat/completions",
+  "error_file_id": null,
+  "errors": null,
+  "expired_at": null,
+  "expires_at": 1793402739,
+  "failed_at": null,
+  "finalizing_at": 1793335958,
+  "id": "batch_6ae3d5f3d3bc8190a3baa06dc1bf33b3",
+  "in_progress_at": 1793316341,
+  "input_file_id": "file-JBWfoxBvydjbYD1GqKthFh",
+  "metadata": {
+    "arm": "full_qqq",
+    "experiment": "electronics_261",
+    "run_id": "full_qqq_gpt-6-luna_batch_20261029T204029Z_c2"
+  },
+  "model": "gpt-6-luna",
+  "object": "batch",
+  "output_file_id": "file-A5teQe8LQa9FTaj8SLyfnY",
+  "request_counts": {
+    "completed": 1353,
+    "failed": 0,
+    "total": 1353
+  },
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2588289,
+    "input_tokens_details": {
+      "cached_tokens": 370540
+    },
+    "output_tokens": 1057334,
+    "output_tokens_details": {
+      "reasoning_tokens": 810456
+    },
+    "total_tokens": 3645623
+  }
+}

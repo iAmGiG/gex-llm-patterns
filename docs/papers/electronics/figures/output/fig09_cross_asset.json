@@ -1,0 +1,459 @@
+{
+  "argv": [
+    "fig09_cross_asset.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig09_cross_asset.py",
+      "sha256": "b03d0b13db69fa9442ddf685805915512a3ea1971a517c0cfe52c00d11d87c9b"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "llm_arms_present": [
+      "ex0dte_qqq",
+      "ex0dte_spy",
+      "full_iwm",
+      "full_qqq",
+      "full_spy"
+    ],
+    "rate_pct_by_year": {
+      "IWM": {
+        "new_ex0dte": {
+          "llm": null,
+          "rule": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          }
+        },
+        "new_full": {
+          "llm": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          },
+          "rule": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          }
+        }
+      },
+      "QQQ": {
+        "new_ex0dte": {
+          "llm": {
+            "2008": null,
+            "2009": null,
+            "2010": null,
+            "2011": null,
+            "2012": null,
+            "2013": null,
+            "2014": null,
+            "2015": null,
+            "2016": null,
+            "2017": null,
+            "2018": null,
+            "2019": null,
+            "2020": null,
+            "2021": null,
+            "2022": null,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          },
+          "rule": {
+            "2008": null,
+            "2009": null,
+            "2010": null,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          }
+        },
+        "new_full": {
+          "llm": {
+            "2008": null,
+            "2009": null,
+            "2010": null,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          },
+          "rule": {
+            "2008": null,
+            "2009": null,
+            "2010": null,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 0.0,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          }
+        }
+      },
+      "SPY": {
+        "new_ex0dte": {
+          "llm": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 8.333333,
+            "2015": 1.5873020000000002,
+            "2016": 22.0,
+            "2017": 19.166667,
+            "2018": 22.891566,
+            "2019": 3.187251,
+            "2020": 10.714286,
+            "2021": 0.0,
+            "2022": 37.051793,
+            "2023": 26.0,
+            "2024": 14.285713999999999,
+            "2025": 16.4,
+            "2026": 21.243523
+          },
+          "rule": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 8.333333,
+            "2015": 1.5873020000000002,
+            "2016": 22.0,
+            "2017": 19.583333,
+            "2018": 23.694779,
+            "2019": 3.187251,
+            "2020": 10.714286,
+            "2021": 0.0,
+            "2022": 36.653386,
+            "2023": 25.2,
+            "2024": 13.095238,
+            "2025": 16.4,
+            "2026": 21.243523
+          }
+        },
+        "new_full": {
+          "llm": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 9.126984,
+            "2015": 7.936508000000001,
+            "2016": 27.6,
+            "2017": 31.666666999999997,
+            "2018": 34.939759,
+            "2019": 9.960159,
+            "2020": 22.222222,
+            "2021": 3.571429,
+            "2022": 41.832669,
+            "2023": 23.2,
+            "2024": 11.111111,
+            "2025": 14.000000000000002,
+            "2026": 11.398964
+          },
+          "rule": {
+            "2008": 0.0,
+            "2009": 0.0,
+            "2010": 0.0,
+            "2011": 0.0,
+            "2012": 0.0,
+            "2013": 0.0,
+            "2014": 9.126984,
+            "2015": 7.936508000000001,
+            "2016": 28.000000000000004,
+            "2017": 32.083333,
+            "2018": 34.538153,
+            "2019": 9.960159,
+            "2020": 22.222222,
+            "2021": 3.571429,
+            "2022": 40.63745,
+            "2023": 22.4,
+            "2024": 10.31746,
+            "2025": 13.600000000000001,
+            "2026": 11.398964
+          }
+        }
+      }
+    },
+    "symbols": {
+      "IWM": {
+        "detected_new_full": 0,
+        "largest_mean_abs_gex_bn_new_full": 4.97588352,
+        "llm_arms_missing": [
+          "ex0dte_iwm"
+        ],
+        "median_mean_abs_gex_bn_new_full": 0.6618784397666666,
+        "series_drawn": [
+          "new_full",
+          "new_ex0dte"
+        ],
+        "share_persistence_and_flips_only_pct": 71.76143651132963,
+        "windows_new_full": 4678
+      },
+      "QQQ": {
+        "detected_new_full": 0,
+        "largest_mean_abs_gex_bn_new_full": 4.923073649066667,
+        "llm_arms_missing": [],
+        "median_mean_abs_gex_bn_new_full": 0.7392106850666668,
+        "series_drawn": [
+          "new_full",
+          "new_ex0dte"
+        ],
+        "share_persistence_and_flips_only_pct": 37.08301008533747,
+        "windows_new_full": 3867
+      },
+      "SPY": {
+        "detected_new_full": 606,
+        "largest_mean_abs_gex_bn_new_full": 15.995506090666666,
+        "llm_arms_missing": [],
+        "median_mean_abs_gex_bn_new_full": 3.8434417824000002,
+        "series_drawn": [
+          "new_full",
+          "new_ex0dte"
+        ],
+        "share_persistence_and_flips_only_pct": 37.7435238706915,
+        "windows_new_full": 4671
+      }
+    },
+    "thresholds": {
+      "magnitude_bn": 5.0,
+      "max_sign_flips": 5,
+      "persistence_days": 21,
+      "source": "report.yaml diagnostics.thresholds; reproduce every stored verdict"
+    },
+    "years": [
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "figure": "fig09_cross_asset",
+  "generated_utc": "2026-10-30T19:18:16+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 25459,
+      "path": "docs/papers/electronics/figures/output/fig09_cross_asset.pdf",
+      "sha256": "9b3fb6700e907de808dddddb1be78fe0b3dcf29e8cb38a775c44fd8c1386f99a"
+    },
+    "png": {
+      "bytes": 353431,
+      "path": "docs/papers/electronics/figures/output/fig09_cross_asset.png",
+      "pixels": [
+        1842,
+        1425
+      ],
+      "sha256": "36eb46922f1385078f4f9421030c0c7a08376cbe868567d5ccd3d8e97346d256"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4678,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3867,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4671,
+    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4678,
+    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3867,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671,
+    "docs/papers/electronics/results/detection_by_year.csv": 433,
+    "docs/papers/electronics/results/report.yaml": 15
+  },
+  "sources": [
+    {
+      "bytes": 1442756,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
+      "sha256": "b6c3df8c7bf25d73654fdb28f8db1a10c3179393ed30d9d5258e9f19ba6de146"
+    },
+    {
+      "bytes": 1184792,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
+      "sha256": "314cfc3e4fefb7406d4572231791938db93af7412b012e67d92484d67509b0aa"
+    },
+    {
+      "bytes": 1441247,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "sha256": "6188c5f53044844634ad46e8c3a34e14cd34993284c7ef566743ad899efe9d4f"
+    },
+    {
+      "bytes": 1357109,
+      "path": "data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
+      "sha256": "e2a35e6fb2602d18476efd903f0e85e97a68caf019a6f6e530970384fd85543c"
+    },
+    {
+      "bytes": 1123721,
+      "path": "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
+      "sha256": "38a5bd98971e5867a66d4580a743e481b20dd1e04e14faad80bfbc1af2e94a90"
+    },
+    {
+      "bytes": 1376488,
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
+    },
+    {
+      "bytes": 57298,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+    },
+    {
+      "bytes": 153366,
+      "path": "docs/papers/electronics/results/report.yaml",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

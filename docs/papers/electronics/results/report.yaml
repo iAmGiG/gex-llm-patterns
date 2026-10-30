@@ -1,0 +1,5683 @@
+generated_at: '2026-10-30T19:17:28+00:00'
+script:
+  path: scripts/validation/electronics/05_report.py
+  sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+  common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+  git_sha: 669c93b539233d29320019dd11f8bc099273634f
+environment:
+  python: 3.12.12
+  pandas: 2.3.3
+  numpy: 2.4.0
+  scipy: 1.16.3
+  pyyaml: 6.0.3
+parameters:
+  seed: 261
+  n_boot: 2000
+  results_dir: docs/papers/electronics/results
+  only: null
+contract:
+  detection_by_year.csv: 'long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct,
+    ci_lo_pct, ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows'
+  detection_by_year_wide.csv: 'derived copy of the yearly rows in the shape of the written spec: clf_rate, clf_ci_lo,
+    clf_ci_hi, llm_rate, llm_ci_lo, llm_ci_hi as FRACTIONS in [0, 1]; agree_pct in percent (no figure reads it)'
+  bridge_agreement.csv: n_pairs and n_ref_det_oth_det / _not, n_ref_not_oth_det / _not; the columns n, both_detect,
+    only_r1, only_luna, neither repeat the same counts under the names of the written spec
+  series_comparison.csv: series_a and series_b; 'pair' repeats '<series_a>_vs_<series_b>' (the written spec's column)
+  reported_vs_computed.csv: basis arm | bridge_pairs; median of model-reported mean |GEX| over the computed mean
+  post_publication_2026_summary.csv: definition ends_in_2026 | entirely_2026, label_source classifier | llm
+source:
+  kind: parquet
+  parquet_root: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables
+  files:
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/call_only_SPY.parquet
+    rows: 1700
+    sha256: d73a9eed7fa6ee2b92f1274cc5c03bae37563a71bf824bcfd662c52308e673c9
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/intraday_late_SPY.parquet
+    rows: 51
+    sha256: 16728b4511938f9a6de423672d5e06c415a79214c881e97de2ead0f4e6d38f48
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/jan2026_phase4a_SPY.parquet
+    rows: 1505
+    sha256: 551cfe14196ab2ddc36f574d1ec939c8fc1fe99459d2abfa32067797a7e3bf83
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_ex0dte_IWM.parquet
+    rows: 4707
+    sha256: ce99ba40c615abcf2044b0099bacbae32169c1a68c425ca7d523dc92e472ba7a
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_ex0dte_QQQ.parquet
+    rows: 3896
+    sha256: b286f63a1001d8e0595f6ba742c1bbc926352870ef126292685119b40e4e4d1b
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_ex0dte_SPY.parquet
+    rows: 4700
+    sha256: 72578a795100a52157139626577678f1b70dd3f5c6186bf114089b1a0fd122ff
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_full_IWM.parquet
+    rows: 4707
+    sha256: a16c0fa375d94ca549a1186c0dc7b30c7ed8ce16e1babee054ea200bd547bf9e
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_full_QQQ.parquet
+    rows: 3896
+    sha256: 5dec2ebac5c6dd9549644177da68230e3d925713c13bdd0598f4af346238d34c
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_full_SPY.parquet
+    rows: 4700
+    sha256: 4fc3c43a1c6edd4fce0fe3052bcea5f87c2f1b25a99f79135d4b385d92a7dc3d
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_full_scaled_IWM.parquet
+    rows: 1700
+    sha256: dd65303965ce176a0182780cb63464653f333e5b2abfe1eb3ae8ca95fb22394f
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/new_full_scaled_QQQ.parquet
+    rows: 1699
+    sha256: 038dce4c8ed91f0408e4287c36823ca18d6d45c468aad5ceb892ea34aa0517c3
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/old_bs_SPY.parquet
+    rows: 4667
+    sha256: 5d008373c7aa9165b9e107782dcc88d11901f27be47a78174adaba5b9b45e03c
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/p3_2024_SPY.parquet
+    rows: 252
+    sha256: 19c168af7f097a6a2cd15148ff86430ad877ffe2ef4fcda3e186bce72eddc1e0
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/p3_2024_dated_SPY.parquet
+    rows: 252
+    sha256: 1b5f0a30c63cc98c8e1febe5292f2be8e0f7162da97e9878b728c34d96c99499
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/p4_2020_SPY.parquet
+    rows: 252
+    sha256: 67ed3e6ede33bb93c3de5717ed1203d16c2013933e925295e922f15ba5110c85
+  - kind: series
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/series/p4_2020_dated_SPY.parquet
+    rows: 252
+    sha256: fb179c63edf590f399fc327ea631b67be7fc404468c01fb7dfc95dfccfb73406
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/call_only_SPY.parquet
+    rows: 1671
+    sha256: 01484f42f8c89df5fe111d85d29cd98b713cff4941d1beea8bfbec0c38befce9
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet
+    rows: 51
+    sha256: e25c418a89b4f70ec50762cf49de24a6ff568edf5414a15f047078e4fdf6e476
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet
+    rows: 1476
+    sha256: 1e62ab32c7e550554a933ab03af9ae24d85cb1a0317eb92ba92ab6bc0d349f18
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet
+    rows: 4678
+    sha256: b6c3df8c7bf25d73654fdb28f8db1a10c3179393ed30d9d5258e9f19ba6de146
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet
+    rows: 3867
+    sha256: 314cfc3e4fefb7406d4572231791938db93af7412b012e67d92484d67509b0aa
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet
+    rows: 4671
+    sha256: 6188c5f53044844634ad46e8c3a34e14cd34993284c7ef566743ad899efe9d4f
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_IWM.parquet
+    rows: 4678
+    sha256: e2a35e6fb2602d18476efd903f0e85e97a68caf019a6f6e530970384fd85543c
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_QQQ.parquet
+    rows: 3867
+    sha256: 38a5bd98971e5867a66d4580a743e481b20dd1e04e14faad80bfbc1af2e94a90
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet
+    rows: 4671
+    sha256: 13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet
+    rows: 1671
+    sha256: a5f65a6c9bf01a897d97e2778323240d66429de0208ff65b04a0b0752ed3c7e9
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet
+    rows: 1670
+    sha256: 22e148b0daf5843254d7ad608626a80ce6769bcdf3084ecf6eddbae7b72ab75e
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/old_bs_SPY.parquet
+    rows: 4638
+    sha256: 0aa64fe29bcd628f403cf809998b5469bd10f6900d58b0a65304779ec0ec20cd
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet
+    rows: 223
+    sha256: 7d741ad2f43436a844acd12b72b3610045f5e1d0bdc24d378fbfb0cb7e09ccd6
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet
+    rows: 223
+    sha256: ece8a9f42b355c2162a6963c58b668b7615960b1fcc552ce536056b1cde4d601
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet
+    rows: 223
+    sha256: 288e42245554c801ab9b60b79e550b1f04b217a1fdb623efa44985e3bdd05d08
+  - kind: windows
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet
+    rows: 223
+    sha256: c43926fc9b3b5fd05f8e0d246b30edeb74d7eb4e67b2f6aacf61cf9e1f487ba3
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet
+    rows: 1476
+    sha256: b9e2084bab34bd8205389d4c990e330c6f66fe6508a910bcf8267108fdbc3df4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c1.parquet
+    rows: 1476
+    sha256: a418edc2f6a71fbdcda4bae209ec2df28bfe2dcef3dfbfb9889dbcab91dc3a0a
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet
+    rows: 892
+    sha256: d4aac300c914f5520109974ad244955db1ea4364791808bf685f7cf27855ffbd
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet
+    rows: 1227
+    sha256: acc281b2b3de6da698fe61fb95c8500ba9cb7f2d91a9cc14fd7705b9fd40c8e8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet
+    rows: 1226
+    sha256: 840359a3d2070ce2af296c19006a56ca18edd6d734992c2d48c77910f9902673
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet
+    rows: 1226
+    sha256: 1117b1f4fd277ed0e7cf2d4257025534efd62f6cff81d410b803d08a40e3ddfb
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet
+    rows: 1226
+    sha256: 5140fc94f58bf89745b819e2ffe0504e45ead42ed92c5a22cd2a855e877dd096
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet
+    rows: 1228
+    sha256: 55c25ea6f26c74aa6aa5f330259451728def98dd385e0a6b529f15e06d4bb551
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet
+    rows: 1228
+    sha256: 6b64ce1ac7280bc31584ff64c7ec4ef54dfccfbdb8eff6af5b7fc3a1dd96a8dd
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet
+    rows: 1228
+    sha256: 2f45a81ac352a857203eb75d8ff8ee611e8d786ed77daf5b00ae9ef2206cebfa
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet
+    rows: 1228
+    sha256: cd8bddf7162a324fcb49f441c4c3e6b509825a99a045a17864036cd45be9835b
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet
+    rows: 878
+    sha256: b06a26ab1bb82992d8e351029d353ef0b0053469c2d21f63850b40082a5f00c7
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet
+    rows: 877
+    sha256: 92748d3a25e7a298c9adf57c33ef0e145cd525fa3f60366db4f065a4903f567e
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet
+    rows: 1354
+    sha256: 912edaec1cf26b7b88ab8b811b92d11f3098907a01259918962741749c328017
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet
+    rows: 1353
+    sha256: f0f1d3b07e8c138499a57a1603ccaedf793f92eed4938914ba2b0584c3e2741a
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet
+    rows: 1353
+    sha256: fea3ac8285e4809f9aa5905fd2454994605cb9df013eacc485cf8e17095ce54a
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet
+    rows: 877
+    sha256: b4932572b59077d9a05bcca81bceeed132b9c6aef8af936ab252a8f9406f894f
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet
+    rows: 877
+    sha256: 7b577ee6815a0e32ea9c056378b3cc7411195b490f813463469c780fc553bd5c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet
+    rows: 1227
+    sha256: be24fb9c58333fc6d22168cecd948433c197e1909cd78ef72865022c7a6d5d39
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet
+    rows: 1226
+    sha256: 1820e146d1940d6481be55dca4047eb0d4c272697a215acb11abdd6198d60a80
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet
+    rows: 1226
+    sha256: 1d33546ef0f41c103c43e5208463b7849df27d61dd5c11e22da4ba224c72aa6c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet
+    rows: 1226
+    sha256: 5ad767de80fb29084af43ea1e7b123b89237580f67504d878b985ac9865a0769
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet
+    rows: 54
+    sha256: dcc6c0bda79889cb6e49faa3f54339732f9d14d98f65e28173eb52e590f299c3
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet
+    rows: 234
+    sha256: f40d7e2ecf55d8e4060020727193990cb697858da3652bddb6c3096776033386
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet
+    rows: 234
+    sha256: 6d0c7e70d0f8ab78d4566d900c904b2ab36d7308124c8853f7ed3b9e5430e886
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet
+    rows: 234
+    sha256: 6c9fc29446b84039c0f92cf89be62ada0454432976ab347ea391223cdb86e834
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet
+    rows: 234
+    sha256: 8ed2c890dd109d14e8009577901c60401b8691b493676f5800060f652ed68cbb
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/pilot_bridge_jan_gpt-6-luna_sync_20261029T203454Z_c0.parquet
+    rows: 40
+    sha256: 7a4f8c80ff20df3ee7709a260d7b96e1223d9a8a98010b4883d7432e3759c6a8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_o4mini.parquet
+    rows: 1476
+    sha256: 11fd9b58dbc64105264d8f8d0a72accdb7e92e247c556b22ce8ab88aca46d4ef
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_p3_o4mini.parquet
+    rows: 223
+    sha256: d5b14147a8c794e30ab7bfbd98c2a7acc6e1f53fdd0ebb929e63b7da043e59af
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_p4_o4mini.parquet
+    rows: 223
+    sha256: f5c10d7179c3518eb969b2c48eb0147bbe7b620df256b811d3a32c975995c45f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet
+    rows: 1
+    sha256: dec2110dfe10b4d8e551c1ae63b31b5fd51da25a90f326503c931ae166813b71
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c1.parquet
+    rows: 1
+    sha256: 54440f9f38c838a06d1fd2432cb03873651fcf3f12a6a9dc461c922e98ba2e29
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet
+    rows: 1
+    sha256: ff70dafa7e6b44ad373e3665cc4fd655b969dcab05fa2526d679b355d07d6010
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet
+    rows: 1
+    sha256: fff877ec4be13291d80ca5dda2f790266cd7c4baf62325f05f689f07f3af980f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet
+    rows: 1
+    sha256: 478190abb4b0f384cac6203b06c24edf22e6c9470db25e71d18788bf24c64d15
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet
+    rows: 1
+    sha256: 49b312463d5f7c1443c50b12bf3b205bfb656d239433e36174efa5d95c1b7c62
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet
+    rows: 1
+    sha256: 423c7e7f7c6e1d61a396c7fdfd31fb4fa4a5d238131c0588b473124ea0c4cfb1
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet
+    rows: 1
+    sha256: abda5c24137559f74fb91572a3cc60a81825be9c86c1cca301501973189ec71e
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet
+    rows: 1
+    sha256: 872d6ca3fe7b3df4f977bbe120d5aeb293d2df8d1672cb65edd50a85c9433b65
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet
+    rows: 1
+    sha256: 33b937468b2608bbfb8f1220bc24d8ee24c77352a3dac268117446f4849da4a3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet
+    rows: 1
+    sha256: 4ce8a898981acab5ddcbb29597bd2b80ddd0bd2bc494ccd20cce6d2d3e894652
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet
+    rows: 1
+    sha256: 93e634e691ad82749f69a496e6572bc22c97d0a99418322024b69c4aad356138
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet
+    rows: 1
+    sha256: 07d1304a6c601894d5bd6e50bb730ab95bc731df8e6a6ba5867b42c7b87d98c7
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet
+    rows: 1
+    sha256: 418d21273a246274cec52a0007fc6a89be5b084b28a67d780442e1cc76b244c7
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet
+    rows: 1
+    sha256: e705de952451cd955f0fd2e83de96305921e9839412512be17d3af2dbbae6340
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet
+    rows: 1
+    sha256: ddbdf6d147a715e45474ab96c22df0ac5c5f46bd3b5a4677389c7df913e0fd50
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet
+    rows: 1
+    sha256: c3723eb4db6025aef4c47d5e84431ca7a6bbdc31203e1d56431fc172da437a26
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet
+    rows: 1
+    sha256: 5df297bd87657f6c121ff24877b0d663a74a3c3155afcc62c82aad7ce7c59fc3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet
+    rows: 1
+    sha256: b9b74dc03a6d5909bd8c1c3f7ce450a7a7183c258a499afed70b61a27cecb419
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet
+    rows: 1
+    sha256: 14df656dec28ca97fdedc84ffcb899bb87961c31735eac34fe180d137e42f348
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet
+    rows: 1
+    sha256: e7280246ecd87f6c64444d1ef805905f7401ad8b4b63efd923bf03e0948ae87f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet
+    rows: 1
+    sha256: 4db61853fe95e05ff5ddb9f2711da69a7d848457af20dc52ba88702c91e19038
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet
+    rows: 1
+    sha256: 8f0bb9a5a705e237c3fad2cb124b13505ade8dda4cd61ba632fee6b100a49c18
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet
+    rows: 1
+    sha256: b24e5b8aa2d06d9b115cb3d31bdf451b243592ec9a414fa668cb9cae56dde097
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet
+    rows: 1
+    sha256: 875619a92f991cffeffea4f9909acd3668ee79c8cc84c21af3ba9141d1446b7e
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet
+    rows: 1
+    sha256: 9d4d06767537fe7e7ca27ac69940834d91bb1a0ed6b4f0db1e63c54c3208a0e3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet
+    rows: 1
+    sha256: de53e219c25dcc96a1a2d6b1c1875f611e3421a0b87fd3e013bea0e24365073f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet
+    rows: 1
+    sha256: dfc8e750d36fb10ebbfaa4c30895b4d673b97354f7a2011600080a54d2cac850
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet
+    rows: 1
+    sha256: cbe297a48865de8cbc9d9e23e8dea84ac67830a0c08396d7369941c109a3d1da
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet
+    rows: 1
+    sha256: 7f875925d50f9e6df010a7470d5298039738afaf52db826890d83a01b84e6dd3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet
+    rows: 1
+    sha256: 4c0091e6710921663cddb09dbb76746d96e4e4a67d44fea8d2ab1438e0976d76
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet
+    rows: 1
+    sha256: 22fed6bf6da049bbd91870b5b75b990d0750eaaca8a4f54d9494bedc240d9bac
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet
+    rows: 1
+    sha256: 70e9e21d5b52d91fe3d3ce918859098523cdc393936bb6104a4997e48ead4074
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet
+    rows: 1
+    sha256: 4782275efa11bd08d0377c65187eab544bee2620bcd0be08143ecbfd851469c3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/pilot_bridge_jan_gpt-6-luna_sync_20261029T203454Z_c0.parquet
+    rows: 1
+    sha256: 5fef3cbc649dd05ff4c8371b0a5ca43fbb4e16b5331284acbab8bd4798fcd632
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/r1_o4mini.parquet
+    rows: 1
+    sha256: 0c275de166ae1e86a5447d301de02eda16b6c4bd0589390d0b204aaeaed134c1
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/r1_p3_o4mini.parquet
+    rows: 1
+    sha256: d04cf80b09d6df15b3f100bff1191414886f83d276f4ed582e9072b1d727a272
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/r1_p4_o4mini.parquet
+    rows: 1
+    sha256: 86558fd48850ee134a6df0ac19166e907b9c333aa05f58794d67d514225136ab
+  max_created_at:
+    series: '2026-10-29T20:24:13.076118+00:00'
+    windows: '2026-10-29T20:33:41.780655+00:00'
+    detections: '2026-10-30T19:11:32.459323+00:00'
+    runs: '2026-10-30T01:04:55.077116+00:00'
+inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+inputs:
+  series:
+    rows: 38936
+    coverage:
+    - series_key: call_only
+      symbol: SPY
+      rows: 1700
+      first: '2020-01-02'
+      last: '2026-10-09'
+    - series_key: intraday_late
+      symbol: SPY
+      rows: 51
+      first: '2026-07-27'
+      last: '2026-10-09'
+    - series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1505
+      first: '2020-01-02'
+      last: '2025-12-31'
+    - series_key: new_ex0dte
+      symbol: IWM
+      rows: 4707
+      first: '2008-01-02'
+      last: '2026-10-09'
+    - series_key: new_ex0dte
+      symbol: QQQ
+      rows: 3896
+      first: '2011-03-23'
+      last: '2026-10-09'
+    - series_key: new_ex0dte
+      symbol: SPY
+      rows: 4700
+      first: '2008-01-02'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: IWM
+      rows: 4707
+      first: '2008-01-02'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: QQQ
+      rows: 3896
+      first: '2011-03-23'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: SPY
+      rows: 4700
+      first: '2008-01-02'
+      last: '2026-10-09'
+    - series_key: new_full_scaled
+      symbol: IWM
+      rows: 1700
+      first: '2020-01-02'
+      last: '2026-10-09'
+    - series_key: new_full_scaled
+      symbol: QQQ
+      rows: 1699
+      first: '2020-01-02'
+      last: '2026-10-09'
+    - series_key: old_bs
+      symbol: SPY
+      rows: 4667
+      first: '2008-01-02'
+      last: '2026-10-02'
+    - series_key: p3_2024
+      symbol: SPY
+      rows: 252
+      first: '2024-01-02'
+      last: '2024-12-31'
+    - series_key: p3_2024_dated
+      symbol: SPY
+      rows: 252
+      first: '2024-01-02'
+      last: '2024-12-31'
+    - series_key: p4_2020
+      symbol: SPY
+      rows: 252
+      first: '2020-01-02'
+      last: '2020-12-31'
+    - series_key: p4_2020_dated
+      symbol: SPY
+      rows: 252
+      first: '2020-01-02'
+      last: '2020-12-31'
+  windows:
+    rows: 38501
+    coverage:
+    - series_key: call_only
+      symbol: SPY
+      rows: 1671
+      first: '2020-02-13'
+      last: '2026-10-09'
+    - series_key: intraday_t0
+      symbol: SPY
+      rows: 51
+      first: '2026-07-27'
+      last: '2026-10-09'
+    - series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+    - series_key: new_ex0dte
+      symbol: IWM
+      rows: 4678
+      first: '2008-02-13'
+      last: '2026-10-09'
+    - series_key: new_ex0dte
+      symbol: QQQ
+      rows: 3867
+      first: '2011-05-04'
+      last: '2026-10-09'
+    - series_key: new_ex0dte
+      symbol: SPY
+      rows: 4671
+      first: '2008-02-13'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: IWM
+      rows: 4678
+      first: '2008-02-13'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: QQQ
+      rows: 3867
+      first: '2011-05-04'
+      last: '2026-10-09'
+    - series_key: new_full
+      symbol: SPY
+      rows: 4671
+      first: '2008-02-13'
+      last: '2026-10-09'
+    - series_key: new_full_scaled
+      symbol: IWM
+      rows: 1671
+      first: '2020-02-13'
+      last: '2026-10-09'
+    - series_key: new_full_scaled
+      symbol: QQQ
+      rows: 1670
+      first: '2020-02-13'
+      last: '2026-10-09'
+    - series_key: old_bs
+      symbol: SPY
+      rows: 4638
+      first: '2008-02-13'
+      last: '2026-10-02'
+    - series_key: p3_2024
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+    - series_key: p3_2024_dated
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+    - series_key: p4_2020
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+    - series_key: p4_2020_dated
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+  detections:
+    rows: 29087
+    coverage:
+    - arm: bridge_jan
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+      recovered_2026_rows: 0
+    - arm: bridge_jan#rep1
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+      recovered_2026_rows: 0
+    - arm: ex0dte_qqq
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: QQQ
+      rows: 807
+      first: '2023-07-21'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: ex0dte_qqq#rep1
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: QQQ
+      rows: 85
+      first: '2020-01-07'
+      last: '2026-09-15'
+      recovered_2026_rows: 0
+    - arm: ex0dte_spy
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 4671
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: ex0dte_spy#rep1
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 234
+      first: '2008-04-07'
+      last: '2026-10-07'
+      recovered_2026_rows: 0
+    - arm: full_iwm
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: IWM
+      rows: 4678
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: full_iwm#rep1
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: IWM
+      rows: 234
+      first: '2008-02-13'
+      last: '2026-09-16'
+      recovered_2026_rows: 0
+    - arm: full_iwm_scaled
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: IWM
+      rows: 1671
+      first: '2020-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: full_iwm_scaled#rep1
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: IWM
+      rows: 84
+      first: '2020-06-08'
+      last: '2026-10-02'
+      recovered_2026_rows: 0
+    - arm: full_qqq
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: QQQ
+      rows: 3867
+      first: '2011-05-04'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: full_qqq#rep1
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: QQQ
+      rows: 193
+      first: '2011-05-10'
+      last: '2026-09-03'
+      recovered_2026_rows: 0
+    - arm: full_qqq_scaled
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: QQQ
+      rows: 1670
+      first: '2020-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: full_qqq_scaled#rep1
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: QQQ
+      rows: 84
+      first: '2020-02-27'
+      last: '2026-09-14'
+      recovered_2026_rows: 0
+    - arm: full_spy
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: SPY
+      rows: 4671
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: full_spy#rep1
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: SPY
+      rows: 234
+      first: '2008-04-30'
+      last: '2026-06-26'
+      recovered_2026_rows: 0
+    - arm: intraday_spy
+      model: gpt-6-luna
+      series_key: intraday_t0
+      symbol: SPY
+      rows: 51
+      first: '2026-07-27'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: intraday_spy#rep1
+      model: gpt-6-luna
+      series_key: intraday_t0
+      symbol: SPY
+      rows: 3
+      first: '2026-09-10'
+      last: '2026-09-28'
+      recovered_2026_rows: 0
+    - arm: p34_dated_2020
+      model: gpt-6-luna
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: p34_dated_2020#rep1
+      model: gpt-6-luna
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 11
+      first: '2020-02-21'
+      last: '2020-11-30'
+      recovered_2026_rows: 0
+    - arm: p34_dated_2024
+      model: gpt-6-luna
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: p34_dated_2024#rep1
+      model: gpt-6-luna
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 11
+      first: '2024-03-11'
+      last: '2024-11-19'
+      recovered_2026_rows: 0
+    - arm: p34_obf_2020
+      model: gpt-6-luna
+      series_key: p4_2020
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: p34_obf_2020#rep1
+      model: gpt-6-luna
+      series_key: p4_2020
+      symbol: SPY
+      rows: 11
+      first: '2020-02-13'
+      last: '2020-12-24'
+      recovered_2026_rows: 0
+    - arm: p34_obf_2024
+      model: gpt-6-luna
+      series_key: p3_2024
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: p34_obf_2024#rep1
+      model: gpt-6-luna
+      series_key: p3_2024
+      symbol: SPY
+      rows: 11
+      first: '2024-02-28'
+      last: '2024-12-30'
+      recovered_2026_rows: 0
+    - arm: pilot_bridge_jan
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 40
+      first: '2020-04-27'
+      last: '2025-11-26'
+      recovered_2026_rows: 0
+    - arm: r1_o4mini
+      model: o4-mini-2025-04-16
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+      recovered_2026_rows: 64
+    - arm: r1_p3_o4mini
+      model: o4-mini
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: r1_p4_o4mini
+      model: o4-mini
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    parsed_rows: 29087
+    recovered_2026_rows: 64
+  runs:
+    rows: 38
+sections:
+  detection_by_year:
+    status: written
+    files:
+    - detection_by_year.csv
+    - detection_by_year_wide.csv
+    summary:
+      rows: 433
+      classifier_rate_pct_by_year:
+        jan2026_phase4a:
+          SPY:
+            2020: 12.107623
+            2021: 3.968254
+            2022: 32.270916
+            2023: 19.277108
+            2024: 100.0
+            2025: 100.0
+        old_bs:
+          SPY:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 13.492063
+            2015: 0.396825
+            2016: 26.4
+            2017: 38.75
+            2018: 32.128514
+            2019: 7.171315
+            2020: 16.666667
+            2021: 3.571429
+            2022: 26.294821
+            2023: 22.48996
+            2024: 100.0
+            2025: 100.0
+            2026: 23.45679
+        new_full:
+          IWM:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          QQQ:
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          SPY:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 9.126984
+            2015: 7.936508
+            2016: 28.0
+            2017: 32.083333
+            2018: 34.538153
+            2019: 9.960159
+            2020: 22.222222
+            2021: 3.571429
+            2022: 40.63745
+            2023: 22.4
+            2024: 10.31746
+            2025: 13.6
+            2026: 11.398964
+        new_ex0dte:
+          IWM:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          QQQ:
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          SPY:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 8.333333
+            2015: 1.587302
+            2016: 22.0
+            2017: 19.583333
+            2018: 23.694779
+            2019: 3.187251
+            2020: 10.714286
+            2021: 0.0
+            2022: 36.653386
+            2023: 25.2
+            2024: 13.095238
+            2025: 16.4
+            2026: 21.243523
+        intraday_t0:
+          SPY:
+            2026: 0.0
+        call_only:
+          SPY:
+            2020: 90.58296
+            2021: 100.0
+            2022: 100.0
+            2023: 100.0
+            2024: 100.0
+            2025: 100.0
+            2026: 100.0
+        new_full_scaled:
+          IWM:
+            2020: 9.865471
+            2021: 65.47619
+            2022: 100.0
+            2023: 79.2
+            2024: 20.634921
+            2025: 50.8
+            2026: 44.559585
+          QQQ:
+            2020: 0.0
+            2021: 23.412698
+            2022: 60.557769
+            2023: 16.8
+            2024: 6.374502
+            2025: 20.4
+            2026: 15.544041
+        p3_2024:
+          SPY:
+            2024: 81.165919
+        p3_2024_dated:
+          SPY:
+            2024: 81.165919
+        p4_2020:
+          SPY:
+            2020: 12.107623
+        p4_2020_dated:
+          SPY:
+            2020: 12.107623
+      llm_rate_pct_by_year:
+        r1_o4mini:
+          o4-mini-2025-04-16:
+            2020: 12.206573
+            2021: 3.73444
+            2022: 32.377049
+            2023: 20.175439
+            2024: 100.0
+            2025: 100.0
+        bridge_jan:
+          gpt-6-luna:
+            2020: 11.659193
+            2021: 5.15873
+            2022: 32.669323
+            2023: 19.678715
+            2024: 100.0
+            2025: 100.0
+        full_iwm:
+          gpt-6-luna:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+        full_qqq:
+          gpt-6-luna:
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+        full_spy:
+          gpt-6-luna:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 9.126984
+            2015: 7.936508
+            2016: 27.6
+            2017: 31.666667
+            2018: 34.939759
+            2019: 9.960159
+            2020: 22.222222
+            2021: 3.571429
+            2022: 41.832669
+            2023: 23.2
+            2024: 11.111111
+            2025: 14.0
+            2026: 11.398964
+        ex0dte_qqq:
+          gpt-6-luna:
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+        ex0dte_spy:
+          gpt-6-luna:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 8.333333
+            2015: 1.587302
+            2016: 22.0
+            2017: 19.166667
+            2018: 22.891566
+            2019: 3.187251
+            2020: 10.714286
+            2021: 0.0
+            2022: 37.051793
+            2023: 26.0
+            2024: 14.285714
+            2025: 16.4
+            2026: 21.243523
+        intraday_spy:
+          gpt-6-luna:
+            2026: 0.0
+        full_iwm_scaled:
+          gpt-6-luna:
+            2020: 9.865471
+            2021: 65.873016
+            2022: 100.0
+            2023: 79.2
+            2024: 20.634921
+            2025: 51.2
+            2026: 45.07772
+        full_qqq_scaled:
+          gpt-6-luna:
+            2020: 0.0
+            2021: 23.809524
+            2022: 60.956175
+            2023: 17.6
+            2024: 8.366534
+            2025: 20.4
+            2026: 16.062176
+        p34_obf_2024:
+          gpt-6-luna:
+            2024: 80.717489
+        r1_p3_o4mini:
+          o4-mini:
+            2024: 81.165919
+        p34_dated_2024:
+          gpt-6-luna:
+            2024: 81.165919
+        p34_obf_2020:
+          gpt-6-luna:
+            2020: 12.107623
+        r1_p4_o4mini:
+          o4-mini:
+            2020: 12.107623
+        p34_dated_2020:
+          gpt-6-luna:
+            2020: 12.107623
+      llm_vs_classifier_all_years:
+      - arm: r1_o4mini
+        model: o4-mini-2025-04-16
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_parsed: 1412.0
+        n_compared: 1412.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: bridge_jan
+        model: gpt-6-luna
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_parsed: 1476.0
+        n_compared: 1476.0
+        agree_pct: 99.593496
+        kappa: 0.991798
+      - arm: full_iwm
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: IWM
+        n_parsed: 4678.0
+        n_compared: 4678.0
+        agree_pct: 100.0
+        kappa: null
+      - arm: full_qqq
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: QQQ
+        n_parsed: 3867.0
+        n_compared: 3867.0
+        agree_pct: 100.0
+        kappa: null
+      - arm: full_spy
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: SPY
+        n_parsed: 4671.0
+        n_compared: 4671.0
+        agree_pct: 99.67887
+        kappa: 0.985848
+      - arm: ex0dte_qqq
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: QQQ
+        n_parsed: 807.0
+        n_compared: 807.0
+        agree_pct: 100.0
+        kappa: null
+      - arm: ex0dte_spy
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: SPY
+        n_parsed: 4671.0
+        n_compared: 4671.0
+        agree_pct: 99.721687
+        kappa: 0.985246
+      - arm: intraday_spy
+        model: gpt-6-luna
+        series_key: intraday_t0
+        symbol: SPY
+        n_parsed: 51.0
+        n_compared: 51.0
+        agree_pct: 100.0
+        kappa: null
+      - arm: full_iwm_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: IWM
+        n_parsed: 1671.0
+        n_compared: 1671.0
+        agree_pct: 99.700778
+        kappa: 0.993977
+      - arm: full_qqq_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: QQQ
+        n_parsed: 1670.0
+        n_compared: 1670.0
+        agree_pct: 99.401198
+        kappa: 0.982114
+      - arm: p34_obf_2024
+        model: gpt-6-luna
+        series_key: p3_2024
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 99.55157
+        kappa: 0.985466
+      - arm: r1_p3_o4mini
+        model: o4-mini
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: p34_dated_2024
+        model: gpt-6-luna
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: p34_obf_2020
+        model: gpt-6-luna
+        series_key: p4_2020
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: r1_p4_o4mini
+        model: o4-mini
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: p34_dated_2020
+        model: gpt-6-luna
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      recovered_2026:
+        windows: 64
+        arms:
+        - r1_o4mini
+        note: left out of the r1_o4mini rows (the published result); r1_o4mini_all rows include them
+  bridge_agreement:
+    status: written
+    files:
+    - bridge_agreement.csv
+    - bridge_agreement.yaml
+    summary:
+      rows: 133
+      gate:
+        comparison: r1_o4mini vs bridge_jan
+        metric: cohen_kappa
+        threshold: 0.6
+        source: planning/00_design.md section 5
+        window_set: published answers (r1_o4mini without detection_metadata recovered_2026)
+        kappa: 0.992871
+        kappa_defined: true
+        agree_pct: 99.645892
+        n_pairs: 1412
+        met: true
+        incl_recovered:
+          n_pairs: 1476
+          agree_pct: 99.593496
+          kappa: 0.991798
+      bridge:
+      - ref_arm: r1_o4mini
+        other_arm: bridge_jan
+        n_pairs: 1412
+        agree_pct: 99.645892
+        kappa: 0.992871
+        rate_diff_pp: -0.354108
+        p_mcnemar_exact: 0.0625
+      - ref_arm: r1_p3_o4mini
+        other_arm: p34_dated_2024
+        n_pairs: 223
+        agree_pct: 100.0
+        kappa: 1.0
+        rate_diff_pp: 0.0
+        p_mcnemar_exact: 1.0
+      - ref_arm: r1_p4_o4mini
+        other_arm: p34_dated_2020
+        n_pairs: 223
+        agree_pct: 100.0
+        kappa: 1.0
+        rate_diff_pp: 0.0
+        p_mcnemar_exact: 1.0
+      bridge_incl_recovered:
+      - ref_arm: r1_o4mini_all
+        other_arm: bridge_jan
+        n_pairs: 1476
+        agree_pct: 99.593496
+        kappa: 0.991798
+      test_retest:
+      - ref_arm: bridge_jan
+        other_arm: bridge_jan#rep1
+        n_pairs: 1476
+        agree_pct: 99.254743
+        kappa: 0.984973
+      - ref_arm: ex0dte_qqq
+        other_arm: ex0dte_qqq#rep1
+        n_pairs: 39
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: ex0dte_spy
+        other_arm: ex0dte_spy#rep1
+        n_pairs: 234
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: full_iwm
+        other_arm: full_iwm#rep1
+        n_pairs: 234
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: full_iwm_scaled
+        other_arm: full_iwm_scaled#rep1
+        n_pairs: 84
+        agree_pct: 98.809524
+        kappa: 0.97561
+      - ref_arm: full_qqq
+        other_arm: full_qqq#rep1
+        n_pairs: 193
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: full_qqq_scaled
+        other_arm: full_qqq_scaled#rep1
+        n_pairs: 84
+        agree_pct: 98.809524
+        kappa: 0.966614
+      - ref_arm: full_spy
+        other_arm: full_spy#rep1
+        n_pairs: 234
+        agree_pct: 99.57265
+        kappa: 0.977206
+      - ref_arm: intraday_spy
+        other_arm: intraday_spy#rep1
+        n_pairs: 3
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: p34_dated_2020
+        other_arm: p34_dated_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: p34_dated_2024
+        other_arm: p34_dated_2024#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: p34_obf_2020
+        other_arm: p34_obf_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: p34_obf_2024
+        other_arm: p34_obf_2024#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+  series_comparison:
+    status: written
+    files:
+    - series_comparison.csv
+    summary:
+      rows: 98
+      exact_match_pct_by_year:
+        jan2026_phase4a__vs__new_full:
+          SPY:
+            2020: 100.0
+            2021: 99.206349
+            2022: 98.406375
+            2023: 60.64257
+            2024: 0.0
+            2025: 0.0
+        old_bs__vs__jan2026_phase4a:
+          SPY:
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+        old_bs__vs__new_full:
+          SPY:
+            2008: 0.790514
+            2009: 0.0
+            2010: 0.0
+            2011: 0.4
+            2012: 0.0
+            2013: 0.396825
+            2014: 0.0
+            2015: 0.0
+            2016: 0.4
+            2017: 0.416667
+            2018: 0.401606
+            2019: 0.398406
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.617284
+        new_full__vs__new_ex0dte:
+          IWM:
+            2008: 98.804781
+            2009: 98.412698
+            2010: 92.430279
+            2011: 83.730159
+            2012: 84.4
+            2013: 84.126984
+            2014: 82.936508
+            2015: 78.174603
+            2016: 80.079681
+            2017: 79.423868
+            2018: 79.6
+            2019: 78.884462
+            2020: 80.15873
+            2021: 69.444444
+            2022: 41.035857
+            2023: 39.6
+            2024: 12.301587
+            2025: 3.2
+            2026: 2.072539
+          QQQ:
+            2011: 83.756345
+            2012: 85.2
+            2013: 83.333333
+            2014: 82.539683
+            2015: 78.571429
+            2016: 80.079681
+            2017: 79.423868
+            2018: 78.714859
+            2019: 78.486056
+            2020: 79.365079
+            2021: 51.190476
+            2022: 32.669323
+            2023: 0.4
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          SPY:
+            2008: 98.418972
+            2009: 98.8
+            2010: 90.039841
+            2011: 83.6
+            2012: 84.0
+            2013: 83.333333
+            2014: 82.539683
+            2015: 78.571429
+            2016: 72.4
+            2017: 59.166667
+            2018: 40.562249
+            2019: 38.247012
+            2020: 39.68254
+            2021: 37.698413
+            2022: 32.270916
+            2023: 0.4
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+        call_only__vs__jan2026_phase4a:
+          SPY:
+            2020: 0.0
+            2021: 0.793651
+            2022: 1.195219
+            2023: 39.35743
+            2024: 100.0
+            2025: 100.0
+      sign_agree_pct_by_year:
+        jan2026_phase4a__vs__new_full:
+          SPY:
+            2020: 100.0
+            2021: 99.206349
+            2022: 98.804781
+            2023: 81.526104
+            2024: 62.151394
+            2025: 54.0
+        old_bs__vs__jan2026_phase4a:
+          SPY:
+            2020: 93.650794
+            2021: 90.47619
+            2022: 92.031873
+            2023: 91.967871
+            2024: 100.0
+            2025: 99.6
+        old_bs__vs__new_full:
+          SPY:
+            2008: 91.699605
+            2009: 84.8
+            2010: 94.422311
+            2011: 94.4
+            2012: 92.0
+            2013: 92.063492
+            2014: 90.873016
+            2015: 93.650794
+            2016: 94.8
+            2017: 92.916667
+            2018: 92.771084
+            2019: 96.015936
+            2020: 93.650794
+            2021: 89.68254
+            2022: 90.836653
+            2023: 73.493976
+            2024: 62.151394
+            2025: 54.4
+            2026: 93.82716
+        new_full__vs__new_ex0dte:
+          IWM:
+            2008: 100.0
+            2009: 100.0
+            2010: 99.203187
+            2011: 99.603175
+            2012: 99.6
+            2013: 98.412698
+            2014: 98.809524
+            2015: 98.809524
+            2016: 98.007968
+            2017: 97.530864
+            2018: 98.8
+            2019: 95.61753
+            2020: 96.825397
+            2021: 95.238095
+            2022: 99.601594
+            2023: 98.0
+            2024: 93.253968
+            2025: 93.6
+            2026: 93.264249
+          QQQ:
+            2011: 97.969543
+            2012: 98.0
+            2013: 98.015873
+            2014: 98.015873
+            2015: 96.428571
+            2016: 97.609562
+            2017: 95.884774
+            2018: 97.590361
+            2019: 97.609562
+            2020: 96.428571
+            2021: 93.650794
+            2022: 95.61753
+            2023: 91.6
+            2024: 91.633466
+            2025: 91.6
+            2026: 84.455959
+          SPY:
+            2008: 99.604743
+            2009: 100.0
+            2010: 98.804781
+            2011: 97.6
+            2012: 96.8
+            2013: 96.825397
+            2014: 98.015873
+            2015: 97.222222
+            2016: 98.0
+            2017: 97.5
+            2018: 95.983936
+            2019: 97.609562
+            2020: 95.238095
+            2021: 94.444444
+            2022: 94.023904
+            2023: 89.2
+            2024: 88.888889
+            2025: 86.8
+            2026: 92.746114
+        call_only__vs__jan2026_phase4a:
+          SPY:
+            2020: 63.095238
+            2021: 70.238095
+            2022: 20.318725
+            2023: 59.036145
+            2024: 100.0
+            2025: 100.0
+  ex0dte_decomposition:
+    status: written
+    files:
+    - ex0dte_decomposition.csv
+    summary:
+      rows: 57
+      classifier_rate_pct_matched_by_year:
+        new_full:
+          IWM:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          QQQ:
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          SPY:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 9.126984
+            2015: 7.936508
+            2016: 28.0
+            2017: 32.083333
+            2018: 34.538153
+            2019: 9.960159
+            2020: 22.222222
+            2021: 3.571429
+            2022: 40.63745
+            2023: 22.4
+            2024: 10.31746
+            2025: 13.6
+            2026: 11.398964
+        new_ex0dte:
+          IWM:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          QQQ:
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 0.0
+            2015: 0.0
+            2016: 0.0
+            2017: 0.0
+            2018: 0.0
+            2019: 0.0
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
+          SPY:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 8.333333
+            2015: 1.587302
+            2016: 22.0
+            2017: 19.583333
+            2018: 23.694779
+            2019: 3.187251
+            2020: 10.714286
+            2021: 0.0
+            2022: 36.653386
+            2023: 25.2
+            2024: 13.095238
+            2025: 16.4
+            2026: 21.243523
+      abs_0dte_share_pct_by_year:
+        IWM:
+          2008: 1.151131
+          2009: 1.098102
+          2010: 2.025516
+          2011: 3.079368
+          2012: 3.479898
+          2013: 5.207158
+          2014: 5.714893
+          2015: 7.854624
+          2016: 9.00788
+          2017: 8.474624
+          2018: 7.226548
+          2019: 11.065419
+          2020: 12.002378
+          2021: 16.098704
+          2022: 8.413619
+          2023: 9.126384
+          2024: 21.836606
+          2025: 23.04221
+          2026: 19.68979
+        QQQ:
+          2011: 10.670744
+          2012: 8.38283
+          2013: 8.457371
+          2014: 7.134326
+          2015: 22.279068
+          2016: 13.308897
+          2017: 16.074855
+          2018: 9.503764
+          2019: 17.122341
+          2020: 18.844682
+          2021: 23.011283
+          2022: 17.13365
+          2023: 36.195559
+          2024: 42.891616
+          2025: 45.546761
+          2026: 45.53376
+        SPY:
+          2008: 0.878528
+          2009: 0.13879
+          2010: 5.042116
+          2011: 5.32703
+          2012: 6.969756
+          2013: 11.478045
+          2014: 10.51321
+          2015: 16.563882
+          2016: 13.527756
+          2017: 13.138046
+          2018: 16.41563
+          2019: 22.072511
+          2020: 25.662781
+          2021: 35.962618
+          2022: 23.393624
+          2023: 35.803112
+          2024: 45.901937
+          2025: 43.905075
+          2026: 40.816134
+      gex_0dte_origin:
+        stored: 13303
+  post_publication_2026:
+    status: written
+    files:
+    - post_publication_2026.csv
+    - post_publication_2026_summary.csv
+    summary:
+      rows: 1950
+      label: 'post-publication period (not out-of-sample: gpt-6-luna was created 2026-09-14)'
+      definition: window_end on or after 2026-01-01 (ends_in_2026); entirely_2026 = window_start on or after 2026-01-01
+        as well (the windows the paper tabulates); post_publication_2026_summary.csv has the rates under both definitions
+      by_series:
+      - series_key: old_bs
+        symbol: SPY
+        n_windows: 162
+        window_end_first: '2026-02-10'
+        window_end_last: '2026-10-02'
+        clf_rate_pct: 23.45679
+        mean_abs_gex_bn: 7.248661
+        entirely_2026:
+          n_windows: 133
+          window_end_first: '2026-03-24'
+          window_end_last: '2026-10-02'
+          clf_rate_pct: 15.789474
+          mean_abs_gex_bn: 5.944682
+      - series_key: new_full
+        symbol: IWM
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 1.758525
+        llm_full_iwm:
+          n: 193
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 0.0
+          mean_abs_gex_bn: 1.904504
+          llm_full_iwm:
+            n: 164
+            rate_pct: 0.0
+            agree_with_clf_pct: 100.0
+      - series_key: new_full
+        symbol: QQQ
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 4.049253
+        llm_full_qqq:
+          n: 193
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 0.0
+          mean_abs_gex_bn: 4.074011
+          llm_full_qqq:
+            n: 164
+            rate_pct: 0.0
+            agree_with_clf_pct: 100.0
+      - series_key: new_full
+        symbol: SPY
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 11.398964
+        mean_abs_gex_bn: 8.414116
+        llm_full_spy:
+          n: 193
+          rate_pct: 11.398964
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 13.414634
+          mean_abs_gex_bn: 8.531861
+          llm_full_spy:
+            n: 164
+            rate_pct: 13.414634
+            agree_with_clf_pct: 100.0
+      - series_key: new_ex0dte
+        symbol: IWM
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 1.584507
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 0.0
+          mean_abs_gex_bn: 1.732218
+      - series_key: new_ex0dte
+        symbol: QQQ
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 2.770315
+        llm_ex0dte_qqq:
+          n: 193
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 0.0
+          mean_abs_gex_bn: 2.889821
+          llm_ex0dte_qqq:
+            n: 164
+            rate_pct: 0.0
+            agree_with_clf_pct: 100.0
+      - series_key: new_ex0dte
+        symbol: SPY
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 21.243523
+        mean_abs_gex_bn: 5.683172
+        llm_ex0dte_spy:
+          n: 193
+          rate_pct: 21.243523
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 25.0
+          mean_abs_gex_bn: 5.932504
+          llm_ex0dte_spy:
+            n: 164
+            rate_pct: 25.0
+            agree_with_clf_pct: 100.0
+      - series_key: intraday_t0
+        symbol: SPY
+        n_windows: 51
+        window_end_first: '2026-07-27'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 8.317928
+        llm_intraday_spy:
+          n: 51
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+        entirely_2026:
+          n_windows: 51
+          window_end_first: '2026-07-27'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 0.0
+          mean_abs_gex_bn: 8.317928
+          llm_intraday_spy:
+            n: 51
+            rate_pct: 0.0
+            agree_with_clf_pct: 100.0
+      - series_key: call_only
+        symbol: SPY
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 100.0
+        mean_abs_gex_bn: 21.73453
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 100.0
+          mean_abs_gex_bn: 21.231121
+      - series_key: new_full_scaled
+        symbol: IWM
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 44.559585
+        mean_abs_gex_bn: 20.101595
+        llm_full_iwm_scaled:
+          n: 193
+          rate_pct: 45.07772
+          agree_with_clf_pct: 99.481865
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 52.439024
+          mean_abs_gex_bn: 21.770272
+          llm_full_iwm_scaled:
+            n: 164
+            rate_pct: 53.04878
+            agree_with_clf_pct: 99.390244
+      - series_key: new_full_scaled
+        symbol: QQQ
+        n_windows: 193
+        window_end_first: '2026-01-02'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 15.544041
+        mean_abs_gex_bn: 17.106977
+        llm_full_qqq_scaled:
+          n: 193
+          rate_pct: 16.062176
+          agree_with_clf_pct: 99.481865
+        entirely_2026:
+          n_windows: 164
+          window_end_first: '2026-02-13'
+          window_end_last: '2026-10-09'
+          clf_rate_pct: 16.463415
+          mean_abs_gex_bn: 17.211572
+          llm_full_qqq_scaled:
+            n: 164
+            rate_pct: 17.073171
+            agree_with_clf_pct: 99.390244
+      arms_excluded_from_columns:
+      - ex0dte_qqq#rep1
+      - ex0dte_spy#rep1
+      - full_iwm#rep1
+      - full_iwm_scaled#rep1
+      - full_qqq#rep1
+      - full_qqq_scaled#rep1
+      - full_spy#rep1
+      - intraday_spy#rep1
+  intraday:
+    status: written
+    files:
+    - intraday.csv
+    summary:
+      rows: 51
+      irregular_days:
+      - '2026-07-29'
+      - '2026-08-03'
+      - '2026-09-14'
+      n_irregular_flagged: 0
+      n_regular_windows: 51
+      n_clf_compared: 51
+      clf_agree_pct: 100.0
+      n_llm_compared: 51
+      llm_agree_pct: 100.0
+      n_t0_values: 51
+      t0_mean_abs_diff_bn: 1.686198
+      t0_sign_agree_pct: 90.196078
+  stats:
+    status: written
+    files:
+    - stats.yaml
+    summary:
+      rates: 157
+      contrasts: 76
+      headline_contrasts:
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: classifier
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_full
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 88.023952
+        bootstrap_diff_ci_pp:
+        - 80.761334
+        - 94.950758
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.00012207
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: bridge_jan
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: full_spy
+          model: gpt-6-luna
+        diff_pp: 87.42515
+        bootstrap_diff_ci_pp:
+        - 80.326644
+        - 93.936022
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.00012207
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: IWM
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: IWM
+          arm: null
+          model: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: QQQ
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: QQQ
+          arm: null
+          model: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: -2.788845
+        bootstrap_diff_ci_pp:
+        - -8.76771
+        - 2.761341
+        p_bootstrap: 0.369
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: QQQ
+          arm: full_qqq
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: QQQ
+          arm: ex0dte_qqq
+          model: gpt-6-luna
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: full_spy
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: ex0dte_spy
+          model: gpt-6-luna
+        diff_pp: -2.788845
+        bootstrap_diff_ci_pp:
+        - -8.767145
+        - 2.40976
+        p_bootstrap: 0.376
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: classifier
+          series_key: old_bs
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_full
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 88.023952
+        bootstrap_diff_ci_pp:
+        - 80.761334
+        - 94.950758
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.00012207
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: classifier
+          series_key: p3_2024
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: p34_obf_2024
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: p34_dated_2024
+          model: gpt-6-luna
+        diff_pp: -0.44843
+        bootstrap_diff_ci_pp:
+        - -1.875
+        - 0.0
+        p_bootstrap: 0.646
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: classifier
+          series_key: p4_2020
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: p34_obf_2020
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: p34_dated_2020
+          model: gpt-6-luna
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: scale
+        period: all
+        a:
+          kind: classifier
+          series_key: new_full_scaled
+          symbol: IWM
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_full
+          symbol: IWM
+          arm: null
+          model: null
+        diff_pp: 53.919808
+        bootstrap_diff_ci_pp:
+        - 40.667832
+        - 67.387829
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 4.65661e-10
+      - name: series_contrast
+        family: scale
+        period: all
+        a:
+          kind: classifier
+          series_key: new_full_scaled
+          symbol: QQQ
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: new_full
+          symbol: QQQ
+          arm: null
+          model: null
+        diff_pp: 20.958084
+        bootstrap_diff_ci_pp:
+        - 12.609794
+        - 31.173329
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.000488281
+      - name: series_contrast
+        family: scale
+        period: all
+        a:
+          kind: llm
+          series_key: new_full_scaled
+          symbol: IWM
+          arm: full_iwm_scaled
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: IWM
+          arm: full_iwm
+          model: gpt-6-luna
+        diff_pp: 54.099342
+        bootstrap_diff_ci_pp:
+        - 40.964965
+        - 67.446244
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 4.65661e-10
+      - name: series_contrast
+        family: scale
+        period: all
+        a:
+          kind: llm
+          series_key: new_full_scaled
+          symbol: QQQ
+          arm: full_qqq_scaled
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: QQQ
+          arm: full_qqq
+          model: gpt-6-luna
+        diff_pp: 21.556886
+        bootstrap_diff_ci_pp:
+        - 13.303492
+        - 31.774659
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.000488281
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: null
+          model: null
+        b: null
+        diff_pp: 82.974359
+        bootstrap_diff_ci_pp:
+        - 71.078248
+        - 92.374505
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 2.67421e-09
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: old_bs
+          symbol: SPY
+          arm: null
+          model: null
+        b: null
+        diff_pp: 82.768924
+        bootstrap_diff_ci_pp:
+        - 71.031351
+        - 91.900404
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 2.84754e-07
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: IWM
+          arm: null
+          model: null
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: QQQ
+          arm: null
+          model: null
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_full
+          symbol: SPY
+          arm: null
+          model: null
+        b: null
+        diff_pp: -10.236863
+        bootstrap_diff_ci_pp:
+        - -23.167616
+        - 2.001953
+        p_bootstrap: 0.108
+        p_nonoverlap: 0.727806
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: IWM
+          arm: null
+          model: null
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: QQQ
+          arm: null
+          model: null
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: null
+          model: null
+        b: null
+        diff_pp: -3.368417
+        bootstrap_diff_ci_pp:
+        - -16.679634
+        - 11.375542
+        p_bootstrap: 0.604
+        p_nonoverlap: 0.731166
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: call_only
+          symbol: SPY
+          arm: null
+          model: null
+        b: null
+        diff_pp: 2.151639
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 6.47482
+        p_bootstrap: 0.761
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_full_scaled
+          symbol: IWM
+          arm: null
+          model: null
+        b: null
+        diff_pp: -29.506564
+        bootstrap_diff_ci_pp:
+        - -55.745508
+        - 1.587424
+        p_bootstrap: 0.061
+        p_nonoverlap: 0.137205
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: classifier
+          series_key: new_full_scaled
+          symbol: QQQ
+          arm: null
+          model: null
+        b: null
+        diff_pp: -12.548878
+        bootstrap_diff_ci_pp:
+        - -30.051982
+        - 5.392052
+        p_bootstrap: 0.17
+        p_nonoverlap: 0.291575
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: r1_o4mini
+          model: o4-mini-2025-04-16
+        b: null
+        diff_pp: 82.721382
+        bootstrap_diff_ci_pp:
+        - 70.674325
+        - 92.341357
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 2.67421e-09
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: bridge_jan
+          model: gpt-6-luna
+        b: null
+        diff_pp: 82.564103
+        bootstrap_diff_ci_pp:
+        - 70.93803
+        - 91.964545
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 2.67421e-09
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: IWM
+          arm: full_iwm
+          model: gpt-6-luna
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: QQQ
+          arm: full_qqq
+          model: gpt-6-luna
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: full_spy
+          model: gpt-6-luna
+        b: null
+        diff_pp: -10.136766
+        bootstrap_diff_ci_pp:
+        - -23.072247
+        - 2.000021
+        p_bootstrap: 0.112
+        p_nonoverlap: 0.727806
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: QQQ
+          arm: ex0dte_qqq
+          model: gpt-6-luna
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: ex0dte_spy
+          model: gpt-6-luna
+        b: null
+        diff_pp: -3.069315
+        bootstrap_diff_ci_pp:
+        - -16.293233
+        - 11.894492
+        p_bootstrap: 0.637
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full_scaled
+          symbol: IWM
+          arm: full_iwm_scaled
+          model: gpt-6-luna
+        b: null
+        diff_pp: -29.40982
+        bootstrap_diff_ci_pp:
+        - -55.590935
+        - 1.319354
+        p_bootstrap: 0.062
+        p_nonoverlap: 0.137205
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full_scaled
+          symbol: QQQ
+          arm: full_qqq_scaled
+          model: gpt-6-luna
+        b: null
+        diff_pp: -11.96071
+        bootstrap_diff_ci_pp:
+        - -29.607359
+        - 5.781934
+        p_bootstrap: 0.186
+        p_nonoverlap: 0.291575
+      - name: phase_contrast
+        family: null
+        period: p3_2024_dated vs p4_2020_dated
+        a:
+          kind: classifier
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 69.058296
+        bootstrap_diff_ci_pp:
+        - 31.56478
+        - 93.253968
+        p_bootstrap: 0.002
+        p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
+        period: p3_2024_dated vs p4_2020_dated
+        a:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: r1_p3_o4mini
+          model: o4-mini
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: r1_p4_o4mini
+          model: o4-mini
+        diff_pp: 69.058296
+        bootstrap_diff_ci_pp:
+        - 31.56478
+        - 93.253968
+        p_bootstrap: 0.002
+        p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
+        period: p3_2024_dated vs p4_2020_dated
+        a:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: p34_dated_2024
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: p34_dated_2020
+          model: gpt-6-luna
+        diff_pp: 69.058296
+        bootstrap_diff_ci_pp:
+        - 31.56478
+        - 93.253968
+        p_bootstrap: 0.002
+        p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
+        period: p3_2024 vs p4_2020
+        a:
+          kind: classifier
+          series_key: p3_2024
+          symbol: SPY
+          arm: null
+          model: null
+        b:
+          kind: classifier
+          series_key: p4_2020
+          symbol: SPY
+          arm: null
+          model: null
+        diff_pp: 69.058296
+        bootstrap_diff_ci_pp:
+        - 31.56478
+        - 93.253968
+        p_bootstrap: 0.002
+        p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
+        period: p3_2024 vs p4_2020
+        a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: p34_obf_2024
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: p34_obf_2020
+          model: gpt-6-luna
+        diff_pp: 68.609865
+        bootstrap_diff_ci_pp:
+        - 29.677987
+        - 93.253968
+        p_bootstrap: 0.003
+        p_nonoverlap: 0.040559
+  cost_ledger:
+    status: written
+    files:
+    - cost_ledger.csv
+    - cost_ledger.yaml
+    summary:
+      rows: 38
+      est_cost_usd: 7.63677
+      spent_usd: 7.63677
+      committed_usd: 10.055961
+      remaining_to_hard_stop_usd: 1.944039
+      historical_backfill_usd: 9.967462
+      est_cost_usd_all_stored_runs: 17.604232
+      cost_per_request_usd: 0.000281125
+  disagreements:
+    status: written
+    files:
+    - disagreements.csv
+    summary:
+      rows: 50
+      by_arm:
+      - arm: r1_o4mini
+        model: o4-mini-2025-04-16
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_scored: 1412
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: r1_p3_o4mini
+        model: o4-mini
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: r1_p4_o4mini
+        model: o4-mini
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: bridge_jan
+        model: gpt-6-luna
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_scored: 1476
+        n_disagree: 6
+        disagree_pct: 0.406504
+      - arm: full_spy
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: SPY
+        n_scored: 4671
+        n_disagree: 15
+        disagree_pct: 0.32113
+      - arm: ex0dte_spy
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: SPY
+        n_scored: 4671
+        n_disagree: 13
+        disagree_pct: 0.278313
+      - arm: p34_obf_2024
+        model: gpt-6-luna
+        series_key: p3_2024
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 1
+        disagree_pct: 0.44843
+      - arm: p34_dated_2024
+        model: gpt-6-luna
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: p34_obf_2020
+        model: gpt-6-luna
+        series_key: p4_2020
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: p34_dated_2020
+        model: gpt-6-luna
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: full_qqq
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: QQQ
+        n_scored: 3867
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: full_iwm
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: IWM
+        n_scored: 4678
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: full_qqq_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: QQQ
+        n_scored: 1670
+        n_disagree: 10
+        disagree_pct: 0.598802
+      - arm: full_iwm_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: IWM
+        n_scored: 1671
+        n_disagree: 5
+        disagree_pct: 0.299222
+      - arm: ex0dte_qqq
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: QQQ
+        n_scored: 807
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: intraday_spy
+        model: gpt-6-luna
+        series_key: intraday_t0
+        symbol: SPY
+        n_scored: 51
+        n_disagree: 0
+        disagree_pct: 0.0
+  llm_parse_stats:
+    status: written
+    files:
+    - llm_parse_stats.csv
+    summary:
+      rows: 30
+      luna_rows: 27125
+      luna_parsed: 27125
+      luna_finish_length: 0
+      luna_rerun_at_retry_cap: 0
+  reported_vs_computed:
+    status: written
+    files:
+    - reported_vs_computed.csv
+    summary:
+      rows: 294
+      bridge_pairs:
+      - comparison: bridge
+        ref_arm: r1_o4mini
+        rater: other
+        arm: bridge_jan
+        model: gpt-6-luna
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1412
+        median_ratio: 1.0
+      - comparison: bridge
+        ref_arm: r1_p3_o4mini
+        rater: other
+        arm: p34_dated_2024
+        model: gpt-6-luna
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - comparison: bridge
+        ref_arm: r1_p4_o4mini
+        rater: other
+        arm: p34_dated_2020
+        model: gpt-6-luna
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - comparison: bridge
+        ref_arm: r1_o4mini
+        rater: reference
+        arm: r1_o4mini
+        model: o4-mini-2025-04-16
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1412
+        median_ratio: 1.0
+      - comparison: bridge
+        ref_arm: r1_p3_o4mini
+        rater: reference
+        arm: r1_p3_o4mini
+        model: o4-mini
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - comparison: bridge
+        ref_arm: r1_p4_o4mini
+        rater: reference
+        arm: r1_p4_o4mini
+        model: o4-mini
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - comparison: bridge_incl_recovered
+        ref_arm: r1_o4mini_all
+        rater: other
+        arm: bridge_jan
+        model: gpt-6-luna
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1476
+        median_ratio: 1.0
+      - comparison: bridge_incl_recovered
+        ref_arm: r1_o4mini_all
+        rater: reference
+        arm: r1_o4mini_all
+        model: o4-mini-2025-04-16
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1476
+        median_ratio: 1.0
+      median_ratio_by_arm:
+      - arm: r1_o4mini
+        model: o4-mini-2025-04-16
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1412
+        median_ratio: 1.0
+      - arm: r1_p3_o4mini
+        model: o4-mini
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: r1_p4_o4mini
+        model: o4-mini
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: bridge_jan
+        model: gpt-6-luna
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1476
+        median_ratio: 1.0
+      - arm: full_spy
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: SPY
+        n: 4671
+        median_ratio: 0.999995
+      - arm: ex0dte_spy
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: SPY
+        n: 4671
+        median_ratio: 0.999984
+      - arm: p34_obf_2024
+        model: gpt-6-luna
+        series_key: p3_2024
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: p34_dated_2024
+        model: gpt-6-luna
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: p34_obf_2020
+        model: gpt-6-luna
+        series_key: p4_2020
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: p34_dated_2020
+        model: gpt-6-luna
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: full_qqq
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: QQQ
+        n: 3867
+        median_ratio: 0.99984
+      - arm: full_iwm
+        model: gpt-6-luna
+        series_key: new_full
+        symbol: IWM
+        n: 4678
+        median_ratio: 1.000054
+      - arm: full_qqq_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: QQQ
+        n: 1670
+        median_ratio: 1.000011
+      - arm: full_iwm_scaled
+        model: gpt-6-luna
+        series_key: new_full_scaled
+        symbol: IWM
+        n: 1671
+        median_ratio: 1.000013
+      - arm: ex0dte_qqq
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: QQQ
+        n: 807
+        median_ratio: 1.000026
+      - arm: intraday_spy
+        model: gpt-6-luna
+        series_key: intraday_t0
+        symbol: SPY
+        n: 51
+        median_ratio: 0.999986
+files:
+  bridge_agreement.csv:
+    rows: 133
+    columns:
+    - comparison
+    - ref_arm
+    - ref_model
+    - other_arm
+    - other_model
+    - series_key
+    - symbol
+    - scope
+    - year
+    - n_pairs
+    - n_ref_det_oth_det
+    - n_ref_det_oth_not
+    - n_ref_not_oth_det
+    - n_ref_not_oth_not
+    - agree_pct
+    - agree_ci_lo_pct
+    - agree_ci_hi_pct
+    - agree_boot_lo_pct
+    - agree_boot_hi_pct
+    - kappa
+    - kappa_boot_lo
+    - kappa_boot_hi
+    - type_agree_pct
+    - n_disagree_with_clf
+    - n_disagree_ref_matches_clf
+    - n_disagree_other_matches_clf
+    - rate_ref_pct
+    - rate_other_pct
+    - rate_diff_pp
+    - rate_diff_boot_lo_pp
+    - rate_diff_boot_hi_pp
+    - p_mcnemar_exact
+    - p_boot
+    - ref_clf_agree_pct
+    - other_clf_agree_pct
+    - median_ratio_ref
+    - median_ratio_other
+    - n
+    - both_detect
+    - only_r1
+    - only_luna
+    - neither
+    bytes: 28548
+    sha256: 0f1e9d08281314d9cefaa2ebdc527427efb173d041d2e2ab396f17dda55baaab
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  bridge_agreement.yaml:
+    keys:
+    - reference_arm
+    - reference_set
+    - series_key
+    - primary_label
+    - references
+    - gate
+    - bridge
+    - bridge_incl_recovered
+    - test_retest
+    - notes
+    bytes: 96491
+    sha256: e30ebb9aeffaff6b17f38fbfcd563874d31ba1a9b8cafca2dbbe2b2b160ede64
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  cost_ledger.csv:
+    rows: 38
+    columns:
+    - run_id
+    - arm
+    - series_key
+    - symbol
+    - model
+    - mode
+    - status
+    - budget_class
+    - counts_toward_budget
+    - n_requests
+    - n_responses
+    - n_parsed
+    - n_failed
+    - prompt_tokens
+    - completion_tokens
+    - reasoning_tokens
+    - est_cost_usd
+    - recomputed_cost_usd
+    - cost_gap_usd
+    - cost_per_request_usd
+    - prompt_tokens_per_response
+    - completion_tokens_per_response
+    - reasoning_tokens_per_response
+    - n_detections
+    - detection_prompt_tokens
+    - detection_completion_tokens
+    - prompt_token_gap
+    - completion_token_gap
+    - submitted_at
+    - completed_at
+    - ingested_at
+    - git_sha
+    bytes: 12155
+    sha256: 2756c745fc89b63d2bf0e8366ec9add33a4e8b36b7da365948487c0754630d8b
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  cost_ledger.yaml:
+    keys:
+    - currency
+    - pricing_usd_per_mtok
+    - budget
+    - totals
+    - by_arm
+    - by_model
+    - by_mode
+    - by_status
+    - runs_without_est_cost
+    - reconciliation
+    bytes: 7746
+    sha256: eb55d3b5dc0da7efc8ed02f662d52c9f064e8eb0b9eeddcfd0f6c31436ffdce8
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  detection_by_year.csv:
+    rows: 433
+    columns:
+    - label_source
+    - arm
+    - arm_role
+    - model
+    - series_key
+    - symbol
+    - scope
+    - year
+    - n_windows
+    - n_parsed
+    - n
+    - n_detect
+    - rate_pct
+    - ci_lo_pct
+    - ci_hi_pct
+    - n_indep_30d
+    - mean_abs_gex_bn
+    - n_compared
+    - clf_rate_matched_pct
+    - clf_mean_abs_gex_bn_matched
+    - agree_pct
+    - kappa
+    - metrics_agree_pct
+    - sign_flips_exact_pct
+    - median_ratio_reported_to_computed
+    bytes: 57298
+    sha256: 8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  detection_by_year_wide.csv:
+    rows: 386
+    columns:
+    - series_key
+    - symbol
+    - year
+    - n
+    - clf_rate
+    - clf_ci_lo
+    - clf_ci_hi
+    - arm
+    - model
+    - n_parsed
+    - llm_rate
+    - llm_ci_lo
+    - llm_ci_hi
+    - agree_pct
+    - kappa
+    - arm_role
+    - n_windows
+    - n_compared
+    - clf_rate_matched
+    - n_indep_30d
+    bytes: 40559
+    sha256: 0e4cee9b4a2d6dff326d200d921d846a7508a0dd9a1826f048374585ce34f5b9
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  disagreements.csv:
+    rows: 50
+    columns:
+    - arm
+    - arm_role
+    - model
+    - series_key
+    - symbol
+    - window_end
+    - window_start
+    - llm_detected
+    - clf_detected
+    - llm_type
+    - clf_type
+    - confidence
+    - llm_positive_days
+    - clf_positive_days
+    - llm_avg_magnitude_bn
+    - clf_avg_magnitude_bn
+    - llm_persistence_pct
+    - clf_persistence_pct
+    - llm_sign_flips
+    - clf_sign_flips
+    - metrics_agree
+    - finish_reason
+    bytes: 8619
+    sha256: 908dc936c612dea468e532add2052eefdb4a1cab65226ff04f0c93ee3644ec58
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  ex0dte_decomposition.csv:
+    rows: 57
+    columns:
+    - symbol
+    - scope
+    - year
+    - n_days
+    - mean_abs_net_full_bn
+    - mean_abs_net_ex0dte_bn
+    - abs_0dte_share_pct
+    - sign_flip_by_0dte_pct
+    - n_windows_full
+    - n_windows_ex0dte
+    - n_matched
+    - rate_full_pct
+    - rate_full_ci_lo_pct
+    - rate_full_ci_hi_pct
+    - rate_ex0dte_pct
+    - rate_ex0dte_ci_lo_pct
+    - rate_ex0dte_ci_hi_pct
+    - diff_pp
+    - n_full_only
+    - n_ex0dte_only
+    - llm_n_matched
+    - llm_rate_full_pct
+    - llm_rate_ex0dte_pct
+    - llm_diff_pp
+    bytes: 7431
+    sha256: 13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  intraday.csv:
+    rows: 51
+    columns:
+    - window_end
+    - symbol
+    - irregular_day
+    - gex_t0_final_rush_bn
+    - gex_t0_eod_bn
+    - gex_t0_diff_bn
+    - clf_intraday
+    - clf_full
+    - clf_agree
+    - clf_type_intraday
+    - clf_type_full
+    - mean_abs_gex_intraday_bn
+    - mean_abs_gex_full_bn
+    - llm_intraday
+    - llm_full
+    - llm_agree
+    bytes: 6799
+    sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  llm_parse_stats.csv:
+    rows: 30
+    columns:
+    - arm
+    - arm_role
+    - model
+    - series_key
+    - symbol
+    - n_rows
+    - n_parsed
+    - parsed_pct
+    - n_ok
+    - n_fallback
+    - n_failed
+    - n_missing
+    - n_other_status
+    - n_finish_stop
+    - n_finish_length
+    - n_finish_other
+    - n_finish_unknown
+    - n_rerun_at_retry_cap
+    - n_recovered_2026
+    - mean_prompt_tokens
+    - mean_completion_tokens
+    - max_completion_tokens_used
+    - mean_reasoning_tokens
+    bytes: 3976
+    sha256: c7eeee837f477ca35f48c19f86819188ab302ee36c64626f4e41a9b744c91865
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  post_publication_2026.csv:
+    rows: 1950
+    columns:
+    - window_end
+    - window_start
+    - entirely_2026
+    - series_key
+    - symbol
+    - clf_regime_type
+    - clf_should_detect
+    - clf_avg_magnitude_bn
+    - clf_persistence_pct
+    - clf_sign_flips
+    - llm_full_spy
+    - llm_type_full_spy
+    - llm_ex0dte_spy
+    - llm_type_ex0dte_spy
+    - llm_full_qqq
+    - llm_type_full_qqq
+    - llm_full_iwm
+    - llm_type_full_iwm
+    - llm_full_qqq_scaled
+    - llm_type_full_qqq_scaled
+    - llm_full_iwm_scaled
+    - llm_type_full_iwm_scaled
+    - llm_ex0dte_qqq
+    - llm_type_ex0dte_qqq
+    - llm_intraday_spy
+    - llm_type_intraday_spy
+    bytes: 217718
+    sha256: 404bec1cf82c828708a6f5fdfb540ba4441ee0d869bc9dabe100c26f53f47cd4
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  post_publication_2026_summary.csv:
+    rows: 38
+    columns:
+    - definition
+    - series_key
+    - symbol
+    - label_source
+    - arm
+    - model
+    - n_windows
+    - n_scored
+    - n_detect
+    - rate_pct
+    - ci_lo_pct
+    - ci_hi_pct
+    - agree_with_clf_pct
+    - window_end_first
+    - window_end_last
+    - mean_abs_gex_bn
+    bytes: 4563
+    sha256: bf442eabe89b7d1e488193f42437e377acfeb80de3930beb3ed8d10d0cc2420f
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  reported_vs_computed.csv:
+    rows: 294
+    columns:
+    - basis
+    - comparison
+    - rater
+    - ref_arm
+    - arm
+    - arm_role
+    - model
+    - series_key
+    - symbol
+    - scope
+    - year
+    - n
+    - median_ratio
+    - q25_ratio
+    - q75_ratio
+    - ratio_within_5pct_pct
+    - median_abs_diff_bn
+    - median_reported_bn
+    - median_computed_bn
+    bytes: 38310
+    sha256: f4dc0b9c8e55a7b6c5631cd53fd0bbee011ae8835593caa2d5304fcbd9a6c19f
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  series_comparison.csv:
+    rows: 98
+    columns:
+    - series_a
+    - series_b
+    - pair
+    - symbol
+    - scope
+    - year
+    - n_days
+    - first_date
+    - last_date
+    - mean_abs_a_bn
+    - mean_abs_b_bn
+    - mean_abs_diff_bn
+    - median_ratio_a_over_b
+    - sign_agree_pct
+    - exact_match_pct
+    bytes: 13147
+    sha256: 355a3771b12faca2aefaa2ac11e6aff52472e5d5dcc262af9ba041f845f17c8d
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+  stats.yaml:
+    keys:
+    - meta
+    - headline_contrasts
+    - rates
+    - contrasts
+    bytes: 162434
+    sha256: 2f761cc1eb137c6d6d80795beb2168a82f9002d5d616ee4fa800c56d47b41d55
+    produced_with:
+      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
+      common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-10-30T19:17:28+00:00'
+untracked_files: []
+warnings: []
+diagnostics:
+  thresholds:
+    persistence: 0.7
+    mean_abs_gex_usd: 5000000000.0
+    max_sign_flips: 5
+    low_conviction_usd: 3000000000.0
+  floor_effect:
+  - series_key: new_ex0dte
+    symbol: IWM
+    n_windows: 4678
+    max_window_mean_abs_gex_bn: 4.368882
+  - series_key: new_ex0dte
+    symbol: QQQ
+    n_windows: 3867
+    max_window_mean_abs_gex_bn: 4.106002
+  - series_key: new_full
+    symbol: IWM
+    n_windows: 4678
+    max_window_mean_abs_gex_bn: 4.975884
+  - series_key: new_full
+    symbol: QQQ
+    n_windows: 3867
+    max_window_mean_abs_gex_bn: 4.923074
+  floor_effect_note: no window of these groups reaches the fixed magnitude threshold, so the classifier detects
+    nothing there in any year (pre-registered thresholds; not a modelling result)
+  clf_versions:
+  - regime_classifier@e27bdc749ff0 persistence=0.7 magnitude=5000000000 max_flips=5 low_conviction=3000000000
+  window_rules:
+    call_only:A: 1671
+    intraday_t0:T0: 51
+    jan2026_phase4a:J: 1476
+    new_ex0dte:A: 13216
+    new_full:A: 13216
+    new_full_scaled:A: 3341
+    old_bs:A: 4638
+    p3_2024:J: 223
+    p3_2024_dated:J: 223
+    p4_2020:J: 223
+    p4_2020_dated:J: 223
+  scaling:
+    new_full_scaled:IWM:
+      scale: oi_notional
+      rows: 1700
+      factor: 11.43094
+      n_days_in_factor: 1700
+    new_full_scaled:QQQ:
+      scale: oi_notional
+      rows: 1699
+      factor: 4.224724
+      n_days_in_factor: 1699
+  flagged_windows:
+  - series_key: jan2026_phase4a
+    symbol: SPY
+    n_windows: 1476
+    n_calendar_gap: 58
+    n_missing_master_days: 58
+  - series_key: new_ex0dte
+    symbol: IWM
+    n_windows: 4678
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: new_ex0dte
+    symbol: QQQ
+    n_windows: 3867
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: new_ex0dte
+    symbol: SPY
+    n_windows: 4671
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: new_full
+    symbol: IWM
+    n_windows: 4678
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: new_full
+    symbol: QQQ
+    n_windows: 3867
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: new_full
+    symbol: SPY
+    n_windows: 4671
+    n_calendar_gap: 87
+    n_missing_master_days: 0
+  - series_key: old_bs
+    symbol: SPY
+    n_windows: 4638
+    n_calendar_gap: 174
+    n_missing_master_days: 87
+headline:
+  classifier_rate_pct_by_year_spy:
+    jan2026_phase4a:
+      2020: 12.107623
+      2021: 3.968254
+      2022: 32.270916
+      2023: 19.277108
+      2024: 100.0
+      2025: 100.0
+    old_bs:
+      2008: 0.0
+      2009: 0.0
+      2010: 0.0
+      2011: 0.0
+      2012: 0.0
+      2013: 0.0
+      2014: 13.492063
+      2015: 0.396825
+      2016: 26.4
+      2017: 38.75
+      2018: 32.128514
+      2019: 7.171315
+      2020: 16.666667
+      2021: 3.571429
+      2022: 26.294821
+      2023: 22.48996
+      2024: 100.0
+      2025: 100.0
+      2026: 23.45679
+    new_full:
+      2008: 0.0
+      2009: 0.0
+      2010: 0.0
+      2011: 0.0
+      2012: 0.0
+      2013: 0.0
+      2014: 9.126984
+      2015: 7.936508
+      2016: 28.0
+      2017: 32.083333
+      2018: 34.538153
+      2019: 9.960159
+      2020: 22.222222
+      2021: 3.571429
+      2022: 40.63745
+      2023: 22.4
+      2024: 10.31746
+      2025: 13.6
+      2026: 11.398964
+    new_ex0dte:
+      2008: 0.0
+      2009: 0.0
+      2010: 0.0
+      2011: 0.0
+      2012: 0.0
+      2013: 0.0
+      2014: 8.333333
+      2015: 1.587302
+      2016: 22.0
+      2017: 19.583333
+      2018: 23.694779
+      2019: 3.187251
+      2020: 10.714286
+      2021: 0.0
+      2022: 36.653386
+      2023: 25.2
+      2024: 13.095238
+      2025: 16.4
+      2026: 21.243523
+    intraday_t0:
+      2026: 0.0
+    call_only:
+      2020: 90.58296
+      2021: 100.0
+      2022: 100.0
+      2023: 100.0
+      2024: 100.0
+      2025: 100.0
+      2026: 100.0
+    p3_2024:
+      2024: 81.165919
+    p3_2024_dated:
+      2024: 81.165919
+    p4_2020:
+      2020: 12.107623
+    p4_2020_dated:
+      2020: 12.107623
+  llm_rate_pct_by_year:
+    r1_o4mini:
+      o4-mini-2025-04-16:
+        2020: 12.206573
+        2021: 3.73444
+        2022: 32.377049
+        2023: 20.175439
+        2024: 100.0
+        2025: 100.0
+    bridge_jan:
+      gpt-6-luna:
+        2020: 11.659193
+        2021: 5.15873
+        2022: 32.669323
+        2023: 19.678715
+        2024: 100.0
+        2025: 100.0
+    full_iwm:
+      gpt-6-luna:
+        2008: 0.0
+        2009: 0.0
+        2010: 0.0
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 0.0
+        2015: 0.0
+        2016: 0.0
+        2017: 0.0
+        2018: 0.0
+        2019: 0.0
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
+    full_qqq:
+      gpt-6-luna:
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 0.0
+        2015: 0.0
+        2016: 0.0
+        2017: 0.0
+        2018: 0.0
+        2019: 0.0
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
+    full_spy:
+      gpt-6-luna:
+        2008: 0.0
+        2009: 0.0
+        2010: 0.0
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 9.126984
+        2015: 7.936508
+        2016: 27.6
+        2017: 31.666667
+        2018: 34.939759
+        2019: 9.960159
+        2020: 22.222222
+        2021: 3.571429
+        2022: 41.832669
+        2023: 23.2
+        2024: 11.111111
+        2025: 14.0
+        2026: 11.398964
+    ex0dte_qqq:
+      gpt-6-luna:
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
+    ex0dte_spy:
+      gpt-6-luna:
+        2008: 0.0
+        2009: 0.0
+        2010: 0.0
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 8.333333
+        2015: 1.587302
+        2016: 22.0
+        2017: 19.166667
+        2018: 22.891566
+        2019: 3.187251
+        2020: 10.714286
+        2021: 0.0
+        2022: 37.051793
+        2023: 26.0
+        2024: 14.285714
+        2025: 16.4
+        2026: 21.243523
+    intraday_spy:
+      gpt-6-luna:
+        2026: 0.0
+    full_iwm_scaled:
+      gpt-6-luna:
+        2020: 9.865471
+        2021: 65.873016
+        2022: 100.0
+        2023: 79.2
+        2024: 20.634921
+        2025: 51.2
+        2026: 45.07772
+    full_qqq_scaled:
+      gpt-6-luna:
+        2020: 0.0
+        2021: 23.809524
+        2022: 60.956175
+        2023: 17.6
+        2024: 8.366534
+        2025: 20.4
+        2026: 16.062176
+    p34_obf_2024:
+      gpt-6-luna:
+        2024: 80.717489
+    r1_p3_o4mini:
+      o4-mini:
+        2024: 81.165919
+    p34_dated_2024:
+      gpt-6-luna:
+        2024: 81.165919
+    p34_obf_2020:
+      gpt-6-luna:
+        2020: 12.107623
+    r1_p4_o4mini:
+      o4-mini:
+        2020: 12.107623
+    p34_dated_2020:
+      gpt-6-luna:
+        2020: 12.107623
+  llm_vs_classifier_all_years:
+  - arm: r1_o4mini
+    model: o4-mini-2025-04-16
+    series_key: jan2026_phase4a
+    symbol: SPY
+    n_parsed: 1412.0
+    n_compared: 1412.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: bridge_jan
+    model: gpt-6-luna
+    series_key: jan2026_phase4a
+    symbol: SPY
+    n_parsed: 1476.0
+    n_compared: 1476.0
+    agree_pct: 99.593496
+    kappa: 0.991798
+  - arm: full_iwm
+    model: gpt-6-luna
+    series_key: new_full
+    symbol: IWM
+    n_parsed: 4678.0
+    n_compared: 4678.0
+    agree_pct: 100.0
+    kappa: null
+  - arm: full_qqq
+    model: gpt-6-luna
+    series_key: new_full
+    symbol: QQQ
+    n_parsed: 3867.0
+    n_compared: 3867.0
+    agree_pct: 100.0
+    kappa: null
+  - arm: full_spy
+    model: gpt-6-luna
+    series_key: new_full
+    symbol: SPY
+    n_parsed: 4671.0
+    n_compared: 4671.0
+    agree_pct: 99.67887
+    kappa: 0.985848
+  - arm: ex0dte_qqq
+    model: gpt-6-luna
+    series_key: new_ex0dte
+    symbol: QQQ
+    n_parsed: 807.0
+    n_compared: 807.0
+    agree_pct: 100.0
+    kappa: null
+  - arm: ex0dte_spy
+    model: gpt-6-luna
+    series_key: new_ex0dte
+    symbol: SPY
+    n_parsed: 4671.0
+    n_compared: 4671.0
+    agree_pct: 99.721687
+    kappa: 0.985246
+  - arm: intraday_spy
+    model: gpt-6-luna
+    series_key: intraday_t0
+    symbol: SPY
+    n_parsed: 51.0
+    n_compared: 51.0
+    agree_pct: 100.0
+    kappa: null
+  - arm: full_iwm_scaled
+    model: gpt-6-luna
+    series_key: new_full_scaled
+    symbol: IWM
+    n_parsed: 1671.0
+    n_compared: 1671.0
+    agree_pct: 99.700778
+    kappa: 0.993977
+  - arm: full_qqq_scaled
+    model: gpt-6-luna
+    series_key: new_full_scaled
+    symbol: QQQ
+    n_parsed: 1670.0
+    n_compared: 1670.0
+    agree_pct: 99.401198
+    kappa: 0.982114
+  - arm: p34_obf_2024
+    model: gpt-6-luna
+    series_key: p3_2024
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 99.55157
+    kappa: 0.985466
+  - arm: r1_p3_o4mini
+    model: o4-mini
+    series_key: p3_2024_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: p34_dated_2024
+    model: gpt-6-luna
+    series_key: p3_2024_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: p34_obf_2020
+    model: gpt-6-luna
+    series_key: p4_2020
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: r1_p4_o4mini
+    model: o4-mini
+    series_key: p4_2020_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: p34_dated_2020
+    model: gpt-6-luna
+    series_key: p4_2020_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  bridge:
+    gate:
+      comparison: r1_o4mini vs bridge_jan
+      metric: cohen_kappa
+      threshold: 0.6
+      source: planning/00_design.md section 5
+      window_set: published answers (r1_o4mini without detection_metadata recovered_2026)
+      kappa: 0.992871
+      kappa_defined: true
+      agree_pct: 99.645892
+      n_pairs: 1412
+      met: true
+      incl_recovered:
+        n_pairs: 1476
+        agree_pct: 99.593496
+        kappa: 0.991798
+    bridge:
+    - ref_arm: r1_o4mini
+      other_arm: bridge_jan
+      n_pairs: 1412
+      agree_pct: 99.645892
+      kappa: 0.992871
+      rate_diff_pp: -0.354108
+      p_mcnemar_exact: 0.0625
+    - ref_arm: r1_p3_o4mini
+      other_arm: p34_dated_2024
+      n_pairs: 223
+      agree_pct: 100.0
+      kappa: 1.0
+      rate_diff_pp: 0.0
+      p_mcnemar_exact: 1.0
+    - ref_arm: r1_p4_o4mini
+      other_arm: p34_dated_2020
+      n_pairs: 223
+      agree_pct: 100.0
+      kappa: 1.0
+      rate_diff_pp: 0.0
+      p_mcnemar_exact: 1.0
+    bridge_incl_recovered:
+    - ref_arm: r1_o4mini_all
+      other_arm: bridge_jan
+      n_pairs: 1476
+      agree_pct: 99.593496
+      kappa: 0.991798
+    test_retest:
+    - ref_arm: bridge_jan
+      other_arm: bridge_jan#rep1
+      n_pairs: 1476
+      agree_pct: 99.254743
+      kappa: 0.984973
+    - ref_arm: ex0dte_qqq
+      other_arm: ex0dte_qqq#rep1
+      n_pairs: 39
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: ex0dte_spy
+      other_arm: ex0dte_spy#rep1
+      n_pairs: 234
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: full_iwm
+      other_arm: full_iwm#rep1
+      n_pairs: 234
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: full_iwm_scaled
+      other_arm: full_iwm_scaled#rep1
+      n_pairs: 84
+      agree_pct: 98.809524
+      kappa: 0.97561
+    - ref_arm: full_qqq
+      other_arm: full_qqq#rep1
+      n_pairs: 193
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: full_qqq_scaled
+      other_arm: full_qqq_scaled#rep1
+      n_pairs: 84
+      agree_pct: 98.809524
+      kappa: 0.966614
+    - ref_arm: full_spy
+      other_arm: full_spy#rep1
+      n_pairs: 234
+      agree_pct: 99.57265
+      kappa: 0.977206
+    - ref_arm: intraday_spy
+      other_arm: intraday_spy#rep1
+      n_pairs: 3
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: p34_dated_2020
+      other_arm: p34_dated_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: p34_dated_2024
+      other_arm: p34_dated_2024#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: p34_obf_2020
+      other_arm: p34_obf_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: p34_obf_2024
+      other_arm: p34_obf_2024#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+  series_exact_match_pct_by_year:
+    jan2026_phase4a__vs__new_full:
+      SPY:
+        2020: 100.0
+        2021: 99.206349
+        2022: 98.406375
+        2023: 60.64257
+        2024: 0.0
+        2025: 0.0
+    old_bs__vs__jan2026_phase4a:
+      SPY:
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+    old_bs__vs__new_full:
+      SPY:
+        2008: 0.790514
+        2009: 0.0
+        2010: 0.0
+        2011: 0.4
+        2012: 0.0
+        2013: 0.396825
+        2014: 0.0
+        2015: 0.0
+        2016: 0.4
+        2017: 0.416667
+        2018: 0.401606
+        2019: 0.398406
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.617284
+    new_full__vs__new_ex0dte:
+      IWM:
+        2008: 98.804781
+        2009: 98.412698
+        2010: 92.430279
+        2011: 83.730159
+        2012: 84.4
+        2013: 84.126984
+        2014: 82.936508
+        2015: 78.174603
+        2016: 80.079681
+        2017: 79.423868
+        2018: 79.6
+        2019: 78.884462
+        2020: 80.15873
+        2021: 69.444444
+        2022: 41.035857
+        2023: 39.6
+        2024: 12.301587
+        2025: 3.2
+        2026: 2.072539
+      QQQ:
+        2011: 83.756345
+        2012: 85.2
+        2013: 83.333333
+        2014: 82.539683
+        2015: 78.571429
+        2016: 80.079681
+        2017: 79.423868
+        2018: 78.714859
+        2019: 78.486056
+        2020: 79.365079
+        2021: 51.190476
+        2022: 32.669323
+        2023: 0.4
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
+      SPY:
+        2008: 98.418972
+        2009: 98.8
+        2010: 90.039841
+        2011: 83.6
+        2012: 84.0
+        2013: 83.333333
+        2014: 82.539683
+        2015: 78.571429
+        2016: 72.4
+        2017: 59.166667
+        2018: 40.562249
+        2019: 38.247012
+        2020: 39.68254
+        2021: 37.698413
+        2022: 32.270916
+        2023: 0.4
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
+    call_only__vs__jan2026_phase4a:
+      SPY:
+        2020: 0.0
+        2021: 0.793651
+        2022: 1.195219
+        2023: 39.35743
+        2024: 100.0
+        2025: 100.0
+  ex0dte:
+    classifier_rate_pct_matched_by_year:
+      new_full:
+        IWM:
+          2008: 0.0
+          2009: 0.0
+          2010: 0.0
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 0.0
+          2015: 0.0
+          2016: 0.0
+          2017: 0.0
+          2018: 0.0
+          2019: 0.0
+          2020: 0.0
+          2021: 0.0
+          2022: 0.0
+          2023: 0.0
+          2024: 0.0
+          2025: 0.0
+          2026: 0.0
+        QQQ:
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 0.0
+          2015: 0.0
+          2016: 0.0
+          2017: 0.0
+          2018: 0.0
+          2019: 0.0
+          2020: 0.0
+          2021: 0.0
+          2022: 0.0
+          2023: 0.0
+          2024: 0.0
+          2025: 0.0
+          2026: 0.0
+        SPY:
+          2008: 0.0
+          2009: 0.0
+          2010: 0.0
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 9.126984
+          2015: 7.936508
+          2016: 28.0
+          2017: 32.083333
+          2018: 34.538153
+          2019: 9.960159
+          2020: 22.222222
+          2021: 3.571429
+          2022: 40.63745
+          2023: 22.4
+          2024: 10.31746
+          2025: 13.6
+          2026: 11.398964
+      new_ex0dte:
+        IWM:
+          2008: 0.0
+          2009: 0.0
+          2010: 0.0
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 0.0
+          2015: 0.0
+          2016: 0.0
+          2017: 0.0
+          2018: 0.0
+          2019: 0.0
+          2020: 0.0
+          2021: 0.0
+          2022: 0.0
+          2023: 0.0
+          2024: 0.0
+          2025: 0.0
+          2026: 0.0
+        QQQ:
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 0.0
+          2015: 0.0
+          2016: 0.0
+          2017: 0.0
+          2018: 0.0
+          2019: 0.0
+          2020: 0.0
+          2021: 0.0
+          2022: 0.0
+          2023: 0.0
+          2024: 0.0
+          2025: 0.0
+          2026: 0.0
+        SPY:
+          2008: 0.0
+          2009: 0.0
+          2010: 0.0
+          2011: 0.0
+          2012: 0.0
+          2013: 0.0
+          2014: 8.333333
+          2015: 1.587302
+          2016: 22.0
+          2017: 19.583333
+          2018: 23.694779
+          2019: 3.187251
+          2020: 10.714286
+          2021: 0.0
+          2022: 36.653386
+          2023: 25.2
+          2024: 13.095238
+          2025: 16.4
+          2026: 21.243523
+    abs_0dte_share_pct_by_year:
+      IWM:
+        2008: 1.151131
+        2009: 1.098102
+        2010: 2.025516
+        2011: 3.079368
+        2012: 3.479898
+        2013: 5.207158
+        2014: 5.714893
+        2015: 7.854624
+        2016: 9.00788
+        2017: 8.474624
+        2018: 7.226548
+        2019: 11.065419
+        2020: 12.002378
+        2021: 16.098704
+        2022: 8.413619
+        2023: 9.126384
+        2024: 21.836606
+        2025: 23.04221
+        2026: 19.68979
+      QQQ:
+        2011: 10.670744
+        2012: 8.38283
+        2013: 8.457371
+        2014: 7.134326
+        2015: 22.279068
+        2016: 13.308897
+        2017: 16.074855
+        2018: 9.503764
+        2019: 17.122341
+        2020: 18.844682
+        2021: 23.011283
+        2022: 17.13365
+        2023: 36.195559
+        2024: 42.891616
+        2025: 45.546761
+        2026: 45.53376
+      SPY:
+        2008: 0.878528
+        2009: 0.13879
+        2010: 5.042116
+        2011: 5.32703
+        2012: 6.969756
+        2013: 11.478045
+        2014: 10.51321
+        2015: 16.563882
+        2016: 13.527756
+        2017: 13.138046
+        2018: 16.41563
+        2019: 22.072511
+        2020: 25.662781
+        2021: 35.962618
+        2022: 23.393624
+        2023: 35.803112
+        2024: 45.901937
+        2025: 43.905075
+        2026: 40.816134
+    gex_0dte_origin:
+      stored: 13303
+  contrasts:
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: classifier
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_full
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 88.023952
+    bootstrap_diff_ci_pp:
+    - 80.761334
+    - 94.950758
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.00012207
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: bridge_jan
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: full_spy
+      model: gpt-6-luna
+    diff_pp: 87.42515
+    bootstrap_diff_ci_pp:
+    - 80.326644
+    - 93.936022
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.00012207
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: IWM
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: IWM
+      arm: null
+      model: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: QQQ
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: QQQ
+      arm: null
+      model: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: -2.788845
+    bootstrap_diff_ci_pp:
+    - -8.76771
+    - 2.761341
+    p_bootstrap: 0.369
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: QQQ
+      arm: full_qqq
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: QQQ
+      arm: ex0dte_qqq
+      model: gpt-6-luna
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: full_spy
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: ex0dte_spy
+      model: gpt-6-luna
+    diff_pp: -2.788845
+    bootstrap_diff_ci_pp:
+    - -8.767145
+    - 2.40976
+    p_bootstrap: 0.376
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: classifier
+      series_key: old_bs
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_full
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 88.023952
+    bootstrap_diff_ci_pp:
+    - 80.761334
+    - 94.950758
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.00012207
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: classifier
+      series_key: p3_2024
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: p34_obf_2024
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: p34_dated_2024
+      model: gpt-6-luna
+    diff_pp: -0.44843
+    bootstrap_diff_ci_pp:
+    - -1.875
+    - 0.0
+    p_bootstrap: 0.646
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: classifier
+      series_key: p4_2020
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: p34_obf_2020
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: p34_dated_2020
+      model: gpt-6-luna
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: scale
+    period: all
+    a:
+      kind: classifier
+      series_key: new_full_scaled
+      symbol: IWM
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_full
+      symbol: IWM
+      arm: null
+      model: null
+    diff_pp: 53.919808
+    bootstrap_diff_ci_pp:
+    - 40.667832
+    - 67.387829
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 4.65661e-10
+  - name: series_contrast
+    family: scale
+    period: all
+    a:
+      kind: classifier
+      series_key: new_full_scaled
+      symbol: QQQ
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: new_full
+      symbol: QQQ
+      arm: null
+      model: null
+    diff_pp: 20.958084
+    bootstrap_diff_ci_pp:
+    - 12.609794
+    - 31.173329
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.000488281
+  - name: series_contrast
+    family: scale
+    period: all
+    a:
+      kind: llm
+      series_key: new_full_scaled
+      symbol: IWM
+      arm: full_iwm_scaled
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: IWM
+      arm: full_iwm
+      model: gpt-6-luna
+    diff_pp: 54.099342
+    bootstrap_diff_ci_pp:
+    - 40.964965
+    - 67.446244
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 4.65661e-10
+  - name: series_contrast
+    family: scale
+    period: all
+    a:
+      kind: llm
+      series_key: new_full_scaled
+      symbol: QQQ
+      arm: full_qqq_scaled
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: QQQ
+      arm: full_qqq
+      model: gpt-6-luna
+    diff_pp: 21.556886
+    bootstrap_diff_ci_pp:
+    - 13.303492
+    - 31.774659
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.000488281
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: null
+      model: null
+    b: null
+    diff_pp: 82.974359
+    bootstrap_diff_ci_pp:
+    - 71.078248
+    - 92.374505
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 2.67421e-09
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: old_bs
+      symbol: SPY
+      arm: null
+      model: null
+    b: null
+    diff_pp: 82.768924
+    bootstrap_diff_ci_pp:
+    - 71.031351
+    - 91.900404
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 2.84754e-07
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: IWM
+      arm: null
+      model: null
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: QQQ
+      arm: null
+      model: null
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_full
+      symbol: SPY
+      arm: null
+      model: null
+    b: null
+    diff_pp: -10.236863
+    bootstrap_diff_ci_pp:
+    - -23.167616
+    - 2.001953
+    p_bootstrap: 0.108
+    p_nonoverlap: 0.727806
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: IWM
+      arm: null
+      model: null
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: QQQ
+      arm: null
+      model: null
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: null
+      model: null
+    b: null
+    diff_pp: -3.368417
+    bootstrap_diff_ci_pp:
+    - -16.679634
+    - 11.375542
+    p_bootstrap: 0.604
+    p_nonoverlap: 0.731166
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: call_only
+      symbol: SPY
+      arm: null
+      model: null
+    b: null
+    diff_pp: 2.151639
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 6.47482
+    p_bootstrap: 0.761
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_full_scaled
+      symbol: IWM
+      arm: null
+      model: null
+    b: null
+    diff_pp: -29.506564
+    bootstrap_diff_ci_pp:
+    - -55.745508
+    - 1.587424
+    p_bootstrap: 0.061
+    p_nonoverlap: 0.137205
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: classifier
+      series_key: new_full_scaled
+      symbol: QQQ
+      arm: null
+      model: null
+    b: null
+    diff_pp: -12.548878
+    bootstrap_diff_ci_pp:
+    - -30.051982
+    - 5.392052
+    p_bootstrap: 0.17
+    p_nonoverlap: 0.291575
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: r1_o4mini
+      model: o4-mini-2025-04-16
+    b: null
+    diff_pp: 82.721382
+    bootstrap_diff_ci_pp:
+    - 70.674325
+    - 92.341357
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 2.67421e-09
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: bridge_jan
+      model: gpt-6-luna
+    b: null
+    diff_pp: 82.564103
+    bootstrap_diff_ci_pp:
+    - 70.93803
+    - 91.964545
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 2.67421e-09
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: IWM
+      arm: full_iwm
+      model: gpt-6-luna
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: QQQ
+      arm: full_qqq
+      model: gpt-6-luna
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: full_spy
+      model: gpt-6-luna
+    b: null
+    diff_pp: -10.136766
+    bootstrap_diff_ci_pp:
+    - -23.072247
+    - 2.000021
+    p_bootstrap: 0.112
+    p_nonoverlap: 0.727806
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: QQQ
+      arm: ex0dte_qqq
+      model: gpt-6-luna
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: ex0dte_spy
+      model: gpt-6-luna
+    b: null
+    diff_pp: -3.069315
+    bootstrap_diff_ci_pp:
+    - -16.293233
+    - 11.894492
+    p_bootstrap: 0.637
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full_scaled
+      symbol: IWM
+      arm: full_iwm_scaled
+      model: gpt-6-luna
+    b: null
+    diff_pp: -29.40982
+    bootstrap_diff_ci_pp:
+    - -55.590935
+    - 1.319354
+    p_bootstrap: 0.062
+    p_nonoverlap: 0.137205
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full_scaled
+      symbol: QQQ
+      arm: full_qqq_scaled
+      model: gpt-6-luna
+    b: null
+    diff_pp: -11.96071
+    bootstrap_diff_ci_pp:
+    - -29.607359
+    - 5.781934
+    p_bootstrap: 0.186
+    p_nonoverlap: 0.291575
+  - name: phase_contrast
+    family: null
+    period: p3_2024_dated vs p4_2020_dated
+    a:
+      kind: classifier
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 69.058296
+    bootstrap_diff_ci_pp:
+    - 31.56478
+    - 93.253968
+    p_bootstrap: 0.002
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
+    period: p3_2024_dated vs p4_2020_dated
+    a:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: r1_p3_o4mini
+      model: o4-mini
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: r1_p4_o4mini
+      model: o4-mini
+    diff_pp: 69.058296
+    bootstrap_diff_ci_pp:
+    - 31.56478
+    - 93.253968
+    p_bootstrap: 0.002
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
+    period: p3_2024_dated vs p4_2020_dated
+    a:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: p34_dated_2024
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: p34_dated_2020
+      model: gpt-6-luna
+    diff_pp: 69.058296
+    bootstrap_diff_ci_pp:
+    - 31.56478
+    - 93.253968
+    p_bootstrap: 0.002
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
+    period: p3_2024 vs p4_2020
+    a:
+      kind: classifier
+      series_key: p3_2024
+      symbol: SPY
+      arm: null
+      model: null
+    b:
+      kind: classifier
+      series_key: p4_2020
+      symbol: SPY
+      arm: null
+      model: null
+    diff_pp: 69.058296
+    bootstrap_diff_ci_pp:
+    - 31.56478
+    - 93.253968
+    p_bootstrap: 0.002
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
+    period: p3_2024 vs p4_2020
+    a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: p34_obf_2024
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: p34_obf_2020
+      model: gpt-6-luna
+    diff_pp: 68.609865
+    bootstrap_diff_ci_pp:
+    - 29.677987
+    - 93.253968
+    p_bootstrap: 0.003
+    p_nonoverlap: 0.040559
+  post_publication:
+    definition: window_end on or after 2026-01-01 (ends_in_2026); entirely_2026 = window_start on or after 2026-01-01
+      as well (the windows the paper tabulates); post_publication_2026_summary.csv has the rates under both definitions
+    by_series:
+    - series_key: old_bs
+      symbol: SPY
+      n_windows: 162
+      window_end_first: '2026-02-10'
+      window_end_last: '2026-10-02'
+      clf_rate_pct: 23.45679
+      mean_abs_gex_bn: 7.248661
+      entirely_2026:
+        n_windows: 133
+        window_end_first: '2026-03-24'
+        window_end_last: '2026-10-02'
+        clf_rate_pct: 15.789474
+        mean_abs_gex_bn: 5.944682
+    - series_key: new_full
+      symbol: IWM
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 0.0
+      mean_abs_gex_bn: 1.758525
+      llm_full_iwm:
+        n: 193
+        rate_pct: 0.0
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 1.904504
+        llm_full_iwm:
+          n: 164
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+    - series_key: new_full
+      symbol: QQQ
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 0.0
+      mean_abs_gex_bn: 4.049253
+      llm_full_qqq:
+        n: 193
+        rate_pct: 0.0
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 4.074011
+        llm_full_qqq:
+          n: 164
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+    - series_key: new_full
+      symbol: SPY
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 11.398964
+      mean_abs_gex_bn: 8.414116
+      llm_full_spy:
+        n: 193
+        rate_pct: 11.398964
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 13.414634
+        mean_abs_gex_bn: 8.531861
+        llm_full_spy:
+          n: 164
+          rate_pct: 13.414634
+          agree_with_clf_pct: 100.0
+    - series_key: new_ex0dte
+      symbol: IWM
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 0.0
+      mean_abs_gex_bn: 1.584507
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 1.732218
+    - series_key: new_ex0dte
+      symbol: QQQ
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 0.0
+      mean_abs_gex_bn: 2.770315
+      llm_ex0dte_qqq:
+        n: 193
+        rate_pct: 0.0
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 2.889821
+        llm_ex0dte_qqq:
+          n: 164
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+    - series_key: new_ex0dte
+      symbol: SPY
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 21.243523
+      mean_abs_gex_bn: 5.683172
+      llm_ex0dte_spy:
+        n: 193
+        rate_pct: 21.243523
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 25.0
+        mean_abs_gex_bn: 5.932504
+        llm_ex0dte_spy:
+          n: 164
+          rate_pct: 25.0
+          agree_with_clf_pct: 100.0
+    - series_key: intraday_t0
+      symbol: SPY
+      n_windows: 51
+      window_end_first: '2026-07-27'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 0.0
+      mean_abs_gex_bn: 8.317928
+      llm_intraday_spy:
+        n: 51
+        rate_pct: 0.0
+        agree_with_clf_pct: 100.0
+      entirely_2026:
+        n_windows: 51
+        window_end_first: '2026-07-27'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 0.0
+        mean_abs_gex_bn: 8.317928
+        llm_intraday_spy:
+          n: 51
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
+    - series_key: call_only
+      symbol: SPY
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 100.0
+      mean_abs_gex_bn: 21.73453
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 100.0
+        mean_abs_gex_bn: 21.231121
+    - series_key: new_full_scaled
+      symbol: IWM
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 44.559585
+      mean_abs_gex_bn: 20.101595
+      llm_full_iwm_scaled:
+        n: 193
+        rate_pct: 45.07772
+        agree_with_clf_pct: 99.481865
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 52.439024
+        mean_abs_gex_bn: 21.770272
+        llm_full_iwm_scaled:
+          n: 164
+          rate_pct: 53.04878
+          agree_with_clf_pct: 99.390244
+    - series_key: new_full_scaled
+      symbol: QQQ
+      n_windows: 193
+      window_end_first: '2026-01-02'
+      window_end_last: '2026-10-09'
+      clf_rate_pct: 15.544041
+      mean_abs_gex_bn: 17.106977
+      llm_full_qqq_scaled:
+        n: 193
+        rate_pct: 16.062176
+        agree_with_clf_pct: 99.481865
+      entirely_2026:
+        n_windows: 164
+        window_end_first: '2026-02-13'
+        window_end_last: '2026-10-09'
+        clf_rate_pct: 16.463415
+        mean_abs_gex_bn: 17.211572
+        llm_full_qqq_scaled:
+          n: 164
+          rate_pct: 17.073171
+          agree_with_clf_pct: 99.390244
+  intraday:
+    irregular_days:
+    - '2026-07-29'
+    - '2026-08-03'
+    - '2026-09-14'
+    n_irregular_flagged: 0
+    n_regular_windows: 51
+    n_clf_compared: 51
+    clf_agree_pct: 100.0
+    n_llm_compared: 51
+    llm_agree_pct: 100.0
+    n_t0_values: 51
+    t0_mean_abs_diff_bn: 1.686198
+    t0_sign_agree_pct: 90.196078
+  reported_vs_computed:
+    bridge_pairs:
+    - comparison: bridge
+      ref_arm: r1_o4mini
+      rater: other
+      arm: bridge_jan
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1412
+      median_ratio: 1.0
+    - comparison: bridge
+      ref_arm: r1_p3_o4mini
+      rater: other
+      arm: p34_dated_2024
+      model: gpt-6-luna
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - comparison: bridge
+      ref_arm: r1_p4_o4mini
+      rater: other
+      arm: p34_dated_2020
+      model: gpt-6-luna
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - comparison: bridge
+      ref_arm: r1_o4mini
+      rater: reference
+      arm: r1_o4mini
+      model: o4-mini-2025-04-16
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1412
+      median_ratio: 1.0
+    - comparison: bridge
+      ref_arm: r1_p3_o4mini
+      rater: reference
+      arm: r1_p3_o4mini
+      model: o4-mini
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - comparison: bridge
+      ref_arm: r1_p4_o4mini
+      rater: reference
+      arm: r1_p4_o4mini
+      model: o4-mini
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - comparison: bridge_incl_recovered
+      ref_arm: r1_o4mini_all
+      rater: other
+      arm: bridge_jan
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1476
+      median_ratio: 1.0
+    - comparison: bridge_incl_recovered
+      ref_arm: r1_o4mini_all
+      rater: reference
+      arm: r1_o4mini_all
+      model: o4-mini-2025-04-16
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1476
+      median_ratio: 1.0
+    median_ratio_by_arm:
+    - arm: r1_o4mini
+      model: o4-mini-2025-04-16
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1412
+      median_ratio: 1.0
+    - arm: r1_p3_o4mini
+      model: o4-mini
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: r1_p4_o4mini
+      model: o4-mini
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: bridge_jan
+      model: gpt-6-luna
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1476
+      median_ratio: 1.0
+    - arm: full_spy
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: SPY
+      n: 4671
+      median_ratio: 0.999995
+    - arm: ex0dte_spy
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: SPY
+      n: 4671
+      median_ratio: 0.999984
+    - arm: p34_obf_2024
+      model: gpt-6-luna
+      series_key: p3_2024
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: p34_dated_2024
+      model: gpt-6-luna
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: p34_obf_2020
+      model: gpt-6-luna
+      series_key: p4_2020
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: p34_dated_2020
+      model: gpt-6-luna
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: full_qqq
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: QQQ
+      n: 3867
+      median_ratio: 0.99984
+    - arm: full_iwm
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: IWM
+      n: 4678
+      median_ratio: 1.000054
+    - arm: full_qqq_scaled
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: QQQ
+      n: 1670
+      median_ratio: 1.000011
+    - arm: full_iwm_scaled
+      model: gpt-6-luna
+      series_key: new_full_scaled
+      symbol: IWM
+      n: 1671
+      median_ratio: 1.000013
+    - arm: ex0dte_qqq
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: QQQ
+      n: 807
+      median_ratio: 1.000026
+    - arm: intraday_spy
+      model: gpt-6-luna
+      series_key: intraday_t0
+      symbol: SPY
+      n: 51
+      median_ratio: 0.999986
+  cost:
+    est_cost_usd: 7.63677
+    spent_usd: 7.63677
+    committed_usd: 10.055961
+    remaining_to_hard_stop_usd: 1.944039
+    historical_backfill_usd: 9.967462
+    est_cost_usd_all_stored_runs: 17.604232
+    cost_per_request_usd: 0.000281125
+caveats:
+- Windows have stride 1 and overlap; Wilson intervals in detection_by_year.csv are descriptive. Inference is in
+  stats.yaml (quarter-block bootstrap and non-overlapping 30-day subsample next to every p-value).
+- Rates are shares of parsed windows; parse failures are counted in n_windows but not in n.
+- The fixed persistence/magnitude/flip thresholds are a pre-registered design decision; a scaled-threshold variant
+  is a protocol change the authors must approve.
+- 2026 windows are the post-publication period, not out-of-sample (gpt-6-luna was created 2026-09-14). post_publication_2026_summary.csv
+  gives the rates for windows that end in 2026 and for those that lie entirely in 2026.
+- call_only is derived from new_full.call_gex when the series table does not store it.
+- 'Arm r1_o4mini in every table is the published result: the answers without detection_metadata recovered_2026 (1,412
+  windows). r1_o4mini_all and bridge_incl_recovered add the 64 answers that only the 2026 backfill could read; the
+  cost ledger and llm_parse_stats.csv cover every stored row. The backfilled Nov-2025 arms r1_p3_o4mini and r1_p4_o4mini
+  follow the same rule (an ''_all'' variant exists only when some of their rows carry the flag).'
+- Repeat arms ('<arm>#rep<k>') are compared only with their original arm (test_retest); the bridge gate uses the
+  first pass.
+- Spend in cost_ledger.* counts only runs for which common.counts_toward_budget holds (current model, not a backfill);
+  the backfilled o4-mini runs are listed under budget.not_spend and are never added to the spend.

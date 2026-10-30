@@ -254,11 +254,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     n_windows = int(windows["rows"].sum())
     last_end = windows["last"].max().date().isoformat()
 
-    fig = theme.new_figure(HEIGHT_IN)
-    canvas = Canvas(fig, theme.FIG_WIDTH_IN, HEIGHT_IN)
+    # The label frame must hold the rule box plus one row per arm; when that needs more height than the
+    # series column gives, the frame (and the figure) grow by the difference.
+    series_bottom = TOP + len(series) * (SERIES_BOX_H + SERIES_GAP) - SERIES_GAP
+    labels_bottom = (TOP + GROUP_PAD + RULE_BOX_H + 0.10 + 0.06 + 2 * LINE + 0.04
+                     + (len(arms) + (1 if other_requests else 0)) * ARM_LINE + 0.04 + LINE + PAD + GROUP_PAD)
+    extra_height = max(0.0, labels_bottom - series_bottom)
+    height = HEIGHT_IN + extra_height
+    fig = theme.new_figure(height)
+    canvas = Canvas(fig, theme.FIG_WIDTH_IN, height)
     for (x0, x1), title in zip(COLUMNS.values(), ("Daily GEX series", "30-day windows", "Labels")):
         canvas.text((x0 + x1) / 2, 0.03, title, bold=True, ha="center", size=9)
-    bottom = draw_series(canvas, series)
+    bottom = draw_series(canvas, series) + extra_height
     middle = (TOP + bottom) / 2
     draw_windows(canvas, n_windows, last_end, middle)
     draw_labels(canvas, thresholds, n_windows, models, arms, other_requests, cost, bottom, middle)

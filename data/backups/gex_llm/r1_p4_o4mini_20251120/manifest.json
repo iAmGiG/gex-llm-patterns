@@ -1,0 +1,23 @@
+{
+  "arm": "r1_p4_o4mini",
+  "files": {
+    "input.jsonl": {
+      "bytes": 1506862,
+      "lines": 223,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/batch_regime_20251120_104630.jsonl",
+      "sha256": "03c8d4b9b283f11d446f0cc6015388d36c136b3f95ea6a3d093877ae7f9cd2bd"
+    },
+    "output.jsonl": {
+      "bytes": 334975,
+      "lines": 223,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/results_batch_691f37d94ef0819099136e88a69bef82.jsonl",
+      "sha256": "fb147de7c70dcb2473bca3fa9788918d052232021297d9ba8be1e9311db95620"
+    }
+  },
+  "input_file_id": "file-UpLjQW3ai1aF1xo67LLHN5",
+  "n_windows": 223,
+  "openai_batch_id": "batch_691f37d94ef0819099136e88a69bef82",
+  "run_id": "r1_p4_o4mini_20251120",
+  "window_end_max": "2020-12-31",
+  "window_end_min": "2020-02-13"
+}

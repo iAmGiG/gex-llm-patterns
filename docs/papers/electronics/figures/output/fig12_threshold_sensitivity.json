@@ -1,0 +1,1060 @@
+{
+  "argv": [
+    "fig12_threshold_sensitivity.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig12_threshold_sensitivity.py",
+      "sha256": "da7f9a2001e014caec33adf58ed224db468a8a9a51695485dfe07c1e31447871"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "consistency": {
+      "published_thresholds_reproduce_stored_verdicts": {
+        "jan2026_phase4a": {
+          "2024": 251,
+          "2025": 250,
+          "all": 501
+        },
+        "new_full": {
+          "2024": 252,
+          "2025": 250,
+          "all": 502
+        }
+      },
+      "stored_clf_columns_equal_recomputed": true
+    },
+    "gap_pp_published_minus_rebuilt": {
+      "max": 96.01593625498008,
+      "min": 70.71713147410358
+    },
+    "grid": {
+      "magnitude_bn": [
+        3.0,
+        5.0,
+        7.0
+      ],
+      "max_flips": [
+        3,
+        5,
+        7
+      ],
+      "min_days": [
+        18,
+        19,
+        21,
+        22,
+        24
+      ],
+      "n_configurations": 45,
+      "persistence_pct": [
+        60,
+        65,
+        70,
+        75,
+        80
+      ]
+    },
+    "rates": [
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 100.0,
+        "rate_pct_2024": 100.0,
+        "rate_pct_2025": 100.0,
+        "series_key": "jan2026_phase4a"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 29.2829,
+        "rate_pct_2024": 32.5397,
+        "rate_pct_2025": 26.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 29.2829,
+        "rate_pct_2024": 32.5397,
+        "rate_pct_2025": 26.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 9.5618,
+        "rate_pct_2024": 6.746,
+        "rate_pct_2025": 12.4,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 18,
+        "persistence_pct": 60,
+        "rate_pct": 18.3267,
+        "rate_pct_2024": 19.8413,
+        "rate_pct_2025": 16.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 28.6853,
+        "rate_pct_2024": 31.746,
+        "rate_pct_2025": 25.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 28.6853,
+        "rate_pct_2024": 31.746,
+        "rate_pct_2025": 25.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 9.5618,
+        "rate_pct_2024": 6.746,
+        "rate_pct_2025": 12.4,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 19,
+        "persistence_pct": 65,
+        "rate_pct": 18.1275,
+        "rate_pct_2024": 19.8413,
+        "rate_pct_2025": 16.4,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 27.2908,
+        "rate_pct_2024": 31.3492,
+        "rate_pct_2025": 23.2,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 11.9522,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 13.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 27.2908,
+        "rate_pct_2024": 31.3492,
+        "rate_pct_2025": 23.2,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 9.5618,
+        "rate_pct_2024": 6.746,
+        "rate_pct_2025": 12.4,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 21,
+        "persistence_pct": 70,
+        "rate_pct": 17.3307,
+        "rate_pct_2024": 19.8413,
+        "rate_pct_2025": 14.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 11.5538,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 12.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 25.2988,
+        "rate_pct_2024": 30.9524,
+        "rate_pct_2025": 19.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 11.5538,
+        "rate_pct_2024": 10.3175,
+        "rate_pct_2025": 12.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 25.2988,
+        "rate_pct_2024": 30.9524,
+        "rate_pct_2025": 19.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 4.3825,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 9.1633,
+        "rate_pct_2024": 6.746,
+        "rate_pct_2025": 11.6,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 22,
+        "persistence_pct": 75,
+        "rate_pct": 15.9363,
+        "rate_pct_2024": 19.4444,
+        "rate_pct_2025": 12.4,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 3.9841,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 8.9641,
+        "rate_pct_2024": 7.9365,
+        "rate_pct_2025": 10.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 3.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 14.3426,
+        "rate_pct_2024": 15.873,
+        "rate_pct_2025": 12.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 3.9841,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 8.9641,
+        "rate_pct_2024": 7.9365,
+        "rate_pct_2025": 10.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 5.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 14.3426,
+        "rate_pct_2024": 15.873,
+        "rate_pct_2025": 12.8,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 3,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 3.9841,
+        "rate_pct_2024": 0.0,
+        "rate_pct_2025": 8.0,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 5,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 6.7729,
+        "rate_pct_2024": 4.3651,
+        "rate_pct_2025": 9.2,
+        "series_key": "new_full"
+      },
+      {
+        "magnitude_bn": 7.0,
+        "max_flips": 7,
+        "min_days": 24,
+        "persistence_pct": 80,
+        "rate_pct": 8.7649,
+        "rate_pct_2024": 7.5397,
+        "rate_pct_2025": 10.0,
+        "series_key": "new_full"
+      }
+    ],
+    "symbol": "SPY",
+    "thresholds_published": {
+      "magnitude_bn": 5.0,
+      "max_flips": 5,
+      "persistence_pct": 70
+    },
+    "windows": {
+      "jan2026_phase4a": {
+        "2024": 251,
+        "2025": 250,
+        "all": 501
+      },
+      "new_full": {
+        "2024": 252,
+        "2025": 250,
+        "all": 502
+      }
+    },
+    "years": [
+      2024,
+      2025
+    ]
+  },
+  "figure": "fig12_threshold_sensitivity",
+  "generated_utc": "2026-10-30T19:18:26+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 23622,
+      "path": "docs/papers/electronics/figures/output/fig12_threshold_sensitivity.pdf",
+      "sha256": "cae7a0efb0a4014dc2097e5e76fe637d299427e86e0f9c251e7f87409e078d15"
+    },
+    "png": {
+      "bytes": 192938,
+      "path": "docs/papers/electronics/figures/output/fig12_threshold_sensitivity.png",
+      "pixels": [
+        1842,
+        1545
+      ],
+      "sha256": "285cbaa6527454fcc51e091b922a3b6ece443cdcc4feb23219db338cc98b302a"
+    }
+  },
+  "results": {
+    "files": {},
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671
+  },
+  "sources": [
+    {
+      "bytes": 425150,
+      "path": "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
+      "sha256": "1e62ab32c7e550554a933ab03af9ae24d85cb1a0317eb92ba92ab6bc0d349f18"
+    },
+    {
+      "bytes": 1376488,
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "cancelled_at": null,
+  "cancelling_at": null,
+  "completed_at": null,
+  "completion_window": "24h",
+  "created_at": 1793387584,
+  "endpoint": "/v1/chat/completions",
+  "error_file_id": null,
+  "errors": null,
+  "expired_at": null,
+  "expires_at": 1793473984,
+  "failed_at": null,
+  "finalizing_at": null,
+  "id": "batch_6ae4ec400a9481908de0a6a34aec9e06",
+  "in_progress_at": 1793387587,
+  "input_file_id": "file-KgokBKwM6Q4jTRJdgF2jvZ",
+  "metadata": {
+    "arm": "bridge_old",
+    "experiment": "electronics_261",
+    "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z_c2"
+  },
+  "model": "gpt-6-luna",
+  "object": "batch",
+  "output_file_id": null,
+  "request_counts": {
+    "completed": 0,
+    "failed": 0,
+    "total": 1217
+  },
+  "status": "in_progress",
+  "usage": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 0
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "argv": [
+    "fig04_classifier_replay.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig04_classifier_replay.py",
+      "sha256": "c97e863ac00c4ca94a210efa544ef2fbcffc9a25a124976a724e03c8d6f443db"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "absent_optional_series": [],
+    "bars": [
+      "r1_o4mini",
+      "jan2026_phase4a",
+      "call_only",
+      "old_bs",
+      "new_ex0dte",
+      "new_full"
+    ],
+    "ci": "Wilson 95% CI (overlapping windows treated as independent, so optimistic)",
+    "classifier_windows_by_year": {
+      "call_only": {
+        "2020": 223,
+        "2021": 252,
+        "2022": 251,
+        "2023": 250,
+        "2024": 252,
+        "2025": 250
+      },
+      "jan2026_phase4a": {
+        "2020": 223,
+        "2021": 252,
+        "2022": 251,
+        "2023": 249,
+        "2024": 251,
+        "2025": 250
+      },
+      "new_ex0dte": {
+        "2020": 252,
+        "2021": 252,
+        "2022": 251,
+        "2023": 250,
+        "2024": 252,
+        "2025": 250
+      },
+      "new_full": {
+        "2020": 252,
+        "2021": 252,
+        "2022": 251,
+        "2023": 250,
+        "2024": 252,
+        "2025": 250
+      },
+      "old_bs": {
+        "2020": 252,
+        "2021": 252,
+        "2022": 251,
+        "2023": 249,
+        "2024": 251,
+        "2025": 250
+      }
+    },
+    "coverage_floor": 0.9,
+    "gaps": {},
+    "low_coverage": {},
+    "n_indep_30d_by_year": {
+      "call_only": {
+        "2020": 8,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      },
+      "jan2026_phase4a": {
+        "2020": 8,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      },
+      "new_ex0dte": {
+        "2020": 9,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      },
+      "new_full": {
+        "2020": 9,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      },
+      "old_bs": {
+        "2020": 9,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      },
+      "r1_o4mini": {
+        "2020": 8,
+        "2021": 9,
+        "2022": 9,
+        "2023": 9,
+        "2024": 9,
+        "2025": 9
+      }
+    },
+    "published": {
+      "arm": "r1_o4mini",
+      "arm_role": [
+        "backfill"
+      ],
+      "arm_with_recovered_answers": "r1_o4mini_all",
+      "model": [
+        "o4-mini-2025-04-16"
+      ],
+      "n_parsed_by_year": {
+        "2020": 213,
+        "2021": 241,
+        "2022": 244,
+        "2023": 228,
+        "2024": 241,
+        "2025": 245
+      },
+      "n_parsed_total": 1412,
+      "n_windows_by_year": {
+        "2020": 213,
+        "2021": 241,
+        "2022": 244,
+        "2023": 228,
+        "2024": 241,
+        "2025": 245
+      },
+      "recovered_2026_by_year": {
+        "2020": 10,
+        "2021": 11,
+        "2022": 7,
+        "2023": 21,
+        "2024": 10,
+        "2025": 5
+      },
+      "recovered_2026_total": 64
+    },
+    "symbol": "SPY",
+    "years": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "years_not_shown": {
+      "call_only": [
+        2026
+      ],
+      "new_ex0dte": [
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2026
+      ],
+      "new_full": [
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2026
+      ],
+      "old_bs": [
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2026
+      ]
+    }
+  },
+  "figure": "fig04_classifier_replay",
+  "generated_utc": "2026-10-30T19:17:57+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 13990,
+      "path": "docs/papers/electronics/figures/output/fig04_classifier_replay.pdf",
+      "sha256": "fed5cd87add3ee1c7b5617b05df2ad4157286ba6927148eb6db19f6c92096234"
+    },
+    "png": {
+      "bytes": 143850,
+      "path": "docs/papers/electronics/figures/output/fig04_classifier_replay.png",
+      "pixels": [
+        1842,
+        1005
+      ],
+      "sha256": "3832a7fee83ab3bd30eff30b8a6ed99b7c0ff700a4de20e3fde43ec85f5ee8b9"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 433
+  },
+  "sources": [
+    {
+      "bytes": 57298,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

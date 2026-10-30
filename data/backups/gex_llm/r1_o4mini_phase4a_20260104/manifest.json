@@ -1,0 +1,22 @@
+{
+  "arm": "r1_o4mini",
+  "files": {
+    "input.jsonl": {
+      "bytes": 9888848,
+      "lines": 1476,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/phase4a_postgresql_20260104_184832.jsonl",
+      "sha256": "95f83fed9768bbe0553d4434f934ce6a5bd892993812a925b185295f4391eef6"
+    },
+    "output.jsonl": {
+      "bytes": 2252575,
+      "lines": 1476,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/results_phase4a_postgresql_20260104_193513.jsonl",
+      "sha256": "dffd8e78e7e639eb4e4c110316214f0d35d54c390501ebcead9d0947336871bd"
+    }
+  },
+  "n_windows": 1476,
+  "openai_batch_id": "batch_695ab77d2fe8819084e397a55f10e6bc",
+  "run_id": "r1_o4mini_phase4a_20260104",
+  "window_end_max": "2025-12-31",
+  "window_end_min": "2020-02-13"
+}

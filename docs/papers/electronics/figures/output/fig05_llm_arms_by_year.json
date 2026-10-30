@@ -1,0 +1,104 @@
+{
+  "argv": [
+    "fig05_llm_arms_by_year.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig05_llm_arms_by_year.py",
+      "sha256": "9bef794e61a7f3e7343c9ab80cf61b715e3a538443e3a91ad96e19ec58720cb1"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "arms": [
+      "bridge_jan",
+      "full_spy",
+      "ex0dte_spy"
+    ],
+    "median_independent_windows_per_year": 9,
+    "model": "gpt-6-luna",
+    "symbol": "SPY",
+    "unparsed_answers": 0,
+    "windows_by_arm": {
+      "bridge_jan": 1476,
+      "ex0dte_spy": 4671,
+      "full_spy": 4671
+    },
+    "years": [
+      2008,
+      2026
+    ]
+  },
+  "figure": "fig05_llm_arms_by_year",
+  "generated_utc": "2026-10-30T19:18:00+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "outputs": {
+    "pdf": {
+      "bytes": 21047,
+      "path": "docs/papers/electronics/figures/output/fig05_llm_arms_by_year.pdf",
+      "sha256": "a7df6c1bce3205922313fad5258a1a7ece29a0dc8d3964a32b82ef128ae5e969"
+    },
+    "png": {
+      "bytes": 197393,
+      "path": "docs/papers/electronics/figures/output/fig05_llm_arms_by_year.png",
+      "pixels": [
+        1842,
+        1515
+      ],
+      "sha256": "fdd1db6c20be6bc12ffcd7559e74f6e6d501d0db7cd45765a253b21ee644b5a4"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-30T19:17:28+00:00",
+      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 433
+  },
+  "sources": [
+    {
+      "bytes": 57298,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}
