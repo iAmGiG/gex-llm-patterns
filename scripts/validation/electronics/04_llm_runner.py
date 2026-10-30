@@ -142,7 +142,7 @@ DETECTION_SCHEMA = pa.schema([
     ("persistence_pct", pa.float64()), ("metrics_agree", pa.bool_()), ("reasoning", pa.string()),
     ("raw_response", pa.string()), ("parse_status", pa.string()), ("finish_reason", pa.string()),
     ("prompt_tokens", pa.int32()), ("completion_tokens", pa.int32()), ("reasoning_tokens", pa.int32()),
-    ("detection_metadata", pa.string()),
+    ("detection_metadata", pa.string()), ("created_at", _TS),
 ])  # fmt: skip
 RUN_COLUMNS = tuple(RUN_SCHEMA.names)
 DETECTION_COLUMNS = tuple(DETECTION_SCHEMA.names)
@@ -540,7 +540,7 @@ class Store:
 
     def save_detections(self, run_id: str, rows: Sequence[Dict[str, Any]]) -> None:
         if self.db_ready:
-            update = [c for c in DETECTION_COLUMNS if c not in DETECTION_KEY]
+            update = [c for c in DETECTION_COLUMNS if c not in DETECTION_KEY and c != "created_at"]
             common.upsert_rows(self.conn, common.T_DETECTIONS, DETECTION_COLUMNS,
                                [_db_values(r, DETECTION_COLUMNS) for r in rows],
                                conflict_cols=DETECTION_KEY, update_cols=update)  # fmt: skip
@@ -930,6 +930,7 @@ def detection_row(run: Dict[str, Any], request: Dict[str, Any], answer: Optional
             if prompt != common.build_prompt(window["gex_sequence"]):
                 meta["window_changed"] = True  # the stored window no longer matches what was sent
     row["detection_metadata"] = {k: v for k, v in meta.items() if v is not None}
+    row["created_at"] = common.utcnow()  # NOT NULL in the table; kept on re-ingest (see save_detections)
     return row
 
 

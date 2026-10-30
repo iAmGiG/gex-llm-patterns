@@ -198,6 +198,8 @@
 - Why: gex-database-infrastructure `docs/009_PROJECT_BACKUP_STRATEGY.md` (three copies: Postgres, parquet, raw JSONL; documentation before DDL; no foreign keys into core tables). The database maintainer relayed the same constraints on 2026-10-28.
 - Encoded in: `sql/gex_llm_regime_schema.sql`, `T_SERIES`, `T_WINDOWS`, `T_RUNS`, `T_DETECTIONS`, `T_RATES_VIEW`, `parquet_path()`, `run_backup_dir()`.
 
+- Addendum 2026-10-30 (D-14, the gate passed): PR gex-database-infrastructure #165 was approved and the schema applied verbatim by the database session at 20:32 UTC (4 tables, 1 view). `07_load_tables.py` upserted the parquet copies at 21:02 UTC: series 38,936, windows 38,501, runs 38, detections 31,523 rows (ANALYZE run; the view reproduces the report's rates). The loads read no source table; the five chunks still running are upserted later, outside 21:50-22:57 UTC and outside market hours (the maintainer's windows). Open with the maintainer: the inventory pages of the database repository.
+
 ### D-15 Scope and boundaries
 
 - Date: 2026-10-28.
@@ -390,3 +392,4 @@
 - 2026-10-30: D-08 addendum (runs/detections carry the window series key); D-22 stands; the fix workflow's remaining items were worked through (schema comments, figure runner freshness on NFS, forensics folder flattened).
 - 2026-10-30: the three deferred arms of D-22 submitted (every registered LLM arm is now in flight or stored).
 - 2026-10-30: D-17 revised (nothing raw on the remote; condensed copies via `06_condense.py`); Q-09 settled.
+- 2026-10-30: D-14 addendum (schema applied, tables loaded); `07_load_tables.py` added.

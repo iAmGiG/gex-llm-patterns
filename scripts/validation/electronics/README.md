@@ -46,6 +46,8 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 3 | `03_backfill_round1.py` | free | January and November batch files, `.cache/research_cache.db` (read-only), the Phase 3/4 result YAMLs | `r1_o4mini_phase4a_20260104/`, `r1_p3_o4mini_20251120/`, `r1_p4_o4mini_20251120/` and `tables/{runs,detections}/r1_*.parquet` |
 | 4 | `04_llm_runner.py` | `pilot` and `submit` spend money, every other subcommand is free | windows parquet (or `--from-db`) | run directories and `tables/{runs,detections}/<run_id>_c<k>.parquet` |
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
+| 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
+| 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
