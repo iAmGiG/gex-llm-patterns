@@ -19,6 +19,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -574,6 +575,15 @@ def normalize_payload(d: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+_FENCE = re.compile(r"^\s*```(?:json)?\s*(.*?)\s*```\s*$", re.S)
+
+
+def strip_json_fence(content: str) -> str:
+    """The body of a ```json ... ``` fence when the whole answer is one fence; otherwise the answer unchanged."""
+    match = _FENCE.match(content)
+    return match.group(1) if match else content
+
+
 def parse_llm_content(content: Optional[str]) -> Tuple[Optional[Dict[str, Any]], str]:
     """Return (normalized payload or None, parse_status in {ok, fallback, failed, missing})."""
     if content is None or not str(content).strip():
@@ -584,12 +594,13 @@ def parse_llm_content(content: Optional[str]) -> Tuple[Optional[Dict[str, Any]],
             return normalize_payload(data), "ok"
     except Exception:
         pass
-    try:  # raw control characters inside strings (one Phase 4A answer); still a direct parse
-        data = json.loads(content, strict=False)
-        if isinstance(data, dict):
-            return normalize_payload(data), "ok"
-    except Exception:
-        pass
+    for text in (content, strip_json_fence(content)):  # raw control characters inside strings (one Phase 4A answer,
+        try:  # which is also fenced); still a direct parse of the whole answer
+            data = json.loads(text, strict=False)
+            if isinstance(data, dict):
+                return normalize_payload(data), "ok"
+        except Exception:
+            pass
     try:
         from src.utils.json_parser import extract_json
 
