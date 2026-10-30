@@ -26,7 +26,7 @@ The "100% detection in 2024-2025" in Paper 2 (486 of 486 windows; AIAI Table 4, 
 - Exact Phase 4A input file (1,476 requests, 2026-01-04): `/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/reports/validation/paper2_regime_windows/batch_jobs/phase4a_postgresql_20260104_184832.jsonl`; raw o4-mini output beside it (`results_phase4a_postgresql_20260104_193513.jsonl`). The Day T+0 value of each window gives the daily series (1,505 distinct days, 2020-01-02 to 2025-12-31); all 1,475 consecutive window pairs are mutually consistent. (VERIFIED: established facts of this workflow; SK1, SK3 re-extracted values themselves.)
 - Today's database: `gex.options_chains_partitioned` (raw; all SPY rows `created_at` 2026-02-03, i.e. reloaded after the fix), `gex.options_daily_summary` (rebuilt 2026-10-08), and read-only archives `backups.options_daily_summary_pre_rebuild_20261004` / `backups.intraday_gex_summary_pre_rebuild_20261004`.
 - The pre-reload raw table no longer exists, so the January put rows cannot be inspected directly. The conclusion rests on the numerical match, the code, the fix commit, the collection log, and a date-level join (VERIFIED limitation).
-- Per-day comparison table (1,505 rows): `/tmp/claude-1018/-mnt-bst-a100-yxie2-cregan1-gex-llm-patterns/516749a7-3a3d-40b8-8cb3-cbf46b524142/scratchpad/forensics2/jan_vs_candidates_daily.csv`.
+- Per-day comparison table (1,505 rows): `docs/papers/electronics/planning/forensics/jan_vs_candidates_daily.csv`.
 
 ---
 
@@ -113,7 +113,7 @@ OPEN:
 ## 6. Impact inventory
 
 Lineage tags (from F3): L-P5 = Phase 4A/Phase 5 January extract (this memo). L-P3 = Phase 3 2024 series from `.cache/gex_database.db` (-(call+put), ex-0DTE, with 10 placeholder rows). L-P4 = Phase 4 2020 series. L-P1 = Phase 1 Q1-2024 file-cache series. L-P2 = Phase 2 controls built from L-P1/L-P4. L-PAPER1 = Paper 1's 242-day -(call+put) series. L-RAW13 = Paper 1's 13-date raw-chain test.
-Full inventory with 168 file:line anchors: `/tmp/claude-1018/-mnt-bst-a100-yxie2-cregan1-gex-llm-patterns/516749a7-3a3d-40b8-8cb3-cbf46b524142/scratchpad/forensics2/published_claim_inventory.md`.
+Full inventory with 168 file:line anchors: `docs/papers/electronics/planning/forensics/published_claim_inventory.md`.
 
 ### 6.1 Claims that depend on the January (call-only) extract, L-P5 (VERIFIED by F3 and the replay; table values re-read by ME)
 
@@ -232,13 +232,13 @@ D. Preservation: copy the Phase 4A input/output JSONL and `jan_vs_candidates_dai
 
 ## 11. Reproduction and artifact index
 
-Directory: `/tmp/claude-1018/-mnt-bst-a100-yxie2-cregan1-gex-llm-patterns/516749a7-3a3d-40b8-8cb3-cbf46b524142/scratchpad/forensics2/`
+Directory: `docs/papers/electronics/planning/forensics/ (copies of the scratch outputs)`
 - `jan_vs_candidates_daily.csv`: 1,505 rows; columns date, jan, full, full_agg, call_all, call_ex0dte, ex0dte, archive_total, archive_call, best_match, abs_diff (tolerance 0.006B).
 - `month_match_table.csv`, `agg_candidates.csv`, `agg.py`, `cmp.py`, `an*.py`, `replay.py` (F1).
 - `cache_scan.py`, `cache_compare.py`, `raw_daily.py`, `issue24_full.txt`, `issues_22_69.txt`, `archive_*.txt`, `sqlite_*.txt`, `pgdates_sk2.txt`, `archive_putzero_sk2.txt` (F2, SK2).
 - `sk1/rep.py` (SK1 random-date check: 10 pre and 15 post dates, 10 full, 15 call-only, 0 none).
 - `published_claim_inventory.md`, `f3/` (F3: evidence script and output, replay CSVs).
-- January series: `/tmp/claude-1018/-mnt-bst-a100-yxie2-cregan1-gex-llm-patterns/516749a7-3a3d-40b8-8cb3-cbf46b524142/scratchpad/jan2026_phase4a_spy_daily_gex_bn.json`.
+- January series: `docs/papers/electronics/planning/forensics/jan2026_phase4a_spy_daily_gex_bn.json`.
 
 Key commands (AutoGex env; `psql -h 127.0.0.1 -d gex_options -X`, `SET statement_timeout='600s'`):
 - Per symbol-year aggregate on `gex.options_chains_partitioned` with filters `gamma IS NOT NULL AND open_interest>0 AND underlying_price>0`, `sign = CASE WHEN option_type='call' THEN 1 ELSE -1 END`, GEX = `sign*gamma*open_interest*100*underlying_price^2*0.01`, computing full net, calls only (all expirations), calls with `expiration>trading_date`, one statement per year (F1 `agg.py`).
