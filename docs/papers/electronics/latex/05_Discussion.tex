@@ -4,37 +4,47 @@
 \subsection{What Survives}
 \label{sec:discussion:survives}
 
-% TODO(discussion/survives): 3-4 sentences. Separate what the complete inputs leave intact from what they remove. Data audit: the
-% 2020-2023 replay rates are close across the series, while the 2024-2025 saturation is not reproduced on the complete series.
-% Keep the careful causal language of the JRFM article (detection "coincides with" the growth of 0DTE trading) and claim no
-% mechanism. Say what the lineage finding means for the 0DTE interpretation of the published 2023-to-2024 shift.
-\tbd{}
+% src: detection_by_year.csv label_source=classifier symbol=SPY scope=year series_key=jan2026_phase4a|new_full year=2020..2025 rate_pct; stats.yaml series_contrast period_shift (published inputs 17.0 -> 100.0, complete series 22.2 -> 12.0; phi 0.789 and -0.124; bootstrap p 5.0e-4 and 0.108); Section 4.2
+The data audit leaves intact the finding that detection is rare before 2024 and varies from year to year. In 2021 to 2023 the rule gives 4.0\%, 32.3\% and 19.3\% on the published inputs and 3.6\%, 40.6\% and 22.4\% on the complete series, and the model reproduces the rule on both. The audit removes the saturation of 2024 and 2025. The published inputs give 100.0\% in both years because they contain the call leg only; the complete series gives 10.3\% and 13.6\% (Section~\ref{sec:results:replay}). The period contrast of 2020 to 2023 against 2024 and 2025 is a rise of 83.0 percentage points on the published inputs and a change of $-$10.2 points on the complete series, a change that the data do not distinguish from zero (bootstrap $p=0.108$).
+% src: ex0dte_decomposition.csv and stats.yaml series_contrast new_full vs new_ex0dte period 2024-2025 (12.0 against 14.7 percent; bootstrap p=0.369); 0DTE share of absolute net GEX 2019 22.1, 2024 45.9, 2025 43.9; Section 4.4
+The lineage finding bears on the 0DTE reading of the 2023-to-2024 shift. Same-day expiries carry 45.9\% of the absolute net GEX of SPY in 2024, against 22.1\% in 2019, so the growth of 0DTE trading is visible in the exposure itself. The sudden step of the detection rate between 2023 and 2024 is not: it coincides with the change of the input from the complete series to the call leg (Section~\ref{sec:results:inputs}), and it does not appear on the complete series. Removing same-day expiries does not restore it (12.0\% with and 14.7\% without them in 2024 and 2025; Section~\ref{sec:results:ablation}). We therefore read the published rise as a property of the published inputs. The complete series supports only the weaker statement that same-day expiries form a large part of the exposure, and it claims no mechanism that links them to the regime labels. The years of the replay are not independent observations, so these readings rest on the overlap-aware checks of Section~\ref{sec:methods:statistics} and not on the Wilson intervals.
 
 \subsection{What the Model Tracks}
 \label{sec:discussion:tracks}
 
-% TODO(discussion/tracks): 3-4 sentences. The model's verdict follows the numbers it is shown and the criteria in the prompt (probe: 31 of 31
-% verdicts equal to the deterministic rule). Obfuscation therefore validates the model on a given series and says nothing about
-% whether the series is what the prompt says it is; the provenance of the input series is part of the test. Tie to Section 4.10 and
-% to the date effect of Section 4.11 (what the rerun of the Phase 3 and 4 baselines shows about visible dates).
-\tbd{}
+% src: report.yaml headline (fidelity, llm_vs_classifier_all_years); 04_Results Section 4.10: full_spy and ex0dte_spy agree_pct 99.7, kappa 0.986 and 0.985; probe: 03_Methods Section 3.6 (31 of 31 verdicts equal to the rule); Section 4.11 dated table
+The verdict of the model follows the numbers it is shown and the criteria in the prompt. In the probe of 2026-10-28 it equalled the rule in 31 of 31 responses, and in the full runs it equals the rule in 99.7\% of the windows of both complete SPY arms (kappa 0.986 and 0.985). The few verdicts that differ lie at the thresholds: 58 windows over seven arms, 51 of them in the borderline region of persistence, magnitude or flip count (Section~\ref{sec:results:fidelity}). Obfuscation therefore validates the model on a given series. It does not show that the series is what the prompt says it is. The same models, prompts and rule give 100.0\% or about 12\% on the same years, depending only on which series enters the prompt, so the provenance of the input series is part of the test.
+% src: stats.yaml dated vs obfuscated contrast p34_dated_2024 vs p34_obf_2024 (1 discordant window of 223; McNemar p=1.000); detection_by_year.csv arms r1_p3_o4mini, p34_dated_2024, p34_obf_2024 (81.2, 81.2, 80.7 percent); Section 4.11
+The rerun of the Phase 3 and 4 baselines points the same way for the visibility of dates. With calendar dates gpt-6-luna reproduces the November 2025 answers in 223 of 223 windows in each baseline, and with relative day labels it differs in 1 window of 2024 and in none of 2020 (Section~\ref{sec:results:dated}). Visible dates changed nothing that these data can detect. The model is sensitive to the values and the criteria, and it shows no sensitivity to the calendar that the replay can measure.
 
 \subsection{Threats to Validity}
 \label{sec:discussion:threats}
 
-% TODO(discussion/threats): one sentence each, in this order: one provider and model family, and an alias without a dated snapshot; the
-% vendor switch of 2026-10-12 and end-of-day versus intraday open interest; the 0.01B rounding of the prompt; overlapping windows
-% (Section 3.8); thresholds fixed from earlier work and the floor effect for QQQ and IWM; single runs per window unless repeated
-% (test-retest duplicates); undercounted sign flips; the post-publication period is not out-of-sample for the model; vendor licensing;
-% the Phase 3 and 4 baselines are replayed verbatim (two sign conventions, ten placeholder rows) and the QQQ/IWM scaling is a disclosed
-% protocol change decided after the thresholds were fixed.
-\tbd{}
+% src: 03_Methods Section 3.6 (model alias, created 2026-09-14); decisions log D-03 (alias without dated snapshot), model object created timestamp
+All model arms use one provider and one model family, so the agreement with the rule may differ for other models; the alias gpt-6-luna has no dated snapshot, and we store the creation time of the model object and the response identifier of every answer instead.
+% src: 03_Methods Section 3.5 timeline (2026-10-12 vendor switch; every window ends on or before 2026-10-09); intraday.csv (51 days; same sign on 46 of 51 days, 90.2 percent; median relative difference 11.9 percent)
+Equity options moved from Alpha Vantage to Cboe delayed quotes on 2026-10-12, so the last window ends on 2026-10-09, and the end-of-day open interest differs from the intraday value (the sign of the net GEX is the same on 46 of 51 days, 90.2\%, and the check rests on a single snapshot type, the \ident{final_rush} slot).
+% src: 03_Methods Section 3.1 (prompt values rounded to 0.01B, rule on unrounded values)
+The prompt shows values rounded to 0.01B whereas the rule uses the unrounded values, which can move a window across a threshold.
+% src: 03_Methods Section 3.8 (stride one, 29 of 30 days shared)
+Windows have stride one and share 29 of their 30 days, so the Wilson intervals are optimistic, and we rely on the quarter-block bootstrap, which has few blocks per year, and on the non-overlapping subsample, which has few windows (Section~\ref{sec:methods:statistics}).
+% src: 04_Results Section 4.6 (floor effect: 0 of 3,867 QQQ and 0 of 4,678 IWM windows detected; largest 30-day mean 4.92 and 4.98 billion)
+The thresholds come from the earlier work and are fixed in dollars for every symbol; for QQQ and IWM they produce a floor effect (no window is detected in 3{,}867 and 4{,}678 windows) that the unscaled arms cannot test.
+% src: 04_Results Section 4.2 (test-retest: luna repeat 99.3 percent agreement, 11 windows differ; other repeats 98.8 to 100.0 percent)
+Each window is answered once unless an arm was repeated; the repeat of the bridge arm differs from the first pass in 11 windows (99.3\% agreement), so a single run carries a small amount of sampling noise at the thresholds.
+% src: 04_Results Section 4.10 (sign-flip count exact in 93.2 to 95.6 percent of luna answers on the SPY arms; 6.0 percent undercounted, 0.6 percent overcounted)
+The model undercounts sign flips in 6.0\% of its answers, which is the main source of the verdicts that differ from the rule, and the stored count of the rule is the reference.
+% src: 04_Results Section 4.7 (post-publication: gpt-6-luna created 2026-09-14, training cutoff undocumented); 193 windows ending in 2026, 164 entirely after 2025-12-31
+The post-publication period is short (193 windows ending in 2026, of which 164 lie entirely after 2025) and is not out-of-sample for the model, whose training data may cover it; the agreement there shows consistency with the rule and no predictive skill.
+The raw option chains come from licensed vendors and are not redistributed; the condensed per-window tables, which hold the inputs, the labels and the answers, are the basis for reproduction (Section~\ref{sec:methods:storage}).
+% src: 04_Results Section 4.11 (2024 values negative on 242 days, 10 placeholder rows; 2020 values positive on every day); 04_Results Section 4.6 (scale factors 4.225 for QQQ and 11.431 for IWM)
+The Phase 3 and 4 baselines are replayed verbatim, including two sign conventions and ten placeholder rows, and the scaled QQQ and IWM variants use one factor per symbol, a disclosed protocol change that was decided after the thresholds were fixed; their rates depend on the factor and do not measure QQQ or IWM regimes.
 
 \subsection{Implications}
 \label{sec:discussion:implications}
 
-% TODO(discussion/implications): two short paragraphs. (i) For the published results: a data-section note on the input convention and
-% the rebuild date in the AIAI and JRFM papers is a decision for the authors (issue #260 stays open until then). (ii) For the
-% validation of AI-enabled models in general: versioned inputs, lineage checks between model runs, drift alarms on upstream
-% rebuilds and bridge runs when a model is retired; link to the theme of the Special Issue.
-\tbd{}
+% TODO(authors): whether the AIAI and JRFM papers receive a data-section note on the input convention and the rebuild date is a decision for the authors (issue #260 stays open until then). The sentence below only states what such a note would contain.
+For the published results, the relevant facts are these. The published 2024 and 2025 inputs were the call leg of the options chain from 2023-09-29, the labels follow from those inputs and from the published criteria, and the complete series gives other rates for the same years. A data section that states the input convention and the date of the rebuild of the daily table would let a reader place a result on the right series. The decision whether and how to add such a statement to the earlier papers rests with the authors.
+
+For the validation of AI-enabled models in general, the study suggests four practices. Inputs should be versioned and stored with each model run, together with the labels and the raw answers, so that every verdict can be traced to its values. A lineage check between runs should compare the inputs of a new run with those of the previous run before the labels are compared. Drift alarms on upstream rebuilds should flag a change in the construction of an input table. A bridge run on identical inputs should accompany the retirement of a model, as the bridge between o4-mini and gpt-6-luna does here (kappa 0.993 on 1{,}412 windows). These practices address the theme of the Special Issue, the assurance of AI-enabled electronic systems, at the point where an upstream data change reaches the model without any change to the model.
+

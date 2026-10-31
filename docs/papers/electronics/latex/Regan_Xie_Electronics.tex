@@ -78,9 +78,9 @@
   \endgroup}
 
 %=================================================================
-% Suggestion from the data audit (must differ from the AIAI and JRFM titles): "Convention Sensitivity of LLM Regime
-% Detection: Re-Running Temporal Obfuscation Tests Across Gamma-Exposure Definitions, Assets and Time (2008--2026)".
-\Title{Working title: Convention Sensitivity of LLM Regime Detection \ldots}
+% TODO(authors): approve the title. It must differ from the AIAI and JRFM titles; the data-audit suggestion was
+% "Convention Sensitivity of LLM Regime Detection: Re-Running Temporal Obfuscation Tests Across Gamma-Exposure Definitions, Assets and Time (2008--2026)".
+\Title{Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled Large Language Model Re-Test}
 
 % Author ORCID IDs
 \newcommand{\orcidauthorA}{0009-0009-3777-6148}
@@ -106,10 +106,12 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 (AIAI 2026), Chania, Crete, Greece, 16--19 July 2026 \cite{regan2026regimes}}
 
 % Abstract: one paragraph, IMRaD without headings, at most 200 words (MDPI).
-% TODO(abstract): background (obfuscation test, published 30-day result), method (six daily series, deterministic replay,
-% gpt-6-luna bridge and re-runs, dated-versus-obfuscated rerun of the 2024 and 2020 baselines), results (what changes with the
-% complete inputs, with 2-3 numbers), conclusion.
-\abstract{\tbd{} Abstract pending.}
+% src: Section 4.2 (rule, 2024--2025 pooled: 501 of 501 published inputs, 60 of 502 complete series); 4.3 (bridge agreement 99.6, kappa 0.993);
+%      4.4 (gpt-6-luna 63 of 502 = 12.5); 4.9 (agreement 99.7, kappa 0.986); 4.5 (ex-0DTE 14.7 vs 12.0); 4.11 (180 vs 181 of 223); all from results/stats.yaml and detection_by_year*.csv
+% src (files): stats.yaml rates classifier jan2026_phase4a 2024-2025 k=501 n=501; new_full k=60 n=502; arm full_spy 63 of 502; bridge_agreement.yaml agree 99.6459 kappa 0.992871;
+%      detection_by_year.csv arm=full_spy scope=all agree_pct 99.67887 kappa 0.985848 n_compared 4671; stats.yaml rates new_ex0dte 2024-2025 rate_pct 14.741036 vs new_full 11.952191
+% note: 501 windows on the published inputs, 502 on the complete series (see Section 4.2)
+\abstract{Temporal obfuscation tests whether a large language model (LLM) reasons about numbers or recalls market history. Our earlier work reported that an LLM detects persistent dealer-gamma regimes in 30-day windows of obfuscated daily gamma exposure (GEX) of SPY, with a sharp rise in detections after 2023. Here we re-run that test on the complete data. The published 2024--2025 inputs were the call leg of the options chain without the put leg. We rebuilt six daily series, replayed the deterministic rule on them, and bridged o4-mini to gpt-6-luna on the exact published inputs. We also reran the 2024 and 2020 baselines with relative day labels instead of calendar dates. On the published inputs the rule detects 501 of 501 windows (100.0\%) of 2024--2025; on the complete series it detects 60 of 502 (12.0\%), and gpt-6-luna 63 of 502 (12.5\%). The two models agree on 99.6\% of the published windows (kappa 0.993), and gpt-6-luna follows the rule in 99.7\% of 4,671 windows (kappa 0.986). Removing same-day expiries gives 14.7\%, not the published rate. With relative labels gpt-6-luna detects 80.7\% of the 2024 baseline windows, against 81.2\% with dates. The complete series shows no post-2023 increase that the data distinguish from zero.}
 
 % Keywords (semicolon-separated per MDPI style, 3--10)
 \keyword{LLM validation; regime detection; gamma exposure; 0DTE options; temporal obfuscation; data provenance; reproducibility}
@@ -137,12 +139,11 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 
 \conflictsofinterest{The authors declare no conflict of interest.}
 
-% TODO(data): repository URL with access date; release of the four result tables as parquet (DOI/archive) and of results/; name the
-% authoritative copy (the parquet files, or the backups.gex_llm_regime_* tables once the schema is approved); vendor licence note
-% (Alpha Vantage academic access until 2026-10-09, Cboe delayed quotes from 2026-10-12).
-\dataavailability{All code and validation results are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on \tbd{}). The four result tables (daily series, windows, runs and detections) are released as parquet files (\tbd{}). Raw options data were obtained from Alpha Vantage under academic API access and are subject to the vendor's licence.}
+% TODO(authors): data release: archive or DOI for the parquet tables and for results/, and the authoritative copy (parquet files or backups.gex_llm_regime_* tables); update the access date at submission.
+% pending: data-release (authors); neither the archive nor a DOI is in results/
+\dataavailability{All code and validation results are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on 31 October 2026). The four result tables (daily series, windows, runs and detections) are prepared for release as parquet files. Raw options data were obtained from Alpha Vantage under academic API access and are subject to the vendor's licence.}
 
-% TODO(ack): update the AI-use sentence to the current MDPI generative-AI policy (tool, version, purpose).
+% TODO(authors): AI-use disclosure wording (project rule 8, no AI attribution, versus the MDPI generative-AI policy, which may require the disclosure); the sentence below is kept until the authors decide.
 \acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data. OpenAI's gpt-6-luna is the subject of investigation in this study and was accessed through the OpenAI Batch API. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code) for the purposes of clarifying and refining the written presentation and for assisting with software development. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
 
 \institutionalreview{Not applicable.}

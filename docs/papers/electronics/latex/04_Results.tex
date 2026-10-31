@@ -1,35 +1,43 @@
 \section{Results}
 \label{sec:results}
 
-% TODO(results/overview): none needed beyond the subsection order; every number below comes from the 05_report.py output, never typed by hand.
-
 \subsection{What the Published Inputs Were}
 \label{sec:results:inputs}
 
-Table~\ref{tab:lineage} compares the inputs recovered from the Phase 4A batch file with each candidate series, and Figures~\ref{fig:window} and~\ref{fig:series} show one window and the 2008--2026 history. \tbd{}
-% TODO(results/inputs): (i) 1,476 windows recovered with ends 2020-02-13 to 2025-12-31 and the January calendar (no 2023-07-12, no
-% 2024-03-11); (ii) agreement of the daily values with each candidate series by year: equal to new_full at the 0.01B precision of
-% the prompt through about 2023-09 and equal to call-only GEX from about 2023-10 through 2025-12; (iii) the old_bs archive is put-less
-% for the same dates and has holes, so it cannot stand in for a clean "old convention"; (iv) the inputs of the November 2025 Phase 3
-% and 4 runs (252 values each; 2024 gross magnitude with a negative sign imposed, negative on 242 days, ten placeholder rows; 2020
-% magnitude only, positive on every day; ISO dates in the prompts). Source: the series table (series jan2026_phase4a against the
-% others; p3_2024 and p4_2020 as described in Section 3.2).
+Table~\ref{tab:lineage} compares the inputs recovered from the Phase 4A batch file with each candidate series, and Figures~\ref{fig:window} and~\ref{fig:series} show one window and the 2008--2026 history.
+% src: batch file date 2026-01-04: planning/forensics/2026-10-28_memo_published_inputs.md and scripts/validation/electronics/README.md line 10; windows.csv.gz series_key=jan2026_phase4a (count, min and max window_end); series_comparison.csv pair jan2026_phase4a_vs_new_full scope=all n_days; report.yaml diagnostics.flagged_windows (jan2026_phase4a n_missing_master_days); missing dates: series parquet jan2026_phase4a_SPY against new_full_SPY
+The batch file of 2026-01-04 stores the daily values that were sent to o4-mini. They give 1{,}476 windows with ends from 2020-02-13 to 2025-12-31, cut from 1{,}505 daily values. Compared with the complete series, the January calendar lacks 2023-07-12 and 2024-03-11. The 58 windows that span one of the two gaps are flagged and kept (Section~\ref{sec:methods:windows}).
+
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full and call_only_vs_jan2026_phase4a, exact_match_pct by year (Table lineage); CALL_FROM and the isolated days: series parquet jan2026_phase4a_SPY, call_only_SPY and new_full_SPY at the 0.01B precision (tolerance 0.005B)
+The published inputs follow two different series (Table~\ref{tab:lineage}). In 2020 to 2022 the share of daily values that equal \ident{new_full} at the 0.01B precision of the prompt is 100.0\%, 99.2\% and 98.4\%, and the call-only series equals the inputs on at most 1.2\% of the days. In 2024 and 2025 the relation is reversed: none of the values equals \ident{new_full} (0.0\% in both years) and every value equals the call-only GEX (100.0\% in both years). The year 2023 is the transition: 60.6\% of its values equal \ident{new_full} and 39.4\% equal the call-only series, which together account for every day. From 2023-09-29 on, every value equals the call-only GEX; the day before, 2023-09-28, is the last on which a value differs from it. Before that date, 39 days (the first on 2021-09-17) already equal the call-only value and not the complete one. The published inputs of 2024 and 2025 are therefore the call leg of the options chain without the put leg, and they differ in level and sign from the complete series: the mean $|\mathrm{GEX}|$ of the published inputs is \$20.19~billion in 2024 against \$6.48~billion on the complete series, and \$19.21~billion against \$7.13~billion in 2025, with the same daily sign on 62.2\% and 54.0\% of the days.
+
+% src: series_comparison.csv pair old_bs_vs_jan2026_phase4a (exact_match_pct, sign_agree_pct, mean_abs_a_bn) years 2020-2025; missing dates: series parquet old_bs_SPY against new_full_SPY
+The pre-rebuild archive (\ident{old_bs}) was computed from the same put-less table for the same dates, so it cannot serve as a clean earlier convention. Its Black--Scholes gamma differs from the stored gamma, and none of its values equals a published value at 0.01B (0.0\% in every year). Its signs agree with the published inputs on 100.0\% of the days in 2024 and 99.6\% in 2025, and its mean $|\mathrm{GEX}|$ is \$16.19~billion and \$14.71~billion, which is the level of a call-only series. The archive also has holes: it lacks 33 days of the complete calendar (2023-07-12, 2024-03-11, the 26 days from 2026-01-02 to 2026-02-09, and the 5 days from 2026-10-05 to 2026-10-09).
+
+% src: series parquet p3_2024_SPY and p4_2020_SPY (252 values each; sign counts, positive-value range, mean absolute value); windows.csv.gz series_key=p3_2024 and p4_2020 (223 windows each)
+The inputs of the Phase 3 and 4 runs of November 2025 survive in the same way: 252 daily values for 2024 and 252 for 2020, 223 windows each, with ISO dates in the prompts. The 2024 values are a gross call-plus-put magnitude with a negative sign imposed. They are negative on 242 days, and the 10 positive values (\$10.61~billion to \$13.76~billion) are placeholder rows of the source database. The 2020 values are a magnitude only and are positive on every day. The mean absolute daily value is \$31.24~billion for 2024 and \$2.85~billion for 2020, so the two baselines differ in convention and in scale (Section~\ref{sec:results:dated}).
 
 \begin{table}[H]
 \centering
-\caption{Agreement of the recovered published inputs with each candidate series, by year (share of daily values equal at the 0.01B precision of the prompt, in percent).}
+\caption{Agreement of the recovered published inputs with each candidate series, by year (share of daily values equal at the 0.01B precision of the prompt, in percent). The archive uses another gamma model, so exact equality is not expected for it.}
 \label{tab:lineage}
 \footnotesize
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 Year & Days & \ident{new_full} & \ident{call_only} & \ident{old_bs} \\
 \midrule
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2020, n_days and exact_match_pct
+2020 & 252 & 100.0 & 0.0 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2021, n_days and exact_match_pct
+2021 & 252 & 99.2 & 0.8 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2022, n_days and exact_match_pct
+2022 & 251 & 98.4 & 1.2 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2023, n_days and exact_match_pct
+2023 & 249 & 60.6 & 39.4 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2024, n_days and exact_match_pct
+2024 & 251 & 0.0 & 100.0 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2025, n_days and exact_match_pct
+2025 & 250 & 0.0 & 100.0 & 0.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -37,41 +45,54 @@ Year & Days & \ident{new_full} & \ident{call_only} & \ident{old_bs} \\
 \begin{figure}[H]
 \centering
 \resultfigure{\figWindow}
-\caption{One SPY 30-day window under four conventions (\ident{jan2026_phase4a}, \ident{call_only}, \ident{new_ex0dte}, \ident{new_full}), window ending \tbd{}. Dashed lines mark the $\pm$\$5 billion magnitude threshold; the table under the bars gives the three criteria and the verdict for each convention. \textbf{Read this figure as:} \tbd{}}
+% src: figures/output/fig02_convention_window.json (extra.window_end); windows.csv.gz (clf_positive_days, clf_sign_flips, clf_avg_magnitude, clf_regime_type for window_end 2024-03-15, symbol SPY); series parquet net_gex of 2024-03-15
+\caption{One SPY 30-day window under four conventions (\ident{jan2026_phase4a}, \ident{call_only}, \ident{new_ex0dte}, \ident{new_full}), window ending 2024-03-15. Dashed lines mark the $\pm$\$5 billion magnitude threshold; the table under the bars gives the three criteria and the verdict for each convention. \textbf{Read this figure as:} the same 30 trading days receive different verdicts. The published inputs and the call-only series have 30 of 30 positive days, a mean $|\mathrm{GEX}|$ of \$23.56~billion, 0 sign flips, and are detected. The complete series has 23 positive days, 13 flips and a mean of \$6.66~billion, and the ex-0DTE series 26 positive days, 7 flips and \$3.87~billion; both are rejected as low conviction. On the last day the net GEX is $+$\$14.61~billion on the published inputs, $-$\$15.35~billion on the complete series and $-$\$4.51~billion without same-day expiries.}
 \label{fig:window}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \resultfigure{\figSeries}
-\caption{SPY, 2008--2026. (a) Yearly mean of $|\mathrm{GEX}|$ under each series, with the \$5 billion magnitude criterion for scale. (b) Daily sign agreement between pairs of series, by year. \textbf{Read this figure as:} \tbd{}}
+% src: series_comparison.csv SPY by year (pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, new_full_vs_new_ex0dte: mean_abs_a_bn, mean_abs_b_bn, sign_agree_pct)
+\caption{SPY, 2008--2026. (a) Yearly mean of $|\mathrm{GEX}|$ under each series, with the \$5 billion magnitude criterion for scale. (b) Daily sign agreement between pairs of series, by year. \textbf{Read this figure as:} until 2022 the published inputs and the complete series are close; from 2023 the published inputs rise to \$20.19~billion in 2024 while the complete series stays between \$6.05~billion and \$7.13~billion in 2023 to 2025. Their daily sign agreement falls from 98.8\% in 2022 to 81.5\%, 62.2\% and 54.0\%. The call-only series matches the published inputs in 2024 and 2025 only.}
 \label{fig:series}
 \end{figure}
 
 \subsection{Classifier Replay by Year}
 \label{sec:results:replay}
 
-Table~\ref{tab:replay} and Figure~\ref{fig:replay} give the detection rate of the deterministic classifier by year for each series next to the published o4-mini rates, and Figure~\ref{fig:thresholds} shows how far the replay depends on the thresholds. \tbd{}
-% TODO(results/replay): data audit, to be verified against the final tables: the new_full replay gives 10.3 % (2024) and 13.6 % (2025)
-% against 100 % and 100 % published, and on jan2026_phase4a the replay reproduces the published labels in 1,412 of 1,412 parsed
-% windows. Report Wilson intervals and, next to any p-value, the block bootstrap of Section 3.8. The threshold grid has 45
-% configurations (persistence 60-80 %, magnitude 3/5/7 billion, flips 3/5/7).
+Table~\ref{tab:replay} and Figure~\ref{fig:replay} give the detection rate of the deterministic classifier by year for each series next to the published o4-mini rates, and Figure~\ref{fig:thresholds} shows how far the replay depends on the thresholds.
+% src: stats.yaml rates arm=r1_o4mini periods 2024, 2025 (wilson_ci_pct); report.yaml headline.llm_vs_classifier_all_years arm=r1_o4mini (agree_pct, kappa, n_compared); detection_by_year.csv (classifier rows by series_key and year; arm r1_o4mini); stats.yaml rates (Wilson, bootstrap_quarter, nonoverlap_30d) and contrasts series_contrast period 2024-2025 and period_shift
+On the recovered inputs the rule reproduces the published labels in 1{,}412 of 1{,}412 parsed windows (100.0\%; Cohen's kappa 1.000), so the published labels follow from the published inputs and the published criteria. On the published inputs the rule detects 251 of 251 (100.0\%) of the windows ending in 2024 and 250 of 250 (100.0\%) in 2025, and the published o4-mini answers give 241 of 241 (100.0\%) and 245 of 245 (100.0\%) (Wilson 95\% lower bound 98.4\% in 2024 and 98.5\% in 2025). The call-only series and the archive give the same saturation (100.0\% in both years on the call-only series and 100.0\% on the archive). On the complete series the rule detects 26 of 252 (10.3\%) in 2024 (Wilson 95\% interval 7.1--14.7\%; quarter-block bootstrap 3.2--17.3\%, 4 blocks) and 34 of 250 (13.6\%) in 2025 (Wilson 95\% interval 9.9--18.4\%; bootstrap 2.3--25.4\%). Without same-day expiries the rates are 13.1\% and 16.4\%.
+
+Pooled over 2024 and 2025 the detection rate is 100.0\% on the published inputs (501 of 501 windows) and 12.0\% on the complete series (60 of 502; Wilson 9.4--15.1\%, quarter-block bootstrap 5.0--19.2\%; non-overlapping subsample 3 of 17, and between 5.9\% and 25.0\% over the 30 possible starting windows). The paired difference is 88.0 percentage points (quarter-block bootstrap interval 80.8--95.0, $p=5.0\times10^{-4}$, the smallest value that 2{,}000 draws can give; exact McNemar test on the non-overlapping subsample $p=1.2\times10^{-4}$).
+
+The period contrast changes sign. On the published inputs the rule detects 17.0\% of the windows of 2020 to 2023 and 100.0\% of those of 2024 and 2025, a shift of 83.0 percentage points ($\varphi=0.789$; bootstrap $p=5.0\times10^{-4}$; Fisher exact test on the non-overlapping subsample $p=2.7\times10^{-9}$). On the complete series the rates are 22.2\% and 12.0\%, a shift of $-$10.2 percentage points ($\varphi=-0.124$; bootstrap $p=0.108$; Fisher exact test on the subsample $p=0.728$): the complete series shows no increase after 2023 that the data distinguish from zero. In 2020 to 2023 the two series are of the same order (Table~\ref{tab:replay}).
+
+% src: figures/output/fig12_threshold_sensitivity.json extra.rates (series_key jan2026_phase4a and new_full, rate_pct over 45 configurations) and extra.gap_pp_published_minus_rebuilt
+Across the 45 threshold sets the rate on the published inputs stays at 100.0\%, whereas the rate on the complete series runs from 4.0\% to 29.3\%. The gap between the two is at least 70.7 and at most 96.0 percentage points in every configuration, so the difference between the published and the complete inputs does not depend on the exact thresholds.
 
 \begin{table}[H]
 \centering
-\caption{Detection rate of the deterministic classifier by year, SPY, in percent (windows detected out of windows), next to the published o4-mini rate.}
+\caption{Detection rate of the deterministic classifier by year, SPY, in percent (windows detected out of windows, below the rate), next to the published o4-mini rate. The Windows column gives the windows of \ident{new_full}; every cell shows its own count. The published rate covers the 1{,}412 answers of the published result.}
 \label{tab:replay}
 \footnotesize
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
 Year & Windows & Published & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
 \midrule
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: detection_by_year.csv year=2020: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2020 & 252 & \shortstack[r]{12.2\\26/213} & \shortstack[r]{12.1\\27/223} & \shortstack[r]{90.6\\202/223} & \shortstack[r]{16.7\\42/252} & \shortstack[r]{10.7\\27/252} & \shortstack[r]{22.2\\56/252} \\
+% src: detection_by_year.csv year=2021: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2021 & 252 & \shortstack[r]{3.7\\9/241} & \shortstack[r]{4.0\\10/252} & \shortstack[r]{100.0\\252/252} & \shortstack[r]{3.6\\9/252} & \shortstack[r]{0.0\\0/252} & \shortstack[r]{3.6\\9/252} \\
+% src: detection_by_year.csv year=2022: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2022 & 251 & \shortstack[r]{32.4\\79/244} & \shortstack[r]{32.3\\81/251} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{26.3\\66/251} & \shortstack[r]{36.7\\92/251} & \shortstack[r]{40.6\\102/251} \\
+% src: detection_by_year.csv year=2023: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2023 & 250 & \shortstack[r]{20.2\\46/228} & \shortstack[r]{19.3\\48/249} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{22.5\\56/249} & \shortstack[r]{25.2\\63/250} & \shortstack[r]{22.4\\56/250} \\
+% src: detection_by_year.csv year=2024: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2024 & 252 & \shortstack[r]{100.0\\241/241} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{100.0\\252/252} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{13.1\\33/252} & \shortstack[r]{10.3\\26/252} \\
+% src: detection_by_year.csv year=2025: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
+2025 & 250 & \shortstack[r]{100.0\\245/245} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{16.4\\41/250} & \shortstack[r]{13.6\\34/250} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -79,43 +100,67 @@ Year & Windows & Published & \ident{jan2026_phase4a} & \ident{call_only} & \iden
 \begin{figure}[H]
 \centering
 \resultfigure{\figReplay}
-\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the rebuilt table without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} \tbd{}}
+\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the rebuilt table without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} the published labels and the rule on the published inputs agree window by window. In 2024 and 2025 the bars of the published inputs, the call-only series and the archive stand at 100\%, and the two bars of the rebuilt series stand at 13.1\% and 10.3\% in 2024 and 16.4\% and 13.6\% in 2025. The Wilson intervals are optimistic because the overlapping windows of a year are treated as independent.}
 \label{fig:replay}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \resultfigure{\figThresholds}
-\caption{Sensitivity of the 2024--2025 detection rate to the persistence, magnitude and flip thresholds (45 threshold sets: one panel per magnitude and flip limit, persistence on the horizontal axis) for the published inputs (\ident{jan2026_phase4a}) and the rebuilt series (\ident{new_full}); the panel with the heavy frame holds the published thresholds. \textbf{Read this figure as:} \tbd{}}
+\caption{Sensitivity of the 2024--2025 detection rate to the persistence, magnitude and flip thresholds (45 threshold sets: one panel per magnitude and flip limit, persistence on the horizontal axis) for the published inputs (\ident{jan2026_phase4a}) and the rebuilt series (\ident{new_full}); the panel with the heavy frame holds the published thresholds. \textbf{Read this figure as:} the curve of the published inputs is flat at 100.0\% in all nine panels, and the curve of the rebuilt series stays low and moves with the flip limit: it is highest, up to 29.3\%, with a limit of seven flips and lowest, 4.0\%, with three. At the published thresholds the rebuilt series gives 12.0\%.}
 \label{fig:thresholds}
 \end{figure}
 
 \subsection{Model Agreement on the Published Inputs}
 \label{sec:results:bridge}
 
-Table~\ref{tab:bridge} and Figure~\ref{fig:bridge} compare gpt-6-luna with the published o4-mini answers on identical inputs. \tbd{}
-% TODO(results/bridge): arm bridge_jan against r1_o4mini on (symbol, window_end); gate: Cohen's kappa of at least about 0.6, otherwise
-% discuss before reading the other arms. On the exact inputs the o4-mini-reported mean magnitude equals the computed mean (median
-% ratio 1.0 in the data audit), which closes the "about 1.25 times" discrepancy seen against the archive; report it here.
-% State how the 64 re-parsed answers are handled and give the result with and without them.
+Table~\ref{tab:bridge} and Figure~\ref{fig:bridge} compare gpt-6-luna with the published o4-mini answers on identical inputs.
+% src: bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=bridge_jan scope=all and by year (n_pairs, confusion counts, agree_pct, kappa, bootstrap intervals, p_mcnemar_exact, p_boot); comparison=bridge_incl_recovered; comparison=test_retest ref_arm=bridge_jan; report.yaml headline.bridge.gate
+The agreement gate of Section~\ref{sec:methods:model} (Cohen's kappa of at least 0.6) is met with a wide margin. On the 1{,}412 windows with a published answer the two models give the same verdict in 1{,}407 windows (99.6\%; quarter-block bootstrap interval 99.4--99.9\%), and kappa is 0.993 (bootstrap interval 0.986--0.998). The confusion matrix has 646 windows detected by both, 761 by neither, 0 only by o4-mini and 5 only by gpt-6-luna. In each of the 5 windows of disagreement the deterministic rule agrees with o4-mini. The windows lie in 2021 to 2023 (3 in 2021, 1 in 2022, 1 in 2023); the yearly kappa is lowest in 2021 (0.851) and between 0.986 and 1.000 in 2020, 2022 and 2023, and it is undefined in 2024 and 2025, where both models label every window as detected. The detection rates are 45.8\% for o4-mini and 46.1\% for gpt-6-luna on these windows. The paired McNemar test on all windows at stride one gives $p=0.063$ (anti-conservative, because the windows overlap) and the quarter-block bootstrap $p=0.010$ (Table~\ref{tab:bridge} gives both). No McNemar test on the non-overlapping subsample was run for this comparison.
+
+% src: bridge_agreement.csv comparison=bridge_incl_recovered; llm_parse_stats.csv arm=r1_o4mini (n_recovered_2026)
+The 64 answers of the published run that were lost to a parsing error in January 2026 and re-parsed from the stored raw output are held out of every headline number. With them the comparison covers 1{,}476 windows: agreement 99.6\%, kappa 0.992 (bootstrap 0.984--0.997), and 6 windows of disagreement, all with the rule on the side of o4-mini. The conclusions do not depend on whether they are included.
+
+% src: reported_vs_computed.csv basis=bridge_pairs (median_ratio, q25_ratio, q75_ratio, ratio_within_5pct_pct), scope=all; series_comparison.csv pair old_bs_vs_jan2026_phase4a scope=all median_ratio_a_over_b
+On the exact published inputs the mean magnitude that o4-mini reports equals the mean computed from the window: the median ratio of reported to computed is 1.000, and 99.9\% of the answers lie within 5\% of the computed value. For gpt-6-luna the median ratio is 1.000 (99.7\% within 5\%). The pre-rebuild archive cannot serve for this check: its daily values are 0.818 times the published inputs at the median (ratio of the archive to the published inputs), so a comparison with the archive would suggest a magnitude error that the exact inputs rule out.
+
+% src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan (scope=all and by year); other arms scope=all
+The repeat pass runs gpt-6-luna a second time on all 1{,}476 windows of the published inputs. The two passes agree on 99.3\% of the windows (kappa 0.985, bootstrap 0.969--0.996) and differ in 11 windows, which is more than the 5 windows in which the first pass differs from o4-mini. The disagreement between the two models is thus no larger than the disagreement of the model with itself. The repeats of the other arms agree on 98.8\% to 100.0\% of their windows (Table~\ref{tab:ledger} lists the runs; the repeat of \ident{full_spy} agrees on 99.6\% of 234 windows).
 
 \begin{table}[H]
 \centering
-\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs.}
+\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, and the third compares gpt-6-luna with its own repeat pass. Intervals are quarter-block bootstrap intervals; the McNemar test is exact on all windows at stride one and therefore optimistic.}
 \label{tab:bridge}
 \footnotesize
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 Statistic & o4-mini & gpt-6-luna & Both \\
 \midrule
-Windows with a parsed answer & \tbd{} & \tbd{} & \tbd{} \\
-Detection rate (\%) & \tbd{} & \tbd{} & -- \\
-Agreement with the classifier (\%) & \tbd{} & \tbd{} & -- \\
-Agreement between models (\%) & -- & -- & \tbd{} \\
-Cohen's kappa [95\% block-bootstrap interval] & -- & -- & \tbd{} \\
-McNemar exact p (non-overlapping subsample) & -- & -- & \tbd{} \\
-Block-bootstrap p (calendar quarters) & -- & -- & \tbd{} \\
-Median reported / computed mean $|\mathrm{GEX}|$ & \tbd{} & \tbd{} & -- \\
+% src: bridge_agreement.csv comparison=bridge other_arm=bridge_jan scope=all; reported_vs_computed.csv basis=bridge_pairs scope=all
+Windows with a parsed answer & 1{,}412 & 1{,}412 & 1{,}412 \\
+Detection rate (\%) & 45.8 & 46.1 & -- \\
+Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
+Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.4, 99.9] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.993 [0.986, 0.998] \\
+McNemar exact p (stride one, all windows) & -- & -- & 0.063 \\
+Block-bootstrap p (calendar quarters) & -- & -- & 0.010 \\
+Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
+\midrule
+% src: bridge_agreement.csv comparison=bridge_incl_recovered other_arm=bridge_jan scope=all (ref_arm r1_o4mini_all)
+\multicolumn{4}{@{}l}{\textit{With the 64 re-parsed answers}} \\
+Windows with a parsed answer & 1{,}476 & 1{,}476 & 1{,}476 \\
+Detection rate (\%) & 45.2 & 45.5 & -- \\
+Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
+Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.3, 99.9] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.992 [0.984, 0.997] \\
+McNemar exact p (stride one, all windows) & -- & -- & 0.219 \\
+Block-bootstrap p (calendar quarters) & -- & -- & 0.121 \\
+\midrule
+% src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan other_arm=bridge_jan#rep1 scope=all
+\multicolumn{4}{@{}l}{\textit{Test-retest of gpt-6-luna (first pass against repeat pass)}} \\
+Windows with a parsed answer & -- & 1{,}476 & -- \\
+Agreement between passes (\%) [95\% block-bootstrap interval] & -- & -- & 99.3 [98.6, 99.8] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.985 [0.969, 0.996] \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -123,50 +168,105 @@ Median reported / computed mean $|\mathrm{GEX}|$ & \tbd{} & \tbd{} & -- \\
 \begin{figure}[H]
 \centering
 \resultfigure{\figBridge}
-\caption{Bridge to the published result on the Phase 4A windows. (a) Confusion matrix of gpt-6-luna against the o4-mini labels, with the overall agreement and Cohen's kappa. (b), (c) Agreement and kappa by year, with the test-retest of gpt-6-luna and the agreement gate as dashed references. \textbf{Read this figure as:} \tbd{}}
+\caption{Bridge to the published result on the Phase 4A windows. (a) Confusion matrix of gpt-6-luna against the o4-mini labels, with the overall agreement and Cohen's kappa. (b), (c) Agreement and kappa by year, with the test-retest of gpt-6-luna and the agreement gate as dashed references. \textbf{Read this figure as:} nearly all windows lie on the diagonal (646 and 761), and the five off-diagonal windows are all detections by gpt-6-luna alone. Yearly agreement is 98.8\% or higher and the yearly kappa is far above the gate of 0.6, at 0.851 in its lowest year. The test-retest agreement of gpt-6-luna with itself (99.3\%) is a lower reference than the agreement with o4-mini.}
 \label{fig:bridge}
 \end{figure}
 
 \subsection{gpt-6-luna on the Complete Series}
 \label{sec:results:corrected}
 
-Figure~\ref{fig:corrected} shows the detection rate of gpt-6-luna by year on each SPY series, from the published inputs to the complete series, next to the classifier. \tbd{}
-% TODO(results/corrected): arms full_spy and ex0dte_spy, 2008-2026, by year with Wilson intervals and block-bootstrap intervals; list
-% windows where model and classifier disagree; give parse statistics (finish_reason, retries) in one sentence.
+Figure~\ref{fig:corrected} shows the detection rate of gpt-6-luna by year on each SPY series, from the published inputs to the complete series, next to the classifier, and Table~\ref{tab:corrected} gives the yearly rates of the two complete series with their intervals.
+% src: detection_by_year.csv label_source=llm arms full_spy, ex0dte_spy, bridge_jan, bridge_old (scope=all and by year); stats.yaml rates and contrasts (series_contrast llm, period 2024-2025); llm_parse_stats.csv; disagreements.csv
+On the complete series gpt-6-luna labels 613 of 4{,}671 windows as persistent (13.1\%; 606 of them by the rule, 13.0\%) and, without same-day expiries, 494 of 4{,}671 (10.6\%; rule 491, 10.5\%). In 2024 and 2025 it detects 28 of 252 (11.1\%) and 35 of 250 (14.0\%) of the windows of the complete series (Wilson 7.8--15.6\% and 10.2--18.8\%) and 14.3\% and 16.4\% of those without same-day expiries. Pooled over the two years the rate is 12.5\% (63 of 502; Wilson 9.9--15.7\%, quarter-block bootstrap 6.1--19.6\%, non-overlapping subsample 3 of 17). The same model on the published inputs detects 100.0\% of the windows of these two years (501 of 501), and on the pre-rebuild archive 100.0\% (501 of 501). The paired difference between the published inputs and the complete series is 87.4 percentage points (quarter-block bootstrap interval 80.3--93.9, $p=5.0\times10^{-4}$; exact McNemar test on the non-overlapping subsample $p=1.2\times10^{-4}$), and that between the archive and the complete series is 87.4 percentage points ($p=5.0\times10^{-4}$ and $p=1.2\times10^{-4}$). In 2020 to 2023 the model detects 22.7\% of the windows of the complete series. In 2026 it detects 11.4\% of the windows of the complete series and 21.2\% of those without same-day expiries (Section~\ref{sec:results:post}).
+
+The model follows the rule on the complete series. The verdicts agree in 99.7\% of the 4{,}671 windows of \ident{full_spy} (kappa 0.986) and in 99.7\% of those of \ident{ex0dte_spy} (kappa 0.985). The two arms disagree with the rule in 15 and 13 windows; the causes are analysed in Section~\ref{sec:results:fidelity}, and \path{results/disagreements.csv} lists every window. All 34{,}712 stored gpt-6-luna answers were parsed at the first attempt: every answer ended with finish reason \ident{stop}, and none needed a fallback parse or the retry at the larger token limit.
+
+\begin{table}[H]
+\centering
+\caption{gpt-6-luna on the complete SPY series, by year of the window end: windows, detection rate in percent with its 95\% Wilson interval (overlapping windows treated as independent, hence optimistic) for \ident{full_spy} and \ident{ex0dte_spy}, and the agreement of the model verdict with the rule on the same windows (percent). * Windows ending in 2026 up to 2026-10-09.}
+\label{tab:corrected}
+\footnotesize
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & & \multicolumn{2}{c}{\ident{full_spy}} & \multicolumn{2}{c}{\ident{ex0dte_spy}} & \multicolumn{2}{c}{Agreement with rule} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+Year & Windows & Rate & Wilson 95\% & Rate & Wilson 95\% & full & ex-0DTE \\
+\midrule
+% src: detection_by_year.csv label_source=llm arm=full_spy and arm=ex0dte_spy, symbol=SPY, scope=year, years 2008-2026 (n_windows, rate_pct, ci_lo_pct, ci_hi_pct, agree_pct)
+2008 & 224 & 0.0 & 0.0--1.7 & 0.0 & 0.0--1.7 & 100.0 & 100.0 \\
+2009 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2010 & 251 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2011 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2012 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2013 & 252 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2014 & 252 & 9.1 & 6.2--13.3 & 8.3 & 5.5--12.4 & 100.0 & 100.0 \\
+2015 & 252 & 7.9 & 5.2--11.9 & 1.6 & 0.6--4.0 & 100.0 & 100.0 \\
+2016 & 250 & 27.6 & 22.4--33.4 & 22.0 & 17.3--27.5 & 99.6 & 100.0 \\
+2017 & 240 & 31.7 & 26.1--37.8 & 19.2 & 14.7--24.6 & 99.6 & 99.6 \\
+2018 & 249 & 34.9 & 29.3--41.0 & 22.9 & 18.1--28.5 & 99.6 & 99.2 \\
+2019 & 251 & 10.0 & 6.8--14.3 & 3.2 & 1.6--6.2 & 100.0 & 100.0 \\
+2020 & 252 & 22.2 & 17.5--27.8 & 10.7 & 7.5--15.1 & 100.0 & 100.0 \\
+2021 & 252 & 3.6 & 1.9--6.6 & 0.0 & 0.0--1.5 & 99.2 & 100.0 \\
+2022 & 251 & 41.8 & 35.9--48.0 & 37.1 & 31.3--43.2 & 98.8 & 99.6 \\
+2023 & 250 & 23.2 & 18.4--28.8 & 26.0 & 21.0--31.8 & 99.2 & 98.4 \\
+2024 & 252 & 11.1 & 7.8--15.6 & 14.3 & 10.5--19.1 & 98.4 & 98.8 \\
+2025 & 250 & 14.0 & 10.2--18.8 & 16.4 & 12.3--21.5 & 99.6 & 99.2 \\
+2026* & 193 & 11.4 & 7.6--16.7 & 21.2 & 16.1--27.5 & 100.0 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure}[H]
 \centering
 \resultfigure{\figCorrected}
-\caption{gpt-6-luna detection rate by year, SPY: one panel per arm, from the published inputs (\ident{bridge_jan}) to the rebuilt series with and without same-day expiries (\ident{full_spy}, \ident{ex0dte_spy}) and, if it was run, the pre-rebuild archive (\ident{bridge_old}). Dots are the model with 95\% Wilson intervals, dashes the classifier on the windows the model answered, and the grey band is 2026. \textbf{Read this figure as:} \tbd{}}
+\caption{gpt-6-luna detection rate by year, SPY: one panel per arm, from the published inputs (\ident{bridge_jan}) to the rebuilt series with and without same-day expiries (\ident{full_spy}, \ident{ex0dte_spy}) and the pre-rebuild archive (\ident{bridge_old}). Dots are the model with 95\% Wilson intervals, dashes the classifier on the windows the model answered, and the grey band is 2026. \textbf{Read this figure as:} on the published inputs (a) and on the archive (d) the rate jumps to 100\% in 2024 and 2025. On the two rebuilt series (b, c) it stays between 3.6\% and 41.8\% (\ident{full_spy}) and between 0.0\% and 37.1\% (\ident{ex0dte_spy}) from 2020 to 2026, with the highest value in 2022. In every panel the dots lie close to the dashes of the classifier.}
 \label{fig:corrected}
 \end{figure}
 
 \subsection{0DTE Ablation}
 \label{sec:results:ablation}
 
-Table~\ref{tab:ablation} separates the contribution of same-day expiries by comparing \ident{new_full} with \ident{new_ex0dte}. \tbd{}
-% TODO(results/ablation): share of mean |GEX| carried by same-day expiries by year; paired comparison per window (McNemar, block
-% bootstrap). Data audit example for Figure 2: SPY 2024-03-15 is +14.61B on the published inputs and as call-only GEX, -4.50B ex-0DTE and -15.35B
-% on the full series (the archive value, +12.62B, is put-less too, so do not read the first step as a pure gamma-model effect).
+Table~\ref{tab:ablation} separates the contribution of same-day expiries by comparing \ident{new_full} with \ident{new_ex0dte}.
+% src: ex0dte_decomposition.csv (symbol SPY, QQQ, IWM; scope year; abs_0dte_share_pct, sign_flip_by_0dte_pct, rate_full_pct, rate_ex0dte_pct, n_full_only, n_ex0dte_only, llm_rate_*); stats.yaml contrasts series_contrast new_full versus new_ex0dte (paired by window end) for periods 2008-2019, 2020-2023, 2024, 2025, 2024-2025, 2026
+The share of same-day expiries in the absolute net GEX of SPY grows from 0.9\% in 2008 and 11.5\% in 2013 to 22.1\% in 2019, 25.7\% in 2020 and 45.9\% in 2024, and it stands at 43.9\% in 2025 and 40.8\% in 2026 (the share is the sum of the absolute same-day-expiry contribution over the sum of the absolute net GEX of \ident{new_full} over the days of the year). For QQQ it is 45.5\% in 2025 and for IWM 23.0\%. The sign of the daily net GEX changes when same-day expiries are removed on 11.1\% of the days of 2024 and 13.2\% of the days of 2025 (4.4\% of all days).
+
+The effect on the verdict is small and has no constant direction. In 2024 the rule detects 10.3\% of the windows of the complete series and 13.1\% of those without same-day expiries; 9 windows are detected only on the complete series and 16 only without same-day expiries (difference $-$2.8 percentage points; quarter-block bootstrap interval [$-$10.7, 5.5], $p=0.499$; exact McNemar test on the non-overlapping subsample $p=1.000$). The counts for 2025 are 4 and 11 (13.6\% against 16.4\%). Pooled over 2024 and 2025 the rates are 12.0\% and 14.7\% for the rule (difference $-$2.8 percentage points, interval [$-$8.8, 2.8], $p=0.369$; McNemar on the subsample of 17 windows $p=1.000$) and 12.5\% and 15.3\% for gpt-6-luna ($-$2.8 percentage points, $p=0.376$; subsample $p=1.000$). Removing same-day expiries therefore does not restore the high rates of the published inputs: the rate is 14.7\% without them and 12.0\% with them, against 100.0\% on the published inputs. In 2020 to 2023 the complete series detects more than the ex-0DTE series (22.2\% against 18.1\%, 4.1 percentage points; $p=0.137$ by bootstrap, $p=1.000$ by McNemar on the subsample), and in 2026 it detects less (11.4\% against 21.2\%; 0 windows against 19 in the paired comparison; bootstrap $p=0.646$, McNemar on the subsample $p=1.000$). For QQQ and IWM the rule detects no window under either series, so the ablation has no effect on their verdicts.
+
+% src: series parquet new_full_SPY, new_ex0dte_SPY, jan2026_phase4a_SPY, call_only_SPY and old_bs_SPY, net_gex of 2024-03-15
+The window of Figure~\ref{fig:window} gives an example. The net GEX of SPY on 2024-03-15 is $+$\$14.61~billion on the published inputs and $+$\$14.61~billion as call-only GEX, $-$\$4.51~billion without same-day expiries and $-$\$15.35~billion on the complete series. The archive value is $+$\$12.62~billion and is put-less too, so the step from the archive to the rebuilt series cannot be read as an effect of the gamma model alone: it combines the restored put leg with the change of the gamma model.
 
 \begin{table}[H]
 \centering
-\caption{0DTE ablation, SPY, by year: share of mean $|\mathrm{GEX}|$ carried by same-day expiries (percent), and detection rates (percent) of the classifier and of gpt-6-luna on \ident{new_full} and \ident{new_ex0dte}. The McNemar p-values are exact tests on the non-overlapping subsample (Section~\ref{sec:methods:statistics}); the block-bootstrap values accompany them in \ident{results/stats.yaml}.}
+\caption{0DTE ablation, SPY, by year: share of the absolute net GEX contributed by same-day expiries (percent), and detection rates (percent) of the classifier and of gpt-6-luna on \ident{new_full} and \ident{new_ex0dte}. The McNemar p-values are exact tests on the non-overlapping subsample (Section~\ref{sec:methods:statistics}), given where the result files hold the test for the period (2024, 2025, 2026 and the pooled periods); the block-bootstrap values accompany them in \ident{results/stats.yaml}.}
 \label{tab:ablation}
 \footnotesize
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
- & 0DTE share & \multicolumn{2}{c}{Classifier} & \multicolumn{2}{c}{gpt-6-luna} & McNemar \\
-\cmidrule(lr){3-4}\cmidrule(lr){5-6}
-Year & of $|\mathrm{GEX}|$ & full & ex-0DTE & full & ex-0DTE & p-value \\
+ & 0DTE share & \multicolumn{2}{c}{Classifier} & \multicolumn{2}{c}{gpt-6-luna} & \multicolumn{2}{c}{McNemar p} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+Year & of $|\mathrm{GEX}|$ & full & ex-0DTE & full & ex-0DTE & classifier & gpt-6-luna \\
 \midrule
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2020 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2020 & 25.7 & 22.2 & 10.7 & 22.2 & 10.7 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2021 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2021 & 36.0 & 3.6 & 0.0 & 3.6 & 0.0 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2022 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2022 & 23.4 & 40.6 & 36.7 & 41.8 & 37.1 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2023 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2023 & 35.8 & 22.4 & 25.2 & 23.2 & 26.0 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2024 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2024 nonoverlap_30d.p_mcnemar_exact
+2024 & 45.9 & 10.3 & 13.1 & 11.1 & 14.3 & 1.000 & 1.000 \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2025 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2025 nonoverlap_30d.p_mcnemar_exact
+2025 & 43.9 & 13.6 & 16.4 & 14.0 & 16.4 & 1.000 & 1.000 \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2026 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2026 nonoverlap_30d.p_mcnemar_exact
+2026 & 40.8 & 11.4 & 21.2 & 11.4 & 21.2 & 1.000 & 1.000 \\
+\midrule
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2008-2019 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2008--2019 (pooled) & -- & 10.1 & 6.5 & 10.1 & 6.4 & 0.063 & 0.063 \\
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2020-2023 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2020--2023 (pooled) & -- & 22.2 & 18.1 & 22.7 & 18.4 & 1.000 & 0.688 \\
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2024-2025 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2024--2025 (pooled) & -- & 12.0 & 14.7 & 12.5 & 15.3 & 1.000 & 1.000 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -174,44 +274,56 @@ Year & of $|\mathrm{GEX}|$ & full & ex-0DTE & full & ex-0DTE & p-value \\
 \subsection{Deep Baseline, 2008--2019}
 \label{sec:results:deep}
 
-Figure~\ref{fig:deep} extends the analysis to 2008--2019, before the growth of weekly and daily expirations. \tbd{}
-% TODO(results/deep): classifier and model rates by year for SPY on the three complete/diagnostic series; mark the 2008-2009 financial
-% crisis and the 2018 volatility episode in the figure; report the gap between new_full and new_ex0dte over time as a consistency
-% check of the ablation arm.
+Figure~\ref{fig:deep} extends the analysis to 2008--2019, before the growth of weekly and daily expirations.
+% src: detection_by_year.csv (classifier and llm rows, series new_full, new_ex0dte, old_bs, years 2008-2019); stats.yaml rates period 2008-2019; ex0dte_decomposition.csv (diff_pp, llm_diff_pp, abs_0dte_share_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period 2008-2019
+Before 2014 no window of any of the three series is detected, by the rule or by gpt-6-luna; this includes the 474 windows that end in the financial crisis of 2008 and 2009. Detections start in 2014 (9.1\% on \ident{new_full}) and peak in 2018 on both complete series, at 34.5\% on \ident{new_full} (86 of 249 windows) and 23.7\% on \ident{new_ex0dte}, the year of the 2018 volatility episode; the archive peaks in 2017 (38.8\%). Pooled over 2008 to 2019 the rule detects 10.1\% of the windows of \ident{new_full} (301 of 2{,}971; Wilson 9.1--11.3\%, quarter-block bootstrap 4.9--16.6\%), 6.5\% of those of \ident{new_ex0dte} and 9.8\% of those of the archive. The model gives 10.1\%, 6.4\% and 9.8\% on the same three series.
+
+The gap between \ident{new_full} and \ident{new_ex0dte} is a consistency check of the ablation arm. It is zero from 2008 to 2013, although same-day expiries carry 11.5\% of the absolute net GEX in 2013, and it is positive in every year from 2014 to 2019: 0.8 percentage points in 2014, 6.3 in 2015, up to 12.5 in 2017 and 6.8 in 2019, while the share rises to 22.1\%. The gap is therefore not proportional to the share. The model reproduces it (up to 12.5 percentage points). Over the whole period the complete series detects 3.6 percentage points more than the ex-0DTE series (119 windows detected only with same-day expiries against 12 only without; quarter-block bootstrap $p=5.0\times10^{-4}$; McNemar on the non-overlapping subsample of 100 windows $p=0.063$). Same-day expiries thus raise the detection rate in the decade before 0DTE, whereas the sign of the difference is reversed, without a significant difference, in 2024 and 2025 (Section~\ref{sec:results:ablation}).
 
 \begin{figure}[H]
 \centering
 \resultfigure{\figDeep}
-\caption{Pre-0DTE baseline, SPY, 2008--2019, with the 2008--2009 financial crisis and the 2018 volatility episode marked. (a) Detection rate by year of the classifier (lines) and gpt-6-luna (markers). (b) Gap between \ident{new_full} and \ident{new_ex0dte}. (c) Share of $|\mathrm{GEX}|$ carried by same-day expiries. \textbf{Read this figure as:} \tbd{}}
+\caption{Pre-0DTE baseline, SPY, 2008--2019, with the 2008--2009 financial crisis and the 2018 volatility episode marked. (a) Detection rate by year of the classifier (lines) and gpt-6-luna (markers). (b) Gap between \ident{new_full} and \ident{new_ex0dte}. (c) Share of $|\mathrm{GEX}|$ carried by same-day expiries. \textbf{Read this figure as:} all three series stay at zero until 2013 and diverge as the same-day share in panel (c) rises, with the largest gap of 12.5 percentage points in 2017. The markers of gpt-6-luna lie close to the lines of the rule in every year.}
 \label{fig:deep}
 \end{figure}
 
 \subsection{Cross-Asset Replication and the Floor Effect}
 \label{sec:results:cross}
 
-Table~\ref{tab:cross} and Figure~\ref{fig:cross} repeat the analysis for QQQ and IWM. The fixed dollar thresholds of Section~\ref{sec:methods:criteria} can produce a floor effect for smaller underlyings, which we report; the scaled series of Section~\ref{sec:methods:arms} show whether the model's verdict still follows the criteria when the floor is lifted. \tbd{}
-% TODO(results/cross): the data audit found zero persistent windows for QQQ and IWM in every year under the fixed $5B/$3B thresholds
-% (floor effect); report it as a pre-registered design decision and use regime_detected as the primary label. The scaled-input variant
-% (arms full_qqq_scaled and full_iwm_scaled on new_full_scaled, factors from series_metadata) was decided on 2026-10-28 and is reported
-% next to the unscaled arms as a disclosed protocol change; a scaled-threshold variant would change the prompt text and stays out of
-% scope. QQQ starts in 2011 (first window end 2011-05-04); the scaled series start in 2020.
+Table~\ref{tab:cross} and Figure~\ref{fig:cross} repeat the analysis for QQQ and IWM. The fixed dollar thresholds of Section~\ref{sec:methods:criteria} can produce a floor effect for smaller underlyings, which we report; the scaled series of Section~\ref{sec:methods:arms} show whether the model's verdict still follows the criteria when the floor is lifted.
+% src: report.yaml diagnostics.floor_effect (max_window_mean_abs_gex_bn) and diagnostics.floor_effect_note; detection_by_year.csv scope=all (QQQ, IWM, SPY); windows.csv.gz (clf_persistence_pct, clf_sign_flips, clf_avg_magnitude)
+The floor effect is complete. Under the fixed thresholds the rule detects no window of QQQ (0 of 3{,}867, windows ending 2011 to 2026-10-09) and none of IWM (0 of 4{,}678, 2008 to 2026-10-09), in any year and on either series. The largest 30-day mean $|\mathrm{GEX}|$ is \$4.92~billion for QQQ and \$4.98~billion for IWM on \ident{new_full} (\$4.11~billion and \$4.37~billion without same-day expiries), against \$16.00~billion for SPY, so no window reaches the \$5~billion criterion. This is a consequence of the fixed thresholds, a pre-registered design decision, and not a modelling result. The magnitude criterion is the binding one: the persistence and sign-flip tests alone pass 1{,}434 of 3{,}867 windows of QQQ (37.1\%) and 3{,}357 of 4{,}678 of IWM (71.8\%), against 1{,}763 of 4{,}671 windows of SPY (37.7\%). gpt-6-luna labels no window of QQQ or IWM as persistent either (0 of 3{,}867 and 0 of 4{,}678 on \ident{new_full}; 0 of 1{,}699 and 0 of 1{,}700 on \ident{new_ex0dte}), so the unscaled arms show that the model also rejects every window; they cannot test its discrimination.
+
+% src: report.yaml diagnostics.scaling (factor, n_days_in_factor); series parquet new_full_scaled_QQQ / _IWM series_metadata (ratio_min, ratio_max, ratio_p25, ratio_p75); stats.yaml contrasts series_contrast family scale and period_shift for new_full_scaled
+The scaled variant multiplies the \ident{new_full} values by one factor per symbol: 4.225 for QQQ (median of 1{,}699 daily ratios) and 11.431 for IWM (1{,}700 days). It is a disclosed protocol change (Section~\ref{sec:methods:arms}). With it the rule detects 350 of 1{,}670 windows of QQQ (21.0\%) and 901 of 1{,}671 windows of IWM (53.9\%), and gpt-6-luna 360 (21.6\%) and 904 (54.1\%). The model follows the rule on the scaled inputs: the verdicts agree in 99.4\% of the QQQ windows (kappa 0.982) and 99.7\% of the IWM windows (kappa 0.994). The paired difference to the unscaled arms is 21.0 percentage points for QQQ (quarter-block bootstrap interval [12.6, 31.2], $p=5.0\times10^{-4}$; exact McNemar test on the non-overlapping subsample $p=4.9\times10^{-4}$) and 53.9 for IWM ([40.7, 67.4], $p=5.0\times10^{-4}$; $p=4.7\times10^{-10}$); for the model the differences are 21.6 and 54.1 percentage points.
+
+The scaled rates depend on the factor and are not a measurement of QQQ or IWM regimes. The ratio of the open-interest notional of SPY to that of the symbol is not constant: for QQQ the daily ratio runs from 0.78 to 38.32 (quartiles 3.30 and 5.73), and for IWM from 1.51 to 110.57 (quartiles 7.72 and 16.46). A single factor puts the exposure on the scale of SPY on a typical day, no more, and another factor would give other rates. The scaled arms therefore show only that the model follows the criteria once the floor is lifted. They show no step after 2023: the rate of the rule on the scaled IWM series is 65.2\% in 2020 to 2023 and 35.7\% in 2024 and 2025 (shift $-$29.5 percentage points, $p=0.061$ by bootstrap, $p=0.137$ by Fisher exact test on the subsample), and on the scaled QQQ series 25.9\% and 13.4\% ($-$12.5 percentage points, $p=0.170$, $p=0.292$).
 
 \begin{table}[H]
 \centering
-\caption{Cross-asset replication: windows, typical magnitude and persistent windows under the fixed thresholds, by symbol and series. The scaled series are the disclosed protocol change of Section~\ref{sec:methods:arms}.}
+\caption{Cross-asset replication: windows, typical magnitude and persistent windows under the fixed thresholds, by symbol and series. The scaled series are the disclosed protocol change of Section~\ref{sec:methods:arms}. The magnitude column is the median over windows of the 30-day mean $|\mathrm{GEX}|$ of the series as sent to the model; the scaled series are SPY-scale values, so their magnitudes are not comparable with the unscaled rows of the same symbol. The ex-0DTE arms of QQQ and IWM start in 2020, so gpt-6-luna answered fewer windows than the classifier labelled.}
 \label{tab:cross}
 \footnotesize
 \begin{tabular}{@{}llrrrr@{}}
 \toprule
 Symbol & Series & Windows & \shortstack[r]{Median mean\\ $|\mathrm{GEX}|$ (\$B)} & \shortstack[r]{Persistent\\ (classifier)} & \shortstack[r]{Detected\\ (gpt-6-luna)} \\
 \midrule
-SPY & \ident{new_full} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-QQQ & \ident{new_full} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-IWM & \ident{new_full} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-QQQ & \ident{new_ex0dte} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-IWM & \ident{new_ex0dte} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-QQQ & \ident{new_full_scaled} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-IWM & \ident{new_full_scaled} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: detection_by_year.csv scope=all symbol=SPY (classifier series_key=new_full: n, n_detect; llm arm=full_spy: n_detect); windows.csv.gz series_key=new_full symbol=SPY (median of clf_avg_magnitude)
+SPY & \ident{new_full} & 4{,}671 & 3.84 & 606 of 4{,}671 (13.0\%) & 613 of 4{,}671 (13.1\%) \\
+% src: detection_by_year.csv scope=all symbol=QQQ (classifier series_key=new_full: n, n_detect; llm arm=full_qqq: n_detect); windows.csv.gz series_key=new_full symbol=QQQ (median of clf_avg_magnitude)
+QQQ & \ident{new_full} & 3{,}867 & 0.74 & 0 of 3{,}867 (0.0\%) & 0 of 3{,}867 (0.0\%) \\
+% src: detection_by_year.csv scope=all symbol=IWM (classifier series_key=new_full: n, n_detect; llm arm=full_iwm: n_detect); windows.csv.gz series_key=new_full symbol=IWM (median of clf_avg_magnitude)
+IWM & \ident{new_full} & 4{,}678 & 0.66 & 0 of 4{,}678 (0.0\%) & 0 of 4{,}678 (0.0\%) \\
+% src: detection_by_year.csv scope=all symbol=SPY (classifier series_key=new_ex0dte: n, n_detect; llm arm=ex0dte_spy: n_detect); windows.csv.gz series_key=new_ex0dte symbol=SPY (median of clf_avg_magnitude)
+SPY & \ident{new_ex0dte} & 4{,}671 & 3.04 & 491 of 4{,}671 (10.5\%) & 494 of 4{,}671 (10.6\%) \\
+% src: detection_by_year.csv scope=all symbol=QQQ (classifier series_key=new_ex0dte: n, n_detect; llm arm=ex0dte_qqq: n_detect); windows.csv.gz series_key=new_ex0dte symbol=QQQ (median of clf_avg_magnitude)
+QQQ & \ident{new_ex0dte} & 3{,}867 & 0.64 & 0 of 3{,}867 (0.0\%) & 0 of 1{,}699 (0.0\%) \\
+% src: detection_by_year.csv scope=all symbol=IWM (classifier series_key=new_ex0dte: n, n_detect; llm arm=ex0dte_iwm: n_detect); windows.csv.gz series_key=new_ex0dte symbol=IWM (median of clf_avg_magnitude)
+IWM & \ident{new_ex0dte} & 4{,}678 & 0.62 & 0 of 4{,}678 (0.0\%) & 0 of 1{,}700 (0.0\%) \\
+% src: detection_by_year.csv scope=all symbol=QQQ (classifier series_key=new_full_scaled: n, n_detect; llm arm=full_qqq_scaled: n_detect); windows.csv.gz series_key=new_full_scaled symbol=QQQ (median of clf_avg_magnitude)
+QQQ & \ident{new_full_scaled} & 1{,}670 & 9.13 & 350 of 1{,}670 (21.0\%) & 360 of 1{,}670 (21.6\%) \\
+% src: detection_by_year.csv scope=all symbol=IWM (classifier series_key=new_full_scaled: n, n_detect; llm arm=full_iwm_scaled: n_detect); windows.csv.gz series_key=new_full_scaled symbol=IWM (median of clf_avg_magnitude)
+IWM & \ident{new_full_scaled} & 1{,}671 & 12.00 & 901 of 1{,}671 (53.9\%) & 904 of 1{,}671 (54.1\%) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -219,28 +331,34 @@ IWM & \ident{new_full_scaled} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
 \begin{figure}[H]
 \centering
 \resultfigure{\figCross}
-\caption{Cross-asset replication, SPY, QQQ and IWM (QQQ from 2011). Top row: detection rate by year of the classifier (lines) and gpt-6-luna (markers) on \ident{new_full} and \ident{new_ex0dte}, and the share of windows that pass the persistence and sign-flip tests alone (dotted). Bottom row: yearly median and largest 30-day mean $|\mathrm{GEX}|$ against the \$5 billion criterion. \textbf{Read this figure as:} \tbd{}}
+\caption{Cross-asset replication, SPY, QQQ and IWM (QQQ from 2011). Top row: detection rate by year of the classifier (lines) and gpt-6-luna (markers) on \ident{new_full} and \ident{new_ex0dte}, and the share of windows that pass the persistence and sign-flip tests alone (dotted). Bottom row: yearly median and largest 30-day mean $|\mathrm{GEX}|$ against the \$5 billion criterion. \textbf{Read this figure as:} for QQQ and IWM the detection lines lie at zero in every year while the dotted lines show that many windows pass the persistence and flip tests; the bottom row shows why, since the largest yearly window mean stays below the \$5 billion line for QQQ (at most \$4.92~billion) and for IWM (at most \$4.98~billion). For SPY the largest window mean reaches \$16.00~billion.}
 \label{fig:cross}
 \end{figure}
 
 \subsection{Post-Publication Period}
 \label{sec:results:post}
 
-Table~\ref{tab:post} and Figure~\ref{fig:post} cover the post-publication period of Section~\ref{sec:methods:windows}: the windows that end in 2026, of which those with ends from 2026-02-13 lie entirely after the end of the published sample (2025-12-31). We use this label rather than out-of-sample, because gpt-6-luna was created on 2026-09-14 and its training cutoff is undocumented. \tbd{}
-% TODO(results/post): SPY windows ending in 2026 (to 2026-10-09) on new_full and new_ex0dte, with the counts for all of them and for those entirely in 2026 (ends from 2026-02-13). Explain the cap
-% at 2026-10-09 (vendor switch on 2026-10-12) and that the model's training data may overlap the period.
+Table~\ref{tab:post} and Figure~\ref{fig:post} cover the post-publication period of Section~\ref{sec:methods:windows}: the windows that end in 2026, of which those with ends from 2026-02-13 lie entirely after the end of the published sample (2025-12-31). We use this label rather than out-of-sample, because gpt-6-luna was created on 2026-09-14 and its training cutoff is undocumented.
+% src: dates 2026-09-14 (gpt-6-luna creation; README line 216, runs.model_created_at) and 2026-10-12 (Alpha Vantage to Cboe switch; decisions log line 207, README line 126); post_publication_2026_summary.csv (SPY; definitions ends_in_2026 and entirely_2026; series new_full, new_ex0dte, call_only, new_full_scaled); post_publication_2026.csv (clf_regime_type of detected windows, clf_avg_magnitude_bn); stats.yaml rates period 2026
+The period has 193 windows with ends from 2026-01-02 to 2026-10-09, of which 164 lie entirely in 2026 (ends from 2026-02-13) and 29 still contain days of 2025. The last window end is 2026-10-09 because equity options moved from Alpha Vantage to Cboe delayed quotes on 2026-10-12 (Section~\ref{sec:methods:lineage}). On the complete series the rule detects 22 of 193 (11.4\%) of the windows that end in 2026 and 22 of 164 (13.4\%) of those entirely in 2026; without same-day expiries it detects 41 of 193 (21.2\%) and 41 of 164 (25.0\%). All detected windows of the complete series are persistent negative-GEX windows, with ends between 2026-03-20 and 2026-04-21. These rates are close to the 12.0\% of 2024 and 2025 on the complete series and far from the 100\% that the published inputs gave for those years. The Wilson interval for the windows ending in 2026 is 7.6--16.7\% (quarter-block bootstrap 0.0--22.1\%, 4 blocks). A call-only series would label 193 of the 193 windows as persistent, with a mean $|\mathrm{GEX}|$ of \$21.73~billion. gpt-6-luna agrees with the rule in 100.0\% of the windows on \ident{new_full} and 100.0\% on \ident{new_ex0dte} (0 and 0 windows of disagreement, respectively). For QQQ and IWM the unscaled series give no detection by the rule or by the model (0 of 193 windows each). On the scaled series the rule detects 15.5\% (QQQ) and 44.6\% (IWM) of the windows ending in 2026 and the model 16.1\% and 45.1\%. The training data of gpt-6-luna may overlap this period, so the agreement of the model with the rule here shows consistency with the rule and says nothing about forecasting.
 
 \begin{table}[H]
 \centering
-\caption{Post-publication period, SPY, windows ending in 2026 up to 2026-10-09 (those with ends from 2026-02-13 lie entirely in 2026).}
+\caption{Post-publication period, SPY, windows ending in 2026 up to 2026-10-09 (those with ends from 2026-02-13 lie entirely in 2026). Cells give windows detected, with the percentage in brackets.}
 \label{tab:post}
 \footnotesize
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}llrrrr@{}}
 \toprule
-Series & Windows & Classifier detects (\%) & gpt-6-luna detects (\%) & Agreement (\%) \\
+Series & Window set & Windows & Classifier detects (\%) & gpt-6-luna detects (\%) & Agreement (\%) \\
 \midrule
-\ident{new_full} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{new_ex0dte} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: post_publication_2026_summary.csv definition=ends_in_2026 series_key=new_full symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_full} & ends in 2026 & 193 & 22 (11.4) & 22 (11.4) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=entirely_2026 series_key=new_full symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_full} & entirely in 2026 & 164 & 22 (13.4) & 22 (13.4) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=ends_in_2026 series_key=new_ex0dte symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_ex0dte} & ends in 2026 & 193 & 41 (21.2) & 41 (21.2) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=entirely_2026 series_key=new_ex0dte symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_ex0dte} & entirely in 2026 & 164 & 41 (25.0) & 41 (25.0) & 100.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -248,18 +366,16 @@ Series & Windows & Classifier detects (\%) & gpt-6-luna detects (\%) & Agreement
 \begin{figure}[H]
 \centering
 \resultfigure{\figPost}
-\caption{Post-publication period (windows ending in 2026 up to 2026-10-09): per-window classifier and gpt-6-luna labels for SPY under the complete series; the windows that still contain days of 2025 are set apart. \textbf{Read this figure as:} \tbd{}}
+\caption{Post-publication period (windows ending in 2026 up to 2026-10-09): per-window classifier and gpt-6-luna labels for SPY under the complete series; the windows that still contain days of 2025 are set apart. \textbf{Read this figure as:} the 30-day mean $|\mathrm{GEX}|$ of the complete series (a) stays above \$5 billion in every window (lowest value \$6.13~billion), whereas that of the ex-0DTE series is below it in 84 of 193 windows. The rule labels 22 windows of the complete series and 41 windows of the ex-0DTE series as persistent (red in b), and gpt-6-luna differs from the rule in 0 of the 193 windows of the complete series and in 0 of the 193 windows of the ex-0DTE series.}
 \label{fig:post}
 \end{figure}
 
 \subsection{Intraday Check}
 \label{sec:results:intraday}
 
-Table~\ref{tab:intraday} and Figure~\ref{fig:intraday} compare the late-session intraday snapshot with the end-of-day value for SPY from 2026-07-27 to 2026-10-09. \tbd{}
-% TODO(results/intraday): snapshot type final_rush (19:55:59 UTC), the last independent late-session observation; the market_close slot
-% equals the end-of-day row. Exclude 2026-07-29, 2026-08-03 and 2026-09-14 (irregular days); equity intraday rows before
-% 2026-07-25 carried the previous day's chain (upstream #64). Compare composite windows (new_full for T-29..T-1 and the
-% intraday value at T+0) with the end-of-day windows. With a few dozen days report counts, not p-values.
+Table~\ref{tab:intraday} and Figure~\ref{fig:intraday} compare the late-session intraday snapshot with the end-of-day value for SPY from 2026-07-27 to 2026-10-09.
+% src: irregular days and final_rush 19:55:59 UTC: report.yaml outputs.intraday.summary.irregular_days, README line 112; intraday.csv (51 regular days; gex_t0_final_rush_bn, gex_t0_eod_bn, gex_t0_diff_bn, clf_agree, llm_agree, clf_type_*); report.yaml headline.intraday; figures/output/fig11_intraday_vs_eod.json extra.counts
+The snapshot is the \ident{final_rush} slot (19:55:59 UTC), the last independent late-session observation; the \ident{market_close} slot equals the end-of-day row. The irregular days 2026-07-29, 2026-08-03, 2026-09-14 are excluded, which leaves 51 days. The two values of day T+0 have the same sign on 46 of 51 days (90.2\%). Their median relative difference is 11.9\% and the median absolute difference is \$0.93~billion (mean \$1.69~billion, largest \$19.08~billion). A single day moves the 30-day mean $|\mathrm{GEX}|$ of a window only a little: the composite window (the complete series for days $T{-}29$ to $T{-}1$ and the snapshot at T+0) differs from the end-of-day window by at most \$0.34~billion. The rule gives the same label for the composite and the end-of-day window on 51 of 51 days, and gpt-6-luna on 51 of 51. This agreement is weak evidence, because no window of the period is persistent: the rule and the model detect 0 and 0 of the 102 windows, and the 30-day mean $|\mathrm{GEX}|$ of every window is at least \$7.54~billion, so the verdict depends on persistence and flips, not on the magnitude. With a few dozen days the section reports counts and no p-values.
 
 \begin{table}[H]
 \centering
@@ -270,11 +386,13 @@ Table~\ref{tab:intraday} and Figure~\ref{fig:intraday} compare the late-session 
 \toprule
 Statistic & Value \\
 \midrule
-Days with both observations & \tbd{} \\
-Days with the same sign (\%) & \tbd{} \\
-Median relative difference of GEX (\%) & \tbd{} \\
-Classifier label agreement of composite and end-of-day windows (\%) & \tbd{} \\
-gpt-6-luna label agreement of composite and end-of-day windows (\%) & \tbd{} \\
+% src: intraday.csv (all rows, irregular days excluded)
+Days with both observations & 51 \\
+Days with the same sign (\%) & 90.2 (46 of 51) \\
+Median relative difference of GEX (\%) & 11.9 \\
+Median absolute difference of GEX (\$B) & 0.93 \\
+Classifier label agreement of composite and end-of-day windows (\%) & 100.0 (51 of 51) \\
+gpt-6-luna label agreement of composite and end-of-day windows (\%) & 100.0 (51 of 51) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -282,40 +400,50 @@ gpt-6-luna label agreement of composite and end-of-day windows (\%) & \tbd{} \\
 \begin{figure}[H]
 \centering
 \resultfigure{\figIntraday}
-\caption{Late-session intraday snapshot versus end-of-day GEX, SPY, 2026-07-27 to 2026-10-09. (a) Day T+0 value of the snapshot (\ident{final_rush}) and of the end-of-day row. (b) 30-day mean $|\mathrm{GEX}|$ of the composite and of the end-of-day window against the \$5 billion criterion. (c) Labels of the classifier and of gpt-6-luna on the two windows. Irregular days are drawn hollow and not counted. \textbf{Read this figure as:} \tbd{}}
+\caption{Late-session intraday snapshot versus end-of-day GEX, SPY, 2026-07-27 to 2026-10-09. (a) Day T+0 value of the snapshot (\ident{final_rush}) and of the end-of-day row. (b) 30-day mean $|\mathrm{GEX}|$ of the composite and of the end-of-day window against the \$5 billion criterion. (c) Labels of the classifier and of gpt-6-luna on the two windows. The three irregular days (2026-07-29, 2026-08-03, 2026-09-14) are not in the series. \textbf{Read this figure as:} the snapshot and the end-of-day value of day T+0 are close on most days and differ in sign on 5 of 51 days. The two window means in (b) are almost the same line, and in (c) every window is rejected under both labels, with no day on which the composite label differs.}
 \label{fig:intraday}
 \end{figure}
 
 \subsection{Model Fidelity to the Rule}
 \label{sec:results:fidelity}
 
-Table~\ref{tab:fidelity} and Figure~\ref{fig:fidelity} compare each model answer with the deterministic classifier on the same window. \tbd{}
-% TODO(results/fidelity): accuracy of regime_detected against clf_should_detect by arm, Cohen's kappa, the share of answers whose
-% reported counts, magnitude and persistence equal the computed values (metrics_agree: 0.5 day, 0.05B, 0.5 percentage points),
-% the exact-match rate of sign_flips (undercounted in 7 of 32 in the probe), and behaviour in the borderline region around 70 %
-% persistence and 5B magnitude.
+Table~\ref{tab:fidelity} and Figure~\ref{fig:fidelity} compare each model answer with the deterministic classifier on the same window.
+% src: detection_by_year.csv label_source=llm scope=all (n_compared, agree_pct, kappa, metrics_agree_pct, sign_flips_exact_pct); disagreements.csv (58 rows; causes derived from llm_sign_flips, clf_sign_flips, llm_avg_magnitude_bn, clf_avg_magnitude_bn); figures/output/fig07_llm_classifier_fidelity.json extra.groups and extra.borderline
+The verdict of the model equals the verdict of the rule in 99.6\% or more of the windows of every SPY arm (99.7\% on \ident{full_spy}, 99.7\% on \ident{ex0dte_spy}), with kappa between 0.985 and 0.995. The published o4-mini answers equal the rule in all 1{,}412 windows, and gpt-6-luna reaches 99.4\% and 99.7\% on the scaled QQQ and IWM series. On the unscaled QQQ and IWM arms the accuracy is 100.0\% and kappa is undefined, because the rule labels no window as persistent. Over the answers drawn in panels (c) to (e) of Figure~\ref{fig:fidelity} (33{,}160 parsed answers) the verdict equals the rule's in 99.8\% of the 31{,}684 gpt-6-luna answers and in 100.0\% of the 1{,}476 o4-mini answers.
+
+The reported metrics are less exact than the verdict, and least exact on the unscaled QQQ and IWM arms (82.2\% to 89.5\%). The share of answers whose reported counts, magnitude and persistence equal the computed values (within 0.5 days, \$0.05 billion and 0.5 percentage points) is 99.4\% for o4-mini and between 92.7\% and 98.1\% for gpt-6-luna on the SPY arms. The sign-flip count is exact in 100.0\% of the o4-mini answers and in 93.2\% to 95.6\% of the gpt-6-luna answers on the SPY arms (93.3\% over all gpt-6-luna answers of Figure~\ref{fig:fidelity}); the model undercounts flips in 6.0\% of its answers and overcounts them in 0.6\%. Its reported persistence lies within the tolerance of the figure (one day) in 94.9\% of the answers and its reported magnitude within 10\% of \$5 billion in 98.7\%, against 99.9\% and 99.6\% for o4-mini. The median ratio of reported to computed magnitude is 1.000.
+
+The few verdicts that differ from the rule lie at the thresholds. Seven gpt-6-luna arms have windows in which the verdict differs from the rule (\ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq_scaled}, \ident{bridge_old}, \ident{bridge_jan}, \ident{full_iwm_scaled}, \ident{p34_obf_2024}), 58 windows in all (\path{results/disagreements.csv}): 39 are windows in which the model reports at most five sign flips where the rule counts six or more, so that it calls a window persistent that the rule classifies as low conviction; 15 are windows in which the reported mean magnitude lies on the other side of \$5 billion than the computed one; 2 are overcounted flips; and 2 are windows whose reported values are correct and meet all three criteria but which the model labels transitional (persistence 70.0\% and 73.3\%, close to the 70\% threshold). In 41 of the 58 windows the model detects a regime that the rule rejects, and in 17 it rejects one that the rule detects. In 51 of the 58 windows the computed values lie in the borderline region of Figure~\ref{fig:fidelity}, that is a persistence within one day of 21 of 30 days (66.7--73.3\%), a mean magnitude between \$4.50 and \$5.50 billion or 4 to 6 flips. Away from these regions the model reproduces the rule.
 
 \begin{table}[H]
 \centering
-\caption{Fidelity of model answers to the deterministic classifier, by arm (the published o4-mini answers of \ident{r1_o4mini} are the reference).}
+\caption{Fidelity of model answers to the deterministic classifier on the same windows, by arm: accuracy of the binary verdict, Cohen's kappa (-- where the classifier or the model labels every window alike), the share of answers whose reported counts, magnitude and persistence equal the computed values (0.5 day, \$0.05 billion, 0.5 percentage points), and the share with an exact sign-flip count. The published o4-mini answers of \ident{r1_o4mini}, \ident{r1_p3_o4mini} and \ident{r1_p4_o4mini} form the first block.}
 \label{tab:fidelity}
 \footnotesize
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 Arm & Windows & Accuracy (\%) & Cohen's kappa & Metrics agree (\%) & Flips exact (\%) \\
 \midrule
-\ident{r1_o4mini} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{bridge_jan} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{full_spy} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{ex0dte_spy} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{full_qqq} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{full_iwm} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{full_qqq_scaled} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{full_iwm_scaled} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{p34_obf_2024} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{p34_dated_2024} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{p34_obf_2020} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\ident{p34_dated_2020} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: detection_by_year.csv label_source=llm scope=all, one row per arm (n_compared, agree_pct, kappa, metrics_agree_pct, sign_flips_exact_pct); -- where kappa is undefined (one label only)
+\ident{r1_o4mini} & 1{,}412 & 100.0 & 1.000 & 99.4 & 100.0 \\
+\ident{r1_p3_o4mini} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{r1_p4_o4mini} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\midrule
+\ident{bridge_jan} & 1{,}476 & 99.6 & 0.992 & 98.1 & 95.2 \\
+\ident{bridge_old} & 4{,}638 & 99.8 & 0.995 & 94.2 & 95.6 \\
+\ident{full_spy} & 4{,}671 & 99.7 & 0.986 & 92.7 & 93.2 \\
+\ident{ex0dte_spy} & 4{,}671 & 99.7 & 0.985 & 93.4 & 94.6 \\
+\ident{full_qqq} & 3{,}867 & 100.0 & -- & 82.2 & 89.6 \\
+\ident{full_iwm} & 4{,}678 & 100.0 & -- & 85.9 & 92.6 \\
+\ident{ex0dte_qqq} & 1{,}699 & 100.0 & -- & 89.5 & 92.2 \\
+\ident{ex0dte_iwm} & 1{,}700 & 100.0 & -- & 86.0 & 89.2 \\
+\ident{full_qqq_scaled} & 1{,}670 & 99.4 & 0.982 & 93.5 & 93.2 \\
+\ident{full_iwm_scaled} & 1{,}671 & 99.7 & 0.994 & 97.5 & 95.8 \\
+\ident{p34_obf_2024} & 223 & 99.6 & 0.985 & 98.2 & 96.4 \\
+\ident{p34_dated_2024} & 223 & 100.0 & 1.000 & 99.6 & 98.2 \\
+\ident{p34_obf_2020} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{p34_dated_2020} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{intraday_spy} & 51 & 100.0 & -- & 96.1 & 92.2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -323,33 +451,39 @@ Arm & Windows & Accuracy (\%) & Cohen's kappa & Metrics agree (\%) & Flips exact
 \begin{figure}[H]
 \centering
 \resultfigure{\figFidelity}
-\caption{Fidelity of the model answers (o4-mini and gpt-6-luna) to the deterministic classifier. (a), (b) Accuracy and Cohen's kappa of the verdict by series and year. (c)--(e) Reported versus computed persistence, mean $|\mathrm{GEX}|$ and sign-flip count, with the borderline region around each threshold shaded. \textbf{Read this figure as:} \tbd{}}
+\caption{Fidelity of the model answers (o4-mini and gpt-6-luna) to the deterministic classifier. (a), (b) Accuracy and Cohen's kappa of the verdict by series and year. (c)--(e) Reported versus computed persistence, mean $|\mathrm{GEX}|$ and sign-flip count, with the borderline region around each threshold shaded. \textbf{Read this figure as:} the yearly accuracy stays between 98.4\% and 100\% for every arm and year, (lowest value: \ident{ex0dte_spy} in 2023). In panels (c) to (e) the o4-mini answers (grey) lie on the zero line, whereas the gpt-6-luna answers (black) scatter around it; the errors that matter for the verdict are those inside the shaded regions, and the largest scatter is in the sign-flip count, where the model undercounts.}
 \label{fig:fidelity}
 \end{figure}
 
 \subsection{Dated versus Obfuscated Prompts: The 2024 and 2020 Baselines}
 \label{sec:results:dated}
 
-Table~\ref{tab:dated} compares the published o4-mini answers on the inputs of the Phase 3 and 4 baselines, whose prompts carried calendar dates, with gpt-6-luna on the same values with the dates and with relative day labels (Section~\ref{sec:methods:arms}). \tbd{}
-% TODO(results/dated): arms r1_p3_o4mini and r1_p4_o4mini (published o4-mini answers, dated prompts; data audit: 181 of 223 = 81.2 % for 2024
-% and 27 of 223 = 12.1 % for 2020, to be verified against the final tables), p34_dated_* and p34_obf_*: detection rate with Wilson
-% intervals, agreement with the classifier on the series as sent (p3_2024 and p4_2020), the paired dated-versus-obfuscated difference per
-% baseline (exact McNemar on the non-overlapping subsample, quarter-block bootstrap) and the 2024-versus-2020 contrast (phi; 0.692 for the
-% published answers) under each label type. The two series differ in sign convention and in size (mean |GEX| about 31.2 B against 2.85 B in
-% the data audit), so say that the contrast is one of magnitudes and do not describe it as negative versus positive regimes. The 223
-% windows of each baseline overlap (stride one): report the non-overlapping subsample next to every p-value.
+Table~\ref{tab:dated} compares the published o4-mini answers on the inputs of the Phase 3 and 4 baselines, whose prompts carried calendar dates, with gpt-6-luna on the same values with the dates and with relative day labels (Section~\ref{sec:methods:arms}).
+% src: detection_by_year.csv scope=all (mean_abs_gex_bn of classifier p3_2024 and p4_2020; arms r1_p3_o4mini, r1_p4_o4mini, p34_dated_2024, p34_dated_2020, p34_obf_2024, p34_obf_2020; classifier p3_2024, p4_2020); stats.yaml rates (Wilson), contrasts series_contrast family label and phase_contrast; report.yaml headline.bridge; series parquet p3_2024_SPY, p4_2020_SPY
+The published o4-mini answers detect 181 of 223 (81.2\%) of the 2024 windows and 27 of 223 (12.1\%) of the 2020 windows (Wilson 95\% intervals 75.5--85.8\% and 8.5--17.0\%). With the dates, gpt-6-luna reproduces these answers: it gives the same verdict in 223 of 223 windows of 2024 and 223 of 223 of 2020 (kappa 1.000 and 1.000). The deterministic classifier on the series as sent gives the same labels as o4-mini in both baselines (100.0\% and 100.0\% agreement).
+
+Showing the dates changed nothing that the data can detect. With relative day labels gpt-6-luna detects 180 of 223 (80.7\%) of the 2024 windows against 181 of 223 (81.2\%) with dates, and 27 of 223 (12.1\%) of the 2020 windows against 27 of 223 (12.1\%). The two labelings differ in 1 window of 2024 and in none of 2020 (paired quarter-block bootstrap interval for 2024 [$-$1.9, 0.0] percentage points, $p=0.646$; exact McNemar test $p=1.000$ at stride one and $p=1.000$ on the non-overlapping subsample of 8 windows; in 2020 both are $p=1.000$). The 223 windows of each baseline overlap with stride one, and the quarter-block bootstrap rests on 4 calendar quarters, so these intervals are coarse.
+
+The 2024-versus-2020 contrast of the earlier studies is reproduced under every label type. The difference in detection rate between the two baselines is 69.1 percentage points for the published o4-mini answers ($\varphi=0.692$, Newcombe--Wilson interval [61.6, 74.9]; quarter-block bootstrap interval [31.6, 93.3], $p=0.002$; Fisher exact test on the non-overlapping subsample of 8 windows per baseline $p=0.041$), 69.1 for gpt-6-luna with dates ($\varphi=0.692$) and 68.6 for gpt-6-luna with relative labels ($\varphi=0.688$; bootstrap $p=0.003$; Fisher $p=0.041$). The Fisher test on 8 non-overlapping windows per baseline is far less extreme than the test on all windows, which treats the overlapping windows as independent ($p=1.8\times10^{-52}$).
+
+The contrast is one of magnitudes and not of regimes. The two input series are not on one convention: the 2024 values are a gross magnitude with an imposed negative sign and a mean absolute value of \$31.24~billion per day, the 2020 values are a magnitude without sign and have a mean of \$2.85~billion (Section~\ref{sec:results:inputs}). The 30-day mean $|\mathrm{GEX}|$ of the windows averages \$30.71~billion in 2024 and \$2.56~billion in 2020, against the criterion of \$5 billion, so the contrast does not describe a negative against a positive regime, and the type of day label does not change it.
 
 \begin{table}[H]
 \centering
-\caption{Phase 3 (2024) and Phase 4 (2020) baselines: detection rate in percent (detected windows out of 223) of the published o4-mini answers, which carried dates, of gpt-6-luna with the dates and with relative day labels (Day T), and of the deterministic classifier on the series as sent. The last column is the exact McNemar p-value of the two gpt-6-luna arms on the non-overlapping subsample (Section~\ref{sec:methods:statistics}).}
+\caption{Phase 3 (2024) and Phase 4 (2020) baselines: detection rate in percent (detected windows out of 223 in brackets) of the published o4-mini answers, which carried dates, of gpt-6-luna with the dates and with relative day labels (Day T), and of the deterministic classifier on the series as sent. The last column is the exact McNemar p-value of the two gpt-6-luna arms on the non-overlapping subsample (Section~\ref{sec:methods:statistics}). The last row gives the difference between the two baselines in percentage points with $\varphi$ in brackets (unpaired).}
 \label{tab:dated}
 \footnotesize
 \begin{tabular}{@{}llrrrrr@{}}
 \toprule
 Baseline & Series & o4-mini, dated & luna, dated & luna, Day T & Classifier & McNemar p \\
 \midrule
-Phase 3, 2024 & \ident{p3_2024} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-Phase 4, 2020 & \ident{p4_2020} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+% src: detection_by_year.csv scope=all (arms r1_p3_o4mini, p34_dated_2024, p34_obf_2024; classifier series_key=p3_2024); stats.yaml contrasts series_contrast label family, nonoverlap_30d.p_mcnemar_exact
+Phase 3, 2024 & \ident{p3_2024} & 81.2 (181) & 81.2 (181) & 80.7 (180) & 81.2 (181) & 1.000 \\
+% src: detection_by_year.csv scope=all (arms r1_p4_o4mini, p34_dated_2020, p34_obf_2020; classifier series_key=p4_2020); stats.yaml contrasts series_contrast label family, nonoverlap_30d.p_mcnemar_exact
+Phase 4, 2020 & \ident{p4_2020} & 12.1 (27) & 12.1 (27) & 12.1 (27) & 12.1 (27) & 1.000 \\
+\midrule
+% src: stats.yaml contrasts phase_contrast (diff_pp, phi); the classifier row of the same labeller family on p3_2024
+2024 minus 2020, pp ($\varphi$) & & 69.1 (0.692) & 69.1 (0.692) & 68.6 (0.688) & 69.1 (0.692) & -- \\
 \bottomrule
 \end{tabular}
 \end{table}

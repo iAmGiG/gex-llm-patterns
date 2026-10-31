@@ -1,34 +1,24 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% TODO(intro/overview): 2-3 sentences. LLM structural reasoning has to be validated against memorization, and temporal
-% obfuscation does so by removing dates and tickers; the test is only as sound as the numerical series shown to the model.
-% This article re-runs the published 30-day regime test on inputs whose definition and provenance are now documented and
-% asks what the published conclusions rest on.
-\tbd{} Opening paragraph pending.
+A language model that labels a market regime may be recalling the period it was trained on, or it may be reasoning about the numbers it is shown. Temporal obfuscation separates the two readings: dates and tickers are removed, so that the model has only the values and the stated criteria. The test is only as sound as the numerical series that it shows to the model. This article re-runs the published 30-day regime test on the complete daily series, with a second model on identical inputs, and asks what the published conclusions rest on.
 
 \subsection{Motivation: Data-Definition Drift and Model Retirement}
 \label{sec:introduction:motivation}
 
-% TODO(intro/motivation): 1-3 sentences. After the January 2026 run (o4-mini) the model was retired on all endpoints, the raw
-% options table was reloaded (2026-02-03) and the daily GEX table was rebuilt (2026-10-08: stored per-contract gamma, 0DTE
-% included). A result that depends on a model and on an input definition that can both disappear cannot be re-run, only
-% re-interpreted; hence the exact-input bridge and the versioned storage of every input and response.
-\tbd{} Motivation pending.
+% src: planning/forensics/2026-10-28_memo_published_inputs.md (raw table reloaded 2026-02-03; options_daily_summary rebuilt 2026-10-08); planning/02_decisions_log.md D-01 (404 model_not_found)
+The published run used o4-mini in January 2026. The model no longer answers inference requests (the endpoint returns \ident{model_not_found}). The raw options table was reloaded on 2026-02-03, and the daily GEX table was rebuilt on 2026-10-08 from stored per-contract gamma, with same-day expiries included (Section~\ref{sec:methods:lineage}). A result that depends on a model and on an input definition that can both disappear cannot be re-run, only re-interpreted. The study therefore recovers the exact inputs of the published run from the stored batch file, bridges a second model (gpt-6-luna) to o4-mini on these inputs, and stores every input, prompt and response.
 
 \subsection{Relation to Prior Work}
 \label{sec:introduction:relation}
 
 This article is the extended version of the AIAI~2026 conference paper \cite{regan2026regimes}, which introduced 30-day regime detection under temporal obfuscation and built on the single-day study presented at IEEE BigData~2025 \cite{regan2025obfuscation}. Both lines of work are combined in a separate journal article \cite{regan2026jrfm}. The experiments reported here are new relative to all three publications.
-% TODO(intro/relation): 2-3 sentences or a short list of what is new: (i) the provenance and definition of the daily input series,
-% (ii) a different model (gpt-6-luna) bridged to o4-mini on identical inputs, (iii) 2008-2019, QQQ/IWM, 2026 and an intraday
-% check, (iv) overlap-aware inference, (v) an obfuscated-versus-dated rerun of the Phase 3 and 4 baselines, and (vi) a disclosed
-% per-symbol scaling for QQQ and IWM. Keep the overlap with the AIAI/JRFM text to the recap in Section 3.1.
+New relative to the three publications are (i)~the provenance and definition of the daily input series, (ii)~a second model, gpt-6-luna, bridged to o4-mini on identical inputs, (iii)~the years 2008--2019, QQQ and IWM, 2026 and an intraday check, (iv)~overlap-aware inference, (v)~an obfuscated-versus-dated rerun of the Phase~3 and~4 baselines, and (vi)~a disclosed per-symbol scaling for QQQ and IWM. The recap of the earlier design is limited to Section~\ref{sec:methods}.
 
 \subsection{Research Questions}
 \label{sec:introduction:rqs}
 
-% TODO(intro/rqs): refine the wording with the co-author; keep one question per results subsection.
+% TODO(authors): confirm the wording of RQ1-RQ7; the guidance says one question per results subsection (Sections 4.1-4.11), but there are 7 questions for 11 subsections, so map them explicitly or reword to 'RQ1-RQ7 cover Sections 4.1-4.11'.
 We address seven questions:
 \begin{enumerate}[label=RQ\arabic*.,leftmargin=*]
 \item Which daily series were the published inputs, and how do the deterministic labels change on the complete series?
@@ -43,12 +33,18 @@ We address seven questions:
 \subsection{Contributions}
 \label{sec:introduction:contributions}
 
-% TODO(intro/contributions): one sentence per item with its headline number taken from the results (never typed by hand).
-% The first item is the data statement: the published 2024-2025 inputs lacked the put leg of GEX; this article
-% reconstructs them and recomputes everything on the complete series. Say so plainly (not as a correction) and point to Section 4.1.
-% TODO(storage): contribution (v) names result tables, not a database: until the schema of the project database is approved they are
-% parquet files (Section 3.7). Name the authoritative copy here and in the Data Availability Statement once that is settled.
-This article makes six contributions: (i)~a reconstruction of the published inputs and an account of the data defect they carried, with the deterministic labels recomputed on the complete series (Section~\ref{sec:results:inputs}); (ii)~a convention-sensitivity analysis of the deterministic regime labels across six daily series (one of them a call-only diagnostic), three assets and 2008--2026 (Sections~\ref{sec:results:replay} and~\ref{sec:results:ablation}--\ref{sec:results:cross}); (iii)~a model-agreement bridge between o4-mini and gpt-6-luna on identical inputs (Sections~\ref{sec:results:bridge} and~\ref{sec:results:corrected}); (iv)~overlap-aware statistics for stride-one windows (Section~\ref{sec:methods:statistics}); (v)~storage of every input, prompt and response in result tables, from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}); and (vi)~an obfuscated-versus-dated rerun of the Phase 3 and 4 baselines, which separates the effect of visible calendar dates from the effect of the model and of the input values (Section~\ref{sec:results:dated}).
+% src: stats.yaml / report.yaml headline (pooled 2024-2025 SPY rule rates: jan2026_phase4a 501 of 501, new_full 60 of 502; replay agreement 1,412 of 1,412);
+%      bridge_agreement.yaml bridge[0] (agree_pct 99.6, kappa 0.993); detection_by_year_wide.csv arm=full_spy (luna 613 of 4,671);
+%      detection_by_year.csv arm=full_spy scope=all agree_pct 99.67887, kappa 0.985848, n_compared 4671; stats.yaml rates classifier new_ex0dte vs new_full, 2024-2025, rate_pct 14.741036 vs 11.952191;
+%      stats.yaml rates classifier new_full_scaled period=all (QQQ 20.958084, IWM 53.919808; 350 of 1,670 and 901 of 1,671); new_full SPY 2024-2025 nonoverlap_30d 3 of 17, block bootstrap 5.009-19.201;
+%      report.yaml inputs.detections.rows 36,634; dated vs obfuscated 180 vs 181 of 223 (stats.yaml / decisions log D-22).
+This article makes six contributions.
+(i)~It reconstructs the published inputs and gives an account of the data they carried. The published 2024 and 2025 values are the call leg of the options chain without the put leg, from 2023-09-29 on. The deterministic labels are recomputed on the complete series: the rule detects 501 of 501 windows (100.0\%) of 2024 and 2025 on the published inputs and 60 of 502 (12.0\%) on the complete series (Section~\ref{sec:results:inputs}, Section~\ref{sec:results:replay}).
+(ii)~It analyses the sensitivity of the deterministic labels to the series definition across six daily series (one of them a call-only diagnostic), three assets and 2008--2026. Removing same-day expiries does not restore the published rates (14.7\% against 12.0\%), and the fixed thresholds leave QQQ and IWM without a detection until a disclosed scaling lifts the rule rate over 2020--2026 to 21.0\% (QQQ, 350 of 1{,}670) and 53.9\% (IWM, 901 of 1{,}671) (Sections~\ref{sec:results:ablation}--\ref{sec:results:cross}).
+(iii)~It bridges o4-mini and gpt-6-luna on identical inputs. The two models give the same verdict in 99.6\% of the 1{,}412 published windows (kappa 0.993). On the complete series gpt-6-luna labels 613 of 4{,}671 windows (13.1\%) as persistent and agrees with the rule on 99.7\% of the 4{,}671 windows (kappa 0.986) (Sections~\ref{sec:results:bridge}, \ref{sec:results:corrected} and~\ref{sec:results:fidelity}).
+(iv)~It applies overlap-aware statistics to stride-one windows: the quarter-block bootstrap and a non-overlapping subsample next to the Wilson intervals. The pooled rule rate of 12.0\% on the complete series has a Wilson interval of 9.4--15.1\% and a bootstrap interval of 5.0--19.2\% (Section~\ref{sec:methods:statistics}).
+(v)~It stores every input, prompt and response in result tables (36{,}634 answers), from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}).
+(vi)~It reruns the Phase~3 and~4 baselines with relative day labels instead of calendar dates. For 2024, gpt-6-luna detects 180 of 223 windows (80.7\%) with relative labels and 181 of 223 (81.2\%) with dates, so the visible dates changed nothing that the data can detect (Section~\ref{sec:results:dated}).
 
 \subsection{Organization}
 \label{sec:introduction:organization}

@@ -1,8 +1,5 @@
 \section{Conclusions}
 \label{sec:conclusion}
 
-% TODO(conclusion): 4-6 sentences. Restate the data statement (published inputs versus the complete series), the convention sensitivity of the regime labels, the
-% model-agreement bridge, the date-effect rerun of the Phase 3 and 4 baselines and the scope limits. Future work: a scaled-threshold
-% variant (it changes the prompt text, so it is a new prompt version), intraday open
-% interest, other models and vendors, and standards for versioned inputs in LLM validation studies.
-\tbd{}
+% src: detection_by_year.csv jan2026_phase4a and new_full 2024/2025 rate_pct; stats.yaml series_contrast 2024-2025 (100.0 vs 12.0 percent, difference 88.0 points); bridge_agreement.yaml (kappa 0.993, 1,412 windows); stats.yaml dated vs obfuscated (1 discordant window of 223, 2024)
+This study re-runs the detection of persistent dealer-gamma regimes on the complete data. The published 2024 and 2025 inputs were the call leg of the options chain from 2023-09-29; on them the rule detects 100.0\% of the windows of both years, and on the complete series it detects 12.0\% (60 of 502; quarter-block bootstrap 5.0--19.2\%). The regime labels are therefore sensitive to the input convention, and the earlier saturation is a property of the inputs; the complete series shows no increase after 2023 that the data distinguish from zero. A second model, gpt-6-luna, agrees with the published o4-mini answers on 99.6\% of 1{,}412 windows (kappa 0.993), follows the rule on the complete series in 99.7\% of the windows, and is unchanged by dates in the prompt (1 window of 223 differs in the 2024 baseline). The scope is limited to one provider, one model alias, fixed dollar thresholds and overlapping windows, and the scaled QQQ and IWM variants and the single intraday snapshot are checks and not measurements. Future work includes a scaled-threshold variant, which changes the prompt text and is a new prompt version, intraday open interest, other models and vendors, and standards for versioned inputs in LLM validation studies.

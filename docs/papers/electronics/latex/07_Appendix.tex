@@ -9,8 +9,9 @@
 %  and describes the recovered series.  Do not edit the SQL lines by hand: change the statement and say so in the text.
 %  Re-check the listings against the code whenever the prompt, the schema or the model configuration changes
 %  (README.md, section "Keeping Appendices A and B in step with the code").
-%  Appendix C holds placeholders (\tbd) until 05_report.py has written results/; "../build.sh --strict" fails until
-%  they are filled.
+%  Appendix C is filled from results/ (05_report.py, 2026-10-31); every table carries its source in a "% src:" comment.
+%  Prompt check (2026-10-31): the listing of A.2, with the data lines replaced by the placeholder and the three symbols in ASCII,
+%  equals common.build_prompt on 34,244 of 34,244 obfuscated gpt-6-luna requests stored in data/backups/gex_llm/*/input_*.jsonl.
 \appendixtitles{yes}
 \appendix
 
@@ -34,6 +35,7 @@ This appendix reproduces the complete request sent to the model for each 30-day 
 \subsection{Model and API Configuration}
 \label{app:prompt:config}
 
+% src: scripts/validation/electronics/common.py BATCH_MAX_REQUESTS=1500, MAX_COMPLETION_TOKENS=4000, RETRY_MAX_COMPLETION_TOKENS=8000; cost_ledger.yaml pricing_usd_per_mtok gpt-6-luna batch input 0.05 output 0.25 (standard 0.1/0.5); 02_decisions_log.md line 60 (model created 2026-09-14T17:15:02Z); reasoning effort medium
 \begin{itemize}[leftmargin=*,labelsep=5.5mm]
 \item \textbf{Model:} \ident{gpt-6-luna}, an OpenAI model alias without a dated snapshot. The creation timestamp of the model object (2026-09-14) is stored with every run and the response identifier with every answer. The published run used \ident{o4-mini-2025-04-16}.
 \item \textbf{Access:} OpenAI Batch API, endpoint \path{/v1/chat/completions}, completion window of 24 hours, at most 1{,}500 requests per batch job. Each input line is one request that carries the key \texttt{<arm>|<symbol>|<window\_end>} in \ident{custom_id}; a test-retest duplicate adds the suffix \texttt{\#rep1}, and its arm is stored as \texttt{<arm>\#rep1}.
@@ -51,6 +53,9 @@ Identical requests need not return identical answers, because no seed is set. Th
 \label{app:prompt:body}
 
 The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
+
+The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 34{,}244 of 34{,}244 requests of the obfuscated gpt-6-luna input files (the dated-label arms differ only in the day labels). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
+% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (34,244 requests, 34,244 equal; the 40-request synchronous pilot is included; 34,712 ledger requests minus 4 x 234 dated-arm requests), 2026-10-31; also equal to common.build_prompt
 
 \begin{lstlisting}[style=prompt]
 You are a market structure analyst specializing in dealer gamma positioning regimes.
@@ -313,6 +318,7 @@ Each line of a batch input file is one request of the following form.
 \section{Series Definitions in SQL}
 \label{app:series}
 
+% src: 02_decisions_log.md D-08 (vendor cap 2026-10-09, cboe_delayed from 2026-10-12, irregular days 2026-07-29, 2026-08-03, 2026-09-14, series validity 2026-07-27..2026-10-09); README.md line 112. The verbatim audit statements are not stored as sql_series_*.sql in scripts/validation/electronics/sql (only gex_llm_regime_schema.sql); authors to place them there.
 The daily series of Table~\ref{tab:series} are defined by the four read-only statements of Appendices~\ref{app:series:old} to~\ref{app:series:intraday}, which are reproduced verbatim from the data audit of 2026-10-28 on the project database; Appendix~\ref{app:series:derived} defines the derived and recovered series. The comments and the file names in the usage lines are those of the audit files. The audit calls the archive table ``frozen'' and its convention ``old''; Section~\ref{sec:methods:lineage} shows that this table is put-less from October 2023, so it is not a clean old convention (series key \ident{old_bs}). In the statements \texttt{:sym} is the symbol (SPY, QQQ or IWM) and \texttt{:y0}, \texttt{:y1} bound one calendar year, because the raw table is read one symbol-year per statement. Every statement stops at 2026-10-09, the last day before the vendor switch (Section~\ref{sec:methods:lineage}). The first two statements return the 30 daily values of every window. The pipeline stores the daily rows and cuts the windows in a second step (Section~\ref{sec:methods:windows}); unlike that step, the first statement drops a window when one of its 30 days of the \path{gex.options_daily_summary} calendar is missing from the archive table.
 
 \subsection{Pre-Rebuild Archive Table (\texttt{old\_bs})}
@@ -429,76 +435,79 @@ WHERE q.notional > 0;
 \section{Per-Year Tables}
 \label{app:tables}
 
-Tables~\ref{tab:app:series}--\ref{tab:ledger} give the numbers behind the figures of Section~\ref{sec:results} for every year, taken from the files that \path{scripts/validation/electronics/05_report.py} writes to \path{docs/papers/electronics/results/}. The years are the calendar years of the window end, and rates are percentages of parsed windows. The tables are placeholders until that script has run on the final tables; Wilson and block-bootstrap intervals accompany every rate in the results files.
+Tables~\ref{tab:app:series}--\ref{tab:ledger} give the numbers behind the figures of Section~\ref{sec:results} for every year, taken from the files that \path{scripts/validation/electronics/05_report.py} writes to \path{docs/papers/electronics/results/}. The years are the calendar years of the window end, and rates are percentages of parsed windows. Wilson and quarter-block bootstrap intervals accompany every rate in \path{detection_by_year.csv} and \path{stats.yaml}; the Wilson intervals treat overlapping windows as independent and are optimistic.
 
 \begin{table}[H]
 \centering
-\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Days are the trading days with a value in \ident{new_full}.}
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. A dash marks a year outside the series.}
+% src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_new_full, new_full_vs_new_ex0dte
 \label{tab:app:series}
 \footnotesize
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Year & Days & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
 \midrule
-2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2008 & 253 & -- & -- & 1.39 & 1.59 & 1.60 \\
+2009 & 250 & -- & -- & 0.98 & 0.88 & 0.88 \\
+2010 & 251 & -- & -- & 1.01 & 1.14 & 1.16 \\
+2011 & 250 & -- & -- & 1.79 & 1.99 & 2.02 \\
+2012 & 250 & -- & -- & 1.54 & 1.71 & 1.78 \\
+2013 & 252 & -- & -- & 2.34 & 2.29 & 2.51 \\
+2014 & 252 & -- & -- & 3.03 & 3.07 & 3.36 \\
+2015 & 252 & -- & -- & 2.69 & 2.91 & 3.37 \\
+2016 & 250 & -- & -- & 3.99 & 3.76 & 4.23 \\
+2017 & 240 & -- & -- & 6.43 & 5.82 & 6.53 \\
+2018 & 249 & -- & -- & 4.79 & 4.63 & 5.32 \\
+2019 & 251 & -- & -- & 3.62 & 3.39 & 4.11 \\
+2020 & 252 & 3.24 & 10.51 & 2.76 & 2.57 & 3.24 \\
+2021 & 252 & 4.97 & 17.13 & 3.98 & 3.50 & 4.99 \\
+2022 & 251 & 5.48 & 9.27 & 4.42 & 4.62 & 5.46 \\
+2023 & 250 & 10.62 & 17.04 & 8.39 & 4.59 & 6.10 \\
+2024 & 252 & 20.19 & 20.19 & 16.19 & 4.13 & 6.46 \\
+2025 & 250 & 19.21 & 19.21 & 14.71 & 4.55 & 7.13 \\
+2026 & 193 & -- & -- & 6.00 & 5.76 & 8.37 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Detection rate of the deterministic classifier by series and window-end year, SPY, in percent of windows. Windows are the windows of \ident{new_full}.}
+\caption{Detection rate of the deterministic classifier by series and window-end year, SPY, in percent of windows. Windows are the windows of \ident{new_full}. A dash marks a year without windows in the series.}
+% src: detection_by_year.csv label_source=classifier scope=year symbol=SPY, column n (windows of new_full) and rate_pct per series_key
 \label{tab:app:replay}
 \footnotesize
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Year & Windows & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
 \midrule
-2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2008 & 224 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2009 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2010 & 251 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2011 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2012 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2013 & 252 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2014 & 252 & -- & -- & 13.5 & 8.3 & 9.1 \\
+2015 & 252 & -- & -- & 0.4 & 1.6 & 7.9 \\
+2016 & 250 & -- & -- & 26.4 & 22.0 & 28.0 \\
+2017 & 240 & -- & -- & 38.8 & 19.6 & 32.1 \\
+2018 & 249 & -- & -- & 32.1 & 23.7 & 34.5 \\
+2019 & 251 & -- & -- & 7.2 & 3.2 & 10.0 \\
+2020 & 252 & 12.1 & 90.6 & 16.7 & 10.7 & 22.2 \\
+2021 & 252 & 4.0 & 100.0 & 3.6 & 0.0 & 3.6 \\
+2022 & 251 & 32.3 & 100.0 & 26.3 & 36.7 & 40.6 \\
+2023 & 250 & 19.3 & 100.0 & 22.5 & 25.2 & 22.4 \\
+2024 & 252 & 100.0 & 100.0 & 100.0 & 13.1 & 10.3 \\
+2025 & 250 & 100.0 & 100.0 & 100.0 & 16.4 & 13.6 \\
+2026 & 193 & -- & 100.0 & 23.5 & 21.2 & 11.4 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Detection rate of gpt-6-luna by arm and window-end year, in percent of parsed windows. The columns are the arms \ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq}, \ident{full_qqq_scaled}, \ident{ex0dte_qqq}, \ident{full_iwm}, \ident{full_iwm_scaled} and \ident{ex0dte_iwm} of Table~\ref{tab:arms} (full = \ident{new_full}, scaled = \ident{new_full_scaled}, ex-0DTE = \ident{new_ex0dte}); the bridge, intraday and Phase 3/4 arms are reported in Sections~\ref{sec:results:bridge}, \ref{sec:results:intraday} and~\ref{sec:results:dated}.}
+\caption{Detection rate of gpt-6-luna by arm and window-end year, in percent of parsed windows (a dash marks a year without windows in the arm). The columns are the arms \ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq}, \ident{full_qqq_scaled}, \ident{ex0dte_qqq}, \ident{full_iwm}, \ident{full_iwm_scaled} and \ident{ex0dte_iwm} of Table~\ref{tab:arms} (full = \ident{new_full}, scaled = \ident{new_full_scaled}, ex-0DTE = \ident{new_ex0dte}); the bridge, intraday and Phase 3/4 arms are reported in Sections~\ref{sec:results:bridge}, \ref{sec:results:intraday} and~\ref{sec:results:dated}.}
 \label{tab:app:llm}
+% src: detection_by_year.csv label_source=llm arm_role=primary scope=year, column rate_pct per arm
 \footnotesize
 \begin{tabular}{@{}lrrrrrrrr@{}}
 \toprule
@@ -506,49 +515,112 @@ Year & Windows & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & 
 \cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}
 Year & full & ex-0DTE & full & scaled & ex-0DTE & full & scaled & ex-0DTE \\
 \midrule
-2008 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2009 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2010 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2011 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2012 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2013 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2014 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2015 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2016 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2017 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2018 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2019 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2020 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2021 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2022 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2023 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2024 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2025 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-2026 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+2008 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2009 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2010 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2011 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2012 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2013 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2014 & 9.1 & 8.3 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2015 & 7.9 & 1.6 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2016 & 27.6 & 22.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2017 & 31.7 & 19.2 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2018 & 34.9 & 22.9 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2019 & 10.0 & 3.2 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2020 & 22.2 & 10.7 & 0.0 & 0.0 & 0.0 & 0.0 & 9.9 & 0.0 \\
+2021 & 3.6 & 0.0 & 0.0 & 23.8 & 0.0 & 0.0 & 65.9 & 0.0 \\
+2022 & 41.8 & 37.1 & 0.0 & 61.0 & 0.0 & 0.0 & 100.0 & 0.0 \\
+2023 & 23.2 & 26.0 & 0.0 & 17.6 & 0.0 & 0.0 & 79.2 & 0.0 \\
+2024 & 11.1 & 14.3 & 0.0 & 8.4 & 0.0 & 0.0 & 20.6 & 0.0 \\
+2025 & 14.0 & 16.4 & 0.0 & 20.4 & 0.0 & 0.0 & 51.2 & 0.0 \\
+2026 & 11.4 & 21.2 & 0.0 & 16.1 & 0.0 & 0.0 & 45.1 & 0.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-% TODO(tables): typeset the run identifiers with \path{...} (it breaks at underscores) so that they wrap in the first column.
+% src: cost_ledger.csv, rows with counts_toward_budget = True (column recomputed_cost_usd; it equals est_cost_usd in every row); total equals cost_ledger.yaml budget.spent_usd (9.700576); backfill rows budget_class = backfill
 \begin{table}[H]
 \centering
-\caption{Run ledger: one row per Batch job, with the token usage and the cost priced at Batch rates. The identifier has the form \ident{<arm>_<model>_<mode>_<UTC timestamp>_c<chunk>}. Only runs paid in this study enter the total; the three backfilled o4-mini runs are listed below it, as stored answers of earlier runs that are not spend of this study.}
+\caption{Run ledger: one row per Batch job, with the token usage and the cost priced at Batch rates. The identifier has the form \ident{<arm>_<model>_<mode>_<UTC timestamp>_c<chunk>}. Only runs paid in this study enter the total; the synchronous pilot (\ident{sync}) is included in it. The three backfilled o4-mini runs are listed below it, as stored answers of earlier runs that are not spend of this study.}
 \label{tab:ledger}
-\footnotesize
-\begin{tabular}{@{}p{4.6cm}rrrrl@{}}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
 \toprule
 Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Status \\
 \midrule
-\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
-\midrule
-Total (this study) & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \\
-\midrule
-\multicolumn{6}{@{}l}{Backfilled o4-mini runs (not spend of this study)} \\
-\path{r1_o4mini_phase4a_20260104} & 1{,}476 & \tbd{} & \tbd{} & \tbd{} & backfill \\
-\path{r1_p3_o4mini_20251120} & 223 & \tbd{} & \tbd{} & \tbd{} & backfill \\
-\path{r1_p4_o4mini_20251120} & 223 & \tbd{} & \tbd{} & \tbd{} & backfill \\
+
+\path{bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0} & 1{,}476 & 2{,}823{,}588 & 1{,}086{,}712 & 0.41 & ingested \\
+\path{bridge_jan_gpt-6-luna_batch_20261029T203742Z_c1} & 1{,}476 & 2{,}823{,}588 & 1{,}082{,}280 & 0.41 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c0} & 1{,}227 & 2{,}347{,}251 & 871{,}277 & 0.34 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c1} & 1{,}226 & 2{,}345{,}338 & 969{,}842 & 0.36 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c2} & 1{,}226 & 2{,}345{,}338 & 1{,}004{,}850 & 0.37 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c3} & 1{,}226 & 2{,}345{,}338 & 1{,}024{,}540 & 0.37 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0} & 1{,}227 & 2{,}347{,}251 & 839{,}753 & 0.33 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1} & 1{,}226 & 2{,}345{,}338 & 968{,}965 & 0.36 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2} & 1{,}226 & 2{,}345{,}338 & 951{,}505 & 0.36 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3} & 1{,}226 & 2{,}345{,}338 & 982{,}560 & 0.36 & ingested \\
+\path{p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0} & 234 & 447{,}642 & 156{,}636 & 0.06 & ingested \\
+\path{p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0} & 234 & 461{,}682 & 154{,}330 & 0.06 & ingested \\
+\path{p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0} & 234 & 447{,}642 & 132{,}619 & 0.06 & ingested \\
+\path{p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0} & 234 & 461{,}682 & 130{,}805 & 0.06 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c0} & 1{,}354 & 2{,}590{,}202 & 1{,}012{,}074 & 0.38 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c1} & 1{,}353 & 2{,}588{,}289 & 1{,}004{,}705 & 0.38 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c2} & 1{,}353 & 2{,}588{,}289 & 1{,}057{,}334 & 0.39 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c0} & 1{,}228 & 2{,}349{,}164 & 762{,}229 & 0.31 & ingested \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[H]
+\centering
+\caption{Run ledger (continued): remaining Batch jobs, the total of this study and the backfilled runs.}
+\label{tab:ledger2}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Status \\
+\midrule
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c1} & 1{,}228 & 2{,}349{,}164 & 719{,}759 & 0.30 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c2} & 1{,}228 & 2{,}349{,}164 & 826{,}909 & 0.32 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c3} & 1{,}228 & 2{,}349{,}164 & 855{,}981 & 0.33 & ingested \\
+\path{full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1} & 877 & 1{,}677{,}701 & 750{,}362 & 0.27 & ingested \\
+\path{full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0} & 877 & 1{,}677{,}701 & 694{,}967 & 0.26 & ingested \\
+\path{full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0} & 878 & 1{,}679{,}614 & 614{,}557 & 0.24 & ingested \\
+\path{full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1} & 877 & 1{,}677{,}701 & 695{,}367 & 0.26 & ingested \\
+\path{ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1} & 892 & 1{,}706{,}396 & 680{,}360 & 0.26 & ingested \\
+\path{ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0} & 892 & 1{,}706{,}396 & 622{,}593 & 0.24 & ingested \\
+\path{ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0} & 893 & 1{,}708{,}309 & 560{,}829 & 0.23 & ingested \\
+\path{ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1} & 892 & 1{,}706{,}396 & 616{,}040 & 0.24 & ingested \\
+\path{intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0} & 54 & 103{,}302 & 45{,}525 & 0.02 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c0} & 1{,}218 & 2{,}330{,}034 & 813{,}090 & 0.32 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c1} & 1{,}218 & 2{,}330{,}034 & 970{,}974 & 0.36 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c2} & 1{,}217 & 2{,}328{,}121 & 953{,}927 & 0.35 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c3} & 1{,}217 & 2{,}328{,}121 & 830{,}288 & 0.32 & ingested \\
+\path{pilot_bridge_jan_gpt-6-luna_sync_20261029T203454Z_c0} & 40 & 76{,}520 & 28{,}015 & 0.02 & ingested \\
+\midrule
+Total (this study) & 34{,}712 & 66{,}432{,}136 & 25{,}472{,}559 & 9.70 & \\
+\midrule
+\multicolumn{6}{@{}l}{Backfilled o4-mini runs (not spend of this study)} \\
+\path{r1_o4mini_phase4a_20260104} & 1{,}476 & 2{,}655{,}324 & 2{,}928{,}992 & 7.90 & backfill \\
+\path{r1_p3_o4mini_20251120} & 223 & 414{,}557 & 405{,}127 & 1.12 & backfill \\
+\path{r1_p4_o4mini_20251120} & 223 & 414{,}557 & 325{,}436 & 0.94 & backfill \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=================================================================
+\section{Data Availability Details}
+\label{app:data}
+
+% src: data/backups/gex_llm/condensed/ (row counts read from the files, 2026-10-31); series_index.csv; scripts/validation/electronics/README.md (storage section); 02_decisions_log.md D-14, D-17
+The repository holds the condensed material and the results. The condensed files are in \path{data/backups/gex_llm/condensed/}.
+\begin{itemize}[leftmargin=*,labelsep=5.5mm]
+\item \path{detections.csv.gz}: 36{,}634 rows, one per stored model answer, with the verdict, the reported metrics and the parse status but without the reasoning or the raw text. The key is \ident{arm}, \ident{series_key}, \ident{symbol}, \ident{window_end}, \ident{model}, \ident{prompt_version}.
+\item \path{windows.csv.gz}: 38{,}501 rows, one per 30-day window, with the labels, the sha256 of the input as sent and the verdict of the deterministic rule but without the sequences.
+\item \path{series_index.csv}: 16 rows, one per series and symbol, with the row count, the first and last date, the source table and the hash of the builder.
+\end{itemize}
+Every number of the paper can be reproduced from the first two files (join on \ident{series_key}, \ident{symbol} and \ident{window_end}) and the files of \path{docs/papers/electronics/results/}. The provenance of every Batch job (batch and file identifiers, sha256 of the input file, token counts and cost) is in \path{data/backups/gex_llm/tables/runs/} and in the \path{manifest.json} and \path{batch_<k>.json} files of each run folder. The raw request and answer files (\path{input_<k>.jsonl}, \path{output_<k>.jsonl}) and the full tables are kept on the authors' machine and in the database; they are not part of the repository.
+
+The full tables are loaded into four tables and one view of the schema \ident{backups} of the research database: \ident{gex_llm_regime_series} (the number shown to the model, one row per series, symbol and trading date), \ident{gex_llm_regime_windows} (the 30-day input as sent, its sha256 and the verdict of the rule), \ident{gex_llm_regime_runs} (one row per Batch job, pilot or backfilled run) and \ident{gex_llm_regime_detections} (one row per model answer), with the view \ident{gex_llm_regime_rates_summary} (yearly rate of the model next to the rate of the rule, by arm). The parquet copies of these four tables are the release format named in the Data Availability Statement. The options data are subject to the vendor's licence and are not redistributed.
