@@ -58,7 +58,7 @@
 \newcommand{\figReplay}{fig04_classifier_replay}
 \newcommand{\figThresholds}{fig12_threshold_sensitivity}
 \newcommand{\figBridge}{fig06_bridge_agreement}
-\newcommand{\figCorrected}{fig05_llm_arms_by_year}
+\newcommand{\figComplete}{fig05_llm_arms_by_year}
 \newcommand{\figDeep}{fig08_deep_baseline}
 \newcommand{\figCross}{fig09_cross_asset}
 \newcommand{\figPost}{fig10_post_publication_2026}
@@ -107,11 +107,11 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 
 % Abstract: one paragraph, IMRaD without headings, at most 200 words (MDPI).
 % src: Section 4.2 (rule, 2024--2025 pooled: 501 of 501 published inputs, 60 of 502 complete series); 4.3 (bridge agreement 99.6, kappa 0.993);
-%      4.4 (gpt-6-luna 63 of 502 = 12.5); 4.9 (agreement 99.7, kappa 0.986); 4.5 (ex-0DTE 14.7 vs 12.0); 4.11 (180 vs 181 of 223); all from results/stats.yaml and detection_by_year*.csv
+%      4.4 (gpt-6-luna 63 of 502 = 12.5); 4.10 (agreement 99.7, kappa 0.986); 4.5 (ex-0DTE 14.7 vs 12.0); 4.11 (180 vs 181 of 223); all from results/stats.yaml and detection_by_year*.csv
 % src (files): stats.yaml rates classifier jan2026_phase4a 2024-2025 k=501 n=501; new_full k=60 n=502; arm full_spy 63 of 502; bridge_agreement.yaml agree 99.6459 kappa 0.992871;
 %      detection_by_year.csv arm=full_spy scope=all agree_pct 99.67887 kappa 0.985848 n_compared 4671; stats.yaml rates new_ex0dte 2024-2025 rate_pct 14.741036 vs new_full 11.952191
 % note: 501 windows on the published inputs, 502 on the complete series (see Section 4.2)
-\abstract{Temporal obfuscation tests whether a large language model (LLM) reasons about numbers or recalls market history. Our earlier work reported that an LLM detects persistent dealer-gamma regimes in 30-day windows of obfuscated daily gamma exposure (GEX) of SPY, with a sharp rise in detections after 2023. Here we re-run that test on the complete data. The published 2024--2025 inputs were the call leg of the options chain without the put leg. We rebuilt six daily series, replayed the deterministic rule on them, and bridged o4-mini to gpt-6-luna on the exact published inputs. We also reran the 2024 and 2020 baselines with relative day labels instead of calendar dates. On the published inputs the rule detects 501 of 501 windows (100.0\%) of 2024--2025; on the complete series it detects 60 of 502 (12.0\%), and gpt-6-luna 63 of 502 (12.5\%). The two models agree on 99.6\% of the published windows (kappa 0.993), and gpt-6-luna follows the rule in 99.7\% of 4,671 windows (kappa 0.986). Removing same-day expiries gives 14.7\%, not the published rate. With relative labels gpt-6-luna detects 80.7\% of the 2024 baseline windows, against 81.2\% with dates. The complete series shows no post-2023 increase that the data distinguish from zero.}
+\abstract{Temporal obfuscation tests whether a large language model (LLM) reasons about numbers or recalls market history. Our earlier work reported that an LLM detects persistent dealer-gamma regimes in 30-day windows of obfuscated daily gamma exposure (GEX) of SPY, with a sharp rise in detections after 2023. Here we re-run that test on the complete data. The published 2024--2025 inputs were the call leg of the options chain without the put leg. We assembled six daily series (recovered, archived or rebuilt), replayed the deterministic rule on them, and bridged o4-mini to gpt-6-luna on the exact published inputs. We also reran the 2024 and 2020 baselines with relative day labels instead of calendar dates. On the published inputs the rule detects 501 of 501 windows (100.0\%) of 2024--2025; on the complete series it detects 60 of 502 (12.0\%), and gpt-6-luna 63 of 502 (12.5\%). The two models agree on 99.6\% of the published windows (Cohen's kappa 0.993), and gpt-6-luna follows the rule in 99.7\% of 4,671 windows (kappa 0.986). Removing same-day expiries gives 14.7\%, not the published rate. With relative labels gpt-6-luna detects 80.7\% of the 2024 baseline windows, against 81.2\% with dates. The complete series shows no post-2023 increase that the data distinguish from zero.}
 
 % Keywords (semicolon-separated per MDPI style, 3--10)
 \keyword{LLM validation; regime detection; gamma exposure; 0DTE options; temporal obfuscation; data provenance; reproducibility}
@@ -155,10 +155,14 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \noindent
 \begin{tabular}{@{}ll}
 0DTE & Zero Days to Expiration \\
-EOD & End of Day \\
+API & Application Programming Interface \\
+EOD & End of day (the daily closing snapshot) \\
+ETF & Exchange-Traded Fund \\
 GEX & Gamma Exposure \\
+ISO & International Organization for Standardization \\
 LLM & Large Language Model \\
 OI & Open Interest \\
+SQL & Structured Query Language \\
 \end{tabular}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

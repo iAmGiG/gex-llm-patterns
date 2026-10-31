@@ -47,15 +47,15 @@ This appendix reproduces the complete request sent to the model for each 30-day 
 \item \textbf{Prices:} USD 0.05 per million input tokens and USD 0.25 per million output tokens on Batch, twice that on the standard API.
 \end{itemize}
 
-Identical requests need not return identical answers, because no seed is set. The test-retest duplicates of Section~\ref{sec:methods:arms} measure this variation, and the deterministic classifier, not the model, supplies the reference label of each window.
+Identical requests need not return identical answers, because no seed is set. The test-retest duplicates of Section~\ref{sec:methods:arms} measure this variation, and the deterministic rule, not the model, supplies the reference label of each window.
 
 \subsection{Prompt Text}
 \label{app:prompt:body}
 
 The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
 
-The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 34{,}244 of 34{,}244 requests of the obfuscated gpt-6-luna input files (the dated-label arms differ only in the day labels). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
-% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (34,244 requests, 34,244 equal; the 40-request synchronous pilot is included; 34,712 ledger requests minus 4 x 234 dated-arm requests), 2026-10-31; also equal to common.build_prompt
+The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 34{,}244 of 34{,}244 requests (the 34{,}712 requests of Table~\ref{tab:arms} less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
+% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (34,244 requests, 34,244 equal; the 40-request synchronous pilot is included; 34,712 ledger requests minus 2 x 234 = 468 requests of the two dated arms = 34,244), 2026-10-31; also equal to common.build_prompt
 
 \begin{lstlisting}[style=prompt]
 You are a market structure analyst specializing in dealer gamma positioning regimes.
@@ -224,7 +224,7 @@ Analyze the 30-day GEX data above and provide your regime classification in JSON
 \subsection{Output Schema}
 \label{app:prompt:schema}
 
-The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the deterministic classifier (Section~\ref{sec:results:fidelity}).
+The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the rule (Section~\ref{sec:results:fidelity}).
 
 \begin{lstlisting}[style=appcode]
 {
@@ -318,7 +318,7 @@ Each line of a batch input file is one request of the following form.
 \section{Series Definitions in SQL}
 \label{app:series}
 
-% src: 02_decisions_log.md D-08 (vendor cap 2026-10-09, cboe_delayed from 2026-10-12, irregular days 2026-07-29, 2026-08-03, 2026-09-14, series validity 2026-07-27..2026-10-09); README.md line 112. The verbatim audit statements are not stored as sql_series_*.sql in scripts/validation/electronics/sql (only gex_llm_regime_schema.sql); authors to place them there.
+% src: 02_decisions_log.md D-08 (vendor cap 2026-10-09, cboe_delayed from 2026-10-12, irregular days 2026-07-29, 2026-08-03, 2026-09-14, series validity 2026-07-27..2026-10-09); README.md line 112. The four audit statements are reproduced verbatim in the text of this appendix; the audit files sql_series_*.sql themselves are not in scripts/validation/electronics/sql (only gex_llm_regime_schema.sql).
 The daily series of Table~\ref{tab:series} are defined by the four read-only statements of Appendices~\ref{app:series:old} to~\ref{app:series:intraday}, which are reproduced verbatim from the data audit of 2026-10-28 on the project database; Appendix~\ref{app:series:derived} defines the derived and recovered series. The comments and the file names in the usage lines are those of the audit files. The audit calls the archive table ``frozen'' and its convention ``old''; Section~\ref{sec:methods:lineage} shows that this table is put-less from October 2023, so it is not a clean old convention (series key \ident{old_bs}). In the statements \texttt{:sym} is the symbol (SPY, QQQ or IWM) and \texttt{:y0}, \texttt{:y1} bound one calendar year, because the raw table is read one symbol-year per statement. Every statement stops at 2026-10-09, the last day before the vendor switch (Section~\ref{sec:methods:lineage}). The first two statements return the 30 daily values of every window. The pipeline stores the daily rows and cuts the windows in a second step (Section~\ref{sec:methods:windows}); unlike that step, the first statement drops a window when one of its 30 days of the \path{gex.options_daily_summary} calendar is missing from the archive table.
 
 \subsection{Pre-Rebuild Archive Table (\texttt{old\_bs})}
@@ -415,7 +415,7 @@ ORDER BY d, snapshot_timestamp DESC;
 
 \textbf{Call leg only (\ident{call_only}).} The sum of the call terms \texttt{g} of the third statement over all expiries, same-day expiries included, with the put terms dropped. In the rebuilt summary table this is \ident{net_call_gex} (up to the float4 rounding of the stored column), which the second statement returns as \texttt{call\_gex\_30}.
 
-\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol, which the following statement computes (tested read-only on 2026-10-29). The factor and the number of days are stored with the series.
+\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol (Section~\ref{sec:methods:arms}), which the following statement computes (tested read-only on 2026-10-29). The factor and the number of days are stored with the series.
 
 \begin{lstlisting}[style=appcode]
 -- new_full_scaled: factor of one symbol = median over 2020-01-01..2026-10-09 of the ratio of SPY's open-interest notional to the symbol's.
@@ -435,11 +435,11 @@ WHERE q.notional > 0;
 \section{Per-Year Tables}
 \label{app:tables}
 
-Tables~\ref{tab:app:series}--\ref{tab:ledger} give the numbers behind the figures of Section~\ref{sec:results} for every year, taken from the files that \path{scripts/validation/electronics/05_report.py} writes to \path{docs/papers/electronics/results/}. The years are the calendar years of the window end, and rates are percentages of parsed windows. Wilson and quarter-block bootstrap intervals accompany every rate in \path{detection_by_year.csv} and \path{stats.yaml}; the Wilson intervals treat overlapping windows as independent and are optimistic.
+Tables~\ref{tab:app:series}--\ref{tab:ledger2} give the numbers behind the figures of Section~\ref{sec:results} for every year, taken from the files that \path{scripts/validation/electronics/05_report.py} writes to \path{docs/papers/electronics/results/}. The years are the calendar years of the window end, and rates are percentages of parsed windows. Wilson and quarter-block bootstrap intervals accompany every rate in \path{detection_by_year.csv} and \path{stats.yaml}; the Wilson intervals treat overlapping windows as independent and are optimistic.
 
 \begin{table}[H]
 \centering
-\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. A dash marks a year outside the series.}
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means in Section~\ref{sec:results:inputs} use all days of \ident{new_full}; here the days shared with \ident{new_ex0dte}. A dash marks a year outside the series.}
 % src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_new_full, new_full_vs_new_ex0dte
 \label{tab:app:series}
 \footnotesize
@@ -574,7 +574,7 @@ Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Sta
 
 \begin{table}[H]
 \centering
-\caption{Run ledger (continued): remaining Batch jobs, the total of this study and the backfilled runs.}
+\caption{Run ledger (continued): remaining Batch jobs, the total of this study and the backfilled runs. Rows are rounded to cents; the totals are computed from the unrounded values (the three backfilled runs sum to 9.97).}
 \label{tab:ledger2}
 \scriptsize
 \setlength{\tabcolsep}{3pt}

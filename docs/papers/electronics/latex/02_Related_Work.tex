@@ -13,7 +13,7 @@ The growth of zero-days-to-expiration (0DTE) options since 2022 concentrates gam
 
 Concern that LLM performance reflects memorized rather than inferred structure \cite{mccoy2023embers,lopezlira2025memorization,dong2024generalization} motivates behavioral tests of the CheckList type \cite{ribeiro2020beyond}. Temporal obfuscation removes dates, tickers and event context so that only numerical structure remains; it is one such test \cite{regan2025obfuscation}. A model that still gives the same answer on obfuscated input is less likely to be recalling training data \cite{lopezlira2025memorization}.
 
-Obfuscation has a limited reach. It tests whether the answer depends on memorized context. It does not test whether the numbers shown to the model mean what the prompt says they mean. A model can pass an obfuscation test and still report faithfully on a flawed input. That second question concerns the inputs, not the model, and is the subject of the next subsection.
+Obfuscation has a limited reach. It tests whether the answer depends on memorized context. It does not test whether the numbers shown to the model mean what the prompt says they mean. A model can pass an obfuscation test and still report faithfully on an input whose definition differs from what the prompt states. That second question concerns the inputs, not the model, and is the subject of the next subsection.
 
 \subsection{Construct Validity of Financial Inputs}
 \label{sec:background:construct}

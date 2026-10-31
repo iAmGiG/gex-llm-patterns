@@ -12,23 +12,34 @@ The published run used o4-mini in January 2026. The model no longer answers infe
 \subsection{Relation to Prior Work}
 \label{sec:introduction:relation}
 
-This article is the extended version of the AIAI~2026 conference paper \cite{regan2026regimes}, which introduced 30-day regime detection under temporal obfuscation and built on the single-day study presented at IEEE BigData~2025 \cite{regan2025obfuscation}. Both lines of work are combined in a separate journal article \cite{regan2026jrfm}. The experiments reported here are new relative to all three publications.
-New relative to the three publications are (i)~the provenance and definition of the daily input series, (ii)~a second model, gpt-6-luna, bridged to o4-mini on identical inputs, (iii)~the years 2008--2019, QQQ and IWM, 2026 and an intraday check, (iv)~overlap-aware inference, (v)~an obfuscated-versus-dated rerun of the Phase~3 and~4 baselines, and (vi)~a disclosed per-symbol scaling for QQQ and IWM. The recap of the earlier design is limited to Section~\ref{sec:methods}.
+This article is the extended version of the AIAI~2026 conference paper \cite{regan2026regimes}, which introduced 30-day regime detection under temporal obfuscation and built on the single-day study presented at IEEE BigData~2025 \cite{regan2025obfuscation}. Both lines of work are combined in a separate journal article \cite{regan2026jrfm} (Journal of Risk and Financial Management, JRFM).
+
+Relative to all three publications, the new elements are:
+\begin{enumerate}[label=(\roman*),leftmargin=*,itemsep=0pt]
+\item the provenance and definition of the daily input series;
+\item a second model, gpt-6-luna, bridged to o4-mini on identical inputs;
+\item the years 2008--2019, the exchange-traded funds (ETFs) SPY (S\&P 500), QQQ (Nasdaq-100) and IWM (Russell 2000), 2026 and an intraday check;
+\item overlap-aware inference;
+\item an obfuscated-versus-dated rerun of the Phase~3 and~4 baselines; and
+\item a disclosed per-symbol scaling for QQQ and IWM.
+\end{enumerate}
+The recap of the earlier design is limited to Section~\ref{sec:methods}.
 
 \subsection{Research Questions}
 \label{sec:introduction:rqs}
 
-% TODO(authors): confirm the wording of RQ1-RQ7; the guidance says one question per results subsection (Sections 4.1-4.11), but there are 7 questions for 11 subsections, so map them explicitly or reword to 'RQ1-RQ7 cover Sections 4.1-4.11'.
+% TODO(authors): confirm the wording of RQ1-RQ7 and the mapping of the questions to Sections 4.1-4.11 given after the list.
 We address seven questions:
 \begin{enumerate}[label=RQ\arabic*.,leftmargin=*]
 \item Which daily series were the published inputs, and how do the deterministic labels change on the complete series?
 \item Does gpt-6-luna reproduce the o4-mini labels on the exact published inputs?
 \item Does the model's regime call follow the input series and the stated criteria?
-\item How much of the persistence signal lives in same-day-expiry (0DTE) gamma?
+\item How much of the persistence signal lives in zero-days-to-expiration (0DTE), i.e.\ same-day-expiry, gamma?
 \item Do the answers hold for 2008--2019, for QQQ and IWM, and in the post-publication period (2026)?
 \item Does a late-session intraday snapshot reproduce the end-of-day label?
 \item Does the 2024-versus-2020 contrast of the earlier baseline runs, whose prompts carried calendar dates, persist when the dates are replaced by relative day labels?
 \end{enumerate}
+RQ1 is answered in Sections~\ref{sec:results:inputs}--\ref{sec:results:replay}, RQ2 in Section~\ref{sec:results:bridge}, RQ3 in Sections~\ref{sec:results:complete} and~\ref{sec:results:fidelity}, RQ4 in Section~\ref{sec:results:ablation}, RQ5 in Sections~\ref{sec:results:deep}--\ref{sec:results:post}, RQ6 in Section~\ref{sec:results:intraday} and RQ7 in Section~\ref{sec:results:dated}.
 
 \subsection{Contributions}
 \label{sec:introduction:contributions}
@@ -40,13 +51,13 @@ We address seven questions:
 %      report.yaml inputs.detections.rows 36,634; dated vs obfuscated 180 vs 181 of 223 (stats.yaml / decisions log D-22).
 This article makes six contributions.
 (i)~It reconstructs the published inputs and gives an account of the data they carried. The published 2024 and 2025 values are the call leg of the options chain without the put leg, from 2023-09-29 on. The deterministic labels are recomputed on the complete series: the rule detects 501 of 501 windows (100.0\%) of 2024 and 2025 on the published inputs and 60 of 502 (12.0\%) on the complete series (Section~\ref{sec:results:inputs}, Section~\ref{sec:results:replay}).
-(ii)~It analyses the sensitivity of the deterministic labels to the series definition across six daily series (one of them a call-only diagnostic), three assets and 2008--2026. Removing same-day expiries does not restore the published rates (14.7\% against 12.0\%), and the fixed thresholds leave QQQ and IWM without a detection until a disclosed scaling lifts the rule rate over 2020--2026 to 21.0\% (QQQ, 350 of 1{,}670) and 53.9\% (IWM, 901 of 1{,}671) (Sections~\ref{sec:results:ablation}--\ref{sec:results:cross}).
-(iii)~It bridges o4-mini and gpt-6-luna on identical inputs. The two models give the same verdict in 99.6\% of the 1{,}412 published windows (kappa 0.993). On the complete series gpt-6-luna labels 613 of 4{,}671 windows (13.1\%) as persistent and agrees with the rule on 99.7\% of the 4{,}671 windows (kappa 0.986) (Sections~\ref{sec:results:bridge}, \ref{sec:results:corrected} and~\ref{sec:results:fidelity}).
-(iv)~It applies overlap-aware statistics to stride-one windows: the quarter-block bootstrap and a non-overlapping subsample next to the Wilson intervals. The pooled rule rate of 12.0\% on the complete series has a Wilson interval of 9.4--15.1\% and a bootstrap interval of 5.0--19.2\% (Section~\ref{sec:methods:statistics}).
+(ii)~It analyses the sensitivity of the deterministic labels to the series definition across six daily series (one of them a call-only diagnostic), three assets and 2008--2026. Removing same-day expiries does not restore the published rates, and the fixed thresholds leave QQQ and IWM without a detection until a disclosed scaling is applied (Sections~\ref{sec:results:ablation}--\ref{sec:results:cross}).
+(iii)~It bridges o4-mini and gpt-6-luna on identical inputs. The two models give nearly the same verdict on the published windows, and on the complete series gpt-6-luna follows the rule almost everywhere (Sections~\ref{sec:results:bridge}, \ref{sec:results:complete} and~\ref{sec:results:fidelity}).
+(iv)~It applies overlap-aware statistics to stride-one windows: the quarter-block bootstrap and a non-overlapping subsample next to the Wilson intervals. Wilson and bootstrap intervals are reported for the pooled rule rate (Section~\ref{sec:methods:statistics} for the method, Section~\ref{sec:results:replay} for the values).
 (v)~It stores every input, prompt and response in result tables (36{,}634 answers), from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}).
 (vi)~It reruns the Phase~3 and~4 baselines with relative day labels instead of calendar dates. For 2024, gpt-6-luna detects 180 of 223 windows (80.7\%) with relative labels and 181 of 223 (81.2\%) with dates, so the visible dates changed nothing that the data can detect (Section~\ref{sec:results:dated}).
 
 \subsection{Organization}
 \label{sec:introduction:organization}
 
-Section~\ref{sec:background} reviews dealer gamma exposure, the validation of LLM reasoning by obfuscation and the construct validity of financial inputs. Section~\ref{sec:methods} defines the daily series, the windows and classifier, the model protocol, the experimental arms and the statistics. Section~\ref{sec:results} reports the results, from the lineage of the published inputs to the rerun of the earlier baselines. Section~\ref{sec:discussion} discusses what survives, what the model tracks, the threats to validity and the implications. Section~\ref{sec:conclusion} concludes, and the appendices give the prompt, schema and API configuration (Appendix~\ref{app:prompt}), the series definitions in SQL (Appendix~\ref{app:series}) and the per-year tables (Appendix~\ref{app:tables}).
+Section~\ref{sec:background} reviews dealer gamma exposure, the validation of LLM reasoning by obfuscation and the construct validity of financial inputs. Section~\ref{sec:methods} defines the daily series, the windows and rule, the model protocol, the experimental arms and the statistics. Section~\ref{sec:results} reports the results, from the lineage of the published inputs to the rerun of the earlier baselines. Section~\ref{sec:discussion} discusses what survives, what the model tracks, the threats to validity and the implications. Section~\ref{sec:conclusion} concludes, and the appendices give the prompt, schema and API configuration (Appendix~\ref{app:prompt}), the series definitions in SQL (Appendix~\ref{app:series}) and the per-year tables (Appendix~\ref{app:tables}).
