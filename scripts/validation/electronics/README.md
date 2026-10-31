@@ -12,7 +12,8 @@ recovered from the surviving batch file and found to contain the call leg of dea
 2023-09-29 on (565 of 565 days; upstream issue #24 dropped the put rows), so the published 100 % detection rate for
 2024 and 2025 was measured on defective inputs. The Phase 3 and Phase 4 runs of November 2025 behind the
 81.2 % versus 12.1 % contrast used dated prompts and two different sign conventions. The extension is therefore a
-**data-integrity correction with a controlled LLM re-test**, and this folder is the machinery for it. The pipeline
+**re-run on the complete data with a controlled LLM re-test and a plain data statement** (the authors file no
+correction notices and the paper does not present itself as a correction), and this folder is the machinery for it. The pipeline
 
 1. recovers the exact inputs of the published runs (Phase 4A of January 2026; Phase 3 and Phase 4 of November 2025)
    and rebuilds the daily GEX series the extension needs;
@@ -23,20 +24,21 @@ recovered from the surviving batch file and found to contain the call leg of dea
    series (the `*_scaled` arms); and
 5. stores every input, label and answer, so that each number in the manuscript can be regenerated from stored tables.
 
-Written against the scripts and the contract on 2026-10-29 (HEAD `d159741` plus the working tree).
+Written against the scripts and the contract on 2026-10-29 and brought up to date on 2026-10-31 (HEAD `9088874` plus the working tree).
 The `--help` of each script is authoritative for flags. Read
 [00_design.md](../../../docs/papers/electronics/planning/00_design.md) for the reasoning,
 [02_decisions_log.md](../../../docs/papers/electronics/planning/02_decisions_log.md) for decisions (D-nn) and open
 questions (Q-nn), and this file for how to run things. `common.py` and `sql/gex_llm_regime_schema.sql` are the contract
 between the scripts: every table, DataFrame and parquet file uses the column names of that SQL file.
 
-> **State on 2026-10-29** (re-check with `00_env_check.py` and `04_llm_runner.py status` instead of trusting this
-> paragraph): the tables `backups.gex_llm_regime_*` do not exist, so every script writes parquet only; the `--rollback`
-> path of scripts 01 to 04 was run against the live database and left no object behind. By 20:45 UTC the first paid
-> steps of the runner had been taken (a 40-window pilot of `bridge_jan` and Batch submissions of the priority-1 arms
-> and of the unscaled and scaled QQQ and IWM arms; the chunks of the four QQQ and IWM arms failed on the
-> organization's enqueued-token limit, section 8), so `tables/runs/` and `tables/detections/` hold more than the three
-> backfills. The DDL waits for the documentation PR and the database maintainer's approval (section 5.3).
+> **State on 2026-10-31** (re-check with `00_env_check.py --require-tables` and `04_llm_runner.py status` instead of
+> trusting this paragraph): the tables `backups.gex_llm_regime_*` exist (documentation PR #165 of the database
+> repository merged and the schema applied by its maintainer on 2026-10-30 20:32 UTC) and hold the parquet copies
+> (`07_load_tables.py`, 21:02 UTC: 38,936 series rows, 38,501 windows, 38 runs, 31,523 detections). All 18 arms were
+> submitted (34 Batch chunks, 34,672 requests); 33 chunks are stored and the last QQQ ex-0DTE chunk is finishing.
+> Re-run `07_load_tables.py` after every ingest, outside 21:50 to 22:57 UTC and outside market hours (weekdays
+> 13:25 to 20:20 UTC; 14:25 to 21:20 UTC from 2026-11-02), the maintainer's windows. The bridge gate is passed
+> (agreement 99.6 %, kappa 0.99 against the published o4-mini labels).
 
 | Step | Script | Cost | Reads | Writes by default |
 |------|--------|------|-------|-------------------|
@@ -930,23 +932,21 @@ unscaled and the scaled arms.
 
 ---
 
-## 10. Known issues at handoff (2026-10-29)
+## 10. Known issues (2026-10-31)
 
 Found by following this runbook end to end against scratch copies of `data/backups/gex_llm/` with synthetic Batch
-output (`--backup-root`, `--parquet-root`, `--results-dir`; no API call) and by exercising every `--rollback` path.
-The six issues listed at the 2026-10-28 handoff (sorting of runs without `created_at`, the January $7.90 in the ledger,
-the `intraday_spy` window lookup, the `_rep` / `#rep` repeat labels, `KeyError: 'late'` in `stats.yaml`, and
-`02_build_windows.py --series call_only`) are fixed and no longer listed. Delete an entry when it is fixed.
+output (`--backup-root`, `--parquet-root`, `--results-dir`; no API call), by exercising every `--rollback` path, and
+by the live runs of 2026-10-29 to 2026-10-31. Fixed and no longer listed: the six issues of the 2026-10-28 handoff,
+the schema comments that lagged the registry, the untested `--db` paths (the tables exist and are loaded), and the
+one January answer the shared parser rejected (fenced with a raw control character). Delete an entry when it is fixed.
 
 | # | Symptom | Cause | Workaround until fixed |
 |---|---------|-------|------------------------|
-| 1 | `00_env_check.py` ends with `RESULT OK` and a later step fails | the check predates the Phase 3/4 inputs and the figure scripts: it does not look at the November-2025 batch files, treats a missing `.cache/research_cache.db` as a warning (step 3 stops without it), requires `statsmodels` (no script imports it) and does not check Pillow (`figures/scripts/theme.py` imports it) | the November files are verified by step 2 (`fidelity ok`) and step 3 (`--dry-run`); `python -c "import PIL"` before the figures; a `statsmodels` failure can be ignored |
+| 1 | `00_env_check.py` ends with `RESULT OK` and a later step fails | the check predates the Phase 3/4 inputs and the figure scripts: it does not look at the November-2025 batch files, treats a missing `.cache/research_cache.db` as a warning although `03` needs it, and does not check Pillow | run `03_backfill_round1.py --dry-run` and `figures/scripts/run_all.py --check` as well |
 | 2 | `00_env_check.py --write` exits 1 when it cannot write the snapshot, but the printed report ended with `RESULT OK` | `main()` prints the report before it writes the file | read the exit status, not the last line |
-| 3 | `04_llm_runner.py generate --repeat-fraction 0` logs "decision D-09 asks for 5% on every LLM arm" | the runner default is the 5 % sample of D-09 as first written; the decisions log (D-09 revised on 2026-10-29, Q-07) asks for the full repeat of `bridge_jan` only and leaves the sample for the other arms open | expected; pass the fraction you mean to each arm and settle Q-07 before the next `generate` |
-| 4 | The decisions log counts the scaled arms at 1,699 and 1,700 requests (D-10, D-18, Q-03: 33,218 requests for the plan) and their free replay at 350 of 1,699 and 923 of 1,700 windows; the pipeline builds 1,670 and 1,671 windows (350 and 901 persistent) | `new_full_scaled` starts on 2020-01-02 (`Series.start`), so its first window ends on 2020-02-13; the log cut the windows from the unscaled history, which reaches back before 2020 | the numbers in this file are the as-built ones. Windows ending 2020-01-02 to 2020-02-12 need `Series.start` of `new_full_scaled` earlier (a contract change) |
-| 5 | The schema comments lag the registry: `series_key` names five of the eleven series, `gex_sequence` says the dates are removed (the `_dated` series keep ISO dates), `arm` and `custom_id` do not mention `#rep1` or the new arms, and the file header and the `detections` table comment name `r1_o4mini` only | `sql/gex_llm_regime_schema.sql` is part of the contract and was not edited in this round | no effect on the scripts; update the comments in the next contract commit, before the DDL goes to the maintainer |
-| 6 | `submit` does not know the organization's enqueued-token limit | the limit is only visible as `token_limit_exceeded` on a batch that has already been created (section 8) | submit in waves (section 4, step 4); `requeue --wait` resends rejected chunks; a failed chunk costs nothing |
-| 7 | The `--db` and `--from-db` paths are exercised only through `--rollback` | the tables do not exist (section 5.3) | after the DDL: `00_env_check.py --require-tables`, then the loads of section 5.3 step 4, then compare `05_report.py --source db` with `--source parquet` |
+| 3 | `04_llm_runner.py generate --repeat-fraction 0` warns that D-09 asks for 5 % on every arm | the warning predates D-22, which keeps the 5 % duplicate sample as the default on every arm and the full repeat on `bridge_jan` | ignore the warning; the default is what D-22 says |
+| 4 | `submit` does not know the organization's enqueued-token limit (20 M tokens for gpt-6-luna) | the limit is only visible as `token_limit_exceeded` on a batch that has already been created (section 8) | submit everything, then run `04_llm_runner.py requeue --wait` in the background: it resends every rejected chunk with its original file as room frees |
+| 5 | Background collection stops when the Claude Code session that started it closes | the collector and requeue loops are child processes of that session | on resume, relaunch the collector loop and `requeue --wait`; `status` shows what is pending |
 
 ---
 

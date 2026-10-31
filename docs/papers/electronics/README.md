@@ -1,4 +1,4 @@
-# Electronics (MDPI) extension: regime detection under temporal obfuscation, re-run on corrected inputs
+# Electronics (MDPI) extension: regime detection under temporal obfuscation, re-run on the complete inputs
 
 Extended version of *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal
 Obfuscation* (AIAI 2026, Springer, in press), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
@@ -9,26 +9,29 @@ The extension has to consist of new experiments beyond the AIAI paper and the JR
 jrfm-4256551), and it cites both. While it was being prepared, the exact inputs of the published Phase 4A run were
 recovered and found to lack the put leg of dealer gamma exposure (GEX) from 2023-09-29 onward, and the inputs of the
 published 2024-versus-2020 baselines turned out to carry calendar dates. The article is therefore framed as a
-**data-integrity correction with a controlled LLM re-test**, not as an incremental extension.
+**re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
+extension; it does not present itself as a correction (the authors file no correction notices, decisions log D-20).
 
-## Status (2026-10-29)
+## Status (2026-10-31)
 
 | Part | State |
 |---|---|
-| Manuscript, [`latex/`](latex/) | Skeleton that builds with `build.sh` (23 pages as built, most of it placeholders): MDPI front matter, Sections 1 to 6, Appendices A to C. Appendix A (prompt, schema, request body) is transcribed from the code and checked against it; Appendix B is the verbatim text of the four audited series statements plus the statement of the scaling factor. The abstract, most prose, every result number, the per-year tables of Appendix C and the title are still placeholders (`\tbd{}`, a working title); each heading carries a `% TODO(tag)` guidance comment. |
-| Figures, [`figures/`](figures/) | One script for each of the 12 figures, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`. `figures/output/` is empty: the scripts read `results/` and the parquet copies and stop with a message when an input is missing, so nothing has been drawn yet. |
-| Results, `results/` | Empty (an empty directory, so git does not track it yet). Written by `scripts/validation/electronics/05_report.py` once series, windows and model runs exist. |
-| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms, extended on 2026-10-29 with the Phase 3/4 date-effect arms and the scaled QQQ/IWM series), scripts 00 to 05, the schema SQL and a runbook README. A first build of the SPY series and windows and the January backfill exist as parquet under `data/backups/gex_llm/`. The pipeline has submitted no `gpt-6-luna` request; the only calls so far were the probe of 2026-10-28. |
-| Database tables | `backups.gex_llm_regime_*` do **not** exist. The DDL waits for the documentation pull request in the database repository and the maintainer's approval; until then every script writes parquet only. |
-| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notices are filed: this paper carries the corrected analysis on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
-| Submission | Not submitted. Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). The bibliography entry of the JRFM article still says "in production" and needs volume, article number and DOI. |
+| Manuscript, [`latex/`](latex/) | Skeleton that builds with `build.sh` (23 pages as built): MDPI front matter, Sections 1 to 6, Appendices A to C, with `% TODO(tag)` guidance per heading and `\tbd` placeholders for every number. The writing pass (one writer per section from `results/`, then a number-by-number verifier) runs once the last Batch chunk is stored. |
+| Figures, [`figures/`](figures/) | 12 figure scripts, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`; all 12 figures drawn from `results/` into `figures/output/` (PNG, PDF and a provenance manifest each). |
+| Results, `results/` | Written by `scripts/validation/electronics/05_report.py` from the parquet tables: detection rates by arm and year, bridge agreement, series comparison, 0DTE decomposition, post-publication period, intraday check, overlap-aware statistics, cost ledger, disagreements, parse statistics. Re-run after the last chunk. |
+| Model runs | All 18 arms submitted (34 Batch chunks, 34,672 requests, about $9): 33 chunks stored, the last QQQ ex-0DTE chunk finishing at OpenAI. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). |
+| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms), `00` to `07` (environment check, series, windows, backfill, runner, report, condensed copies, database load), the schema SQL and the README. |
+| Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`, 21:02 UTC). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps run provenance, `data/backups/gex_llm/condensed/` and `results/`. |
+| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notices are filed: this paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
+| Submission | Not submitted. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
 
 ## What is new relative to AIAI 2026 and the JRFM article
 
 The JRFM article combines the IEEE BigData 2025 paper and the AIAI 2026 paper. This article cites all three and adds:
 
-1. **A data-integrity correction.** The published inputs are reconstructed from the surviving batch file and compared
-   with five other daily GEX series; the published 2024 and 2025 inputs turn out to be call-only (next section).
+1. **A data statement.** The published inputs are reconstructed from the surviving batch file and compared
+   with five other daily GEX series; the published 2024 and 2025 inputs turn out to be call-only (next section), and
+   every result is recomputed on the complete series.
 2. **A model bridge.** `gpt-6-luna` re-labels the exact published inputs (the published `o4-mini` is retired), so the
    effect of the model is separated from the effect of the data.
 3. **Convention sensitivity.** The rebuilt series with and without same-day expiries (0DTE ablation), the pre-rebuild
@@ -45,7 +48,7 @@ The JRFM article combines the IEEE BigData 2025 paper and the AIAI 2026 paper. T
 7. **Stored inputs and answers.** Every series value, window, deterministic label, request and model answer is stored,
    so each table and figure is regenerated from stored data.
 
-## The data-integrity correction
+## The data statement: what the published inputs were
 
 Evidence (command-level, with the per-day comparison files) is in [`planning/forensics/`](planning/forensics/): the
 [first memo](planning/forensics/2026-10-28_memo_published_inputs.md) (put-row loss) and the
