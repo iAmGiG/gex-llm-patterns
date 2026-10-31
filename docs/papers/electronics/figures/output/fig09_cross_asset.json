@@ -31,6 +31,7 @@
   ],
   "extra": {
     "llm_arms_present": [
+      "ex0dte_iwm",
       "ex0dte_qqq",
       "ex0dte_spy",
       "full_iwm",
@@ -40,7 +41,27 @@
     "rate_pct_by_year": {
       "IWM": {
         "new_ex0dte": {
-          "llm": null,
+          "llm": {
+            "2008": null,
+            "2009": null,
+            "2010": null,
+            "2011": null,
+            "2012": null,
+            "2013": null,
+            "2014": null,
+            "2015": null,
+            "2016": null,
+            "2017": null,
+            "2018": null,
+            "2019": null,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0,
+            "2025": 0.0,
+            "2026": 0.0
+          },
           "rule": {
             "2008": 0.0,
             "2009": 0.0,
@@ -123,9 +144,9 @@
             "2017": null,
             "2018": null,
             "2019": null,
-            "2020": null,
-            "2021": null,
-            "2022": null,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
             "2023": 0.0,
             "2024": 0.0,
             "2025": 0.0,
@@ -293,9 +314,7 @@
       "IWM": {
         "detected_new_full": 0,
         "largest_mean_abs_gex_bn_new_full": 4.97588352,
-        "llm_arms_missing": [
-          "ex0dte_iwm"
-        ],
+        "llm_arms_missing": [],
         "median_mean_abs_gex_bn_new_full": 0.6618784397666666,
         "series_drawn": [
           "new_full",
@@ -358,41 +377,41 @@
     ]
   },
   "figure": "fig09_cross_asset",
-  "generated_utc": "2026-10-30T19:18:16+00:00",
+  "generated_utc": "2026-10-31T05:19:24+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
   "outputs": {
     "pdf": {
-      "bytes": 25459,
+      "bytes": 25643,
       "path": "docs/papers/electronics/figures/output/fig09_cross_asset.pdf",
-      "sha256": "9b3fb6700e907de808dddddb1be78fe0b3dcf29e8cb38a775c44fd8c1386f99a"
+      "sha256": "99cbdf995d3d74165f5e8a2f27f81a8081ba035af4d3b83b7c0cec470bdc2b1a"
     },
     "png": {
-      "bytes": 353431,
+      "bytes": 348533,
       "path": "docs/papers/electronics/figures/output/fig09_cross_asset.png",
       "pixels": [
         1842,
         1425
       ],
-      "sha256": "36eb46922f1385078f4f9421030c0c7a08376cbe868567d5ccd3d8e97346d256"
+      "sha256": "24a113fc299aee7be372b7cdcde99d2f3cf976fd455cd591f90afc580839fb24"
     }
   },
   "results": {
     "files": {
       "detection_by_year.csv": {
-        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+        "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-10-30T19:17:28+00:00",
-      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "generated_at": "2026-10-31T05:18:16+00:00",
+      "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
       "path": "docs/papers/electronics/results/report.yaml",
       "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
-      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
     }
   },
   "rows": {
@@ -402,7 +421,7 @@
     "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4678,
     "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3867,
     "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671,
-    "docs/papers/electronics/results/detection_by_year.csv": 433,
+    "docs/papers/electronics/results/detection_by_year.csv": 492,
     "docs/papers/electronics/results/report.yaml": 15
   },
   "sources": [
@@ -437,14 +456,14 @@
       "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
     },
     {
-      "bytes": 57298,
+      "bytes": 66382,
       "path": "docs/papers/electronics/results/detection_by_year.csv",
-      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
     },
     {
-      "bytes": 153366,
+      "bytes": 163747,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
     }
   ],
   "versions": {

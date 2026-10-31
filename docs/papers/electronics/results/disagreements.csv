@@ -49,3 +49,11 @@ full_iwm_scaled,primary,gpt-6-luna,new_full_scaled,IWM,2025-01-13,2024-11-27,Fal
 full_iwm_scaled,primary,gpt-6-luna,new_full_scaled,IWM,2025-06-18,2025-05-07,True,False,persistent_negative,low_conviction,85.0,7,7,11.245,11.244707,76.67,76.666667,4,6,True,stop
 full_iwm_scaled,primary,gpt-6-luna,new_full_scaled,IWM,2025-11-04,2025-09-24,True,False,persistent_negative,low_conviction,70.0,6,6,13.96,13.95624,80.0,80.0,5,6,True,stop
 full_iwm_scaled,primary,gpt-6-luna,new_full_scaled,IWM,2026-02-24,2026-01-12,True,False,persistent_negative,low_conviction,75.0,9,9,16.061,16.060735,70.0,70.0,5,7,True,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2017-05-26,2017-04-17,False,True,low_conviction,persistent_positive,60.0,23,23,4.6423,5.370689,76.67,76.666667,3,3,False,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2017-08-18,2017-07-10,False,True,low_conviction,persistent_positive,58.0,21,21,4.99,5.135653,70.0,70.0,4,4,False,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2017-11-07,2017-09-27,False,True,low_conviction,persistent_positive,65.0,28,28,4.67,6.438471,93.33,93.333333,2,2,False,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2018-06-28,2018-05-17,False,True,low_conviction,persistent_positive,66.0,21,21,4.9953,5.072661,70.0,70.0,3,3,False,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2018-08-23,2018-07-13,True,False,persistent_positive,low_conviction,75.0,25,25,5.12,5.115707,83.33,83.333333,5,6,True,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2018-08-31,2018-07-23,True,False,persistent_positive,low_conviction,70.0,25,25,5.143,5.184552,83.33,83.333333,5,6,True,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2021-09-14,2021-08-03,False,True,low_conviction,persistent_positive,65.0,26,26,4.9997,5.063298,86.7,86.666667,5,5,False,stop
+bridge_old,primary,gpt-6-luna,old_bs,SPY,2023-07-25,2023-06-09,True,False,persistent_positive,low_conviction,70.0,22,22,5.82,5.817453,73.33,73.333333,5,6,True,stop

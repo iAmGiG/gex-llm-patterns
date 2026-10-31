@@ -73,11 +73,10 @@
     "interval": "Wilson 95% (figdata.ci_columns) on the first series' gpt-6-luna rates; overlapping windows treated as independent",
     "llm_arms_drawn": [
       "full_spy",
-      "ex0dte_spy"
-    ],
-    "llm_arms_missing": [
+      "ex0dte_spy",
       "bridge_old"
     ],
+    "llm_arms_missing": [],
     "max_abs_gap_pp": {
       "llm": 12.5,
       "rule": 12.5
@@ -157,7 +156,20 @@
         }
       },
       "old_bs": {
-        "llm": null,
+        "llm": {
+          "2008": 0.0,
+          "2009": 0.0,
+          "2010": 0.0,
+          "2011": 0.0,
+          "2012": 0.0,
+          "2013": 0.0,
+          "2014": 13.492062999999998,
+          "2015": 0.396825,
+          "2016": 26.400000000000002,
+          "2017": 37.5,
+          "2018": 32.53012,
+          "2019": 7.171315
+        },
         "rule": {
           "2008": 0.0,
           "2009": 0.0,
@@ -210,63 +222,63 @@
     ]
   },
   "figure": "fig08_deep_baseline",
-  "generated_utc": "2026-10-30T19:18:11+00:00",
+  "generated_utc": "2026-10-31T05:19:20+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "669c93b539233d29320019dd11f8bc099273634f",
+  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
   "outputs": {
     "pdf": {
-      "bytes": 23393,
+      "bytes": 23571,
       "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.pdf",
-      "sha256": "217161f48d5506f9feb07dc3f54090bac18f06b48943aeceb0993358e0cc05d7"
+      "sha256": "2f46ed784df9cee72c72692e64f49534da17f2556d1c40f05a900321de48aef7"
     },
     "png": {
-      "bytes": 292717,
+      "bytes": 288938,
       "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.png",
       "pixels": [
         1842,
         1605
       ],
-      "sha256": "ed27e8019c890f22b9c8a6f622bdfa88f99a803798c0fc29390b458eb7ba1401"
+      "sha256": "fb013716121a0c390334f569810b6117b75df04de2b81abf2851bec5476146d2"
     }
   },
   "results": {
     "files": {
       "detection_by_year.csv": {
-        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+        "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
       },
       "ex0dte_decomposition.csv": {
-        "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde"
+        "sha256": "571914fbef3a5f0dfb633d71da1e40744af1314920577adad988fd0332189537"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-10-30T19:17:28+00:00",
-      "inputs_fingerprint": "ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017",
+      "generated_at": "2026-10-31T05:18:16+00:00",
+      "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
       "path": "docs/papers/electronics/results/report.yaml",
       "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
-      "sha256": "a583f2e1b31721dd5a787a7fad2fa43fb512fe9d4144235c5b264cd30c4236d0"
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
     }
   },
   "rows": {
-    "docs/papers/electronics/results/detection_by_year.csv": 433,
+    "docs/papers/electronics/results/detection_by_year.csv": 492,
     "docs/papers/electronics/results/ex0dte_decomposition.csv": 57
   },
   "sources": [
     {
-      "bytes": 57298,
+      "bytes": 66382,
       "path": "docs/papers/electronics/results/detection_by_year.csv",
-      "sha256": "8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78"
+      "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
     },
     {
-      "bytes": 7431,
+      "bytes": 7565,
       "path": "docs/papers/electronics/results/ex0dte_decomposition.csv",
-      "sha256": "13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde"
+      "sha256": "571914fbef3a5f0dfb633d71da1e40744af1314920577adad988fd0332189537"
     }
   ],
   "versions": {

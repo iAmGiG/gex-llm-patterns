@@ -1,9 +1,9 @@
-generated_at: '2026-10-30T19:17:28+00:00'
+generated_at: '2026-10-31T05:18:16+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
   sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
   common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
-  git_sha: 669c93b539233d29320019dd11f8bc099273634f
+  git_sha: d71675406a58d1f8f9341a7a3c97e08f9aedaa84
 environment:
   python: 3.12.12
   pandas: 2.3.3
@@ -166,9 +166,37 @@ source:
     rows: 1476
     sha256: a418edc2f6a71fbdcda4bae209ec2df28bfe2dcef3dfbfb9889dbcab91dc3a0a
   - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet
+    rows: 1218
+    sha256: ee61d44b6b753518ce17db3028f8d3fcd8f2f4e353f8e3b31d71b99fa9691f69
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet
+    rows: 1218
+    sha256: 6535e894980d079d89ee18ceec636cb3f99a840a5899576b489b0ca484f59265
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet
+    rows: 1217
+    sha256: 1a14ae5f02f0cd47aef2e03785b2244099fb77cb21e4aa8b2ce53855b054aff0
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet
+    rows: 1217
+    sha256: b10951bda7332b8531188a256a979a836d176179beaca15c5c6b24b5ef41f0f9
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet
+    rows: 893
+    sha256: 4e481bea79aff8020f4363683633332a9d2fe19425c70797ed1978102717d8c5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet
+    rows: 892
+    sha256: 77324f7ea1bbdc4302d93fd4bee0cee684edb076073e10cfe35ee34193930a4d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet
+    rows: 892
+    sha256: d7985cca88d57ef329641efdff37cac3b0e14b4fd1eaa7e4c22ee3042d096ee9
+  - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet
     rows: 892
-    sha256: d4aac300c914f5520109974ad244955db1ea4364791808bf685f7cf27855ffbd
+    sha256: 10e71e5e0cd6af43e886f2e71425e1ea2690e18298275d50f8a70e07fc85edc7
   - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet
     rows: 1227
@@ -292,31 +320,31 @@ source:
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet
     rows: 1
-    sha256: ff70dafa7e6b44ad373e3665cc4fd655b969dcab05fa2526d679b355d07d6010
+    sha256: c95d571ad11b54391d197fa700075c541f807b6a009a05ae1cc67f595aa01b3e
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet
     rows: 1
-    sha256: fff877ec4be13291d80ca5dda2f790266cd7c4baf62325f05f689f07f3af980f
+    sha256: 60d76f568f5e9c39aaca3b8262ce31990087e07b112e585f71236c00efd3f6b6
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet
     rows: 1
-    sha256: 478190abb4b0f384cac6203b06c24edf22e6c9470db25e71d18788bf24c64d15
+    sha256: 739280c232b98747941fd5fa850af6ba1d0685294321567f1daec0568c22d3bd
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet
     rows: 1
-    sha256: 49b312463d5f7c1443c50b12bf3b205bfb656d239433e36174efa5d95c1b7c62
+    sha256: 8919e8d41451b783b2c456097184f3158de9bdf4ef263b1b43bbf0e84ecf6c43
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet
     rows: 1
-    sha256: 423c7e7f7c6e1d61a396c7fdfd31fb4fa4a5d238131c0588b473124ea0c4cfb1
+    sha256: 23f376d915dd5ff3c018d2b18991dfc2adf8fa6b110b5484c0aae0351a4ac351
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet
     rows: 1
-    sha256: abda5c24137559f74fb91572a3cc60a81825be9c86c1cca301501973189ec71e
+    sha256: 0f5f6621cddcc54230d032464b344ef340ddd9df80cdaa9e5148c2bb6fd433a3
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet
     rows: 1
-    sha256: 872d6ca3fe7b3df4f977bbe120d5aeb293d2df8d1672cb65edd50a85c9433b65
+    sha256: 0adf1cddfbada153bb80d56769f9d5057e5b98afa81ef8b74812a75b550492ea
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet
     rows: 1
@@ -436,9 +464,9 @@ source:
   max_created_at:
     series: '2026-10-29T20:24:13.076118+00:00'
     windows: '2026-10-29T20:33:41.780655+00:00'
-    detections: '2026-10-30T19:11:32.459323+00:00'
+    detections: '2026-10-31T05:11:58.940034+00:00'
     runs: '2026-10-30T01:04:55.077116+00:00'
-inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
 inputs:
   series:
     rows: 38936
@@ -607,7 +635,7 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
   detections:
-    rows: 29087
+    rows: 36634
     coverage:
     - arm: bridge_jan
       model: gpt-6-luna
@@ -625,12 +653,44 @@ inputs:
       first: '2020-02-13'
       last: '2025-12-31'
       recovered_2026_rows: 0
+    - arm: bridge_old
+      model: gpt-6-luna
+      series_key: old_bs
+      symbol: SPY
+      rows: 4638
+      first: '2008-02-13'
+      last: '2026-10-02'
+      recovered_2026_rows: 0
+    - arm: bridge_old#rep1
+      model: gpt-6-luna
+      series_key: old_bs
+      symbol: SPY
+      rows: 232
+      first: '2008-02-25'
+      last: '2026-07-15'
+      recovered_2026_rows: 0
+    - arm: ex0dte_iwm
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: IWM
+      rows: 1700
+      first: '2020-01-02'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: ex0dte_iwm#rep1
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: IWM
+      rows: 85
+      first: '2020-01-24'
+      last: '2026-08-12'
+      recovered_2026_rows: 0
     - arm: ex0dte_qqq
       model: gpt-6-luna
       series_key: new_ex0dte
       symbol: QQQ
-      rows: 807
-      first: '2023-07-21'
+      rows: 1699
+      first: '2020-01-02'
       last: '2026-10-09'
       recovered_2026_rows: 0
     - arm: ex0dte_qqq#rep1
@@ -849,7 +909,7 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
       recovered_2026_rows: 0
-    parsed_rows: 29087
+    parsed_rows: 36634
     recovered_2026_rows: 64
   runs:
     rows: 38
@@ -860,7 +920,7 @@ sections:
     - detection_by_year.csv
     - detection_by_year_wide.csv
     summary:
-      rows: 433
+      rows: 492
       classifier_rate_pct_by_year:
         jan2026_phase4a:
           SPY:
@@ -1065,6 +1125,27 @@ sections:
             2023: 19.678715
             2024: 100.0
             2025: 100.0
+        bridge_old:
+          gpt-6-luna:
+            2008: 0.0
+            2009: 0.0
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 13.492063
+            2015: 0.396825
+            2016: 26.4
+            2017: 37.5
+            2018: 32.53012
+            2019: 7.171315
+            2020: 16.666667
+            2021: 3.174603
+            2022: 26.294821
+            2023: 22.891566
+            2024: 100.0
+            2025: 100.0
+            2026: 23.45679
         full_iwm:
           gpt-6-luna:
             2008: 0.0
@@ -1125,8 +1206,20 @@ sections:
             2024: 11.111111
             2025: 14.0
             2026: 11.398964
+        ex0dte_iwm:
+          gpt-6-luna:
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
         ex0dte_qqq:
           gpt-6-luna:
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
             2023: 0.0
             2024: 0.0
             2025: 0.0
@@ -1208,6 +1301,14 @@ sections:
         n_compared: 1476.0
         agree_pct: 99.593496
         kappa: 0.991798
+      - arm: bridge_old
+        model: gpt-6-luna
+        series_key: old_bs
+        symbol: SPY
+        n_parsed: 4638.0
+        n_compared: 4638.0
+        agree_pct: 99.827512
+        kappa: 0.994912
       - arm: full_iwm
         model: gpt-6-luna
         series_key: new_full
@@ -1232,12 +1333,20 @@ sections:
         n_compared: 4671.0
         agree_pct: 99.67887
         kappa: 0.985848
+      - arm: ex0dte_iwm
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: IWM
+        n_parsed: 1700.0
+        n_compared: 1700.0
+        agree_pct: 100.0
+        kappa: null
       - arm: ex0dte_qqq
         model: gpt-6-luna
         series_key: new_ex0dte
         symbol: QQQ
-        n_parsed: 807.0
-        n_compared: 807.0
+        n_parsed: 1699.0
+        n_compared: 1699.0
         agree_pct: 100.0
         kappa: null
       - arm: ex0dte_spy
@@ -1331,7 +1440,7 @@ sections:
     - bridge_agreement.csv
     - bridge_agreement.yaml
     summary:
-      rows: 133
+      rows: 164
       gate:
         comparison: r1_o4mini vs bridge_jan
         metric: cohen_kappa
@@ -1381,9 +1490,19 @@ sections:
         n_pairs: 1476
         agree_pct: 99.254743
         kappa: 0.984973
+      - ref_arm: bridge_old
+        other_arm: bridge_old#rep1
+        n_pairs: 232
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: ex0dte_iwm
+        other_arm: ex0dte_iwm#rep1
+        n_pairs: 85
+        agree_pct: 100.0
+        kappa: null
       - ref_arm: ex0dte_qqq
         other_arm: ex0dte_qqq#rep1
-        n_pairs: 39
+        n_pairs: 85
         agree_pct: 100.0
         kappa: null
       - ref_arm: ex0dte_spy
@@ -1856,12 +1975,20 @@ sections:
         window_end_last: '2026-10-02'
         clf_rate_pct: 23.45679
         mean_abs_gex_bn: 7.248661
+        llm_bridge_old:
+          n: 162
+          rate_pct: 23.45679
+          agree_with_clf_pct: 100.0
         entirely_2026:
           n_windows: 133
           window_end_first: '2026-03-24'
           window_end_last: '2026-10-02'
           clf_rate_pct: 15.789474
           mean_abs_gex_bn: 5.944682
+          llm_bridge_old:
+            n: 133
+            rate_pct: 15.789474
+            agree_with_clf_pct: 100.0
       - series_key: new_full
         symbol: IWM
         n_windows: 193
@@ -1932,12 +2059,20 @@ sections:
         window_end_last: '2026-10-09'
         clf_rate_pct: 0.0
         mean_abs_gex_bn: 1.584507
+        llm_ex0dte_iwm:
+          n: 193
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
         entirely_2026:
           n_windows: 164
           window_end_first: '2026-02-13'
           window_end_last: '2026-10-09'
           clf_rate_pct: 0.0
           mean_abs_gex_bn: 1.732218
+          llm_ex0dte_iwm:
+            n: 164
+            rate_pct: 0.0
+            agree_with_clf_pct: 100.0
       - series_key: new_ex0dte
         symbol: QQQ
         n_windows: 193
@@ -2057,6 +2192,8 @@ sections:
             rate_pct: 17.073171
             agree_with_clf_pct: 99.390244
       arms_excluded_from_columns:
+      - bridge_old#rep1
+      - ex0dte_iwm#rep1
       - ex0dte_qqq#rep1
       - ex0dte_spy#rep1
       - full_iwm#rep1
@@ -2089,8 +2226,8 @@ sections:
     files:
     - stats.yaml
     summary:
-      rates: 157
-      contrasts: 76
+      rates: 170
+      contrasts: 89
       headline_contrasts:
       - name: series_contrast
         family: series
@@ -2203,6 +2340,27 @@ sections:
         a:
           kind: llm
           series_key: new_full
+          symbol: IWM
+          arm: full_iwm
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: IWM
+          arm: ex0dte_iwm
+          model: gpt-6-luna
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: new_full
           symbol: QQQ
           arm: full_qqq
           model: gpt-6-luna
@@ -2258,6 +2416,27 @@ sections:
         bootstrap_diff_ci_pp:
         - 80.761334
         - 94.950758
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 0.00012207
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: old_bs
+          symbol: SPY
+          arm: bridge_old
+          model: gpt-6-luna
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: full_spy
+          model: gpt-6-luna
+        diff_pp: 87.42515
+        bootstrap_diff_ci_pp:
+        - 80.326644
+        - 93.936022
         p_bootstrap: 0.00049975
         p_nonoverlap: 0.00012207
       - name: series_contrast
@@ -2641,6 +2820,22 @@ sections:
         period: 2024-2025 vs 2020-2023
         a:
           kind: llm
+          series_key: old_bs
+          symbol: SPY
+          arm: bridge_old
+          model: gpt-6-luna
+        b: null
+        diff_pp: 82.768924
+        bootstrap_diff_ci_pp:
+        - 71.115538
+        - 91.824933
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 2.84754e-07
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
           series_key: new_full
           symbol: IWM
           arm: full_iwm
@@ -2684,6 +2879,22 @@ sections:
         - 2.000021
         p_bootstrap: 0.112
         p_nonoverlap: 0.727806
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: IWM
+          arm: ex0dte_iwm
+          model: gpt-6-luna
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
       - name: period_shift
         family: null
         period: 2024-2025 vs 2020-2023
@@ -2860,19 +3071,19 @@ sections:
     - cost_ledger.yaml
     summary:
       rows: 38
-      est_cost_usd: 7.63677
-      spent_usd: 7.63677
-      committed_usd: 10.055961
-      remaining_to_hard_stop_usd: 1.944039
+      est_cost_usd: 9.700576
+      spent_usd: 9.700576
+      committed_usd: 9.700576
+      remaining_to_hard_stop_usd: 2.299424
       historical_backfill_usd: 9.967462
-      est_cost_usd_all_stored_runs: 17.604232
-      cost_per_request_usd: 0.000281125
+      est_cost_usd_all_stored_runs: 19.668038
+      cost_per_request_usd: 0.000279459
   disagreements:
     status: written
     files:
     - disagreements.csv
     summary:
-      rows: 50
+      rows: 58
       by_arm:
       - arm: r1_o4mini
         model: o4-mini-2025-04-16
@@ -2976,7 +3187,14 @@ sections:
         model: gpt-6-luna
         series_key: new_ex0dte
         symbol: QQQ
-        n_scored: 807
+        n_scored: 1699
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: ex0dte_iwm
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: IWM
+        n_scored: 1700
         n_disagree: 0
         disagree_pct: 0.0
       - arm: intraday_spy
@@ -2986,14 +3204,21 @@ sections:
         n_scored: 51
         n_disagree: 0
         disagree_pct: 0.0
+      - arm: bridge_old
+        model: gpt-6-luna
+        series_key: old_bs
+        symbol: SPY
+        n_scored: 4638
+        n_disagree: 8
+        disagree_pct: 0.172488
   llm_parse_stats:
     status: written
     files:
     - llm_parse_stats.csv
     summary:
-      rows: 30
-      luna_rows: 27125
-      luna_parsed: 27125
+      rows: 34
+      luna_rows: 34672
+      luna_parsed: 34672
       luna_finish_length: 0
       luna_rerun_at_retry_cap: 0
   reported_vs_computed:
@@ -3001,7 +3226,7 @@ sections:
     files:
     - reported_vs_computed.csv
     summary:
-      rows: 294
+      rows: 353
       bridge_pairs:
       - comparison: bridge
         ref_arm: r1_o4mini
@@ -3164,17 +3389,29 @@ sections:
         model: gpt-6-luna
         series_key: new_ex0dte
         symbol: QQQ
-        n: 807
-        median_ratio: 1.000026
+        n: 1699
+        median_ratio: 1.000042
+      - arm: ex0dte_iwm
+        model: gpt-6-luna
+        series_key: new_ex0dte
+        symbol: IWM
+        n: 1700
+        median_ratio: 1.000048
       - arm: intraday_spy
         model: gpt-6-luna
         series_key: intraday_t0
         symbol: SPY
         n: 51
         median_ratio: 0.999986
+      - arm: bridge_old
+        model: gpt-6-luna
+        series_key: old_bs
+        symbol: SPY
+        n: 4638
+        median_ratio: 1.00001
 files:
   bridge_agreement.csv:
-    rows: 133
+    rows: 164
     columns:
     - comparison
     - ref_arm
@@ -3218,15 +3455,15 @@ files:
     - only_r1
     - only_luna
     - neither
-    bytes: 28548
-    sha256: 0f1e9d08281314d9cefaa2ebdc527427efb173d041d2e2ab396f17dda55baaab
+    bytes: 34745
+    sha256: a9f954a778b77ce23f523d082e571785ad963e6efaa5eafc00971c82132c06a8
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -3239,15 +3476,15 @@ files:
     - bridge_incl_recovered
     - test_retest
     - notes
-    bytes: 96491
-    sha256: e30ebb9aeffaff6b17f38fbfcd563874d31ba1a9b8cafca2dbbe2b2b160ede64
+    bytes: 117432
+    sha256: f9ad39c1f871a4e0a28c4e897f69fa51ddd45cebd344a2d3860c3ecf95e1d8a0
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   cost_ledger.csv:
     rows: 38
     columns:
@@ -3283,15 +3520,15 @@ files:
     - completed_at
     - ingested_at
     - git_sha
-    bytes: 12155
-    sha256: 2756c745fc89b63d2bf0e8366ec9add33a4e8b36b7da365948487c0754630d8b
+    bytes: 13099
+    sha256: f7783f465da57696dbde0ff8eec72a9d52bf5c43144f314b50b533fa345b1a5e
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -3304,17 +3541,17 @@ files:
     - by_status
     - runs_without_est_cost
     - reconciliation
-    bytes: 7746
-    sha256: eb55d3b5dc0da7efc8ed02f662d52c9f064e8eb0b9eeddcfd0f6c31436ffdce8
+    bytes: 7155
+    sha256: b92fb775462067677df503b9818dc1106f69be46b6a08b777d665dd16c965150
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   detection_by_year.csv:
-    rows: 433
+    rows: 492
     columns:
     - label_source
     - arm
@@ -3341,17 +3578,17 @@ files:
     - metrics_agree_pct
     - sign_flips_exact_pct
     - median_ratio_reported_to_computed
-    bytes: 57298
-    sha256: 8482dcbb498961d0b70d86532aa3d4db1a8b428517f1fcbc255de677c91b1d78
+    bytes: 66382
+    sha256: 2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   detection_by_year_wide.csv:
-    rows: 386
+    rows: 441
     columns:
     - series_key
     - symbol
@@ -3373,17 +3610,17 @@ files:
     - n_compared
     - clf_rate_matched
     - n_indep_30d
-    bytes: 40559
-    sha256: 0e4cee9b4a2d6dff326d200d921d846a7508a0dd9a1826f048374585ce34f5b9
+    bytes: 47531
+    sha256: 34f9c4fa1331a3af7804130f198090c0c211d70096ad996382ac561f744e52e6
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   disagreements.csv:
-    rows: 50
+    rows: 58
     columns:
     - arm
     - arm_role
@@ -3407,15 +3644,15 @@ files:
     - clf_sign_flips
     - metrics_agree
     - finish_reason
-    bytes: 8619
-    sha256: 908dc936c612dea468e532add2052eefdb4a1cab65226ff04f0c93ee3644ec58
+    bytes: 9930
+    sha256: fd89f15048fc9a28ad238b8647fb92788cb76ceeb2a7dbc3d1217bc21cd91106
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -3443,15 +3680,15 @@ files:
     - llm_rate_full_pct
     - llm_rate_ex0dte_pct
     - llm_diff_pp
-    bytes: 7431
-    sha256: 13367f44ff721bed8ba19c697b9fa787bba85d86e7bb02b4a76e96e2b8a9bbde
+    bytes: 7565
+    sha256: 571914fbef3a5f0dfb633d71da1e40744af1314920577adad988fd0332189537
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -3474,14 +3711,14 @@ files:
     bytes: 6799
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   llm_parse_stats.csv:
-    rows: 30
+    rows: 34
     columns:
     - arm
     - arm_role
@@ -3506,15 +3743,15 @@ files:
     - mean_completion_tokens
     - max_completion_tokens_used
     - mean_reasoning_tokens
-    bytes: 3976
-    sha256: c7eeee837f477ca35f48c19f86819188ab302ee36c64626f4e41a9b744c91865
+    bytes: 4458
+    sha256: 7ab49d7f28f0fc3aa757047ebe39a9cbef6521aa18e008008f3141242883b3cb
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   post_publication_2026.csv:
     rows: 1950
     columns:
@@ -3542,19 +3779,23 @@ files:
     - llm_type_full_iwm_scaled
     - llm_ex0dte_qqq
     - llm_type_ex0dte_qqq
+    - llm_ex0dte_iwm
+    - llm_type_ex0dte_iwm
     - llm_intraday_spy
     - llm_type_intraday_spy
-    bytes: 217718
-    sha256: 404bec1cf82c828708a6f5fdfb540ba4441ee0d869bc9dabe100c26f53f47cd4
+    - llm_bridge_old
+    - llm_type_bridge_old
+    bytes: 232237
+    sha256: a21ee7e6eef0130b2e4f3cf2cbd2f94e37d3d5d7829c9e6c7fbf225de42e39d4
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   post_publication_2026_summary.csv:
-    rows: 38
+    rows: 42
     columns:
     - definition
     - series_key
@@ -3572,17 +3813,17 @@ files:
     - window_end_first
     - window_end_last
     - mean_abs_gex_bn
-    bytes: 4563
-    sha256: bf442eabe89b7d1e488193f42437e377acfeb80de3930beb3ed8d10d0cc2420f
+    bytes: 5055
+    sha256: 6a43966e6bbb8ae14d904bf82d74640f215481a1a1c51dfb0ee239933da5308e
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   reported_vs_computed.csv:
-    rows: 294
+    rows: 353
     columns:
     - basis
     - comparison
@@ -3603,15 +3844,15 @@ files:
     - median_abs_diff_bn
     - median_reported_bn
     - median_computed_bn
-    bytes: 38310
-    sha256: f4dc0b9c8e55a7b6c5631cd53fd0bbee011ae8835593caa2d5304fcbd9a6c19f
+    bytes: 45543
+    sha256: 5d095300137c300856a1020cb0f868d8f80fe1451b4fb655b9eb4411e1a7f6a6
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   series_comparison.csv:
     rows: 98
     columns:
@@ -3633,27 +3874,27 @@ files:
     bytes: 13147
     sha256: 355a3771b12faca2aefaa2ac11e6aff52472e5d5dcc262af9ba041f845f17c8d
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
   stats.yaml:
     keys:
     - meta
     - headline_contrasts
     - rates
     - contrasts
-    bytes: 162434
-    sha256: 2f761cc1eb137c6d6d80795beb2168a82f9002d5d616ee4fa800c56d47b41d55
+    bytes: 182170
+    sha256: 6efbf34d3e55717eb87d55c5a96c9a9976b47c1d73fb37f4183c270ee60e6dd1
     produced_with:
-      inputs_fingerprint: ccbc49c8e9e26f592e0f1ad715331087f251c305373e6fa8e020b9d182b54017
+      inputs_fingerprint: 3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f
       script_sha256: 8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7
       common_sha256: 4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b
       seed: 261
       n_boot: 2000
-      generated_at: '2026-10-30T19:17:28+00:00'
+      generated_at: '2026-10-31T05:18:16+00:00'
 untracked_files: []
 warnings: []
 diagnostics:
@@ -3851,6 +4092,27 @@ headline:
         2023: 19.678715
         2024: 100.0
         2025: 100.0
+    bridge_old:
+      gpt-6-luna:
+        2008: 0.0
+        2009: 0.0
+        2010: 0.0
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 13.492063
+        2015: 0.396825
+        2016: 26.4
+        2017: 37.5
+        2018: 32.53012
+        2019: 7.171315
+        2020: 16.666667
+        2021: 3.174603
+        2022: 26.294821
+        2023: 22.891566
+        2024: 100.0
+        2025: 100.0
+        2026: 23.45679
     full_iwm:
       gpt-6-luna:
         2008: 0.0
@@ -3911,8 +4173,20 @@ headline:
         2024: 11.111111
         2025: 14.0
         2026: 11.398964
+    ex0dte_iwm:
+      gpt-6-luna:
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
     ex0dte_qqq:
       gpt-6-luna:
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
         2023: 0.0
         2024: 0.0
         2025: 0.0
@@ -3994,6 +4268,14 @@ headline:
     n_compared: 1476.0
     agree_pct: 99.593496
     kappa: 0.991798
+  - arm: bridge_old
+    model: gpt-6-luna
+    series_key: old_bs
+    symbol: SPY
+    n_parsed: 4638.0
+    n_compared: 4638.0
+    agree_pct: 99.827512
+    kappa: 0.994912
   - arm: full_iwm
     model: gpt-6-luna
     series_key: new_full
@@ -4018,12 +4300,20 @@ headline:
     n_compared: 4671.0
     agree_pct: 99.67887
     kappa: 0.985848
+  - arm: ex0dte_iwm
+    model: gpt-6-luna
+    series_key: new_ex0dte
+    symbol: IWM
+    n_parsed: 1700.0
+    n_compared: 1700.0
+    agree_pct: 100.0
+    kappa: null
   - arm: ex0dte_qqq
     model: gpt-6-luna
     series_key: new_ex0dte
     symbol: QQQ
-    n_parsed: 807.0
-    n_compared: 807.0
+    n_parsed: 1699.0
+    n_compared: 1699.0
     agree_pct: 100.0
     kappa: null
   - arm: ex0dte_spy
@@ -4156,9 +4446,19 @@ headline:
       n_pairs: 1476
       agree_pct: 99.254743
       kappa: 0.984973
+    - ref_arm: bridge_old
+      other_arm: bridge_old#rep1
+      n_pairs: 232
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: ex0dte_iwm
+      other_arm: ex0dte_iwm#rep1
+      n_pairs: 85
+      agree_pct: 100.0
+      kappa: null
     - ref_arm: ex0dte_qqq
       other_arm: ex0dte_qqq#rep1
-      n_pairs: 39
+      n_pairs: 85
       agree_pct: 100.0
       kappa: null
     - ref_arm: ex0dte_spy
@@ -4610,6 +4910,27 @@ headline:
     a:
       kind: llm
       series_key: new_full
+      symbol: IWM
+      arm: full_iwm
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: IWM
+      arm: ex0dte_iwm
+      model: gpt-6-luna
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: new_full
       symbol: QQQ
       arm: full_qqq
       model: gpt-6-luna
@@ -4665,6 +4986,27 @@ headline:
     bootstrap_diff_ci_pp:
     - 80.761334
     - 94.950758
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 0.00012207
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: old_bs
+      symbol: SPY
+      arm: bridge_old
+      model: gpt-6-luna
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: full_spy
+      model: gpt-6-luna
+    diff_pp: 87.42515
+    bootstrap_diff_ci_pp:
+    - 80.326644
+    - 93.936022
     p_bootstrap: 0.00049975
     p_nonoverlap: 0.00012207
   - name: series_contrast
@@ -5048,6 +5390,22 @@ headline:
     period: 2024-2025 vs 2020-2023
     a:
       kind: llm
+      series_key: old_bs
+      symbol: SPY
+      arm: bridge_old
+      model: gpt-6-luna
+    b: null
+    diff_pp: 82.768924
+    bootstrap_diff_ci_pp:
+    - 71.115538
+    - 91.824933
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 2.84754e-07
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
       series_key: new_full
       symbol: IWM
       arm: full_iwm
@@ -5091,6 +5449,22 @@ headline:
     - 2.000021
     p_bootstrap: 0.112
     p_nonoverlap: 0.727806
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: IWM
+      arm: ex0dte_iwm
+      model: gpt-6-luna
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
   - name: period_shift
     family: null
     period: 2024-2025 vs 2020-2023
@@ -5271,12 +5645,20 @@ headline:
       window_end_last: '2026-10-02'
       clf_rate_pct: 23.45679
       mean_abs_gex_bn: 7.248661
+      llm_bridge_old:
+        n: 162
+        rate_pct: 23.45679
+        agree_with_clf_pct: 100.0
       entirely_2026:
         n_windows: 133
         window_end_first: '2026-03-24'
         window_end_last: '2026-10-02'
         clf_rate_pct: 15.789474
         mean_abs_gex_bn: 5.944682
+        llm_bridge_old:
+          n: 133
+          rate_pct: 15.789474
+          agree_with_clf_pct: 100.0
     - series_key: new_full
       symbol: IWM
       n_windows: 193
@@ -5347,12 +5729,20 @@ headline:
       window_end_last: '2026-10-09'
       clf_rate_pct: 0.0
       mean_abs_gex_bn: 1.584507
+      llm_ex0dte_iwm:
+        n: 193
+        rate_pct: 0.0
+        agree_with_clf_pct: 100.0
       entirely_2026:
         n_windows: 164
         window_end_first: '2026-02-13'
         window_end_last: '2026-10-09'
         clf_rate_pct: 0.0
         mean_abs_gex_bn: 1.732218
+        llm_ex0dte_iwm:
+          n: 164
+          rate_pct: 0.0
+          agree_with_clf_pct: 100.0
     - series_key: new_ex0dte
       symbol: QQQ
       n_windows: 193
@@ -5648,22 +6038,34 @@ headline:
       model: gpt-6-luna
       series_key: new_ex0dte
       symbol: QQQ
-      n: 807
-      median_ratio: 1.000026
+      n: 1699
+      median_ratio: 1.000042
+    - arm: ex0dte_iwm
+      model: gpt-6-luna
+      series_key: new_ex0dte
+      symbol: IWM
+      n: 1700
+      median_ratio: 1.000048
     - arm: intraday_spy
       model: gpt-6-luna
       series_key: intraday_t0
       symbol: SPY
       n: 51
       median_ratio: 0.999986
+    - arm: bridge_old
+      model: gpt-6-luna
+      series_key: old_bs
+      symbol: SPY
+      n: 4638
+      median_ratio: 1.00001
   cost:
-    est_cost_usd: 7.63677
-    spent_usd: 7.63677
-    committed_usd: 10.055961
-    remaining_to_hard_stop_usd: 1.944039
+    est_cost_usd: 9.700576
+    spent_usd: 9.700576
+    committed_usd: 9.700576
+    remaining_to_hard_stop_usd: 2.299424
     historical_backfill_usd: 9.967462
-    est_cost_usd_all_stored_runs: 17.604232
-    cost_per_request_usd: 0.000281125
+    est_cost_usd_all_stored_runs: 19.668038
+    cost_per_request_usd: 0.000279459
 caveats:
 - Windows have stride 1 and overlap; Wilson intervals in detection_by_year.csv are descriptive. Inference is in
   stats.yaml (quarter-block bootstrap and non-overlapping 30-day subsample next to every p-value).

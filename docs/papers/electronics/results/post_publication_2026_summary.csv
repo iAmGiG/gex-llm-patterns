@@ -1,6 +1,8 @@
 definition,series_key,symbol,label_source,arm,model,n_windows,n_scored,n_detect,rate_pct,ci_lo_pct,ci_hi_pct,agree_with_clf_pct,window_end_first,window_end_last,mean_abs_gex_bn
 ends_in_2026,old_bs,SPY,classifier,,,162,162,38,23.45679,17.593428,30.549817,,2026-02-10,2026-10-02,7.248661
+ends_in_2026,old_bs,SPY,llm,bridge_old,gpt-6-luna,162,162,38,23.45679,17.593428,30.549817,100.0,2026-02-10,2026-10-02,7.248661
 entirely_2026,old_bs,SPY,classifier,,,133,133,21,15.789474,10.565314,22.934372,,2026-03-24,2026-10-02,5.944682
+entirely_2026,old_bs,SPY,llm,bridge_old,gpt-6-luna,133,133,21,15.789474,10.565314,22.934372,100.0,2026-03-24,2026-10-02,5.944682
 ends_in_2026,new_full,IWM,classifier,,,193,193,0,0.0,0.0,1.95155,,2026-01-02,2026-10-09,1.758525
 ends_in_2026,new_full,IWM,llm,full_iwm,gpt-6-luna,193,193,0,0.0,0.0,1.95155,100.0,2026-01-02,2026-10-09,1.758525
 entirely_2026,new_full,IWM,classifier,,,164,164,0,0.0,0.0,2.288743,,2026-02-13,2026-10-09,1.904504
@@ -14,7 +16,9 @@ ends_in_2026,new_full,SPY,llm,full_spy,gpt-6-luna,193,193,22,11.398964,7.649243,
 entirely_2026,new_full,SPY,classifier,,,164,164,22,13.414634,9.028461,19.475497,,2026-02-13,2026-10-09,8.531861
 entirely_2026,new_full,SPY,llm,full_spy,gpt-6-luna,164,164,22,13.414634,9.028461,19.475497,100.0,2026-02-13,2026-10-09,8.531861
 ends_in_2026,new_ex0dte,IWM,classifier,,,193,193,0,0.0,0.0,1.95155,,2026-01-02,2026-10-09,1.584507
+ends_in_2026,new_ex0dte,IWM,llm,ex0dte_iwm,gpt-6-luna,193,193,0,0.0,0.0,1.95155,100.0,2026-01-02,2026-10-09,1.584507
 entirely_2026,new_ex0dte,IWM,classifier,,,164,164,0,0.0,0.0,2.288743,,2026-02-13,2026-10-09,1.732218
+entirely_2026,new_ex0dte,IWM,llm,ex0dte_iwm,gpt-6-luna,164,164,0,0.0,0.0,2.288743,100.0,2026-02-13,2026-10-09,1.732218
 ends_in_2026,new_ex0dte,QQQ,classifier,,,193,193,0,0.0,0.0,1.95155,,2026-01-02,2026-10-09,2.770315
 ends_in_2026,new_ex0dte,QQQ,llm,ex0dte_qqq,gpt-6-luna,193,193,0,0.0,0.0,1.95155,100.0,2026-01-02,2026-10-09,2.770315
 entirely_2026,new_ex0dte,QQQ,classifier,,,164,164,0,0.0,0.0,2.288743,,2026-02-13,2026-10-09,2.889821
