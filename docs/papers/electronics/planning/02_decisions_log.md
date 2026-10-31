@@ -393,3 +393,4 @@
 - 2026-10-30: the three deferred arms of D-22 submitted (every registered LLM arm is now in flight or stored).
 - 2026-10-30: D-17 revised (nothing raw on the remote; condensed copies via `06_condense.py`); Q-09 settled.
 - 2026-10-30: D-14 addendum (schema applied, tables loaded); `07_load_tables.py` added.
+- 2026-10-31: all 34 Batch chunks stored (36,634 answers, USD 9.70); database tables reloaded; manuscript writing pass done from `results/` with a number-by-number verifier, `build.sh --strict` passes (0406c4f); PR #263 ready for review; ten `TODO(authors)` decisions remain in the LaTeX (section 3 of this log lists the open ones).
