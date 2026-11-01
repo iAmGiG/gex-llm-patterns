@@ -1,0 +1,206 @@
+\section{Methods}
+\label{sec:methods}
+
+% src: report.yaml inputs.series.rows (38{,}936), inputs.windows.rows (38{,}501), inputs.detections.rows (36{,}634); cost_ledger.yaml totals.backfill.n_requests (1{,}922)
+The study cuts six daily GEX series and the derived inputs of the rerun arms (38{,}936 stored daily rows) into 38{,}501 windows of 30 trading days. Each window is labelled by the deterministic rule and, for each of 18 arms (15 gpt-6-luna arms and three o4-mini backfills; the 40-request pilot is listed beside them in Table~\ref{tab:arms}), by a language model; the 36{,}634 stored answers (1{,}922 of them backfilled from earlier o4-mini runs) and all other results are kept in parquet files and in the tables \path{backups.gex_llm_regime_*}.
+Figure~\ref{fig:design} gives an overview. The daily series are defined in Section~\ref{sec:methods:series} and their lineage in Section~\ref{sec:methods:lineage}; windows and the rule follow in Section~\ref{sec:methods:windows}, the model protocol in Section~\ref{sec:methods:model} and the experimental arms in Section~\ref{sec:methods:arms}.
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figDesign}
+\caption{Study design. Six daily GEX series, one of them the call-only diagnostic, and the derived inputs of the rerun arms (Table~\ref{tab:series}) are cut into 30-trading-day windows, labelled by the deterministic classifier and, for each arm of Table~\ref{tab:arms}, by gpt-6-luna through the Batch API. Boxes give the stored counts, and every input, label and response is stored (Section~\ref{sec:methods:storage}). \textbf{Read this figure as:} daily rows become 38{,}501 windows, every window carries a label from the rule, and each of the 36{,}634 stored answers is compared with the label of its own window.}
+% src: fig01_study_design.json extra.windows, extra.arms; report.yaml inputs
+\label{fig:design}
+\end{figure}
+
+\subsection{Regime Criteria}
+\label{sec:methods:criteria}
+
+A 30-trading-day window is a persistent regime when three criteria hold \cite{regan2026regimes,regan2026jrfm}: (i)~persistence, at least 21 of the 30 days (70\%) share the sign of net GEX; (ii)~magnitude, the mean absolute net GEX is at least \$5~billion; and (iii)~stability, the sign changes at most five times. The deterministic classifier (the rule) labels every other window as low conviction (persistent sign and mean magnitude of at least \$3~billion, but failing a criterion) or transitional. The detection label used throughout is the binary persistent or not-persistent verdict (\ident{regime_detected} for the model, \ident{clf_should_detect} for the rule). The thresholds are those of the earlier studies and are not re-tuned.
+% src: src/validation/regime_classifier.py (positive days are values > 0; classification order); report.yaml diagnostics.thresholds
+Zero GEX counts as non-positive. A window with a persistent sign and a mean magnitude of at least \$5~billion but more than five sign changes fails the stability criterion and is labelled low conviction, because its mean still exceeds \$3~billion. The prompt shows values rounded to 0.01B, whereas the rule replays the unrounded USD values stored with each window. The thresholds are fixed in dollars before the runs, for every symbol. This choice has a consequence for QQQ and IWM, whose gamma is smaller than that of SPY, and Section~\ref{sec:results:cross} reports the resulting floor effect.
+
+\subsection{Daily GEX Series}
+\label{sec:methods:series}
+
+For each symbol and trading day $t$ the net dealer gamma exposure is
+\begin{equation}
+\mathrm{GEX}_t=\sum_{i\in\mathcal{C}_t} s_i\,\Gamma_i\,\mathrm{OI}_i\cdot 100\cdot S_t^{2}\cdot 0.01,
+\qquad s_i=\begin{cases}+1 & \text{call,}\\ -1 & \text{put,}\end{cases}
+\label{eq:gex}
+\end{equation}
+where $\mathcal{C}_t$ is the set of contracts listed on day $t$ with a defined gamma $\Gamma_i$, positive open interest $\mathrm{OI}_i$ and a positive underlying price $S_t$. The series of Table~\ref{tab:series} differ in how $\Gamma_i$ is obtained, in which expiries and legs enter $\mathcal{C}_t$, and in where the values come from.
+
+\begin{table}[H]
+\centering
+\caption{Daily GEX series. The first block holds the series of the published result and its diagnostics, the second the complete series, the third the intraday check, the fourth the derived inputs of the rerun arms (Section~\ref{sec:methods:arms}).}
+\label{tab:series}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{2.6cm}@{}}
+\toprule
+Series key & Source and gamma convention & Symbols and span & Role \\
+\midrule
+\ident{jan2026_phase4a} & Phase 4A batch file of 2026-01-04: the exact inputs sent to o4-mini, at 0.01B precision & SPY, 2020-01-02 to 2025-12-31 & Bridge to the published result \\
+\ident{call_only} & Raw \path{gex.options_chains_partitioned}: call leg of every contract, same-day expiries included, put leg dropped & SPY, 2020 to 2026-10-09 & Reproduces the put-less inputs; no model arm \\
+\ident{old_bs} & Archive \path{backups.options_daily_summary_pre_rebuild_20261004}: Black--Scholes gamma on integer day counts, same-day expiries zeroed; put-less from about October 2023 & SPY, 2008-01-02 to 2026-10-02, with holes & Diagnostic bridge to the pre-rebuild table \\
+\midrule
+\ident{new_full} & \path{gex.options_daily_summary} after the 2026-10-08 rebuild: stored per-contract gamma, same-day expiries included, both legs & SPY, QQQ, IWM; 2008 (QQQ 2011) to 2026-10-09 & Primary complete series \\
+\ident{new_ex0dte} & Raw \path{gex.options_chains_partitioned}, contracts with \ident{expiration > trading_date}; otherwise as \ident{new_full} & As \ident{new_full} & 0DTE ablation \\
+\midrule
+\ident{intraday_late} & \path{gex.intraday_gex_summary}, snapshot type \ident{final_rush} (19:55:59 UTC), stored gamma & SPY, 2026-07-27 to 2026-10-09 & Intraday check \\
+\midrule
+\ident{new_full_scaled} & \ident{new_full} of QQQ and IWM times one fixed factor per symbol (Section~\ref{sec:methods:arms}) & QQQ, IWM; 2020 to 2026-10-09 & Scaled cross-asset arms (protocol change) \\
+\ident{p3_2024} & Phase 3 batch file of 2025-11-20: 252 daily values, gross call-plus-put magnitude without same-day expiries and with a negative sign imposed (negative on 242 days; the ten positive values are placeholder rows of the source database) & SPY, 2024-01-02 to 2024-12-31 & 2024 baseline, Day-T labels \\
+\ident{p3_2024_dated} & The same values with the ISO dates that were sent in November 2025 & As \ident{p3_2024} & 2024 baseline, dated labels \\
+\ident{p4_2020} & Phase 4 batch file of 2025-11-20: 252 daily values, magnitude only (positive on every day) & SPY, 2020-01-02 to 2020-12-31 & 2020 baseline, Day-T labels \\
+\ident{p4_2020_dated} & The same values with the ISO dates that were sent in November 2025 & As \ident{p4_2020} & 2020 baseline, dated labels \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% src: series parquet files (series_metadata of new_full_scaled_QQQ/IWM: factor, n_days); report.yaml diagnostics.scaling; planning/02_decisions_log.md D-13 (market_close slot)
+Each series answers one question. \ident{jan2026_phase4a} holds the numbers that o4-mini saw in January 2026, so it is the only input that can link the new runs to the published rates. \ident{call_only} is rebuilt from the raw chain with the call leg alone and tests whether the put-less inputs alone explain the published rates. \ident{old_bs} is the pre-rebuild daily table and shows how far a Black--Scholes gamma on integer day counts moves the rates. \ident{new_full} is the complete series and the primary object of the study. \ident{new_ex0dte} removes same-day expiries and so isolates their contribution. \ident{intraday_late} supplies a late-session value for the last day of a window. The fourth block serves the cross-asset and baseline replays. \ident{new_full_scaled} rescales QQQ and IWM by one factor per symbol (Section~\ref{sec:methods:arms}), so that the fixed dollar thresholds are comparable across the three ETFs. The Phase 3 file carries a negative sign on 242 of its 252 days (the ten positive values are placeholder rows), the Phase 4 file is positive on all 252 days, and the dated twins differ from their obfuscated counterparts in the day labels only.
+
+% src: series_comparison.csv / windows.csv.gz old_bs SPY missing master days: 33 = 2 (2023-07-12, 2024-03-11) + 26 (2026-01-02 to 2026-02-09) + 5 (2026-10-05 to 2026-10-09)
+Windows use the rows of each series (rule A, Section~\ref{sec:methods:windows}), so the calendars matter. The series \ident{old_bs} lacks SPY on 2023-07-12, 2024-03-11, the 26 trading days from 2026-01-02 to 2026-02-09, and the 5 days from 2026-10-05 to 2026-10-09, and the January calendar lacks 2023-07-12 and 2024-03-11; both dates are in the complete series. For the intraday series, the \ident{market_close} slot (20:00:59 UTC) equals the end-of-day row on 51 of 54 days, so the independent late-session observation is \ident{final_rush}. The irregular days 2026-07-29, 2026-08-03 and 2026-09-14 are excluded.
+
+\subsection{Provenance of the Published Inputs}
+\label{sec:methods:lineage}
+
+The published inputs cannot be regenerated from today's database. The raw options table was reloaded on 2026-02-03, one month after the Phase 4A run, and a defect of the earlier load (option type defaulting to call) had removed the put rows of the raw table for the dates from about October 2023 to December 2025. The exact inputs were therefore recovered from the surviving Phase 4A batch file (Section~\ref{sec:results:inputs}); the inputs of the Phase 3 and 4 baseline runs of November 2025 survive in the same way. Eight dated events fix the lineage:
+% src: forensics/2026-10-28_memo_published_inputs.md; planning/00_design.md lines 41, 45; planning/02_decisions_log.md (luna created 2026-09-14)
+\begin{itemize}
+\item 2025-11-20: the Phase 3 (2024) and Phase 4 (2020) baseline batches are run on o4-mini with calendar dates as day labels, 223 windows each (Section~\ref{sec:methods:arms}).
+\item 2026-01-04: Phase 4A batch run (o4-mini-2025-04-16) on 1{,}476 SPY windows with ends from 2020-02-13 to 2025-12-31.
+\item 2026-01-15: the pre-rebuild daily table is computed from the same raw table with Black--Scholes gamma and same-day expiries zeroed.
+\item 2026-02-03: the raw options table is reloaded, with the put rows restored.
+\item 2026-09-14: the model object gpt-6-luna is created.
+\item 2026-10-04: the pre-rebuild daily table is archived and treated as read-only.
+\item 2026-10-08: the daily summary is rebuilt from stored per-contract gamma, same-day expiries included.
+\item 2026-10-12: equity options move from Alpha Vantage to Cboe delayed quotes, so every window ends on or before 2026-10-09.
+\end{itemize}
+% src: parquet series jan2026_phase4a, new_full, call_only (SPY), tolerance 0.005B (scripts/validation/electronics/README.md); forensics/2026-10-28_memo_published_inputs.md V1-V5; series_comparison.csv pair=jan2026_phase4a_vs_new_full symbol=SPY (per-year shares in Table tab:lineage / Section 4.1)
+Two observations carry the evidence on the put-row loss; the others, including the share of days on which the January value equals the complete series in each year, are in Table~\ref{tab:lineage} and Section~\ref{sec:results:inputs}. First, on each of the 565 trading days from 2023-09-29 to 2025-12-31 the January value equals the call-only GEX of today's raw table, same-day expiries included, to within \$0.005~billion, and it equals the complete net GEX on none of them. Second, the January calendar lacks 2023-07-12 and 2024-03-11, two trading days that the reloaded table holds; the 58 January windows that span them are flagged (Section~\ref{sec:methods:windows}). The cause (option type defaulting to call) is recorded in issue 24 of the database repository.
+
+The pre-rebuild table is therefore not a clean old convention. The effect of Black--Scholes against stored gamma is identifiable only before about October 2023, and the effect of same-day expiries is the difference between \ident{new_full} and \ident{new_ex0dte}.
+
+\subsection{Windows and Deterministic Classifier}
+\label{sec:methods:windows}
+
+A window consists of 30 consecutive rows of a series (days $T{-}29$ to $T{+}0$), with one window per end date (stride one) and end dates up to 2026-10-09. A span that covers a calendar gap of more than four days is flagged (a gap of five or more days is not a holiday weekend). The number of trading days of the symbol's master calendar (\path{gex.options_daily_summary}) that are absent from the series inside the span is stored with the window. A gap flags a window but does not drop it. Values are relabelled ``Day T-29'' to ``Day T+0'' with no dates or tickers, exactly as in Phase 4A, except in the two dated arms of Section~\ref{sec:methods:arms}, which carry the ISO dates of the November 2025 prompts. The rule of Section~\ref{sec:methods:criteria} labels every window independently of any model call, and its verdict is the reference label for each arm. The windows that end in 2026, up to 2026-10-09, form the post-publication period (Section~\ref{sec:results:post}): the published sample ends on 2025-12-31, so the 29 earliest of these windows still contain days of it, and those with ends from 2026-02-13 lie entirely after it.
+% src: condensed/windows.csv.gz series_key=new_full symbol=SPY window_end >= 2026-01-01 (193 windows, 29 end before 2026-02-13)
+Table~\ref{tab:windows} gives the 38{,}501 windows. The January inputs and the four Phase 3 and 4 inputs keep their own calendars (rule J), and a build stops unless it reproduces the surviving batch file byte for byte. The composite intraday windows (rule T0, key \ident{intraday_t0}) take the \ident{new_full} values for days $T{-}29$ to $T{-}1$ and the \ident{final_rush} value at $T{+}0$. A window with a missing value is dropped. Of the 1{,}476 January windows, 58 span one of the two missing dates and are flagged. Windows overlap in 29 of 30 days, which the statistics of Section~\ref{sec:methods:statistics} take into account.
+
+
+% src: condensed/windows.csv.gz (series_key, symbol, window_rule, window_end, calendar_gap_days, missing_master_days); total agrees with report.yaml inputs.windows.rows
+\begin{table}[H]
+\centering
+\caption{Windows per series and symbol. Rule A cuts 30 consecutive rows of a series that follows the master calendar, rule J does the same for a series with its own calendar, and rule T0 builds the composite intraday windows. The last three columns count windows whose widest calendar gap exceeds four days, windows with at least one master-calendar day absent from the series, and windows with either flag. Flagged windows are kept.}
+\label{tab:windows}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llcrlrrr@{}}
+\toprule
+Series key & Symbol & Rule & Windows & Window ends & Gap $>4$ d & Missing days & Either \\
+\midrule
+\ident{jan2026_phase4a} & SPY & J & 1{,}476 & 2020-02-13 to 2025-12-31 & 0 & 58 & 58 \\
+\ident{call_only} & SPY & A & 1{,}671 & 2020-02-13 to 2026-10-09 & 0 & 0 & 0 \\
+\ident{old_bs} & SPY & A & 4{,}638 & 2008-02-13 to 2026-10-02 & 116 & 87 & 174 \\
+\ident{new_full} & IWM & A & 4{,}678 & 2008-02-13 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{new_full} & QQQ & A & 3{,}867 & 2011-05-04 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{new_full} & SPY & A & 4{,}671 & 2008-02-13 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{new_ex0dte} & IWM & A & 4{,}678 & 2008-02-13 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{new_ex0dte} & QQQ & A & 3{,}867 & 2011-05-04 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{new_ex0dte} & SPY & A & 4{,}671 & 2008-02-13 to 2026-10-09 & 87 & 0 & 87 \\
+\ident{intraday_t0} & SPY & T0 & 51 & 2026-07-27 to 2026-10-09 & 0 & 0 & 0 \\
+\ident{new_full_scaled} & IWM & A & 1{,}671 & 2020-02-13 to 2026-10-09 & 0 & 0 & 0 \\
+\ident{new_full_scaled} & QQQ & A & 1{,}670 & 2020-02-13 to 2026-10-09 & 0 & 0 & 0 \\
+\ident{p3_2024} & SPY & J & 223 & 2024-02-13 to 2024-12-31 & 0 & 0 & 0 \\
+\ident{p3_2024_dated} & SPY & J & 223 & 2024-02-13 to 2024-12-31 & 0 & 0 & 0 \\
+\ident{p4_2020} & SPY & J & 223 & 2020-02-13 to 2020-12-31 & 0 & 0 & 0 \\
+\ident{p4_2020_dated} & SPY & J & 223 & 2020-02-13 to 2020-12-31 & 0 & 0 & 0 \\
+\midrule
+Total & & & 38{,}501 & & 638 & 145 & 754 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Model Protocol}
+\label{sec:methods:model}
+
+All model calls use OpenAI's \ident{gpt-6-luna} through the Batch API (\path{/v1/chat/completions}, 24-hour completion window) in chunks of at most 1{,}500 requests. The model replaces the retired o4-mini; its API alias carries no dated snapshot, so the creation timestamp of the model object (2026-09-14) and the response identifier of every answer are stored. Requests use \ident{reasoning_effort} = \ident{medium}, the effort at which o4-mini ran in the published run, and the prompt text is unchanged from the Phase 4A run (prompt version \ident{v2.0_postgresql}); only the two dated arms of Section~\ref{sec:methods:arms} differ in the data lines, whose day labels are ISO dates. The wording of the prompt uses ``$>$70\%'' and ``$>$\$5B'', whereas the rule uses ``at least 21 of 30 days'' and ``$\geq$ \$5 billion''; the prompt is unchanged from the published run. The answer has nine fields (Appendix~\ref{app:prompt}). The one protocol change that bears on the answer is that these fields are enforced with a strict JSON schema, whereas the earlier runs requested JSON in the prompt text only; the change is disclosed here and does not alter the question asked. The published requests supplied neither a temperature nor a token limit (the AIAI Methods text states 1.0 and 16{,}384 tokens); the requests to gpt-6-luna supply no temperature either. They do cap completion at 4{,}000 tokens, reasoning tokens included, as a safety limit that no answer reached. An answer is read as JSON; a second attempt tolerates raw control characters inside strings (one Phase 4A answer needed it), a last fallback extracts the JSON object from free text, and the parse status of every answer is stored.
+
+% src: cost_ledger.csv arm=pilot_bridge_jan (prompt_tokens_per_response, completion_tokens_per_response, est_cost_usd); llm_parse_stats.csv arm=pilot_bridge_jan; planning/02_decisions_log.md D-22 (balance 20/20, 40 of 40 verdicts equal to the rule and to o4-mini)
+% src: cost_ledger.csv (all gpt-6-luna Batch rows: n_requests, prompt_tokens, completion_tokens, est_cost_usd); llm_parse_stats.csv (n_rows, n_parsed, n_fallback, n_finish_length, max_completion_tokens_used); cost_ledger.yaml pricing_usd_per_mtok.gpt-6-luna.batch
+A pilot of 40 windows, balanced on the label of the rule (20 detected, 20 not) and run synchronously at standard prices, measured length and cost before the Batch runs. All 40 answers parsed on the first strategy and all 40 verdicts equal the rule and the published o4-mini answer. A request used 1{,}913 prompt tokens and on average 700 completion tokens, of which 513 were reasoning tokens; the longest answer used 1{,}063 completion tokens. The pilot cost \$0.02 in all. Over all gpt-6-luna runs, the pilot included, the study sent 34{,}712 requests; 34{,}712 answers parsed (100.0\%), 0 needed the fallback parsers and 0 ended with \ident{finish_reason} = \ident{length}, so the retry at 8{,}000 tokens was never used. A request averaged 1{,}914 prompt and 734 completion tokens, and the longest answer used 1{,}864. At Batch prices of \$0.05 and \$0.25 per million input and output tokens, 1{,}000 requests cost \$0.28.
+
+% src: bridge_agreement.yaml gate (kappa, n_pairs, threshold), bridge[0] (confusion counts, agree_pct), test_retest (ref_arm=bridge_jan)
+The bridge carries a gate. Cohen's kappa between \ident{bridge_jan} and the 1{,}412 published o4-mini answers has to be at least about 0.6, the value of the project checklist. The observed kappa is 0.99 (99.6\% agreement: 646 windows detected by both models, 5 by gpt-6-luna only, 0 by o4-mini only, 761 by neither), so the gate is passed. A full repeat of \ident{bridge_jan} gives a kappa of 0.98 against the first pass (1{,}476 pairs), which sets the scale of the run-to-run noise.
+
+
+\subsection{Experimental Arms}
+\label{sec:methods:arms}
+
+Table~\ref{tab:arms} lists the arms. The arm \ident{r1_o4mini} holds the published o4-mini answers, backfilled from the surviving Phase 4A output file without an API call; 64 of its 1{,}476 answers were lost to a parsing error in January 2026 and are re-parsed from the stored raw output. Every headline number uses the 1{,}412 answers of the published result; the 64 re-parsed answers are reported separately (as \ident{r1_o4mini_all}). The arms \ident{r1_p3_o4mini} and \ident{r1_p4_o4mini} are backfilled in the same way from the 223 stored answers of each November 2025 baseline run. The arm \ident{bridge_jan} sends the exact published inputs to gpt-6-luna, which separates the effect of the model from the effect of the inputs. The other arms run gpt-6-luna on the complete series of each symbol; the ex-0DTE arms of QQQ and IWM start in 2020. The intraday arm uses composite windows whose last day is the late-session snapshot.
+
+Two further groups of arms test the earlier results more directly. The Phase 3 (2024) and Phase 4 (2020) baselines of the earlier studies \cite{regan2026regimes,regan2026jrfm}, the 81.2\% versus 12.1\% contrast, were run on o4-mini in November 2025 with ISO calendar dates as day labels instead of relative labels. The arms \ident{p34_dated_2024} and \ident{p34_dated_2020} send the same 252 values per year, with the dates that were actually sent, to gpt-6-luna; the arms \ident{p34_obf_2024} and \ident{p34_obf_2020} send the identical values with Day-T labels. Within a year the two arms differ in the labels only, which isolates the effect of visible dates, and each is compared with the stored o4-mini answers. The two baselines are not on one convention (Table~\ref{tab:series}): the 2024 series is a gross call-plus-put magnitude with a negative sign imposed and the 2020 series is a magnitude without sign. We keep them verbatim because the aim is to replay the published contrast, which therefore cannot be read as one between a negative and a positive regime.
+
+With the thresholds fixed in dollars, QQQ and IWM have no persistent window (Section~\ref{sec:results:cross}), so the unscaled arms only test whether the model also rejects every window. As a disclosed protocol change, the arms \ident{full_qqq_scaled} and \ident{full_iwm_scaled} therefore run on \ident{new_full_scaled}: the \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol, the median over 2020-01-01 to 2026-10-09 of SPY's open-interest notional divided by the symbol's (\ident{total_weighted_oi} $\times$ 100 $\times$ underlying price, from \path{gex.options_daily_summary}; Appendix~\ref{app:series}). % src: report.yaml diagnostics.scaling new_full_scaled:QQQ / :IWM (factor, n_days_in_factor)
+The factors are 4.22 for QQQ (over 1{,}699 days) and 11.43 for IWM (over 1{,}700 days), and they are stored with the series. Prompt, thresholds and rule are unchanged, so scaled and unscaled arms are labelled by the same rule and run side by side.
+
+\begin{table}[H]
+\centering
+\caption{Experimental arms and run matrix. Windows, requests and cost come from the run ledger (Table~\ref{tab:ledger}). Requests include the test-retest repeats, and the pilot ran synchronously at standard prices. Batch costs use \$0.05 and \$0.25 per million input and output tokens. The three o4-mini backfills are not spend of this study.}
+% src: llm_parse_stats.csv (n_rows of primary runs = windows); cost_ledger.yaml by_arm (n_requests, est_cost_usd_counted)
+\label{tab:arms}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llllrrr@{}}
+\toprule
+Arm & Series & Symbol & Window ends & Windows & Requests & Cost (USD) \\
+\midrule
+\ident{r1_o4mini} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 1{,}476 & 0 (backfill) & -- \\
+\ident{r1_p3_o4mini} & \ident{p3_2024_dated} & SPY & 2024 & 223 & 0 (backfill) & -- \\
+\ident{r1_p4_o4mini} & \ident{p4_2020_dated} & SPY & 2020 & 223 & 0 (backfill) & -- \\
+\ident{bridge_jan} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 1{,}476 & 2{,}952 & 0.82 \\
+\ident{full_spy} & \ident{new_full} & SPY & 2008--2026 & 4{,}671 & 4{,}905 & 1.44 \\
+\ident{ex0dte_spy} & \ident{new_ex0dte} & SPY & 2008--2026 & 4{,}671 & 4{,}905 & 1.40 \\
+\ident{p34_obf_2024} & \ident{p3_2024} & SPY & 2024 & 223 & 234 & 0.06 \\
+\ident{p34_dated_2024} & \ident{p3_2024_dated} & SPY & 2024 & 223 & 234 & 0.06 \\
+\ident{p34_obf_2020} & \ident{p4_2020} & SPY & 2020 & 223 & 234 & 0.06 \\
+\ident{p34_dated_2020} & \ident{p4_2020_dated} & SPY & 2020 & 223 & 234 & 0.06 \\
+\ident{full_qqq} & \ident{new_full} & QQQ & 2011--2026 & 3{,}867 & 4{,}060 & 1.16 \\
+\ident{full_iwm} & \ident{new_full} & IWM & 2008--2026 & 4{,}678 & 4{,}912 & 1.26 \\
+\ident{full_qqq_scaled} & \ident{new_full_scaled} & QQQ & 2020--2026 & 1{,}670 & 1{,}754 & 0.53 \\
+\ident{full_iwm_scaled} & \ident{new_full_scaled} & IWM & 2020--2026 & 1{,}671 & 1{,}755 & 0.50 \\
+\ident{ex0dte_qqq} & \ident{new_ex0dte} & QQQ & 2020--2026 & 1{,}699 & 1{,}784 & 0.50 \\
+\ident{ex0dte_iwm} & \ident{new_ex0dte} & IWM & 2020--2026 & 1{,}700 & 1{,}785 & 0.46 \\
+\ident{intraday_spy} & \ident{intraday_late} & SPY & 2026-07 to 2026-10 & 51 & 54 & 0.02 \\
+\ident{bridge_old} & \ident{old_bs} & SPY & 2008--2026 & 4{,}638 & 4{,}870 & 1.36 \\
+\ident{pilot_bridge_jan} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 40 & 40 (sync) & 0.02 \\
+\midrule
+% src: cost_ledger.yaml totals.counted (n_requests, est_cost_usd)
+Total & & & & & 34{,}712 & 9.70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% src: llm_parse_stats.csv arm_role=repeat (n_rows); cost_ledger.yaml budget (hard_stop_usd, spent_usd), totals.backfill.est_cost_usd; planning/02_decisions_log.md D-10, D-18, D-22 (run order, scaling decision of 2026-10-28)
+The runs went in priority order. The first group was \ident{bridge_jan}, \ident{full_spy}, \ident{ex0dte_spy} and the four \ident{p34_*} arms; the second the unscaled and scaled arms of QQQ and IWM; the third the ex-0DTE arms of QQQ and IWM and the intraday arm; \ident{bridge_old} was optional and ran last. Test-retest duplicates carry the suffix \texttt{\#rep1}: \ident{bridge_jan} is repeated in full (1{,}476 requests), and every other arm carries a duplicate sample of about 5\% of its windows (1{,}512 requests in all). The first pass alone feeds every rate, and the duplicates feed the agreement of repeated runs. A request that ends with \ident{finish_reason} = \ident{length} is repeated once with 8{,}000 tokens; none was needed. All new requests cost \$9.70 in total, against a hard stop of \$12.00. Only runs paid in this study count: the three o4-mini backfills, worth \$9.97 at o4-mini Batch prices, do not. % src: cost_ledger.yaml budget.not_spend.historical_backfill_usd 9.967462 (rows 7.904 + 1.119 + 0.944; rounded rows 7.90 + 1.12 + 0.94 in Table tab:ledger2)
+ The scaling of QQQ and IWM was decided on 2026-10-28, and both variants are run side by side. It is a protocol change that is disclosed as such, not a re-tuning of the thresholds.
+
+\subsection{Storage and Reproducibility}
+\label{sec:methods:storage}
+
+Every series value, window, verdict of the rule, run and model answer is written to four tables, \path{gex_llm_regime_series}, \path{gex_llm_regime_windows}, \path{gex_llm_regime_runs} and \path{gex_llm_regime_detections}, with a summary view of detection rates per arm and year. The tables exist as parquet files under \path{data/backups/gex_llm/tables/}, and, after the documentation pull request in the database repository was approved, as standalone tables without foreign keys into the core tables in the \ident{backups} schema of the project database; the schema was applied and the parquet copies were loaded on 2026-10-30. The raw batch input and output files, the batch object and a parquet copy of the detections are kept per run under \path{data/backups/gex_llm/<run_id>/}, with run identifiers of the form \texttt{<arm>\_<model>\_<mode>\_<UTC timestamp>}. The three backfilled o4-mini runs are \path{r1_o4mini_phase4a_20260104}, \path{r1_p3_o4mini_20251120} and \path{r1_p4_o4mini_20251120}, and a test-retest repeat is stored under the arm \texttt{<arm>\#rep1}. All tables and figures of this article are generated from the stored tables and from the stored Phase 3, 4 and 4A files; no figure falls back to synthetic data.
+% src: scripts/validation/electronics/README.md (state of 2026-10-31, section 5.5); planning/02_decisions_log.md D-14 addendum, D-17; report.yaml inputs_fingerprint
+Every window stores the SHA-256 of its input, every run row the hashes of its batch input and output files, and \path{report.yaml} the hashes of all result files and a fingerprint of the stored tables (beginning 3b69bd38197d). The project keeps three copies of every result: the database tables, the parquet files and the raw batch files on the local disk. Nothing raw is in the repository or on its remote. The raw files and the full tables, which hold the model text, are ignored by git; the repository keeps the run provenance, the condensed per-window tables (detections without text, windows without sequences, a series index) and the result files of this article. Every number of the article can be reproduced from the condensed tables. The run ledger is Table~\ref{tab:ledger} in Appendix~\ref{app:tables}.
+% TODO(authors): name the authoritative copy (database tables or parquet files) and state the data-release plan for the Data Availability Statement.
+
+\subsection{Statistics}
+\label{sec:methods:statistics}
+
+Detection rates are reported with 95\% Wilson intervals \cite{brown2001interval}, and differences between rates with Newcombe--Wilson intervals. Windows have stride one, so neighbouring windows share 29 of their 30 days and cannot be treated as independent. Every p-value is therefore accompanied by (i)~a calendar-quarter block bootstrap with 2{,}000 draws (seed 261) and (ii)~the same statistic on a non-overlapping 30-day subsample, the greedy chain of windows that share no day, starting at the first window of the period. Agreement between models is measured with Cohen's kappa, and paired detection rates across series or arms with the exact McNemar test (on the subsample; the stride-one value is reported as anti-conservative); effect sizes between years use $\varphi$.
+% src: stats.yaml meta (bootstrap_quarter, nonoverlap_30d, period_shift); rates entry labeller=classifier series_key=new_full symbol=SPY period=2024-2025 (nonoverlap_30d: k, n, rate_pct, rate_pct_range_over_starts)
+The p-values of the AIAI and JRFM papers \cite{regan2026regimes,regan2026jrfm} were computed under independence of windows. The quarter-block bootstrap resamples the calendar quarters of the window end with replacement, and a paired contrast resamples the same quarters for both series. Its two-sided p-value is $2\min\{P(d\le 0),P(d\ge 0)\}$, bounded below by $1/2{,}001$, and an interval built from fewer than about eight quarters is coarse. A single year gives four quarters, and the period 2024 to 2025 gives 8. The non-overlapping subsample depends on its first window, so the 30 possible first windows give 30 chains, and the range of their rates is reported beside the rate of the chain that starts at the first window. For the rule on \ident{new_full} (SPY, window ends in 2024 and 2025), the chain holds 3 of 17 windows (17.6\%), and the rate ranges from 5.9\% to 25.0\% across the starts. Between periods, $\varphi$ is signed (late minus early) and the p-value comes from Fisher's exact test. Each p-value in Section~\ref{sec:results} names the method it uses.
+% TODO(authors): add Cohen (1960) on kappa, McNemar (1947) and Kuensch (1989) or Politis and Romano (1994) on block bootstraps to references.bib and cite them here.

@@ -1,0 +1,144 @@
+{
+  "argv": [
+    "fig10_post_publication_2026.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig10_post_publication_2026.py",
+      "sha256": "d3a70106b81d6832fd5c597058004c035e150835187440532a1c9a9956c47160"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "boundary_source": "windows parquet (window_start)",
+    "first_window_entirely_in_2026": "2026-02-13T00:00:00",
+    "groups": [
+      {
+        "agree_pct": 100.0,
+        "arm": "full_spy",
+        "differs": 0,
+        "llm_detects": 22,
+        "rule_detects": 22,
+        "scored": 193,
+        "series_key": "new_full",
+        "symbol": "SPY",
+        "windows": 193
+      },
+      {
+        "agree_pct": 100.0,
+        "arm": "ex0dte_spy",
+        "differs": 0,
+        "llm_detects": 41,
+        "rule_detects": 41,
+        "scored": 193,
+        "series_key": "new_ex0dte",
+        "symbol": "SPY",
+        "windows": 193
+      }
+    ],
+    "llm_missing": [],
+    "n_window_ends": 193,
+    "series": [
+      "new_full",
+      "new_ex0dte"
+    ],
+    "symbols": [
+      "SPY"
+    ],
+    "window_ends": [
+      "2026-01-02T00:00:00",
+      "2026-10-09T00:00:00"
+    ],
+    "windows_with_2025_days": 29,
+    "wording": "post-publication period (not out-of-sample)"
+  },
+  "figure": "fig10_post_publication_2026",
+  "generated_utc": "2026-10-31T05:19:28+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
+  "outputs": {
+    "pdf": {
+      "bytes": 26886,
+      "path": "docs/papers/electronics/figures/output/fig10_post_publication_2026.pdf",
+      "sha256": "e914d99de8ff9b18d3f0693702003a7c5669f25277f4879b5e84b7978b9c1c17"
+    },
+    "png": {
+      "bytes": 269254,
+      "path": "docs/papers/electronics/figures/output/fig10_post_publication_2026.png",
+      "pixels": [
+        1842,
+        1701
+      ],
+      "sha256": "65efa44d29da3c7ab113317cf2b821b5cc5c5750456d635f54b9d6967d7ac80d"
+    }
+  },
+  "results": {
+    "files": {
+      "post_publication_2026.csv": {
+        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "a21ee7e6eef0130b2e4f3cf2cbd2f94e37d3d5d7829c9e6c7fbf225de42e39d4"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-31T05:18:16+00:00",
+      "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
+    }
+  },
+  "rows": {
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4671,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671,
+    "docs/papers/electronics/results/post_publication_2026.csv": 1950
+  },
+  "sources": [
+    {
+      "bytes": 1441247,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "sha256": "6188c5f53044844634ad46e8c3a34e14cd34993284c7ef566743ad899efe9d4f"
+    },
+    {
+      "bytes": 1376488,
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
+    },
+    {
+      "bytes": 232237,
+      "path": "docs/papers/electronics/results/post_publication_2026.csv",
+      "sha256": "a21ee7e6eef0130b2e4f3cf2cbd2f94e37d3d5d7829c9e6c7fbf225de42e39d4"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

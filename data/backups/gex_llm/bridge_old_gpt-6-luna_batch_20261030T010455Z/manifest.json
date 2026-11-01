@@ -1,0 +1,88 @@
+{
+  "arm": "bridge_old",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "1b0e1d14bc45cf3d4fcbe7b700d43d1406e3fb9f2c5b300763fd8737acebbcf0",
+      "n_requests": 1218,
+      "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z_c0",
+      "window_end_max": "2012-12-19",
+      "window_end_min": "2008-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "4326212b12f96b81d701fc7124f6f34bb195643dba58866b1f20f332dfe0c7a9",
+      "n_requests": 1218,
+      "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z_c1",
+      "window_end_max": "2017-11-08",
+      "window_end_min": "2012-12-20"
+    },
+    {
+      "input_file": "input_2.jsonl",
+      "input_sha256": "c784b86476a0db0db24c47958f9a1f3014603b5d958fc7a43fcd8f2613d77376",
+      "n_requests": 1217,
+      "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z_c2",
+      "window_end_max": "2022-09-16",
+      "window_end_min": "2017-11-09"
+    },
+    {
+      "input_file": "input_3.jsonl",
+      "input_sha256": "8e2346286f146c75fac660a538ad92e156e0214c2d24232f04c01620ee6c8d36",
+      "n_requests": 1217,
+      "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z_c3",
+      "window_end_max": "2026-10-02",
+      "window_end_min": "2008-02-25"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "406eb4ec044cad34a65d4821deb3d476553143b12b665e4b2fc752b0210174e9",
+    "common.py": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+  },
+  "generated_at": "2026-10-30T01:04:55.077116+00:00",
+  "git_sha": "872f35263cc94860beb6c590aab2f623532806e0",
+  "infra_git_sha": "231aa64d76af0771fe02fd0fec228d9a1b12fd87",
+  "max_completion_tokens": 4000,
+  "mode": "batch",
+  "model": "gpt-6-luna",
+  "n_chunks": 4,
+  "package_versions": {
+    "numpy": "2.4.0",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.11",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "batch",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "bridge_old_gpt-6-luna_batch_20261030T010455Z",
+  "selection": {
+    "end_max": "2026-10-03",
+    "end_min": "2008-01-01",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 4638,
+    "n_repeats": 232,
+    "n_windows_in_range": 4638,
+    "pool_window_end_max": "2026-10-02",
+    "pool_window_end_min": "2008-02-13",
+    "repeat_fraction": 0.05,
+    "repeat_target": 232,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "old_bs",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/old_bs_SPY.parquet"
+  },
+  "series_key": "old_bs",
+  "symbol": "SPY"
+}

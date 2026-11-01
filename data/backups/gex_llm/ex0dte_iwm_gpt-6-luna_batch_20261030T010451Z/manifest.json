@@ -1,0 +1,72 @@
+{
+  "arm": "ex0dte_iwm",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "fc6c43b003f6dc1357f1c9c5fb85a19cc5d7277bfc457d1c2865d7a5525f7b9a",
+      "n_requests": 893,
+      "run_id": "ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0",
+      "window_end_max": "2023-07-21",
+      "window_end_min": "2020-01-02"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "daabfaf3bcd788b1086530043171c5a8cd8f88a7ed06ed570c95b9896fd686bb",
+      "n_requests": 892,
+      "run_id": "ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1",
+      "window_end_max": "2026-10-09",
+      "window_end_min": "2020-01-24"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "406eb4ec044cad34a65d4821deb3d476553143b12b665e4b2fc752b0210174e9",
+    "common.py": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+  },
+  "generated_at": "2026-10-30T01:04:51.080965+00:00",
+  "git_sha": "872f35263cc94860beb6c590aab2f623532806e0",
+  "infra_git_sha": "231aa64d76af0771fe02fd0fec228d9a1b12fd87",
+  "max_completion_tokens": 4000,
+  "mode": "batch",
+  "model": "gpt-6-luna",
+  "n_chunks": 2,
+  "package_versions": {
+    "numpy": "2.4.0",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.11",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "batch",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z",
+  "selection": {
+    "end_max": "2026-10-09",
+    "end_min": "2020-01-01",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 1700,
+    "n_repeats": 85,
+    "n_windows_in_range": 1700,
+    "pool_window_end_max": "2026-10-09",
+    "pool_window_end_min": "2020-01-02",
+    "repeat_fraction": 0.05,
+    "repeat_target": 85,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "new_ex0dte",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet"
+  },
+  "series_key": "new_ex0dte",
+  "symbol": "IWM"
+}

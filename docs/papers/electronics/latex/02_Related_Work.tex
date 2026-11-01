@@ -1,0 +1,23 @@
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{Dealer Gamma Exposure and 0DTE Options}
+\label{sec:background:gex}
+
+Market makers must keep their books close to delta-neutral, so accumulated gamma turns into systematic hedging flows \cite{grossman1988liquidity,frey1997market}. Dealers are the counterparties of customer option positions, and aggregated market makers carry negative gamma that feeds back to the spot market \cite{anderegg2022impact}. Dealer hedging has measurable price effects \cite{ni2005stock,garleanu2009demand}, and practitioners summarise it as a gamma exposure (GEX) figure \cite{spotgamma2021,anderegg2022impact}. Such a figure is a lossy scalar: it depends on modelling choices (which gamma, which contracts, which expiries), so two daily GEX series with the same name need not agree.
+
+The growth of zero-days-to-expiration (0DTE) options since 2022 concentrates gamma at very short maturities \cite{cboe2024zero,dim2023odtes,adams2025zerodte}. Whether 0DTE contracts are included is one such modelling choice, and it can change the sign of the daily figure on some days. Regime-switching models detect regimes from observable outcomes such as returns \cite{hamilton1989new,ang2002regime,nystrup2020regime}. The rule and the LLM in this paper work on dealer positioning instead.
+
+\subsection{Validating LLM Reasoning via Obfuscation}
+\label{sec:background:validation}
+
+Concern that LLM performance reflects memorized rather than inferred structure \cite{mccoy2023embers,lopezlira2025memorization,dong2024generalization} motivates behavioral tests of the CheckList type \cite{ribeiro2020beyond}. Temporal obfuscation removes dates, tickers and event context so that only numerical structure remains; it is one such test \cite{regan2025obfuscation}. A model that still gives the same answer on obfuscated input is less likely to be recalling training data \cite{lopezlira2025memorization}.
+
+Obfuscation has a limited reach. It tests whether the answer depends on memorized context. It does not test whether the numbers shown to the model mean what the prompt says they mean. A model can pass an obfuscation test and still report faithfully on an input whose definition differs from what the prompt states. That second question concerns the inputs, not the model, and is the subject of the next subsection.
+
+\subsection{Construct Validity of Financial Inputs}
+\label{sec:background:construct}
+
+An LLM validation inherits the construct validity of its inputs \cite{cronbach1955construct}. A daily GEX series is a derived quantity. Its definition (gamma model, contract filters, 0DTE treatment, put and call legs) and its provenance (vendor, load date, rebuild date) are part of the experiment, and they belong in the record of a study as much as the prompt and the model name do.
+
+Three threats follow for the reproducibility of LLM studies. Data definitions drift between collections. Upstream data can be rebuilt silently, so that the same query returns a different series later. Models are deprecated, so a run cannot be repeated with the same model. Section~\ref{sec:methods} describes how this paper records the input series and the model version for every arm.

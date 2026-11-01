@@ -1,0 +1,88 @@
+{
+  "arm": "full_spy",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "154d91a467bf2a05117de4af5a52811913be2947dd6bcd2f679f5d20cbdfb0a0",
+      "n_requests": 1227,
+      "run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z_c0",
+      "window_end_max": "2013-01-03",
+      "window_end_min": "2008-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "b453bbc3aea0e0ac0191b81a7ecfedfcfe352f14878ea0552cd19a359795adfc",
+      "n_requests": 1226,
+      "run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z_c1",
+      "window_end_max": "2017-12-04",
+      "window_end_min": "2013-01-04"
+    },
+    {
+      "input_file": "input_2.jsonl",
+      "input_sha256": "23cd87fd721dc30879bc9e6b0ba7b222cbd13e81fb584267bf1e8152e7161fd3",
+      "n_requests": 1226,
+      "run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z_c2",
+      "window_end_max": "2022-10-24",
+      "window_end_min": "2017-12-05"
+    },
+    {
+      "input_file": "input_3.jsonl",
+      "input_sha256": "39c12d390338cc69ee6d4d95b7fad1ddd508eabb6ba4d5a5bb07af1a2d62c1e5",
+      "n_requests": 1226,
+      "run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z_c3",
+      "window_end_max": "2026-10-09",
+      "window_end_min": "2008-04-30"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "fac5e05b149bc5f47eb97c287fc817a9b7bb136380fa8c59460a2c92dd39f9d1",
+    "common.py": "cb0b1c45feffbc4d69961facb152979ab4bb5aa10634c746e6fadf926e80c121"
+  },
+  "generated_at": "2026-10-29T20:37:45.904552+00:00",
+  "git_sha": "e27bdc749ff0db58f7e0028df11e0c66b6a1abb4",
+  "infra_git_sha": "231aa64d76af0771fe02fd0fec228d9a1b12fd87",
+  "max_completion_tokens": 4000,
+  "mode": "batch",
+  "model": "gpt-6-luna",
+  "n_chunks": 4,
+  "package_versions": {
+    "numpy": "2.4.0",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.11",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "batch",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "full_spy_gpt-6-luna_batch_20261029T203745Z",
+  "selection": {
+    "end_max": "2026-10-09",
+    "end_min": "2008-01-01",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 4671,
+    "n_repeats": 234,
+    "n_windows_in_range": 4671,
+    "pool_window_end_max": "2026-10-09",
+    "pool_window_end_min": "2008-02-13",
+    "repeat_fraction": 0.05,
+    "repeat_target": 234,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "new_full",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet"
+  },
+  "series_key": "new_full",
+  "symbol": "SPY"
+}

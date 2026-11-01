@@ -1,0 +1,23 @@
+{
+  "arm": "r1_p3_o4mini",
+  "files": {
+    "input.jsonl": {
+      "bytes": 1513501,
+      "lines": 223,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/phase3_full_2024_baseline_v2.jsonl",
+      "sha256": "da58f4ed2f849d2712a80a22562513b6e81d14b2e5c225b2ab43f6902dd109e9"
+    },
+    "output.jsonl": {
+      "bytes": 345725,
+      "lines": 223,
+      "original_path": "reports/validation/paper2_regime_windows/batch_jobs/results_batch_691ea7f7b79481909f4667eaff640f26.jsonl",
+      "sha256": "428b83c7dd7cf0ec2a468644db11d5e6ec6b6f8679487bd4db8f1eeca7909d47"
+    }
+  },
+  "input_file_id": "file-8wpMycsi61Vt5K4uCjS8N8",
+  "n_windows": 223,
+  "openai_batch_id": "batch_691ea7f7b79481909f4667eaff640f26",
+  "run_id": "r1_p3_o4mini_20251120",
+  "window_end_max": "2024-12-31",
+  "window_end_min": "2024-02-13"
+}

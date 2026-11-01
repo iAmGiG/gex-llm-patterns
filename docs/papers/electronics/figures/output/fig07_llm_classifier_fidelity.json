@@ -1,0 +1,731 @@
+{
+  "argv": [
+    "fig07_llm_classifier_fidelity.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig07_llm_classifier_fidelity.py",
+      "sha256": "94cf8cf5b68da98ccc77dc4da4addb3498b75b72e09842b06f4c5ab09ad78e3e"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+    }
+  ],
+  "extra": {
+    "answers": {
+      "answers": 33160,
+      "matched": 33160,
+      "parsed": 33160
+    },
+    "arms_drawn": [
+      "r1_o4mini",
+      "bridge_jan",
+      "full_spy",
+      "ex0dte_spy",
+      "bridge_old"
+    ],
+    "borderline": {
+      "magnitude_bn": [
+        4.5,
+        5.5
+      ],
+      "persistence_pct": [
+        66.66666666666667,
+        73.33333333333333
+      ],
+      "sign_flips": [
+        4,
+        6
+      ]
+    },
+    "cross_asset_accuracy_pct": {
+      "ex0dte_iwm": 100.0,
+      "ex0dte_qqq": 100.0,
+      "full_iwm": 100.0,
+      "full_qqq": 100.0
+    },
+    "groups": {
+      "luna": {
+        "answers": 31684,
+        "magnitude_beyond_frame": 204,
+        "magnitude_within_tolerance_pct": 98.65231662668855,
+        "median_reported_over_computed_magnitude": 1.0,
+        "persistence_within_tolerance_pct": 94.9406640575685,
+        "sign_flips_exact_pct": 93.34995581365989,
+        "sign_flips_over_pct": 0.6438580987249085,
+        "sign_flips_under_pct": 6.0061860876152,
+        "verdicts_equal_rule_pct": 99.81694230526449
+      },
+      "o4-mini": {
+        "answers": 1476,
+        "magnitude_beyond_frame": 1,
+        "magnitude_within_tolerance_pct": 99.59349593495935,
+        "median_reported_over_computed_magnitude": 1.0,
+        "persistence_within_tolerance_pct": 99.86449864498645,
+        "sign_flips_exact_pct": 100.0,
+        "sign_flips_over_pct": 0.0,
+        "sign_flips_under_pct": 0.0,
+        "verdicts_equal_rule_pct": 100.0
+      }
+    },
+    "symbol": "SPY",
+    "tolerance": {
+      "magnitude_bn": 0.05,
+      "persistence_pp": 0.5,
+      "sign_flips": "exact"
+    },
+    "yearly": {
+      "bridge_jan": {
+        "accuracy_pct": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": null,
+          "2015": null,
+          "2016": null,
+          "2017": null,
+          "2018": null,
+          "2019": null,
+          "2020": 99.55157,
+          "2021": 98.809524,
+          "2022": 99.601594,
+          "2023": 99.598394,
+          "2024": 100.0,
+          "2025": 100.0,
+          "2026": null
+        },
+        "kappa": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": null,
+          "2015": null,
+          "2016": null,
+          "2017": null,
+          "2018": null,
+          "2019": null,
+          "2020": 0.978589,
+          "2021": 0.863439,
+          "2022": 0.990915,
+          "2023": 0.987197,
+          "2024": null,
+          "2025": null,
+          "2026": null
+        },
+        "kappa_not_informative_years": [
+          2024,
+          2025
+        ]
+      },
+      "bridge_old": {
+        "accuracy_pct": {
+          "2008": 100.0,
+          "2009": 100.0,
+          "2010": 100.0,
+          "2011": 100.0,
+          "2012": 100.0,
+          "2013": 100.0,
+          "2014": 100.0,
+          "2015": 100.0,
+          "2016": 100.0,
+          "2017": 98.75,
+          "2018": 98.795181,
+          "2019": 100.0,
+          "2020": 100.0,
+          "2021": 99.603175,
+          "2022": 100.0,
+          "2023": 99.598394,
+          "2024": 100.0,
+          "2025": 100.0,
+          "2026": 100.0
+        },
+        "kappa": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": 1.0,
+          "2015": 1.0,
+          "2016": 1.0,
+          "2017": 0.97351,
+          "2018": 0.972465,
+          "2019": 1.0,
+          "2020": 1.0,
+          "2021": 0.93913,
+          "2022": 1.0,
+          "2023": 0.988553,
+          "2024": null,
+          "2025": null,
+          "2026": 1.0
+        },
+        "kappa_not_informative_years": [
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013,
+          2024,
+          2025
+        ]
+      },
+      "ex0dte_spy": {
+        "accuracy_pct": {
+          "2008": 100.0,
+          "2009": 100.0,
+          "2010": 100.0,
+          "2011": 100.0,
+          "2012": 100.0,
+          "2013": 100.0,
+          "2014": 100.0,
+          "2015": 100.0,
+          "2016": 100.0,
+          "2017": 99.583333,
+          "2018": 99.196787,
+          "2019": 100.0,
+          "2020": 100.0,
+          "2021": 100.0,
+          "2022": 99.601594,
+          "2023": 98.4,
+          "2024": 98.809524,
+          "2025": 99.2,
+          "2026": 100.0
+        },
+        "kappa": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": 1.0,
+          "2015": 1.0,
+          "2016": 1.0,
+          "2017": 0.986664,
+          "2018": 0.977525,
+          "2019": 1.0,
+          "2020": 1.0,
+          "2021": null,
+          "2022": 0.99144,
+          "2023": 0.958001,
+          "2024": 0.94964,
+          "2025": 0.970825,
+          "2026": 1.0
+        },
+        "kappa_not_informative_years": [
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013,
+          2021
+        ]
+      },
+      "full_spy": {
+        "accuracy_pct": {
+          "2008": 100.0,
+          "2009": 100.0,
+          "2010": 100.0,
+          "2011": 100.0,
+          "2012": 100.0,
+          "2013": 100.0,
+          "2014": 100.0,
+          "2015": 100.0,
+          "2016": 99.6,
+          "2017": 99.583333,
+          "2018": 99.598394,
+          "2019": 100.0,
+          "2020": 100.0,
+          "2021": 99.206349,
+          "2022": 98.804781,
+          "2023": 99.2,
+          "2024": 98.412698,
+          "2025": 99.6,
+          "2026": 100.0
+        },
+        "kappa": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": 1.0,
+          "2015": 1.0,
+          "2016": 0.990036,
+          "2017": 0.990406,
+          "2018": 0.991143,
+          "2019": 1.0,
+          "2020": 1.0,
+          "2021": 0.884774,
+          "2022": 0.975341,
+          "2023": 0.977277,
+          "2024": 0.917051,
+          "2025": 0.983188,
+          "2026": 1.0
+        },
+        "kappa_not_informative_years": [
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013
+        ]
+      },
+      "r1_o4mini": {
+        "accuracy_pct": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": null,
+          "2015": null,
+          "2016": null,
+          "2017": null,
+          "2018": null,
+          "2019": null,
+          "2020": 100.0,
+          "2021": 100.0,
+          "2022": 100.0,
+          "2023": 100.0,
+          "2024": 100.0,
+          "2025": 100.0,
+          "2026": null
+        },
+        "kappa": {
+          "2008": null,
+          "2009": null,
+          "2010": null,
+          "2011": null,
+          "2012": null,
+          "2013": null,
+          "2014": null,
+          "2015": null,
+          "2016": null,
+          "2017": null,
+          "2018": null,
+          "2019": null,
+          "2020": 1.0,
+          "2021": 1.0,
+          "2022": 1.0,
+          "2023": 1.0,
+          "2024": null,
+          "2025": null,
+          "2026": null
+        },
+        "kappa_not_informative_years": [
+          2024,
+          2025
+        ]
+      }
+    },
+    "years": [
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "figure": "fig07_llm_classifier_fidelity",
+  "generated_utc": "2026-10-31T05:19:16+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
+  "outputs": {
+    "pdf": {
+      "bytes": 112850,
+      "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.pdf",
+      "sha256": "c76aa7470bcf1ceb38f5db1e402e59348ca80e984153483de26b5f05e777ef98"
+    },
+    "png": {
+      "bytes": 626651,
+      "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.png",
+      "pixels": [
+        1842,
+        1845
+      ],
+      "sha256": "5bd367718a3b96e402c6d10cc1a50afd8f6daf9a112595b5e1d7329a323f1a8e"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-10-31T05:18:16+00:00",
+      "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
+    }
+  },
+  "rows": {
+    "data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet": 1476,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet": 1218,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet": 1218,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet": 1217,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet": 985,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet": 893,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet": 892,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet": 1227,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet": 994,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet": 878,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet": 1354,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet": 1353,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet": 1160,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet": 877,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet": 1227,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet": 51,
+    "data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/r1_o4mini.parquet": 1476,
+    "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet": 51,
+    "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4678,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3867,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4671,
+    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4678,
+    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3867,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet": 1671,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet": 1670,
+    "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet": 4638,
+    "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet": 223,
+    "docs/papers/electronics/results/detection_by_year.csv": 492,
+    "docs/papers/electronics/results/report.yaml": 15
+  },
+  "sources": [
+    {
+      "bytes": 618398,
+      "path": "data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet",
+      "sha256": "b9e2084bab34bd8205389d4c990e330c6f66fe6508a910bcf8267108fdbc3df4"
+    },
+    {
+      "bytes": 507058,
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet",
+      "sha256": "ee61d44b6b753518ce17db3028f8d3fcd8f2f4e353f8e3b31d71b99fa9691f69"
+    },
+    {
+      "bytes": 541204,
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet",
+      "sha256": "6535e894980d079d89ee18ceec636cb3f99a840a5899576b489b0ca484f59265"
+    },
+    {
+      "bytes": 532872,
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet",
+      "sha256": "1a14ae5f02f0cd47aef2e03785b2244099fb77cb21e4aa8b2ce53855b054aff0"
+    },
+    {
+      "bytes": 526945,
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet",
+      "sha256": "b10951bda7332b8531188a256a979a836d176179beaca15c5c6b24b5ef41f0f9"
+    },
+    {
+      "bytes": 362142,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet",
+      "sha256": "4e481bea79aff8020f4363683633332a9d2fe19425c70797ed1978102717d8c5"
+    },
+    {
+      "bytes": 377631,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet",
+      "sha256": "77324f7ea1bbdc4302d93fd4bee0cee684edb076073e10cfe35ee34193930a4d"
+    },
+    {
+      "bytes": 378009,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet",
+      "sha256": "d7985cca88d57ef329641efdff37cac3b0e14b4fd1eaa7e4c22ee3042d096ee9"
+    },
+    {
+      "bytes": 388000,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet",
+      "sha256": "10e71e5e0cd6af43e886f2e71425e1ea2690e18298275d50f8a70e07fc85edc7"
+    },
+    {
+      "bytes": 512022,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet",
+      "sha256": "acc281b2b3de6da698fe61fb95c8500ba9cb7f2d91a9cc14fd7705b9fd40c8e8"
+    },
+    {
+      "bytes": 530166,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet",
+      "sha256": "840359a3d2070ce2af296c19006a56ca18edd6d734992c2d48c77910f9902673"
+    },
+    {
+      "bytes": 517425,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet",
+      "sha256": "1117b1f4fd277ed0e7cf2d4257025534efd62f6cff81d410b803d08a40e3ddfb"
+    },
+    {
+      "bytes": 543565,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet",
+      "sha256": "5140fc94f58bf89745b819e2ffe0504e45ead42ed92c5a22cd2a855e877dd096"
+    },
+    {
+      "bytes": 483505,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet",
+      "sha256": "55c25ea6f26c74aa6aa5f330259451728def98dd385e0a6b529f15e06d4bb551"
+    },
+    {
+      "bytes": 469622,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet",
+      "sha256": "6b64ce1ac7280bc31584ff64c7ec4ef54dfccfbdb8eff6af5b7fc3a1dd96a8dd"
+    },
+    {
+      "bytes": 503106,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet",
+      "sha256": "2f45a81ac352a857203eb75d8ff8ee611e8d786ed77daf5b00ae9ef2206cebfa"
+    },
+    {
+      "bytes": 510913,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet",
+      "sha256": "cd8bddf7162a324fcb49f441c4c3e6b509825a99a045a17864036cd45be9835b"
+    },
+    {
+      "bytes": 383357,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet",
+      "sha256": "b06a26ab1bb82992d8e351029d353ef0b0053469c2d21f63850b40082a5f00c7"
+    },
+    {
+      "bytes": 409475,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet",
+      "sha256": "92748d3a25e7a298c9adf57c33ef0e145cd525fa3f60366db4f065a4903f567e"
+    },
+    {
+      "bytes": 584335,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet",
+      "sha256": "912edaec1cf26b7b88ab8b811b92d11f3098907a01259918962741749c328017"
+    },
+    {
+      "bytes": 575385,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet",
+      "sha256": "f0f1d3b07e8c138499a57a1603ccaedf793f92eed4938914ba2b0584c3e2741a"
+    },
+    {
+      "bytes": 562161,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet",
+      "sha256": "fea3ac8285e4809f9aa5905fd2454994605cb9df013eacc485cf8e17095ce54a"
+    },
+    {
+      "bytes": 391611,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet",
+      "sha256": "b4932572b59077d9a05bcca81bceeed132b9c6aef8af936ab252a8f9406f894f"
+    },
+    {
+      "bytes": 403081,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet",
+      "sha256": "7b577ee6815a0e32ea9c056378b3cc7411195b490f813463469c780fc553bd5c"
+    },
+    {
+      "bytes": 515309,
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet",
+      "sha256": "be24fb9c58333fc6d22168cecd948433c197e1909cd78ef72865022c7a6d5d39"
+    },
+    {
+      "bytes": 535988,
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet",
+      "sha256": "1820e146d1940d6481be55dca4047eb0d4c272697a215acb11abdd6198d60a80"
+    },
+    {
+      "bytes": 539746,
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet",
+      "sha256": "1d33546ef0f41c103c43e5208463b7849df27d61dd5c11e22da4ba224c72aa6c"
+    },
+    {
+      "bytes": 546487,
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet",
+      "sha256": "5ad767de80fb29084af43ea1e7b123b89237580f67504d878b985ac9865a0769"
+    },
+    {
+      "bytes": 46226,
+      "path": "data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet",
+      "sha256": "dcc6c0bda79889cb6e49faa3f54339732f9d14d98f65e28173eb52e590f299c3"
+    },
+    {
+      "bytes": 99542,
+      "path": "data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet",
+      "sha256": "f40d7e2ecf55d8e4060020727193990cb697858da3652bddb6c3096776033386"
+    },
+    {
+      "bytes": 109148,
+      "path": "data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet",
+      "sha256": "6d0c7e70d0f8ab78d4566d900c904b2ab36d7308124c8853f7ed3b9e5430e886"
+    },
+    {
+      "bytes": 100942,
+      "path": "data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet",
+      "sha256": "6c9fc29446b84039c0f92cf89be62ada0454432976ab347ea391223cdb86e834"
+    },
+    {
+      "bytes": 110046,
+      "path": "data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet",
+      "sha256": "8ed2c890dd109d14e8009577901c60401b8691b493676f5800060f652ed68cbb"
+    },
+    {
+      "bytes": 515768,
+      "path": "data/backups/gex_llm/tables/detections/r1_o4mini.parquet",
+      "sha256": "11fd9b58dbc64105264d8f8d0a72accdb7e92e247c556b22ce8ab88aca46d4ef"
+    },
+    {
+      "bytes": 29556,
+      "path": "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet",
+      "sha256": "e25c418a89b4f70ec50762cf49de24a6ff568edf5414a15f047078e4fdf6e476"
+    },
+    {
+      "bytes": 425150,
+      "path": "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
+      "sha256": "1e62ab32c7e550554a933ab03af9ae24d85cb1a0317eb92ba92ab6bc0d349f18"
+    },
+    {
+      "bytes": 1442756,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
+      "sha256": "b6c3df8c7bf25d73654fdb28f8db1a10c3179393ed30d9d5258e9f19ba6de146"
+    },
+    {
+      "bytes": 1184792,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
+      "sha256": "314cfc3e4fefb7406d4572231791938db93af7412b012e67d92484d67509b0aa"
+    },
+    {
+      "bytes": 1441247,
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "sha256": "6188c5f53044844634ad46e8c3a34e14cd34993284c7ef566743ad899efe9d4f"
+    },
+    {
+      "bytes": 1357109,
+      "path": "data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
+      "sha256": "e2a35e6fb2602d18476efd903f0e85e97a68caf019a6f6e530970384fd85543c"
+    },
+    {
+      "bytes": 1123721,
+      "path": "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
+      "sha256": "38a5bd98971e5867a66d4580a743e481b20dd1e04e14faad80bfbc1af2e94a90"
+    },
+    {
+      "bytes": 1376488,
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
+    },
+    {
+      "bytes": 519439,
+      "path": "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet",
+      "sha256": "a5f65a6c9bf01a897d97e2778323240d66429de0208ff65b04a0b0752ed3c7e9"
+    },
+    {
+      "bytes": 523262,
+      "path": "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet",
+      "sha256": "22e148b0daf5843254d7ad608626a80ce6769bcdf3084ecf6eddbae7b72ab75e"
+    },
+    {
+      "bytes": 1357197,
+      "path": "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet",
+      "sha256": "0aa64fe29bcd628f403cf809998b5469bd10f6900d58b0a65304779ec0ec20cd"
+    },
+    {
+      "bytes": 74942,
+      "path": "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet",
+      "sha256": "7d741ad2f43436a844acd12b72b3610045f5e1d0bdc24d378fbfb0cb7e09ccd6"
+    },
+    {
+      "bytes": 56394,
+      "path": "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet",
+      "sha256": "ece8a9f42b355c2162a6963c58b668b7615960b1fcc552ce536056b1cde4d601"
+    },
+    {
+      "bytes": 74358,
+      "path": "data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet",
+      "sha256": "288e42245554c801ab9b60b79e550b1f04b217a1fdb623efa44985e3bdd05d08"
+    },
+    {
+      "bytes": 54574,
+      "path": "data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet",
+      "sha256": "c43926fc9b3b5fd05f8e0d246b30edeb74d7eb4e67b2f6aacf61cf9e1f487ba3"
+    },
+    {
+      "bytes": 66382,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
+    },
+    {
+      "bytes": 163747,
+      "path": "docs/papers/electronics/results/report.yaml",
+      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}
