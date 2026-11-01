@@ -143,22 +143,22 @@ def create_figure(windows):
         # Compact title with status
         title = f"{window['label']} [{window['status']}]"
 
-        ax.set_title(title, fontsize=11, fontweight="bold", color=badge_color, pad=4)
+        ax.set_title(title, fontsize=13, fontweight="bold", color=badge_color, pad=4)
 
         # Axis formatting
         ax.set_xlim(0, 31)
         ax.set_xticks([1, 15, 30])
-        ax.tick_params(colors=IEEE_THEME["text"], labelsize=10)
+        ax.tick_params(colors=IEEE_THEME["text"], labelsize=12)
         ax.grid(axis="y", alpha=0.3, color=IEEE_THEME["grid"], linestyle="-")
 
         # Labels
-        ax.set_xlabel("Day", fontsize=11, color=IEEE_THEME["text"])
-        ax.set_ylabel("GEX ($B)", fontsize=11, color=IEEE_THEME["text"])
+        ax.set_xlabel("Day", fontsize=13, color=IEEE_THEME["text"])
+        ax.set_ylabel("GEX ($B)", fontsize=13, color=IEEE_THEME["text"])
 
     # Criteria legend at bottom - larger font
     criteria_text = "Detection Criteria:  Persistence > 70%  |  Avg Magnitude > $5B  |  Sign Flips ≤ 5"
     fig.text(
-        0.5, 0.01, criteria_text, ha="center", va="bottom", fontsize=12, fontweight="bold", color=IEEE_THEME["text"]
+        0.5, 0.01, criteria_text, ha="center", va="bottom", fontsize=14, fontweight="bold", color=IEEE_THEME["text"]
     )
 
     plt.tight_layout(rect=[0, 0.04, 1, 1])

@@ -107,17 +107,17 @@ def create_figure(example_data):
     ax.axhline(5, color=IEEE_THEME["accent_warning"], linestyle="--", linewidth=1.5, alpha=0.7, zorder=2)
 
     # Threshold labels on right edge
-    ax.text(31, -5, "$5B", fontsize=10, color=IEEE_THEME["accent_warning"], va="center", ha="left")
-    ax.text(31, 5, "$5B", fontsize=10, color=IEEE_THEME["accent_warning"], va="center", ha="left")
+    ax.text(31, -5, "$5B", fontsize=12, color=IEEE_THEME["accent_warning"], va="center", ha="left")
+    ax.text(31, 5, "$5B", fontsize=12, color=IEEE_THEME["accent_warning"], va="center", ha="left")
 
     # Labels
-    ax.set_xlabel("Day in 30-Day Window", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
-    ax.set_ylabel("GEX Magnitude ($B)", fontsize=13, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_xlabel("Day in 30-Day Window", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
+    ax.set_ylabel("GEX Magnitude ($B)", fontsize=15, fontweight="bold", color=IEEE_THEME["text"])
 
     # Axis formatting
     ax.set_xlim(0, 32)
     ax.set_xticks([1, 5, 10, 15, 20, 25, 30])
-    ax.tick_params(colors=IEEE_THEME["text"], labelsize=11)
+    ax.tick_params(colors=IEEE_THEME["text"], labelsize=13)
     ax.grid(axis="y", alpha=0.4, color=IEEE_THEME["grid"], linestyle="-", linewidth=0.5, zorder=0)
 
     # Spine styling
@@ -141,7 +141,7 @@ def create_figure(example_data):
         stats_text,
         ha="center",
         va="bottom",
-        fontsize=11,
+        fontsize=13,
         color=IEEE_THEME["text"],
         fontweight="bold",
         bbox=dict(

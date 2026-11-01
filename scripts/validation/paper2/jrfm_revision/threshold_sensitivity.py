@@ -168,7 +168,7 @@ def plot_heatmap(results: list[dict]) -> None:
                     ha="center",
                     va="center",
                     color="white" if val < (vmin + vmax) / 2 else "black",
-                    fontsize=9,
+                    fontsize=12,
                 )
 
         # mark the paper default with a red box
@@ -189,7 +189,7 @@ def plot_heatmap(results: list[dict]) -> None:
     fig.suptitle(
         "Threshold sensitivity: 2024 vs 2020 detection gap across 45 configurations\n"
         "(red box marks the paper default: persistence >= 70%, magnitude >= $5B, flips <= 5)",
-        fontsize=11,
+        fontsize=13,
     )
 
     FIG_DIR.mkdir(parents=True, exist_ok=True)

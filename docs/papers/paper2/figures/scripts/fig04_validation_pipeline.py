@@ -104,7 +104,7 @@ def create_figure():
             phase["name"],
             ha="center",
             va="center",
-            fontsize=12,
+            fontsize=14,
             fontweight="bold",
             color="#FFFFFF",
         )
@@ -151,7 +151,7 @@ def create_figure():
             phase["title"],
             ha="center",
             va="top",
-            fontsize=12,
+            fontsize=14,
             fontweight="bold",
             color=IEEE_THEME["text"],
         )
@@ -163,7 +163,7 @@ def create_figure():
             phase["data"],
             ha="center",
             va="top",
-            fontsize=10,
+            fontsize=12,
             color=IEEE_THEME["dim"],
             style="italic",
         )
@@ -175,7 +175,7 @@ def create_figure():
             f"n={phase['windows']}",
             ha="center",
             va="top",
-            fontsize=10,
+            fontsize=12,
             color=IEEE_THEME["dim"],
         )
 
@@ -202,7 +202,7 @@ def create_figure():
         finding_text,
         ha="center",
         va="center",
-        fontsize=11,
+        fontsize=13,
         color=IEEE_THEME["text"],
         fontweight="bold",
         bbox=dict(
