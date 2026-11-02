@@ -3,9 +3,9 @@
 
 Before weekly and daily expirations grew, how often does a 30-day window of SPY dealer GEX meet the Paper 2
 criteria (at least 21 of 30 days of one sign, mean |GEX| of at least $5B, at most 5 sign flips)?  Panel (a) draws
-the rule as a line and gpt-6-luna as open markers for the rebuilt series with and without 0DTE and, when the
+the rule as a line and gpt-6-luna as open markers for the complete series with and without 0DTE and, when the
 optional archive arm was run, for the pre-rebuild archive.  Panel (b) is the consistency check of the ablation
-arm: the gap between the two rebuilt series must vanish while same-day expiries carry (almost) none of the GEX,
+arm: the gap between the two complete series must vanish while same-day expiries carry (almost) none of the GEX,
 which panel (c) shows.  The 2008-2009 financial crisis and the 2018 volatility episode are marked.
 
 Input  results/detection_by_year.csv and results/ex0dte_decomposition.csv (05_report.py)
@@ -36,8 +36,8 @@ SYMBOL = "SPY"
 FIRST_YEAR, LAST_YEAR = 2008, 2019
 # (series key, LLM arm, rule required, LLM arm required, label of the rule line); drawn in this order
 SERIES = (
-    (figllm.FULL, "full_spy", True, True, "Rule, rebuilt 0DTE incl."),
-    (figllm.EX0DTE, "ex0dte_spy", True, False, "Rule, rebuilt ex-0DTE"),
+    (figllm.FULL, "full_spy", True, True, "Rule, complete, 0DTE incl."),
+    (figllm.EX0DTE, "ex0dte_spy", True, False, "Rule, complete, ex-0DTE"),
     (figllm.OLD, "bridge_old", False, False, "Rule, pre-rebuild archive"),
 )
 LLM_OFFSET = {figllm.FULL: -0.14, figllm.EX0DTE: 0.0, figllm.OLD: 0.14}  # sideways shift of the open markers (years)
@@ -86,7 +86,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if gap[["diff_pp", "abs_0dte_share_pct"]].isna().all().all():
         inputs.fail(f"ex0dte_decomposition.csv has no {SYMBOL} yearly rows for {RANGE}")
 
-    # ---- figure: event strip, (a) rates, (b) gap between the rebuilt series, (c) share of |GEX| in same-day expiries
+    # ---- figure: event strip, (a) rates, (b) gap between the complete series, (c) share of |GEX| in same-day expiries
     fig = theme.new_figure(5.35)
     grid = fig.add_gridspec(4, 1, height_ratios=[0.26, 1.0, 0.5, 0.42])
     ax = fig.add_subplot(grid[1])
@@ -135,7 +135,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     reach = float(np.nanmax(np.abs(np.concatenate([gap_rule, gap_llm, [2.0]]))))
     ax_gap.set_ylim(-1.2 * reach, 1.2 * reach)
     ax_gap.set_ylabel("Gap (pp)")
-    theme.panel_title(ax_gap, "b", "Rebuilt series with minus without 0DTE")
+    theme.panel_title(ax_gap, "b", "Complete series with minus without 0DTE")
     ax_gap.legend(handles=[Line2D([0], [0], color=theme.INK, marker="o", markersize=3.0, linewidth=1.0, label="Rule"),
                            Line2D([0], [0], label="gpt-6-luna", **{**figllm.hollow_style(theme.INK, "o", 3.6), "clip_on": True})],
                   loc="upper left", ncol=2, borderaxespad=0.1, handlelength=1.2)

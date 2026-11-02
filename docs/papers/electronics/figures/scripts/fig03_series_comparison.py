@@ -51,7 +51,7 @@ MEAN_SOURCES: Dict[str, Tuple[Tuple[str, str, str], ...]] = {
     "new_ex0dte": (("new_full", "new_ex0dte", "mean_abs_b_bn"),),
 }
 SHORT_NAMES: Dict[str, str] = {
-    "jan2026_phase4a": "published", "call_only": "call-only", "old_bs": "pre-rebuild", "new_full": "rebuilt",
+    "jan2026_phase4a": "published", "call_only": "call-only", "old_bs": "pre-rebuild", "new_full": "complete",
     "new_ex0dte": "ex-0DTE",
 }
 

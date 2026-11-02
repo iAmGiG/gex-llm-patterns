@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Threshold sensitivity of the 2024-2025 detection rate: published inputs against the rebuilt series.
+"""Threshold sensitivity of the 2024-2025 detection rate: published inputs against the complete series.
 
 The Paper 2 criteria have three thresholds: at least 21 of 30 days of one sign (persistence 70%), a mean |GEX| of
 at least $5B and at most 5 sign flips.  Every SPY window ending in 2024 or 2025 is re-classified from its stored
 30-day sequence under 45 threshold sets (persistence 60-80% in steps of 5, magnitude $3B/$5B/$7B, at most 3/5/7
 flips), once for the exact published inputs (``jan2026_phase4a``, the put-less January table) and once for the
-rebuilt series (``new_full``).  If the published 100% against the rebuilt ~10-14% were a quirk of one threshold
+complete series (``new_full``).  If the published 100% against the complete ~10-14% were a quirk of one threshold
 choice, some panel would show the two lines meeting.  The panel with a heavy frame holds the published
 thresholds; a ring marks the published persistence there.
 
@@ -41,7 +41,7 @@ MAX_FLIPS = (3, 5, 7)
 PUBLISHED = {"persistence_pct": 70, "magnitude_bn": 5.0, "max_flips": 5}  # the criteria of Paper 2
 WINDOW_COLUMNS = ("series_key", "symbol", "window_end", "gex_sequence", "clf_should_detect", "clf_positive_days",
                   "clf_negative_days", "clf_avg_magnitude", "clf_sign_flips")
-LABELS = {figllm.JAN: "Published inputs (call leg only)", figllm.FULL: "Rebuilt, 0DTE incl."}
+LABELS = {figllm.JAN: "Published inputs (call leg only)", figllm.FULL: "Complete, 0DTE incl."}
 
 
 def min_days(persistence_pct: int) -> int:
@@ -158,9 +158,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     gap = wide[figllm.JAN] - wide[figllm.FULL]
     published = f"{PUBLISHED['persistence_pct']}%, {theme.usd_b(PUBLISHED['magnitude_bn'])}, {PUBLISHED['max_flips']} flips"
     theme.footnote(fig, f"SPY windows ending in {YEARS[0]} or {YEARS[-1]} ({counts[figllm.JAN]['all']} on the published inputs, "
-                        f"{counts[figllm.FULL]['all']} on the rebuilt series), each re-classified from its stored 30-day sequence. "
+                        f"{counts[figllm.FULL]['all']} on the complete series), each re-classified from its stored 30-day sequence. "
                         f"Heavy frame and rings: the published thresholds ({published}). Across the {len(wide)} threshold sets the "
-                        f"published-input rate exceeds the rebuilt rate by {gap.min():.1f} to {gap.max():.1f} percentage points.")
+                        f"published-input rate exceeds the complete rate by {gap.min():.1f} to {gap.max():.1f} percentage points.")
     extra = {
         "symbol": SYMBOL, "years": list(YEARS), "windows": counts, "thresholds_published": PUBLISHED,
         "grid": {"persistence_pct": list(PERSISTENCE_PCT), "min_days": [min_days(p) for p in PERSISTENCE_PCT],

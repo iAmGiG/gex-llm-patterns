@@ -12,8 +12,8 @@ recovered from the surviving batch file and found to contain the call leg of dea
 2023-09-29 on (565 of 565 days; upstream issue #24 dropped the put rows), so the published 100 % detection rate for
 2024 and 2025 was measured on defective inputs. The Phase 3 and Phase 4 runs of November 2025 behind the
 81.2 % versus 12.1 % contrast used dated prompts and two different sign conventions. The extension is therefore a
-**re-run on the complete data with a controlled LLM re-test and a plain data statement** (the authors file no
-correction notices and the paper does not present itself as a correction), and this folder is the machinery for it. The pipeline
+**re-run on the complete data with a controlled LLM re-test and a plain data statement** (no correction notice has
+been filed and the paper does not present itself as a correction), and this folder is the machinery for it. The pipeline
 
 1. recovers the exact inputs of the published runs (Phase 4A of January 2026; Phase 3 and Phase 4 of November 2025)
    and rebuilds the daily GEX series the extension needs;
@@ -976,6 +976,6 @@ Related:
 | `docs/papers/electronics/figures/` | figure scripts (`scripts/`: twelve figures, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`) and output |
 | `docs/papers/electronics/latex/`, `build.sh` | manuscript (MDPI Electronics class) |
 | `docs/papers/electronics/README.md` | the paper folder: status, layout, build, data provenance |
-| `docs/papers/CORRECTIONS.md` | public record of the findings about the published results (no notices are filed; the Electronics paper carries the corrected analysis) |
+| `docs/papers/CORRECTIONS.md` | public record of the findings about the published results (no notice filed so far, a formal revision is a later step; the Electronics paper carries the corrected analysis) |
 | `src/llm/mechanics_prompt_builder.py`, `src/validation/regime_classifier.py`, `src/utils/json_parser.py` | the reused prompt builder, deterministic classifier and fallback JSON parser |
 | `gex-database-infrastructure/docs/009_PROJECT_BACKUP_STRATEGY.md`, `docs/gex-llm-patterns/backup-schema.md` | storage rules and the documentation this project owes the database repository |

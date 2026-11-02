@@ -3,7 +3,7 @@
 
 The Paper 2 criteria are fixed dollar thresholds (mean |GEX| of at least $5B).  QQQ and IWM carry far less dollar
 gamma than SPY, so the magnitude test can be unreachable for them whatever the model does.  Row 1 draws, for each
-symbol, the deterministic rule (lines) and gpt-6-luna (open markers) on the rebuilt series with and without 0DTE,
+symbol, the deterministic rule (lines) and gpt-6-luna (open markers) on the complete series with and without 0DTE,
 plus the share of windows that pass the persistence and sign-flip tests alone (dotted).  Row 2 draws the
 quantity the magnitude test compares with $5B: the yearly median and the largest 30-day mean |GEX|.  Nothing is
 rescaled: a symbol without a persistent window is shown as it is, and an LLM arm that has not been run says so
@@ -37,8 +37,8 @@ FIG_ID = "fig09_cross_asset"
 RESULTS_FILES = ("detection_by_year.csv",)
 TABLE_KINDS: Sequence[str] = ("windows",)
 SERIES = (figllm.FULL, figllm.EX0DTE)
-RULE_LABELS = {figllm.FULL: "Rule, rebuilt 0DTE incl.", figllm.EX0DTE: "Rule, rebuilt ex-0DTE"}
-LLM_LABELS = {figllm.FULL: "gpt-6-luna, rebuilt", figllm.EX0DTE: "gpt-6-luna, ex-0DTE"}
+RULE_LABELS = {figllm.FULL: "Rule, complete, 0DTE incl.", figllm.EX0DTE: "Rule, complete, ex-0DTE"}
+LLM_LABELS = {figllm.FULL: "gpt-6-luna, complete, 0DTE incl.", figllm.EX0DTE: "gpt-6-luna, complete, ex-0DTE"}
 LLM_OFFSET = {figllm.FULL: -0.12, figllm.EX0DTE: 0.12}  # sideways shift of the open markers (years)
 WINDOW_COLUMNS = ("series_key", "symbol", "window_end", "clf_should_detect", "clf_avg_magnitude", "clf_positive_days",
                   "clf_negative_days", "clf_sign_flips")
@@ -113,8 +113,8 @@ def draw_symbol(ax_rate, ax_size, symbol: str, series: Dict[str, dict], years: S
     if missing:
         notes.append("gpt-6-luna not run" if len(missing) == len(series) else f"not run: {', '.join(missing)}")
     if notes:
-        ax_rate.text(0.03, 0.97, "\n".join(notes), transform=ax_rate.transAxes, ha="left", va="top", fontsize=8, color=theme.INK_SECONDARY)
-    ax_rate.set_ylim(-5, 105)
+        ax_rate.text(0.03, 0.025, "\n".join(notes), transform=ax_rate.transAxes, ha="left", va="bottom", fontsize=8, color=theme.INK_SECONDARY)
+    ax_rate.set_ylim(-30, 105)
     ax_rate.set_yticks([0, 50, 100])
     ax_size.set_ylim(0, ymax_bn)
     theme.threshold_line(ax_size, threshold_bn)
@@ -163,12 +163,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     handles = [figllm.line_handle(theme.series_color(k), theme.series_marker(k), RULE_LABELS[k]) for k in SERIES]
     handles += [figllm.hollow_handle(theme.series_color(k), theme.series_marker(k), LLM_LABELS[k]) for k in SERIES]
     handles.append(Line2D([0], [0], color=theme.INK_SECONDARY, linestyle=MAGNITUDE_FREE, linewidth=1.1,
-                          label="Persistence and flips only (rebuilt 0DTE incl.)"))
+                          label="Persistence and flips only"))
     fig.legend(handles=handles, loc="outside upper center", ncol=3, columnspacing=1.2)
     theme.footnote(fig, f"30-day windows ending in the year (QQQ from 2011; ex-0DTE series of QQQ and IWM from 2020). Row 1: lines are the "
                         f"deterministic rule, open markers gpt-6-luna on the same windows; the dotted line is the share of windows that "
                         f"meet the persistence ({rule['min_days']} of {common.WINDOW_DAYS} days) and sign-flip ({rule['max_sign_flips']}) "
-                        f"tests, whatever their magnitude; the notes count the rebuilt 0DTE-incl. series. Row 2: median and largest mean |GEX| of the windows ending in "
+                        f"tests, whatever their magnitude; the dotted line and the notes count the complete series with 0DTE. Row 2: median and largest mean |GEX| of the windows ending in "
                         f"the year; the dashed horizontal line is the fixed {theme.usd_b(rule['magnitude_bn'])} magnitude threshold. "
                         f"{theme.PARTIAL_YEAR_NOTE}")
     extra = {

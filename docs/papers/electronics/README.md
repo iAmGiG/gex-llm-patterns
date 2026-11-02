@@ -1,7 +1,7 @@
 # Electronics (MDPI) extension: regime detection under temporal obfuscation, re-run on the complete inputs
 
 Extended version of *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal
-Obfuscation* (AIAI 2026, Springer, in press), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
+Obfuscation* (AIAI 2026, Springer IFIP AICT, pp. 127-140, doi:10.1007/978-3-032-30801-6_10), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
 Interdisciplinary Synergies for Intelligent Modeling". Authors: Christopher Regan and Ying Xie (Kennesaw State
 University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261). Branch: `paper/electronics`.
 
@@ -10,7 +10,7 @@ jrfm-4256551), and it cites both. While it was being prepared, the exact inputs 
 recovered and found to lack the put leg of dealer gamma exposure (GEX) from 2023-09-29 onward, and the inputs of the
 published 2024-versus-2020 baselines turned out to carry calendar dates. The article is therefore framed as a
 **re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
-extension; it does not present itself as a correction (the authors file no correction notices, decisions log D-20).
+extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
 
 ## Status (2026-10-31)
 
@@ -22,8 +22,8 @@ extension; it does not present itself as a correction (the authors file no corre
 | Model runs | All 18 arms submitted (34 Batch chunks, 34,672 requests, about $9): 33 chunks stored, the last QQQ ex-0DTE chunk finishing at OpenAI. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). |
 | Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms), `00` to `07` (environment check, series, windows, backfill, runner, report, condensed copies, database load), the schema SQL and the README. |
 | Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`, 21:02 UTC). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps run provenance, `data/backups/gex_llm/condensed/` and `results/`. |
-| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notices are filed: this paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
-| Submission | Not submitted. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
+| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
+| Submission | Not submitted. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page must be checked in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
 
 ## What is new relative to AIAI 2026 and the JRFM article
 
@@ -77,7 +77,7 @@ baselines, synthetic figures, headline numbers).
   (checked 2026-10-29), so the dated and the obfuscated arms differ in the day labels only.
 
 The article states the defect and the convention differences in its data section and reports the re-run on its own
-terms; no notice goes to the editors of AIAI or JRFM (decisions log D-20 and Q-02, 2026-10-29).
+terms; no notice has gone to the editors of AIAI or JRFM (decisions log D-20 and Q-02, revised 2026-11-02).
 
 ## Layout
 

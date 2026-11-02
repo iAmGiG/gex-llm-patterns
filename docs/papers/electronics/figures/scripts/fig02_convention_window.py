@@ -3,7 +3,7 @@
 
 Grouped daily bars of the net GEX (USD billions) of the 30-day window that ends on ``--window-end`` (default
 2024-03-15) under the published Phase 4A inputs, the call leg alone (the put-less table that produced them), and
-the rebuilt series with and without same-day expiries.  Dashed lines mark the +/-$5B magnitude criterion of the
+the complete series with and without same-day expiries.  Dashed lines mark the +/-$5B magnitude criterion of the
 deterministic classifier; the table under the bars gives the three criteria and the verdict for each window.
 
 Input  <tables-dir>/windows/*.parquet (02_build_windows.py), the window of series jan2026_phase4a, call_only,

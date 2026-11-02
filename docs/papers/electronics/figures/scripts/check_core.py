@@ -120,7 +120,7 @@ def check_theme(work: Path) -> None:
         "10%-20%": True, "\\$5B-7B": True, "3bn-4bn": True,
         "2008-2019": True, "2024-25": True, "21-30 days": True, "-3.5": True, "(-5.2)": True,
         "Day T−29": False, "−3.5": False, "0–100%": False, "2008–2019": False, "o4-mini": False,
-        "gpt-6-luna": False, "Rebuilt, ex-0DTE": False, "non-overlapping": False, "Day-T labels": False,
+        "gpt-6-luna": False, "Complete, ex-0DTE": False, "non-overlapping": False, "Day-T labels": False,
         "2026-10-09": False, "2026-10": False, "o4-mini-2025-04-16": False, "up to 2026-10-09.": False, "30-day windows": False,
     }
     for text, should in cases.items():

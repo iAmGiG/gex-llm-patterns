@@ -1,12 +1,12 @@
 # Corrections to published results
 
-**Maintained by the authors (C. Regan, Y. Xie). Last updated 2026-10-31.**
+**Maintained by the authors (C. Regan, Y. Xie). Last updated 2026-11-02.**
 
 This page records problems found in our published results, what caused them, and what the corrected numbers are. It exists because the repository is public and readers of the papers should not have to find these things out from the code. Evidence for every item is in `docs/papers/electronics/planning/forensics/` (two memos with command-level evidence, the recovered inputs, per-day comparisons, and a claim inventory with file:line anchors). Items were established by automated forensic passes and then tested by independent adversarial re-analysis against the primary files; nothing below rests on a single reading.
 
-The authors do not file separate correction notices with the venues. The extension study tracked in issue #261 re-runs the analysis on the complete data with every input and label stored, and reports the results on their own terms; the numbers below supersede the affected published figures until that paper appears.
+**Status of formal revisions.** No correction or revision has been submitted to any venue so far. Whether and how to do so is still open, at low priority and with no deadline; until then this page is the authors' public record of the findings. The extension study tracked in issue #261 re-runs the analysis on the complete data with every input and label stored, and reports the results on their own terms; the numbers below supersede the affected published figures.
 
-## Paper 2 — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* (AIAI 2026, Springer LNCS) and the combined article in JRFM (MDPI, 2026)
+## Paper 2 — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* (AIAI 2026, Springer IFIP AICT, pp. 127–140, doi:10.1007/978-3-032-30801-6_10) and the combined article in JRFM (MDPI, 2026)
 
 ### A. The 2024–2025 inputs lacked put-side exposure (data defect)
 
@@ -43,4 +43,4 @@ The authors do not file separate correction notices with the venues. The extensi
 
 1. All inputs, deterministic labels and model answers of the re-analysis are stored (`backups.gex_llm_regime_*` in the research database, loaded 2026-10-30; condensed copies in `data/backups/gex_llm/condensed/`), so every number in the extension paper is reproducible from SQL. First results (2026-10-31): gpt-6-luna reproduces the published o4-mini labels on the exact January inputs (99.6% agreement, κ = 0.99) and gives 11.1% (2024), 14.0% (2025) and 11.4% (2026, to 10-09) on the complete SPY series; the Phase 3/4 baselines give the same verdicts with and without dates (81.2% vs 80.7%; 12.1% vs 12.1%).
 2. The re-analysis uses obfuscated prompts throughout, one signed GEX convention, the complete chain, and reports the deterministic rule next to every model rate; it includes an obfuscated-vs-dated rerun of the 2024/2020 baselines to measure the effect of item B.
-3. The extension paper (MDPI *Electronics* special issue, in preparation) reports the re-analysis; no separate correction notices are filed.
+3. The extension paper (MDPI *Electronics* special issue, in preparation) reports the re-analysis. Formal revisions to the published papers are a later, low-priority step with no deadline; this page will link them if they are submitted.

@@ -74,25 +74,26 @@ Across the 45 threshold sets the rate on the published inputs stays at 100.0\%, 
 
 \begin{table}[H]
 \centering
-\caption{Detection rate of the deterministic classifier by year, SPY, in percent (windows detected out of windows, below the rate), next to the published o4-mini rate. The Windows column gives the windows of \ident{new_full}; every cell shows its own count. The published rate covers the 1{,}412 answers of the published result.}
+\caption{Detection rate of the deterministic classifier by year, SPY, in percent, next to the published o4-mini rate. Each cell gives the rate and, in parentheses, the windows detected out of the windows classified. The denominator of the \ident{new_full} cell is the number of windows ending in the year; the other columns can hold fewer. The published rate covers the 1{,}412 answers of the published result.}
 \label{tab:replay}
-\footnotesize
-\begin{tabular}{@{}lrrrrrrr@{}}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-Year & Windows & Published & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
+Year & Published & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
 \midrule
-% src: detection_by_year.csv year=2020: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2020 & 252 & \shortstack[r]{12.2\\26/213} & \shortstack[r]{12.1\\27/223} & \shortstack[r]{90.6\\202/223} & \shortstack[r]{16.7\\42/252} & \shortstack[r]{10.7\\27/252} & \shortstack[r]{22.2\\56/252} \\
-% src: detection_by_year.csv year=2021: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2021 & 252 & \shortstack[r]{3.7\\9/241} & \shortstack[r]{4.0\\10/252} & \shortstack[r]{100.0\\252/252} & \shortstack[r]{3.6\\9/252} & \shortstack[r]{0.0\\0/252} & \shortstack[r]{3.6\\9/252} \\
-% src: detection_by_year.csv year=2022: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2022 & 251 & \shortstack[r]{32.4\\79/244} & \shortstack[r]{32.3\\81/251} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{26.3\\66/251} & \shortstack[r]{36.7\\92/251} & \shortstack[r]{40.6\\102/251} \\
-% src: detection_by_year.csv year=2023: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2023 & 250 & \shortstack[r]{20.2\\46/228} & \shortstack[r]{19.3\\48/249} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{22.5\\56/249} & \shortstack[r]{25.2\\63/250} & \shortstack[r]{22.4\\56/250} \\
-% src: detection_by_year.csv year=2024: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2024 & 252 & \shortstack[r]{100.0\\241/241} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{100.0\\252/252} & \shortstack[r]{100.0\\251/251} & \shortstack[r]{13.1\\33/252} & \shortstack[r]{10.3\\26/252} \\
-% src: detection_by_year.csv year=2025: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); Windows = n of new_full
-2025 & 250 & \shortstack[r]{100.0\\245/245} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{100.0\\250/250} & \shortstack[r]{16.4\\41/250} & \shortstack[r]{13.6\\34/250} \\
+% src: detection_by_year.csv year=2020: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2020 & 12.2 (26/213) & 12.1 (27/223) & 90.6 (202/223) & 16.7 (42/252) & 10.7 (27/252) & 22.2 (56/252) \\
+% src: detection_by_year.csv year=2021: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2021 & 3.7 (9/241) & 4.0 (10/252) & 100.0 (252/252) & 3.6 (9/252) & 0.0 (0/252) & 3.6 (9/252) \\
+% src: detection_by_year.csv year=2022: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2022 & 32.4 (79/244) & 32.3 (81/251) & 100.0 (251/251) & 26.3 (66/251) & 36.7 (92/251) & 40.6 (102/251) \\
+% src: detection_by_year.csv year=2023: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2023 & 20.2 (46/228) & 19.3 (48/249) & 100.0 (250/250) & 22.5 (56/249) & 25.2 (63/250) & 22.4 (56/250) \\
+% src: detection_by_year.csv year=2024: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2024 & 100.0 (241/241) & 100.0 (251/251) & 100.0 (252/252) & 100.0 (251/251) & 13.1 (33/252) & 10.3 (26/252) \\
+% src: detection_by_year.csv year=2025: label_source=llm arm=r1_o4mini; label_source=classifier series_key=jan2026_phase4a, call_only, old_bs, new_ex0dte, new_full (n_detect, n, rate_pct); the denominator of the new_full cell is the number of windows of the year
+2025 & 100.0 (245/245) & 100.0 (250/250) & 100.0 (250/250) & 100.0 (250/250) & 16.4 (41/250) & 13.6 (34/250) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -100,14 +101,14 @@ Year & Windows & Published & \ident{jan2026_phase4a} & \ident{call_only} & \iden
 \begin{figure}[H]
 \centering
 \resultfigure{\figReplay}
-\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the rebuilt table without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} the published labels and the rule on the published inputs agree window by window. In 2024 and 2025 the bars of the published inputs, the call-only series and the archive stand at 100\%, and the two bars of the rebuilt series stand at 13.1\% and 10.3\% in 2024 and 16.4\% and 13.6\% in 2025. The Wilson intervals are optimistic because the overlapping windows of a year are treated as independent.}
+\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the complete series without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} the published labels and the rule on the published inputs agree window by window. In 2024 and 2025 the bars of the published inputs, the call-only series and the archive stand at 100\%, and the two bars of the complete series stand at 13.1\% and 10.3\% in 2024 and 16.4\% and 13.6\% in 2025. The Wilson intervals are optimistic because the overlapping windows of a year are treated as independent.}
 \label{fig:replay}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \resultfigure{\figThresholds}
-\caption{Sensitivity of the 2024--2025 detection rate to the persistence, magnitude and flip thresholds (45 threshold sets: one panel per magnitude and flip limit, persistence on the horizontal axis) for the published inputs (\ident{jan2026_phase4a}) and the rebuilt series (\ident{new_full}); the panel with the heavy frame holds the published thresholds. \textbf{Read this figure as:} the curve of the published inputs is flat at 100.0\% in all nine panels, and the curve of the rebuilt series stays low and moves with the flip limit: it is highest, up to 29.3\%, with a limit of seven flips and lowest, 4.0\%, with three. At the published thresholds the rebuilt series gives 12.0\%.}
+\caption{Sensitivity of the 2024--2025 detection rate to the persistence, magnitude and flip thresholds (45 threshold sets: one panel per magnitude and flip limit, persistence on the horizontal axis) for the published inputs (\ident{jan2026_phase4a}) and the complete series (\ident{new_full}); the panel with the heavy frame holds the published thresholds. \textbf{Read this figure as:} the curve of the published inputs is flat at 100.0\% in all nine panels, and the curve of the complete series stays low and moves with the flip limit: it is highest, up to 29.3\%, with a limit of seven flips and lowest, 4.0\%, with three. At the published thresholds the complete series gives 12.0\%.}
 \label{fig:thresholds}
 \end{figure}
 
@@ -219,7 +220,7 @@ Year & Windows & Rate & Wilson 95\% & Rate & Wilson 95\% & full & ex-0DTE \\
 \begin{figure}[H]
 \centering
 \resultfigure{\figComplete}
-\caption{gpt-6-luna detection rate by year, SPY: one panel per arm, from the published inputs (\ident{bridge_jan}) to the rebuilt series with and without same-day expiries (\ident{full_spy}, \ident{ex0dte_spy}) and the pre-rebuild archive (\ident{bridge_old}). Dots are the model with 95\% Wilson intervals, dashes the classifier on the windows the model answered, and the grey band is 2026. \textbf{Read this figure as:} on the published inputs (a) and on the archive (d) the rate jumps to 100\% in 2024 and 2025. On the two rebuilt series (b, c) it stays between 3.6\% and 41.8\% (\ident{full_spy}) and between 0.0\% and 37.1\% (\ident{ex0dte_spy}) from 2020 to 2026, with the highest value in 2022. In every panel the dots lie close to the dashes of the classifier.}
+\caption{gpt-6-luna detection rate by year, SPY: one panel per arm, from the published inputs (\ident{bridge_jan}) to the complete series with and without same-day expiries (\ident{full_spy}, \ident{ex0dte_spy}) and the pre-rebuild archive (\ident{bridge_old}). Dots are the model with 95\% Wilson intervals, dashes the classifier on the windows the model answered, and the grey band is 2026. \textbf{Read this figure as:} on the published inputs (a) and on the archive (d) the rate jumps to 100\% in 2024 and 2025. On the two complete series (b, c) it stays between 3.6\% and 41.8\% (\ident{full_spy}) and between 0.0\% and 37.1\% (\ident{ex0dte_spy}) from 2020 to 2026, with the highest value in 2022. In every panel the dots lie close to the dashes of the classifier.}
 \label{fig:complete}
 \end{figure}
 
@@ -237,7 +238,7 @@ The window of Figure~\ref{fig:window} gives an example. The net GEX of SPY on 20
 
 \begin{table}[H]
 \centering
-\caption{0DTE ablation, SPY, by year: share of the absolute net GEX contributed by same-day expiries (percent), and detection rates (percent) of the classifier and of gpt-6-luna on \ident{new_full} and \ident{new_ex0dte}. The McNemar p-values are exact tests on the non-overlapping subsample (Section~\ref{sec:methods:statistics}), given where the result files hold the test for the period (2024, 2025, 2026 and the pooled periods); the block-bootstrap values accompany them in \ident{results/stats.yaml}.}
+\caption{0DTE ablation, SPY, by year: share of the absolute net GEX contributed by same-day expiries (percent), and detection rates (percent) of the classifier and of gpt-6-luna on \ident{new_full} and \ident{new_ex0dte}. The McNemar p-values are exact tests on the non-overlapping subsample (Section~\ref{sec:methods:statistics}), reported for 2024, 2025 and 2026 and for the pooled periods 2008--2019, 2020--2023 and 2024--2025; the other years have no test (--).}
 \label{tab:ablation}
 \footnotesize
 \begin{tabular}{@{}lrrrrrrr@{}}
@@ -301,12 +302,12 @@ The scaled rates depend on the factor and are not a measurement of QQQ or IWM re
 
 \begin{table}[H]
 \centering
-\caption{Cross-asset replication: windows, typical magnitude and persistent windows under the fixed thresholds, by symbol and series. The scaled series are the disclosed protocol change of Section~\ref{sec:methods:arms}. The magnitude column is the median over windows of the 30-day mean $|\mathrm{GEX}|$ of the series as sent to the model; the scaled series are SPY-scale values, so their magnitudes are not comparable with the unscaled rows of the same symbol. The ex-0DTE arms of QQQ and IWM start in 2020, so gpt-6-luna answered fewer windows than the classifier labelled.}
+\caption{Cross-asset replication: windows, typical magnitude and detected windows under the fixed thresholds, by symbol and series. The scaled series are the disclosed protocol change of Section~\ref{sec:methods:arms}. The magnitude column is the median over windows of the 30-day mean $|\mathrm{GEX}|$ of the series as sent to the model; the scaled series are SPY-scale values, so their magnitudes are not comparable with the unscaled rows of the same symbol. The ex-0DTE arms of QQQ and IWM start in 2020, so gpt-6-luna answered fewer windows than the classifier labelled.}
 \label{tab:cross}
 \footnotesize
 \begin{tabular}{@{}llrrrr@{}}
 \toprule
-Symbol & Series & Windows & \shortstack[r]{Median mean\\ $|\mathrm{GEX}|$ (\$B)} & \shortstack[r]{Persistent\\ (classifier)} & \shortstack[r]{Detected\\ (gpt-6-luna)} \\
+Symbol & Series & Windows & \shortstack[r]{Median mean\\ $|\mathrm{GEX}|$ (\$B)} & \shortstack[r]{Detected\\ (classifier)} & \shortstack[r]{Detected\\ (gpt-6-luna)} \\
 \midrule
 % src: detection_by_year.csv scope=all symbol=SPY (classifier series_key=new_full: n, n_detect; llm arm=full_spy: n_detect); windows.csv.gz series_key=new_full symbol=SPY (median of clf_avg_magnitude)
 SPY & \ident{new_full} & 4{,}671 & 3.84 & 606 of 4{,}671 (13.0\%) & 613 of 4{,}671 (13.1\%) \\

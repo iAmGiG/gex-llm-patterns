@@ -51,8 +51,8 @@ CELLS = (
 )
 CODE = {name: i + 1 for i, (name, _, _) in enumerate(CELLS)}
 SYMBOL_LINESTYLE = {"SPY": "-", "QQQ": (0, (5, 2)), "IWM": (0, (1, 1.5))}
-SERIES_TITLE = {figllm.FULL: "Rebuilt, 0DTE incl.", figllm.EX0DTE: "Rebuilt, ex-0DTE"}
-SERIES_LEGEND = {figllm.FULL: "rebuilt 0DTE incl.", figllm.EX0DTE: "rebuilt ex-0DTE"}
+SERIES_TITLE = {figllm.FULL: "Complete, 0DTE incl.", figllm.EX0DTE: "Complete, ex-0DTE"}
+SERIES_LEGEND = {figllm.FULL: "complete 0DTE incl.", figllm.EX0DTE: "complete ex-0DTE"}
 
 
 def add_options(parser: argparse.ArgumentParser) -> None:
