@@ -4,9 +4,9 @@
   ],
   "code": [
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/fig08_deep_baseline.py",
-      "sha256": "3d0e0064be766342e9ce2c5d74ed868b2cc2a73ae9ce31cec737682f2db354c1"
+      "sha256": "ff001a562676ecfa5ab7be3839dafef88cdf44e827c3c134aa4e50b9c83a494e"
     },
     {
       "git": "clean",
@@ -19,9 +19,9 @@
       "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+      "sha256": "25d0463b2370c40e6305bc78b3c2b4300eb7a7630982ca0d8a640d57e2a7ef56"
     },
     {
       "git": "clean",
@@ -222,24 +222,24 @@
     ]
   },
   "figure": "fig08_deep_baseline",
-  "generated_utc": "2026-10-31T05:19:20+00:00",
+  "generated_utc": "2026-11-02T03:21:34+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
+  "git_sha": "93f1b51f3e4e15236a94c15979f28dc2f950cb7a",
   "outputs": {
     "pdf": {
-      "bytes": 23571,
+      "bytes": 23522,
       "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.pdf",
-      "sha256": "2f46ed784df9cee72c72692e64f49534da17f2556d1c40f05a900321de48aef7"
+      "sha256": "104f8ec17f222608d8f31f58ad332f03a1026d5fd656bdd5925e3654415b6c2f"
     },
     "png": {
-      "bytes": 288938,
+      "bytes": 294748,
       "path": "docs/papers/electronics/figures/output/fig08_deep_baseline.png",
       "pixels": [
         1842,
         1605
       ],
-      "sha256": "fb013716121a0c390334f569810b6117b75df04de2b81abf2851bec5476146d2"
+      "sha256": "0736955d8baf0a341f84811ce54c0730c0e7703415278a384e6ff56d18c30b7e"
     }
   },
   "results": {

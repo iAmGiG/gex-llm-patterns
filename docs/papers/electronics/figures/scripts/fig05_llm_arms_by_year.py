@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """gpt-6-luna detection rate by year on each SPY series, with the deterministic classifier as reference.
 
-One panel per SPY arm, from the exact published inputs (``bridge_jan``) to the rebuilt series (``full_spy``, then
+One panel per SPY arm, from the exact published inputs (``bridge_jan``) to the complete series (``full_spy``, then
 the ex-0DTE ablation ``ex0dte_spy``) and, when it was run, the pre-rebuild archive (``bridge_old``).  A dot is the
 share of 30-day windows ending in the year that the model labelled as a persistent regime, with its Wilson 95%
 interval; the dark dash is the share the deterministic criteria give on exactly the windows the model answered.

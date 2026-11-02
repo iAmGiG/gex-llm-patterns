@@ -1,0 +1,294 @@
+%  Appendix A: prompt, schema and API configuration.
+%  A is transcribed from the code, not typed.  The prompt is MechanicsPromptBuilder.build_regime_prompt with the 30 data lines
+%  replaced by the placeholder {gex_data_table}; the schema and the request are common.REGIME_JSON_SCHEMA and common.chat_body.
+%  The three typographic symbols of the prompt (U+2264, U+2265, U+2192) are written in ASCII (<=, >=, ->) in this file and
+%  typeset as symbols by the "prompt" listing style, which keeps the sources ASCII.
+%  Prompt check (2026-10-31): the listing of A.2, with the data lines replaced by the placeholder and the three symbols in ASCII,
+%  equals common.build_prompt on 34,244 of 34,244 obfuscated gpt-6-luna requests stored in data/backups/gex_llm/*/input_*.jsonl.
+%=================================================================
+\section{Prompt, Schema and API Configuration}
+\label{app:prompt}
+
+This appendix reproduces the complete request sent to the model for each 30-day window, so that the experiment can be repeated from the manuscript alone. The prompt text is the output of \ident{MechanicsPromptBuilder.build_regime_prompt} (file \path{src/llm/mechanics_prompt_builder.py}); the schema and the request body are the constant \ident{REGIME_JSON_SCHEMA} and the function \ident{chat_body} of \path{scripts/validation/electronics/common.py}. The listings were generated from these objects and compared with them.
+
+\subsection{Model and API Configuration}
+\label{app:prompt:config}
+
+% src: scripts/validation/electronics/common.py BATCH_MAX_REQUESTS=1500, MAX_COMPLETION_TOKENS=4000, RETRY_MAX_COMPLETION_TOKENS=8000; cost_ledger.yaml pricing_usd_per_mtok gpt-6-luna batch input 0.05 output 0.25 (standard 0.1/0.5); 02_decisions_log.md line 60 (model created 2026-09-14T17:15:02Z); reasoning effort medium
+\begin{itemize}[leftmargin=*,labelsep=5.5mm]
+\item \textbf{Model:} \ident{gpt-6-luna}, an OpenAI model alias without a dated snapshot. The creation timestamp of the model object (2026-09-14) is stored with every run and the response identifier with every answer. The published run used \ident{o4-mini-2025-04-16}.
+\item \textbf{Access:} OpenAI Batch API, endpoint \path{/v1/chat/completions}, completion window of 24 hours, at most 1{,}500 requests per batch job. Each input line is one request that carries the key \texttt{<arm>|<symbol>|<window\_end>} in \ident{custom_id}; a test-retest duplicate adds the suffix \texttt{\#rep1}, and its arm is stored as \texttt{<arm>\#rep1}.
+\item \textbf{Reasoning effort:} \ident{medium}, the default effort of o4-mini in the published run.
+\item \textbf{Maximum completion tokens:} 4{,}000; reasoning tokens count against the limit. An answer that ends with \ident{finish_reason} = \ident{length} is requested once more with 8{,}000.
+\item \textbf{Response format:} the strict JSON schema of Appendix~\ref{app:prompt:schema}. The earlier runs requested the same nine fields in the prompt text only; this is the one protocol change of the study.
+\item \textbf{Not sent:} temperature, seed, system message, tools and stop sequences.
+\item \textbf{Parsing:} an answer is parsed as JSON; a second attempt tolerates raw control characters inside strings, and a last fallback extracts the JSON object from free text. The parse status of every answer (\ident{ok}, \ident{fallback}, \ident{failed} or \ident{missing}) is stored.
+\item \textbf{Prices:} USD 0.05 per million input tokens and USD 0.25 per million output tokens on Batch, twice that on the standard API.
+\end{itemize}
+
+Identical requests need not return identical answers, because no seed is set. The test-retest duplicates of Section~\ref{sec:methods:arms} measure this variation, and the deterministic rule, not the model, supplies the reference label of each window.
+
+\subsection{Prompt Text}
+\label{app:prompt:body}
+
+The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
+
+The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 34{,}244 of 34{,}244 requests (the 34{,}712 requests of Table~\ref{tab:arms} less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
+% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (34,244 requests, 34,244 equal; the 40-request synchronous pilot is included; 34,712 ledger requests minus 2 x 234 = 468 requests of the two dated arms = 34,244), 2026-10-31; also equal to common.build_prompt
+
+\begin{lstlisting}[style=prompt]
+You are a market structure analyst specializing in dealer gamma positioning regimes.
+
+TASK: Analyze this 30-day period and determine if it represents a PERSISTENT regime where dealer constraints create forced, directional flows.
+
+## 30-DAY GEX DATA
+
+{gex_data_table}
+
+## REGIME CLASSIFICATION FRAMEWORK
+
+### PERSISTENT REGIMES (Detect These)
+
+**1. PERSISTENT POSITIVE REGIME**
+- Definition: Dealers are LONG gamma, forced to sell into strength
+- Criteria:
+  * >70% of days (21+/30) have positive net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold long gamma:
+- Price rises -> Dealers MUST sell shares (rebalance)
+- Price falls -> Dealers MUST buy shares (rebalance)
+- Creates dampening, mean-reverting flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+**2. PERSISTENT NEGATIVE REGIME**
+- Definition: Dealers are SHORT gamma, forced to buy into strength
+- Criteria:
+  * >70% of days (21+/30) have negative net GEX
+  * Average magnitude >$5B
+  * <=5 sign flips across 30 days
+  * Stable directional constraint
+
+**Mechanism**: When dealers hold short gamma:
+- Price rises -> Dealers MUST buy shares (chase)
+- Price falls -> Dealers MUST sell shares (chase)
+- Creates amplifying, momentum flows
+- Constraint is STRUCTURAL (dealers cannot avoid)
+
+---
+
+### NON-REGIMES (Reject These)
+
+**3. TRANSITIONAL (Reject)**
+- Frequent sign flips between positive/negative GEX
+- No dominant regime direction (less than 70% same sign)
+- Market in regime change period
+- Example: 15 positive days, 15 negative days (50/50 split)
+
+**Why Reject**: No persistent constraint. Dealers face mixed conditions daily. Not a structural regime.
+
+**4. LOW CONVICTION (Reject)**
+- Consistent sign BUT weak magnitude (<$5B average)
+- Example: 25 days positive, avg $2B GEX
+- Insufficient constraint to create persistent forced flows
+
+**Why Reject**: Even if sign is consistent, magnitude too weak to force dealers into meaningful positions. Not a structural constraint.
+
+---
+
+## ANALYSIS QUESTIONS
+
+Systematically evaluate the 30-day window:
+
+**Step 1: Sign Persistence**
+1. Count days with positive net GEX
+2. Count days with negative net GEX
+3. Calculate persistence percentage: max(positive_days, negative_days) / 30 * 100
+4. Does it meet 70% threshold (21+ days)?
+
+**Step 2: Magnitude Assessment**
+1. Calculate average GEX magnitude (absolute value): sum(|net_gex|) / 30
+2. Is average magnitude >=$5B?
+3. Check for extreme outliers that might distort average
+
+**Step 3: Stability Check**
+1. Count sign flips: How many times does GEX switch from pos->neg or neg->pos?
+2. Are there <=5 sign flips across 30 days?
+3. Stable regime should have low flip count
+
+**Step 4: Regime Classification**
+- If Steps 1, 2, 3 all pass AND positive dominates -> PERSISTENT POSITIVE
+- If Steps 1, 2, 3 all pass AND negative dominates -> PERSISTENT NEGATIVE
+- If Step 1 passes but Step 2 fails -> LOW CONVICTION (reject)
+- If Step 1 fails -> TRANSITIONAL (reject)
+
+---
+
+## CONFIDENCE CALIBRATION (Mechanical Guidance)
+
+Use these concrete anchors to calibrate confidence:
+
+**90-100 (Very High Confidence)**
+- 25-30 days same sign (83-100% persistence)
+- Average magnitude >$10B
+- 0-2 sign flips (highly stable)
+- Example: "29 negative days, avg $15B, 1 flip"
+
+**70-89 (High Confidence)**
+- 21-24 days same sign (70-80% persistence)
+- Average magnitude $5-10B
+- 2-4 sign flips (moderately stable)
+- Example: "23 negative days, avg $7B, 3 flips"
+
+**50-69 (Borderline - Use with Caution)**
+- 18-20 days same sign (60-67% persistence)
+- Average magnitude $3-5B
+- 5-7 sign flips
+- Example: "20 negative days, avg $4B, 6 flips"
+- **Note**: Borderline cases should generally be REJECTED unless other factors strengthen confidence
+
+**0-49 (Reject - Not Persistent)**
+- <18 days same sign (<60% persistence)
+- OR average magnitude <$3B
+- OR >7 sign flips
+- These are NOT persistent regimes
+
+**Important**: Confidence is a FILTER, not a probability. Use it to distinguish clear regimes (70+) from borderline (50-69) from noise (<50).
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Provide your analysis in this exact JSON structure:
+
+```json
+{
+    "regime_detected": true/false,
+    "regime_type": "persistent_positive|persistent_negative|transitional|low_conviction",
+    "positive_days": <count as integer>,
+    "negative_days": <count as integer>,
+    "avg_magnitude_billions": <value as number>,
+    "sign_flips": <count as integer>,
+    "persistence_pct": <percentage as number>,
+    "confidence": <integer 0-100>,
+    "reasoning": "Explain step-by-step why this is/isn't a persistent regime. Reference specific metrics (persistence %, avg magnitude, sign flips). If rejecting, state which criterion failed."
+}
+```
+
+**IMPORTANT**: All numeric fields (confidence, positive_days, negative_days, sign_flips, avg_magnitude_billions, persistence_pct) MUST be numbers (integers or decimals), NOT words like "thirty-five" or "fifty".
+
+**regime_detected Rules**:
+- `true` ONLY if regime_type is "persistent_positive" or "persistent_negative"
+- `false` if regime_type is "transitional" or "low_conviction"
+
+---
+
+## KEY PRINCIPLES
+
+1. **Selectivity is Expected**: Most windows will NOT be persistent regimes (expect 30-50% detection rate)
+
+2. **ALL Criteria Must Pass**: Persistence + Magnitude + Stability required for detection
+
+3. **Rejection is Valid**: Saying "no persistent regime" is a correct answer for transitional/weak periods
+
+4. **Mechanical Over Qualitative**: Use concrete thresholds (70%, $5B, 5 flips) rather than subjective judgment
+
+5. **Structural Focus**: Only detect when dealers are FORCED into directional positions by constraints
+
+Analyze the 30-day GEX data above and provide your regime classification in JSON format.
+\end{lstlisting}
+
+\subsection{Output Schema}
+\label{app:prompt:schema}
+
+The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the rule (Section~\ref{sec:results:fidelity}).
+
+\begin{lstlisting}[style=appcode]
+{
+  "type": "json_schema",
+  "json_schema": {
+    "name": "regime_classification",
+    "strict": true,
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "regime_detected": {
+          "type": "boolean"
+        },
+        "regime_type": {
+          "type": "string",
+          "enum": [
+            "persistent_positive",
+            "persistent_negative",
+            "transitional",
+            "low_conviction"
+          ]
+        },
+        "positive_days": {
+          "type": "integer"
+        },
+        "negative_days": {
+          "type": "integer"
+        },
+        "avg_magnitude_billions": {
+          "type": "number"
+        },
+        "sign_flips": {
+          "type": "integer"
+        },
+        "persistence_pct": {
+          "type": "number"
+        },
+        "confidence": {
+          "type": "integer"
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "regime_detected",
+        "regime_type",
+        "positive_days",
+        "negative_days",
+        "avg_magnitude_billions",
+        "sign_flips",
+        "persistence_pct",
+        "confidence",
+        "reasoning"
+      ]
+    }
+  }
+}
+\end{lstlisting}
+
+\subsection{Request Body}
+\label{app:prompt:request}
+
+Each line of a batch input file is one request of the following form.
+
+\begin{lstlisting}[style=appcode]
+{
+  "custom_id": "<arm>|<symbol>|<window_end>",
+  "method": "POST",
+  "url": "/v1/chat/completions",
+  "body": {
+    "model": "gpt-6-luna",
+    "messages": [
+      {
+        "role": "user",
+        "content": "<prompt text of Appendix A.2>"
+      }
+    ],
+    "max_completion_tokens": 4000,
+    "reasoning_effort": "medium",
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": "<schema of Appendix A.3>"
+    }
+  }
+}
+\end{lstlisting}

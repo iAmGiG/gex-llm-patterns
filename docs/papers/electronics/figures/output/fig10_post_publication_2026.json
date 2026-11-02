@@ -4,9 +4,9 @@
   ],
   "code": [
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/fig10_post_publication_2026.py",
-      "sha256": "d3a70106b81d6832fd5c597058004c035e150835187440532a1c9a9956c47160"
+      "sha256": "233b8c85ae04ab17c67b11ee3d520b433a7bc331d9f5ef89f297bae1156b282a"
     },
     {
       "git": "clean",
@@ -19,9 +19,9 @@
       "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+      "sha256": "25d0463b2370c40e6305bc78b3c2b4300eb7a7630982ca0d8a640d57e2a7ef56"
     },
     {
       "git": "clean",
@@ -73,24 +73,24 @@
     "wording": "post-publication period (not out-of-sample)"
   },
   "figure": "fig10_post_publication_2026",
-  "generated_utc": "2026-10-31T05:19:28+00:00",
+  "generated_utc": "2026-11-02T03:21:40+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
+  "git_sha": "93f1b51f3e4e15236a94c15979f28dc2f950cb7a",
   "outputs": {
     "pdf": {
-      "bytes": 26886,
+      "bytes": 26814,
       "path": "docs/papers/electronics/figures/output/fig10_post_publication_2026.pdf",
-      "sha256": "e914d99de8ff9b18d3f0693702003a7c5669f25277f4879b5e84b7978b9c1c17"
+      "sha256": "04b278f8faa9ce406aea7da102ca53deda17857921bfd3eacd08e9e6f86030d0"
     },
     "png": {
-      "bytes": 269254,
+      "bytes": 272243,
       "path": "docs/papers/electronics/figures/output/fig10_post_publication_2026.png",
       "pixels": [
         1842,
         1701
       ],
-      "sha256": "65efa44d29da3c7ab113317cf2b821b5cc5c5750456d635f54b9d6967d7ac80d"
+      "sha256": "d5042045ee373055813edf46d9d95b17a674bf06096df62a49f98d6ff4048f5c"
     }
   },
   "results": {

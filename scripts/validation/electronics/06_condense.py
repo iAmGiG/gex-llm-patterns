@@ -14,9 +14,9 @@ and the run provenance (tables/runs, manifests, batch objects), the three files 
   data/backups/gex_llm/condensed/series_index.csv    one row per (series_key, symbol): rows, range, source,
                                                       builder version -- no values
 
-Every number of the paper is reproducible from the condensed detections and windows alone (join on
-series_key, symbol, window_end); the inputs themselves come from the database or from the series
-builders.  Run after every ingest:  python scripts/validation/electronics/06_condense.py
+Every detection rate and agreement figure of the paper can be recomputed from the condensed detections
+and windows (join on series_key, symbol, window_end); the other numbers are in results/, and the daily
+values behind them are in the full tables (database, Zenodo deposit).  Run after every ingest:  python scripts/validation/electronics/06_condense.py
 """
 from __future__ import annotations
 
@@ -65,14 +65,14 @@ def main(argv=None) -> int:
 
     detections = load("detections")
     d = detections[DETECTION_COLUMNS].sort_values(["arm", "symbol", "window_end", "custom_id"], kind="stable")
-    d.to_csv(args.out / "detections.csv.gz", index=False, compression="gzip")
+    d.to_csv(args.out / "detections.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
     windows = load("windows")
     w = windows[WINDOW_COLUMNS].copy()
     w["calendar_gap_days"] = windows["window_metadata"].map(lambda m: meta(m).get("calendar_gap_days"))
     w["missing_master_days"] = windows["window_metadata"].map(lambda m: meta(m).get("missing_master_days"))
     w = w.sort_values(["series_key", "symbol", "window_end"], kind="stable")
-    w.to_csv(args.out / "windows.csv.gz", index=False, compression="gzip")
+    w.to_csv(args.out / "windows.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
     series = load("series")
     g = series.groupby(["series_key", "symbol"], as_index=False).agg(

@@ -1,7 +1,7 @@
 # Electronics (MDPI) extension: regime detection under temporal obfuscation, re-run on the complete inputs
 
 Extended version of *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal
-Obfuscation* (AIAI 2026, Springer, in press), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
+Obfuscation* (AIAI 2026, Springer IFIP AICT, pp. 127-140, doi:10.1007/978-3-032-30801-6_10), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
 Interdisciplinary Synergies for Intelligent Modeling". Authors: Christopher Regan and Ying Xie (Kennesaw State
 University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261). Branch: `paper/electronics`.
 
@@ -10,20 +10,20 @@ jrfm-4256551), and it cites both. While it was being prepared, the exact inputs 
 recovered and found to lack the put leg of dealer gamma exposure (GEX) from 2023-09-29 onward, and the inputs of the
 published 2024-versus-2020 baselines turned out to carry calendar dates. The article is therefore framed as a
 **re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
-extension; it does not present itself as a correction (the authors file no correction notices, decisions log D-20).
+extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
 
 ## Status (2026-10-31)
 
 | Part | State |
 |---|---|
-| Manuscript, [`latex/`](latex/) | Skeleton that builds with `build.sh` (23 pages as built): MDPI front matter, Sections 1 to 6, Appendices A to C, with `% TODO(tag)` guidance per heading and `\tbd` placeholders for every number. The writing pass (one writer per section from `results/`, then a number-by-number verifier) runs once the last Batch chunk is stored. |
+| Manuscript, [`latex/`](latex/) | Complete draft for co-author review: the article (40 pages) and a separate supplement (5 pages), one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` items remain: Dr. Xie confirms the CRediT roles, and the Zenodo DOI and vendor terms are settled at submission. |
 | Figures, [`figures/`](figures/) | 12 figure scripts, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`; all 12 figures drawn from `results/` into `figures/output/` (PNG, PDF and a provenance manifest each). |
 | Results, `results/` | Written by `scripts/validation/electronics/05_report.py` from the parquet tables: detection rates by arm and year, bridge agreement, series comparison, 0DTE decomposition, post-publication period, intraday check, overlap-aware statistics, cost ledger, disagreements, parse statistics. Re-run after the last chunk. |
 | Model runs | All 18 arms submitted (34 Batch chunks, 34,672 requests, about $9): 33 chunks stored, the last QQQ ex-0DTE chunk finishing at OpenAI. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). |
 | Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms), `00` to `07` (environment check, series, windows, backfill, runner, report, condensed copies, database load), the schema SQL and the README. |
 | Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`, 21:02 UTC). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps run provenance, `data/backups/gex_llm/condensed/` and `results/`. |
-| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notices are filed: this paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
-| Submission | Not submitted. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
+| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
+| Submission | Not submitted. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page must be checked in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
 
 ## What is new relative to AIAI 2026 and the JRFM article
 
@@ -77,15 +77,19 @@ baselines, synthetic figures, headline numbers).
   (checked 2026-10-29), so the dated and the obfuscated arms differ in the day labels only.
 
 The article states the defect and the convention differences in its data section and reports the re-run on its own
-terms; no notice goes to the editors of AIAI or JRFM (decisions log D-20 and Q-02, 2026-10-29).
+terms; no notice has gone to the editors of AIAI or JRFM (decisions log D-20 and Q-02, revised 2026-11-02).
 
 ## Layout
 
 ```
 docs/papers/electronics/
   README.md           this file
-  build.sh            build the PDF (below)
-  latex/              Regan_Xie_Electronics.tex, 01_Introduction ... 06_Conclusion, 07_Appendix, references.bib
+  build.sh            build the PDFs and the Overleaf package (below)
+  latex/              Regan_Xie_Electronics.tex and one file per part: 01_Introduction, 02_Related_Work, 03_Methods,
+                      04_01_Inputs ... 04_11_Dated, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
+                      08_Appendix_B_Tables, 09_Appendix_C_Data; references.bib
+                      Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL and S2_Run_Ledger
+  overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)
   figures/scripts/    figNN_<name>.py (12), run_all.py, theme.py, figdata.py, figllm.py
   figures/output/     figNN_<name>.png (300 dpi), .pdf and a provenance manifest .json; written by the scripts
   results/            CSV and YAML tables written by 05_report.py; the only numbers the manuscript may quote
@@ -97,18 +101,20 @@ docs/papers/electronics/
 ```bash
 docs/papers/electronics/build.sh            # pdflatex, bibtex, pdflatex, pdflatex; page count and warning summary
 docs/papers/electronics/build.sh --strict   # as above, then exit 1 unless the manuscript is submission-ready
-docs/papers/electronics/build.sh --clean    # remove the TeX build files (the PDF is kept)
+docs/papers/electronics/build.sh --overleaf # as --strict, then write the self-contained Overleaf zip, compiled in a clean folder first
+docs/papers/electronics/build.sh --clean    # remove the TeX build files (the PDFs are kept)
 ```
 
 - The MDPI class is `\documentclass[electronics,article,submit,moreauthors,pdftex]{Definitions/mdpi}`. `build.sh` puts
   `../../jrfm` on `TEXINPUTS` and `BSTINPUTS` so that `Definitions/` resolves to `docs/papers/jrfm/Definitions`;
-  nothing in `docs/papers/jrfm/` is modified. For Overleaf or the MDPI submission zip copy `Definitions/` next to the
-  `.tex` file; the sources do not change.
+  nothing in `docs/papers/jrfm/` is modified. The Overleaf zip carries its own `Definitions/` and `figures/`, and the
+  main file finds `figures/` when it exists, so the sources do not change. On Overleaf, render one part by commenting out
+  the other `\input` lines of the main file.
 - TeX Live is the shared install named in the script; set `TEXLIVE_BIN` to use another one. The build stops at the first
   failing pass and prints the tail of its log. The output is `latex/Regan_Xie_Electronics.pdf` plus
   `latex/build_*.log` (the TeX auxiliary files and logs are git-ignored, the PDF is not).
 - The sections are included as `./NN_Name` and `build.sh` refuses to run when one of them is missing, because the JRFM
-  folder has files of the same names (`01_Introduction.tex`, `04_Results.tex`, ...) that TeX would otherwise find on the
+  folder has files of the same names (`01_Introduction.tex`, `05_Discussion.tex`, ...) that TeX would otherwise find on the
   search path and typeset silently.
 - A figure whose PNG does not exist yet is drawn as a boxed placeholder and logged as `Missing figure file`.
 - The summary prints the undefined references and citations, the bibtex warnings, the missing figures, the unresolved
@@ -153,7 +159,7 @@ and detections tables are git-ignored and loaded into the database; git keeps ru
 `new_full`, `new_ex0dte`, `intraday_late`) and the derived inputs of the rerun arms (`new_full_scaled`, `p3_2024`,
 `p3_2024_dated`, `p4_2020`, `p4_2020_dated`; the Phase 3/4 series use their own calendar, window rule J, and the
 `_dated` ones carry the ISO dates sent in November 2025). `common.ARMS` holds 18 arms: 15 model arms and three
-backfills of stored `o4-mini` answers. The definitions are in Appendix B of the manuscript, in the pipeline README
+backfills of stored `o4-mini` answers. The definitions are in Section S1 of the supplement, in the pipeline README
 (section 3) and in the decisions log (D-04 to D-08).
 
 **Run ids.** `<arm>_<model>_<mode>_<UTC timestamp>`, with `_c<k>` appended for each chunk of at most 1,500 requests; a
@@ -225,21 +231,16 @@ ledger.
    open questions of the decisions log first (spend, agreement gate, primary analyses).
 2. `run_all.py` for the figures, then fill every `\tbd{}` and `% TODO(...)` of the sections from `results/`; write the
    abstract and choose the title.
-3. State the authoritative copy of the result tables (parquet release, and the `backups` schema once the DDL is
-   approved) in Section 3.7 and in the Data Availability Statement. The raw batch files (the Phase 3, 4 and 4A inputs
-   and answers included: `reports/validation/paper2_regime_windows/batch_jobs/` and `data/backups/gex_llm/<run_id>/`) and
-   the full series, windows and detections tables are git-ignored (authors' rule of 2026-10-30: nothing raw on the
-   remote); they live in the database and on this machine, and `data/backups/gex_llm/condensed/` plus `results/` carry
-   what the paper needs (decisions log, D-17 and Q-09).
-4. `build.sh --strict` must end with `STRICT: ok`; commit from `paper/electronics` (no attribution lines).
+3. Publish the data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL). Ask Alpha Vantage first: its terms license "personal, non-commercial use" and do not address a public deposit of derived daily series. Then add the DOI and the access date to the Data Availability Statement. The database tables are the authoritative copy (Section 3.7). If the deposit is not possible, change the statement to "available from the authors on request".
+4. `build.sh --strict` must end with `STRICT: ok`, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
 
-## Keeping Appendices A and B in step with the code
+## Keeping Appendix A and Supplement S1 in step with the code
 
 The prompt, the schema and the request body of Appendix A are transcribed from
-`MechanicsPromptBuilder.build_regime_prompt`, `common.REGIME_JSON_SCHEMA` and `common.chat_body`. Appendix B.1 to B.4 are
-the four statements of the data audit of 2026-10-28 (`sql_series_a_frozen`, `_b_new`, `_c_ex0dte`, `_d_intraday.sql`),
-verbatim and comments included (the audit working folder is not in the repository, so the appendix is the repository's
-copy); B.5 adds the statement of the scaling factor, tested read-only on 2026-10-29. After any change to the prompt, the
+`MechanicsPromptBuilder.build_regime_prompt`, `common.REGIME_JSON_SCHEMA` and `common.chat_body`. Sections S1.1 to S1.4 of the
+supplement are the four read-only statements run on 2026-10-28 (only their comment lines were edited for readers; the
+working folder is not in the repository, so the supplement is the repository's copy); S1.5 adds the statement of the
+scaling factor, tested read-only on 2026-10-29. After any change to the prompt, the
 schema or the model configuration, re-check Appendix A from the repository root (the typeset symbols are written `<=`,
 `>=` and `->` in the `.tex` file and set as symbols by the `prompt` listing style):
 
@@ -249,7 +250,7 @@ import json, re, sys
 sys.path.insert(0, "scripts/validation/electronics")
 import common
 
-tex = open("docs/papers/electronics/latex/07_Appendix.tex").read()
+tex = open("docs/papers/electronics/latex/07_Appendix_A_Prompt.tex").read()
 listing = lambda style: re.search(r"\\begin\{lstlisting\}\[style=%s[^\]]*\]\n(.*?)\n\\end\{lstlisting\}" % style, tex, re.S).group(1)
 seq = common.obfuscate([float(i) * 1e8 - 1.5e9 for i in range(30)])
 real = common.build_prompt(seq)

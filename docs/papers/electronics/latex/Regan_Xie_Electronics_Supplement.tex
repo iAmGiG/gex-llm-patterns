@@ -1,0 +1,22 @@
+%  Supplementary Materials of the Electronics manuscript (compiled on its own: pdflatex, twice).
+%  Section S1: series definitions in SQL.  Section S2: run ledger.  One \input per part, as in the article.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs,tabularx,float,listings,xcolor,url,amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
+\lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
+  columns=fixed, keepspaces=true, showstringspaces=false, upquote=true,
+  breaklines=true, breakindent=0pt, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\title{Supplementary Materials for\\ ``Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test''}
+\author{Christopher Regan and Ying Xie}
+\date{}
+\begin{document}
+\maketitle
+\input{./S1_Series_SQL}
+\input{./S2_Run_Ledger}
+\end{document}

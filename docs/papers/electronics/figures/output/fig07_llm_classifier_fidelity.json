@@ -19,9 +19,9 @@
       "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "44c3a54a3baa0c939498bcda2313c7f2be5e5b9c1e02081ff223303522df2dba"
+      "sha256": "25d0463b2370c40e6305bc78b3c2b4300eb7a7630982ca0d8a640d57e2a7ef56"
     },
     {
       "git": "clean",
@@ -372,24 +372,24 @@
     ]
   },
   "figure": "fig07_llm_classifier_fidelity",
-  "generated_utc": "2026-10-31T05:19:16+00:00",
+  "generated_utc": "2026-11-02T03:21:31+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "d71675406a58d1f8f9341a7a3c97e08f9aedaa84",
+  "git_sha": "93f1b51f3e4e15236a94c15979f28dc2f950cb7a",
   "outputs": {
     "pdf": {
-      "bytes": 112850,
+      "bytes": 112838,
       "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.pdf",
-      "sha256": "c76aa7470bcf1ceb38f5db1e402e59348ca80e984153483de26b5f05e777ef98"
+      "sha256": "498450bc8539e53e20e6615f596b8694e3ab307508c125f1687c06e97017cd35"
     },
     "png": {
-      "bytes": 626651,
+      "bytes": 627713,
       "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.png",
       "pixels": [
         1842,
         1845
       ],
-      "sha256": "5bd367718a3b96e402c6d10cc1a50afd8f6daf9a112595b5e1d7329a323f1a8e"
+      "sha256": "c365a9cf3883b39103a32892869fd3ffc26181a5b0c90d236d665d1d7e8112fc"
     }
   },
   "results": {

@@ -1,0 +1,50 @@
+\subsection{gpt-6-luna on the Complete Series}
+\label{sec:results:complete}
+
+Figure~\ref{fig:complete} shows the detection rate of gpt-6-luna by year on each SPY series, from the published inputs to the complete series, next to the rule, and Table~\ref{tab:complete} gives the yearly rates of the two complete series with their intervals; Table~\ref{tab:app:llm} gives the QQQ and IWM arms.
+% src: detection_by_year.csv label_source=llm arms full_spy, ex0dte_spy, bridge_jan, bridge_old (scope=all and by year); stats.yaml rates and contrasts (series_contrast llm, period 2024-2025); llm_parse_stats.csv; disagreements.csv
+On the complete series gpt-6-luna labels 613 of 4{,}671 windows as persistent (13.1\%; 606 of them by the rule, 13.0\%) and, without same-day expiries, 494 of 4{,}671 (10.6\%; rule 491, 10.5\%). In 2024 and 2025 it detects 11.1\% and 14.0\% of the windows of the complete series and 14.3\% and 16.4\% of those without same-day expiries (Wilson intervals in Table~\ref{tab:complete}). Pooled over the two years the rate is 12.5\% (63 of 502; Wilson 9.9--15.7\%, quarter-block bootstrap 6.1--19.6\%, non-overlapping subsample 3 of 17). The same model on the published inputs detects 100.0\% of the windows of these two years (501 of 501), and on the pre-rebuild archive 100.0\% (501 of 501). The paired difference between the published inputs and the complete series is 87.4 percentage points (quarter-block bootstrap interval 80.3--93.9, $p=5.0\times10^{-4}$; exact McNemar test on the non-overlapping subsample $p=1.2\times10^{-4}$), and that between the archive and the complete series is 87.4 percentage points ($p=5.0\times10^{-4}$ and $p=1.2\times10^{-4}$). In 2020 to 2023 the model detects 22.7\% of the windows of the complete series. In 2026 it detects 11.4\% of the windows of the complete series and 21.2\% of those without same-day expiries (Section~\ref{sec:results:post}).
+
+The model follows the rule on the complete series. The verdicts agree in 99.7\% of the 4{,}671 windows of \ident{full_spy} (kappa 0.986) and in 99.7\% of those of \ident{ex0dte_spy} (kappa 0.985). The two arms disagree with the rule in 15 and 13 windows; the causes are analysed in Section~\ref{sec:results:fidelity}. All 34{,}712 stored gpt-6-luna answers were parsed at the first attempt: every answer ended with finish reason \ident{stop}, and none needed a fallback parse or the retry at the larger token limit.
+
+\begin{table}[H]
+\centering
+\caption{gpt-6-luna on the complete SPY series, by year of the window end: windows, detection rate in percent with its 95\% Wilson interval (overlapping windows treated as independent, hence optimistic) for \ident{full_spy} and \ident{ex0dte_spy}, and the agreement of the model verdict with the rule on the same windows (percent). * Windows ending in 2026 up to 2026-10-09.}
+\label{tab:complete}
+\footnotesize
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & & \multicolumn{2}{c}{\ident{full_spy}} & \multicolumn{2}{c}{\ident{ex0dte_spy}} & \multicolumn{2}{c}{Agreement with rule} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+Year & Windows & Rate & Wilson 95\% & Rate & Wilson 95\% & full & ex-0DTE \\
+\midrule
+% src: detection_by_year.csv label_source=llm arm=full_spy and arm=ex0dte_spy, symbol=SPY, scope=year, years 2008-2026 (n_windows, rate_pct, ci_lo_pct, ci_hi_pct, agree_pct)
+2008 & 224 & 0.0 & 0.0--1.7 & 0.0 & 0.0--1.7 & 100.0 & 100.0 \\
+2009 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2010 & 251 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2011 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2012 & 250 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2013 & 252 & 0.0 & 0.0--1.5 & 0.0 & 0.0--1.5 & 100.0 & 100.0 \\
+2014 & 252 & 9.1 & 6.2--13.3 & 8.3 & 5.5--12.4 & 100.0 & 100.0 \\
+2015 & 252 & 7.9 & 5.2--11.9 & 1.6 & 0.6--4.0 & 100.0 & 100.0 \\
+2016 & 250 & 27.6 & 22.4--33.4 & 22.0 & 17.3--27.5 & 99.6 & 100.0 \\
+2017 & 240 & 31.7 & 26.1--37.8 & 19.2 & 14.7--24.6 & 99.6 & 99.6 \\
+2018 & 249 & 34.9 & 29.3--41.0 & 22.9 & 18.1--28.5 & 99.6 & 99.2 \\
+2019 & 251 & 10.0 & 6.8--14.3 & 3.2 & 1.6--6.2 & 100.0 & 100.0 \\
+2020 & 252 & 22.2 & 17.5--27.8 & 10.7 & 7.5--15.1 & 100.0 & 100.0 \\
+2021 & 252 & 3.6 & 1.9--6.6 & 0.0 & 0.0--1.5 & 99.2 & 100.0 \\
+2022 & 251 & 41.8 & 35.9--48.0 & 37.1 & 31.3--43.2 & 98.8 & 99.6 \\
+2023 & 250 & 23.2 & 18.4--28.8 & 26.0 & 21.0--31.8 & 99.2 & 98.4 \\
+2024 & 252 & 11.1 & 7.8--15.6 & 14.3 & 10.5--19.1 & 98.4 & 98.8 \\
+2025 & 250 & 14.0 & 10.2--18.8 & 16.4 & 12.3--21.5 & 99.6 & 99.2 \\
+2026* & 193 & 11.4 & 7.6--16.7 & 21.2 & 16.1--27.5 & 100.0 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figComplete}
+\caption{gpt-6-luna detection rate by year, SPY: one panel per arm, from the published inputs (\ident{bridge_jan}) to the complete series with and without same-day expiries (\ident{full_spy}, \ident{ex0dte_spy}) and the pre-rebuild archive (\ident{bridge_old}). Dots are the model with 95\% Wilson intervals, dashes the classifier on the windows the model answered, and the grey band is 2026. \textbf{Read this figure as:} on the published inputs (a) and on the archive (d) the rate jumps to 100\% in 2024 and 2025. On the two complete series (b, c) it stays between 3.6\% and 41.8\% (\ident{full_spy}) and between 0.0\% and 37.1\% (\ident{ex0dte_spy}) from 2020 to 2026, with the highest value in 2022. In every panel the dots lie close to the dashes of the classifier.}
+\label{fig:complete}
+\end{figure}

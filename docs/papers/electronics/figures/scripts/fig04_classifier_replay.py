@@ -4,7 +4,7 @@
 SPY, 2020-2025 (the years with published labels).  One bar per convention and year: the published
 o4-mini detection rate, then the Paper 2 criteria (>= 70% same-sign days, mean |GEX| >= $5B, <= 5 sign
 flips) replayed on the exact published inputs, on the call leg only, on the pre-rebuild archive, and on
-the rebuilt table without and with 0DTE.  No LLM call is needed for any bar except the first.
+the complete series without and with 0DTE.  No LLM call is needed for any bar except the first.
 
 Input  results/detection_by_year.csv, the long table of 05_report.py, read by figdata.load_detection_by_year():
   * one row per classifier series and year (label_source == 'classifier', arm blank) and one row per LLM arm, model,
@@ -46,8 +46,8 @@ CLASSIFIER_SERIES = (
     ("jan2026_phase4a", "Rule on published inputs"),
     ("call_only", "Rule, call leg only"),
     ("old_bs", "Rule, pre-rebuild archive"),
-    ("new_ex0dte", "Rule, rebuilt ex-0DTE"),
-    ("new_full", "Rule, rebuilt 0DTE incl."),
+    ("new_ex0dte", "Rule, complete, ex-0DTE"),
+    ("new_full", "Rule, complete, 0DTE incl."),
 )
 REQUIRED = ("jan2026_phase4a", "new_ex0dte", "new_full")
 LABELLED = ("new_ex0dte", "new_full")  # value labels on these two for the years after the convention change

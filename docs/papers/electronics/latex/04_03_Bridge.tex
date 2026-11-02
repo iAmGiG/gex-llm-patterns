@@ -1,0 +1,60 @@
+\subsection{Model Agreement on the Published Inputs}
+\label{sec:results:bridge}
+
+Table~\ref{tab:bridge} and Figure~\ref{fig:bridge} compare gpt-6-luna with the published o4-mini answers on identical inputs.
+% src: bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=bridge_jan scope=all and by year (n_pairs, confusion counts, agree_pct, kappa, bootstrap intervals, p_mcnemar_exact, p_boot); comparison=bridge_incl_recovered; comparison=test_retest ref_arm=bridge_jan; report.yaml headline.bridge.gate
+The agreement gate of Section~\ref{sec:methods:model} (Cohen's kappa of at least 0.6) is met with a wide margin. On the 1{,}412 windows with a published answer the two models give the same verdict in 1{,}407 windows (99.6\%; quarter-block bootstrap interval 99.4--99.9\%), and kappa is 0.993 (bootstrap interval 0.986--0.998). The confusion matrix has 646 windows detected by both, 761 by neither, 0 only by o4-mini and 5 only by gpt-6-luna. In each of the 5 windows of disagreement the deterministic rule agrees with o4-mini. The windows lie in 2021 to 2023 (3 in 2021, 1 in 2022, 1 in 2023); the yearly kappa is lowest in 2021 (0.851) and between 0.986 and 1.000 in 2020, 2022 and 2023, and it is undefined in 2024 and 2025, where both models label every window as detected. The detection rates are 45.8\% for o4-mini and 46.1\% for gpt-6-luna on these windows. The paired McNemar test on all windows at stride one gives $p=0.063$ (anti-conservative, because the windows overlap) and the quarter-block bootstrap $p=0.010$ (Table~\ref{tab:bridge} gives both).
+
+% src: bridge_agreement.csv comparison=bridge_incl_recovered; llm_parse_stats.csv arm=r1_o4mini (n_recovered_2026)
+The 64 answers of the published run that were lost to a parsing error in January 2026 and re-parsed from the stored raw output are held out of every headline number. With them the comparison covers 1{,}476 windows: agreement 99.6\%, kappa 0.992 (bootstrap 0.984--0.997), and 6 windows of disagreement, all with the rule on the side of o4-mini. The conclusions do not depend on whether they are included.
+
+% src: reported_vs_computed.csv basis=bridge_pairs (median_ratio, q25_ratio, q75_ratio, ratio_within_5pct_pct), scope=all; series_comparison.csv pair old_bs_vs_jan2026_phase4a scope=all median_ratio_a_over_b
+On the exact published inputs the mean magnitude that o4-mini reports equals the mean computed from the window: the median ratio of reported to computed is 1.000, and 99.9\% of the answers lie within 5\% of the computed value. For gpt-6-luna the median ratio is 1.000 (99.7\% within 5\%). The pre-rebuild archive cannot serve for this check: its daily values are 0.818 times the published inputs at the median (ratio of the archive to the published inputs), so a comparison with the archive would suggest a magnitude error that the exact inputs rule out.
+
+% src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan (scope=all and by year); other arms scope=all
+The repeat pass runs gpt-6-luna a second time on all 1{,}476 windows of the published inputs. The two passes agree on 99.3\% of the windows (kappa 0.985, bootstrap 0.969--0.996) and differ in 11 windows, which is more than the 5 windows in which the first pass differs from o4-mini. The disagreement between the two models is thus no larger than the disagreement of the model with itself. The repeats of the other arms agree on 98.8\% to 100.0\% of their windows (Table~S1 of the Supplementary Materials lists the runs; the repeat of \ident{full_spy} agrees on 99.6\% of 234 windows).
+
+\begin{table}[H]
+\centering
+\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, and the third compares gpt-6-luna with its own repeat pass. Intervals are quarter-block bootstrap intervals; the McNemar test is exact on all windows at stride one and therefore optimistic.}
+\label{tab:bridge}
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Statistic & o4-mini & gpt-6-luna & Both \\
+\midrule
+% src: bridge_agreement.csv comparison=bridge other_arm=bridge_jan scope=all; reported_vs_computed.csv basis=bridge_pairs scope=all
+Windows with a parsed answer & 1{,}412 & 1{,}412 & 1{,}412 \\
+Detection rate (\%) & 45.8 & 46.1 & -- \\
+Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
+Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.4, 99.9] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.993 [0.986, 0.998] \\
+McNemar exact p (stride one, all windows) & -- & -- & 0.063 \\
+Block-bootstrap p (calendar quarters) & -- & -- & 0.010 \\
+Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
+\midrule
+% src: bridge_agreement.csv comparison=bridge_incl_recovered other_arm=bridge_jan scope=all (ref_arm r1_o4mini_all)
+\multicolumn{4}{@{}l}{\textit{With the 64 re-parsed answers}} \\
+Windows with a parsed answer & 1{,}476 & 1{,}476 & 1{,}476 \\
+Detection rate (\%) & 45.2 & 45.5 & -- \\
+Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
+Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.3, 99.9] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.992 [0.984, 0.997] \\
+McNemar exact p (stride one, all windows) & -- & -- & 0.219 \\
+Block-bootstrap p (calendar quarters) & -- & -- & 0.121 \\
+\midrule
+% src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan other_arm=bridge_jan#rep1 scope=all
+\multicolumn{4}{@{}l}{\textit{Test-retest of gpt-6-luna (first pass against repeat pass)}} \\
+Windows with a parsed answer & -- & 1{,}476 & -- \\
+Agreement between passes (\%) [95\% block-bootstrap interval] & -- & -- & 99.3 [98.6, 99.8] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.985 [0.969, 0.996] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figBridge}
+\caption{Bridge to the published result on the Phase 4A windows. (a) Confusion matrix of gpt-6-luna against the o4-mini labels, with the overall agreement and Cohen's kappa. (b), (c) Agreement and kappa by year, with the test-retest of gpt-6-luna and the agreement gate as dashed references. \textbf{Read this figure as:} nearly all windows lie on the diagonal (646 and 761), and the five off-diagonal windows are all detections by gpt-6-luna alone. Yearly agreement is 98.8\% or higher and the yearly kappa is far above the gate of 0.6, at 0.851 in its lowest year. The test-retest agreement of gpt-6-luna with itself (99.3\%) is a lower reference than the agreement with o4-mini.}
+\label{fig:bridge}
+\end{figure}

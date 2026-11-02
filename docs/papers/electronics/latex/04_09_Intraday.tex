@@ -1,0 +1,33 @@
+\subsection{Intraday Check}
+\label{sec:results:intraday}
+
+Table~\ref{tab:intraday} and Figure~\ref{fig:intraday} compare the late-session intraday snapshot with the end-of-day value for SPY from 2026-07-27 to 2026-10-09.
+% src: irregular days and final_rush 19:55:59 UTC: report.yaml outputs.intraday.summary.irregular_days, README line 112; intraday.csv (51 regular days; gex_t0_final_rush_bn, gex_t0_eod_bn, gex_t0_diff_bn, clf_agree, llm_agree, clf_type_*); report.yaml headline.intraday; figures/output/fig11_intraday_vs_eod.json extra.counts
+The snapshot is the \ident{final_rush} slot (19:55:59 UTC), the last independent late-session observation; the \ident{market_close} slot equals the end-of-day row. The irregular days 2026-07-29, 2026-08-03, 2026-09-14 are excluded, which leaves 51 days. The two values of day T+0 have the same sign on 46 of 51 days (90.2\%). Their median relative difference is 11.9\% and the median absolute difference is \$0.93~billion (mean \$1.69~billion, largest \$19.08~billion). A single day moves the 30-day mean $|\mathrm{GEX}|$ of a window only a little: the composite window (the complete series for days $T{-}29$ to $T{-}1$ and the snapshot at T+0) differs from the end-of-day window by at most \$0.34~billion. The rule gives the same label for the composite and the end-of-day window on 51 of 51 days, and gpt-6-luna on 51 of 51. This agreement is weak evidence, because no window of the period is persistent: the rule and the model detect 0 and 0 of the 102 windows, and the 30-day mean $|\mathrm{GEX}|$ of every window is at least \$7.54~billion, so the verdict depends on persistence and flips, not on the magnitude. With a few dozen days the section reports counts and no p-values.
+
+\begin{table}[H]
+\centering
+\caption{Late-session intraday snapshot versus end-of-day GEX, SPY, 2026-07-27 to 2026-10-09.}
+\label{tab:intraday}
+\footnotesize
+\begin{tabular}{@{}lr@{}}
+\toprule
+Statistic & Value \\
+\midrule
+% src: intraday.csv (all rows, irregular days excluded)
+Days with both observations & 51 \\
+Days with the same sign (\%) & 90.2 (46 of 51) \\
+Median relative difference of GEX (\%) & 11.9 \\
+Median absolute difference of GEX (\$B) & 0.93 \\
+Classifier label agreement of composite and end-of-day windows (\%) & 100.0 (51 of 51) \\
+gpt-6-luna label agreement of composite and end-of-day windows (\%) & 100.0 (51 of 51) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figIntraday}
+\caption{Late-session intraday snapshot versus end-of-day GEX, SPY, 2026-07-27 to 2026-10-09. (a) Day T+0 value of the snapshot (\ident{final_rush}) and of the end-of-day row. (b) 30-day mean $|\mathrm{GEX}|$ of the composite and of the end-of-day window against the \$5 billion criterion. (c) Labels of the classifier and of gpt-6-luna on the two windows. The three irregular days (2026-07-29, 2026-08-03, 2026-09-14) are not in the series. \textbf{Read this figure as:} the snapshot and the end-of-day value of day T+0 are close on most days and differ in sign on 5 of 51 days. The two window means in (b) are almost the same line, and in (c) every window is rejected under both labels, with no day on which the composite label differs.}
+\label{fig:intraday}
+\end{figure}

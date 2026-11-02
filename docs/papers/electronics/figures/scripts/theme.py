@@ -93,7 +93,7 @@ SERIES_COLORS: Dict[str, str] = {
     "jan2026_phase4a": "#0072B2",  # the exact published inputs (blue)
     "call_only": "#CC79A7",  # diagnostic: call leg only, the put-less January table (reddish purple)
     "old_bs": "#56B4E9",  # archive of the pre-rebuild daily table (sky blue)
-    "new_full": "#D55E00",  # rebuilt table, stored gamma, 0DTE included: the primary corrected series (vermilion)
+    "new_full": "#D55E00",  # complete table, stored gamma, 0DTE included: the primary complete series (vermilion)
     "new_ex0dte": "#009E73",  # raw chains, expiration > trading date (bluish green)
     "intraday": "#E69F00",  # final-rush intraday snapshot at T+0 (orange)
     "new_full_scaled": "#8C2F1F",  # new_full of QQQ and IWM times one fixed factor: the dark shade of its parent (dark vermilion)
@@ -111,10 +111,10 @@ SERIES_LABELS: Dict[str, str] = {
     "jan2026_phase4a": "Published inputs",
     "call_only": "Call leg only",
     "old_bs": "Pre-rebuild (BS)",
-    "new_full": "Rebuilt, 0DTE incl.",
-    "new_ex0dte": "Rebuilt, ex-0DTE",
+    "new_full": "Complete, 0DTE incl.",
+    "new_ex0dte": "Complete, ex-0DTE",
     "intraday": "Intraday T+0",
-    "new_full_scaled": "Rebuilt, scaled",
+    "new_full_scaled": "Complete, scaled",
     "p3_2024": "2024 baseline, Day-T labels",
     "p3_2024_dated": "2024 baseline, dated labels",
     "p4_2020": "2020 baseline, Day-T labels",
@@ -138,18 +138,18 @@ ARM_LABELS: Dict[str, str] = {
     "r1_p4_o4mini": "o4-mini, 2020 baseline, dated",
     "bridge_jan": "luna, published inputs",
     "bridge_old": "luna, pre-rebuild (BS)",
-    "full_spy": "luna, rebuilt, SPY",
+    "full_spy": "luna, complete, SPY",
     "ex0dte_spy": "luna, ex-0DTE, SPY",
     "p34_obf_2024": "luna, 2024 baseline, Day-T labels",
     "p34_dated_2024": "luna, 2024 baseline, dated",
     "p34_obf_2020": "luna, 2020 baseline, Day-T labels",
     "p34_dated_2020": "luna, 2020 baseline, dated",
-    "full_qqq": "luna, rebuilt, QQQ",
+    "full_qqq": "luna, complete, QQQ",
     "ex0dte_qqq": "luna, ex-0DTE, QQQ",
-    "full_iwm": "luna, rebuilt, IWM",
+    "full_iwm": "luna, complete, IWM",
     "ex0dte_iwm": "luna, ex-0DTE, IWM",
-    "full_qqq_scaled": "luna, rebuilt, QQQ, scaled",
-    "full_iwm_scaled": "luna, rebuilt, IWM, scaled",
+    "full_qqq_scaled": "luna, complete, QQQ, scaled",
+    "full_iwm_scaled": "luna, complete, IWM, scaled",
     "intraday_spy": "luna, intraday T+0, SPY",
 }
 

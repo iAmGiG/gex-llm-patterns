@@ -1,0 +1,56 @@
+\subsection{What the Published Inputs Were}
+\label{sec:results:inputs}
+
+Table~\ref{tab:lineage} compares the inputs recovered from the Phase 4A batch file with each candidate series, and Figures~\ref{fig:window} and~\ref{fig:series} show one window and the 2008--2026 history.
+% src: batch file date 2026-01-04: planning/forensics/2026-10-28_memo_published_inputs.md and scripts/validation/electronics/README.md line 10; windows.csv.gz series_key=jan2026_phase4a (count, min and max window_end); series_comparison.csv pair jan2026_phase4a_vs_new_full scope=all n_days; report.yaml diagnostics.flagged_windows (jan2026_phase4a n_missing_master_days); missing dates: series parquet jan2026_phase4a_SPY against new_full_SPY
+The batch file of 2026-01-04 stores the daily values that were sent to o4-mini. They give 1{,}476 windows with ends from 2020-02-13 to 2025-12-31, cut from 1{,}505 daily values. Compared with the complete series, the January calendar lacks 2023-07-12 and 2024-03-11. The 58 windows that span one of the two gaps are flagged and kept (Section~\ref{sec:methods:windows}).
+
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full and call_only_vs_jan2026_phase4a, exact_match_pct by year (Table lineage); CALL_FROM and the isolated days: series parquet jan2026_phase4a_SPY, call_only_SPY and new_full_SPY at the 0.01B precision (tolerance 0.005B)
+The published inputs follow two different series (Table~\ref{tab:lineage}). In 2020 to 2022 the share of daily values that equal \ident{new_full} at the 0.01B precision of the prompt is 100.0\%, 99.2\% and 98.4\%, and the call-only series equals the inputs on at most 1.2\% of the days. In 2024 and 2025 the relation is reversed: none of the values equals \ident{new_full} (0.0\% in both years) and every value equals the call-only GEX (100.0\% in both years). The year 2023 is the transition: 60.6\% of its values equal \ident{new_full} and 39.4\% equal the call-only series, which together account for every day. From 2023-09-29 on, every value equals the call-only GEX; the day before, 2023-09-28, is the last on which a value differs from it. Before that date, 39 days (the first on 2021-09-17) already equal the call-only value and not the complete one. The published inputs of 2024 and 2025 are therefore the call leg of the options chain without the put leg. They differ in level and sign from the complete series (Table~\ref{tab:app:series} gives the means): the mean $|\mathrm{GEX}|$ of the published inputs is \$20.19~billion in 2024 against \$6.48~billion on the complete series, and \$19.21~billion against \$7.13~billion in 2025, with the same daily sign on 62.2\% and 54.0\% of the days.
+
+% src: series_comparison.csv pair old_bs_vs_jan2026_phase4a (exact_match_pct, sign_agree_pct, mean_abs_a_bn) years 2020-2025; missing dates: series parquet old_bs_SPY against new_full_SPY
+The pre-rebuild archive (\ident{old_bs}) was computed from the same put-less table for the same dates, so it cannot serve as a clean earlier convention. Its Black--Scholes gamma differs from the stored gamma, and none of its values equals a published value at 0.01B (0.0\% in every year). Its signs agree with the published inputs on 100.0\% of the days in 2024 and 99.6\% in 2025, and its mean $|\mathrm{GEX}|$ is \$16.19~billion and \$14.71~billion, which is the level of a call-only series. The archive also has holes: it lacks 33 days of the complete calendar (2023-07-12, 2024-03-11, the 26 days from 2026-01-02 to 2026-02-09, and the 5 days from 2026-10-05 to 2026-10-09).
+
+% src: series parquet p3_2024_SPY and p4_2020_SPY (252 values each; sign counts, positive-value range, mean absolute value); windows.csv.gz series_key=p3_2024 and p4_2020 (223 windows each)
+The inputs of the Phase 3 and 4 runs of November 2025 survive in the same way: 252 daily values for 2024 and 252 for 2020, 223 windows each, with ISO dates in the prompts. The 2024 values are a gross call-plus-put magnitude with a negative sign imposed. They are negative on 242 days, and the 10 positive values (\$10.61~billion to \$13.76~billion) are placeholder rows of the source database. The 2020 values are a magnitude only and are positive on every day. The mean absolute daily value is \$31.24~billion for 2024 and \$2.85~billion for 2020, so the two baselines differ in convention and in scale (Section~\ref{sec:results:dated}).
+
+\begin{table}[H]
+\centering
+\caption{Agreement of the recovered published inputs with each candidate series, by year (share of daily values equal at the 0.01B precision of the prompt, in percent). The archive uses another gamma model, so exact equality is not expected for it.}
+\label{tab:lineage}
+\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Year & Days & \ident{new_full} & \ident{call_only} & \ident{old_bs} \\
+\midrule
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2020, n_days and exact_match_pct
+2020 & 252 & 100.0 & 0.0 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2021, n_days and exact_match_pct
+2021 & 252 & 99.2 & 0.8 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2022, n_days and exact_match_pct
+2022 & 251 & 98.4 & 1.2 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2023, n_days and exact_match_pct
+2023 & 249 & 60.6 & 39.4 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2024, n_days and exact_match_pct
+2024 & 251 & 0.0 & 100.0 & 0.0 \\
+% src: series_comparison.csv pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_jan2026_phase4a, year=2025, n_days and exact_match_pct
+2025 & 250 & 0.0 & 100.0 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figWindow}
+% src: figures/output/fig02_convention_window.json (extra.window_end); windows.csv.gz (clf_positive_days, clf_sign_flips, clf_avg_magnitude, clf_regime_type for window_end 2024-03-15, symbol SPY); series parquet net_gex of 2024-03-15
+\caption{One SPY 30-day window under four conventions (\ident{jan2026_phase4a}, \ident{call_only}, \ident{new_ex0dte}, \ident{new_full}), window ending 2024-03-15. Dashed lines mark the $\pm$\$5 billion magnitude threshold; the table under the bars gives the three criteria and the verdict for each convention. \textbf{Read this figure as:} the same 30 trading days receive different verdicts. The published inputs and the call-only series have 30 of 30 positive days, a mean $|\mathrm{GEX}|$ of \$23.56~billion, 0 sign flips, and are detected. The complete series has 23 positive days, 13 flips and a mean of \$6.66~billion, and the ex-0DTE series 26 positive days, 7 flips and \$3.87~billion; both are rejected as low conviction. On the last day the net GEX is $+$\$14.61~billion on the published inputs, $-$\$15.35~billion on the complete series and $-$\$4.51~billion without same-day expiries.}
+\label{fig:window}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figSeries}
+% src: series_comparison.csv SPY by year (pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, new_full_vs_new_ex0dte: mean_abs_a_bn, mean_abs_b_bn, sign_agree_pct)
+\caption{SPY, 2008--2026. (a) Yearly mean of $|\mathrm{GEX}|$ under each series, with the \$5 billion magnitude criterion for scale. (b) Daily sign agreement between pairs of series, by year. \textbf{Read this figure as:} until 2022 the published inputs and the complete series are close; from 2023 the published inputs rise to \$20.19~billion in 2024 while the complete series stays between \$6.05~billion and \$7.13~billion in 2023 to 2025. Their daily sign agreement falls from 98.8\% in 2022 to 81.5\%, 62.2\% and 54.0\%. The call-only series matches the published inputs in 2024 and 2025 only.}
+\label{fig:series}
+\end{figure}
