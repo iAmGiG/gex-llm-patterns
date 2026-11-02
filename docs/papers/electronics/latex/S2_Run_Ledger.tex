@@ -1,0 +1,76 @@
+\section{Run Ledger}
+\label{sup:ledger}
+
+Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every model run of the study: the identifiers, the token usage and the cost. The arms are defined in Section~3.6 of the article.
+
+% src: cost_ledger.csv, rows with counts_toward_budget = True (column recomputed_cost_usd; it equals est_cost_usd in every row); total equals cost_ledger.yaml budget.spent_usd (9.700576); backfill rows budget_class = backfill
+\begin{table}[H]
+\centering
+\caption{Run ledger: one row per Batch job, with the token usage and the cost priced at Batch rates. The identifier has the form \ident{<arm>_<model>_<mode>_<UTC timestamp>_c<chunk>}. Only runs paid in this study enter the total; the synchronous pilot (\ident{sync}) is included in it. The three backfilled o4-mini runs are listed below it, as stored answers of earlier runs that are not spend of this study.}
+\label{tab:ledger}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Status \\
+\midrule
+
+\path{bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0} & 1{,}476 & 2{,}823{,}588 & 1{,}086{,}712 & 0.41 & ingested \\
+\path{bridge_jan_gpt-6-luna_batch_20261029T203742Z_c1} & 1{,}476 & 2{,}823{,}588 & 1{,}082{,}280 & 0.41 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c0} & 1{,}227 & 2{,}347{,}251 & 871{,}277 & 0.34 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c1} & 1{,}226 & 2{,}345{,}338 & 969{,}842 & 0.36 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c2} & 1{,}226 & 2{,}345{,}338 & 1{,}004{,}850 & 0.37 & ingested \\
+\path{full_spy_gpt-6-luna_batch_20261029T203745Z_c3} & 1{,}226 & 2{,}345{,}338 & 1{,}024{,}540 & 0.37 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0} & 1{,}227 & 2{,}347{,}251 & 839{,}753 & 0.33 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1} & 1{,}226 & 2{,}345{,}338 & 968{,}965 & 0.36 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2} & 1{,}226 & 2{,}345{,}338 & 951{,}505 & 0.36 & ingested \\
+\path{ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3} & 1{,}226 & 2{,}345{,}338 & 982{,}560 & 0.36 & ingested \\
+\path{p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0} & 234 & 447{,}642 & 156{,}636 & 0.06 & ingested \\
+\path{p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0} & 234 & 461{,}682 & 154{,}330 & 0.06 & ingested \\
+\path{p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0} & 234 & 447{,}642 & 132{,}619 & 0.06 & ingested \\
+\path{p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0} & 234 & 461{,}682 & 130{,}805 & 0.06 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c0} & 1{,}354 & 2{,}590{,}202 & 1{,}012{,}074 & 0.38 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c1} & 1{,}353 & 2{,}588{,}289 & 1{,}004{,}705 & 0.38 & ingested \\
+\path{full_qqq_gpt-6-luna_batch_20261029T204029Z_c2} & 1{,}353 & 2{,}588{,}289 & 1{,}057{,}334 & 0.39 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c0} & 1{,}228 & 2{,}349{,}164 & 762{,}229 & 0.31 & ingested \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Run ledger (continued): remaining Batch jobs, the total of this study and the backfilled runs. Rows are rounded to cents; the totals are computed from the unrounded values (the three backfilled runs sum to 9.97).}
+\label{tab:ledger2}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & Cost (USD) & Status \\
+\midrule
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c1} & 1{,}228 & 2{,}349{,}164 & 719{,}759 & 0.30 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c2} & 1{,}228 & 2{,}349{,}164 & 826{,}909 & 0.32 & ingested \\
+\path{full_iwm_gpt-6-luna_batch_20261029T204033Z_c3} & 1{,}228 & 2{,}349{,}164 & 855{,}981 & 0.33 & ingested \\
+\path{full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1} & 877 & 1{,}677{,}701 & 750{,}362 & 0.27 & ingested \\
+\path{full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0} & 877 & 1{,}677{,}701 & 694{,}967 & 0.26 & ingested \\
+\path{full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0} & 878 & 1{,}679{,}614 & 614{,}557 & 0.24 & ingested \\
+\path{full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1} & 877 & 1{,}677{,}701 & 695{,}367 & 0.26 & ingested \\
+\path{ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1} & 892 & 1{,}706{,}396 & 680{,}360 & 0.26 & ingested \\
+\path{ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0} & 892 & 1{,}706{,}396 & 622{,}593 & 0.24 & ingested \\
+\path{ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0} & 893 & 1{,}708{,}309 & 560{,}829 & 0.23 & ingested \\
+\path{ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1} & 892 & 1{,}706{,}396 & 616{,}040 & 0.24 & ingested \\
+\path{intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0} & 54 & 103{,}302 & 45{,}525 & 0.02 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c0} & 1{,}218 & 2{,}330{,}034 & 813{,}090 & 0.32 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c1} & 1{,}218 & 2{,}330{,}034 & 970{,}974 & 0.36 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c2} & 1{,}217 & 2{,}328{,}121 & 953{,}927 & 0.35 & ingested \\
+\path{bridge_old_gpt-6-luna_batch_20261030T010455Z_c3} & 1{,}217 & 2{,}328{,}121 & 830{,}288 & 0.32 & ingested \\
+\path{pilot_bridge_jan_gpt-6-luna_sync_20261029T203454Z_c0} & 40 & 76{,}520 & 28{,}015 & 0.02 & ingested \\
+\midrule
+Total (this study) & 34{,}712 & 66{,}432{,}136 & 25{,}472{,}559 & 9.70 & \\
+\midrule
+\multicolumn{6}{@{}l}{Backfilled o4-mini runs (not spend of this study)} \\
+\path{r1_o4mini_phase4a_20260104} & 1{,}476 & 2{,}655{,}324 & 2{,}928{,}992 & 7.90 & backfill \\
+\path{r1_p3_o4mini_20251120} & 223 & 414{,}557 & 405{,}127 & 1.12 & backfill \\
+\path{r1_p4_o4mini_20251120} & 223 & 414{,}557 & 325{,}436 & 0.94 & backfill \\
+\bottomrule
+\end{tabular}
+\end{table}

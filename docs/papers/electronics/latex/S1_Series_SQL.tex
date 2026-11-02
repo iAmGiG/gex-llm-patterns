@@ -1,0 +1,114 @@
+\section{Series Definitions in SQL}
+\label{sup:series}
+
+% Only the comment lines of the listings differ from the statements as run; the SQL itself is unchanged.  Numbers of sections and tables of the
+% article are typed by hand here because the supplement compiles on its own: build.sh checks them against the article's .aux file.
+The daily series of Table~1 of the article are defined by the four read-only statements of Sections~\ref{app:series:old} to~\ref{app:series:intraday}, which were run on the project database on 2026-10-28; Section~\ref{app:series:derived} defines the derived and recovered series. In the statements \texttt{:sym} is the symbol (SPY, QQQ or IWM) and \texttt{:y0}, \texttt{:y1} bound one calendar year, because the raw table is read one symbol-year per statement. Every statement stops at 2026-10-09, the last day before the vendor switch (Section~3.3 of the article). The first two statements return the 30 daily values of every window. The pipeline stores the daily rows and cuts the windows in a second step (Section~3.4 of the article); unlike that step, the first statement drops a window when one of its 30 days of the \path{gex.options_daily_summary} calendar is missing from the archive table.
+
+\subsection{Pre-Rebuild Archive Table (\texttt{old\_bs})}
+\label{app:series:old}
+
+\begin{lstlisting}[style=appcode]
+-- old_bs: pre-rebuild archive table (read-only). Parameter :sym is the symbol.
+-- Calendar: gex.options_daily_summary for the symbol; a 30-day window is valid only if all 30 consecutive calendar days exist in the archive table.
+-- The archive ends on 2026-10-02, so the last window ends there; IWM and QQQ have no rows from 2020-12-03 to 2025-12-30.
+WITH cal AS (SELECT trading_date, row_number() OVER (ORDER BY trading_date) AS rn
+             FROM gex.options_daily_summary WHERE symbol = :'sym' AND trading_date <= DATE '2026-10-09'),
+     f AS (SELECT c.rn, c.trading_date, z.total_gex, z.net_call_gex, z.net_put_gex, z.underlying_price
+           FROM cal c JOIN backups.options_daily_summary_pre_rebuild_20261004 z
+             ON z.symbol = :'sym' AND z.trading_date = c.trading_date)
+SELECT e.trading_date AS window_end,
+       array_agg(w.total_gex     ORDER BY w.rn) AS total_gex_30,
+       array_agg(w.net_call_gex  ORDER BY w.rn) AS call_gex_30,
+       array_agg(w.net_put_gex   ORDER BY w.rn) AS put_gex_30
+FROM f e JOIN f w ON w.rn BETWEEN e.rn - 29 AND e.rn
+GROUP BY e.trading_date, e.rn
+HAVING count(*) = 30          -- hole-free window
+ORDER BY e.rn;
+\end{lstlisting}
+
+\subsection{Rebuilt Daily Table (\texttt{new\_full})}
+\label{app:series:full}
+
+\begin{lstlisting}[style=appcode]
+-- new_full: stored per-contract gamma, same-day expiries included (gex.options_daily_summary, rebuilt 2026-10-08). Parameter :sym is the symbol.
+WITH s AS (SELECT trading_date, total_gex, net_call_gex, net_put_gex, underlying_price,
+                  row_number() OVER (ORDER BY trading_date) AS rn
+           FROM gex.options_daily_summary
+           WHERE symbol = :'sym' AND trading_date <= DATE '2026-10-09')      -- alpha_vantage ends 2026-10-09; cboe_delayed starts 2026-10-12
+SELECT e.trading_date AS window_end,
+       array_agg(w.total_gex    ORDER BY w.rn) AS total_gex_30,
+       array_agg(w.net_call_gex ORDER BY w.rn) AS call_gex_30,
+       array_agg(w.net_put_gex  ORDER BY w.rn) AS put_gex_30
+FROM s e JOIN s w ON w.rn BETWEEN e.rn - 29 AND e.rn
+WHERE e.rn >= 30
+GROUP BY e.trading_date, e.rn
+HAVING count(*) = 30
+ORDER BY e.rn;
+\end{lstlisting}
+
+\subsection{Raw Chains Without Same-Day Expiries (\texttt{new\_ex0dte})}
+\label{app:series:ex0dte}
+
+\begin{lstlisting}[style=appcode]
+-- new_ex0dte: raw chains, one symbol-year per statement. Parameters :sym, :y0, :y1 (SPY and IWM 2008 to 2026, QQQ 2011 to 2026).
+-- enable_seqscan=off is a session planner setting (no writes): the index plan is faster and returns the same numbers (largest relative difference 5e-13).
+SET enable_seqscan = off;
+SELECT trading_date,
+       count(*)                                                 AS n_contracts,
+       count(*) FILTER (WHERE expiration = trading_date)        AS n_0dte,
+       sum(CASE WHEN option_type = 'call' THEN g END)  FILTER (WHERE expiration > trading_date) AS call_gex_ex0dte,
+      -sum(CASE WHEN option_type = 'put'  THEN g END)  FILTER (WHERE expiration > trading_date) AS put_gex_ex0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration > trading_date) AS total_gex_ex0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration = trading_date) AS total_gex_0dte,
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END)                                          AS total_gex_all  -- ties to gex.options_daily_summary.total_gex (<=2e-7 rel)
+FROM (SELECT trading_date, option_type, expiration,
+             gamma::float8 * open_interest::float8 * 100.0 * underlying_price::float8 * underlying_price::float8 * 0.01 AS g   -- float8: real*int would stay float4
+      FROM gex.options_chains_partitioned
+      WHERE symbol = :'sym' AND trading_date >= :'y0' AND trading_date < :'y1'
+        AND trading_date <= DATE '2026-10-09'                     -- vendor cap: alpha_vantage ends 2026-10-09, cboe_delayed starts 2026-10-12
+        AND gamma IS NOT NULL AND open_interest > 0 AND underlying_price > 0) t
+GROUP BY trading_date
+ORDER BY trading_date;
+\end{lstlisting}
+
+\subsection{Late-Session Intraday Snapshot (\texttt{intraday\_late})}
+\label{app:series:intraday}
+
+The statement as listed returns Variant~1 of its comments, the \ident{market_close} slot, which equals the end-of-day row. The series of the study is Variant~2: the filter on the clock time is replaced by a filter on the snapshot type (\ident{snapshot_type} equal to \ident{final_rush}, 19:55:59 UTC), so that the snapshot is selected by type and not by clock time, and the three irregular days 2026-07-29, 2026-08-03 and 2026-09-14 are dropped when the series is built.
+
+\begin{lstlisting}[style=appcode]
+-- intraday_late: late-session snapshot, SPY, 2026-07-27 to 2026-10-09 (EDT: 20:00 UTC = 16:00 ET).
+-- Variant 1 'late' = last snapshot with timestamp < 20:01:00 UTC  -> the market_close slot (20:00:59), which EQUALS the daily summary row (not independent).
+-- Variant 2, used in this study (independent of the end-of-day row): add  AND snapshot_type = 'final_rush'  (19:55:59 UTC).
+SELECT DISTINCT ON (d)
+       d AS trading_date, snapshot_timestamp, snapshot_type, total_gex, net_call_gex, net_put_gex, underlying_price, total_contracts
+FROM (SELECT *, (snapshot_timestamp AT TIME ZONE 'America/New_York')::date AS d
+      FROM gex.intraday_gex_summary
+      WHERE symbol = 'SPY'
+        AND snapshot_timestamp >= TIMESTAMPTZ '2026-07-27 00:00+00' AND snapshot_timestamp < TIMESTAMPTZ '2026-10-10 00:00+00'
+        AND snapshot_type <> 'test'
+        AND (snapshot_timestamp AT TIME ZONE 'UTC')::time < TIME '20:01:00') x
+ORDER BY d, snapshot_timestamp DESC;
+\end{lstlisting}
+
+\subsection{Derived and Recovered Series}
+\label{app:series:derived}
+
+\textbf{Call leg only (\ident{call_only}).} The sum of the call terms \texttt{g} of the third statement over all expiries, same-day expiries included, with the put terms dropped. In the rebuilt summary table this is \ident{net_call_gex} (up to the float4 rounding of the stored column), which the second statement returns as \texttt{call\_gex\_30}.
+
+\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol (Section~3.6 of the article), which the following statement computes (tested read-only on 2026-10-29). The factor and the number of days are stored with the series.
+
+\begin{lstlisting}[style=appcode]
+-- new_full_scaled: factor of one symbol = median over 2020-01-01..2026-10-09 of the ratio of SPY's open-interest notional to the symbol's.
+-- Parameter :sym is QQQ or IWM; the scaled values are the new_full values of the symbol times this factor.
+WITH n AS (SELECT symbol, trading_date, total_weighted_oi::float8 * 100.0 * underlying_price::float8 AS notional
+           FROM gex.options_daily_summary
+           WHERE symbol IN ('SPY', :'sym') AND trading_date BETWEEN DATE '2020-01-01' AND DATE '2026-10-09')
+SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY s.notional / q.notional) AS factor,
+       count(*) AS n_days
+FROM n s JOIN n q ON q.trading_date = s.trading_date AND s.symbol = 'SPY' AND q.symbol = :'sym'
+WHERE q.notional > 0;
+\end{lstlisting}
+
+\textbf{Recovered input series.} The series \ident{jan2026_phase4a}, \ident{p3_2024} and \ident{p4_2020} (and the dated twins of the last two) are not defined by SQL. They are the daily values parsed from the data lines of the surviving batch input files \path{phase4a_postgresql_20260104_184832.jsonl}, \path{phase3_full_2024_baseline_v2.jsonl} and \path{batch_regime_20251120_104630.jsonl} (folder \path{reports/validation/paper2_regime_windows/batch_jobs/}); overlapping windows are checked for consistent values (Section~4.1 of the article).

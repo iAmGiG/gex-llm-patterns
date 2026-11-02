@@ -1,0 +1,57 @@
+\subsection{Model Fidelity to the Rule}
+\label{sec:results:fidelity}
+
+Table~\ref{tab:fidelity} and Figure~\ref{fig:fidelity} compare each model answer with the deterministic classifier on the same window.
+% src: detection_by_year.csv label_source=llm scope=all (n_compared, agree_pct, kappa, metrics_agree_pct, sign_flips_exact_pct); disagreements.csv (58 rows; causes derived from llm_sign_flips, clf_sign_flips, llm_avg_magnitude_bn, clf_avg_magnitude_bn); figures/output/fig07_llm_classifier_fidelity.json extra.groups and extra.borderline
+The verdict of the model equals the verdict of the rule in 99.6\% or more of the windows of every SPY arm (99.7\% on \ident{full_spy}, 99.7\% on \ident{ex0dte_spy}), with kappa between 0.985 and 0.995. The published o4-mini answers equal the rule in all 1{,}412 windows, and gpt-6-luna reaches 99.4\% and 99.7\% on the scaled QQQ and IWM series. On the unscaled QQQ and IWM arms the accuracy is 100.0\% and kappa is undefined, because the rule labels no window as persistent. Over the answers drawn in panels (c) to (e) of Figure~\ref{fig:fidelity} (33{,}160 parsed answers) the verdict equals the rule's in 99.8\% of the 31{,}684 gpt-6-luna answers and in 100.0\% of the 1{,}476 o4-mini answers.
+
+The reported metrics are less exact than the verdict, and least exact on the unscaled QQQ and IWM arms (82.2\% to 89.5\%). The share of answers whose reported counts, magnitude and persistence equal the computed values (within 0.5 days, \$0.05 billion and 0.5 percentage points) is 99.4\% for o4-mini and between 92.7\% and 98.1\% for gpt-6-luna on the SPY arms. The sign-flip count is exact in 100.0\% of the o4-mini answers and in 93.2\% to 95.6\% of the gpt-6-luna answers on the SPY arms (93.3\% over all gpt-6-luna answers of Figure~\ref{fig:fidelity}); the model undercounts flips in 6.0\% of its answers and overcounts them in 0.6\%. Its reported persistence lies within the tolerance of the figure (one day) in 94.9\% of the answers and its reported magnitude within 10\% of \$5 billion in 98.7\%, against 99.9\% and 99.6\% for o4-mini. The median ratio of reported to computed magnitude is 1.000.
+
+The few verdicts that differ from the rule lie at the thresholds. Seven gpt-6-luna arms have windows in which the verdict differs from the rule (\ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq_scaled}, \ident{bridge_old}, \ident{bridge_jan}, \ident{full_iwm_scaled}, \ident{p34_obf_2024}). They hold 58 windows in all, listed in the result files of the repository (Appendix~\ref{app:data}), with four causes:
+\begin{itemize}
+\item 39 windows in which the model reports at most five sign flips where the rule counts six or more, so that it calls a window persistent that the rule classifies as low conviction;
+\item 15 windows in which the reported mean magnitude lies on the other side of \$5 billion than the computed one;
+\item 2 windows with overcounted flips;
+\item 2 windows whose reported values are correct and meet all three criteria but which the model labels transitional (persistence 70.0\% and 73.3\%, close to the 70\% threshold).
+\end{itemize}
+In 41 of the 58 windows the model detects a regime that the rule rejects, and in 17 it rejects one that the rule detects. In 51 of the 58 windows the computed values lie in the borderline region of Figure~\ref{fig:fidelity}, that is a persistence within one day of 21 of 30 days (66.7--73.3\%), a mean magnitude between \$4.50 and \$5.50 billion or 4 to 6 flips. Away from these regions the model reproduces the rule.
+
+\begin{table}[H]
+\centering
+\caption{Fidelity of model answers to the deterministic classifier on the same windows, by arm: accuracy of the binary verdict, Cohen's kappa (-- where the classifier or the model labels every window alike), the share of answers whose reported counts, magnitude and persistence equal the computed values (0.5 day, \$0.05 billion, 0.5 percentage points), and the share with an exact sign-flip count. The published o4-mini answers of \ident{r1_o4mini}, \ident{r1_p3_o4mini} and \ident{r1_p4_o4mini} form the first block.}
+\label{tab:fidelity}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Arm & Windows & Accuracy (\%) & Cohen's kappa & Metrics agree (\%) & Flips exact (\%) \\
+\midrule
+% src: detection_by_year.csv label_source=llm scope=all, one row per arm (n_compared, agree_pct, kappa, metrics_agree_pct, sign_flips_exact_pct); -- where kappa is undefined (one label only)
+\ident{r1_o4mini} & 1{,}412 & 100.0 & 1.000 & 99.4 & 100.0 \\
+\ident{r1_p3_o4mini} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{r1_p4_o4mini} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\midrule
+\ident{bridge_jan} & 1{,}476 & 99.6 & 0.992 & 98.1 & 95.2 \\
+\ident{bridge_old} & 4{,}638 & 99.8 & 0.995 & 94.2 & 95.6 \\
+\ident{full_spy} & 4{,}671 & 99.7 & 0.986 & 92.7 & 93.2 \\
+\ident{ex0dte_spy} & 4{,}671 & 99.7 & 0.985 & 93.4 & 94.6 \\
+\ident{full_qqq} & 3{,}867 & 100.0 & -- & 82.2 & 89.6 \\
+\ident{full_iwm} & 4{,}678 & 100.0 & -- & 85.9 & 92.6 \\
+\ident{ex0dte_qqq} & 1{,}699 & 100.0 & -- & 89.5 & 92.2 \\
+\ident{ex0dte_iwm} & 1{,}700 & 100.0 & -- & 86.0 & 89.2 \\
+\ident{full_qqq_scaled} & 1{,}670 & 99.4 & 0.982 & 93.5 & 93.2 \\
+\ident{full_iwm_scaled} & 1{,}671 & 99.7 & 0.994 & 97.5 & 95.8 \\
+\ident{p34_obf_2024} & 223 & 99.6 & 0.985 & 98.2 & 96.4 \\
+\ident{p34_dated_2024} & 223 & 100.0 & 1.000 & 99.6 & 98.2 \\
+\ident{p34_obf_2020} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{p34_dated_2020} & 223 & 100.0 & 1.000 & 100.0 & 100.0 \\
+\ident{intraday_spy} & 51 & 100.0 & -- & 96.1 & 92.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figFidelity}
+\caption{Fidelity of the model answers (o4-mini and gpt-6-luna) to the deterministic classifier. (a), (b) Accuracy and Cohen's kappa of the verdict by series and year. (c)--(e) Reported versus computed persistence, mean $|\mathrm{GEX}|$ and sign-flip count, with the borderline region around each threshold shaded. \textbf{Read this figure as:} the yearly accuracy stays between 98.4\% and 100\% for every arm and year (lowest value: \ident{ex0dte_spy} in 2023). In panels (c) to (e) the o4-mini answers (grey) lie on the zero line, whereas the gpt-6-luna answers (black) scatter around it; the errors that matter lie inside the shaded regions, and the largest scatter is in the sign-flip count.}
+\label{fig:fidelity}
+\end{figure}

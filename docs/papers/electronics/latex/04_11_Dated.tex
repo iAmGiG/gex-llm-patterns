@@ -1,0 +1,32 @@
+\subsection{Dated versus Obfuscated Prompts: The 2024 and 2020 Baselines}
+\label{sec:results:dated}
+
+Table~\ref{tab:dated} compares the published o4-mini answers on the inputs of the Phase 3 and 4 baselines, whose prompts carried calendar dates, with gpt-6-luna on the same values with the dates and with relative day labels (Section~\ref{sec:methods:arms}).
+% src: detection_by_year.csv scope=all (mean_abs_gex_bn of classifier p3_2024 and p4_2020; arms r1_p3_o4mini, r1_p4_o4mini, p34_dated_2024, p34_dated_2020, p34_obf_2024, p34_obf_2020; classifier p3_2024, p4_2020); stats.yaml rates (Wilson), contrasts series_contrast family label and phase_contrast; report.yaml headline.bridge; series parquet p3_2024_SPY, p4_2020_SPY
+The published o4-mini answers detect 181 of 223 (81.2\%) of the 2024 windows and 27 of 223 (12.1\%) of the 2020 windows (Wilson 95\% intervals 75.5--85.8\% and 8.5--17.0\%). With the dates, gpt-6-luna reproduces these answers: it gives the same verdict in 223 of 223 windows of 2024 and 223 of 223 of 2020 (kappa 1.000 and 1.000). The deterministic rule on the series as sent gives the same labels as o4-mini in both baselines (100.0\% and 100.0\% agreement).
+
+Showing the dates changed nothing that the data can detect. With relative day labels gpt-6-luna detects 180 of 223 (80.7\%) of the 2024 windows against 181 of 223 (81.2\%) with dates, and 27 of 223 (12.1\%) of the 2020 windows against 27 of 223 (12.1\%). The two labelings differ in 1 window of 2024 and in none of 2020 (paired quarter-block bootstrap interval for 2024 [$-$1.9, 0.0] percentage points, $p=0.646$; exact McNemar test $p=1.000$ at stride one and $p=1.000$ on the non-overlapping subsample of 8 windows; in 2020 both are $p=1.000$). The 223 windows of each baseline overlap with stride one, and the quarter-block bootstrap rests on 4 calendar quarters, so these intervals are coarse.
+
+The 2024-versus-2020 contrast of the earlier studies is reproduced under every label type. The difference in detection rate between the two baselines is 69.1 percentage points for the published o4-mini answers ($\varphi=0.692$; the AIAI paper prints 0.672 and the JRFM article 0.69, and 0.692 is the value recomputed from the 181 of 223 and 27 of 223 counts; Newcombe--Wilson interval [61.6, 74.9]; quarter-block bootstrap interval [31.6, 93.3], $p=0.002$; Fisher exact test on the non-overlapping subsample of 8 windows per baseline $p=0.041$), 69.1 for gpt-6-luna with dates ($\varphi=0.692$) and 68.6 for gpt-6-luna with relative labels ($\varphi=0.688$; bootstrap $p=0.003$; Fisher $p=0.041$). The Fisher test on 8 non-overlapping windows per baseline is far less extreme than the test on all windows, which treats the overlapping windows as independent ($p=1.8\times10^{-52}$).
+
+The contrast is one of magnitudes and not of regimes. The two input series are not on one convention: the 2024 values are a gross magnitude with an imposed negative sign and a mean absolute value of \$31.24~billion per day, the 2020 values are a magnitude without sign and have a mean of \$2.85~billion (Section~\ref{sec:results:inputs}). The 30-day mean $|\mathrm{GEX}|$ of the windows averages \$30.71~billion in 2024 and \$2.56~billion in 2020, against the criterion of \$5 billion, so the contrast does not describe a negative against a positive regime, and the type of day label does not change it.
+
+\begin{table}[H]
+\centering
+\caption{Phase 3 (2024) and Phase 4 (2020) baselines: detection rate in percent (detected windows out of 223 in brackets) of the published o4-mini answers, which carried dates, of gpt-6-luna with the dates and with relative day labels (Day T), and of the deterministic classifier on the series as sent. The last column is the exact McNemar p-value of the two gpt-6-luna arms on the non-overlapping subsample (Section~\ref{sec:methods:statistics}). The last row gives the difference between the two baselines in percentage points with $\varphi$ in brackets (unpaired).}
+\label{tab:dated}
+\footnotesize
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Baseline & Series & o4-mini, dated & luna, dated & luna, Day T & Classifier & McNemar p \\
+\midrule
+% src: detection_by_year.csv scope=all (arms r1_p3_o4mini, p34_dated_2024, p34_obf_2024; classifier series_key=p3_2024); stats.yaml contrasts series_contrast label family, nonoverlap_30d.p_mcnemar_exact
+Phase 3, 2024 & \ident{p3_2024} & 81.2 (181) & 81.2 (181) & 80.7 (180) & 81.2 (181) & 1.000 \\
+% src: detection_by_year.csv scope=all (arms r1_p4_o4mini, p34_dated_2020, p34_obf_2020; classifier series_key=p4_2020); stats.yaml contrasts series_contrast label family, nonoverlap_30d.p_mcnemar_exact
+Phase 4, 2020 & \ident{p4_2020} & 12.1 (27) & 12.1 (27) & 12.1 (27) & 12.1 (27) & 1.000 \\
+\midrule
+% src: stats.yaml contrasts phase_contrast (diff_pp, phi); the classifier row of the same labeller family on p3_2024
+2024 minus 2020, pp ($\varphi$) & & 69.1 (0.692) & 69.1 (0.692) & 68.6 (0.688) & 69.1 (0.692) & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

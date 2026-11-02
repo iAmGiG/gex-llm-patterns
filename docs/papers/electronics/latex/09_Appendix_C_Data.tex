@@ -1,0 +1,14 @@
+%=================================================================
+\section{Data Availability Details}
+\label{app:data}
+
+% src: data/backups/gex_llm/condensed/ (row counts read from the files, 2026-10-31); series_index.csv; scripts/validation/electronics/README.md (storage section); 02_decisions_log.md D-14, D-17
+The repository holds the condensed material and the results. The condensed files are in \path{data/backups/gex_llm/condensed/}.
+\begin{itemize}[leftmargin=*,labelsep=5.5mm]
+\item \path{detections.csv.gz}: 36{,}634 rows, one per stored model answer, with the verdict, the reported metrics and the parse status but without the reasoning or the raw text. The key is \ident{arm}, \ident{series_key}, \ident{symbol}, \ident{window_end}, \ident{model}, \ident{prompt_version}.
+\item \path{windows.csv.gz}: 38{,}501 rows, one per 30-day window, with the labels, the sha256 of the input as sent and the verdict of the deterministic rule but without the sequences.
+\item \path{series_index.csv}: 16 rows, one per series and symbol, with the row count, the first and last date, the source table and the hash of the builder.
+\end{itemize}
+Every number of the paper can be reproduced from the first two files (join on \ident{series_key}, \ident{symbol} and \ident{window_end}) and the files of \path{docs/papers/electronics/results/}. The provenance of every Batch job (batch and file identifiers, sha256 of the input file, token counts and cost) is in \path{data/backups/gex_llm/tables/runs/} and in the \path{manifest.json} and \path{batch_<k>.json} files of each run folder. The raw request and answer files (\path{input_<k>.jsonl}, \path{output_<k>.jsonl}) and the full tables are kept on the authors' machine and in the database; they are not part of the repository.
+
+The full tables are loaded into four tables and one view of the schema \ident{backups} of the research database: \ident{gex_llm_regime_series} (the number shown to the model, one row per series, symbol and trading date), \ident{gex_llm_regime_windows} (the 30-day input as sent, its sha256 and the verdict of the rule), \ident{gex_llm_regime_runs} (one row per Batch job, pilot or backfilled run) and \ident{gex_llm_regime_detections} (one row per model answer), with the view \ident{gex_llm_regime_rates_summary} (yearly rate of the model next to the rate of the rule, by arm). The parquet copies of these four tables are deposited at Zenodo (Data Availability Statement). The options data are subject to the vendor's licence and are not redistributed.

@@ -1,0 +1,107 @@
+% Appendix B: per-year tables, filled from results/ (05_report.py); every table carries its source in a "% src:" comment.
+%=================================================================
+\section{Per-Year Tables}
+\label{app:tables}
+
+Tables~\ref{tab:app:series}--\ref{tab:app:llm} give the numbers behind the figures of Section~\ref{sec:results} for every year. The years are the calendar years of the window end, and rates are percentages of parsed windows. The Wilson intervals treat overlapping windows as independent and are optimistic; the quarter-block bootstrap interval of every rate is in the result files of the repository (Appendix~\ref{app:data}).
+
+\begin{table}[H]
+\centering
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means in Section~\ref{sec:results:inputs} use all days of \ident{new_full}, so they can differ slightly. A dash marks a year outside the series.}
+% src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_new_full, new_full_vs_new_ex0dte
+\label{tab:app:series}
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Year & Days & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
+\midrule
+2008 & 253 & -- & -- & 1.39 & 1.59 & 1.60 \\
+2009 & 250 & -- & -- & 0.98 & 0.88 & 0.88 \\
+2010 & 251 & -- & -- & 1.01 & 1.14 & 1.16 \\
+2011 & 250 & -- & -- & 1.79 & 1.99 & 2.02 \\
+2012 & 250 & -- & -- & 1.54 & 1.71 & 1.78 \\
+2013 & 252 & -- & -- & 2.34 & 2.29 & 2.51 \\
+2014 & 252 & -- & -- & 3.03 & 3.07 & 3.36 \\
+2015 & 252 & -- & -- & 2.69 & 2.91 & 3.37 \\
+2016 & 250 & -- & -- & 3.99 & 3.76 & 4.23 \\
+2017 & 240 & -- & -- & 6.43 & 5.82 & 6.53 \\
+2018 & 249 & -- & -- & 4.79 & 4.63 & 5.32 \\
+2019 & 251 & -- & -- & 3.62 & 3.39 & 4.11 \\
+2020 & 252 & 3.24 & 10.51 & 2.76 & 2.57 & 3.24 \\
+2021 & 252 & 4.97 & 17.13 & 3.98 & 3.50 & 4.99 \\
+2022 & 251 & 5.48 & 9.27 & 4.42 & 4.62 & 5.46 \\
+2023 & 250 & 10.62 & 17.04 & 8.39 & 4.59 & 6.10 \\
+2024 & 252 & 20.19 & 20.19 & 16.19 & 4.13 & 6.46 \\
+2025 & 250 & 19.21 & 19.21 & 14.71 & 4.55 & 7.13 \\
+2026 & 193 & -- & -- & 6.00 & 5.76 & 8.37 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Detection rate of the deterministic classifier by series and window-end year, SPY, in percent of windows. Windows are the windows of \ident{new_full}. A dash marks a year without windows in the series.}
+% src: detection_by_year.csv label_source=classifier scope=year symbol=SPY, column n (windows of new_full) and rate_pct per series_key
+\label{tab:app:replay}
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Year & Windows & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \ident{new_ex0dte} & \ident{new_full} \\
+\midrule
+2008 & 224 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2009 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2010 & 251 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2011 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2012 & 250 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2013 & 252 & -- & -- & 0.0 & 0.0 & 0.0 \\
+2014 & 252 & -- & -- & 13.5 & 8.3 & 9.1 \\
+2015 & 252 & -- & -- & 0.4 & 1.6 & 7.9 \\
+2016 & 250 & -- & -- & 26.4 & 22.0 & 28.0 \\
+2017 & 240 & -- & -- & 38.8 & 19.6 & 32.1 \\
+2018 & 249 & -- & -- & 32.1 & 23.7 & 34.5 \\
+2019 & 251 & -- & -- & 7.2 & 3.2 & 10.0 \\
+2020 & 252 & 12.1 & 90.6 & 16.7 & 10.7 & 22.2 \\
+2021 & 252 & 4.0 & 100.0 & 3.6 & 0.0 & 3.6 \\
+2022 & 251 & 32.3 & 100.0 & 26.3 & 36.7 & 40.6 \\
+2023 & 250 & 19.3 & 100.0 & 22.5 & 25.2 & 22.4 \\
+2024 & 252 & 100.0 & 100.0 & 100.0 & 13.1 & 10.3 \\
+2025 & 250 & 100.0 & 100.0 & 100.0 & 16.4 & 13.6 \\
+2026 & 193 & -- & 100.0 & 23.5 & 21.2 & 11.4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Detection rate of gpt-6-luna by arm and window-end year, in percent of parsed windows (a dash marks a year without windows in the arm). The columns are the arms \ident{full_spy}, \ident{ex0dte_spy}, \ident{full_qqq}, \ident{full_qqq_scaled}, \ident{ex0dte_qqq}, \ident{full_iwm}, \ident{full_iwm_scaled} and \ident{ex0dte_iwm} of Table~\ref{tab:arms} (full = \ident{new_full}, scaled = \ident{new_full_scaled}, ex-0DTE = \ident{new_ex0dte}); the bridge, intraday and Phase 3/4 arms are reported in Sections~\ref{sec:results:bridge}, \ref{sec:results:intraday} and~\ref{sec:results:dated}.}
+\label{tab:app:llm}
+% src: detection_by_year.csv label_source=llm arm_role=primary scope=year, column rate_pct per arm
+\footnotesize
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{SPY} & \multicolumn{3}{c}{QQQ} & \multicolumn{3}{c}{IWM} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}
+Year & full & ex-0DTE & full & scaled & ex-0DTE & full & scaled & ex-0DTE \\
+\midrule
+2008 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2009 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2010 & 0.0 & 0.0 & -- & -- & -- & 0.0 & -- & -- \\
+2011 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2012 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2013 & 0.0 & 0.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2014 & 9.1 & 8.3 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2015 & 7.9 & 1.6 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2016 & 27.6 & 22.0 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2017 & 31.7 & 19.2 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2018 & 34.9 & 22.9 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2019 & 10.0 & 3.2 & 0.0 & -- & -- & 0.0 & -- & -- \\
+2020 & 22.2 & 10.7 & 0.0 & 0.0 & 0.0 & 0.0 & 9.9 & 0.0 \\
+2021 & 3.6 & 0.0 & 0.0 & 23.8 & 0.0 & 0.0 & 65.9 & 0.0 \\
+2022 & 41.8 & 37.1 & 0.0 & 61.0 & 0.0 & 0.0 & 100.0 & 0.0 \\
+2023 & 23.2 & 26.0 & 0.0 & 17.6 & 0.0 & 0.0 & 79.2 & 0.0 \\
+2024 & 11.1 & 14.3 & 0.0 & 8.4 & 0.0 & 0.0 & 20.6 & 0.0 \\
+2025 & 14.0 & 16.4 & 0.0 & 20.4 & 0.0 & 0.0 & 51.2 & 0.0 \\
+2026 & 11.4 & 21.2 & 0.0 & 16.1 & 0.0 & 0.0 & 45.1 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}

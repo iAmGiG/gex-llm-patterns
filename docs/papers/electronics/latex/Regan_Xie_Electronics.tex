@@ -3,15 +3,15 @@
 %
 %  Build with ../build.sh: it exports TEXINPUTS/BSTINPUTS=".:../../jrfm:" so that Definitions/ resolves to
 %  docs/papers/jrfm/Definitions (mdpi.cls hard-codes Definitions/... paths relative to the working directory).
-%  For Overleaf or the MDPI submission zip, copy Definitions/ next to this file and point \figdir at the figure folder.
+%  For Overleaf, ../build.sh --overleaf writes a self-contained zip (Definitions/ and figures/ next to this file; \figdir finds them).
 %
 %  Conventions of this skeleton
 %    - "% TODO(tag): ..." comments carry the guidance for each heading (1-3 sentences).  \tbd marks what is still
 %      missing in the typeset text (unwritten prose, numbers to be filled from the 05_report.py output);
-%      "../build.sh --strict" fails while any \tbd remains in this file or in 01-07 and while the working title
+%      "../build.sh --strict" fails while any \tbd remains in this file or in the part files and while the working title
 %      stands; it only counts the open TODO markers.
 %    - The sections are pulled in as ./NN_Name on purpose.  build.sh puts ../../jrfm on TEXINPUTS, and the JRFM folder has
-%      files of the same names (01_Introduction, 02_Related_Work, 04_Results, 05_Discussion, 06_Conclusion); a bare name
+%      files of the same names (01_Introduction, 02_Related_Work, 05_Discussion, 06_Conclusion); a bare name
 %      would silently typeset the JRFM text if a local file were renamed or deleted.
 %    - Figures are the PNGs written by ../figures/scripts into ../figures/output (300 dpi, 6.14 in wide).  \resultfigure
 %      draws a boxed placeholder and writes a "Missing figure file" warning to the log while a PNG does not exist yet,
@@ -66,7 +66,7 @@
 \newcommand{\figFidelity}{fig07_llm_classifier_fidelity}
 
 % \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
-\newcommand{\figdir}{../figures/output}
+\IfFileExists{figures/fig01_study_design.png}{\newcommand{\figdir}{figures}}{\newcommand{\figdir}{../figures/output}}  % figures/ in the Overleaf package, ../figures/output in the repository
 \newcommand{\resultfigure}[1]{%
   \begingroup
   \edef\figstem{#1}%
@@ -78,9 +78,7 @@
   \endgroup}
 
 %=================================================================
-% TODO(authors): approve the title. It must differ from the AIAI and JRFM titles; the data-audit suggestion was
-% "Convention Sensitivity of LLM Regime Detection: Re-Running Temporal Obfuscation Tests Across Gamma-Exposure Definitions, Assets and Time (2008--2026)".
-\Title{Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled Large Language Model Re-Test}
+\Title{Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test}
 
 % Author ORCID IDs
 \newcommand{\orcidauthorA}{0009-0009-3777-6148}
@@ -115,32 +113,63 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 % Keywords (semicolon-separated per MDPI style, 3--10)
 \keyword{LLM validation; regime detection; gamma exposure; 0DTE options; temporal obfuscation; data provenance; reproducibility}
 
+% Listing styles (the listings package is loaded above).  "prompt" typesets <=, >= and -> as symbols; it is used for the
+% prompt only, because the SQL contains the operators literally.  The two penalties are set to 0 inside the listing because
+% mdpi.cls loads hyphenat[none], which makes both infinite and so forbids the discretionary breaks that listings uses for
+% breaklines (without this the long prompt lines run into the margin).
+\lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
+  columns=fixed, keepspaces=true, showstringspaces=false, upquote=true,
+  breaklines=true, breakindent=0pt, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
+\lstdefinestyle{prompt}{style=appcode, breakatwhitespace=true,
+  literate={<=}{{$\leq$}}1 {>=}{{$\geq$}}1 {->}{{$\rightarrow$}}1}
+
 %=================================================================
 \begin{document}
 
+% One \input per part, so that a part can be rendered alone: comment out the lines you do not need.
 \input{./01_Introduction}
 \input{./02_Related_Work}
 \input{./03_Methods}
-\input{./04_Results}
+
+\section{Results}
+\label{sec:results}
+\input{./04_01_Inputs}
+\input{./04_02_Replay}
+\input{./04_03_Bridge}
+\input{./04_04_Complete}
+\input{./04_05_Ablation}
+\input{./04_06_Deep}
+\input{./04_07_Cross}
+\input{./04_08_Post}
+\input{./04_09_Intraday}
+\input{./04_10_Fidelity}
+\input{./04_11_Dated}
+
 \input{./05_Discussion}
 \input{./06_Conclusion}
 
 % Appendices precede the back matter, as in the JRFM source.
-\input{./07_Appendix}
+\appendixtitles{yes}
+\appendix
+\input{./07_Appendix_A_Prompt}
+\input{./08_Appendix_B_Tables}
+\input{./09_Appendix_C_Data}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{6pt}
 
 % TODO(authors): confirm the CRediT roles; the text below is the JRFM statement.
+\supplementary{The following supporting information is available with this article: Section~S1, series definitions in SQL; Tables~S1 and~S2, run ledger.}
+
 \authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
 
 \funding{This research received no external funding.}
 
 \conflictsofinterest{The authors declare no conflict of interest.}
 
-% TODO(authors): data release: archive or DOI for the parquet tables and for results/, and the authoritative copy (parquet files or backups.gex_llm_regime_* tables); update the access date at submission.
-% pending: data-release (authors); neither the archive nor a DOI is in results/
-\dataavailability{All code and validation results are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on 31 October 2026). The four result tables (daily series, windows, runs and detections) are prepared for release as parquet files. Raw options data were obtained from Alpha Vantage under academic API access and are subject to the vendor's licence.}
+% TODO(authors): add the Zenodo DOI once the deposit is published, confirm that the vendor's terms allow it, and update the access date at submission.
+\dataavailability{All code, the condensed per-window tables and the result files are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on 2 November 2026). The full tables (daily series, windows, runs and detections) are deposited at Zenodo; the DOI is added at submission. Raw options data were obtained from Alpha Vantage under academic API access, are subject to the vendor's licence and are not redistributed.}
 
 % TODO(authors): AI-use disclosure wording (project rule 8, no AI attribution, versus the MDPI generative-AI policy, which may require the disclosure); the sentence below is kept until the authors decide.
 \acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for academic API access to historical options market data. OpenAI's gpt-6-luna is the subject of investigation in this study and was accessed through the OpenAI Batch API. During the preparation of this manuscript, the authors used Anthropic's Claude (Claude Code) for the purposes of clarifying and refining the written presentation and for assisting with software development. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
