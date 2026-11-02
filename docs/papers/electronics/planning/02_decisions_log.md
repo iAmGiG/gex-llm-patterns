@@ -290,6 +290,18 @@
 - Collection: `poll --wait` then `retrieve` then `ingest --parquet-only` per run; the Postgres load follows the database gate (D-14) through `ingest` without `--parquet-only`.
 - Encoded in: the runs rows under `data/backups/gex_llm/tables/runs/` (batch ids, file ids, sha256 of every chunk) and `data/backups/gex_llm/<run_id>/batch_<k>.json`.
 
+### D-23 Manuscript structure and author decisions of 2026-11-02
+
+- Date: 2026-11-02. Decided by Chris.
+- Structure: one `.tex` file per part, because Chris renders by section on Overleaf: Results has one file per subsection and the appendix one file per appendix. The SQL series definitions and the run ledger moved to a separate supplement, so the article went from 45 to 40 pages. `build.sh --overleaf` writes a self-contained zip after compiling it in a clean folder.
+- Published inputs: stated in one sentence in the abstract and in detail in Sections 3.3 and 4.1. The Section 5.4 paragraph on the published results and the "data audit" wording of Section 5.1 are gone; Contribution (i) and the Conclusions no longer restate the defect. This settles Q-02's remaining wording.
+- Title: "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test".
+- Data: the database tables are the authoritative copy; the full tables go to Zenodo at submission (`08_package_release.py`). Alpha Vantage's terms license "personal, non-commercial use" and do not address a public deposit of derived daily series, so the vendor is asked first. If the deposit is not possible, the statement becomes "available from the authors on request".
+- AI use: the sentence states that Claude Code wrote the analysis code and drafted and revised the text, with the models used (Opus 5.5, Fable 5.1, Sonnet 5.5, taken from the session record), because the JRFM wording ("clarifying and refining") understates this paper.
+- Corresponding author: Chris alone. CRediT: the JRFM statement until Dr. Xie confirms his roles. Research questions: as written, with the mapping to Sections 4.1 to 4.11 in the Introduction.
+- References: every entry was checked against Crossref or arXiv. Fixed: McCoy et al. title (PNAS title, not the preprint's), Nystrup DOI, Dim year (2024 per Crossref), Baltussen DOI, TradingAgents authors (Xiao et al., not Yang). Removed as unused or unverifiable: the OpenAI "o-series" entry, Hayek, Kirzner, Marcus. Added: Cohen 1960, McNemar 1947, K\"unsch 1989 (fixed blocks fit the calendar-quarter bootstrap better than the stationary bootstrap of Politis and Romano), Newcombe 1998. The errors that reach the published JRFM are in `CORRECTIONS.md`, item E.
+- Deadline: not confirmed. One unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper; MDPI's page has to be read in a browser.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -397,3 +409,4 @@
 - 2026-10-31: all 34 Batch chunks stored (36,634 answers, USD 9.70); database tables reloaded; manuscript writing pass done from `results/` with a number-by-number verifier, `build.sh --strict` passes (0406c4f); PR #263 ready for review; ten `TODO(authors)` decisions remain in the LaTeX (section 3 of this log lists the open ones).
 - 2026-10-31 (later): whole-manuscript coherence review (30 findings: a 'pre-registered' claim, a leaked authorial note, wording about the earlier papers, a stale probe passage, missing uptake of Sections 4.5-4.11 in the Discussion/Conclusion, RQ mapping, abbreviations, label names) applied by three fixers; `build.sh --strict` passes; 10 `TODO(authors)` decisions remain.
 - 2026-11-02: D-20 revised (corrections stay in the repository; a formal revision is a later, low-priority step). AIAI and JRFM citations completed from the DOI records (IFIP AICT pp. 127-140; JRFM 19(6), 382), so the AIAI "in press" question is closed. CORRECTIONS.md no longer says Springer LNCS.
+- 2026-11-02: D-23 added (structure, title, data release, AI-use wording, corresponding author, CRediT, research questions, reference audit).

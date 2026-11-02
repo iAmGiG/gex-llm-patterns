@@ -31,6 +31,14 @@ This page records problems found in our published results, what caused them, and
 
 - "$23 B" (AIAI Table 4 and text) matches no stored series; the yearly window means are $3.0 / 4.9 / 5.5 / 9.6 / 20.3 / 19.0 B (as JRFM Table 5 prints). "+360% ($5 B → $23 B)" is arithmetic on numbers not in the data (2021→2024 is +317%; 2020→2024 is +585%, which JRFM rounds to +577%). All 2024–2025 magnitudes are call-only in any case (item A).
 
+### E. References in the JRFM article
+
+Found while checking the bibliography of the extension study against Crossref and arXiv (2026-11-02).
+
+- *TradingAgents* (arXiv:2412.20138): the first author is printed as Yang, Y.; the authors are Xiao, Y., Sun, E., Luo, D. and Wang, W.
+- McCoy et al. (PNAS 2024): the entry carries the preprint title; the PNAS title is "Embers of autoregression show how large language models are shaped by the problem they are trained to solve".
+- OpenAI (2024), "Introducing OpenAI o-series: A New Series of Reasoning Models": no source with this title could be found, and the entry has no URL.
+
 ## Paper 1 — *Inferring Latent Market Forces: Evaluating LLM Detection of Gamma Exposure Patterns via Obfuscation Testing* (IEEE BigData 2025 workshop; arXiv 2512.17923; journal version in preparation)
 
 - The scalar GEX series behind the single-day results (242 days of 2024) is the **negative of the unsigned sum** of call and put dollar gamma, excluding same-day expiries. "GEX < −$2 B on all 242 days" therefore holds by construction and carries no regime information. Under the calls-positive/puts-negative convention stated in the paper, the same dates have 93 negative days and a mean of +$1.26 B.

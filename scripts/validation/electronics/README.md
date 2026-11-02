@@ -50,6 +50,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
 | 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
 | 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
+| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: full tables, README, checksums; not tracked by git) |
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
@@ -760,8 +761,9 @@ database; git keeps the condensed material only.
 | Inputs with one copy | `reports/validation/paper2_regime_windows/batch_jobs/` (January and November batch files and their `batch_*_metadata.json`), `.cache/research_cache.db`, `config/` | ignored |
 | Published result records | `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`, `phase4_baseline_2020.yaml` | tracked |
 
-Every number of the paper is reproducible from the condensed detections and windows alone (join on `series_key`,
-`symbol`, `window_end`); the inputs themselves come from the database or from the series builders.
+Every detection rate and agreement figure of the paper can be recomputed from the condensed detections and windows
+(join on `series_key`, `symbol`, `window_end`). The other numbers are in `results/`, and the daily values behind them
+are in the full tables (database, Zenodo deposit written by `08_package_release.py`).
 
 Layout on disk:
 

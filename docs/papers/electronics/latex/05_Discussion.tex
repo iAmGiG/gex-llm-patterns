@@ -36,7 +36,7 @@ Each window is answered once unless an arm was repeated; the repeat of the bridg
 The model undercounts sign flips in 6.0\% of its answers, which is the main source of the verdicts that differ from the rule, and the stored count of the rule is the reference.
 % src: 04_Results Section 4.8 (post-publication: gpt-6-luna created 2026-09-14, training cutoff undocumented); 193 windows ending in 2026, 164 entirely after 2025-12-31
 The post-publication period is short (193 windows ending in 2026, of which 164 lie entirely after 2025) and is not out-of-sample for the model, whose training data may cover it; the agreement there shows consistency with the rule and no predictive skill.
-The raw option chains come from licensed vendors and are not redistributed; the condensed per-window tables, which hold the inputs, the labels and the answers, are the basis for reproduction (Section~\ref{sec:methods:storage}).
+The raw option chains come from licensed vendors and are not redistributed; the tables deposited at Zenodo, which hold the inputs, the labels and the answers, are the basis for reproduction (Section~\ref{sec:methods:storage}).
 % src: 04_Results Section 4.11 (2024 values negative on 242 days, 10 placeholder rows; 2020 values positive on every day); 04_Results Section 4.7 (scale factors 4.22 for QQQ and 11.43 for IWM; report.yaml 4.224724 and 11.43094)
 The Phase 3 and 4 baselines are replayed verbatim, including two sign conventions and ten placeholder rows, and the scaled QQQ and IWM variants use one factor per symbol, a disclosed protocol change that was decided after the thresholds were fixed; their rates depend on the factor and do not measure QQQ or IWM regimes.
 
