@@ -318,6 +318,9 @@
 
 ## 3. Open decisions for the authors
 
+- Outcome (2026-11-03): the database filled the 41 days at 03:54 UTC (none rejected by the parity gate; largest deviation 0.35%). The nine affected series were rebuilt with every pre-existing day bit-identical, and the raw-chain totals equal the summary on the added days to within 2.6e-7. The windows were re-cut (SPY 4,691) and 1,121 requests re-asked the changed and new windows; 1,049 answers were superseded. The total spend is USD 10.02 and the database was reloaded at 21:28 UTC. The 2024 and 2025 rates are unchanged; 2026 SPY is 22 of 194 (11.3%); 2016 to 2018 move around the refilled 2017 block, and the 2008-2019 same-day-expiry contrast is no longer significant on the subsample (p = 0.375). The manuscript numbers were recomputed from `results/` and checked independently (about 260 numbers).
+- A loader bug found on the way: `07_load_tables.py` filled missing `created_at` with the load time before deduplicating, which briefly kept stale answers in the database. It was fixed and reloaded the same evening; the report, figures and condensed tables were not affected.
+
 ### Q-01 QQQ and IWM floor effect (closed)
 
 - Closed 2026-10-29 by D-18. The options were: (a) report the floor effect as it stands; (b) a disclosed per-symbol scaling of the input series, with the prompt and the thresholds unchanged (design memo v2 s9, item 2); (b') a scaled-threshold variant, which changes the classifier and the prompt text; (c) drop or shrink the QQQ and IWM arms. D-18 runs (a) and (b) side by side; (b') and (c) are not pursued. The facts that framed the question (zero persistent windows for QQQ and IWM under the fixed USD 5B criterion) are in the Evidence of D-18.
@@ -425,3 +428,4 @@
 - 2026-11-02: D-20 revised (corrections stay in the repository; a formal revision is a later, low-priority step). AIAI and JRFM citations completed from the DOI records (IFIP AICT pp. 127-140; JRFM 19(6), 382), so the AIAI "in press" question is closed. CORRECTIONS.md no longer says Springer LNCS.
 - 2026-11-02: D-23 added (structure, title, data release, AI-use wording, corresponding author, CRediT, research questions, reference audit).
 - 2026-11-03: D-24 added (missing trading days; rebuild after the database repair; NYSE-calendar flag).
+- 2026-11-03 (evening): D-24 outcome recorded (rebuild, re-run, reload, manuscript numbers).
