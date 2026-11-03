@@ -23,7 +23,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -626,10 +626,72 @@ def usage_fields(usage: Optional[Dict[str, Any]]) -> Tuple[Optional[int], Option
 # J = the January 2026 calendar (jan2026_phase4a only).  Rule B of the data audit equals A for the new series.
 WINDOW_RULE = "A"
 WINDOW_RULE_COMPOSITE = "T0"  # composite windows (intraday_t0); 'C' is reserved for a strict NYSE calendar
-# Two complementary hole detectors: calendar_gap_days > 4 (a 5+ day gap is never a plain holiday
-# weekend) and missing_master_days (trading dates of gex.options_daily_summary absent from the series,
-# which catches a single skipped weekday such as 2023-07-12 in the January calendar).
+# Three complementary hole detectors: calendar_gap_days > 4 (a 5+ day gap is never a plain holiday
+# weekend), missing_master_days (trading dates of gex.options_daily_summary absent from the series,
+# which catches a single skipped weekday such as 2023-07-12 in the January calendar) and nyse_missing_days
+# (NYSE trading days absent from the series; independent of the summary table, which is itself the master
+# calendar and so cannot see a day it lacks).
 CALENDAR_GAP_FLAG_DAYS = 4
+# Days the NYSE closed outside its holiday schedule: Hurricane Sandy, the national days of mourning for
+# G. H. W. Bush and J. Carter.
+NYSE_SPECIAL_CLOSURES = frozenset({date(2012, 10, 29), date(2012, 10, 30), date(2018, 12, 5), date(2025, 1, 9)})
+JUNETEENTH_FIRST_YEAR = 2022
+
+
+def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
+    """The n-th ``weekday`` (Monday=0) of a month; n=-1 is the last one."""
+    if n > 0:
+        first = date(year, month, 1)
+        return first + timedelta(days=(weekday - first.weekday()) % 7 + 7 * (n - 1))
+    last = (date(year + 1, 1, 1) if month == 12 else date(year, month + 1, 1)) - timedelta(days=1)
+    return last - timedelta(days=(last.weekday() - weekday) % 7)
+
+
+def _observed(day: date) -> date:
+    """Saturday holidays are observed on the Friday before, Sunday holidays on the Monday after."""
+    return day - timedelta(days=1) if day.weekday() == 5 else day + timedelta(days=1) if day.weekday() == 6 else day
+
+
+def nyse_holidays(year: int) -> frozenset:
+    """Weekday dates of ``year`` on which the NYSE is closed by its holiday schedule (special closures excluded).
+
+    New Year's Day falling on a Saturday is not observed on the Friday (31 December of the year before).
+    """
+    from dateutil.easter import easter
+
+    days = {
+        _nth_weekday(year, 1, 0, 3),  # Martin Luther King Jr. Day
+        _nth_weekday(year, 2, 0, 3),  # Presidents' Day
+        easter(year) - timedelta(days=2),  # Good Friday
+        _nth_weekday(year, 5, 0, -1),  # Memorial Day
+        _observed(date(year, 7, 4)),  # Independence Day
+        _nth_weekday(year, 9, 0, 1),  # Labor Day
+        _nth_weekday(year, 11, 3, 4),  # Thanksgiving
+        _observed(date(year, 12, 25)),  # Christmas
+    }
+    if date(year, 1, 1).weekday() != 5:
+        days.add(_observed(date(year, 1, 1)))  # New Year's Day (Sunday -> Monday 2 January)
+    if year >= JUNETEENTH_FIRST_YEAR:
+        days.add(_observed(date(year, 6, 19)))
+    return frozenset(days)
+
+
+def nyse_trading_days(start: date, end: date) -> List[date]:
+    """NYSE trading days from ``start`` to ``end`` inclusive: weekdays minus holidays and special closures.
+
+    Rules only (no package): valid for the closures listed in ``NYSE_SPECIAL_CLOSURES`` and the holiday schedule
+    of 2008 onwards; early closes are trading days.  Checked against the SPY summary calendar in README.md.
+    """
+    holidays = set(NYSE_SPECIAL_CLOSURES)
+    for year in range(start.year, end.year + 1):
+        holidays |= nyse_holidays(year)
+    days = []
+    day = start
+    while day <= end:
+        if day.weekday() < 5 and day not in holidays:
+            days.append(day)
+        day += timedelta(days=1)
+    return days
 INTRADAY_T0_KEY = "intraday_t0"  # composite windows: new_full for T-29..T-1, intraday_late (final_rush) at T+0
 
 QUIET_WINDOW_UTC = ((21, 50), (22, 45))  # daily ingest + daily-summary cron; no DDL, loads or raw scans inside it

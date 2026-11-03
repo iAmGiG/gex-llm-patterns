@@ -6,6 +6,7 @@ bridge_jan,primary,gpt-6-luna,jan2026_phase4a,SPY,2021-11-24,2021-10-14,True,Fal
 bridge_jan,primary,gpt-6-luna,jan2026_phase4a,SPY,2022-03-11,2022-01-28,True,False,persistent_negative,low_conviction,85.0,3,3,6.13,6.127667,90.0,90.0,4,6,True,stop
 bridge_jan,primary,gpt-6-luna,jan2026_phase4a,SPY,2023-03-21,2023-02-07,True,False,persistent_negative,low_conviction,76.0,7,7,7.85,7.849333,76.67,76.666667,5,9,True,stop
 full_spy,primary,gpt-6-luna,new_full,SPY,2016-08-29,2016-07-19,False,True,low_conviction,persistent_positive,65.0,28,28,3.45,5.759578,93.33,93.333333,2,2,False,stop
+full_spy,primary,gpt-6-luna,new_full,SPY,2017-10-11,2017-08-30,True,False,persistent_positive,low_conviction,82.0,24,24,6.47,6.471542,80.0,80.0,4,6,True,stop
 full_spy,primary,gpt-6-luna,new_full,SPY,2017-11-22,2017-10-12,False,True,low_conviction,persistent_positive,68.0,27,27,4.88,5.196022,90.0,90.0,4,4,False,stop
 full_spy,primary,gpt-6-luna,new_full,SPY,2018-08-27,2018-07-17,True,False,persistent_positive,low_conviction,70.0,24,24,5.28,5.28394,80.0,80.0,5,6,True,stop
 full_spy,primary,gpt-6-luna,new_full,SPY,2021-07-29,2021-06-17,True,False,persistent_positive,low_conviction,75.0,26,26,5.65,5.646214,86.67,86.666667,5,6,True,stop
@@ -21,6 +22,7 @@ full_spy,primary,gpt-6-luna,new_full,SPY,2024-02-29,2024-01-18,True,False,persis
 full_spy,primary,gpt-6-luna,new_full,SPY,2024-06-11,2024-04-30,False,True,low_conviction,persistent_positive,55.0,24,24,4.67,5.550561,80.0,80.0,5,5,False,stop
 full_spy,primary,gpt-6-luna,new_full,SPY,2025-09-23,2025-08-12,True,False,persistent_positive,low_conviction,70.0,22,22,6.09,6.092037,73.33,73.333333,5,7,True,stop
 ex0dte_spy,primary,gpt-6-luna,new_ex0dte,SPY,2017-04-26,2017-03-15,False,True,low_conviction,persistent_negative,60.0,5,5,4.64,5.101291,83.33,83.333333,2,2,False,stop
+ex0dte_spy,primary,gpt-6-luna,new_ex0dte,SPY,2017-10-09,2017-08-28,True,False,persistent_positive,low_conviction,70.0,24,24,6.04,6.035415,80.0,80.0,5,7,True,stop
 ex0dte_spy,primary,gpt-6-luna,new_ex0dte,SPY,2018-04-10,2018-02-27,False,True,low_conviction,persistent_negative,60.0,8,8,4.402,5.009698,73.33,73.333333,2,2,False,stop
 ex0dte_spy,primary,gpt-6-luna,new_ex0dte,SPY,2018-10-25,2018-09-14,False,True,transitional,persistent_negative,35.0,9,9,5.8,5.804661,70.0,70.0,3,3,True,stop
 ex0dte_spy,primary,gpt-6-luna,new_ex0dte,SPY,2022-05-02,2022-03-21,True,False,persistent_negative,low_conviction,78.0,6,6,5.313,4.949536,80.0,80.0,4,4,False,stop

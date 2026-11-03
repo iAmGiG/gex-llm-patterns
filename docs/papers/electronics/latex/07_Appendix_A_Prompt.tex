@@ -4,7 +4,7 @@
 %  The three typographic symbols of the prompt (U+2264, U+2265, U+2192) are written in ASCII (<=, >=, ->) in this file and
 %  typeset as symbols by the "prompt" listing style, which keeps the sources ASCII.
 %  Prompt check (2026-10-31): the listing of A.2, with the data lines replaced by the placeholder and the three symbols in ASCII,
-%  equals common.build_prompt on 34,244 of 34,244 obfuscated gpt-6-luna requests stored in data/backups/gex_llm/*/input_*.jsonl.
+%  equals common.build_prompt on 35,365 of 35,365 obfuscated gpt-6-luna requests stored in data/backups/gex_llm/*/input_*.jsonl.
 %=================================================================
 \section{Prompt, Schema and API Configuration}
 \label{app:prompt}
@@ -33,8 +33,8 @@ Identical requests need not return identical answers, because no seed is set. Th
 
 The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
 
-The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 34{,}244 of 34{,}244 requests (the 34{,}712 requests of Table~\ref{tab:arms} less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
-% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (34,244 requests, 34,244 equal; the 40-request synchronous pilot is included; 34,712 ledger requests minus 2 x 234 = 468 requests of the two dated arms = 34,244), 2026-10-31; also equal to common.build_prompt
+The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 35{,}365 of 35{,}365 requests (the 35{,}833 requests of Table~\ref{tab:arms} less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
+% src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (35,365 requests, 35,365 equal; the 40-request synchronous pilot is included; 35,833 ledger requests minus 2 x 234 = 468 requests of the two dated arms = 35,365), 2026-10-31 for the 34,244 requests of the first runs and 2026-11-03 for the 1,121 re-requests (after removing the 30 data lines, one distinct message across all 35,365 requests); also equal to common.build_prompt
 
 \begin{lstlisting}[style=prompt]
 You are a market structure analyst specializing in dealer gamma positioning regimes.

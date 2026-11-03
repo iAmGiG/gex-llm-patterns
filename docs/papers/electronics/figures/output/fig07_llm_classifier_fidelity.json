@@ -9,9 +9,9 @@
       "sha256": "94cf8cf5b68da98ccc77dc4da4addb3498b75b72e09842b06f4c5ab09ad78e3e"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/figdata.py",
-      "sha256": "1fbb286eeddbcda908c53a01652baa4ef01fd9a019e5e71edb8d9263a08f934d"
+      "sha256": "613c75abb7788b8464e58cd0bf8adfb86f64bcbe4b825b64975adf35d35ce949"
     },
     {
       "git": "clean",
@@ -19,21 +19,21 @@
       "sha256": "2da680e829e681a4266f269f4b61a2abb0e65316d06a7eab56ffd11ea70a300a"
     },
     {
-      "git": "modified",
+      "git": "clean",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
       "sha256": "25d0463b2370c40e6305bc78b3c2b4300eb7a7630982ca0d8a640d57e2a7ef56"
     },
     {
       "git": "clean",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "4c0ebe17a294d45d60612a4a199d09507906c442a83d2f91a1ea56268300c26b"
+      "sha256": "1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f"
     }
   ],
   "extra": {
     "answers": {
-      "answers": 33160,
-      "matched": 33160,
-      "parsed": 33160
+      "answers": 33228,
+      "matched": 33228,
+      "parsed": 33228
     },
     "arms_drawn": [
       "r1_o4mini",
@@ -64,15 +64,15 @@
     },
     "groups": {
       "luna": {
-        "answers": 31684,
-        "magnitude_beyond_frame": 204,
-        "magnitude_within_tolerance_pct": 98.65231662668855,
+        "answers": 31752,
+        "magnitude_beyond_frame": 196,
+        "magnitude_within_tolerance_pct": 98.67094986142605,
         "median_reported_over_computed_magnitude": 1.0,
-        "persistence_within_tolerance_pct": 94.9406640575685,
-        "sign_flips_exact_pct": 93.34995581365989,
-        "sign_flips_over_pct": 0.6438580987249085,
-        "sign_flips_under_pct": 6.0061860876152,
-        "verdicts_equal_rule_pct": 99.81694230526449
+        "persistence_within_tolerance_pct": 94.95149911816578,
+        "sign_flips_exact_pct": 93.37994457042076,
+        "sign_flips_over_pct": 0.6487780297304107,
+        "sign_flips_under_pct": 5.971277399848828,
+        "verdicts_equal_rule_pct": 99.81103552532123
       },
       "o4-mini": {
         "answers": 1476,
@@ -206,8 +206,8 @@
           "2014": 100.0,
           "2015": 100.0,
           "2016": 100.0,
-          "2017": 99.583333,
-          "2018": 99.196787,
+          "2017": 99.203187,
+          "2018": 99.2,
           "2019": 100.0,
           "2020": 100.0,
           "2021": 100.0,
@@ -227,8 +227,8 @@
           "2014": 1.0,
           "2015": 1.0,
           "2016": 1.0,
-          "2017": 0.986664,
-          "2018": 0.977525,
+          "2017": 0.972923,
+          "2018": 0.977817,
           "2019": 1.0,
           "2020": 1.0,
           "2021": null,
@@ -258,9 +258,9 @@
           "2013": 100.0,
           "2014": 100.0,
           "2015": 100.0,
-          "2016": 99.6,
-          "2017": 99.583333,
-          "2018": 99.598394,
+          "2016": 99.603175,
+          "2017": 99.203187,
+          "2018": 99.6,
           "2019": 100.0,
           "2020": 100.0,
           "2021": 99.206349,
@@ -279,9 +279,9 @@
           "2013": null,
           "2014": 1.0,
           "2015": 1.0,
-          "2016": 0.990036,
-          "2017": 0.990406,
-          "2018": 0.991143,
+          "2016": 0.990237,
+          "2017": 0.981266,
+          "2018": 0.991209,
           "2019": 1.0,
           "2020": 1.0,
           "2021": 0.884774,
@@ -372,41 +372,41 @@
     ]
   },
   "figure": "fig07_llm_classifier_fidelity",
-  "generated_utc": "2026-11-02T03:21:31+00:00",
+  "generated_utc": "2026-11-03T21:28:43+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "93f1b51f3e4e15236a94c15979f28dc2f950cb7a",
+  "git_sha": "ed479b37f86cc57b9744a5609ea353edf6f4c401",
   "outputs": {
     "pdf": {
-      "bytes": 112838,
+      "bytes": 112841,
       "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.pdf",
-      "sha256": "498450bc8539e53e20e6615f596b8694e3ab307508c125f1687c06e97017cd35"
+      "sha256": "bb01e5cf247ef462f1d6bfc94df2a7499353df0846da1988cd5ca5751765cf68"
     },
     "png": {
-      "bytes": 627713,
+      "bytes": 630682,
       "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.png",
       "pixels": [
         1842,
         1845
       ],
-      "sha256": "c365a9cf3883b39103a32892869fd3ffc26181a5b0c90d236d665d1d7e8112fc"
+      "sha256": "2b3e5fc9048c73dee0251461e00897cea726ed6087b6df03d813f0f844959796"
     }
   },
   "results": {
     "files": {
       "detection_by_year.csv": {
-        "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+        "inputs_fingerprint": "255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
+        "sha256": "e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-10-31T05:18:16+00:00",
-      "inputs_fingerprint": "3b69bd38197d9437906b513dfd4f68b9ad4aab23999f2cb5f5a7b0fbd60b125f",
+      "generated_at": "2026-11-03T21:23:43+00:00",
+      "inputs_fingerprint": "255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "8ad52125ae19c07b61076eaa56df45f7e91cad17a5939922aa9e295e1c278ce7",
-      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
+      "script_sha256": "dbc46d524a15314aa763f5b710d0e209b8897741864f4275f6da78a6e7fe9c12",
+      "sha256": "f6c9a32efb50a564a119fe045d45598a969eee9ec2b22b81f2f924903eeb5db5"
     }
   },
   "rows": {
@@ -417,27 +417,35 @@
     "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet": 985,
     "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet": 893,
     "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet": 30,
     "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet": 892,
     "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet": 30,
     "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet": 1227,
     "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet": 1226,
     "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet": 1226,
     "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet": 322,
     "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet": 1228,
     "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet": 1228,
     "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet": 1228,
     "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet": 994,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet": 178,
     "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet": 878,
     "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet": 30,
     "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet": 1354,
     "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet": 1353,
     "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet": 1160,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet": 127,
     "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet": 877,
     "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet": 30,
     "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet": 1227,
     "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet": 1226,
     "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet": 1226,
     "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet": 322,
     "data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet": 51,
     "data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet": 223,
     "data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet": 223,
@@ -446,14 +454,14 @@
     "data/backups/gex_llm/tables/detections/r1_o4mini.parquet": 1476,
     "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet": 51,
     "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
-    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4678,
-    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3867,
-    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4671,
-    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4678,
-    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3867,
-    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4671,
-    "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet": 1671,
-    "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet": 1670,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet": 1672,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet": 1671,
     "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet": 4638,
     "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet": 223,
     "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet": 223,
@@ -499,6 +507,11 @@
       "sha256": "77324f7ea1bbdc4302d93fd4bee0cee684edb076073e10cfe35ee34193930a4d"
     },
     {
+      "bytes": 30981,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet",
+      "sha256": "54f12e87137acbd24cb3f10632dc2fe59dff602bef4c4ddd9bb9690e136e8f3b"
+    },
+    {
       "bytes": 378009,
       "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet",
       "sha256": "d7985cca88d57ef329641efdff37cac3b0e14b4fd1eaa7e4c22ee3042d096ee9"
@@ -507,6 +520,11 @@
       "bytes": 388000,
       "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet",
       "sha256": "10e71e5e0cd6af43e886f2e71425e1ea2690e18298275d50f8a70e07fc85edc7"
+    },
+    {
+      "bytes": 29903,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet",
+      "sha256": "972bc1de569012c151889e4d7ef7effe99176e7b12cbdeb656ebc2178bfbdecf"
     },
     {
       "bytes": 512022,
@@ -529,6 +547,11 @@
       "sha256": "5140fc94f58bf89745b819e2ffe0504e45ead42ed92c5a22cd2a855e877dd096"
     },
     {
+      "bytes": 184841,
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet",
+      "sha256": "4f10ed397d860cc26beb708066e6ea10cf2275a3d1b58847c574d85d323b9e1d"
+    },
+    {
       "bytes": 483505,
       "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet",
       "sha256": "55c25ea6f26c74aa6aa5f330259451728def98dd385e0a6b529f15e06d4bb551"
@@ -549,6 +572,11 @@
       "sha256": "cd8bddf7162a324fcb49f441c4c3e6b509825a99a045a17864036cd45be9835b"
     },
     {
+      "bytes": 99566,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet",
+      "sha256": "b86f0dc43311f56e35ff21f37cc219b463399ef55ae5ed0278b7594eca2d0165"
+    },
+    {
       "bytes": 383357,
       "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet",
       "sha256": "b06a26ab1bb82992d8e351029d353ef0b0053469c2d21f63850b40082a5f00c7"
@@ -557,6 +585,11 @@
       "bytes": 409475,
       "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet",
       "sha256": "92748d3a25e7a298c9adf57c33ef0e145cd525fa3f60366db4f065a4903f567e"
+    },
+    {
+      "bytes": 32106,
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet",
+      "sha256": "a961531189629657f22ec10e14c837e4fba6bf89522e7d9991e15a82197a691a"
     },
     {
       "bytes": 584335,
@@ -574,6 +607,11 @@
       "sha256": "fea3ac8285e4809f9aa5905fd2454994605cb9df013eacc485cf8e17095ce54a"
     },
     {
+      "bytes": 79750,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet",
+      "sha256": "4d52a5589f5f9d53a2d7da3b35f79618e76bc382d06a5349d6eb95a5569118d0"
+    },
+    {
       "bytes": 391611,
       "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet",
       "sha256": "b4932572b59077d9a05bcca81bceeed132b9c6aef8af936ab252a8f9406f894f"
@@ -582,6 +620,11 @@
       "bytes": 403081,
       "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet",
       "sha256": "7b577ee6815a0e32ea9c056378b3cc7411195b490f813463469c780fc553bd5c"
+    },
+    {
+      "bytes": 31924,
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet",
+      "sha256": "62e58cfcc775ae341e81d11ddecddaacd98375d09c00ddb510753a604c5e7d6c"
     },
     {
       "bytes": 515309,
@@ -602,6 +645,11 @@
       "bytes": 546487,
       "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet",
       "sha256": "5ad767de80fb29084af43ea1e7b123b89237580f67504d878b985ac9865a0769"
+    },
+    {
+      "bytes": 194224,
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet",
+      "sha256": "395ca09e16dcc09717912cd8513ae775da274cd2bd7a0f2096043fc395b864e3"
     },
     {
       "bytes": 46226,
@@ -634,89 +682,89 @@
       "sha256": "11fd9b58dbc64105264d8f8d0a72accdb7e92e247c556b22ce8ab88aca46d4ef"
     },
     {
-      "bytes": 29556,
+      "bytes": 29692,
       "path": "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet",
-      "sha256": "e25c418a89b4f70ec50762cf49de24a6ff568edf5414a15f047078e4fdf6e476"
+      "sha256": "6de8e2628d311a724141b47f7a1356b00cc8c288aa0a996d71add11b73697ecd"
     },
     {
-      "bytes": 425150,
+      "bytes": 425286,
       "path": "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
-      "sha256": "1e62ab32c7e550554a933ab03af9ae24d85cb1a0317eb92ba92ab6bc0d349f18"
+      "sha256": "f452ee8c5af70763b33895691965d0fed01bc80c74701bdac11084672ecedccf"
     },
     {
-      "bytes": 1442756,
+      "bytes": 1438633,
       "path": "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
-      "sha256": "b6c3df8c7bf25d73654fdb28f8db1a10c3179393ed30d9d5258e9f19ba6de146"
+      "sha256": "da0d84f092b8e6de962ee2f6b4b486531be670c4c2a51e32e974ae6d3ee2473e"
     },
     {
-      "bytes": 1184792,
+      "bytes": 1191743,
       "path": "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
-      "sha256": "314cfc3e4fefb7406d4572231791938db93af7412b012e67d92484d67509b0aa"
+      "sha256": "91e554b1113b2bddde98fe25cdcab7c40be66d4685365462122c14bd5043c1a3"
     },
     {
-      "bytes": 1441247,
+      "bytes": 1447055,
       "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
-      "sha256": "6188c5f53044844634ad46e8c3a34e14cd34993284c7ef566743ad899efe9d4f"
+      "sha256": "999fa2f10c3fdeb18d6c712505a76e1a55d8600b6b9a1a03b9e6659f1037dcff"
     },
     {
-      "bytes": 1357109,
+      "bytes": 1362674,
       "path": "data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
-      "sha256": "e2a35e6fb2602d18476efd903f0e85e97a68caf019a6f6e530970384fd85543c"
+      "sha256": "519d7414c14ab9b3e7e76a675ed4f458a44f5eeedc5be527615242e6f2e71301"
     },
     {
-      "bytes": 1123721,
+      "bytes": 1130075,
       "path": "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
-      "sha256": "38a5bd98971e5867a66d4580a743e481b20dd1e04e14faad80bfbc1af2e94a90"
+      "sha256": "04e5c8b348174529ef9a6e8f2593808f132512d39d119bf8e9d85ab92a4fa7a1"
     },
     {
-      "bytes": 1376488,
+      "bytes": 1380806,
       "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
-      "sha256": "13eebb0a66d261c91ba0a14d37ffe1e160a47499ed0cc9c424a24ece02e4fe7c"
+      "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     },
     {
-      "bytes": 519439,
+      "bytes": 519804,
       "path": "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet",
-      "sha256": "a5f65a6c9bf01a897d97e2778323240d66429de0208ff65b04a0b0752ed3c7e9"
+      "sha256": "21e239f5c7c87543308ca50336c719120454287a355985225424b8ee680876bb"
     },
     {
-      "bytes": 523262,
+      "bytes": 523686,
       "path": "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet",
-      "sha256": "22e148b0daf5843254d7ad608626a80ce6769bcdf3084ecf6eddbae7b72ab75e"
+      "sha256": "15391ad332f018636daed90692aca68427243a6b78a97b038408d4022407cfa3"
     },
     {
-      "bytes": 1357197,
+      "bytes": 1357445,
       "path": "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet",
-      "sha256": "0aa64fe29bcd628f403cf809998b5469bd10f6900d58b0a65304779ec0ec20cd"
+      "sha256": "5b8108ff4b6264d3153286659d134310781f087da77d24458fddaadad1cd1308"
     },
     {
-      "bytes": 74942,
+      "bytes": 75054,
       "path": "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet",
-      "sha256": "7d741ad2f43436a844acd12b72b3610045f5e1d0bdc24d378fbfb0cb7e09ccd6"
+      "sha256": "46eb2d8eacc8e32329aae367d008f0592f012e48f3e2e03707a31ceccbaab264"
     },
     {
-      "bytes": 56394,
+      "bytes": 56506,
       "path": "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet",
-      "sha256": "ece8a9f42b355c2162a6963c58b668b7615960b1fcc552ce536056b1cde4d601"
+      "sha256": "5fb0356da3b7696e485da7bdf72592bff427aed76d1803d8bbf665309167a7e6"
     },
     {
-      "bytes": 74358,
+      "bytes": 74489,
       "path": "data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet",
-      "sha256": "288e42245554c801ab9b60b79e550b1f04b217a1fdb623efa44985e3bdd05d08"
+      "sha256": "599ff783523e562980261c56f66b86de823bf5401fd9deee52aa5f9af68da6cb"
     },
     {
-      "bytes": 54574,
+      "bytes": 54705,
       "path": "data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet",
-      "sha256": "c43926fc9b3b5fd05f8e0d246b30edeb74d7eb4e67b2f6aacf61cf9e1f487ba3"
+      "sha256": "fdc1675081f04e4d64d48f5477ae03ee60738472c44a1e17fd66757ba3780e22"
     },
     {
-      "bytes": 66382,
+      "bytes": 66429,
       "path": "docs/papers/electronics/results/detection_by_year.csv",
-      "sha256": "2cddd4e8ae447e9a1d0fdb25de1f3f27f6553bbf7012281e23b2da058c6afd3b"
+      "sha256": "e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4"
     },
     {
-      "bytes": 163747,
+      "bytes": 175871,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "4651c926fc62e69369f33777296b43b51f42ccddb4266d196af50fd30b7d009c"
+      "sha256": "f6c9a32efb50a564a119fe045d45598a969eee9ec2b22b81f2f924903eeb5db5"
     }
   ],
   "versions": {

@@ -64,6 +64,12 @@ def main(argv=None) -> int:
     args.out.mkdir(parents=True, exist_ok=True)
 
     detections = load("detections")
+    # A window re-asked after its inputs changed has an older and a newer answer; keep the latest, as 05 and 07 do.
+    key = ["arm", "series_key", "symbol", "window_end", "model", "prompt_version"]
+    n_all = len(detections)
+    detections = detections.sort_values("created_at", kind="stable", na_position="first").drop_duplicates(key, keep="last")
+    if len(detections) < n_all:
+        print(f"detections: {n_all - len(detections):,} superseded answer(s) dropped (latest created_at kept)")
     d = detections[DETECTION_COLUMNS].sort_values(["arm", "symbol", "window_end", "custom_id"], kind="stable")
     d.to_csv(args.out / "detections.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
@@ -71,6 +77,7 @@ def main(argv=None) -> int:
     w = windows[WINDOW_COLUMNS].copy()
     w["calendar_gap_days"] = windows["window_metadata"].map(lambda m: meta(m).get("calendar_gap_days"))
     w["missing_master_days"] = windows["window_metadata"].map(lambda m: meta(m).get("missing_master_days"))
+    w["nyse_missing_days"] = windows["window_metadata"].map(lambda m: meta(m).get("nyse_missing_days"))
     w = w.sort_values(["series_key", "symbol", "window_end"], kind="stable")
     w.to_csv(args.out / "windows.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 

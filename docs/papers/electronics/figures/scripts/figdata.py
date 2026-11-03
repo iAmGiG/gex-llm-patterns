@@ -163,10 +163,11 @@ class Inputs:
         for path in files:
             names = set(pq.read_schema(path).names)
             missing = [c for c in read_columns if c not in names]
+            extra = ["created_at"] if kind == "detections" and "created_at" in names else []  # absent before 2026-10-30
             if missing:
                 self.fail(f"{theme.display_path(path)} lacks column(s) {missing}")
             filters = [(c, "in", sorted(set(v))) for c, v in wanted.items() if v is not None and c in names]
-            part = pq.read_table(path, columns=read_columns, filters=filters or None).to_pandas()
+            part = pq.read_table(path, columns=read_columns + extra, filters=filters or None).to_pandas()
             if part.empty:
                 continue
             self._record(path, len(part))
@@ -178,6 +179,12 @@ class Inputs:
         for column in DATE_COLUMNS:
             if column in frame.columns:
                 frame[column] = pd.to_datetime(frame[column]).dt.tz_localize(None).dt.normalize()
+        if key and kind == "detections" and "created_at" in frame.columns and frame.duplicated(list(key)).any():
+            # A window re-asked after its inputs changed has an older and a newer answer in different run files;
+            # keep the latest, as 05_report.py, 06_condense.py and 07_load_tables.py do.
+            before = len(frame)
+            frame = frame.sort_values("created_at", kind="stable", na_position="first").drop_duplicates(list(key), keep="last")
+            logger.info("detections: %d superseded answer(s) dropped (latest created_at kept per natural key)", before - len(frame))
         if key and frame.duplicated(list(key)).any():
             clash = int(frame.duplicated(list(key)).sum())
             sample = frame.loc[frame.duplicated(list(key), keep=False), list(key)].head(2).to_dict("records")

@@ -25,6 +25,12 @@ and uses parquet only.  ``--parquet-only`` never opens a database connection.  `
 schema inline (BEGIN/COMMIT stripped), performs every database write and rolls the transaction back on exit,
 which exercises the SQL without creating anything; files and parquet are still written.
 
+Stale answers: a stored answer whose ``detection_metadata.prompt_sha256`` differs from the sha256 of the prompt the
+window would be sent now (``common.build_prompt`` of the stored ``gex_sequence``) was given to other inputs, because the
+window was rebuilt under the same key.  A window with only stale answers is state ``stale``: open for ``generate`` (also its
+``#rep1`` repeat), listed by ``status``, not "already answered" for ``submit``.  Backfills (no hash) are never stale.
+``ingest`` records the replaced row in ``detection_metadata.supersedes`` {run_id, prompt_sha256}.
+
 Guards (each refuses before anything is sent or written):
 
 * cost ledger: ``submit`` and ``pilot`` add their projection to the spend recorded for the current balance and
@@ -164,6 +170,7 @@ class Seen(NamedTuple):
 
     parse_status: Optional[str]
     finish_reason: Optional[str]
+    prompt_sha256: Optional[str] = None  # detection_metadata.prompt_sha256; None for backfills (r1_*)
 
 
 @dataclass(frozen=True)
@@ -517,7 +524,7 @@ class Store:
     def detection_index(self, arms: Optional[Collection[str]], model: str,
                         prompt_version: str) -> Dict[Tuple[str, date], List[Seen]]:  # fmt: skip
         """Every stored answer by (arm, window_end), from parquet and the database (all arms if ``arms`` is None)."""
-        columns = ("arm", "window_end", "model", "prompt_version", "parse_status", "finish_reason")
+        columns = ("arm", "window_end", "model", "prompt_version", "parse_status", "finish_reason", "detection_metadata")
         rows = [row for path in self._files("detections") for row in read_parquet(path, columns)]
         if self.db_ready:
             rows += self._query(
@@ -526,8 +533,37 @@ class Store:
         index: Dict[Tuple[str, date], List[Seen]] = {}
         for row in rows:
             if row["model"] == model and row["prompt_version"] == prompt_version and (arms is None or row["arm"] in arms):
-                index.setdefault((row["arm"], row["window_end"]), []).append(Seen(row["parse_status"], row["finish_reason"]))
+                meta = row["detection_metadata"]
+                if isinstance(meta, str):  # JSON text in parquet, jsonb (already a dict) in Postgres
+                    meta = json.loads(meta) if meta else {}
+                sha = (meta or {}).get("prompt_sha256")
+                index.setdefault((row["arm"], row["window_end"]), []).append(
+                    Seen(row["parse_status"], row["finish_reason"], sha))  # fmt: skip
         return index
+
+    def stored_answers(self, keys: Collection[Tuple[str, str, str, date]], model: str,
+                       prompt_version: str) -> Dict[Tuple[str, str, str, date], List[Dict[str, Any]]]:  # fmt: skip
+        """Stored detections (run_id, created_at, detection_metadata) by (arm, series_key, symbol, window_end).
+
+        Used at ingest to find the answer a new one replaces.  Parquet copies and the database are both read.
+        """
+        wanted = set(keys)
+        columns = ("arm", "series_key", "symbol", "window_end", "model", "prompt_version", "run_id", "created_at",
+                   "detection_metadata")  # fmt: skip
+        rows = [row for path in self._files("detections") for row in read_parquet(path, columns)]
+        if self.db_ready:
+            arms = sorted({k[0] for k in wanted})
+            rows += self._query(
+                f"SELECT {', '.join(columns)} FROM {common.T_DETECTIONS} WHERE model = %s AND prompt_version = %s "
+                "AND arm = ANY(%s)", (model, prompt_version, arms))  # fmt: skip
+        found: Dict[Tuple[str, str, str, date], List[Dict[str, Any]]] = {}
+        for row in rows:
+            key = (row["arm"], row["series_key"], row["symbol"], row["window_end"])
+            if key in wanted and row["model"] == model and row["prompt_version"] == prompt_version:
+                meta = row["detection_metadata"]
+                meta = json.loads(meta) if isinstance(meta, str) and meta else (meta or {})
+                found.setdefault(key, []).append({"run_id": row["run_id"], "created_at": row["created_at"], "metadata": meta})
+        return found
 
     def load_detections(self, run_id: str) -> List[Dict[str, Any]]:
         """Detection rows written by one chunk (parquet copy, else the database)."""
@@ -541,9 +577,14 @@ class Store:
     def save_detections(self, run_id: str, rows: Sequence[Dict[str, Any]]) -> None:
         if self.db_ready:
             update = [c for c in DETECTION_COLUMNS if c not in DETECTION_KEY and c != "created_at"]
-            common.upsert_rows(self.conn, common.T_DETECTIONS, DETECTION_COLUMNS,
-                               [_db_values(r, DETECTION_COLUMNS) for r in rows],
-                               conflict_cols=DETECTION_KEY, update_cols=update)  # fmt: skip
+            # A re-ingest keeps created_at; an answer that replaces another one (supersedes) takes its own, so the
+            # row that stays is also the newest one for 05_report's "latest created_at per natural key".
+            for replaced, columns in ((False, update), (True, update + ["created_at"])):
+                part = [r for r in rows if bool((r["detection_metadata"] or {}).get("supersedes")) == replaced]
+                if part:
+                    common.upsert_rows(self.conn, common.T_DETECTIONS, DETECTION_COLUMNS,
+                                       [_db_values(r, DETECTION_COLUMNS) for r in part],
+                                       conflict_cols=DETECTION_KEY, update_cols=columns)  # fmt: skip
         write_parquet(common.parquet_path("detections", run_id), rows, DETECTION_SCHEMA)
 
 
@@ -590,11 +631,34 @@ def balanced_sample(windows: Sequence[Dict[str, Any]], n: int, seed: int, salt: 
     return sorted(sample, key=lambda w: w["window_end"])
 
 
-def window_state(seen: Sequence[Seen]) -> str:
-    """'done' = a parsed answer that was not cut off; 'retry' = cut off by the token limit; else 'open'."""
-    if any(s.parse_status in PARSED and s.finish_reason != "length" for s in seen):
+def prompt_hash(window: Dict[str, Any]) -> Optional[str]:
+    """sha256 of the prompt the window would be sent with now (None if it cannot be built)."""
+    try:
+        return hashlib.sha256(common.build_prompt(window["gex_sequence"]).encode()).hexdigest()
+    except Exception:  # noqa: BLE001 - a malformed window is reported by build_request, not here
+        return None
+
+
+def is_stale(seen: Seen, current: Optional[str]) -> bool:
+    """A stored answer is stale when it carries a prompt hash that differs from the current prompt's.
+
+    Without a current hash (window unknown) or without a stored one (backfills, r1_*) nothing is stale.
+    """
+    return current is not None and seen.prompt_sha256 is not None and seen.prompt_sha256 != current
+
+
+def window_state(seen: Sequence[Seen], current: Optional[str] = None) -> str:
+    """'done' = a parsed answer that was not cut off; 'retry' = cut off by the token limit; 'stale' = every stored
+    answer was given to a different prompt than ``current`` (the window changed since); else 'open'.
+
+    Stale answers are ignored when a current answer exists.  'stale' windows are open work for ``generate``.
+    """
+    live = [s for s in seen if not is_stale(s, current)]
+    if any(s.parse_status in PARSED and s.finish_reason != "length" for s in live):
         return "done"
-    return "retry" if any(s.finish_reason == "length" for s in seen) else "open"
+    if any(s.finish_reason == "length" for s in live):
+        return "retry"
+    return "stale" if seen and not live else "open"
 
 
 # --------------------------------------------------------------------------- work already requested
@@ -611,6 +675,11 @@ def holds_answers(run: Dict[str, Any]) -> bool:
 
 def run_requests(run: Dict[str, Any]) -> List[Tuple[str, date]]:
     """(arm label as stored in detections, window_end) of every request in a chunk's input file."""
+    return [key for key, _ in run_request_hashes(run)]
+
+
+def run_request_hashes(run: Dict[str, Any]) -> List[Tuple[Tuple[str, date], str]]:
+    """((arm label, window_end), sha256 of the prompt) of every request in a chunk's input file."""
     try:
         path = chunk_paths(run).input
     except (KeyError, TypeError):  # a row that was not written by this script (no chunk index)
@@ -621,7 +690,8 @@ def run_requests(run: Dict[str, Any]) -> List[Tuple[str, date]]:
     keys = []
     for line in read_jsonl(path):
         arm, _, window_end, repeat = split_custom_id(line["custom_id"])
-        keys.append((detection_arm(arm, repeat), window_end))
+        prompt = line["body"]["messages"][0]["content"]
+        keys.append(((detection_arm(arm, repeat), window_end), hashlib.sha256(prompt.encode()).hexdigest()))
     return keys
 
 
@@ -645,7 +715,10 @@ def pending_requests(store: Store, arms: Optional[Collection[str]], model: str, 
 
 
 def refuse_duplicate_requests(store: Store, todo: Sequence[Dict[str, Any]]) -> None:
-    """Refuse chunks that ask again for a window already answered or already requested in a run that was sent."""
+    """Refuse chunks that ask again for a window already answered or already requested in a run that was sent.
+
+    An answer whose prompt differs from the one in the chunk is stale and does not count as an answer.
+    """
     first = todo[0]
     arms = {r["arm"] for r in todo}
     sent = pending_requests(store, arms, first["model"], first["prompt_version"], sent_only=True,
@@ -653,10 +726,10 @@ def refuse_duplicate_requests(store: Store, todo: Sequence[Dict[str, Any]]) -> N
     index = store.detection_index(arms | {a + REPEAT_ARM_SUFFIX for a in arms}, first["model"], first["prompt_version"])
     clashes = []
     for run in todo:
-        for key in run_requests(run):
+        for key, sha in run_request_hashes(run):
             if key in sent:
                 clashes.append((run["run_id"], key, f"already requested in run {sent[key]}"))
-            elif window_state(index.get(key, ())) == "done":
+            elif window_state(index.get(key, ()), sha) == "done":
                 clashes.append((run["run_id"], key, "already answered"))
     if clashes:
         run_id, (label, window_end), why = clashes[0]
@@ -1001,17 +1074,22 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
     index = store.detection_index([arm.key, repeat_arm], common.MODEL, common.PROMPT_VERSION)
     held = {} if args.include_inflight else pending_requests(store, [arm.key], common.MODEL, common.PROMPT_VERSION)
 
+    current = {w["window_end"]: prompt_hash(w) for w in pool}
+
     def state(window: Dict[str, Any], label: str) -> str:
-        """'done', 'retry' (cut off by the token limit), 'inflight' (a pending run holds the request) or 'open'."""
+        """'done', 'retry' (cut off by the token limit), 'stale' (answered, but to another prompt than the window's
+        current one), 'inflight' (a pending run holds the request) or 'open'."""
         key = (label, window["window_end"])
-        stored = "open" if args.include_done else window_state(index.get(key, ()))  # --include-done ignores answers
+        # --include-done ignores answers
+        stored = "open" if args.include_done else window_state(index.get(key, ()), current[window["window_end"]])
         return "inflight" if key in held and stored != "done" else stored
 
     states = {w["window_end"]: state(w, arm.key) for w in pool}
     in_flight = [w for w in pool if states[w["window_end"]] == "inflight"]
     done = [w for w in pool if states[w["window_end"]] == "done"]
     awaiting = [w for w in pool if states[w["window_end"]] == "retry"]  # the retry subcommand's job
-    todo = [w for w in pool if states[w["window_end"]] == "open"]
+    stale = [w for w in pool if states[w["window_end"]] == "stale"]  # open work: the window changed since the answer
+    todo = [w for w in pool if states[w["window_end"]] in ("open", "stale")]
     if args.limit is None:
         originals = todo
     elif args.sample == "stratified":
@@ -1023,13 +1101,16 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
     answered = originals + done
     repeat_states = {w["window_end"]: state(w, repeat_arm) for w in answered}
     target = round(args.repeat_fraction * len(answered))
-    requested = sum(s != "open" for s in repeat_states.values())  # done, in flight or awaiting retry
+    requested = sum(s not in ("open", "stale") for s in repeat_states.values())  # done, in flight or awaiting retry
+    stale_repeats = [w for w in answered if repeat_states[w["window_end"]] == "stale"]  # asked again, same rule
     candidates = [w for w in answered if repeat_states[w["window_end"]] == "open"]
-    repeats = pick(candidates, max(0, target - requested), args.seed, arm.key + common.REPEAT_MARK)
-    log.info("%s: %d windows ending %s..%s | %d done, %d awaiting retry, %d in flight, %d open | selected %d + %d "
-             "repeats (repeat target %d, %d already requested)", arm.key, len(pool), pool[0]["window_end"],
-             pool[-1]["window_end"], len(done), len(awaiting), len(in_flight), len(todo), len(originals), len(repeats),
-             target, requested)  # fmt: skip
+    repeats = stale_repeats + pick(candidates, max(0, target - requested - len(stale_repeats)), args.seed,
+                                   arm.key + common.REPEAT_MARK)  # fmt: skip
+    log.info("%s: %d windows ending %s..%s | %d done, %d awaiting retry, %d in flight, %d open (%d of them stale: "
+             "answered to a prompt that no longer matches the window) | selected %d + %d repeats (repeat target %d, "
+             "%d already requested, %d stale repeats)", arm.key, len(pool), pool[0]["window_end"],
+             pool[-1]["window_end"], len(done), len(awaiting), len(in_flight), len(todo), len(stale), len(originals),
+             len(repeats), target, requested, len(stale_repeats))  # fmt: skip
     if in_flight:
         status_of = {r["run_id"]: r["status"] for r in store.load_runs()}
         holders = sorted({held[(arm.key, w["window_end"])] for w in in_flight})
@@ -1047,7 +1128,9 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
                  "repeat_fraction": args.repeat_fraction, "include_done": args.include_done,
                  "include_inflight": args.include_inflight, "n_windows_in_range": len(pool),
                  "pool_window_end_min": pool[0]["window_end"], "pool_window_end_max": pool[-1]["window_end"],
-                 "windows_series": window_series, "n_done": len(done),
+                 "windows_series": window_series, "n_done": len(done), "n_stale": len(stale),
+                 "n_stale_selected": sum(states[w["window_end"]] == "stale" for w in originals),
+                 "n_stale_repeats": len(stale_repeats),
                  "n_awaiting_retry": len(awaiting), "n_in_flight": len(in_flight), "n_originals": len(originals),
                  "n_repeats": len(repeats), "repeat_target": target, "repeats_already_requested": requested,
                  "windows_source": "db" if args.from_db else str(common.parquet_path("windows", window_series, arm.symbol))}
@@ -1262,6 +1345,32 @@ def cmd_retrieve(store: Store, args: argparse.Namespace) -> int:
     return 0
 
 
+def mark_superseded(store: Store, run: Dict[str, Any], rows: Sequence[Dict[str, Any]]) -> int:
+    """Record in ``detection_metadata.supersedes`` {run_id, prompt_sha256} which stored answer each new row replaces.
+
+    The upsert overwrites the old row (same natural key), so this keeps its provenance: the run and the prompt hash
+    (None for a backfill) and, nested, what that row had itself replaced.  Only answers of other runs count; a
+    re-ingest of the same run keeps the ``supersedes`` its earlier ingest wrote.
+    """
+    keys = [(r["arm"], r["series_key"], r["symbol"], r["window_end"]) for r in rows]
+    stored = store.stored_answers(keys, run["model"], run["prompt_version"])
+    n = 0
+    for row, key in zip(rows, keys):
+        mine = [e for e in stored.get(key, ()) if e["run_id"] == row["run_id"]]
+        others = sorted((e for e in stored.get(key, ()) if e["run_id"] != row["run_id"]),
+                        key=lambda e: str(e["created_at"]))  # fmt: skip
+        previous = (mine[0]["metadata"].get("supersedes") if mine else None)
+        if previous is None and others:
+            old = others[-1]
+            previous = {"run_id": old["run_id"], "prompt_sha256": old["metadata"].get("prompt_sha256")}
+            if old["metadata"].get("supersedes"):
+                previous["supersedes"] = old["metadata"]["supersedes"]
+        if previous is not None:
+            row["detection_metadata"]["supersedes"] = previous
+            n += 1
+    return n
+
+
 def ingest_chunks(store: Store, runs: Sequence[Dict[str, Any]],
                   from_db: bool) -> List[Tuple[Dict[str, Any], List[Dict[str, Any]]]]:  # fmt: skip
     """Parse retrieved chunks, upsert detections and update the runs rows (one transaction per chunk)."""
@@ -1272,6 +1381,8 @@ def ingest_chunks(store: Store, runs: Sequence[Dict[str, Any]],
         if key not in cache:
             cache[key] = {w["window_end"]: w for w in store.load_windows(*key, from_db)}
         updated, rows, summary = parse_chunk(run, cache[key])
+        summary["n_superseded"] = mark_superseded(store, run, rows)
+        updated["run_metadata"]["ingest"] = summary
         with store.transaction():
             store.save_detections(updated["run_id"], rows)
             store.save_runs([updated])
@@ -1416,9 +1527,12 @@ def cmd_retry(store: Store, args: argparse.Namespace) -> int:
     chunks = chunk_runs(store, args.run_id)
     first = chunks[0]
     cut_off = [row for run in chunks for row in store.load_detections(run["run_id"]) if row["finish_reason"] == "length"]
+    windows = {w["window_end"]: w for w in store.load_windows(run_window_series(first), first["symbol"], args.from_db)}
     if cut_off:
         index = store.detection_index({r["arm"] for r in cut_off}, first["model"], first["prompt_version"])
-        cut_off = [r for r in cut_off if window_state(index.get((r["arm"], r["window_end"]), ())) == "retry"]
+        now = {end: prompt_hash(w) for end, w in windows.items()}
+        cut_off = [r for r in cut_off  # a stale cut-off answer is generate's job (the window changed)
+                   if window_state(index.get((r["arm"], r["window_end"]), ()), now.get(r["window_end"])) == "retry"]  # fmt: skip
     if cut_off and not args.include_inflight:
         held = pending_requests(store, {first["arm"]}, first["model"], first["prompt_version"])
         covered = [r for r in cut_off if (r["arm"], r["window_end"]) in held]
@@ -1430,7 +1544,6 @@ def cmd_retry(store: Store, args: argparse.Namespace) -> int:
     if not cut_off:
         log.info("no answers of %s still wait for a retry", args.run_id)
         return 0
-    windows = {w["window_end"]: w for w in store.load_windows(run_window_series(first), first["symbol"], args.from_db)}
     vanished = sorted({str(r["window_end"]) for r in cut_off if r["window_end"] not in windows})
     if vanished:
         raise RunnerError(f"windows {vanished[:3]} are no longer in the windows table")
@@ -1442,6 +1555,25 @@ def cmd_retry(store: Store, args: argparse.Namespace) -> int:
                       metadata={"retry_of": [r["run_id"] for r in chunks], "reason": "finish_reason=length"})  # fmt: skip
     print_generated(rows)
     return 0
+
+
+def status_prompt_hashes(store: Store, labels: Collection[str], from_db: bool) -> Dict[Tuple[str, date], str]:
+    """(arm label, window_end) -> hash of the current prompt, for the arms whose windows can be read."""
+    out: Dict[Tuple[str, date], str] = {}
+    for label in sorted(labels):
+        arm = common.ARMS.get(common.base_arm(label))
+        if arm is None:
+            continue
+        try:
+            windows = store.load_windows(common.arm_window_series(arm), arm.symbol, from_db)
+        except RunnerError:
+            log.warning("%s: windows not readable, its stale count is unknown", label)
+            continue
+        for w in windows:
+            sha = prompt_hash(w)
+            if sha is not None:
+                out[(label, w["window_end"])] = sha
+    return out
 
 
 def cmd_status(store: Store, args: argparse.Namespace) -> int:
@@ -1469,14 +1601,15 @@ def cmd_status(store: Store, args: argparse.Namespace) -> int:
     index = store.detection_index(None, common.MODEL, common.PROMPT_VERSION)
     held = pending_requests(store, None, common.MODEL, common.PROMPT_VERSION)
     states: Dict[str, Counter] = {}
+    current = status_prompt_hashes(store, {k[0] for k, v in index.items() if any(x.prompt_sha256 for x in v)}, getattr(args, "from_db", False))
     for key in sorted(set(index) | set(held)):
-        stored = window_state(index.get(key, ()))
+        stored = window_state(index.get(key, ()), current.get(key))
         states.setdefault(key[0], Counter())["inflight" if key in held and stored != "done" else stored] += 1
     if states:
-        print(f"\n{'arm':<20} {'windows':>8} {'done':>6} {'retry':>6} {'inflight':>8} {'open':>6}   "
+        print(f"\n{'arm':<20} {'windows':>8} {'done':>6} {'stale':>6} {'retry':>6} {'inflight':>8} {'open':>6}   "
               "(state of each window across all runs)")  # fmt: skip
         for arm, count in sorted(states.items()):
-            print(f"{arm:<20} {sum(count.values()):>8} {count['done']:>6} {count['retry']:>6} "
+            print(f"{arm:<20} {sum(count.values()):>8} {count['done']:>6} {count['stale']:>6} {count['retry']:>6} "
                   f"{count['inflight']:>8} {count['open']:>6}")  # fmt: skip
     return 0
 

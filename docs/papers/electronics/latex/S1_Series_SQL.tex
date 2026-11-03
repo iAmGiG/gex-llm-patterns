@@ -61,7 +61,7 @@ SELECT trading_date,
       -sum(CASE WHEN option_type = 'put'  THEN g END)  FILTER (WHERE expiration > trading_date) AS put_gex_ex0dte,
        sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration > trading_date) AS total_gex_ex0dte,
        sum(CASE WHEN option_type = 'call' THEN g ELSE -g END) FILTER (WHERE expiration = trading_date) AS total_gex_0dte,
-       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END)                                          AS total_gex_all  -- ties to gex.options_daily_summary.total_gex (<=2e-7 rel)
+       sum(CASE WHEN option_type = 'call' THEN g ELSE -g END)                                          AS total_gex_all  -- ties to gex.options_daily_summary.total_gex (rel. diff. < 3e-7)
 FROM (SELECT trading_date, option_type, expiration,
              gamma::float8 * open_interest::float8 * 100.0 * underlying_price::float8 * underlying_price::float8 * 0.01 AS g   -- float8: real*int would stay float4
       FROM gex.options_chains_partitioned
@@ -71,6 +71,8 @@ FROM (SELECT trading_date, option_type, expiration,
 GROUP BY trading_date
 ORDER BY trading_date;
 \end{lstlisting}
+
+Since the database additions of 2026-11-03 (Section~3.3 of the article) the pipeline's statement also takes the spot from \path{gex.spot_fill_log} on the days listed there, whose chain rows have no spot: it reads \texttt{coalesce(c.underlying\_price, f.spot\_used)} from a left join of the chains with that table on symbol and trading date (rows with \texttt{in\_summary}), and keeps the row filter otherwise. On every other day the result is unchanged.
 
 \subsection{Late-Session Intraday Snapshot (\texttt{intraday\_late})}
 \label{app:series:intraday}

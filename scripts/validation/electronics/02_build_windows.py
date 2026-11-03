@@ -25,7 +25,11 @@ Holes (``window_metadata``, every rule; flagged windows are kept, never dropped)
     calendar_gap_days    widest gap in calendar days between neighbouring rows of the window
     missing_master_days  trading dates of the symbol's master calendar (gex.options_daily_summary) that lie
                          inside the window but are not among its rows (a skipped weekday leaves no calendar gap)
-    gap_flag             true when calendar_gap_days > common.CALENDAR_GAP_FLAG_DAYS (4) or missing_master_days > 0
+    nyse_missing_days    NYSE trading days (common.nyse_trading_days, rules only) inside the window's span that are not
+                         among its rows.  Independent of the master calendar, which is itself the summary table and so
+                         cannot see a trading day that table lacks (a single missing day leaves calendar_gap_days <= 4)
+    gap_flag             true when calendar_gap_days > common.CALENDAR_GAP_FLAG_DAYS (4), missing_master_days > 0 or
+                         nyse_missing_days > 0.  A flag only: the windows, rule A and every label are unchanged
     The master calendar is read once per run: from the new_full series parquet of the symbol (default), or from
     gex.options_daily_summary with --master-calendar db (the default with --from-db).  It must cover every window.
     Composite windows add snapshot_timestamp, snapshot_type, t0_series and base_series.
@@ -35,7 +39,7 @@ Output
     with --db, an upsert into backups.gex_llm_regime_windows.  Both hold the columns of that table (the surrogate
     key window_id is omitted) and both are upserts on (series_key, symbol, window_end): a run limited by
     --end-min/--end-max replaces the windows in its range and keeps the rest (a file written by an earlier version
-    of this script, whose window_metadata lacks missing_master_days, is refused instead of mixed).  In parquet the
+    of this script, whose window_metadata lacks nyse_missing_days, is refused instead of mixed).  In parquet the
     JSON columns gex_sequence and window_metadata are JSON text; ``input_sha256`` is the SHA-256 of the stored
     gex_sequence text.  A series parquet that stops more than a week before the last requested window_end is
     refused (a partial build of step 01); pass --end-max to build from it anyway.
@@ -312,17 +316,21 @@ def load_inputs(series_keys: Sequence[str], symbol: str, from_db: bool, root: Pa
 
 
 # --------------------------------------------------------------------------- window construction
-def gap_metadata(dates: Sequence[date], master: Sequence[date]) -> Dict[str, Any]:
-    """The hole detectors for the dates of one window (``master``: sorted master trading dates of the symbol).
+def gap_metadata(dates: Sequence[date], master: Sequence[date], nyse: Sequence[date]) -> Dict[str, Any]:
+    """The hole detectors for the dates of one window.
 
+    ``master``: sorted master trading dates of the symbol; ``nyse``: sorted NYSE trading days covering the window.
     calendar_gap_days is the widest gap between neighbouring rows; missing_master_days counts the master dates
-    inside the window that it lacks.  gap_flag is set when either detector fires.
+    inside the window that it lacks; nyse_missing_days the NYSE trading days inside it that it lacks.  gap_flag is
+    set when any of the three fires.
     """
     widest = max((later - earlier).days for earlier, later in zip(dates, dates[1:]))
     inside = master[bisect_left(master, dates[0]): bisect_right(master, dates[-1])]
     missing = len(set(inside) - set(dates))
-    return {"calendar_gap_days": widest, "missing_master_days": missing,
-            "gap_flag": widest > common.CALENDAR_GAP_FLAG_DAYS or missing > 0}
+    expected = nyse[bisect_left(nyse, dates[0]): bisect_right(nyse, dates[-1])]
+    nyse_missing = len(set(expected) - set(dates))
+    return {"calendar_gap_days": widest, "missing_master_days": missing, "nyse_missing_days": nyse_missing,
+            "gap_flag": widest > common.CALENDAR_GAP_FLAG_DAYS or missing > 0 or nyse_missing > 0}
 
 
 def consecutive_windows(series: pd.DataFrame, end_min: Optional[date], end_max: Optional[date]) -> List[WindowSpec]:
@@ -441,6 +449,7 @@ def check_phase4a_fidelity(specs: Sequence[WindowSpec], end_min: Optional[date],
 def build_records(series_key: str, symbol: str, rule: str, labels: str, specs: Sequence[WindowSpec],
                   master: Sequence[date]) -> List[Dict[str, Any]]:
     """Label, hash and classify every window; one dict per row of backups.gex_llm_regime_windows."""
+    nyse = common.nyse_trading_days(min(spec.start for spec in specs), max(spec.end for spec in specs))
     version = common.classifier_version()
     created_at = common.utcnow()
     records = []
@@ -464,7 +473,7 @@ def build_records(series_key: str, symbol: str, rule: str, labels: str, specs: S
             "clf_avg_magnitude": verdict["avg_magnitude"],
             "clf_sign_flips": verdict["sign_flips"],
             "clf_version": version,
-            "window_metadata": json.dumps({**gap_metadata(spec.dates, master), **spec.extra}, sort_keys=True),
+            "window_metadata": json.dumps({**gap_metadata(spec.dates, master, nyse), **spec.extra}, sort_keys=True),
             "created_at": created_at,
         })
     return records
@@ -480,9 +489,9 @@ def warn_stale(stale: Sequence[date], where: str) -> None:
 
 
 def has_hole_fields(metadata: Optional[str]) -> bool:
-    """True for window_metadata written by this version of the script (it always carries missing_master_days)."""
+    """True for window_metadata written by this version of the script (it always carries nyse_missing_days)."""
     try:
-        return "missing_master_days" in json.loads(metadata)
+        return "nyse_missing_days" in json.loads(metadata)
     except (TypeError, ValueError):
         return False
 
@@ -505,7 +514,7 @@ def write_parquet(records: Sequence[Dict[str, Any]], path: Path, span: Tuple[dat
         outdated = sum(not has_hole_fields(text) for text in kept["window_metadata"].to_pylist())
         if outdated:
             raise WindowBuildError(f"{path} holds {outdated} window(s) from an earlier version of this script (window_metadata "
-                                   f"without missing_master_days) that this run would keep; "
+                                   f"without nyse_missing_days) that this run would keep; "
                                    f"delete the file and rebuild the full range")
         warn_stale([end for end in old_ends if end not in rebuilt and span[0] <= end <= span[1]], path.name)
         merged = pa.concat_tables([kept, merged])
@@ -604,7 +613,7 @@ def detection_by_year(records: Sequence[Dict[str, Any]]) -> pd.DataFrame:
     """Windows, deterministic detections, mean |GEX| and hole counts per window_end year, plus a total.
 
     cal_gap counts windows with calendar_gap_days above the flag threshold, missing_master with
-    missing_master_days > 0, gap_flagged those with either.
+    missing_master_days > 0, nyse_missing with nyse_missing_days > 0, gap_flagged those with any of the three.
     """
     metadata = [json.loads(r["window_metadata"]) for r in records]
     frame = pd.DataFrame({
@@ -613,17 +622,19 @@ def detection_by_year(records: Sequence[Dict[str, Any]]) -> pd.DataFrame:
         "mean_abs_gex_bn": [r["clf_avg_magnitude"] / 1e9 for r in records],
         "cal_gap": [m["calendar_gap_days"] > common.CALENDAR_GAP_FLAG_DAYS for m in metadata],
         "missing_master": [m["missing_master_days"] > 0 for m in metadata],
+        "nyse_missing": [m["nyse_missing_days"] > 0 for m in metadata],
         "gap_flagged": [bool(m["gap_flag"]) for m in metadata],
     })
     table = frame.groupby("year").agg(windows=("detected", "size"), detected=("detected", "sum"),
                                       mean_abs_gex_bn=("mean_abs_gex_bn", "mean"), cal_gap=("cal_gap", "sum"),
-                                      missing_master=("missing_master", "sum"), gap_flagged=("gap_flagged", "sum"))
+                                      missing_master=("missing_master", "sum"), nyse_missing=("nyse_missing", "sum"),
+                                      gap_flagged=("gap_flagged", "sum"))
     total = pd.DataFrame([[len(frame), frame["detected"].sum(), frame["mean_abs_gex_bn"].mean(), frame["cal_gap"].sum(),
-                           frame["missing_master"].sum(), frame["gap_flagged"].sum()]], columns=table.columns, index=["all"])
+                           frame["missing_master"].sum(), frame["nyse_missing"].sum(), frame["gap_flagged"].sum()]], columns=table.columns, index=["all"])
     table = pd.concat([table, total])
     table.insert(2, "detected_pct", (100.0 * table["detected"] / table["windows"]).round(1))
     table["mean_abs_gex_bn"] = table["mean_abs_gex_bn"].round(2)
-    return table.astype({"windows": int, "detected": int, "cal_gap": int, "missing_master": int, "gap_flagged": int})
+    return table.astype({"windows": int, "detected": int, "cal_gap": int, "missing_master": int, "nyse_missing": int, "gap_flagged": int})
 
 
 # --------------------------------------------------------------------------- command line
@@ -698,9 +709,9 @@ def run(args: argparse.Namespace) -> int:
     records = build_records(series_key, args.symbol, rule, labels, specs, master)
     by_year = detection_by_year(records)
     logger.info("built %d windows (rule %s, labels %s) ending %s .. %s; calendar_gap_days > %d: %d, missing_master_days > 0: %d, "
-                "gap_flag: %d", len(records), rule, labels, records[0]["window_end"], records[-1]["window_end"],
+                "nyse_missing_days > 0: %d, gap_flag: %d", len(records), rule, labels, records[0]["window_end"], records[-1]["window_end"],
                 common.CALENDAR_GAP_FLAG_DAYS, by_year.loc["all", "cal_gap"], by_year.loc["all", "missing_master"],
-                by_year.loc["all", "gap_flagged"])
+                by_year.loc["all", "nyse_missing"], by_year.loc["all", "gap_flagged"])
 
     span = (args.end_min or date.min, end_max)
     if args.rollback:
@@ -714,7 +725,7 @@ def run(args: argparse.Namespace) -> int:
     print(f"\nDetection rate by window_end year (clf_should_detect), {series_key}/{args.symbol}, rule {rule}:")
     print(by_year.to_string())
     print(f"cal_gap = calendar_gap_days > {common.CALENDAR_GAP_FLAG_DAYS}; missing_master = missing_master_days > 0; "
-          f"gap_flagged = either (windows are kept)")
+          f"nyse_missing = nyse_missing_days > 0; gap_flagged = any of the three (windows are kept)")
     return 0
 
 
