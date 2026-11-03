@@ -150,8 +150,18 @@ Row counts are as built on 2026-10-29.
   `calendar_gap_days` is the widest calendar gap between neighbouring rows of the window; `missing_master_days`
   counts the trading dates of the symbol's master calendar (`gex.options_daily_summary`) that lie inside the window
   but are not among its rows, which catches a single skipped weekday that leaves no calendar gap. `gap_flag` is true
-  when `calendar_gap_days` exceeds `common.CALENDAR_GAP_FLAG_DAYS` (4, so a plain holiday weekend never fires) or
-  `missing_master_days` is above 0. Composite windows add `snapshot_timestamp`, `snapshot_type`, `t0_series` and
+  when `calendar_gap_days` exceeds `common.CALENDAR_GAP_FLAG_DAYS` (4, so a plain holiday weekend never fires),
+  `missing_master_days` is above 0 or `nyse_missing_days` is above 0. `nyse_missing_days` counts the NYSE trading days
+  (`common.nyse_trading_days(start, end)`: weekdays minus the NYSE holidays and the special closures 2012-10-29/30,
+  2018-12-05 and 2025-01-09, rules only, no package) inside the window's span that the series lacks. It does not depend on
+  the summary table, which is itself the master calendar and so cannot see a trading day it lacks; a single missing day
+  leaves `calendar_gap_days` at 4 or less. The flag changes nothing else: rule A, the windows and every label are
+  unchanged. Validation of the calendar (2026-11-03): over 2008-01-02..2026-10-09 no `new_full` SPY date falls on a
+  day the rules close the exchange, and the weekdays the rules find missing from the `new_full` SPY series are exactly
+  2009-07-23, 2009-08-31, 2010-11-17, 2011-05-13, 2011-06-07, 2016-07-15, 2016-09-09, 2017-01-26, 2017-08-25 to
+  2017-09-08 (10 trading days), 2018-01-29, 2018-11-06, 2019-09-03, 2020-06-23 and, in a series built before the
+  summary table was filled, 2026-05-06. 389 of the 4,671 `new_full` SPY windows span such a day (87 windows are
+  flagged by `calendar_gap_days`, 418 by any detector). Composite windows add `snapshot_timestamp`, `snapshot_type`, `t0_series` and
   `base_series`. As built: 87 windows per symbol of `new_full` are flagged by a gap of 5 days or more (storm closure
   2012-10, the data hole 2017-08-24 to 2017-09-11, the missing 2019-09-03), all ending before 2020; 58 windows of
   `jan2026_phase4a` are flagged by `missing_master_days = 1` (the January calendar lacks 2023-07-12 and 2024-03-11);
@@ -362,10 +372,10 @@ python $E/02_build_windows.py --series new_full --symbol SPY --rollback   # data
 * Output: `tables/windows/<series>_<symbol>.parquet` with the columns of `backups.gex_llm_regime_windows`
   (`gex_sequence` and `window_metadata` as JSON text, `input_sha256` = sha256 of the stored sequence). A partial build
   replaces the windows in its range and keeps the rest; a file written by an earlier version of the script (whose
-  `window_metadata` lacks `missing_master_days`) is refused instead of mixed. The composite windows are stored under the
+  `window_metadata` lacks `nyse_missing_days`) is refused instead of mixed. The composite windows are stored under the
   series key `intraday_t0` (`tables/windows/intraday_t0_SPY.parquet`).
 * The script prints the detection rate by `window_end` year, with the hole counts (`cal_gap`, `missing_master`,
-  `gap_flagged`). On `new_full` SPY it must show 4,671 windows, 10.3 % for 2024 and 13.6 % for 2025; on
+  `nyse_missing`, `gap_flagged`). On `new_full` SPY it must show 4,671 windows, 10.3 % for 2024 and 13.6 % for 2025; on
   `jan2026_phase4a` 1,476 windows, 100 % for 2024 and 2025 and 58 gap-flagged windows (section 3.5).
 * The master calendar of the hole detector is read once per run from the `new_full` series parquet of the symbol (run
   step 1 for `new_full` first); `--master-calendar db` reads `gex.options_daily_summary` instead (the default with
@@ -442,7 +452,7 @@ without touching the shared tree) and `--ignore-busy-window`. The arms it accept
 | `ingest --run-id R` | parses answers into detections and updates the run rows; idempotent | free |
 | `requeue [--run-id R] [--wait]` | sends chunks that the Batch API rejected at validation (enqueued-token quota) again, with the same files; `--wait` retries every `--interval` seconds (default 300) for up to `--max-hours` (24) | spends, like `submit` |
 | `retry --run-id R` | new run for answers cut off by the token limit, at 8,000 tokens | free until submitted |
-| `status` | runs, cost ledger, per-arm window state | free |
+| `status` | runs, cost ledger, per-arm window state (done, stale, retry, inflight, open) | free |
 
 Typical sequence for one arm:
 
@@ -464,7 +474,7 @@ python $E/04_llm_runner.py status
 `common.arm_window_series(arm)`. Windows that already have a parsed answer that was not cut off are skipped
 (`--include-done` overrides), windows whose answer was cut off wait for `retry`, windows that a generated, submitted or
 not yet ingested run already holds are skipped and logged (`--include-inflight` overrides), and the rest, including
-windows whose answer could not be parsed, are requested. `--limit N` takes the first N windows, or with
+windows whose answer could not be parsed and windows whose only answers are stale (below), are requested. `--limit N` takes the first N windows, or with
 `--sample stratified` N spread over calendar years in proportion to their size, picked by a reproducible hash rank
 (`--seed`, default 261). `--repeat-fraction F` (default `common.REPEAT_FRACTION` = 0.05; 0 turns it off and logs a
 warning; `1.0` repeats every window, which is decision D-09's full second pass of `bridge_jan`) adds `round(F x n)`
@@ -510,9 +520,27 @@ completed share for an expired or cancelled batch, and zero for a `generated` ru
 three o4-mini backfills apart, as "outside the budget ... never counted"; they are history, not spend. Always
 `submit --dry-run` first.
 
+**Stale answers (a window rebuilt under the same key).** When a series is rebuilt after the database gains a missing day,
+some windows keep their `(series_key, symbol, window_end)` but hold other values. Every answer 04 stored has
+`detection_metadata.prompt_sha256`, the sha256 of the prompt text that was sent. The rule: a stored answer is *stale* when
+it has a `prompt_sha256` and that differs from the sha256 of `common.build_prompt(gex_sequence)` for the window as it is
+stored now (same arm, symbol and `window_end`; the test-retest arm `<arm>#rep1` follows the same rule). Answers without
+`prompt_sha256` (the `r1_*` backfills) are never stale and never re-requested. Stale answers are ignored when a current
+answer exists. A window whose answers are all stale is in state `stale`, which counts as open work: `generate` selects it
+(and its stale `#rep1` repeat, ahead of the top-up to the repeat target), `status` has a `stale` column, and
+`refuse_duplicate_requests` (in `submit`) does not call it "already answered". `generate` logs the number of stale windows
+and writes `n_stale`, `n_stale_selected` and `n_stale_repeats` to `run_metadata.selection`. No flag is needed;
+`--include-done` still ignores all stored answers. `retry` leaves stale cut-off answers to `generate`. At `ingest` the new
+answer replaces the old row (same natural key; upsert in Postgres, and 05 keeps the latest `created_at` per natural key,
+which a replacing row also sets in Postgres) and records `detection_metadata.supersedes = {run_id, prompt_sha256}` of the
+row it replaced (`prompt_sha256` is absent for a backfill; an older `supersedes` is nested; re-ingesting the same run
+keeps the entry). Test (scratch copy): one window changed in `new_full` SPY gave `4670 done, 1 open (1 of them stale)`
+and a run of one request; after a synthetic answer only the new answer was left for that window.
+
 **Double requests.** `generate` and `retry` skip windows that a generated, submitted or not yet ingested run already
 holds (`--include-inflight` overrides), and `submit` refuses a chunk that repeats a request that was already sent or
-answered (`... repeat earlier work, e.g. ... -- refusing (pass --force to send them anyway)`). Only ingested answers
+answered (`... repeat earlier work, e.g. ... -- refusing (pass --force to send them anyway)`); an answer to a different
+prompt (stale) does not count as answered. Only ingested answers
 count as done, so ingest a run before generating the next one for the same arm. The backfilled runs (`r1_*`) are not
 runner runs: `submit`, `poll`, `retrieve`, `ingest` and `retry` refuse them (`... was not made by this script`).
 
@@ -671,7 +699,7 @@ rates are percentages, intervals are Wilson 95 %, and `n_indep_30d` counts non-o
 | `disagreements.csv`, `llm_parse_stats.csv`, `reported_vs_computed.csv` | every parsed answer whose verdict differs from the rule; parse and finish-reason counts and token use per arm; model-reported over computed mean \|GEX\| |
 | `stats.yaml` | overlap-aware inference: rates by label source and period, series, label (`p3_2024` against `p3_2024_dated`, `p4_2020` against `p4_2020_dated`) and scale (`new_full_scaled` against `new_full`) contrasts, period shifts, Phase 3 against Phase 4, and the headline contrasts |
 | `cost_ledger.csv`, `.yaml` | spend per run, arm and model, reconciled with per-request token use; `budget` counts only runs with `common.counts_toward_budget`, the three o4-mini backfills sit under `not_spend` |
-| `report.yaml` | row counts, input fingerprint, script and git sha, warnings, caveats, classifier diagnostics (floor effect, scaling, flagged windows), headline numbers |
+| `report.yaml` | row counts, input fingerprint, script and git sha, warnings, caveats, classifier diagnostics (floor effect, scaling, flagged windows with `n_nyse_missing_days`, `rates_without_nyse_missing`: per series and arm the detection rate with and without the windows that span a missing NYSE day, and the largest change in points), headline numbers |
 | `env_check_<UTC stamp>.json` | `00_env_check.py --write` |
 
 Windows have stride 1, so consecutive windows share 29 of 30 days and the Wilson intervals are too narrow. Every
@@ -897,7 +925,7 @@ November prompt; that is the point of the arm.
 | `... does not exist: apply ... after maintainer approval` or `... do not exist yet (DDL awaits approval): using parquet only` | the gate (section 5.3) | expected; use the default mode, `--parquet-only` or `--rollback` |
 | `FidelityError: ... window_end set differs`, `... differ from <file> in their dates or values` or `... prompt(s) differ from the file` | the batch files, the prompt builder or the series parquet changed | stop; run `00_env_check.py`; rebuild the series (01) and the windows (02) |
 | 02: `series parquet not found: ...`; `<series>/<symbol> ends <date>, more than 7 days before the last window_end requested ... the series looks incomplete`; `master calendar: ... not found (run 01_build_series.py --series new_full ...)` | step 01 has not been run, was run for part of the range (`--years`), or `new_full` of the symbol is missing | run 01 for the series (and for `new_full` of the symbol); or pass `--end-max` to build the windows a short series supports; or `--master-calendar db` |
-| 02: `<file> holds N window(s) from an earlier version of this script (window_metadata without missing_master_days)` | a windows parquet written before the hole detectors existed | delete that windows parquet and rebuild the full range |
+| 02: `<file> holds N window(s) from an earlier version of this script (window_metadata without nyse_missing_days)` | a windows parquet written before the NYSE-calendar detector existed | delete that windows parquet and rebuild the full range |
 | 03: `the batch output does not reproduce the published run: ...` | a batch file, the research cache or the result YAML differs from what the published rates need | nothing was written; run `00_env_check.py`; do not continue until the cause is known |
 | 04: `<path> not found: run 02_build_windows.py for <series>/<symbol> (or --from-db)` | the windows parquet of the arm is missing (the composite arm needs `intraday_t0`, the scaled arms `new_full_scaled`, the Phase 3/4 arms `p3_2024`, `p3_2024_dated`, `p4_2020`, `p4_2020_dated`) | build the series (01), then the windows (02) |
 | 04: `... -- refusing (raise --budget or pass --force)` | ledger plus projection above the budget | `status`; raise `--budget` only with the authors' approval |

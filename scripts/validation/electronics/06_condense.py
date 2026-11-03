@@ -71,6 +71,7 @@ def main(argv=None) -> int:
     w = windows[WINDOW_COLUMNS].copy()
     w["calendar_gap_days"] = windows["window_metadata"].map(lambda m: meta(m).get("calendar_gap_days"))
     w["missing_master_days"] = windows["window_metadata"].map(lambda m: meta(m).get("missing_master_days"))
+    w["nyse_missing_days"] = windows["window_metadata"].map(lambda m: meta(m).get("nyse_missing_days"))
     w = w.sort_values(["series_key", "symbol", "window_end"], kind="stable")
     w.to_csv(args.out / "windows.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 

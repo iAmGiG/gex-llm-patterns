@@ -2324,8 +2324,11 @@ def input_diagnostics(data: Data) -> Dict[str, Any]:
 
     ``scaling``: per scaled series (common.Series.scale) and symbol, the factor recorded in series_metadata by
     01_build_series.py.  ``flagged_windows``: windows whose window_metadata marks a calendar gap longer than
-    ``common.CALENDAR_GAP_FLAG_DAYS`` (gap_flag / calendar_gap_days) or master-calendar days missing from the series
-    (missing_master_days), per series and symbol.
+    ``common.CALENDAR_GAP_FLAG_DAYS`` (gap_flag / calendar_gap_days), master-calendar days missing from the series
+    (missing_master_days) or NYSE trading days missing from it (nyse_missing_days), per series and symbol.
+    ``rates_without_nyse_missing``: per series and symbol (classifier label) and per arm (parsed answers) the detection
+    rate over all windows, over the windows that span no missing NYSE trading day, and the change in percentage
+    points; ``max_abs_change_pp`` is the largest change over all entries.
     """
     out: Dict[str, Any] = {}
     scaled: Dict[str, Any] = {}
@@ -2347,12 +2350,51 @@ def input_diagnostics(data: Data) -> Dict[str, Any]:
         gap_days = pd.to_numeric(meta.map(lambda m: m.get("calendar_gap_days")), errors="coerce")
         gap = meta.map(lambda m: truthy(m.get("gap_flag"))) | (gap_days > common.CALENDAR_GAP_FLAG_DAYS)
         missing = pd.to_numeric(meta.map(lambda m: m.get("missing_master_days")), errors="coerce").fillna(0) > 0
-        grouped = win.assign(gap=gap, missing=missing).groupby(["series_key", "symbol"]).agg(
-            n_windows=("gap", "size"), n_calendar_gap=("gap", "sum"), n_missing_master_days=("missing", "sum")).reset_index()
-        flagged = grouped[(grouped["n_calendar_gap"] > 0) | (grouped["n_missing_master_days"] > 0)]
+        nyse = pd.to_numeric(meta.map(lambda m: m.get("nyse_missing_days")), errors="coerce").fillna(0) > 0
+        grouped = win.assign(gap=gap, missing=missing, nyse=nyse).groupby(["series_key", "symbol"]).agg(
+            n_windows=("gap", "size"), n_calendar_gap=("gap", "sum"), n_missing_master_days=("missing", "sum"),
+            n_nyse_missing_days=("nyse", "sum")).reset_index()
+        flagged = grouped[(grouped["n_calendar_gap"] > 0) | (grouped["n_missing_master_days"] > 0)
+                          | (grouped["n_nyse_missing_days"] > 0)]
         if len(flagged):
-            out["flagged_windows"] = flagged.astype({"n_calendar_gap": int, "n_missing_master_days": int}).to_dict("records")
+            out["flagged_windows"] = flagged.astype(
+                {"n_calendar_gap": int, "n_missing_master_days": int, "n_nyse_missing_days": int}).to_dict("records")
+        if meta.map(lambda m: "nyse_missing_days" in m).any():
+            out["rates_without_nyse_missing"] = rates_without_nyse_missing(data, nyse)
     return out
+
+
+def rates_without_nyse_missing(data: Data, nyse: pd.Series) -> Dict[str, Any]:
+    """Detection rates with and without the windows that span a NYSE trading day the series lacks.
+
+    ``nyse`` is aligned with ``data.windows``.  Classifier label per (series, symbol); LLM answer per arm (parsed
+    answers of the original run, repeats left out), joined to the window the answer scored.
+    """
+    has_field = data.windows["window_metadata"].map(lambda m: "nyse_missing_days" in m)
+    win = data.windows.assign(nyse=nyse.to_numpy())[has_field.to_numpy()]  # windows built before the field existed are left out
+
+    def entry(label: pd.Series, flagged: pd.Series) -> Dict[str, Any]:
+        label, flagged = label.astype(bool), flagged.astype(bool)
+        kept = label[~flagged]
+        all_rate = 100.0 * label.mean()
+        kept_rate = 100.0 * kept.mean() if len(kept) else math.nan
+        return {"n_all": int(len(label)), "n_nyse_missing": int(flagged.sum()), "n_without": int(len(kept)),
+                "rate_all_pct": all_rate, "rate_without_pct": kept_rate, "change_pp": kept_rate - all_rate}
+
+    classifier = [{"series_key": key, "symbol": symbol, **entry(g["clf_should_detect"], g["nyse"])}
+                  for (key, symbol), g in win.groupby(["series_key", "symbol"]) if g["clf_should_detect"].notna().all()]
+    llm = []
+    det = data.detections
+    if len(det):
+        det = det[det["parsed"] & (det["repeat_index"] == 0)]
+        flags = win[["series_key", "symbol", "window_end", "nyse"]].rename(columns={"series_key": "window_series_key"})
+        joined = det.merge(flags, on=["window_series_key", "symbol", "window_end"], how="inner")
+        llm = [{"arm": arm, "symbol": symbol, **entry(g["regime_detected"], g["nyse"])}
+               for (arm, symbol), g in joined.groupby(["arm", "symbol"])]
+    changes = [abs(e["change_pp"]) for e in classifier + llm if not math.isnan(e["change_pp"])]
+    return {"classifier": classifier, "llm": llm, "max_abs_change_pp": max(changes) if changes else None,
+            "note": "rate over all windows, and over the windows whose span holds no NYSE trading day missing from the "
+                    "series (window_metadata.nyse_missing_days == 0); the windows are kept in every other table"}
 
 
 def write_report(ctx: Context, status: Dict[str, Dict[str, Any]], args_view: Dict[str, Any]) -> None:
