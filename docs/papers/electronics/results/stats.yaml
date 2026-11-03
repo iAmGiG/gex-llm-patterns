@@ -335,10 +335,10 @@ headline_contrasts:
     symbol: IWM
     arm: null
     model: null
-  diff_pp: 53.919808
+  diff_pp: 53.947368
   bootstrap_diff_ci_pp:
-  - 40.667832
-  - 67.387829
+  - 40.734582
+  - 67.407363
   p_bootstrap: 0.00049975
   p_nonoverlap: 4.65661e-10
 - name: series_contrast
@@ -356,10 +356,10 @@ headline_contrasts:
     symbol: QQQ
     arm: null
     model: null
-  diff_pp: 20.958084
+  diff_pp: 21.005386
   bootstrap_diff_ci_pp:
-  - 12.609794
-  - 31.173329
+  - 12.712132
+  - 31.21361
   p_bootstrap: 0.00049975
   p_nonoverlap: 0.000488281
 - name: series_contrast
@@ -377,10 +377,10 @@ headline_contrasts:
     symbol: IWM
     arm: full_iwm
     model: gpt-6-luna
-  diff_pp: 54.099342
+  diff_pp: 54.126794
   bootstrap_diff_ci_pp:
-  - 40.964965
-  - 67.446244
+  - 41.068093
+  - 67.454355
   p_bootstrap: 0.00049975
   p_nonoverlap: 4.65661e-10
 - name: series_contrast
@@ -398,10 +398,10 @@ headline_contrasts:
     symbol: QQQ
     arm: full_qqq
     model: gpt-6-luna
-  diff_pp: 21.556886
+  diff_pp: 21.60383
   bootstrap_diff_ci_pp:
-  - 13.303492
-  - 31.774659
+  - 13.373443
+  - 31.812732
   p_bootstrap: 0.00049975
   p_nonoverlap: 0.000488281
 - name: period_shift
@@ -1349,12 +1349,12 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2978
+  n: 2990
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.128828
+  - 1.0842e-17
+  - 0.128312
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
@@ -1379,12 +1379,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -1409,12 +1409,12 @@ rates:
     arm: null
     model: null
   period: all
-  n: 4678
+  n: 4691
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.08205
+  - 5.42101e-18
+  - 0.081823
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
@@ -1422,12 +1422,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 156
+    n: 157
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.403293
+    - 2.388351
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -1559,12 +1559,12 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2168
+  n: 2178
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.176876
+  - 0.176065
   bootstrap_quarter:
     n_blocks: 35
     n_draws: 2000
@@ -1589,12 +1589,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -1619,12 +1619,12 @@ rates:
     arm: null
     model: null
   period: all
-  n: 3867
+  n: 3878
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.099241
+  - 0.09896
   bootstrap_quarter:
     n_blocks: 63
     n_draws: 2000
@@ -1632,12 +1632,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 129
+    n: 130
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.891762
+    - 2.870156
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -1769,29 +1769,29 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2971
-  k: 301
-  rate_pct: 10.131269
+  n: 2990
+  k: 304
+  rate_pct: 10.167224
   wilson_ci_pct:
-  - 9.097223
-  - 11.268281
+  - 9.134568
+  - 11.302101
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     ci_pct:
-    - 4.929069
-    - 16.588638
+    - 4.919341
+    - 16.690604
   nonoverlap_30d:
     n: 100
-    k: 13
-    rate_pct: 13.0
+    k: 8
+    rate_pct: 8.0
     wilson_ci_pct:
-    - 7.757167
-    - 20.980351
+    - 4.109346
+    - 14.998108
     n_starts: 30
     rate_pct_range_over_starts:
-    - 6.060606
-    - 13.131313
+    - 5.050505
+    - 15.0
 - labeller:
     kind: classifier
     series_key: new_full
@@ -1799,18 +1799,18 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 22
-  rate_pct: 11.398964
+  rate_pct: 11.340206
   wilson_ci_pct:
-  - 7.649243
-  - 16.655321
+  - 7.609164
+  - 16.572551
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
     ci_pct:
     - 0.0
-    - 22.105263
+    - 21.761658
   nonoverlap_30d:
     n: 7
     k: 1
@@ -1829,29 +1829,29 @@ rates:
     arm: null
     model: null
   period: all
-  n: 4671
-  k: 606
-  rate_pct: 12.973667
+  n: 4691
+  k: 609
+  rate_pct: 12.982307
   wilson_ci_pct:
-  - 12.040402
-  - 13.967784
+  - 12.050689
+  - 13.974502
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
     ci_pct:
-    - 8.57257
-    - 17.756764
+    - 8.566491
+    - 17.746832
   nonoverlap_30d:
-    n: 156
-    k: 22
-    rate_pct: 14.102564
+    n: 157
+    k: 19
+    rate_pct: 12.101911
     wilson_ci_pct:
-    - 9.501114
-    - 20.429455
+    - 7.886015
+    - 18.128085
     n_starts: 30
     rate_pct_range_over_starts:
-    - 10.897436
-    - 15.384615
+    - 9.615385
+    - 16.56051
 - labeller:
     kind: classifier
     series_key: new_ex0dte
@@ -1979,12 +1979,12 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2978
+  n: 2990
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.128828
+  - 1.0842e-17
+  - 0.128312
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
@@ -2009,12 +2009,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -2039,12 +2039,12 @@ rates:
     arm: null
     model: null
   period: all
-  n: 4678
+  n: 4691
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.08205
+  - 5.42101e-18
+  - 0.081823
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
@@ -2052,12 +2052,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 156
+    n: 157
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.403293
+    - 2.388351
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -2189,12 +2189,12 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2168
+  n: 2178
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.176876
+  - 0.176065
   bootstrap_quarter:
     n_blocks: 35
     n_draws: 2000
@@ -2219,12 +2219,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -2249,12 +2249,12 @@ rates:
     arm: null
     model: null
   period: all
-  n: 3867
+  n: 3878
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.099241
+  - 0.09896
   bootstrap_quarter:
     n_blocks: 63
     n_draws: 2000
@@ -2262,12 +2262,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 129
+    n: 130
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.891762
+    - 2.870156
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -2399,29 +2399,29 @@ rates:
     arm: null
     model: null
   period: 2008-2019
-  n: 2971
+  n: 2990
   k: 194
-  rate_pct: 6.529788
+  rate_pct: 6.488294
   wilson_ci_pct:
-  - 5.696375
-  - 7.475468
+  - 5.660029
+  - 7.428222
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     ci_pct:
-    - 2.706904
-    - 11.356727
+    - 2.712201
+    - 11.309676
   nonoverlap_30d:
     n: 100
-    k: 8
-    rate_pct: 8.0
+    k: 5
+    rate_pct: 5.0
     wilson_ci_pct:
-    - 4.109346
-    - 14.998108
+    - 2.154368
+    - 11.175047
     n_starts: 30
     rate_pct_range_over_starts:
     - 3.030303
-    - 8.080808
+    - 10.0
 - labeller:
     kind: classifier
     series_key: new_ex0dte
@@ -2429,12 +2429,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
+  n: 194
   k: 41
-  rate_pct: 21.243523
+  rate_pct: 21.134021
   wilson_ci_pct:
-  - 16.063149
-  - 27.546291
+  - 15.978102
+  - 27.410912
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -2459,29 +2459,29 @@ rates:
     arm: null
     model: null
   period: all
-  n: 4671
+  n: 4691
   k: 491
-  rate_pct: 10.511668
+  rate_pct: 10.466851
   wilson_ci_pct:
-  - 9.664326
-  - 11.423907
+  - 9.622937
+  - 11.37546
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
     ci_pct:
-    - 6.856893
-    - 14.544302
+    - 6.825599
+    - 14.448875
   nonoverlap_30d:
-    n: 156
-    k: 17
-    rate_pct: 10.897436
+    n: 157
+    k: 15
+    rate_pct: 9.55414
     wilson_ci_pct:
-    - 6.91592
-    - 16.75845
+    - 5.8756
+    - 15.164658
     n_starts: 30
     rate_pct_range_over_starts:
     - 7.692308
-    - 12.258065
+    - 14.012739
 - labeller:
     kind: classifier
     series_key: intraday_t0
@@ -2669,11 +2669,11 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
-  k: 193
+  n: 194
+  k: 194
   rate_pct: 100.0
   wilson_ci_pct:
-  - 98.04845
+  - 98.058315
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
@@ -2699,17 +2699,17 @@ rates:
     arm: null
     model: null
   period: all
-  n: 1671
-  k: 1650
-  rate_pct: 98.743268
+  n: 1672
+  k: 1651
+  rate_pct: 98.744019
   wilson_ci_pct:
-  - 98.086378
-  - 99.176559
+  - 98.087518
+  - 99.177053
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     ci_pct:
-    - 96.099011
+    - 96.099071
     - 100.0
   nonoverlap_30d:
     n: 56
@@ -2849,12 +2849,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
-  k: 86
-  rate_pct: 44.559585
+  n: 194
+  k: 87
+  rate_pct: 44.845361
   wilson_ci_pct:
-  - 37.721523
-  - 51.609992
+  - 38.014629
+  - 51.876266
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -2879,18 +2879,18 @@ rates:
     arm: null
     model: null
   period: all
-  n: 1671
-  k: 901
-  rate_pct: 53.919808
+  n: 1672
+  k: 902
+  rate_pct: 53.947368
   wilson_ci_pct:
-  - 51.52358
-  - 56.298055
+  - 51.551899
+  - 56.324741
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     ci_pct:
-    - 40.667832
-    - 67.387829
+    - 40.734582
+    - 67.407363
   nonoverlap_30d:
     n: 56
     k: 32
@@ -3029,12 +3029,12 @@ rates:
     arm: null
     model: null
   period: '2026'
-  n: 193
-  k: 30
-  rate_pct: 15.544041
+  n: 194
+  k: 31
+  rate_pct: 15.979381
   wilson_ci_pct:
-  - 11.110407
-  - 21.322526
+  - 11.491617
+  - 21.788292
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -3051,7 +3051,7 @@ rates:
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
-    - 28.571429
+    - 33.333333
 - labeller:
     kind: classifier
     series_key: new_full_scaled
@@ -3059,18 +3059,18 @@ rates:
     arm: null
     model: null
   period: all
-  n: 1670
-  k: 350
-  rate_pct: 20.958084
+  n: 1671
+  k: 351
+  rate_pct: 21.005386
   wilson_ci_pct:
-  - 19.073772
-  - 22.975698
+  - 19.119899
+  - 23.023878
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     ci_pct:
-    - 12.609794
-    - 31.173329
+    - 12.712132
+    - 31.21361
   nonoverlap_30d:
     n: 56
     k: 12
@@ -4019,12 +4019,12 @@ rates:
     arm: full_iwm
     model: gpt-6-luna
   period: 2008-2019
-  n: 2978
+  n: 2990
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.128828
+  - 1.0842e-17
+  - 0.128312
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
@@ -4049,12 +4049,12 @@ rates:
     arm: full_iwm
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -4079,12 +4079,12 @@ rates:
     arm: full_iwm
     model: gpt-6-luna
   period: all
-  n: 4678
+  n: 4691
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
-  - 0.0
-  - 0.08205
+  - 5.42101e-18
+  - 0.081823
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
@@ -4092,12 +4092,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 156
+    n: 157
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.403293
+    - 2.388351
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -4229,12 +4229,12 @@ rates:
     arm: full_qqq
     model: gpt-6-luna
   period: 2008-2019
-  n: 2168
+  n: 2178
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.176876
+  - 0.176065
   bootstrap_quarter:
     n_blocks: 35
     n_draws: 2000
@@ -4259,12 +4259,12 @@ rates:
     arm: full_qqq
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -4289,12 +4289,12 @@ rates:
     arm: full_qqq
     model: gpt-6-luna
   period: all
-  n: 3867
+  n: 3878
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.099241
+  - 0.09896
   bootstrap_quarter:
     n_blocks: 63
     n_draws: 2000
@@ -4302,12 +4302,12 @@ rates:
     - 0.0
     - 0.0
   nonoverlap_30d:
-    n: 129
+    n: 130
     k: 0
     rate_pct: 0.0
     wilson_ci_pct:
     - 0.0
-    - 2.891762
+    - 2.870156
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
@@ -4439,29 +4439,29 @@ rates:
     arm: full_spy
     model: gpt-6-luna
   period: 2008-2019
-  n: 2971
-  k: 300
-  rate_pct: 10.09761
+  n: 2990
+  k: 304
+  rate_pct: 10.167224
   wilson_ci_pct:
-  - 9.065204
-  - 11.23307
+  - 9.134568
+  - 11.302101
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     ci_pct:
-    - 4.924216
-    - 16.422714
+    - 4.94194
+    - 16.623167
   nonoverlap_30d:
     n: 100
-    k: 13
-    rate_pct: 13.0
+    k: 8
+    rate_pct: 8.0
     wilson_ci_pct:
-    - 7.757167
-    - 20.980351
+    - 4.109346
+    - 14.998108
     n_starts: 30
     rate_pct_range_over_starts:
-    - 6.060606
-    - 13.131313
+    - 5.050505
+    - 15.0
 - labeller:
     kind: llm
     series_key: new_full
@@ -4469,18 +4469,18 @@ rates:
     arm: full_spy
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 22
-  rate_pct: 11.398964
+  rate_pct: 11.340206
   wilson_ci_pct:
-  - 7.649243
-  - 16.655321
+  - 7.609164
+  - 16.572551
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
     ci_pct:
     - 0.0
-    - 22.105263
+    - 21.761658
   nonoverlap_30d:
     n: 7
     k: 1
@@ -4499,29 +4499,29 @@ rates:
     arm: full_spy
     model: gpt-6-luna
   period: all
-  n: 4671
-  k: 613
-  rate_pct: 13.123528
+  n: 4691
+  k: 617
+  rate_pct: 13.152846
   wilson_ci_pct:
-  - 12.185433
-  - 14.122228
+  - 12.215751
+  - 14.15024
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
     ci_pct:
-    - 8.761205
-    - 17.858747
+    - 8.736995
+    - 17.890255
   nonoverlap_30d:
-    n: 156
-    k: 22
-    rate_pct: 14.102564
+    n: 157
+    k: 20
+    rate_pct: 12.738854
     wilson_ci_pct:
-    - 9.501114
-    - 20.429455
+    - 8.399914
+    - 18.857647
     n_starts: 30
     rate_pct_range_over_starts:
-    - 10.25641
-    - 15.483871
+    - 9.615385
+    - 16.56051
 - labeller:
     kind: llm
     series_key: new_ex0dte
@@ -4649,12 +4649,12 @@ rates:
     arm: ex0dte_iwm
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -4679,12 +4679,12 @@ rates:
     arm: ex0dte_iwm
     model: gpt-6-luna
   period: all
-  n: 1700
+  n: 1701
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.225459
+  - 0.225326
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
@@ -4829,12 +4829,12 @@ rates:
     arm: ex0dte_qqq
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -4859,12 +4859,12 @@ rates:
     arm: ex0dte_qqq
     model: gpt-6-luna
   period: all
-  n: 1699
+  n: 1700
   k: 0
   rate_pct: 0.0
   wilson_ci_pct:
   - 0.0
-  - 0.225591
+  - 0.225459
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
@@ -5009,29 +5009,29 @@ rates:
     arm: ex0dte_spy
     model: gpt-6-luna
   period: 2008-2019
-  n: 2971
-  k: 191
-  rate_pct: 6.428812
+  n: 2990
+  k: 192
+  rate_pct: 6.421405
   wilson_ci_pct:
-  - 5.601923
-  - 7.368229
+  - 5.597457
+  - 7.357186
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     ci_pct:
-    - 2.633969
-    - 11.266775
+    - 2.614499
+    - 11.274199
   nonoverlap_30d:
     n: 100
-    k: 8
-    rate_pct: 8.0
+    k: 5
+    rate_pct: 5.0
     wilson_ci_pct:
-    - 4.109346
-    - 14.998108
+    - 2.154368
+    - 11.175047
     n_starts: 30
     rate_pct_range_over_starts:
     - 3.030303
-    - 8.080808
+    - 10.0
 - labeller:
     kind: llm
     series_key: new_ex0dte
@@ -5039,12 +5039,12 @@ rates:
     arm: ex0dte_spy
     model: gpt-6-luna
   period: '2026'
-  n: 193
+  n: 194
   k: 41
-  rate_pct: 21.243523
+  rate_pct: 21.134021
   wilson_ci_pct:
-  - 16.063149
-  - 27.546291
+  - 15.978102
+  - 27.410912
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -5069,29 +5069,29 @@ rates:
     arm: ex0dte_spy
     model: gpt-6-luna
   period: all
-  n: 4671
-  k: 494
-  rate_pct: 10.575894
+  n: 4691
+  k: 495
+  rate_pct: 10.552121
   wilson_ci_pct:
-  - 9.726138
-  - 11.490442
+  - 9.705001
+  - 11.463796
   bootstrap_quarter:
     n_blocks: 76
     n_draws: 2000
     ci_pct:
-    - 6.899048
-    - 14.629679
+    - 6.874153
+    - 14.595939
   nonoverlap_30d:
-    n: 156
-    k: 18
-    rate_pct: 11.538462
+    n: 157
+    k: 15
+    rate_pct: 9.55414
     wilson_ci_pct:
-    - 7.424446
-    - 17.501164
+    - 5.8756
+    - 15.164658
     n_starts: 30
     rate_pct_range_over_starts:
     - 7.692308
-    - 12.258065
+    - 13.375796
 - labeller:
     kind: llm
     series_key: intraday_t0
@@ -5279,12 +5279,12 @@ rates:
     arm: full_iwm_scaled
     model: gpt-6-luna
   period: '2026'
-  n: 193
-  k: 87
-  rate_pct: 45.07772
+  n: 194
+  k: 88
+  rate_pct: 45.360825
   wilson_ci_pct:
-  - 38.222153
-  - 52.125409
+  - 38.513154
+  - 52.388652
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -5309,18 +5309,18 @@ rates:
     arm: full_iwm_scaled
     model: gpt-6-luna
   period: all
-  n: 1671
-  k: 904
-  rate_pct: 54.099342
+  n: 1672
+  k: 905
+  rate_pct: 54.126794
   wilson_ci_pct:
-  - 51.703392
-  - 56.476487
+  - 51.731608
+  - 56.503062
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     ci_pct:
-    - 40.964965
-    - 67.446244
+    - 41.068093
+    - 67.454355
   nonoverlap_30d:
     n: 56
     k: 32
@@ -5459,12 +5459,12 @@ rates:
     arm: full_qqq_scaled
     model: gpt-6-luna
   period: '2026'
-  n: 193
-  k: 31
-  rate_pct: 16.062176
+  n: 194
+  k: 32
+  rate_pct: 16.494845
   wilson_ci_pct:
-  - 11.552457
-  - 21.896522
+  - 11.933107
+  - 22.357713
   bootstrap_quarter:
     n_blocks: 4
     n_draws: 2000
@@ -5481,7 +5481,7 @@ rates:
     n_starts: 30
     rate_pct_range_over_starts:
     - 0.0
-    - 28.571429
+    - 33.333333
 - labeller:
     kind: llm
     series_key: new_full_scaled
@@ -5489,18 +5489,18 @@ rates:
     arm: full_qqq_scaled
     model: gpt-6-luna
   period: all
-  n: 1670
-  k: 360
-  rate_pct: 21.556886
+  n: 1671
+  k: 361
+  rate_pct: 21.60383
   wilson_ci_pct:
-  - 19.651104
-  - 23.593222
+  - 19.696942
+  - 23.640979
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     ci_pct:
-    - 13.303492
-    - 31.774659
+    - 13.373443
+    - 31.812732
   nonoverlap_30d:
     n: 56
     k: 12
@@ -6485,15 +6485,15 @@ contrasts:
     symbol: IWM
     arm: null
     model: null
-  n_common_windows: 2978
+  n_common_windows: 2990
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
-  - 0.0
-  - 0.128828
+  - 1.0842e-17
+  - 0.128312
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
-  - 0.0
-  - 0.128828
+  - 1.0842e-17
+  - 0.128312
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -6577,15 +6577,15 @@ contrasts:
     symbol: IWM
     arm: null
     model: null
-  n_common_windows: 193
+  n_common_windows: 194
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -6761,15 +6761,15 @@ contrasts:
     symbol: QQQ
     arm: null
     model: null
-  n_common_windows: 2168
+  n_common_windows: 2178
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
   - 0.0
-  - 0.176876
+  - 0.176065
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
   - 0.0
-  - 0.176876
+  - 0.176065
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -6853,15 +6853,15 @@ contrasts:
     symbol: QQQ
     arm: null
     model: null
-  n_common_windows: 193
+  n_common_windows: 194
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -7037,36 +7037,36 @@ contrasts:
     symbol: SPY
     arm: null
     model: null
-  n_common_windows: 2971
-  rate_a_pct: 10.131269
+  n_common_windows: 2990
+  rate_a_pct: 10.167224
   rate_a_wilson_ci_pct:
-  - 9.097223
-  - 11.268281
-  rate_b_pct: 6.529788
+  - 9.134568
+  - 11.302101
+  rate_b_pct: 6.488294
   rate_b_wilson_ci_pct:
-  - 5.696375
-  - 7.475468
-  diff_pp: 3.601481
-  windows_only_a: 119
-  windows_only_b: 12
+  - 5.660029
+  - 7.428222
+  diff_pp: 3.67893
+  windows_only_a: 120
+  windows_only_b: 10
   naive_stride1:
-    p_mcnemar_exact: 2.587e-23
+    p_mcnemar_exact: 4.26343e-25
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     diff_ci_pp:
-    - 1.508728
-    - 6.090728
+    - 1.531228
+    - 6.229436
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 100
-    rate_a_pct: 13.0
-    rate_b_pct: 8.0
-    diff_pp: 5.0
-    windows_only_a: 5
-    windows_only_b: 0
-    p_mcnemar_exact: 0.0625
+    rate_a_pct: 8.0
+    rate_b_pct: 5.0
+    diff_pp: 3.0
+    windows_only_a: 4
+    windows_only_b: 1
+    p_mcnemar_exact: 0.375
 - name: series_contrast
   family: series
   design: paired by window_end (windows present in both series)
@@ -7129,16 +7129,16 @@ contrasts:
     symbol: SPY
     arm: null
     model: null
-  n_common_windows: 193
-  rate_a_pct: 11.398964
+  n_common_windows: 194
+  rate_a_pct: 11.340206
   rate_a_wilson_ci_pct:
-  - 7.649243
-  - 16.655321
-  rate_b_pct: 21.243523
+  - 7.609164
+  - 16.572551
+  rate_b_pct: 21.134021
   rate_b_wilson_ci_pct:
-  - 16.063149
-  - 27.546291
-  diff_pp: -9.84456
+  - 15.978102
+  - 27.410912
+  diff_pp: -9.793814
   windows_only_a: 0
   windows_only_b: 19
   naive_stride1:
@@ -7359,15 +7359,15 @@ contrasts:
     symbol: IWM
     arm: ex0dte_iwm
     model: gpt-6-luna
-  n_common_windows: 193
+  n_common_windows: 194
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -7589,15 +7589,15 @@ contrasts:
     symbol: QQQ
     arm: ex0dte_qqq
     model: gpt-6-luna
-  n_common_windows: 193
+  n_common_windows: 194
   rate_a_pct: 0.0
   rate_a_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
   - 0.0
-  - 1.95155
+  - 1.941685
   diff_pp: 0.0
   windows_only_a: 0
   windows_only_b: 0
@@ -7773,36 +7773,36 @@ contrasts:
     symbol: SPY
     arm: ex0dte_spy
     model: gpt-6-luna
-  n_common_windows: 2971
-  rate_a_pct: 10.09761
+  n_common_windows: 2990
+  rate_a_pct: 10.167224
   rate_a_wilson_ci_pct:
-  - 9.065204
-  - 11.23307
-  rate_b_pct: 6.428812
+  - 9.134568
+  - 11.302101
+  rate_b_pct: 6.421405
   rate_b_wilson_ci_pct:
-  - 5.601923
-  - 7.368229
-  diff_pp: 3.668798
-  windows_only_a: 122
-  windows_only_b: 13
+  - 5.597457
+  - 7.357186
+  diff_pp: 3.745819
+  windows_only_a: 124
+  windows_only_b: 12
   naive_stride1:
-    p_mcnemar_exact: 2.2439e-23
+    p_mcnemar_exact: 1.28681e-24
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     diff_ci_pp:
-    - 1.546218
-    - 6.17366
+    - 1.574526
+    - 6.288639
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 100
-    rate_a_pct: 13.0
-    rate_b_pct: 8.0
-    diff_pp: 5.0
-    windows_only_a: 5
-    windows_only_b: 0
-    p_mcnemar_exact: 0.0625
+    rate_a_pct: 8.0
+    rate_b_pct: 5.0
+    diff_pp: 3.0
+    windows_only_a: 4
+    windows_only_b: 1
+    p_mcnemar_exact: 0.375
 - name: series_contrast
   family: series
   design: paired by window_end (windows present in both series)
@@ -7865,16 +7865,16 @@ contrasts:
     symbol: SPY
     arm: ex0dte_spy
     model: gpt-6-luna
-  n_common_windows: 193
-  rate_a_pct: 11.398964
+  n_common_windows: 194
+  rate_a_pct: 11.340206
   rate_a_wilson_ci_pct:
-  - 7.649243
-  - 16.655321
-  rate_b_pct: 21.243523
+  - 7.609164
+  - 16.572551
+  rate_b_pct: 21.134021
   rate_b_wilson_ci_pct:
-  - 16.063149
-  - 27.546291
-  diff_pp: -9.84456
+  - 15.978102
+  - 27.410912
+  diff_pp: -9.793814
   windows_only_a: 0
   windows_only_b: 19
   naive_stride1:
@@ -8054,23 +8054,23 @@ contrasts:
   rate_a_wilson_ci_pct:
   - 8.809186
   - 10.951244
-  rate_b_pct: 10.131269
+  rate_b_pct: 10.164928
   rate_b_wilson_ci_pct:
-  - 9.097223
-  - 11.268281
-  diff_pp: -0.302928
+  - 9.129246
+  - 11.303489
+  diff_pp: -0.336587
   windows_only_a: 85
-  windows_only_b: 94
+  windows_only_b: 95
   naive_stride1:
-    p_mcnemar_exact: 0.549995
+    p_mcnemar_exact: 0.502445
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     diff_ci_pp:
-    - -2.757509
-    - 1.92655
-    p_two_sided: 0.82
+    - -2.810659
+    - 1.915462
+    p_two_sided: 0.794
   nonoverlap_30d:
     n: 100
     rate_a_pct: 11.0
@@ -8330,23 +8330,23 @@ contrasts:
   rate_a_wilson_ci_pct:
   - 8.745219
   - 10.88075
-  rate_b_pct: 10.09761
+  rate_b_pct: 10.164928
   rate_b_wilson_ci_pct:
-  - 9.065204
-  - 11.23307
-  diff_pp: -0.336587
-  windows_only_a: 86
-  windows_only_b: 96
+  - 9.129246
+  - 11.303489
+  diff_pp: -0.403904
+  windows_only_a: 85
+  windows_only_b: 97
   naive_stride1:
-    p_mcnemar_exact: 0.504803
+    p_mcnemar_exact: 0.414931
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
     n_draws: 2000
     diff_ci_pp:
-    - -2.810314
-    - 1.928941
-    p_two_sided: 0.8
+    - -2.893273
+    - 1.893106
+    p_two_sided: 0.762
   nonoverlap_30d:
     n: 100
     rate_a_pct: 11.0
@@ -8647,27 +8647,27 @@ contrasts:
     symbol: IWM
     arm: null
     model: null
-  n_common_windows: 1671
-  rate_a_pct: 53.919808
+  n_common_windows: 1672
+  rate_a_pct: 53.947368
   rate_a_wilson_ci_pct:
-  - 51.52358
-  - 56.298055
+  - 51.551899
+  - 56.324741
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
-  - 2.1684e-17
-  - 0.229363
-  diff_pp: 53.919808
-  windows_only_a: 901
+  - 0.0
+  - 0.229226
+  diff_pp: 53.947368
+  windows_only_a: 902
   windows_only_b: 0
   naive_stride1:
-    p_mcnemar_exact: 1.18305e-271
+    p_mcnemar_exact: 5.91526e-272
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     diff_ci_pp:
-    - 40.667832
-    - 67.387829
+    - 40.734582
+    - 67.407363
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 56
@@ -8693,27 +8693,27 @@ contrasts:
     symbol: QQQ
     arm: null
     model: null
-  n_common_windows: 1670
-  rate_a_pct: 20.958084
+  n_common_windows: 1671
+  rate_a_pct: 21.005386
   rate_a_wilson_ci_pct:
-  - 19.073772
-  - 22.975698
+  - 19.119899
+  - 23.023878
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
-  - 0.0
-  - 0.2295
-  diff_pp: 20.958084
-  windows_only_a: 350
+  - 2.1684e-17
+  - 0.229363
+  diff_pp: 21.005386
+  windows_only_a: 351
   windows_only_b: 0
   naive_stride1:
-    p_mcnemar_exact: 8.7203e-106
+    p_mcnemar_exact: 4.36015e-106
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     diff_ci_pp:
-    - 12.609794
-    - 31.173329
+    - 12.712132
+    - 31.21361
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 56
@@ -8739,27 +8739,27 @@ contrasts:
     symbol: IWM
     arm: full_iwm
     model: gpt-6-luna
-  n_common_windows: 1671
-  rate_a_pct: 54.099342
+  n_common_windows: 1672
+  rate_a_pct: 54.126794
   rate_a_wilson_ci_pct:
-  - 51.703392
-  - 56.476487
+  - 51.731608
+  - 56.503062
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
-  - 2.1684e-17
-  - 0.229363
-  diff_pp: 54.099342
-  windows_only_a: 904
+  - 0.0
+  - 0.229226
+  diff_pp: 54.126794
+  windows_only_a: 905
   windows_only_b: 0
   naive_stride1:
-    p_mcnemar_exact: 1.47882e-272
+    p_mcnemar_exact: 7.39408e-273
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     diff_ci_pp:
-    - 40.964965
-    - 67.446244
+    - 41.068093
+    - 67.454355
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 56
@@ -8785,27 +8785,27 @@ contrasts:
     symbol: QQQ
     arm: full_qqq
     model: gpt-6-luna
-  n_common_windows: 1670
-  rate_a_pct: 21.556886
+  n_common_windows: 1671
+  rate_a_pct: 21.60383
   rate_a_wilson_ci_pct:
-  - 19.651104
-  - 23.593222
+  - 19.696942
+  - 23.640979
   rate_b_pct: 0.0
   rate_b_wilson_ci_pct:
-  - 0.0
-  - 0.2295
-  diff_pp: 21.556886
-  windows_only_a: 360
+  - 2.1684e-17
+  - 0.229363
+  diff_pp: 21.60383
+  windows_only_a: 361
   windows_only_b: 0
   naive_stride1:
-    p_mcnemar_exact: 8.51592e-109
+    p_mcnemar_exact: 4.25796e-109
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
     n_draws: 2000
     diff_ci_pp:
-    - 13.303492
-    - 31.774659
+    - 13.373443
+    - 31.812732
     p_two_sided: 0.00049975
   nonoverlap_30d:
     n: 56
