@@ -81,6 +81,12 @@ def load(conn, kind: str) -> int:
     names = [c for c, _ in use]
     if "created_at" in frame.columns:  # NOT NULL with a default: an explicit NULL would override the default
         frame["created_at"] = frame["created_at"].where(frame["created_at"].notna(), pd.Timestamp(common.utcnow()))
+        # A re-requested (stale) window has an older and a newer answer under one natural key, in different run files.
+        # Keep the latest, as 05_report does; one INSERT ... ON CONFLICT cannot touch the same key twice.
+        before = len(frame)
+        frame = frame.sort_values("created_at", kind="stable").drop_duplicates(list(key), keep="last")
+        if len(frame) < before:
+            print(f"  {kind}: {before - len(frame):,} superseded row(s) dropped (latest created_at kept per natural key)")
     rows = ([cell(v, t) for v, (_, t) in zip(rec, use)] for rec in frame[names].itertuples(index=False, name=None))
     before = time.perf_counter()
     sent = common.upsert_rows(conn, table, names, rows, key, page_size=500)

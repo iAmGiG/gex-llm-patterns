@@ -383,7 +383,8 @@ def add_flags(frame: pd.DataFrame, extra: Dict[date, Dict[str, Any]]) -> pd.Data
 
 
 def spot_fill_meta(fills: Dict[date, Dict[str, Any]], conn) -> Dict[str, Any]:
-    return {"spot_fill": {"table": SPOT_FILL_TABLE, "present": spot_fill_present(conn), "days": sorted(fills)}}
+    return {"spot_fill": {"table": SPOT_FILL_TABLE, "present": spot_fill_present(conn),
+                          "days": [d.isoformat() for d in sorted(fills)]}}  # ISO text: pandas writes frame attrs into parquet as JSON
 
 
 # --------------------------------------------------------------------------- builders
@@ -1038,8 +1039,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if "factor" in built.meta:
         window = built.meta["factor_window"]
         print(
-            f"{series.key} {args.symbol}: {built.meta['scale']} factor {built.meta['factor']!r} = median of "
-            f"{built.meta['n_days']} daily SPY/{args.symbol} ratios ({window[0]} .. {window[1]})"
+            f"{series.key} {args.symbol}: {built.meta['scale']} factor {built.meta['factor']!r}"
+            + (f" (fixed; the median of today's {built.meta['n_days']} daily SPY/{args.symbol} ratios is "
+               f"{built.meta['factor_recomputed']!r})" if "factor_recomputed" in built.meta else
+               f" = median of {built.meta['n_days']} daily SPY/{args.symbol} ratios ({window[0]} .. {window[1]})")
         )
     if args.db or args.rollback:
         sent, stored = write_db(frame, rollback=args.rollback)
