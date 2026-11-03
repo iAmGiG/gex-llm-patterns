@@ -164,10 +164,14 @@ SELECT trading_date,
 FROM (SELECT trading_date, expiration, option_type, underlying_price,
              CASE WHEN option_type = 'call' THEN 1.0 ELSE -1.0 END
                * gamma::float8 * open_interest::float8 * 100.0
-               * underlying_price::float8 * underlying_price::float8 * 0.01 AS gex
-      FROM gex.options_chains_partitioned
-      WHERE symbol = %(symbol)s AND trading_date BETWEEN %(lo)s AND %(hi)s
-        AND gamma IS NOT NULL AND open_interest > 0 AND underlying_price > 0) AS t
+               * underlying_price * underlying_price * 0.01 AS gex
+      FROM (SELECT c.trading_date, c.expiration, c.option_type, c.gamma, c.open_interest,
+                   coalesce(c.underlying_price::float8, f.spot_used::float8) AS underlying_price
+            FROM gex.options_chains_partitioned c
+            {fill_join}
+            WHERE c.symbol = %(symbol)s AND c.trading_date BETWEEN %(lo)s AND %(hi)s
+              AND c.gamma IS NOT NULL AND c.open_interest > 0) AS c
+      WHERE underlying_price > 0) AS t
 GROUP BY trading_date
 ORDER BY trading_date
 """
@@ -204,7 +208,8 @@ ORDER BY et_date, snapshot_timestamp DESC
 """
 
 RAW_GEX_FORMULA = "sign * gamma * open_interest * 100 * underlying_price^2 * 0.01 in float8, call +, put -"
-RAW_ROW_FILTER = "gamma IS NOT NULL AND open_interest > 0 AND underlying_price > 0"
+RAW_ROW_FILTER = ("gamma IS NOT NULL AND open_interest > 0 AND spot > 0, spot = underlying_price, or gex.spot_fill_log.spot_used "
+                  "on the days the database filled (in_summary)")
 OLD_BS_CAVEAT = (
     "Archive computed 2026-01-15 from a raw table whose put rows were missing from about 2023-10 to "
     "2025-12 (upstream issue #24): put_gex is incomplete there and net_gex is call-only"
@@ -318,6 +323,67 @@ def check_quiet_window(series_key: str, writes_db: bool, override: bool, now: Op
             f"refusing to run between {h0:02d}:{m0:02d} and {h1:02d}:{m1:02d} UTC "
             f"(daily rebuild of the monitors); rerun later or pass --ignore-busy-window"
         )
+
+
+# Days on which the database built the summary from a spot it took elsewhere (vendor left the chain's spot empty).
+# gex.spot_fill_log (database migration 058) lists them per symbol; the chain rows keep a NULL underlying_price, so the
+# raw-chain series take the logged spot on exactly those days and no others, which keeps them equal to the summary.
+SPOT_FILL_TABLE = "gex.spot_fill_log"
+SPOT_FILL_JOIN = (
+    "LEFT JOIN gex.spot_fill_log f ON f.symbol = c.symbol AND f.trading_date = c.trading_date AND f.in_summary"
+)
+NO_SPOT_FILL_JOIN = (
+    "LEFT JOIN (SELECT NULL::text AS symbol, NULL::date AS trading_date, NULL::float8 AS spot_used) f ON false"
+)
+SQL_SPOT_FILL_DAYS = """
+SELECT trading_date, spot_used::float8 AS spot_used, spot_source, parity_dev::float8 AS parity_dev, gate_version
+FROM gex.spot_fill_log
+WHERE symbol = %(symbol)s AND trading_date BETWEEN %(lo)s AND %(hi)s AND in_summary
+ORDER BY trading_date
+"""
+_SPOT_FILL_PRESENT: Dict[int, bool] = {}
+
+
+def spot_fill_present(conn) -> bool:
+    """True when gex.spot_fill_log exists (checked once per connection)."""
+    if id(conn) not in _SPOT_FILL_PRESENT:
+        with conn.cursor() as cur:
+            cur.execute("SELECT to_regclass(%s) IS NOT NULL", (SPOT_FILL_TABLE,))
+            _SPOT_FILL_PRESENT[id(conn)] = bool(cur.fetchone()[0])
+        if not _SPOT_FILL_PRESENT[id(conn)]:
+            log.warning("%s is absent: the raw-chain series use only the chains' own spot", SPOT_FILL_TABLE)
+    return _SPOT_FILL_PRESENT[id(conn)]
+
+
+def raw_gex_sql(conn) -> str:
+    return SQL_RAW_GEX.format(fill_join=SPOT_FILL_JOIN if spot_fill_present(conn) else NO_SPOT_FILL_JOIN)
+
+
+def spot_fill_days(conn, symbol: str, spans: Sequence[Span]) -> Dict[date, Dict[str, Any]]:
+    """Per-day provenance of the database's spot fill inside the spans (empty when the log does not exist)."""
+    if not spot_fill_present(conn):
+        return {}
+    out: Dict[date, Dict[str, Any]] = {}
+    for lo, hi in spans:
+        frame = query(conn, SQL_SPOT_FILL_DAYS, {"symbol": symbol, "lo": lo, "hi": hi})
+        for row in frame.itertuples(index=False):
+            out[row.trading_date] = {"spot_from": f"{SPOT_FILL_TABLE} ({row.spot_source})", "spot_used": row.spot_used,
+                                     "parity_dev": row.parity_dev, "gate_version": row.gate_version}
+    return out
+
+
+def add_flags(frame: pd.DataFrame, extra: Dict[date, Dict[str, Any]]) -> pd.DataFrame:
+    """Merge per-day notes into frame['flags'] (creating it when absent)."""
+    if not extra:
+        return frame
+    current = frame["flags"] if "flags" in frame else pd.Series([None] * len(frame), index=frame.index, dtype=object)
+    frame["flags"] = pd.Series([{**(f or {}), **extra[d]} if d in extra else f for d, f in zip(frame.index, current)],
+                               index=frame.index, dtype=object)
+    return frame
+
+
+def spot_fill_meta(fills: Dict[date, Dict[str, Any]], conn) -> Dict[str, Any]:
+    return {"spot_fill": {"table": SPOT_FILL_TABLE, "present": spot_fill_present(conn), "days": sorted(fills)}}
 
 
 # --------------------------------------------------------------------------- builders
@@ -442,6 +508,10 @@ def build_daily_summary(conn, series: common.Series, symbol: str, spans: List[Sp
     extra: Dict[str, Any] = {"columns": DAILY_SUMMARY_COLUMNS}
     if series.key == "old_bs":
         extra["caveat"] = OLD_BS_CAVEAT
+    else:
+        fills = spot_fill_days(conn, symbol, spans)
+        frame = add_flags(frame, fills)
+        extra.update(spot_fill_meta(fills, conn))
     return Built(drop_non_finite(frame, f"{series.key} {symbol}"), base_meta(series, "daily_summary_v1", sql, **extra))
 
 
@@ -504,16 +574,26 @@ def oi_notional_factor(conn, series: common.Series, symbol: str) -> Dict[str, An
     return out
 
 
+# Open-interest-notional factors of the 2026-10-29 build (median over 2020-01-02..2026-10-09 of the daily SPY/symbol
+# ratio).  The scaled arms were run on these values, so a rebuild keeps them and records the recomputed median beside them.
+FIXED_SCALE_FACTORS: Dict[str, float] = {"QQQ": 4.224724272035567, "IWM": 11.430940262578634}
+
+
 def build_scaled_daily_summary(conn, series: common.Series, symbol: str, spans: List[Span]) -> Built:
     """new_full of the symbol times its fixed open-interest-notional factor (net/call/put GEX only).
 
     The summary table has no 0DTE split or contract counts, so those columns stay NULL as in new_full.
     """
     scale = oi_notional_factor(conn, series, symbol)
+    if symbol in FIXED_SCALE_FACTORS:  # fixed before the model runs (decisions log D-24): recomputed value is recorded only
+        scale = {**scale, "factor_recomputed": scale["factor"], "factor": FIXED_SCALE_FACTORS[symbol],
+                 "factor_fixed": "value of the 2026-10-29 build, kept fixed for the runs"}
     sql = SQL_DAILY_SUMMARY.format(table=series.source_table)
     frame = query_spans(conn, sql, symbol, spans, series.key).set_index("trading_date")
     for column in SCALED_COLUMNS:
         frame[column] = frame[column] * scale["factor"]
+    fills = spot_fill_days(conn, symbol, spans)
+    frame = add_flags(frame, fills)
     meta = base_meta(
         series,
         "daily_summary_scaled_v1",
@@ -523,6 +603,7 @@ def build_scaled_daily_summary(conn, series: common.Series, symbol: str, spans: 
         scaled_columns=list(SCALED_COLUMNS),
         spot_note="the symbol's own underlying_price, not scaled",
         **scale,
+        **spot_fill_meta(fills, conn),
     )
     return Built(drop_non_finite(frame, f"{series.key} {symbol}"), meta)
 
@@ -581,7 +662,7 @@ def build_phase34(conn, series: common.Series, symbol: str, spans: List[Span]) -
 
 def fetch_raw(conn, series: common.Series, symbol: str, spans: List[Span]) -> pd.DataFrame:
     """Per-day aggregates of the raw chains for every leg either raw series needs (one statement per symbol-year)."""
-    raw = query_spans(conn, SQL_RAW_GEX, symbol, spans, series.key, index_scan=True).set_index("trading_date")
+    raw = query_spans(conn, raw_gex_sql(conn), symbol, spans, series.key, index_scan=True).set_index("trading_date")
     expired = raw["n_expired"] > 0
     if expired.any():
         log.warning(
@@ -595,10 +676,14 @@ def fetch_raw(conn, series: common.Series, symbol: str, spans: List[Span]) -> pd
     raw["flags"] = pd.Series(
         [{"n_expired_contracts": int(n)} if n else None for n in raw["n_expired"]], index=raw.index, dtype=object
     )
-    return raw
+    fills = spot_fill_days(conn, symbol, spans)
+    raw.attrs["spot_fill"] = spot_fill_meta(fills, conn)["spot_fill"]
+    return add_flags(raw, fills)
 
 
-def raw_meta(series: common.Series, **extra: Any) -> Dict[str, Any]:
+def raw_meta(series: common.Series, raw: pd.DataFrame, **extra: Any) -> Dict[str, Any]:
+    if "spot_fill" in raw.attrs:
+        extra["spot_fill"] = raw.attrs["spot_fill"]
     return base_meta(
         series,
         "raw_gex_v1",
@@ -617,6 +702,7 @@ def build_new_ex0dte(conn, series: common.Series, symbol: str, spans: List[Span]
     frame = raw[["net_gex", "call_gex", "put_gex", "gex_0dte", "n_contracts", "n_0dte", "spot", "flags"]]
     meta = raw_meta(
         series,
+        raw,
         ex0dte_rule="net/call/put/n_contracts over expiration > trading_date; "
         "gex_0dte/n_0dte over expiration = trading_date",
     )
@@ -639,6 +725,7 @@ def build_call_only(conn, series: common.Series, symbol: str, spans: List[Span])
     )
     meta = raw_meta(
         series,
+        raw,
         leg="call rows only, all expirations incl. 0DTE; put_gex NULL; "
         "gex_0dte/n_0dte/n_contracts count call rows only",
     )

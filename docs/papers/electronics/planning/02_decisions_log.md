@@ -302,6 +302,20 @@
 - References: every entry was checked against Crossref or arXiv. Fixed: McCoy et al. title (PNAS title, not the preprint's), Nystrup DOI, Dim year (2024 per Crossref), Baltussen DOI, TradingAgents authors (Xiao et al., not Yang). Removed as unused or unverifiable: the OpenAI "o-series" entry, Hayek, Kirzner, Marcus. Added: Cohen 1960, McNemar 1947, K\"unsch 1989 (fixed blocks fit the calendar-quarter bootstrap better than the stationary bootstrap of Politis and Romano), Newcombe 1998. The errors that reach the published JRFM are in `CORRECTIONS.md`, item E.
 - Deadline: not confirmed. One unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper; MDPI's page has to be read in a browser.
 
+### D-24 Missing trading days: 2026-05-06 fill, spot-less repair, NYSE-calendar flag
+
+- Date: 2026-11-03. Decided by Chris (here, and in the database session for the repair).
+- Facts:
+  - On 2026-11-03 the database team filled 2026-05-06 for SPY, QQQ and IWM (data_source av_t1_from_slot; DB issue #194).
+  - A sweep of gex.options_daily_summary against the NYSE calendar found more weekdays without a row that are neither holidays nor closures: 22 for SPY (2009-2020), 14 for QQQ and 15 for IWM.
+  - 8.3% of SPY windows span such a day. The existing flags catch only the multi-day holes, because the summary table is itself the master calendar.
+  - Dropping the spanning windows moves the rule's rate by about 0.1 percentage point.
+- Decisions:
+  - Rebuild the affected series and re-run the windows whose inputs change (stale answers are re-requested by prompt hash).
+  - Keep the QQQ and IWM scale factors fixed at the stored values, because they were fixed before the runs.
+  - Add an NYSE-calendar gap detector, keep the spanning windows in the rates, and disclose their count and the size of the effect.
+- Timing: the database team repairs first, and our rebuild follows so the series change only once. The repair covers the 16 days whose chains exist but lack a spot price (spot taken from the day's close, accepted only when put-call parity agrees within about 1%). 2018-11-06, 2019-09-03, 2020-06-23 and QQQ 2024-09-30 have no chain and stay missing.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -410,3 +424,4 @@
 - 2026-10-31 (later): whole-manuscript coherence review (30 findings: a 'pre-registered' claim, a leaked authorial note, wording about the earlier papers, a stale probe passage, missing uptake of Sections 4.5-4.11 in the Discussion/Conclusion, RQ mapping, abbreviations, label names) applied by three fixers; `build.sh --strict` passes; 10 `TODO(authors)` decisions remain.
 - 2026-11-02: D-20 revised (corrections stay in the repository; a formal revision is a later, low-priority step). AIAI and JRFM citations completed from the DOI records (IFIP AICT pp. 127-140; JRFM 19(6), 382), so the AIAI "in press" question is closed. CORRECTIONS.md no longer says Springer LNCS.
 - 2026-11-02: D-23 added (structure, title, data release, AI-use wording, corresponding author, CRediT, research questions, reference audit).
+- 2026-11-03: D-24 added (missing trading days; rebuild after the database repair; NYSE-calendar flag).
