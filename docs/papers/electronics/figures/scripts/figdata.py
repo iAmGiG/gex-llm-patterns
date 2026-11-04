@@ -188,8 +188,12 @@ class Inputs:
             before = len(frame)
             stamp = pd.to_datetime(frame["created_at"], utc=True)
             if "run_id" in frame.columns:
-                stamp = stamp.fillna(pd.to_datetime(frame["run_id"].map(self._run_ingest_times()), utc=True))
-            frame = frame.loc[stamp.sort_values(kind="stable", na_position="first").index].drop_duplicates(list(key), keep="last")
+                stamp = stamp.fillna(pd.to_datetime(frame["run_id"].map(_run_ingest_times_from(self.tables_dir / "runs")),
+                                                    utc=True))
+            keep = frame.loc[stamp.sort_values(kind="stable", na_position="first").index].drop_duplicates(list(key), keep="last").index
+            # rows in the order the plots have always drawn them (by created_at, undated first), so overlapping markers
+            # are painted in the same sequence
+            frame = frame[frame.index.isin(keep)].sort_values("created_at", kind="stable", na_position="first")
             logger.info("detections: %d superseded answer(s) dropped (latest created_at kept per natural key)", before - len(frame))
         if key and frame.duplicated(list(key)).any():
             clash = int(frame.duplicated(list(key)).sum())

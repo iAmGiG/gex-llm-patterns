@@ -282,5 +282,6 @@ reconciliation:
   runs_compared_with_detection_usage: 46
   runs_with_token_gap: 18
   max_abs_cost_gap_usd: 0.0
-  note: gaps compare the run totals with the sum over that run's detection rows; cost_gap_usd compares est_cost_usd
-    with the token usage priced by common.PRICING_USD_PER_MTOK
+  note: 'gaps compare the run totals with the sum over that run''s detection rows; cost_gap_usd compares est_cost_usd
+    with the token usage priced by common.PRICING_USD_PER_MTOK. A run whose answers were later replaced (the 2026-11-03
+    re-run) shows a token gap: the replaced answers were billed but are no longer among its stored rows'

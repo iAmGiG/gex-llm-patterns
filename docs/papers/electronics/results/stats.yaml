@@ -1,6 +1,7 @@
 meta:
   seed: 261
   n_boot: 2000
+  bootstrap_exact_max_resamples: 200000
   ci_level: 0.95
   primary_label: regime_detected / clf_should_detect
   periods:
@@ -43,9 +44,9 @@ headline_contrasts:
     model: null
   diff_pp: 88.023952
   bootstrap_diff_ci_pp:
-  - 80.761334
-  - 94.950758
-  p_bootstrap: 0.00049975
+  - 80.360721
+  - 94.921875
+  p_bootstrap: 5.96046e-08
   p_nonoverlap: 0.00012207
 - name: series_contrast
   family: series
@@ -64,9 +65,9 @@ headline_contrasts:
     model: gpt-6-luna
   diff_pp: 87.42515
   bootstrap_diff_ci_pp:
-  - 80.326644
-  - 93.936022
-  p_bootstrap: 0.00049975
+  - 80.079681
+  - 94.08284
+  p_bootstrap: 5.96046e-08
   p_nonoverlap: 0.00012207
 - name: series_contrast
   family: series
@@ -127,9 +128,9 @@ headline_contrasts:
     model: null
   diff_pp: -2.788845
   bootstrap_diff_ci_pp:
-  - -8.76771
-  - 2.761341
-  p_bootstrap: 0.369
+  - -8.669355
+  - 2.788845
+  p_bootstrap: 0.36083
   p_nonoverlap: 1.0
 - name: series_contrast
   family: series
@@ -190,9 +191,9 @@ headline_contrasts:
     model: gpt-6-luna
   diff_pp: -2.788845
   bootstrap_diff_ci_pp:
-  - -8.767145
-  - 2.40976
-  p_bootstrap: 0.376
+  - -8.617234
+  - 2.579365
+  p_bootstrap: 0.358838
   p_nonoverlap: 1.0
 - name: series_contrast
   family: series
@@ -211,9 +212,9 @@ headline_contrasts:
     model: null
   diff_pp: 88.023952
   bootstrap_diff_ci_pp:
-  - 80.761334
-  - 94.950758
-  p_bootstrap: 0.00049975
+  - 80.360721
+  - 94.921875
+  p_bootstrap: 5.96046e-08
   p_nonoverlap: 0.00012207
 - name: series_contrast
   family: series
@@ -232,9 +233,9 @@ headline_contrasts:
     model: gpt-6-luna
   diff_pp: 87.42515
   bootstrap_diff_ci_pp:
-  - 80.326644
-  - 93.936022
-  p_bootstrap: 0.00049975
+  - 80.079681
+  - 94.08284
+  p_bootstrap: 5.96046e-08
   p_nonoverlap: 0.00012207
 - name: series_contrast
   family: label
@@ -276,7 +277,7 @@ headline_contrasts:
   bootstrap_diff_ci_pp:
   - -1.875
   - 0.0
-  p_bootstrap: 0.646
+  p_bootstrap: 0.632812
   p_nonoverlap: 1.0
 - name: series_contrast
   family: label
@@ -773,9 +774,9 @@ headline_contrasts:
     model: null
   diff_pp: 69.058296
   bootstrap_diff_ci_pp:
-  - 31.56478
+  - 28.86646
   - 93.253968
-  p_bootstrap: 0.002
+  p_bootstrap: 0.003174
   p_nonoverlap: 0.040559
 - name: phase_contrast
   family: null
@@ -794,9 +795,9 @@ headline_contrasts:
     model: o4-mini
   diff_pp: 69.058296
   bootstrap_diff_ci_pp:
-  - 31.56478
+  - 28.86646
   - 93.253968
-  p_bootstrap: 0.002
+  p_bootstrap: 0.003174
   p_nonoverlap: 0.040559
 - name: phase_contrast
   family: null
@@ -815,9 +816,9 @@ headline_contrasts:
     model: gpt-6-luna
   diff_pp: 69.058296
   bootstrap_diff_ci_pp:
-  - 31.56478
+  - 28.86646
   - 93.253968
-  p_bootstrap: 0.002
+  p_bootstrap: 0.003174
   p_nonoverlap: 0.040559
 - name: phase_contrast
   family: null
@@ -836,9 +837,9 @@ headline_contrasts:
     model: null
   diff_pp: 69.058296
   bootstrap_diff_ci_pp:
-  - 31.56478
+  - 28.86646
   - 93.253968
-  p_bootstrap: 0.002
+  p_bootstrap: 0.003174
   p_nonoverlap: 0.040559
 - name: phase_contrast
   family: null
@@ -857,9 +858,9 @@ headline_contrasts:
     model: gpt-6-luna
   diff_pp: 68.609865
   bootstrap_diff_ci_pp:
-  - 29.677987
+  - 27.220092
   - 93.253968
-  p_bootstrap: 0.003
+  p_bootstrap: 0.005371
   p_nonoverlap: 0.040559
 rates:
 - labeller:
@@ -877,7 +878,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -907,7 +909,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -937,6 +940,7 @@ rates:
   - 19.513194
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 7.625495
@@ -967,7 +971,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -997,6 +1002,7 @@ rates:
   - 47.737881
   bootstrap_quarter:
     n_blocks: 24
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 28.106794
@@ -1027,7 +1033,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -1057,7 +1064,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -1087,6 +1095,7 @@ rates:
   - 19.690854
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 8.099596
@@ -1117,7 +1126,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -1147,6 +1157,7 @@ rates:
   - 10.951244
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 4.537015
@@ -1177,7 +1188,8 @@ rates:
   - 30.549817
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 1.515152
     - 62.162162
@@ -1207,6 +1219,7 @@ rates:
   - 22.855721
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 14.646614
@@ -1237,7 +1250,8 @@ rates:
   - 1.5015
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1267,7 +1281,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1297,6 +1312,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1327,7 +1343,8 @@ rates:
   - 0.75942
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -1357,6 +1374,7 @@ rates:
   - 0.128312
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1387,7 +1405,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1417,6 +1436,7 @@ rates:
   - 0.081823
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1447,7 +1467,8 @@ rates:
   - 1.507392
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1477,7 +1498,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1507,6 +1529,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1537,7 +1560,8 @@ rates:
   - 0.760924
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -1567,6 +1591,7 @@ rates:
   - 0.176065
   bootstrap_quarter:
     n_blocks: 35
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1597,7 +1622,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1627,6 +1653,7 @@ rates:
   - 0.09896
   bootstrap_quarter:
     n_blocks: 63
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1657,7 +1684,8 @@ rates:
   - 14.68799
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 3.2
     - 17.322835
@@ -1687,7 +1715,8 @@ rates:
   - 18.403577
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 2.34375
     - 25.409836
@@ -1717,6 +1746,7 @@ rates:
   - 24.861188
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 12.674651
@@ -1747,10 +1777,11 @@ rates:
   - 15.082849
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 5.009272
-    - 19.201151
+    - 5.078125
+    - 19.60396
   nonoverlap_30d:
     n: 17
     k: 3
@@ -1777,6 +1808,7 @@ rates:
   - 11.302101
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 4.919341
@@ -1807,10 +1839,11 @@ rates:
   - 16.572551
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
-    - 21.761658
+    - 20.289855
   nonoverlap_30d:
     n: 7
     k: 1
@@ -1837,6 +1870,7 @@ rates:
   - 13.974502
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 8.566491
@@ -1867,7 +1901,8 @@ rates:
   - 1.5015
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1897,7 +1932,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -1927,6 +1963,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -1957,7 +1994,8 @@ rates:
   - 0.75942
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -1987,6 +2025,7 @@ rates:
   - 0.128312
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -2017,7 +2056,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -2047,6 +2087,7 @@ rates:
   - 0.081823
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -2077,7 +2118,8 @@ rates:
   - 1.507392
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -2107,7 +2149,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -2137,6 +2180,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -2167,7 +2211,8 @@ rates:
   - 0.760924
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -2197,6 +2242,7 @@ rates:
   - 0.176065
   bootstrap_quarter:
     n_blocks: 35
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -2227,7 +2273,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -2257,6 +2304,7 @@ rates:
   - 0.09896
   bootstrap_quarter:
     n_blocks: 63
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -2287,7 +2335,8 @@ rates:
   - 17.820058
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 5.645161
     - 21.73913
@@ -2317,7 +2366,8 @@ rates:
   - 21.491808
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 36.0
@@ -2347,6 +2397,7 @@ rates:
   - 20.610313
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 9.690068
@@ -2377,10 +2428,11 @@ rates:
   - 18.109787
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 5.544008
-    - 25.995727
+    - 5.325444
+    - 26.252505
   nonoverlap_30d:
     n: 17
     k: 3
@@ -2407,6 +2459,7 @@ rates:
   - 7.428222
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 2.712201
@@ -2437,7 +2490,8 @@ rates:
   - 27.410912
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 39.705882
@@ -2467,6 +2521,7 @@ rates:
   - 11.37546
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 6.825599
@@ -2497,7 +2552,8 @@ rates:
   - 7.004662
   bootstrap_quarter:
     n_blocks: 2
-    n_draws: 2000
+    method: exact
+    n_draws: 4
     ci_pct:
     - 0.0
     - 0.0
@@ -2527,7 +2583,8 @@ rates:
   - 7.004662
   bootstrap_quarter:
     n_blocks: 2
-    n_draws: 2000
+    method: exact
+    n_draws: 4
     ci_pct:
     - 0.0
     - 0.0
@@ -2557,7 +2614,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -2587,7 +2645,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -2617,6 +2676,7 @@ rates:
   - 98.58845
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 93.52518
@@ -2647,7 +2707,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -2677,7 +2738,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -2707,6 +2769,7 @@ rates:
   - 99.177053
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 96.099071
@@ -2737,7 +2800,8 @@ rates:
   - 26.054226
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 11.328125
     - 30.0
@@ -2767,7 +2831,8 @@ rates:
   - 56.937992
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 14.84375
     - 88.52459
@@ -2797,6 +2862,7 @@ rates:
   - 68.088318
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 46.586951
@@ -2827,10 +2893,11 @@ rates:
   - 39.941832
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 16.46421
-    - 59.359963
+    - 16.007905
+    - 59.191919
   nonoverlap_30d:
     n: 17
     k: 8
@@ -2857,7 +2924,8 @@ rates:
   - 51.876266
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 35.263158
     - 59.15493
@@ -2887,6 +2955,7 @@ rates:
   - 56.324741
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 40.734582
@@ -2917,7 +2986,8 @@ rates:
   - 10.102744
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 19.047619
@@ -2947,7 +3017,8 @@ rates:
   - 25.825366
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 3.225806
     - 37.301587
@@ -2977,6 +3048,7 @@ rates:
   - 28.761935
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 13.689703
@@ -3007,10 +3079,11 @@ rates:
   - 16.634041
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 3.180915
-    - 25.896414
+    - 3.168317
+    - 25.548902
   nonoverlap_30d:
     n: 17
     k: 2
@@ -3037,7 +3110,8 @@ rates:
   - 21.788292
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 32.352941
@@ -3067,6 +3141,7 @@ rates:
   - 23.023878
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 12.712132
@@ -3097,7 +3172,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3127,7 +3203,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3157,7 +3234,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3187,7 +3265,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3217,7 +3296,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3247,7 +3327,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -3277,7 +3358,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -3307,7 +3389,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -3337,7 +3420,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -3367,7 +3451,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -3397,7 +3482,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3427,7 +3513,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3457,6 +3544,7 @@ rates:
   - 19.847561
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 7.658643
@@ -3487,7 +3575,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -3517,6 +3606,7 @@ rates:
   - 48.357259
   bootstrap_quarter:
     n_blocks: 24
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 28.57041
@@ -3547,7 +3637,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3577,7 +3668,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3607,6 +3699,7 @@ rates:
   - 19.944022
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 8.035455
@@ -3637,7 +3730,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -3667,6 +3761,7 @@ rates:
   - 48.009474
   bootstrap_quarter:
     n_blocks: 24
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 28.509994
@@ -3697,7 +3792,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3727,7 +3823,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 100.0
     - 100.0
@@ -3757,6 +3854,7 @@ rates:
   - 19.690854
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 8.175067
@@ -3787,7 +3885,8 @@ rates:
   - 100.0
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 100.0
     - 100.0
@@ -3817,6 +3916,7 @@ rates:
   - 10.88075
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 4.479995
@@ -3847,7 +3947,8 @@ rates:
   - 30.549817
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 1.515152
     - 62.162162
@@ -3877,6 +3978,7 @@ rates:
   - 22.811781
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 14.569252
@@ -3907,7 +4009,8 @@ rates:
   - 1.5015
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -3937,7 +4040,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -3967,6 +4071,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -3997,7 +4102,8 @@ rates:
   - 0.75942
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -4027,6 +4133,7 @@ rates:
   - 0.128312
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4057,7 +4164,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4087,6 +4195,7 @@ rates:
   - 0.081823
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4117,7 +4226,8 @@ rates:
   - 1.507392
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4147,7 +4257,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4177,6 +4288,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4207,7 +4319,8 @@ rates:
   - 0.760924
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -4237,6 +4350,7 @@ rates:
   - 0.176065
   bootstrap_quarter:
     n_blocks: 35
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4267,7 +4381,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4297,6 +4412,7 @@ rates:
   - 0.09896
   bootstrap_quarter:
     n_blocks: 63
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4327,7 +4443,8 @@ rates:
   - 15.589971
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 3.137255
     - 18.181818
@@ -4357,7 +4474,8 @@ rates:
   - 18.847972
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 3.125
     - 25.409836
@@ -4387,6 +4505,7 @@ rates:
   - 25.376996
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 13.172997
@@ -4417,10 +4536,11 @@ rates:
   - 15.735133
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 6.063682
-    - 19.633152
+    - 5.91716
+    - 19.919517
   nonoverlap_30d:
     n: 17
     k: 3
@@ -4447,6 +4567,7 @@ rates:
   - 11.302101
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 4.94194
@@ -4477,10 +4598,11 @@ rates:
   - 16.572551
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
-    - 21.761658
+    - 20.289855
   nonoverlap_30d:
     n: 7
     k: 1
@@ -4507,6 +4629,7 @@ rates:
   - 14.15024
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 8.736995
@@ -4537,7 +4660,8 @@ rates:
   - 1.5015
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4567,7 +4691,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4597,6 +4722,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4627,7 +4753,8 @@ rates:
   - 0.75942
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -4657,7 +4784,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4687,6 +4815,7 @@ rates:
   - 0.225326
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4717,7 +4846,8 @@ rates:
   - 1.507392
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4747,7 +4877,8 @@ rates:
   - 1.51333
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4777,6 +4908,7 @@ rates:
   - 0.380779
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4807,7 +4939,8 @@ rates:
   - 0.760924
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
     - 0.0
     - 0.0
@@ -4837,7 +4970,8 @@ rates:
   - 1.941685
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 0.0
@@ -4867,6 +5001,7 @@ rates:
   - 0.225459
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 0.0
@@ -4897,7 +5032,8 @@ rates:
   - 19.143223
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 7.114625
     - 22.924901
@@ -4927,7 +5063,8 @@ rates:
   - 21.491808
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 36.0
@@ -4957,6 +5094,7 @@ rates:
   - 20.922741
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 9.828458
@@ -4987,10 +5125,11 @@ rates:
   - 18.753225
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 6.271417
-    - 26.361251
+    - 5.952381
+    - 26.693227
   nonoverlap_30d:
     n: 17
     k: 3
@@ -5017,6 +5156,7 @@ rates:
   - 7.357186
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 2.614499
@@ -5047,7 +5187,8 @@ rates:
   - 27.410912
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 39.705882
@@ -5077,6 +5218,7 @@ rates:
   - 11.463796
   bootstrap_quarter:
     n_blocks: 76
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 6.874153
@@ -5107,7 +5249,8 @@ rates:
   - 7.004662
   bootstrap_quarter:
     n_blocks: 2
-    n_draws: 2000
+    method: exact
+    n_draws: 4
     ci_pct:
     - 0.0
     - 0.0
@@ -5137,7 +5280,8 @@ rates:
   - 7.004662
   bootstrap_quarter:
     n_blocks: 2
-    n_draws: 2000
+    method: exact
+    n_draws: 4
     ci_pct:
     - 0.0
     - 0.0
@@ -5167,7 +5311,8 @@ rates:
   - 26.054226
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 11.328125
     - 30.0
@@ -5197,7 +5342,8 @@ rates:
   - 57.330969
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 15.625
     - 88.52459
@@ -5227,6 +5373,7 @@ rates:
   - 68.188334
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 46.740982
@@ -5257,10 +5404,11 @@ rates:
   - 40.14464
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 16.665851
-    - 59.358177
+    - 16.17357
+    - 59.15493
   nonoverlap_30d:
     n: 17
     k: 8
@@ -5287,7 +5435,8 @@ rates:
   - 52.388652
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 36.842105
     - 59.15493
@@ -5317,6 +5466,7 @@ rates:
   - 56.503062
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 41.068093
@@ -5347,7 +5497,8 @@ rates:
   - 12.45104
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.784314
     - 22.0
@@ -5377,7 +5528,8 @@ rates:
   - 25.825366
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 3.225806
     - 37.301587
@@ -5407,6 +5559,7 @@ rates:
   - 29.184046
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 14.086809
@@ -5437,10 +5590,11 @@ rates:
   - 17.714396
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     ci_pct:
-    - 4.174127
-    - 26.693227
+    - 4.133858
+    - 26.494024
   nonoverlap_30d:
     n: 17
     k: 2
@@ -5467,7 +5621,8 @@ rates:
   - 22.357713
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 33.823529
@@ -5497,6 +5652,7 @@ rates:
   - 23.640979
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     ci_pct:
     - 13.373443
@@ -5527,7 +5683,8 @@ rates:
   - 85.357548
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 45.625
     - 100.0
@@ -5557,7 +5714,8 @@ rates:
   - 85.357548
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 45.625
     - 100.0
@@ -5587,7 +5745,8 @@ rates:
   - 85.357548
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 45.625
     - 100.0
@@ -5617,7 +5776,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5647,7 +5807,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5677,7 +5838,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5707,7 +5869,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5737,7 +5900,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5767,7 +5931,8 @@ rates:
   - 85.753425
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 47.5
     - 100.0
@@ -5797,7 +5962,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5827,7 +5993,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5857,7 +6024,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5887,7 +6055,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5917,7 +6086,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5947,7 +6117,8 @@ rates:
   - 17.042678
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     ci_pct:
     - 0.0
     - 27.835052
@@ -5996,11 +6167,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 82.677165
     - 96.774194
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -6042,11 +6214,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 74.590164
     - 97.65625
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -6088,11 +6261,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - 80.761334
-    - 94.950758
-    p_two_sided: 0.00049975
+    - 80.360721
+    - 94.921875
+    p_two_sided: 5.96046e-08
   nonoverlap_30d:
     n: 17
     rate_a_pct: 100.0
@@ -6134,6 +6308,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -7.566921
@@ -6180,11 +6355,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 81.746032
     - 96.862745
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -6226,11 +6402,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 74.590164
     - 96.875
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -6272,11 +6449,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - 80.326644
-    - 93.936022
-    p_two_sided: 0.00049975
+    - 80.079681
+    - 94.08284
+    p_two_sided: 5.96046e-08
   nonoverlap_30d:
     n: 17
     rate_a_pct: 100.0
@@ -6318,6 +6496,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -7.615421
@@ -6364,7 +6543,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6410,7 +6590,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6456,7 +6637,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6502,6 +6684,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -6548,6 +6731,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -6594,7 +6778,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6640,7 +6825,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6686,7 +6872,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6732,7 +6919,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6778,6 +6966,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 35
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -6824,6 +7013,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -6870,7 +7060,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -6916,11 +7107,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -10.671937
     - 5.533597
-    p_two_sided: 0.499
+    p_two_sided: 0.515625
   nonoverlap_30d:
     n: 9
     rate_a_pct: 22.222222
@@ -6962,11 +7154,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -12.0
     - 3.515625
-    p_two_sided: 0.638
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 9
     rate_a_pct: 22.222222
@@ -7008,11 +7201,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - -8.76771
-    - 2.761341
-    p_two_sided: 0.369
+    - -8.669355
+    - 2.788845
+    p_two_sided: 0.36083
   nonoverlap_30d:
     n: 17
     rate_a_pct: 17.647059
@@ -7054,6 +7248,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 1.531228
@@ -7100,6 +7295,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -1.386173
@@ -7146,11 +7342,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -27.941176
     - 0.0
-    p_two_sided: 0.646
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 7
     rate_a_pct: 14.285714
@@ -7192,7 +7389,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7238,7 +7436,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7284,7 +7483,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7330,6 +7530,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -7376,7 +7577,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7422,7 +7624,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7468,7 +7671,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7514,7 +7718,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7560,6 +7765,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -7606,7 +7812,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -7652,11 +7859,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -10.671937
     - 4.347826
-    p_two_sided: 0.499
+    p_two_sided: 0.515625
   nonoverlap_30d:
     n: 9
     rate_a_pct: 22.222222
@@ -7698,11 +7906,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -11.6
     - 3.571429
-    p_two_sided: 0.638
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 9
     rate_a_pct: 33.333333
@@ -7744,11 +7953,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - -8.767145
-    - 2.40976
-    p_two_sided: 0.376
+    - -8.617234
+    - 2.579365
+    p_two_sided: 0.358838
   nonoverlap_30d:
     n: 17
     rate_a_pct: 17.647059
@@ -7790,6 +8000,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 1.574526
@@ -7836,6 +8047,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -0.604121
@@ -7882,11 +8094,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -27.941176
     - 0.0
-    p_two_sided: 0.646
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 7
     rate_a_pct: 14.285714
@@ -7928,11 +8141,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 82.677165
     - 96.774194
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -7974,11 +8188,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 74.590164
     - 97.65625
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -8020,11 +8235,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - 80.761334
-    - 94.950758
-    p_two_sided: 0.00049975
+    - 80.360721
+    - 94.921875
+    p_two_sided: 5.96046e-08
   nonoverlap_30d:
     n: 17
     rate_a_pct: 100.0
@@ -8066,6 +8282,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -2.810659
@@ -8112,6 +8329,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -11.156884
@@ -8158,11 +8376,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 40.540541
-    p_two_sided: 0.139
+    p_two_sided: 0.125
   nonoverlap_30d:
     n: 6
     rate_a_pct: 33.333333
@@ -8204,11 +8423,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 81.746032
     - 96.862745
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -8250,11 +8470,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 74.590164
     - 96.875
-    p_two_sided: 0.00049975
+    p_two_sided: 0.003906
   nonoverlap_30d:
     n: 9
     rate_a_pct: 100.0
@@ -8296,11 +8517,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 8
-    n_draws: 2000
+    method: exact
+    n_draws: 16777216
     diff_ci_pp:
-    - 80.326644
-    - 93.936022
-    p_two_sided: 0.00049975
+    - 80.079681
+    - 94.08284
+    p_two_sided: 5.96046e-08
   nonoverlap_30d:
     n: 17
     rate_a_pct: 100.0
@@ -8342,6 +8564,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 48
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -2.893273
@@ -8388,6 +8611,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 16
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -11.288994
@@ -8434,11 +8658,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 40.540541
-    p_two_sided: 0.139
+    p_two_sided: 0.125
   nonoverlap_30d:
     n: 6
     rate_a_pct: 33.333333
@@ -8480,7 +8705,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -8526,11 +8752,12 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - -1.875
     - 0.0
-    p_two_sided: 0.646
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 8
     rate_a_pct: 87.5
@@ -8572,7 +8799,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -8618,7 +8846,8 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 256
     diff_ci_pp:
     - 0.0
     - 0.0
@@ -8664,6 +8893,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 40.734582
@@ -8710,6 +8940,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 12.712132
@@ -8756,6 +8987,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 41.068093
@@ -8802,6 +9034,7 @@ contrasts:
     caveat: treats overlapping windows as independent; anti-conservative
   bootstrap_quarter:
     n_blocks: 28
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 13.373443
@@ -8847,6 +9080,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 71.078248
@@ -8891,6 +9125,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 71.031351
@@ -8935,6 +9170,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -8979,6 +9215,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9023,6 +9260,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -23.167616
@@ -9067,6 +9305,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9111,6 +9350,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9155,6 +9395,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -16.679634
@@ -9199,6 +9440,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9243,6 +9485,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -55.745508
@@ -9287,6 +9530,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -30.051982
@@ -9331,6 +9575,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 70.674325
@@ -9375,6 +9620,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 70.93803
@@ -9419,6 +9665,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 71.115538
@@ -9463,6 +9710,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9507,6 +9755,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9551,6 +9800,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -23.072247
@@ -9595,6 +9845,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9639,6 +9890,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - 0.0
@@ -9683,6 +9935,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -16.293233
@@ -9727,6 +9980,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -55.590935
@@ -9771,6 +10025,7 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 16
     n_blocks_late: 8
+    method: monte_carlo
     n_draws: 2000
     diff_ci_pp:
     - -29.607359
@@ -9821,11 +10076,12 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 4
     n_blocks_late: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 65536
     diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_two_sided: 0.002
+    p_two_sided: 0.003174
   nonoverlap_30d:
     n_early: 8
     n_late: 8
@@ -9871,11 +10127,12 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 4
     n_blocks_late: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 65536
     diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_two_sided: 0.002
+    p_two_sided: 0.003174
   nonoverlap_30d:
     n_early: 8
     n_late: 8
@@ -9921,11 +10178,12 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 4
     n_blocks_late: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 65536
     diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_two_sided: 0.002
+    p_two_sided: 0.003174
   nonoverlap_30d:
     n_early: 8
     n_late: 8
@@ -9971,11 +10229,12 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 4
     n_blocks_late: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 65536
     diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_two_sided: 0.002
+    p_two_sided: 0.003174
   nonoverlap_30d:
     n_early: 8
     n_late: 8
@@ -10021,11 +10280,12 @@ contrasts:
   bootstrap_quarter:
     n_blocks_early: 4
     n_blocks_late: 4
-    n_draws: 2000
+    method: exact
+    n_draws: 65536
     diff_ci_pp:
-    - 29.677987
+    - 27.220092
     - 93.253968
-    p_two_sided: 0.003
+    p_two_sided: 0.005371
   nonoverlap_30d:
     n_early: 8
     n_late: 8

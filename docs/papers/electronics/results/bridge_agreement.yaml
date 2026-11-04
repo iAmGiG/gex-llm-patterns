@@ -76,6 +76,7 @@ bridge:
   rate_diff_boot_lo_pp: -0.642915
   rate_diff_boot_hi_pp: -0.074879
   p_boot: 0.01
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 213
@@ -287,6 +288,7 @@ bridge:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2024
     n_pairs: 223
@@ -363,6 +365,7 @@ bridge:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2020
     n_pairs: 223
@@ -440,6 +443,7 @@ bridge_incl_recovered:
   rate_diff_boot_lo_pp: -0.550235
   rate_diff_boot_hi_pp: 0.0
   p_boot: 0.121
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 223
@@ -652,6 +656,7 @@ test_retest:
   rate_diff_boot_lo_pp: -0.346272
   rate_diff_boot_hi_pp: 0.203118
   p_boot: 0.785
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 223
@@ -863,6 +868,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2008
     n_pairs: 10
@@ -1425,6 +1431,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 15
@@ -1663,6 +1670,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 15
@@ -1901,6 +1909,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2008
     n_pairs: 15
@@ -2463,6 +2472,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2008
     n_pairs: 14
@@ -3025,6 +3035,7 @@ test_retest:
   rate_diff_boot_lo_pp: -3.798685
   rate_diff_boot_hi_pp: 0.0
   p_boot: 0.693
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 10
@@ -3263,6 +3274,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2011
     n_pairs: 7
@@ -3744,6 +3756,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 3.75
   p_boot: 0.754
+  boot_method: monte_carlo
   by_year:
   - year: 2020
     n_pairs: 8
@@ -3982,6 +3995,7 @@ test_retest:
   rate_diff_boot_lo_pp: -1.321732
   rate_diff_boot_hi_pp: 1.265823
   p_boot: 1.0
+  boot_method: monte_carlo
   by_year:
   - year: 2008
     n_pairs: 10
@@ -4544,6 +4558,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2026
     n_pairs: 3
@@ -4620,6 +4635,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2020
     n_pairs: 11
@@ -4696,6 +4712,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2024
     n_pairs: 11
@@ -4772,6 +4789,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2020
     n_pairs: 11
@@ -4848,6 +4866,7 @@ test_retest:
   rate_diff_boot_lo_pp: 0.0
   rate_diff_boot_hi_pp: 0.0
   p_boot: 1.0
+  boot_method: exact
   by_year:
   - year: 2024
     n_pairs: 11
