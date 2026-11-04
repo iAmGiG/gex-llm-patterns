@@ -3,7 +3,8 @@
 Scripts, SQL and conventions behind the extended Paper 2 study for the MDPI *Electronics* Special Issue
 ("Timely AI Advancements and Interdisciplinary Synergies for Intelligent Modeling").
 Tracking issue: [iAmGiG/gex-llm-patterns#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261)
-(context: #260; upstream root cause: gex-database-infrastructure #24). Working branch: `paper/electronics`.
+(context: #260; upstream root cause: gex-database-infrastructure #24). Merged to `main` (PRs #263, #264, #265); new work
+starts on a branch from `origin/main`.
 
 ## 1. Purpose and at a glance
 
@@ -108,7 +109,7 @@ Row counts are as built on 2026-10-29.
 |-----|--------|---------|-------------|------|
 | `jan2026_phase4a` | the January batch file `reports/validation/paper2_regime_windows/batch_jobs/phase4a_postgresql_20260104_184832.jsonl` (values printed at 0.01 B) | SPY | 2020-01-02 to 2025-12-31 (1,505 days = 1,476 windows + 29) | exact published inputs; the bridge; own calendar (rule J) |
 | `old_bs` | archive `backups.options_daily_summary_pre_rebuild_20261004` (read-only; Black-Scholes gamma on integer DTE, same-day expiries zeroed) | SPY | 2008-01-02 to 2026-10-02 (4,667 days; lacks 2023-07-12, 2024-03-11 and 2026-01-02 to 2026-02-09) | diagnostic, optional arm `bridge_old` |
-| `new_full` | `gex.options_daily_summary` after the 2026-10-08 rebuild (stored per-contract gamma, 0DTE included) | SPY, IWM, QQQ | SPY (4,700 days) and IWM (4,707) from 2008-01-02, QQQ (3,896) from 2011-03-23, all to 2026-10-09 | corrected primary series; also the master calendar of the hole detector |
+| `new_full` | `gex.options_daily_summary` after the 2026-10-08 rebuild (stored per-contract gamma, 0DTE included) | SPY, IWM, QQQ | SPY and IWM (4,720 days each) from 2008-01-02, QQQ (3,907) from 2011-03-23, all to 2026-10-09 (after the database fill of 2026-11-03; before it 4,700, 4,707 and 3,896) | corrected primary series; also the master calendar of the hole detector |
 | `new_ex0dte` | raw `gex.options_chains_partitioned` with `expiration > trading_date` | SPY, QQQ, IWM | as `new_full` | 0DTE ablation |
 | `intraday_late` | `gex.intraday_gex_summary`, `snapshot_type = 'final_rush'` (19:55:59 UTC), one row per ET date | SPY | 2026-07-27 to 2026-10-09 (51 days; 2026-07-29, 2026-08-03 and 2026-09-14 excluded) | T+0 value of the composite windows `intraday_t0` |
 | `call_only` | raw chains, call leg only, 0DTE included, put leg dropped | SPY | 2020-01-01 to 2026-10-09 (1,700 days) | diagnostic: reproduces the put-less January inputs from clean data; no LLM arm; `05_report.py` derives the same series in memory from `new_full.call_gex` when it is not stored |
@@ -156,16 +157,18 @@ Row counts are as built on 2026-10-29.
   2018-12-05 and 2025-01-09, rules only, no package) inside the window's span that the series lacks. It does not depend on
   the summary table, which is itself the master calendar and so cannot see a trading day it lacks; a single missing day
   leaves `calendar_gap_days` at 4 or less. The flag changes nothing else: rule A, the windows and every label are
-  unchanged. Validation of the calendar (2026-11-03): over 2008-01-02..2026-10-09 no `new_full` SPY date falls on a
-  day the rules close the exchange, and the weekdays the rules find missing from the `new_full` SPY series are exactly
-  2009-07-23, 2009-08-31, 2010-11-17, 2011-05-13, 2011-06-07, 2016-07-15, 2016-09-09, 2017-01-26, 2017-08-25 to
-  2017-09-08 (10 trading days), 2018-01-29, 2018-11-06, 2019-09-03, 2020-06-23 and, in a series built before the
-  summary table was filled, 2026-05-06. 389 of the 4,671 `new_full` SPY windows span such a day (87 windows are
-  flagged by `calendar_gap_days`, 418 by any detector). Composite windows add `snapshot_timestamp`, `snapshot_type`, `t0_series` and
-  `base_series`. As built: 87 windows per symbol of `new_full` are flagged by a gap of 5 days or more (storm closure
-  2012-10, the data hole 2017-08-24 to 2017-09-11, the missing 2019-09-03), all ending before 2020; 58 windows of
+  unchanged. Validation of the calendar (2026-11-03, before the database fill): over 2008-01-02..2026-10-09 no `new_full` SPY date
+  fell on a day the rules close the exchange, and the weekdays the rules found missing from the `new_full` SPY series were
+  exactly 2009-07-23, 2009-08-31, 2010-11-17, 2011-05-13, 2011-06-07, 2016-07-15, 2016-09-09, 2017-01-26, 2017-08-25 to
+  2017-09-08 (10 trading days), 2018-01-29, 2018-11-06, 2019-09-03, 2020-06-23 and 2026-05-06; 389 of the then 4,671
+  `new_full` SPY windows spanned such a day. After the fill (checked 2026-11-04) still no date falls on a closed day, and
+  only 2018-11-06, 2019-09-03 and 2020-06-23 are missing for all three symbols, plus 2024-09-30 for QQQ (no chain exists
+  for these days): 87 of the 4,691 `new_full` SPY and IWM windows span one of them, 116 of the 3,878 QQQ windows. Composite windows add `snapshot_timestamp`, `snapshot_type`, `t0_series` and
+  `base_series`. As built after the fill (the windows table in the article's Methods): 58 windows per symbol of `new_full` and
+  `new_ex0dte` are flagged by a gap of 5 days or more (the storm closure of 2012-10 and the missing 2019-09-03; the data
+  hole of 2017-08-24 to 2017-09-11 is filled), all ending before 2020, and 116 (SPY, IWM) or 145 (QQQ) by any detector; 58 windows of
   `jan2026_phase4a` are flagged by `missing_master_days = 1` (the January calendar lacks 2023-07-12 and 2024-03-11);
-  `old_bs` has 174 flagged windows, the 87 of `new_full` plus its own holes.
+  `old_bs` has 116 windows with a gap of 5 days or more and 505 flagged by any detector (its own holes).
 * Label (`src/validation/regime_classifier.py`, thresholds fixed for every symbol and year): at least 21 of 30 days
   with the same sign, mean |GEX| of at least $5 B, at most 5 sign flips; $3 B is the low-conviction floor.
   `regime_detected` (model) and `clf_should_detect` (rule) are the primary labels, the four-way `regime_type` is
@@ -174,7 +177,9 @@ Row counts are as built on 2026-10-29.
 ### 3.3 Arms (`common.ARMS`: 18 keys, 15 of them call a model)
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
-answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29; requests and cost use
+answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
+`new_ex0dte` hold 4,691 SPY, 3,878 QQQ and 4,691 IWM windows, and the 1,121 changed or new windows were asked again:
+step 4, stale answers); requests and cost use
 the Batch figure of **$0.30 per 1,000 requests** (section 3.4) and leave out the 5 % test-retest sample (section 4,
 step 4), which adds 5 % to every arm.
 
@@ -287,8 +292,8 @@ How to read it (details and evidence: `planning/00_design.md` section 2 and `pla
   tracked its inputs. The 81.2 % against 12.1 % contrast was produced on a gross, sign-imposed 2024 series and a
   magnitude-only 2020 series, both with dates in the prompt (second-audit memo, items 1 and 2); the `p34_*` arms test
   it again.
-* QQQ and IWM have a floor effect. With the fixed $5 B threshold no window is persistent in any year: 0 of 3,867 QQQ
-  windows and 0 of 4,678 IWM windows (606 of 4,671 for SPY); the largest 30-day mean |GEX| is $4.92 B for QQQ and
+* QQQ and IWM have a floor effect. With the fixed $5 B threshold no window is persistent in any year: 0 of 3,878 QQQ
+  windows and 0 of 4,691 IWM windows (609 of 4,691 for SPY; counts after the database fill of 2026-11-03); the largest 30-day mean |GEX| is $4.92 B for QQQ and
   $4.98 B for IWM, against $16.00 B for SPY. This is a property of the classifier, not a model result (D-18 runs the
   unscaled and the scaled arms side by side); `05_report.py` lists it under `diagnostics.floor_effect`. The scaled
   series lifts the floor by construction, and one factor per symbol does not equalise the rates.
@@ -375,7 +380,8 @@ python $E/02_build_windows.py --series new_full --symbol SPY --rollback   # data
   `window_metadata` lacks `nyse_missing_days`) is refused instead of mixed. The composite windows are stored under the
   series key `intraday_t0` (`tables/windows/intraday_t0_SPY.parquet`).
 * The script prints the detection rate by `window_end` year, with the hole counts (`cal_gap`, `missing_master`,
-  `nyse_missing`, `gap_flagged`). On `new_full` SPY it must show 4,671 windows, 10.3 % for 2024 and 13.6 % for 2025; on
+  `nyse_missing`, `gap_flagged`). On `new_full` SPY it must show 4,691 windows (4,671 before the database fill of 2026-11-03), 10.3 % for 2024
+  and 13.6 % for 2025; on
   `jan2026_phase4a` 1,476 windows, 100 % for 2024 and 2025 and 58 gap-flagged windows (section 3.5).
 * The master calendar of the hole detector is read once per run from the `new_full` series parquet of the symbol (run
   step 1 for `new_full` first); `--master-calendar db` reads `gex.options_daily_summary` instead (the default with
@@ -856,8 +862,8 @@ files is an open decision (Q-09).
 10. **Reused code stays untouched.** The study calls `MechanicsPromptBuilder.build_regime_prompt`,
    `RegimeClassifier` and `src/utils/json_parser.extract_json`. Changing them changes the published prompt or labels;
    the fidelity checks below catch it.
-11. **Shared environment, shared history.** No `pip install`. The pipeline changes no git state; commits on
-    `paper/electronics` are made by the authors, without AI attribution lines.
+11. **Shared environment, shared history.** No `pip install`. The pipeline changes no git state; commits (on short branches
+    from `main`, merged by PR) are made by the authors, without AI attribution lines.
 
 ---
 

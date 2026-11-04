@@ -3,7 +3,7 @@
 Extended version of *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal
 Obfuscation* (AIAI 2026, Springer IFIP AICT, pp. 127-140, doi:10.1007/978-3-032-30801-6_10), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
 Interdisciplinary Synergies for Intelligent Modeling". Authors: Christopher Regan and Ying Xie (Kennesaw State
-University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261). Branch: `paper/electronics`.
+University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261). Merged to `main` (PRs #263, #264, #265).
 
 The extension has to consist of new experiments beyond the AIAI paper and the JRFM article (MDPI, manuscript
 jrfm-4256551), and it cites both. While it was being prepared, the exact inputs of the published Phase 4A run were
@@ -12,18 +12,18 @@ published 2024-versus-2020 baselines turned out to carry calendar dates. The art
 **re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
 extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
 
-## Status (2026-10-31)
+## Status (2026-11-04)
 
 | Part | State |
 |---|---|
-| Manuscript, [`latex/`](latex/) | Complete draft for co-author review: the article (41 pages) and a separate supplement (5 pages), rebuilt on 2026-11-03 after the database added missing trading days, one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` items remain: Dr. Xie confirms the CRediT roles, and the Zenodo DOI and vendor terms are settled at submission. |
+| Manuscript, [`latex/`](latex/) | Complete draft for co-author review: the article (41 pages) and a separate supplement (5 pages), rebuilt on 2026-11-03 after the database added missing trading days, one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` items remain: Dr. Xie confirms the CRediT roles, and the Zenodo DOI and vendor terms are settled at submission. On Overleaf for Dr. Xie's review since 2026-11-04. |
 | Figures, [`figures/`](figures/) | 12 figure scripts, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`; all 12 figures drawn from `results/` into `figures/output/` (PNG, PDF and a provenance manifest each). |
 | Results, `results/` | Written by `scripts/validation/electronics/05_report.py` from the parquet tables: detection rates by arm and year, bridge agreement, series comparison, 0DTE decomposition, post-publication period, intraday check, overlap-aware statistics, cost ledger, disagreements, parse statistics. Re-run after the last chunk. |
-| Model runs | All 18 arms submitted (34 Batch chunks, 34,672 requests, about $9): 33 chunks stored, the last QQQ ex-0DTE chunk finishing at OpenAI. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). |
-| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms), `00` to `07` (environment check, series, windows, backfill, runner, report, condensed copies, database load), the schema SQL and the README. |
-| Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`, 21:02 UTC). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps run provenance, `data/backups/gex_llm/condensed/` and `results/`. |
+| Model runs | All 18 arms run and stored: 35,833 requests in all, including the 1,121 windows asked again after the database fill of 2026-11-03, $10.02. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). |
+| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 18 arms), `00` to `08` (environment check, series, windows, backfill, runner, report, condensed copies, database load, Zenodo package), the schema SQL and the README. |
+| Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`; first load 2026-10-30 21:02 UTC, reloaded 2026-11-03 21:28 UTC after the database fill: 38,592 windows, 36,706 answers, the latest per window). Checked on 2026-11-04 against the database's notice of data changes (gex-database-infrastructure #211): the stored SPY, QQQ and IWM series equal the live daily table on every day through 2026-10-09. Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps run provenance, `data/backups/gex_llm/condensed/` and `results/`. |
 | Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
-| Submission | Not submitted. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page must be checked in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. Draft PR [#263](https://github.com/iAmGiG/gex-llm-patterns/pull/263). Open decisions for the authors are listed in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (section 3). |
+| Submission | Not submitted. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page must be checked in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. PRs #263, #264 and #265 merged. Open before submission: Dr. Xie's review (CRediT roles, the wording of the data statement, the APC, the back matter, the data release, the corresponding author and the timing; asked 2026-11-04), Alpha Vantage's answer on the Zenodo deposit, and the deadline. Decisions so far are in [`planning/02_decisions_log.md`](planning/02_decisions_log.md). |
 
 ## What is new relative to AIAI 2026 and the JRFM article
 
@@ -274,4 +274,4 @@ PY
 - The published `o4-mini` result is the 1,412 answers without the `recovered_2026` flag; the 64 re-parsed answers are
   reported separately (`r1_o4mini_all`).
 - `docs/papers/jrfm/` (the JRFM article) is never edited from here.
-- Commits on `paper/electronics` are made by Chris, without attribution lines.
+- Commits for this paper are made by Chris, without attribution lines, on short branches from `main` merged by PR.

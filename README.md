@@ -3,8 +3,9 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![IEEE BigData 2025](https://img.shields.io/badge/IEEE%20BigData-2025%20Published-success.svg)](https://arxiv.org/abs/2512.17923)
-[![AIAI 2026](https://img.shields.io/badge/AIAI-2026%20Accepted-success.svg)](docs/papers/paper2/aiai/)
-[![JRFM (MDPI)](https://img.shields.io/badge/JRFM%20(MDPI)-Under%20Review-yellow.svg)](docs/papers/jrfm/)
+[![AIAI 2026](https://img.shields.io/badge/AIAI-2026%20Published-success.svg)](https://doi.org/10.1007/978-3-032-30801-6_10)
+[![JRFM (MDPI)](https://img.shields.io/badge/JRFM%20(MDPI)-2026%20Published-success.svg)](https://doi.org/10.3390/jrfm19060382)
+[![Electronics (MDPI)](https://img.shields.io/badge/Electronics%20(MDPI)-In%20Preparation-yellow.svg)](docs/papers/electronics/)
 [![Research](https://img.shields.io/badge/Research-PhD%20Dissertation-purple.svg)](docs/papers/research_roadmap.md)
 
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2018.1-336791.svg)](https://www.postgresql.org/)
@@ -47,6 +48,8 @@ PhD research investigating whether Large Language Models can detect structural c
 
 **Finding**: Detection tracks 0DTE options adoption — 3.7% (2021) → 100% (2024) — with GEX magnitude growing 360%, revealing a structural market reorganization.
 
+> **Data note:** the published 2024–2025 rates rest on inputs that lacked put-side GEX from 2023-09-29, and the 2024-vs-2020 baselines carried calendar dates. On the complete data the rule gives 10.3% (2024) and 13.6% (2025). Details: [`docs/papers/CORRECTIONS.md`](docs/papers/CORRECTIONS.md).
+
 ### Detection ≠ Profitability
 
 Stable detection (68–74% quarterly) persists while economic profitability collapses (Sharpe 1.8 → 0.1), confirming detected patterns are structural mechanics, not exploitable anomalies.
@@ -64,23 +67,34 @@ Stable detection (68–74% quarterly) persists while economic profitability coll
 - **LaTeX**: [`docs/papers/paper1/`](docs/papers/paper1/)
 - **Headline**: 71.5% obfuscated detection, 90.9% predictive accuracy on forward returns
 
-### AIAI 2026 ✅ Accepted — 30-Day Regime Detection
+### AIAI 2026 ✅ Published — 30-Day Regime Detection
 
 **Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
 
-- **Venue**: IFIP International Conference on AI Applications and Innovations (Springer LNCS; camera-ready May 2026)
+- **Venue**: 22nd IFIP WG 12.5 International Conference on Artificial Intelligence Applications and Innovations (AIAI 2026), Springer, IFIP Advances in Information and Communication Technology, pp. 127–140
+- **DOI**: [10.1007/978-3-032-30801-6_10](https://doi.org/10.1007/978-3-032-30801-6_10)
 - **LaTeX**: [`docs/papers/paper2/aiai/`](docs/papers/paper2/aiai/)
 - **Headline**: 81.2% detection (2024) vs 12.1% (2020) — 69.1pp separation, φ = 0.672, p < 0.0001 over 2,221 evaluations
 
-### JRFM (MDPI) 🔄 Under Review — Combined Methodology + Regime Detection
+### JRFM (MDPI) ✅ Published — Combined Methodology + Regime Detection
 
-**Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
+**Title**: *Temporal Obfuscation Testing for LLM Structural Reasoning: From Single-Day Dealer Constraints to Persistent Market Regimes*
 
-A journal-length submission that combines the obfuscation methodology validated at IEEE BigData 2025 with the multi-day regime-detection results from the AIAI 2026 paper, plus reviewer-driven additions: full prompt reproducibility, bootstrap CIs, χ² + Fisher contingency tests, threshold sensitivity, and a Markov-switching benchmark.
+A journal article that combines the obfuscation methodology validated at IEEE BigData 2025 with the multi-day regime-detection results from the AIAI 2026 paper, plus reviewer-driven additions: full prompt reproducibility, bootstrap CIs, χ² + Fisher contingency tests, threshold sensitivity, and a Markov-switching benchmark.
 
 - **Venue**: Journal of Risk and Financial Management (MDPI)
 - **LaTeX**: [`docs/papers/jrfm/`](docs/papers/jrfm/)
-- **Status**: Major revision (R3 round) submitted April 2026
+- **Published**: *J. Risk Financial Manag.* 2026, 19(6), 382, [doi:10.3390/jrfm19060382](https://doi.org/10.3390/jrfm19060382)
+
+### Electronics (MDPI) 🔄 In Preparation — Regime Re-Run on Complete Inputs
+
+**Title**: *Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test*
+
+Extended version of the AIAI 2026 paper for the MDPI *Electronics* Special Issue "Timely AI Advancements and Interdisciplinary Synergies for Intelligent Modeling". It re-runs the regime test on complete daily GEX for SPY, QQQ and IWM (2008–2026) with gpt-6-luna, next to the published o4-mini labels, and stores every input, label and answer.
+
+- **LaTeX**: [`docs/papers/electronics/`](docs/papers/electronics/)
+- **Pipeline**: [`scripts/validation/electronics/`](scripts/validation/electronics/)
+- **Status**: co-author review; tracking issue [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261)
 
 ### Future Directions
 
@@ -148,14 +162,15 @@ gex-llm-patterns/
 │   ├── validation/          # Obfuscation & regime classification
 │   └── data_sources/        # Alpha Vantage, Polygon clients
 ├── scripts/
-│   ├── validation/          # IEEE BigData + AIAI/JRFM validation pipelines
+│   ├── validation/          # IEEE BigData + AIAI/JRFM validation pipelines, Electronics re-run
 │   ├── analysis/            # Sensitivity analysis, figures
 │   └── data_collection/     # Intraday OI monitor
 ├── docs/
 │   ├── papers/
 │   │   ├── paper1/          # Single-day obfuscation source — IEEE BigData 2025 (published)
-│   │   ├── paper2/          # Regime detection source — AIAI 2026 (accepted)
-│   │   ├── jrfm/            # Combined journal submission — JRFM/MDPI (under review)
+│   │   ├── paper2/          # Regime detection source — AIAI 2026 (published)
+│   │   ├── jrfm/            # Combined journal article — JRFM/MDPI (published 2026)
+│   │   ├── electronics/     # Extension: regime re-run on complete inputs — MDPI Electronics (in preparation)
 │   │   └── extensions/      # Forward-looking research directions (snapshot)
 │   └── presentations/       # PhD symposium, fundamentals
 ├── reports/                  # Validation results (YAML)
