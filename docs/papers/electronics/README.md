@@ -43,7 +43,7 @@ The JRFM article combines the IEEE BigData 2025 paper and the AIAI 2026 paper. T
    ISO dates as day labels and on two sign conventions. `gpt-6-luna` re-runs the identical values with the dates and
    with relative labels (arms `p34_*`) next to the stored `o4-mini` answers (`r1_p3_o4mini`, `r1_p4_o4mini`).
 6. **Overlap-aware statistics.** Windows have stride one, so every p-value comes with a calendar-quarter block
-   bootstrap (2,000 draws, seed 261) and a non-overlapping 30-day subsample; the AIAI and JRFM p-values treated the
+   bootstrap (enumerated exactly up to ten quarters, otherwise 2,000 draws with seed 261; D-25) and a non-overlapping 30-day subsample; the AIAI and JRFM p-values treated the
    windows as independent.
 7. **Stored inputs and answers.** Every series value, window, deterministic label, request and model answer is stored,
    so each table and figure is regenerated from stored data.

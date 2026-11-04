@@ -55,7 +55,7 @@ ORDER BY e.rn;
 -- enable_seqscan=off is a session planner setting (no writes): the index plan is faster and returns the same numbers (largest relative difference 5e-13).
 SET enable_seqscan = off;
 SELECT trading_date,
-       count(*)                                                 AS n_contracts,
+       count(*) FILTER (WHERE expiration > trading_date)        AS n_contracts,
        count(*) FILTER (WHERE expiration = trading_date)        AS n_0dte,
        sum(CASE WHEN option_type = 'call' THEN g END)  FILTER (WHERE expiration > trading_date) AS call_gex_ex0dte,
       -sum(CASE WHEN option_type = 'put'  THEN g END)  FILTER (WHERE expiration > trading_date) AS put_gex_ex0dte,

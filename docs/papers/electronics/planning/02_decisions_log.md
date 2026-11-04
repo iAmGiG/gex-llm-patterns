@@ -29,7 +29,7 @@
 | D-10 | 2026-10-28 | Budget | Hard stop at USD 12.00 on money spent from the current balance; 29,819 requests (USD 8.92 to 11.18) without and 33,160 (USD 9.92 to 12.44) with the scaled QQQ and IWM arms |
 | D-11 | 2026-10-28 | Request mechanics | Chunks of at most 1,500; keys in `custom_id`; 4,000 token cap, one retry at 8,000 |
 | D-12 | 2026-10-28 | Thresholds and primary label | Fixed Paper 2 thresholds; `regime_detected` is the primary label |
-| D-13 | 2026-10-28 | Statistics | Wilson intervals, calendar-quarter block bootstrap (2,000 draws, seed 261) and a non-overlapping 30-day subsample next to every p-value |
+| D-13 | 2026-10-28 | Statistics | Wilson intervals, calendar-quarter block bootstrap (2,000 draws, seed 261; exact up to ten quarters since D-25) and a non-overlapping 30-day subsample next to every p-value |
 | D-14 | 2026-10-28 | Storage | New standalone tables in `backups`; DDL gated on a documentation PR and the maintainer's approval; parquet and raw JSONL copies; archive tables read-only |
 | D-15 | 2026-10-28 | Scope and boundaries | SPY, QQQ, IWM; window ends capped at 2026-10-09; Phase 3/4 reruns on SPY 2024 and 2020 |
 | D-16 | 2026-10-28 | Reporting and figures | Everything from stored tables; no synthetic fallback ever; the long CSVs of `05_report.py` are the interface to the figures |
@@ -38,6 +38,10 @@
 | D-19 | 2026-10-29 | Phase 3/4 baselines | Four luna arms rerun the November 2025 inputs with Day-T labels and with the dates actually sent (892 requests); the published o4-mini answers are backfilled for comparison |
 | D-20 | 2026-10-29 | Publication status and corrections | JRFM is published, so no hold request; the findings are public (`CORRECTIONS.md`); revised the same day: no correction notices are filed, the Electronics paper carries the corrected analysis without calling itself a correction, issue #262 closed |
 | D-21 | 2026-10-29 | API keys | Left as they are: no rotation; read from the git-ignored config, never printed or committed |
+| D-22 | 2026-10-29 | Pilot and submission | Pilot outcome and the batch submission of all arms |
+| D-23 | 2026-11-02 | Manuscript structure | One .tex per part, supplement, and the author decisions of 2026-11-02 |
+| D-24 | 2026-11-03 | Missing trading days | 2026-05-06 fill and spot-less repair upstream; rebuild and re-run of changed windows; NYSE-calendar flag |
+| D-25 | 2026-11-04 | Code audit | Exact block bootstrap up to ten quarters; one Methods sentence for the Sandy closure; deposit holds current plus replaced answers |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -316,10 +320,23 @@
   - Add an NYSE-calendar gap detector, keep the spanning windows in the rates, and disclose their count and the size of the effect.
 - Timing: the database team repairs first, and our rebuild follows so the series change only once. The repair covers the 16 days whose chains exist but lack a spot price (spot taken from the day's close, accepted only when put-call parity agrees within about 1%). 2018-11-06, 2019-09-03, 2020-06-23 and QQQ 2024-09-30 have no chain and stay missing.
 
-## 3. Open decisions for the authors
-
 - Outcome (2026-11-03): the database filled the 41 days at 03:54 UTC (none rejected by the parity gate; largest deviation 0.35%). The nine affected series were rebuilt with every pre-existing day bit-identical, and the raw-chain totals equal the summary on the added days to within 2.6e-7. The windows were re-cut (SPY 4,691) and 1,121 requests re-asked the changed and new windows; 1,049 answers were superseded. The total spend is USD 10.02 and the database was reloaded at 21:28 UTC. The 2024 and 2025 rates are unchanged; 2026 SPY is 22 of 194 (11.3%); 2016 to 2018 move around the refilled 2017 block, and the 2008-2019 same-day-expiry contrast is no longer significant on the subsample (p = 0.375). The manuscript numbers were recomputed from `results/` and checked independently (about 260 numbers).
 - A loader bug found on the way: `07_load_tables.py` filled missing `created_at` with the load time before deduplicating, which briefly kept stale answers in the database. It was fixed and reloaded the same evening; the report, figures and condensed tables were not affected.
+
+### D-25 Code audit of 2026-11-04: bootstrap, Sandy flag, deposit contents
+
+- Date: 2026-11-04. Decided by Chris.
+- Facts:
+  - Four independent read-only reviews were run: an independent re-derivation of the paper's numbers from the Methods and the database without the pipeline code, and code reviews of the data path (01, 02, common), the model path (03, 04) and the results path (05 to 08, figure loaders).
+  - The re-derivation reproduced every abstract number, all 38,592 windows exactly, every classifier label, all rate rows, the bridge kappa and the Wilson, Newcombe and McNemar values.
+  - No defect changed a stored answer or a headline number. The findings were text inconsistencies (Section 4.1 and Appendix B means on different day sets, the call-only 2023 and 2026 cells, the fidelity tolerances, the S1 contract count, the wording on missing values, the threshold grid and the low-conviction definition), the rounding effect on 4 labels, latent code issues (an older re-ingest could overwrite a newer answer, the busy window, parse-status strictness, the Zenodo packager), and seed dependence of the bootstrap with four quarters (2026: 0.0-21.8% drawn, 0.0-20.3% exact).
+- Decisions:
+  - Bootstrap: enumerate the resamples exactly whenever there are at most ten quarters (Chris asked which choice has the better integrity; exact enumeration is deterministic and does not depend on the seed). Longer periods keep the seeded draws. The bootstrap numbers of the manuscript are re-synced.
+  - Hurricane Sandy (exchange closed 2012-10-29/30): keep the calendar-gap flag and say in the Methods that it flags 29 complete windows per series.
+  - Zenodo deposit: the current answers (one per key, as counted in the article) plus a separate file of the 1,049 replaced answers with the run that replaced each; local paths stripped.
+- Outcome: pipeline fixes (no stored answer changes), results and figures regenerated (every figure image byte-identical), manuscript text fixed and re-synced; branch fix/audit-2026-11-04.
+
+## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
 

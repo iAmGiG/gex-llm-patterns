@@ -1867,8 +1867,12 @@ def section_stats(ctx: Context) -> Dict[str, Any]:
                         for name, (first, last) in spans.items()},
             "wilson": "Wilson score interval; treats stride-1 windows as independent, so it is too narrow",
             "bootstrap_quarter": "resamples calendar quarters of window_end with replacement (paired contrasts resample the same "
-                                 "quarters for both series); percentile interval; p = 2 min(P(d<=0), P(d>=0)), bounded below by 1/(draws+1); "
-                                 "intervals from fewer than ~8 blocks are coarse",
+                                 "quarters for both series); every distinct resample enumerated with its weight among the k**k "
+                                 "equally likely draws when there are at most 200,000 (up to 10 quarters; for two independent "
+                                 "periods the product of both), else 2,000 seeded draws (method and n_draws per entry); "
+                                 "percentile interval (numpy linear rule); p = 2 min(P(d<=0), P(d>=0)), bounded below by the "
+                                 "probability of one resample (1/n_draws exact, 1/(draws+1) Monte Carlo); with few quarters "
+                                 "the interval is coarse",
             "nonoverlap_30d": "greedy chain of windows that share no day, from the first window of the period; "
                               "rate_pct_range_over_starts is the min/max over the 30 possible first windows",
             "series_contrast": "a minus b on windows present in both series; LLM contrasts hold the model fixed; family = series "

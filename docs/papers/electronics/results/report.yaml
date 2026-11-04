@@ -1,9 +1,9 @@
-generated_at: '2026-11-04T05:27:15+00:00'
+generated_at: '2026-11-04T05:43:55+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
-  sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+  sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
   common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
-  git_sha: 4cb98fd6828a0c42776688d79ccf4d0558f8180c
+  git_sha: 0c52c14ed37f3b7b13cb44d9db0ba8ec75e87bc8
 environment:
   python: 3.12.12
   pandas: 2.3.3
@@ -3541,11 +3541,11 @@ files:
     sha256: f86034f28a40c11c7b9ef7d8cdf100bce96e4231d8c9569c7b5fe61c201a9fac
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -3562,11 +3562,11 @@ files:
     sha256: 2263f7f6cbdfe865f7ba4732d6b85109bf232d0713ae6015c68a9a68fec51cbc
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   cost_ledger.csv:
     rows: 46
     columns:
@@ -3606,11 +3606,11 @@ files:
     sha256: 9683288bd8c857c7bfa794b47644f4dd35bac762bd40586a1c8dcd52c61e42b8
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -3627,11 +3627,11 @@ files:
     sha256: d86a44dbe7bfad195c862fca7d614461d4aacb8668b2b2be8348266edb8fa2df
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   detection_by_year.csv:
     rows: 492
     columns:
@@ -3664,11 +3664,11 @@ files:
     sha256: e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   detection_by_year_wide.csv:
     rows: 441
     columns:
@@ -3696,11 +3696,11 @@ files:
     sha256: 7ca5031506e3667addbb6a18d08ea55f148a0e9b9a43c526f23bebceea0e4dc9
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   disagreements.csv:
     rows: 60
     columns:
@@ -3730,11 +3730,11 @@ files:
     sha256: 77bc84271048fb96d7fd29e8aab7b5caf65e0c63e82b43887ebca488c3b81a18
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -3766,11 +3766,11 @@ files:
     sha256: 0adff916ed255c3fbaf5f5d3c5bd9c58fb8a7f69a12319b88f716cc2bcc5bc0c
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -3794,11 +3794,11 @@ files:
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   llm_parse_stats.csv:
     rows: 34
     columns:
@@ -3829,11 +3829,11 @@ files:
     sha256: 3b36f914abe31d425e4e6635203568f73b0b8e6ffdd2a927f78d5b54cec7c6c5
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   post_publication_2026.csv:
     rows: 1959
     columns:
@@ -3871,11 +3871,11 @@ files:
     sha256: abe8244b2153ab0711bdf3591812c0fa69449742f4333fb94fe4cc0e18fcd373
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   post_publication_2026_summary.csv:
     rows: 42
     columns:
@@ -3899,11 +3899,11 @@ files:
     sha256: 0d4dfe88021efe5ebabc5917dc101405ebd3ef8ca897a36c55b2bce73348559e
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   reported_vs_computed.csv:
     rows: 353
     columns:
@@ -3930,11 +3930,11 @@ files:
     sha256: 383a8388a1f3d980b3f30290750f763e12b44b286d114ba73a6d7743533bbd90
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   series_comparison.csv:
     rows: 106
     columns:
@@ -3957,26 +3957,26 @@ files:
     sha256: f4b24afd4576ff16188ba07c6c516b3807a470526dabf8485b999af57a29a8ba
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
   stats.yaml:
     keys:
     - meta
     - headline_contrasts
     - rates
     - contrasts
-    bytes: 187569
-    sha256: 7818d64ce77865fe3a66339e12ae7934b1e386eae65b5eec46eb79988eb1c0b1
+    bytes: 187902
+    sha256: 48a72f730c78acdd8873c3a89e6707ba86c46b2f91d57c6267bfd1d713dcc0fb
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: 7adbc5db7cd73d50dd859a262f79567cdfd8d3013ca771ee71da8f2bfae607c3
+      script_sha256: 3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6
       common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T05:27:15+00:00'
+      generated_at: '2026-11-04T05:43:55+00:00'
 untracked_files: []
 warnings: []
 diagnostics:

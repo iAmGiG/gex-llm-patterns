@@ -709,7 +709,8 @@ rates are percentages, intervals are Wilson 95 %, and `n_indep_30d` counts non-o
 | `env_check_<UTC stamp>.json` | `00_env_check.py --write` |
 
 Windows have stride 1, so consecutive windows share 29 of 30 days and the Wilson intervals are too narrow. Every
-p-value is therefore reported next to a calendar-quarter block bootstrap (2,000 draws, seed 261) and the same
+p-value is therefore reported next to a calendar-quarter block bootstrap (every resample enumerated exactly up to ten quarters, otherwise 2,000 draws with
+seed 261) and the same
 comparison on a non-overlapping 30-day subsample (decision D-13). Windows ending in 2026 are called the
 **post-publication period**, never out-of-sample: `gpt-6-luna` was created on 2026-09-14 and its training cutoff is
 undocumented (D-07). For fixed inputs every file but `report.yaml` is byte-identical between runs.
