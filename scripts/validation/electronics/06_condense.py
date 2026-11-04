@@ -64,16 +64,17 @@ def main(argv=None) -> int:
     args.out.mkdir(parents=True, exist_ok=True)
 
     detections = load("detections")
-    # A window re-asked after its inputs changed has an older and a newer answer; keep the latest, as 05 and 07 do.
+    # A window re-asked after its inputs changed has an older and a newer answer; keep the latest, by the one rule of
+    # common.latest_answers that 05 and 07 use too (an answer without created_at takes its run's ingested_at).
     key = ["arm", "series_key", "symbol", "window_end", "model", "prompt_version"]
     n_all = len(detections)
-    detections = detections.sort_values("created_at", kind="stable", na_position="first").drop_duplicates(key, keep="last")
+    detections = common.latest_answers(detections, key, common.run_ingest_times(load("runs")))
     if len(detections) < n_all:
         print(f"detections: {n_all - len(detections):,} superseded answer(s) dropped (latest created_at kept)")
     d = detections[DETECTION_COLUMNS].sort_values(["arm", "symbol", "window_end", "custom_id"], kind="stable")
     d.to_csv(args.out / "detections.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
-    windows = load("windows")
+    windows = common.latest_answers(load("windows"), ["series_key", "symbol", "window_end"])  # one row per window
     w = windows[WINDOW_COLUMNS].copy()
     w["calendar_gap_days"] = windows["window_metadata"].map(lambda m: meta(m).get("calendar_gap_days"))
     w["missing_master_days"] = windows["window_metadata"].map(lambda m: meta(m).get("missing_master_days"))
@@ -81,7 +82,7 @@ def main(argv=None) -> int:
     w = w.sort_values(["series_key", "symbol", "window_end"], kind="stable")
     w.to_csv(args.out / "windows.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
-    series = load("series")
+    series = common.latest_answers(load("series"), ["series_key", "symbol", "trading_date"])  # one row per day
     g = series.groupby(["series_key", "symbol"], as_index=False).agg(
         n_rows=("trading_date", "size"), first_date=("trading_date", "min"), last_date=("trading_date", "max"),
         source_table=("source_table", "first"),
@@ -91,7 +92,8 @@ def main(argv=None) -> int:
     g.to_csv(args.out / "series_index.csv", index=False)
 
     for path in sorted(args.out.iterdir()):
-        print(f"{path.stat().st_size:>10,d}  {path.relative_to(common.REPO_ROOT)}")
+        shown = path.relative_to(common.REPO_ROOT) if path.resolve().is_relative_to(common.REPO_ROOT) else path
+        print(f"{path.stat().st_size:>10,d}  {shown}")
     print(f"detections {len(d):,} rows ({d['arm'].nunique()} arms) | windows {len(w):,} rows | series {len(g)} (series, symbol) pairs")
     return 0
 

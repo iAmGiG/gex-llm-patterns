@@ -51,7 +51,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
 | 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
 | 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
-| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: full tables, README, checksums; not tracked by git) |
+| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the 1,049 answers the 2026-11-03 re-run replaced, README, checksums; repository-relative paths; refused on any local path or credential; not tracked by git) |
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
@@ -61,7 +61,7 @@ written to Postgres), after the environment block of section 2:
 
 ```bash
 python $E/00_env_check.py
-python $E/01_build_series.py --series jan2026_phase4a --symbol SPY   # reads raw dates: not 21:50-22:45 UTC
+python $E/01_build_series.py --series jan2026_phase4a --symbol SPY   # reads raw dates: not 21:50-22:57 UTC
 python $E/01_build_series.py --series new_full --symbol SPY
 python $E/01_build_series.py --series old_bs --symbol SPY
 for s in p3_2024 p3_2024_dated p4_2020 p4_2020_dated; do python $E/01_build_series.py --series $s --symbol SPY; done
@@ -408,8 +408,8 @@ Step 3 rebuilds each as an arm from the batch output itself, with no API call:
 | `r1_p3_o4mini` | `r1_p3_o4mini_20251120` | `batch_691ea7f7b79481909f4667eaff640f26` | 223 (2024-02-13 to 2024-12-31) | `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`: 181 of 223 = 81.2 % |
 | `r1_p4_o4mini` | `r1_p4_o4mini_20251120` | `batch_691f37d94ef0819099136e88a69bef82` | 223 (2020-02-13 to 2020-12-31) | `.../phase4_baseline_2020.yaml`: 27 of 223 = 12.1 % |
 
-For every arm the script parses all output lines with `common.parse_llm_content` (`parse_status` `ok` 445 and
-`fallback` 1,031 for January, `ok` 59 and `fallback` 164 for Phase 3, `ok` 87 and `fallback` 136 for Phase 4; one January
+For every arm the script parses all output lines with `common.parse_llm_content` (stored `parse_status`: `ok` 1,412 and
+`fallback` 64 for January, `ok` 207 and `fallback` 16 for Phase 3, `ok` 219 and `fallback` 4 for Phase 4; one January
 answer, 2023-08-07, is wrapped in a markdown fence and holds a raw control character, so it is read leniently, stored as
 `fallback` with `detection_metadata.lenient_json`, and logs the expected warning `All JSON parsing strategies failed.
 Last error: Invalid control character`), cross-checks every field against the published record (1,412 of 1,412 cached
@@ -632,7 +632,7 @@ Each recipe assumes the environment block of section 2. Commands that spend are 
 needs no model call:
 
 ```bash
-for s in new_full jan2026_phase4a old_bs intraday_late call_only new_ex0dte; do python $E/01_build_series.py --series $s --symbol SPY; done  # call_only and new_ex0dte: raw scans, not 21:50-22:45 UTC
+for s in new_full jan2026_phase4a old_bs intraday_late call_only new_ex0dte; do python $E/01_build_series.py --series $s --symbol SPY; done  # call_only and new_ex0dte: raw scans, not 21:50-22:57 UTC
 for s in new_full new_ex0dte; do for y in QQQ IWM; do python $E/01_build_series.py --series $s --symbol $y; done; done
 for y in QQQ IWM; do python $E/01_build_series.py --series new_full_scaled --symbol $y; done
 for s in p3_2024 p3_2024_dated p4_2020 p4_2020_dated; do python $E/01_build_series.py --series $s --symbol SPY; done
@@ -726,7 +726,7 @@ Four tables and one view in schema `backups`, named per the database repository'
 | `backups.gex_llm_regime_windows` | (`series_key`, `symbol`, `window_end`): the 30-day input as sent (labels `Day T-29` ... `Day T+0`, or ISO dates for the `_dated` series), its sha256 and the deterministic verdict | 02 |
 | `backups.gex_llm_regime_runs` | OpenAI Batch job (one chunk), synchronous pilot, or backfilled run; written at submit time so the batch id is never lost | 03, 04 |
 | `backups.gex_llm_regime_detections` | (`arm`, `series_key`, `symbol`, `window_end`, `model`, `prompt_version`): one model answer | 03, 04 |
-| view `backups.gex_llm_regime_rates_summary` | yearly LLM detection rate next to the classifier rate, by arm | read-only |
+| view `backups.gex_llm_regime_rates_summary` | yearly LLM detection rate next to the classifier rate, by arm, over every stored row: a repeat arm (`<arm>#rep1`) is its own row and `r1_o4mini` includes the 64 recovered answers (4.0 % for 2021, not the published 3.7 %); the article's rates come from `05_report.py` | read-only |
 
 ### 5.3 The gate
 
@@ -742,7 +742,7 @@ None of these objects exists yet, and no script creates them. The database user 
    "Refs iAmGiG/gex-llm-patterns#261". Commits, PRs and documents carry no AI attribution lines.
 2. Until the approval, every script runs with `--parquet-only` (or its default, which writes parquet only), or with
    `--rollback` to exercise the database path. Nobody creates the tables ad hoc.
-3. After the approval the maintainer, or an author on the maintainer's go, applies the DDL outside 21:50 to 22:45 UTC:
+3. After the approval the maintainer, or an author on the maintainer's go, applies the DDL outside 21:50 to 22:57 UTC and outside NYSE market hours:
 
    ```bash
    psql -h 127.0.0.1 -d gex_options -X -v ON_ERROR_STOP=1 -f scripts/validation/electronics/sql/gex_llm_regime_schema.sql
@@ -769,8 +769,8 @@ The archive tables `backups.*_pre_rebuild_20261004` are only ever read, in read-
 `--rollback` checks afterwards that no `gex_llm_regime_*` object was left behind and says so in the log
 (`rollback verified: the database is unchanged`, `ROLLBACK done; gex_llm_regime objects before and after: none`,
 `rollback test passed`). `--db` and `--rollback` of 02 and 03, every Postgres write of 04 (`--rollback` and `status
---rollback` included, because they apply the DDL) and the same flags of 01 refuse to run between 21:50 and 22:45 UTC unless
-`--ignore-busy-window` is given. To look yourself (no rows until the DDL has been applied):
+--rollback` included, because they apply the DDL) and the same flags of 01 refuse to run between 21:50 and 22:57 UTC, and during NYSE market hours
+(09:25-16:20 New York time on trading days), unless `--ignore-busy-window` is given. To look yourself (no rows until the DDL has been applied):
 
 ```bash
 psql -h 127.0.0.1 -d gex_options -X -At -c "select relname from pg_class where relnamespace = 'backups'::regnamespace and relname like 'gex_llm_regime%'"
@@ -835,8 +835,10 @@ files is an open decision (Q-09).
    data audit (scratch outputs, not in the repository) measured SPY 2024 at 876,969 buffers read and 4.5 s with the
    default plan against 52,980 buffers and about 1 s with the index plan. Never scan the raw table across several
    years in one statement; use `gex.options_daily_summary` for per-day aggregates.
-2. **Avoid 21:50 to 22:45 UTC.** The monitors rebuild the daily tables then. No raw scans, DDL or upserts in that window.
-   `common.in_quiet_window()` and `common.assert_not_quiet(ignore)` hold the one definition (the minute 22:45 is
+2. **Avoid 21:50 to 22:57 UTC, and write nothing during market hours.** The monitors rebuild the daily tables in that
+   window: no raw scans, DDL or upserts then. While the market is open (09:25-16:20 New York time on NYSE trading days,
+   so 13:25-20:20 UTC in summer and 14:25-21:20 UTC in winter) no database writes either; reads are fine.
+   `common.busy_reason()` and `common.assert_not_quiet(ignore)` hold the one definition (the minutes 22:57 and 16:20 are
    inside). `01_build_series.py` refuses `jan2026_phase4a`, `new_ex0dte`, `call_only` and any `--db` or `--rollback`
    run in it; `02_build_windows.py` and `03_backfill_round1.py` refuse `--db` and `--rollback`; `04_llm_runner.py` refuses
    every Postgres write (`poll --wait` sleeps until the window ends instead). `--ignore-busy-window` overrides; do not
@@ -927,7 +929,7 @@ November prompt; that is the point of the arm.
 | env check: `json_repair  not importable` | deliberate: the package is not installed in the shared env and must not be | nothing to do. `src/utils/json_parser.py` skips its repair strategy. `common.parse_llm_content` retries with `json.loads(strict=False)` but cannot read the one January answer (2023-08-07) that is wrapped in a markdown fence and holds a raw control character; `03_backfill_round1.py` unwraps it, stores it as `fallback` with `lenient_json`, and logs the expected warning `All JSON parsing strategies failed. Last error: Invalid control character`. If the package ever becomes importable the check warns, because `fallback` results would then differ from runs made without it |
 | env check: `user site is active ... export PYTHONNOUSERSITE=1`, a package marked `[user-site]` | `~/.local/lib/python3.12/site-packages` can shadow the env (on 2026-10-29 it still holds `yaml` and pip leftovers named `~umpy`, `~andas`, `~sycopg2`) | `export PYTHONNOUSERSITE=1` before every run |
 | `OpenAI key not found (config/config.json OPEN_AI_KEY or env OPEN_AI_KEY)` | `config/` is git-ignored, so a fresh clone or `git worktree add` has no `config/config.json` (nor the batch files and `.cache/research_cache.db`, which are ignored too) | copy `config/config.json` from the main checkout, or `export OPEN_AI_KEY` for the session; never commit it. Copy the batch files and the cache as well, or work in the main checkout |
-| `refusing to run between 21:50 and 22:45 UTC` (01) or `inside the 21:50-22:45 UTC quiet window; pass --ignore-busy-window to override` (02, 03) or `Postgres writes are paused: ...` (04) | quiet-window guard | wait until after 22:45 UTC (`date -u`); `--parquet-only` work is not blocked (01 still refuses its raw scans) |
+| `refusing to run inside the 21:50-22:57 UTC quiet window ...` or `... NYSE market hours ...` (01), `inside ...; pass --ignore-busy-window to override` (02, 03) or `Postgres writes are paused: ...` (04) | busy-window guard | wait until after 22:57 UTC or after the close (`date -u`); `--parquet-only` work is not blocked (01 still refuses its raw scans) |
 | `... does not exist: apply ... after maintainer approval` or `... do not exist yet (DDL awaits approval): using parquet only` | the gate (section 5.3) | expected; use the default mode, `--parquet-only` or `--rollback` |
 | `FidelityError: ... window_end set differs`, `... differ from <file> in their dates or values` or `... prompt(s) differ from the file` | the batch files, the prompt builder or the series parquet changed | stop; run `00_env_check.py`; rebuild the series (01) and the windows (02) |
 | 02: `series parquet not found: ...`; `<series>/<symbol> ends <date>, more than 7 days before the last window_end requested ... the series looks incomplete`; `master calendar: ... not found (run 01_build_series.py --series new_full ...)` | step 01 has not been run, was run for part of the range (`--years`), or `new_full` of the symbol is missing | run 01 for the series (and for `new_full` of the symbol); or pass `--end-max` to build the windows a short series supports; or `--master-calendar db` |

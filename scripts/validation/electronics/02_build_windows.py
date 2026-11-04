@@ -49,7 +49,7 @@ Safety
     table is missing, and --rollback applies the schema inline inside a transaction that is always rolled back,
     so it can be used before the tables exist.  The schema file is run with its one BEGIN; and one COMMIT; line
     stripped and is refused when any other transaction-control statement remains.  --db and --rollback do not run
-    between 21:50 and 22:45 UTC (``common.assert_not_quiet``; --ignore-busy-window overrides).
+    inside the 21:50-22:57 UTC quiet window or NYSE market hours (``common.assert_not_quiet``; --ignore-busy-window overrides).
 
 Examples (repository root, AutoGex env)::
 
@@ -664,7 +664,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     output.add_argument("--rollback", action="store_true",
                         help="test the Postgres path: apply the schema inline, upsert twice, verify, roll back; writes nothing")
     parser.add_argument("--ignore-busy-window", action="store_true",
-                        help="allow --db/--rollback between 21:50 and 22:45 UTC (the daily ingest and summary cron)")
+                        help="allow --db/--rollback in the 21:50-22:57 UTC quiet window or market hours (the daily ingest and summary cron)")
     args = parser.parse_args(argv)
     if args.series == LATE_SERIES:
         parser.error(f"{LATE_SERIES} holds one row per intraday day, so it has no 30-row windows; use --composite "

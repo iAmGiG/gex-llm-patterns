@@ -84,16 +84,18 @@ def load(conn, kind: str) -> int:
         # Keep the latest, as 05_report does. Answers stored before created_at existed have none: they are older than
         # any answer that has one, so they sort first (na_position="first") and lose every tie.
         before = len(frame)
-        frame = frame.sort_values("created_at", kind="stable", na_position="first").drop_duplicates(list(key), keep="last")
+        run_times = {}
+        if kind == "detections":
+            runs = pd.concat([pd.read_parquet(f) for f in glob.glob(str(common.PARQUET_ROOT / "runs" / "*.parquet"))],
+                             ignore_index=True)
+            run_times = common.run_ingest_times(runs)
+        frame = common.latest_answers(frame, list(key), run_times)  # the rule 05 and 06 use too
         if len(frame) < before:
             print(f"  {kind}: {before - len(frame):,} superseded row(s) dropped (latest created_at kept per natural key)")
         # NOT NULL with a default: give the rows without one their run's ingest time (else the load time)
         missing = frame["created_at"].isna()
-        if missing.any() and "run_id" in frame.columns:
-            runs = pd.concat([pd.read_parquet(f) for f in glob.glob(str(common.PARQUET_ROOT / "runs" / "*.parquet"))],
-                             ignore_index=True)
-            ingested = pd.to_datetime(runs.set_index("run_id")["ingested_at"], utc=True)
-            frame.loc[missing, "created_at"] = frame.loc[missing, "run_id"].map(ingested)
+        if missing.any() and run_times:
+            frame.loc[missing, "created_at"] = pd.to_datetime(frame.loc[missing, "run_id"].map(run_times), utc=True)
         frame["created_at"] = frame["created_at"].where(frame["created_at"].notna(), pd.Timestamp(common.utcnow()))
     rows = ([cell(v, t) for v, (_, t) in zip(rec, use)] for rec in frame[names].itertuples(index=False, name=None))
     before = time.perf_counter()

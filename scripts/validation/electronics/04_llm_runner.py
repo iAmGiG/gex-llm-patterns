@@ -40,7 +40,7 @@ Guards (each refuses before anything is sent or written):
 * in flight: ``generate`` and ``retry`` skip windows that a generated, submitted or not yet ingested run already
   holds (``--include-inflight`` overrides), and ``submit`` refuses a chunk that repeats a request that was already
   sent or answered (``--force`` overrides);
-* busy window: no Postgres writes between 21:50 and 22:45 UTC (``common.assert_not_quiet``), while the monitors
+* busy window: no Postgres writes in the 21:50-22:57 UTC quiet window or NYSE market hours (``common.assert_not_quiet``), while the monitors
   rebuild the daily tables; ``--rollback`` counts as a write because it applies the DDL, even for ``status``;
   ``--parquet-only`` and the parquet fallback are not affected (``--ignore-busy-window`` overrides; ``poll --wait``
   pauses instead of stopping).
@@ -402,14 +402,12 @@ class Store:
         """Pause a long loop (poll --wait) while Postgres must not be written, instead of stopping it."""
         if self.conn is None or not self.writes or self.ignore_busy_window:
             return
-        (h0, m0), (h1, m1) = common.QUIET_WINDOW_UTC
-        while common.in_quiet_window():
-            now = common.utcnow()
-            end = datetime(now.year, now.month, now.day, h1, m1, tzinfo=timezone.utc) + timedelta(minutes=1)  # minute m1 included
-            pause = min(300.0, max(1.0, (end - now).total_seconds() + 1.0))
-            log.info("inside the %02d:%02d-%02d:%02d UTC quiet window (daily rebuild of the monitors): no database "
-                     "writes, sleeping %.0f s", h0, m0, h1, m1, pause)  # fmt: skip
-            time.sleep(pause)
+        while True:
+            reason = common.busy_reason()
+            if reason is None:
+                return
+            log.info("inside %s: no database writes, sleeping 300 s", reason)
+            time.sleep(300.0)
 
     def _open_database(self) -> None:
         if self.mode == "rollback":
@@ -543,13 +541,13 @@ class Store:
 
     def stored_answers(self, keys: Collection[Tuple[str, str, str, date]], model: str,
                        prompt_version: str) -> Dict[Tuple[str, str, str, date], List[Dict[str, Any]]]:  # fmt: skip
-        """Stored detections (run_id, created_at, detection_metadata) by (arm, series_key, symbol, window_end).
+        """Stored detections (run_id, created_at, detection_metadata, done) by (arm, series_key, symbol, window_end).
 
         Used at ingest to find the answer a new one replaces.  Parquet copies and the database are both read.
         """
         wanted = set(keys)
         columns = ("arm", "series_key", "symbol", "window_end", "model", "prompt_version", "run_id", "created_at",
-                   "detection_metadata")  # fmt: skip
+                   "detection_metadata", "parse_status", "finish_reason")  # fmt: skip
         rows = [row for path in self._files("detections") for row in read_parquet(path, columns)]
         if self.db_ready:
             arms = sorted({k[0] for k in wanted})
@@ -562,7 +560,8 @@ class Store:
             if key in wanted and row["model"] == model and row["prompt_version"] == prompt_version:
                 meta = row["detection_metadata"]
                 meta = json.loads(meta) if isinstance(meta, str) and meta else (meta or {})
-                found.setdefault(key, []).append({"run_id": row["run_id"], "created_at": row["created_at"], "metadata": meta})
+                found.setdefault(key, []).append({"run_id": row["run_id"], "created_at": row["created_at"], "metadata": meta,
+                                                  "done": row["parse_status"] in PARSED and row["finish_reason"] == "stop"})
         return found
 
     def load_detections(self, run_id: str) -> List[Dict[str, Any]]:
@@ -648,13 +647,13 @@ def is_stale(seen: Seen, current: Optional[str]) -> bool:
 
 
 def window_state(seen: Sequence[Seen], current: Optional[str] = None) -> str:
-    """'done' = a parsed answer that was not cut off; 'retry' = cut off by the token limit; 'stale' = every stored
+    """'done' = a parsed answer that finished normally (finish_reason 'stop'); 'retry' = cut off by the token limit; 'stale' = every stored
     answer was given to a different prompt than ``current`` (the window changed since); else 'open'.
 
     Stale answers are ignored when a current answer exists.  'stale' windows are open work for ``generate``.
     """
     live = [s for s in seen if not is_stale(s, current)]
-    if any(s.parse_status in PARSED and s.finish_reason != "length" for s in live):
+    if any(s.parse_status in PARSED and s.finish_reason == "stop" for s in live):
         return "done"
     if any(s.finish_reason == "length" for s in live):
         return "retry"
@@ -976,8 +975,8 @@ def detection_row(run: Dict[str, Any], request: Dict[str, Any], answer: Optional
         else:
             meta["error"] = {"status_code": response.get("status_code"), "detail": answer.get("error") or body.get("error")}
     payload, status = common.parse_llm_content(content)
-    if payload is not None and not payload_in_range(payload):
-        payload, status = None, "failed"
+    if payload is not None and (not payload_in_range(payload) or payload.get("regime_detected") is None):
+        payload, status = None, "failed"  # unstorable numbers, or no verdict: not an answer
         meta["invalid_payload"] = True
     if finish == "length":
         meta["retry_at"] = common.RETRY_MAX_COMPLETION_TOKENS
@@ -1345,20 +1344,61 @@ def cmd_retrieve(store: Store, args: argparse.Namespace) -> int:
     return 0
 
 
+def _utc(value: Any) -> datetime:
+    """A stored timestamp as an aware UTC datetime; None sorts before every real time."""
+    if value is None:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    if isinstance(value, str):
+        value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if hasattr(value, "to_pydatetime"):
+        value = value.to_pydatetime()
+    return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+
+
+def _run_stamps(store: Store) -> Dict[str, datetime]:
+    """run_id -> when the run was submitted (else created): the order in which answers were asked for."""
+    stamps = {}
+    for r in store.load_runs():
+        when = r.get("submitted_at") or r.get("created_at")
+        if when is not None:
+            stamps[r["run_id"]] = _utc(when)
+    return stamps
+
+
 def mark_superseded(store: Store, run: Dict[str, Any], rows: Sequence[Dict[str, Any]]) -> int:
     """Record in ``detection_metadata.supersedes`` {run_id, prompt_sha256} which stored answer each new row replaces.
 
     The upsert overwrites the old row (same natural key), so this keeps its provenance: the run and the prompt hash
     (None for a backfill) and, nested, what that row had itself replaced.  Only answers of other runs count; a
-    re-ingest of the same run keeps the ``supersedes`` its earlier ingest wrote.
+    re-ingest of the same run keeps the ``supersedes`` and the ``created_at`` its earlier ingest wrote.
+
+    Refuses (RunnerError, nothing written) when a row would overwrite an answer of a run asked for later than this
+    one, or when a row without an answer would overwrite a finished answer to the same prompt: a late or repeated
+    ingest of an older chunk must not replace the current answer.
     """
     keys = [(r["arm"], r["series_key"], r["symbol"], r["window_end"]) for r in rows]
     stored = store.stored_answers(keys, run["model"], run["prompt_version"])
+    stamps = _run_stamps(store)
+    mine_stamp = stamps.get(run["run_id"])
+    conflicts: List[str] = []
     n = 0
     for row, key in zip(rows, keys):
         mine = [e for e in stored.get(key, ()) if e["run_id"] == row["run_id"]]
         others = sorted((e for e in stored.get(key, ()) if e["run_id"] != row["run_id"]),
-                        key=lambda e: str(e["created_at"]))  # fmt: skip
+                        key=lambda e: _utc(e["created_at"]))  # fmt: skip
+        newer = [e["run_id"] for e in others
+                 if mine_stamp is not None and stamps.get(e["run_id"]) is not None and stamps[e["run_id"]] > mine_stamp]
+        row_done = row["parse_status"] in PARSED and row["finish_reason"] == "stop"
+        same_prompt = row["detection_metadata"].get("prompt_sha256")
+        kept = [e["run_id"] for e in others
+                if not row_done and e["done"] and e["metadata"].get("prompt_sha256") == same_prompt]
+        if newer or kept:
+            why = f"newer run {newer[0]}" if newer else f"finished answer of {kept[0]}"
+            conflicts.append(f"{row['custom_id']} ({why})")
+            continue
+        dated = [e["created_at"] for e in mine if e["created_at"] is not None]
+        if dated:
+            row["created_at"] = min(dated, key=_utc)  # a re-ingest keeps the answer's original time
         previous = (mine[0]["metadata"].get("supersedes") if mine else None)
         if previous is None and others:
             old = others[-1]
@@ -1368,6 +1408,9 @@ def mark_superseded(store: Store, run: Dict[str, Any], rows: Sequence[Dict[str, 
         if previous is not None:
             row["detection_metadata"]["supersedes"] = previous
             n += 1
+    if conflicts:
+        raise RunnerError(f"{run['run_id']}: {len(conflicts)} answer(s) would replace a current one, nothing written; "
+                          f"e.g. {', '.join(conflicts[:3])}. Ingest only the newest run of a window.")
     return n
 
 
@@ -1647,7 +1690,7 @@ def build_parser() -> argparse.ArgumentParser:
     group.add_argument("--backup-root", type=Path,
                        help="alternative root for raw run backups and parquet copies (default: data/backups/gex_llm)")  # fmt: skip
     group.add_argument("--ignore-busy-window", action="store_true",
-                       help="allow Postgres writes between 21:50 and 22:45 UTC (the monitors rebuild the daily tables)")  # fmt: skip
+                       help="allow Postgres writes in the 21:50-22:57 UTC quiet window or market hours (the monitors rebuild the daily tables)")  # fmt: skip
     group.add_argument("-v", "--verbose", action="store_true", help="debug logging")
     source = argparse.ArgumentParser(add_help=False)
     source.add_argument("--from-db", action="store_true", help="read windows from Postgres instead of parquet")

@@ -23,7 +23,7 @@
 --           DROP TABLE backups.gex_llm_regime_detections, backups.gex_llm_regime_runs,
 --                      backups.gex_llm_regime_windows, backups.gex_llm_regime_series;
 --
--- SAFE TO RUN ANY TIME outside 21:50-22:45 UTC.  Creates only new objects in
+-- SAFE TO RUN ANY TIME outside 21:50-22:57 UTC and NYSE market hours.  Creates only new objects in
 -- schema backups; touches nothing else; no monitor restart; idempotent
 -- (CREATE ... IF NOT EXISTS, CREATE OR REPLACE VIEW, COMMENT ON is repeatable).
 -- Archive tables backups.*_pre_rebuild_20261004 are read by the loaders and
@@ -285,6 +285,9 @@ COMMENT ON COLUMN backups.gex_llm_regime_detections.created_at IS 'Row insert/up
 
 -- -----------------------------------------------------------------------------
 -- 5. Read-only summary view: LLM vs classifier detection rate by arm/series/year
+--    It counts every stored row: a repeat arm (<arm>#rep1) is a row of its own, and r1_o4mini includes the 64
+--    answers flagged detection_metadata.recovered_2026 (so 2021 reads 4.0 %, not the published 3.7 %). The
+--    article's rates come from 05_report.py, which leaves both out.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE VIEW backups.gex_llm_regime_rates_summary AS
 SELECT d.arm,

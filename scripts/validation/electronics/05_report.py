@@ -90,7 +90,8 @@ Conventions
 * Windows have stride 1, so consecutive windows share 29 of 30 days.  Wilson intervals treat windows as
   independent and are therefore too narrow; ``n_indep_30d`` (non-overlapping 30-day windows) shows how many
   independent observations back a rate.  ``stats.yaml`` adds a calendar-quarter block bootstrap
-  (2,000 draws, seed 261) and a non-overlapping 30-day subsample next to every p-value.
+  (every distinct resample enumerated with its weight when there are at most 200,000, that is up to 10 quarters;
+  otherwise 2,000 draws, seed 261) and a non-overlapping 30-day subsample next to every p-value.
 * The published result is arm ``r1_o4mini`` WITHOUT the answers flagged ``detection_metadata.recovered_2026``
   (``WHERE detection_metadata ->> 'recovered_2026' IS NULL``): 1,412 windows, 12.2 / 3.7 / 32.4 / 20.2 / 100 / 100
   percent by year 2020-2025.  Those rates, the bridge gate and ``stats.yaml`` use that subset; the cost ledger and
@@ -117,6 +118,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.util
+import itertools
 import json
 import logging
 import math
@@ -142,6 +144,7 @@ logger = logging.getLogger("electronics.report")
 # --------------------------------------------------------------------------- constants
 SEED = 261
 N_BOOT = 2000
+EXACT_MAX_RESAMPLES = 200_000  # distinct block resamples enumerated exactly (k <= 10 blocks); above, N_BOOT draws
 CI_LEVEL = 0.95
 Z95 = float(sps.norm.ppf(0.975))
 EXACT_MATCH_TOL_USD = 0.006e9  # |difference| <= $6M counts as the same value (January inputs carry 0.01B precision)
@@ -175,6 +178,7 @@ SERIES_PAIRS = (  # (a, b): per-day comparison of the values shown to the model
     (BRIDGE_SERIES, FULL_SERIES),
     (CALL_ONLY, BRIDGE_SERIES),
     (FULL_SERIES, ZERO_DTE_SERIES),
+    (CALL_ONLY, FULL_SERIES),
     ("old_bs", FULL_SERIES),
     ("old_bs", BRIDGE_SERIES),
 )
@@ -348,21 +352,78 @@ def resample_block_sums(blocks: np.ndarray, n_boot: int, rng: np.random.Generato
     return blocks[idx].sum(axis=1)
 
 
-def percentile_interval(draws: np.ndarray) -> Tuple[float, float]:
-    finite = draws[np.isfinite(draws)]
-    if finite.size == 0:
+@dataclass
+class Resamples:
+    """Block-bootstrap resamples: ``sums`` (one row per resample), ``weights`` = how many of the n equally likely
+    ordered draws each row stands for (exact enumeration) or None (Monte Carlo draws, weight one each)."""
+
+    sums: np.ndarray
+    weights: Optional[np.ndarray]
+    n: int
+    exact: bool
+
+    def describe(self) -> Dict[str, Any]:
+        return {"method": "exact" if self.exact else "monte_carlo", "n_draws": int(self.n)}
+
+
+def block_resamples(blocks: np.ndarray, ctx: "Context", rng: Optional[np.random.Generator] = None) -> Resamples:
+    """All k**k equally likely resamples of the k blocks when their distinct multisets are few enough to enumerate
+    (each with its multinomial multiplicity), else ``ctx.n_boot`` seeded draws (the generator of the caller, if given)."""
+    k = int(blocks.shape[0])
+    if 0 < k and math.comb(2 * k - 1, k) <= EXACT_MAX_RESAMPLES:
+        counts = np.array([np.bincount(c, minlength=k) for c in itertools.combinations_with_replacement(range(k), k)])
+        fact = [math.factorial(i) for i in range(k + 1)]
+        weights = np.array([fact[k] // math.prod(fact[m] for m in row) for row in counts], dtype=float)
+        return Resamples(counts @ blocks, weights, k ** k, True)
+    rng = rng if rng is not None else np.random.default_rng(ctx.seed)
+    return Resamples(resample_block_sums(blocks, ctx.n_boot, rng), None, ctx.n_boot, False)
+
+
+def _sorted_population(draws: np.ndarray, weights: Optional[np.ndarray]) -> Tuple[np.ndarray, np.ndarray]:
+    """Finite values in ascending order and the running count of the equally likely draws they stand for."""
+    finite = np.isfinite(draws)
+    values = draws[finite]
+    w = np.ones(values.size) if weights is None else weights[finite]
+    order = np.argsort(values, kind="stable")
+    return values[order], np.cumsum(w[order])
+
+
+def percentile_interval(draws: np.ndarray, weights: Optional[np.ndarray] = None) -> Tuple[float, float]:
+    """2.5th and 97.5th percentiles (numpy's linear rule) of the draws, or of the full weighted population."""
+    if weights is None:
+        finite = draws[np.isfinite(draws)]
+        if finite.size == 0:
+            return math.nan, math.nan
+        lo, hi = np.percentile(finite, [50.0 * (1.0 - CI_LEVEL), 50.0 * (1.0 + CI_LEVEL)])
+        return float(lo), float(hi)
+    values, cum = _sorted_population(draws, weights)
+    if values.size == 0:
         return math.nan, math.nan
-    lo, hi = np.percentile(finite, [50.0 * (1.0 - CI_LEVEL), 50.0 * (1.0 + CI_LEVEL)])
-    return float(lo), float(hi)
+    total = cum[-1]
+
+    def at(position: float) -> float:  # value at a 0-based position of the expanded, sorted population
+        return float(values[min(int(np.searchsorted(cum, position + 1.0, side="left")), values.size - 1)])
+
+    out = []
+    for q in (50.0 * (1.0 - CI_LEVEL), 50.0 * (1.0 + CI_LEVEL)):
+        pos = q / 100.0 * (total - 1.0)
+        base = math.floor(pos)
+        lo_v, hi_v = at(base), at(min(base + 1.0, total - 1.0))
+        out.append(lo_v + (hi_v - lo_v) * (pos - base))
+    return out[0], out[1]
 
 
-def bootstrap_p_value(draws: np.ndarray) -> float:
-    """Two-sided percentile-bootstrap p-value for H0: difference = 0, bounded below by 1 / (draws + 1)."""
-    finite = draws[np.isfinite(draws)]
-    if finite.size == 0:
+def bootstrap_p_value(draws: np.ndarray, weights: Optional[np.ndarray] = None) -> float:
+    """Two-sided percentile-bootstrap p-value for H0: difference = 0, 2 min{P(d <= 0), P(d >= 0)}, bounded below by
+    1 / (draws + 1) for Monte Carlo draws and by the weight of one resample, 1 / k**k, for the exact enumeration."""
+    values, cum = _sorted_population(draws, weights)
+    if values.size == 0:
         return math.nan
-    p = 2.0 * min(float((finite <= 0).mean()), float((finite >= 0).mean()))
-    return min(1.0, max(p, 1.0 / (finite.size + 1)))
+    w = np.diff(np.concatenate([[0.0], cum]))
+    total = cum[-1]
+    p = 2.0 * min(float(w[values <= 0].sum() / total), float(w[values >= 0].sum() / total))
+    floor = 1.0 / (values.size + 1) if weights is None else 1.0 / total
+    return min(1.0, max(p, floor))
 
 
 def nonoverlap_indices(starts: np.ndarray, ends: np.ndarray, first: int = 0) -> np.ndarray:
@@ -681,7 +742,8 @@ def enrich_detections(det: pd.DataFrame, win: pd.DataFrame) -> pd.DataFrame:
     """Detections plus arm bookkeeping, a ``parsed`` flag, the year and the matching classifier window."""
     det = tag_repeats(det)
     det = det.assign(arm_role=det["arm"].map(arm_role),
-                     parsed=det["parse_status"].isin(OK_PARSE) & det["regime_detected"].notna(),
+                     parsed=(det["parse_status"].isin(OK_PARSE) & det["regime_detected"].notna()
+                             & ~det["finish_reason"].isin(["length", "content_filter"])),
                      year=det["window_end"].dt.year)
     return attach_windows(det, win)
 
@@ -1082,13 +1144,15 @@ def agreement_record(pairs: pd.DataFrame, ctx: Optional[Context]) -> Dict[str, A
     if ctx is not None and n:
         cells = pd.DataFrame({"window_end": pairs["window_end"], "tt": ref & oth, "tf": ref & ~oth,
                               "ft": ~ref & oth, "ff": ~ref & ~oth})
-        sums = resample_block_sums(block_sums(cells, ["tt", "tf", "ft", "ff"]), ctx.n_boot, np.random.default_rng(ctx.seed))
-        record["kappa_boot_lo"], record["kappa_boot_hi"] = percentile_interval(binary_kappa(*sums.T))
+        res = block_resamples(block_sums(cells, ["tt", "tf", "ft", "ff"]), ctx)
+        sums, w = res.sums, res.weights
+        record["kappa_boot_lo"], record["kappa_boot_hi"] = percentile_interval(binary_kappa(*sums.T), w)
         record["agree_boot_lo_pct"], record["agree_boot_hi_pct"] = (
-            100.0 * x for x in percentile_interval((sums[:, 0] + sums[:, 3]) / sums.sum(axis=1)))
+            100.0 * x for x in percentile_interval((sums[:, 0] + sums[:, 3]) / sums.sum(axis=1), w))
         diff = 100.0 * (sums[:, 1] - sums[:, 2]) / sums.sum(axis=1)
-        record["rate_diff_boot_lo_pp"], record["rate_diff_boot_hi_pp"] = percentile_interval(diff)
-        record["p_boot"] = bootstrap_p_value(diff)
+        record["rate_diff_boot_lo_pp"], record["rate_diff_boot_hi_pp"] = percentile_interval(diff, w)
+        record["p_boot"] = bootstrap_p_value(diff, w)
+        record["boot_method"] = res.describe()["method"]
     return record
 
 
@@ -1545,13 +1609,13 @@ def section_intraday(ctx: Context) -> Dict[str, Any]:
     frame[["gex_t0_final_rush_bn", "gex_t0_eod_bn"]] /= 1e9
     frame["gex_t0_diff_bn"] = frame["gex_t0_final_rush_bn"] - frame["gex_t0_eod_bn"]
     frame["irregular_day"] = frame["window_end"].isin(pd.to_datetime(list(common.INTRADAY_EXCLUDE_DAYS)))
-    frame["clf_agree"] = frame["clf_intraday"] == frame["clf_full"]
+    frame["clf_agree"] = (frame["clf_intraday"] == frame["clf_full"]).where(frame[["clf_intraday", "clf_full"]].notna().all(axis=1))
     symbols = sorted(frame["symbol"].unique())
     for column, key in (("llm_intraday", INTRADAY_COMPOSITE), ("llm_full", FULL_SERIES)):
         scored = pd.concat([primary_llm_labels(ctx, key, s) for s in symbols], ignore_index=True)
         frame = frame.merge(scored[["symbol", "window_end", "regime_detected"]].rename(columns={"regime_detected": column}),
                             on=["symbol", "window_end"], how="left")
-    frame["llm_agree"] = frame["llm_intraday"] == frame["llm_full"]
+    frame["llm_agree"] = (frame["llm_intraday"] == frame["llm_full"]).where(frame[["llm_intraday", "llm_full"]].notna().all(axis=1))
     frame = sort_rows(frame, ["symbol", "window_end"])[INTRADAY_COLUMNS]
     ctx.write_csv("intraday.csv", frame.assign(window_end=frame["window_end"].dt.strftime("%Y-%m-%d")), [])
     regular = frame[~frame["irregular_day"]]
@@ -1638,10 +1702,10 @@ def rate_entry(frame: pd.DataFrame, ctx: Context) -> Dict[str, Any]:
     n, k = len(frame), int(frame["label"].sum())
     fields = rate_fields(k, n)
     blocks = block_sums(frame.assign(n=1), ["n", "label"])
-    sums = resample_block_sums(blocks, ctx.n_boot, np.random.default_rng(ctx.seed))
-    lo, hi = percentile_interval(100.0 * sums[:, 1] / sums[:, 0])
+    res = block_resamples(blocks, ctx)
+    lo, hi = percentile_interval(100.0 * res.sums[:, 1] / res.sums[:, 0], res.weights)
     return {"n": n, "k": k, "rate_pct": fields["rate_pct"], "wilson_ci_pct": [fields["ci_lo_pct"], fields["ci_hi_pct"]],
-            "bootstrap_quarter": {"n_blocks": int(blocks.shape[0]), "n_draws": ctx.n_boot, "ci_pct": [lo, hi]},
+            "bootstrap_quarter": {"n_blocks": int(blocks.shape[0]), **res.describe(), "ci_pct": [lo, hi]},
             "nonoverlap_30d": nonoverlap_summary(frame)}
 
 
@@ -1658,9 +1722,9 @@ def paired_entry(lab_a: Labeller, lab_b: Labeller, fa: pd.DataFrame, fb: pd.Data
     n, only_a, only_b = len(pair), int((a & ~b).sum()), int((~a & b).sum())
     cells = pair.assign(n=1, ka=a.astype(int), kb=b.astype(int))
     blocks = block_sums(cells, ["n", "ka", "kb"])
-    sums = resample_block_sums(blocks, ctx.n_boot, np.random.default_rng(ctx.seed))
-    diff_draws = 100.0 * (sums[:, 1] - sums[:, 2]) / sums[:, 0]
-    lo, hi = percentile_interval(diff_draws)
+    res = block_resamples(blocks, ctx)
+    diff_draws = 100.0 * (res.sums[:, 1] - res.sums[:, 2]) / res.sums[:, 0]
+    lo, hi = percentile_interval(diff_draws, res.weights)
     entry: Dict[str, Any] = {
         "name": "series_contrast", "family": family, "design": "paired by window_end (windows present in both series)",
         "period": period,
@@ -1670,8 +1734,8 @@ def paired_entry(lab_a: Labeller, lab_b: Labeller, fa: pd.DataFrame, fb: pd.Data
         "diff_pp": 100.0 * (a.mean() - b.mean()), "windows_only_a": only_a, "windows_only_b": only_b,
         "naive_stride1": {"p_mcnemar_exact": mcnemar_exact(only_a, only_b),
                           "caveat": "treats overlapping windows as independent; anti-conservative"},
-        "bootstrap_quarter": {"n_blocks": int(blocks.shape[0]), "n_draws": ctx.n_boot, "diff_ci_pp": [lo, hi],
-                              "p_two_sided": bootstrap_p_value(diff_draws)},
+        "bootstrap_quarter": {"n_blocks": int(blocks.shape[0]), **res.describe(), "diff_ci_pp": [lo, hi],
+                              "p_two_sided": bootstrap_p_value(diff_draws, res.weights)},
         "nonoverlap_30d": None,
     }
     chain_frame = pair.assign(window_start=pair[["window_start_a", "window_start_b"]].min(axis=1)).dropna(subset=["window_start"])
@@ -1698,9 +1762,17 @@ def shift_entry(lab: Labeller, early: pd.DataFrame, late: pd.DataFrame, ctx: Con
     n0, k0, n1, k1 = len(early), int(early["label"].sum()), len(late), int(late["label"].sum())
     rng = np.random.default_rng(ctx.seed)
     blocks0, blocks1 = (block_sums(f.assign(n=1), ["n", "label"]) for f in (early, late))
-    s0, s1 = (resample_block_sums(blocks, ctx.n_boot, rng) for blocks in (blocks0, blocks1))
-    diff_draws = 100.0 * (s1[:, 1] / s1[:, 0] - s0[:, 1] / s0[:, 0])
-    lo, hi = percentile_interval(diff_draws)
+    r0, r1 = (block_resamples(blocks, ctx, rng) for blocks in (blocks0, blocks1))
+    if r0.exact and r1.exact and len(r0.sums) * len(r1.sums) <= EXACT_MAX_RESAMPLES:
+        rate0, rate1 = r0.sums[:, 1] / r0.sums[:, 0], r1.sums[:, 1] / r1.sums[:, 0]
+        diff_draws = 100.0 * (rate1[None, :] - rate0[:, None]).ravel()
+        res = Resamples(np.empty((0, 0)), (r0.weights[:, None] * r1.weights[None, :]).ravel(), r0.n * r1.n, True)
+    else:  # the two groups resampled independently with the same seeded generator, as before
+        rng = np.random.default_rng(ctx.seed)
+        s0, s1 = (resample_block_sums(blocks, ctx.n_boot, rng) for blocks in (blocks0, blocks1))
+        diff_draws = 100.0 * (s1[:, 1] / s1[:, 0] - s0[:, 1] / s0[:, 0])
+        res = Resamples(np.empty((0, 0)), None, ctx.n_boot, False)
+    lo, hi = percentile_interval(diff_draws, res.weights)
     new_lo, new_hi = newcombe_difference(k1, n1, k0, n0)
     sub0, sub1 = nonoverlap_summary(early), nonoverlap_summary(late)
     return {
@@ -1713,7 +1785,8 @@ def shift_entry(lab: Labeller, early: pd.DataFrame, late: pd.DataFrame, ctx: Con
         "naive_stride1": {"p_fisher_exact": fisher_p(k1, n1, k0, n0),
                           "caveat": "treats overlapping windows as independent; anti-conservative"},
         "bootstrap_quarter": {"n_blocks_early": int(blocks0.shape[0]), "n_blocks_late": int(blocks1.shape[0]),
-                              "n_draws": ctx.n_boot, "diff_ci_pp": [lo, hi], "p_two_sided": bootstrap_p_value(diff_draws)},
+                              **res.describe(), "diff_ci_pp": [lo, hi],
+                              "p_two_sided": bootstrap_p_value(diff_draws, res.weights)},
         "nonoverlap_30d": None if sub0 is None or sub1 is None else {
             "n_early": sub0["n"], "n_late": sub1["n"], "rate_early_pct": sub0["rate_pct"], "rate_late_pct": sub1["rate_pct"],
             "diff_pp": sub1["rate_pct"] - sub0["rate_pct"],
@@ -1789,7 +1862,7 @@ def section_stats(ctx: Context) -> Dict[str, Any]:
     headline = [headline_entry(c) for c in contrasts if is_headline(c)]
     ctx.write_yaml("stats.yaml", {
         "meta": {
-            "seed": ctx.seed, "n_boot": ctx.n_boot, "ci_level": CI_LEVEL, "primary_label": "regime_detected / clf_should_detect",
+            "seed": ctx.seed, "n_boot": ctx.n_boot, "bootstrap_exact_max_resamples": EXACT_MAX_RESAMPLES, "ci_level": CI_LEVEL, "primary_label": "regime_detected / clf_should_detect",
             "periods": {name: ("every window" if first is None else f"window_end years {first}-{last}")
                         for name, (first, last) in spans.items()},
             "wilson": "Wilson score interval; treats stride-1 windows as independent, so it is too narrow",
@@ -1936,7 +2009,9 @@ def section_cost_ledger(ctx: Context) -> Dict[str, Any]:
             "runs_with_token_gap": int(((reconciled["prompt_token_gap"] != 0) | (reconciled["completion_token_gap"] != 0)).sum()),
             "max_abs_cost_gap_usd": frame["cost_gap_usd"].abs().max() if frame["cost_gap_usd"].notna().any() else None,
             "note": "gaps compare the run totals with the sum over that run's detection rows; cost_gap_usd compares "
-                    "est_cost_usd with the token usage priced by common.PRICING_USD_PER_MTOK",
+                    "est_cost_usd with the token usage priced by common.PRICING_USD_PER_MTOK. A run whose answers "
+                    "were later replaced (the 2026-11-03 re-run) shows a token gap: the replaced answers were billed "
+                    "but are no longer among its stored rows",
         },
     }
     ctx.write_yaml("cost_ledger.yaml", payload)
@@ -2372,7 +2447,7 @@ def rates_without_nyse_missing(data: Data, nyse: pd.Series) -> Dict[str, Any]:
     """Detection rates with and without the windows that span a NYSE trading day the series lacks.
 
     ``nyse`` is aligned with ``data.windows``.  Classifier label per (series, symbol); LLM answer per arm (parsed
-    answers of the original run, repeats left out), joined to the window the answer scored.
+    answers of the original run, repeats and the recovered o4-mini answers left out), joined to the window it scored.
     """
     has_field = data.windows["window_metadata"].map(lambda m: "nyse_missing_days" in m)
     win = data.windows.assign(nyse=nyse.to_numpy())[has_field.to_numpy()]  # windows built before the field existed are left out
@@ -2390,7 +2465,7 @@ def rates_without_nyse_missing(data: Data, nyse: pd.Series) -> Dict[str, Any]:
     llm = []
     det = data.detections
     if len(det):
-        det = det[det["parsed"] & (det["repeat_index"] == 0)]
+        det = published_rows(det[det["parsed"] & (det["repeat_index"] == 0)])
         flags = win[["series_key", "symbol", "window_end", "nyse"]].rename(columns={"series_key": "window_series_key"})
         joined = det.merge(flags, on=["window_series_key", "symbol", "window_end"], how="inner")
         llm = [{"arm": arm, "symbol": symbol, **entry(g["regime_detected"], g["nyse"])}

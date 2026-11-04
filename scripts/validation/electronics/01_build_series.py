@@ -59,7 +59,7 @@ Conventions
     * Raw chains (new_ex0dte, call_only and the calendar of jan2026_phase4a) are read one symbol-year per statement
       with the index plan and without parallel workers (SET LOCAL enable_seqscan = off, SET LOCAL
       max_parallel_workers_per_gather = 0: partial sums combined in a varying order would change the last digits
-      of the float8 sums from run to run), and never between 21:50 and 22:45 UTC; --db and --rollback obey the
+      of the float8 sums from run to run), and never inside the monitors' quiet window (21:50-22:57 UTC), and its writes never during NYSE market hours; --db and --rollback obey the
       same window.  Every source read uses a read-only session.
 
 Run from the repository root with the AutoGex conda env::
@@ -314,15 +314,12 @@ def keep_spans(frame: pd.DataFrame, spans: Sequence[Span]) -> pd.DataFrame:
 
 
 def check_quiet_window(series_key: str, writes_db: bool, override: bool, now: Optional[datetime] = None) -> None:
-    """Refuse heavy raw scans and DDL/upserts while the monitors rebuild the daily tables (common.in_quiet_window)."""
+    """Refuse heavy raw scans in the monitors' quiet window, and DDL/upserts also during market hours (common.busy_reason)."""
     if override or not (series_key in RAW_SCAN_SERIES or writes_db):
         return
-    if common.in_quiet_window(now):
-        (h0, m0), (h1, m1) = common.QUIET_WINDOW_UTC
-        raise SystemExit(
-            f"refusing to run between {h0:02d}:{m0:02d} and {h1:02d}:{m1:02d} UTC "
-            f"(daily rebuild of the monitors); rerun later or pass --ignore-busy-window"
-        )
+    reason = common.busy_reason(now, writes=writes_db)
+    if reason:
+        raise SystemExit(f"refusing to run inside {reason}; rerun later or pass --ignore-busy-window")
 
 
 # Days on which the database built the summary from a spot it took elsewhere (vendor left the chain's spot empty).
@@ -966,7 +963,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--ignore-busy-window",
         action="store_true",
-        help="allow raw scans and database writes between 21:50 and 22:45 UTC",
+        help="allow raw scans and database writes in the quiet window (21:50-22:57 UTC) and writes during market hours",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="debug logging")
     args = parser.parse_args(argv)

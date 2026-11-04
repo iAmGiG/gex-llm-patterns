@@ -48,7 +48,7 @@ Modes (mutually exclusive)::
     --db            raw backup + manifest + parquet copies, then upsert and COMMIT; the tables must already
                     exist, this script never creates them
 
-``--rollback`` and ``--db`` refuse to run between 21:50 and 22:45 UTC (the monitors rebuild the daily tables) unless
+``--rollback`` and ``--db`` refuse to run in the 21:50-22:57 UTC quiet window or NYSE market hours (the monitors rebuild the daily tables) unless
 ``--ignore-busy-window`` is given.  ``--arm`` limits the run to some arms (default: all three).
 
 The published set is the rows without the recovered flag; the November arms have none, so it is every row::
@@ -352,10 +352,10 @@ def lenient_text(content: Optional[str]) -> Optional[str]:
 def parse_response(content: Optional[str]) -> Tuple[Optional[Dict[str, Any]], str, bool]:
     """Parse one assistant message into (payload or None, parse_status, lenient).
 
-    ``common.parse_llm_content`` does the parsing.  Its ``json.loads(strict=False)`` retry looks at the whole message,
-    so it cannot read an answer that is wrapped in a markdown fence AND holds a raw control character in a string
-    (2023-08-07); the bare JSON text of such an answer is handed to it instead, the result is reported as ``fallback``
-    (the fence had to go) and ``lenient`` is set.  Nothing here calls ``common.normalize_payload`` directly: a
+    ``common.parse_llm_content`` does the parsing.  An answer wrapped in a markdown fence AND holding a raw control
+    character in a string (2023-08-07) is handed to it as its bare JSON text, reported as ``fallback`` (the fence had
+    to go) and marked ``lenient``; that is how the stored row reads.  The shared parser has since learnt to unfence and
+    retry with ``strict=False`` itself and would call this answer ``ok``; the backfill keeps its stored label.  Nothing here calls ``common.normalize_payload`` directly: a
     structurally bad answer comes back as ``failed`` and cannot abort the backfill.
     """
     text = lenient_text(content)
@@ -1259,7 +1259,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--ignore-busy-window",
         action="store_true",
-        help="allow --rollback / --db between 21:50 and 22:45 UTC (the monitors rebuild the daily tables)",
+        help="allow --rollback / --db in the 21:50-22:57 UTC quiet window or market hours (the monitors rebuild the daily tables)",
     )
     parser.add_argument(
         "--backup-root",
