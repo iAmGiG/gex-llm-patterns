@@ -1,6 +1,8 @@
 # Research Extensions — Forward-Looking Directions
 
 > **Snapshot as of April 2026.** The dissertation defense proposal has been made. This folder captures research directions that extended the published work but were not pursued within the scope of this repository. It consolidates earlier planning material (previously in `paper3/` and `paper4/`) into a single snapshot.
+>
+> **Update, November 2026.** Paper 2 is published at AIAI 2026 (Springer IFIP AICT) and, combined with Paper 1, in JRFM (MDPI, 2026). The MDPI *Electronics* extension ([`../electronics/`](../electronics/), issue #261) takes up parts of two tracks below: QQQ and IWM next to SPY (ETFs, not the single names of Track A) and a late-session intraday check for SPY in 2026 (a limited form of B1). It also re-runs the regime test on complete inputs: the published 2024–2025 rates quoted below rest on inputs that lacked put-side GEX from 2023-09-29 (see [`../CORRECTIONS.md`](../CORRECTIONS.md)).
 
 ---
 
@@ -9,7 +11,7 @@
 These directions build on the two papers anchored in this repository:
 
 - **Paper 1** — *Validating LLM Understanding of Market Microstructure Through Obfuscation Testing* — IEEE BigData 2025 Workshop (published). Single-day dealer constraint detection, 71.5% detection / 91.2% predictive accuracy, 726 evaluations.
-- **Paper 2** — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* — AIAI 2026 (accepted, camera-ready May 2026), JRFM (MDPI, under review). Multi-day regime detection across 2020–2025, 2,221 evaluations, 69.1pp discrimination between 2020 (12.1%) and 2024 (81.2%), documents 0DTE-driven market structure evolution.
+- **Paper 2** — *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation* — AIAI 2026 (published), JRFM (MDPI, published 2026). Multi-day regime detection across 2020–2025, 2,221 evaluations, 69.1pp discrimination between 2020 (12.1%) and 2024 (81.2%), documents 0DTE-driven market structure evolution.
 
 ---
 

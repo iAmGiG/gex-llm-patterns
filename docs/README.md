@@ -54,7 +54,8 @@ docs/
 │   ├── adr/                        # Cross-paper architecture decisions
 │   ├── planning/                   # Research planning docs
 │   ├── paper1/                     # Paper #1 (single-day, IEEE BigData 2025 — published)
-│   ├── paper2/                     # Paper #2 (regime detection — AIAI accepted, JRFM under review)
+│   ├── paper2/                     # Paper #2 (regime detection — AIAI 2026 and JRFM published)
+│   ├── electronics/                # Paper #2 extension (MDPI Electronics, in preparation)
 │   └── extensions/                 # Forward-looking research directions (snapshot)
 │
 ├── guides/                         # User-facing how-to guides
@@ -165,10 +166,11 @@ All docs include **Navigation** sections with:
 
 **Paper #2** (30-Day Regime Framework):
 
-- **Status**: ✅ Accepted at AIAI 2026 (camera-ready May 2026) · 🔄 Under review at JRFM (MDPI)
+- **Status**: ✅ Published at AIAI 2026 (Springer IFIP AICT, pp. 127–140) · ✅ Published in JRFM (MDPI, 2026, combined with Paper #1) · 🔄 Extended version for MDPI *Electronics* in preparation ([papers/electronics/](papers/electronics/))
 - **Results**: 81.2% detection 2024 vs 12.1% 2020 (69.1pp separation, φ = 0.672, p < 0.0001), 2,221 evaluations
 - **Finding**: 0DTE-driven market structure evolution detected under temporal obfuscation
 - **Location**: [papers/paper2/](papers/paper2/)
+- **Data note**: the published 2024–2025 rates rest on inputs that lacked put-side GEX from 2023-09-29; see [papers/CORRECTIONS.md](papers/CORRECTIONS.md)
 
 **Cross-Paper ADRs**:
 

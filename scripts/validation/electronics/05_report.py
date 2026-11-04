@@ -2323,9 +2323,11 @@ def input_diagnostics(data: Data) -> Dict[str, Any]:
     """Facts about the stored inputs that the text quotes: the factor of each scaled series, windows flagged for calendar holes.
 
     ``scaling``: per scaled series (common.Series.scale) and symbol, the factor recorded in series_metadata by
-    01_build_series.py.  ``flagged_windows``: windows whose window_metadata marks a calendar gap longer than
-    ``common.CALENDAR_GAP_FLAG_DAYS`` (gap_flag / calendar_gap_days), master-calendar days missing from the series
-    (missing_master_days) or NYSE trading days missing from it (nyse_missing_days), per series and symbol.
+    01_build_series.py.  ``flagged_windows``: per series and symbol, the windows whose widest gap
+    between neighbouring rows is longer than ``common.CALENDAR_GAP_FLAG_DAYS`` (n_calendar_gap, from calendar_gap_days),
+    that miss master-calendar days (n_missing_master_days) or NYSE trading days (n_nyse_missing_days), and that any
+    detector flags (n_flagged: gap_flag or one of the three).  n_calendar_gap counts the calendar gap alone, since
+    gap_flag also covers the other two detectors.
     ``rates_without_nyse_missing``: per series and symbol (classifier label) and per arm (parsed answers) the detection
     rate over all windows, over the windows that span no missing NYSE trading day, and the change in percentage
     points; ``max_abs_change_pp`` is the largest change over all entries.
@@ -2348,17 +2350,19 @@ def input_diagnostics(data: Data) -> Dict[str, Any]:
     if len(win):
         meta = win["window_metadata"]
         gap_days = pd.to_numeric(meta.map(lambda m: m.get("calendar_gap_days")), errors="coerce")
-        gap = meta.map(lambda m: truthy(m.get("gap_flag"))) | (gap_days > common.CALENDAR_GAP_FLAG_DAYS)
+        gap = gap_days > common.CALENDAR_GAP_FLAG_DAYS
         missing = pd.to_numeric(meta.map(lambda m: m.get("missing_master_days")), errors="coerce").fillna(0) > 0
         nyse = pd.to_numeric(meta.map(lambda m: m.get("nyse_missing_days")), errors="coerce").fillna(0) > 0
-        grouped = win.assign(gap=gap, missing=missing, nyse=nyse).groupby(["series_key", "symbol"]).agg(
+        any_flag = meta.map(lambda m: truthy(m.get("gap_flag"))) | gap | missing | nyse
+        grouped = win.assign(gap=gap, missing=missing, nyse=nyse, any_flag=any_flag).groupby(
+            ["series_key", "symbol"]).agg(
             n_windows=("gap", "size"), n_calendar_gap=("gap", "sum"), n_missing_master_days=("missing", "sum"),
-            n_nyse_missing_days=("nyse", "sum")).reset_index()
-        flagged = grouped[(grouped["n_calendar_gap"] > 0) | (grouped["n_missing_master_days"] > 0)
-                          | (grouped["n_nyse_missing_days"] > 0)]
+            n_nyse_missing_days=("nyse", "sum"), n_flagged=("any_flag", "sum")).reset_index()
+        flagged = grouped[grouped["n_flagged"] > 0]
         if len(flagged):
             out["flagged_windows"] = flagged.astype(
-                {"n_calendar_gap": int, "n_missing_master_days": int, "n_nyse_missing_days": int}).to_dict("records")
+                {"n_calendar_gap": int, "n_missing_master_days": int, "n_nyse_missing_days": int,
+                 "n_flagged": int}).to_dict("records")
         if meta.map(lambda m: "nyse_missing_days" in m).any():
             out["rates_without_nyse_missing"] = rates_without_nyse_missing(data, nyse)
     return out

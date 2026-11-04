@@ -2,7 +2,9 @@
 
 **Paper Title**: *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal Obfuscation*
 
-**Status**: ✅ All five validation phases complete. Paper accepted at AIAI 2026 (camera-ready May 2026), under review at JRFM (MDPI). Final results: 81.2% detection 2024 vs 12.1% 2020 (69.1pp separation, φ = 0.672, p < 0.0001), 2,221 evaluations.
+**Status**: ✅ All five validation phases complete. Published at AIAI 2026 (Springer IFIP AICT, pp. 127–140) and, combined with Paper #1, in JRFM (MDPI, 2026). Results as published: 81.2% detection 2024 vs 12.1% 2020 (69.1pp separation, φ = 0.672, p < 0.0001), 2,221 evaluations.
+
+**Data note**: the published 2024–2025 rates rest on inputs that lacked put-side GEX from 2023-09-29, and the 2024-vs-2020 baselines carried calendar dates; see [`docs/papers/CORRECTIONS.md`](../../../docs/papers/CORRECTIONS.md). The re-run on complete inputs is in [`scripts/validation/electronics/`](../electronics/).
 
 ---
 

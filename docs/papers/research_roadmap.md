@@ -3,7 +3,7 @@
 > ⚠️ **Historical snapshot — January 13, 2026.** This document captured the research trajectory as of early 2026. For current state see:
 >
 > - **Paper 1**: ✅ Published at IEEE BigData 2025 (Dec 2025) — [`docs/papers/paper1/`](paper1/)
-> - **Paper 2**: ✅ Accepted at AIAI 2026 (camera-ready May 2026), 🔄 under review at JRFM (MDPI), rejected at Digital Finance — [`docs/papers/paper2/`](paper2/)
+> - **Paper 2**: ✅ Published at AIAI 2026 (Springer IFIP AICT) and in JRFM (MDPI, 2026, combined with Paper 1), rejected at Digital Finance — [`docs/papers/paper2/`](paper2/); extended version for MDPI *Electronics* in preparation — [`docs/papers/electronics/`](electronics/); notes on the published results — [`docs/papers/CORRECTIONS.md`](CORRECTIONS.md)
 > - **Forward-looking research directions**: consolidated in [`docs/papers/extensions/`](extensions/) (supersedes the Paper 3 / Paper 4 planning referenced below)
 > - **GitHub issues referenced below**: all closed as of April 2026
 >
