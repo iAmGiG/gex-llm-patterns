@@ -36,7 +36,9 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 (Wilson 95%, percent), n_indep_30d, mean_abs_gex_bn, n_compared (answers with a stored
                                 window), clf_rate_matched_pct, clf_mean_abs_gex_bn_matched, agree_pct and kappa (against the
                                 classifier on those windows), metrics_agree_pct, sign_flips_exact_pct,
-                                median_ratio_reported_to_computed.
+                                median_ratio_reported_to_computed, n_detect_positive and n_detect_negative (the
+                                detections by regime sign), n_both_detect and type_agree_pct (LLM rows: windows that
+                                the model and the classifier both detect, and the share of them with the same type).
     detection_by_year_wide.csv  derived copy of the yearly rows in the shape of the written spec (no figure reads it):
                                 series_key, symbol, year, n, clf_rate, clf_ci_lo, clf_ci_hi, arm, model, n_parsed,
                                 llm_rate, llm_ci_lo, llm_ci_hi, agree_pct, kappa, arm_role, n_windows, n_compared,
@@ -944,8 +946,18 @@ DETECTION_COLUMNS = [
     "n_windows", "n_parsed", "n", "n_detect", "rate_pct", "ci_lo_pct", "ci_hi_pct", "n_indep_30d",
     "mean_abs_gex_bn", "n_compared", "clf_rate_matched_pct", "clf_mean_abs_gex_bn_matched",
     "agree_pct", "kappa", "metrics_agree_pct", "sign_flips_exact_pct", "median_ratio_reported_to_computed",
+    "n_detect_positive", "n_detect_negative", "n_both_detect", "type_agree_pct",
 ]
-DETECTION_INT_COLUMNS = ["year", "n_windows", "n_parsed", "n", "n_detect", "n_indep_30d", "n_compared"]
+DETECTION_INT_COLUMNS = ["year", "n_windows", "n_parsed", "n", "n_detect", "n_indep_30d", "n_compared",
+                         "n_detect_positive", "n_detect_negative", "n_both_detect"]
+POSITIVE, NEGATIVE = "persistent_positive", "persistent_negative"
+
+
+def sign_counts(detected: pd.Series, regime_type: pd.Series) -> Dict[str, int]:
+    """Detections by the sign of the regime: n_detect_positive and n_detect_negative (a detection of another type counts in neither)."""
+    hit = detected.fillna(False).astype(bool)
+    return {"n_detect_positive": int((hit & (regime_type == POSITIVE)).sum()),
+            "n_detect_negative": int((hit & (regime_type == NEGATIVE)).sum())}
 WIDE_COLUMNS = [
     "series_key", "symbol", "year", "n", "clf_rate", "clf_ci_lo", "clf_ci_hi", "arm", "model", "n_parsed",
     "llm_rate", "llm_ci_lo", "llm_ci_hi", "agree_pct", "kappa",
@@ -987,6 +999,7 @@ def classifier_rows(win: pd.DataFrame) -> List[Dict[str, Any]]:
                 "label_source": "classifier", "arm": "", "arm_role": "", "model": "",
                 "series_key": series_key, "symbol": symbol, "scope": scope, "year": year, "n_windows": n,
                 **rate_fields(int(sub["clf_should_detect"].sum()), n),
+                **sign_counts(sub["clf_should_detect"], sub["clf_regime_type"]),
                 "n_indep_30d": independent_count(sub),
                 "mean_abs_gex_bn": sub["clf_avg_magnitude"].mean() / 1e9,
             })
@@ -1004,6 +1017,7 @@ def llm_rows(det: pd.DataFrame) -> List[Dict[str, Any]]:
                 "label_source": "llm", "arm": arm, "arm_role": arm_role(arm), "model": model,
                 "series_key": series_key, "symbol": symbol, "scope": scope, "year": year,
                 "n_windows": len(sub), "n_parsed": n, **rate_fields(int(parsed["regime_detected"].sum()), n),
+                **sign_counts(parsed["regime_detected"], parsed["regime_type"]),
                 "n_indep_30d": independent_count(parsed),
                 "mean_abs_gex_bn": parsed["avg_magnitude_billions"].mean(),
                 "n_compared": len(matched),
@@ -1012,7 +1026,11 @@ def llm_rows(det: pd.DataFrame) -> List[Dict[str, Any]]:
             if len(matched):
                 tt, tf, ft, ff = confusion_counts(matched["regime_detected"], matched["clf_should_detect"])
                 both = matched["sign_flips"].notna() & matched["clf_sign_flips"].notna()
+                joint = matched[matched["regime_detected"].astype(bool) & matched["clf_should_detect"].astype(bool)]
                 row.update({
+                    "n_both_detect": len(joint),
+                    "type_agree_pct": (100.0 * (joint["regime_type"] == joint["clf_regime_type"]).mean()
+                                       if len(joint) else math.nan),
                     "clf_rate_matched_pct": 100.0 * (tt + ft) / len(matched),
                     "clf_mean_abs_gex_bn_matched": matched["clf_avg_magnitude"].mean() / 1e9,
                     "agree_pct": 100.0 * (tt + ff) / len(matched),
@@ -2239,7 +2257,8 @@ CAVEATS = (
 # What the figure scripts can rely on (the as-built LONG schemas are authoritative); echoed into report.yaml.
 CONTRACT = {
     "detection_by_year.csv": "long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct, ci_lo_pct, "
-                             "ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows",
+                             "ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows; "
+                             "n_detect_positive / n_detect_negative split n_detect by regime sign",
     "detection_by_year_wide.csv": "derived copy of the yearly rows in the shape of the written spec: clf_rate, clf_ci_lo, "
                                   "clf_ci_hi, llm_rate, llm_ci_lo, llm_ci_hi as FRACTIONS in [0, 1]; agree_pct in percent "
                                   "(no figure reads it)",

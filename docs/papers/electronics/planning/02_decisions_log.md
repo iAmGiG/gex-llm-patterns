@@ -42,6 +42,7 @@
 | D-23 | 2026-11-02 | Manuscript structure | One .tex per part, supplement, and the author decisions of 2026-11-02 |
 | D-24 | 2026-11-03 | Missing trading days | 2026-05-06 fill and spot-less repair upstream; rebuild and re-run of changed windows; NYSE-calendar flag |
 | D-25 | 2026-11-04 | Code audit | Exact block bootstrap up to ten quarters; one Methods sentence for the Sandy closure; deposit holds current plus replaced answers |
+| D-26 | 2026-11-07 | Reader-facing additions | Sign of the detected regimes, the role of the LLM against the rule, labels not price effects, a leg check among the practices |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -336,6 +337,20 @@
   - Zenodo deposit: the current answers (one per key, as counted in the article) plus a separate file of the 1,049 replaced answers with the run that replaced each; local paths stripped.
 - Outcome: pipeline fixes (no stored answer changes), results and figures regenerated (every figure image byte-identical), manuscript text fixed and re-synced; branch fix/audit-2026-11-04.
 
+### D-26 Reader-facing additions of 2026-11-07
+
+- Date: 2026-11-07. Decided by Chris, after reading the paper from the side of a retail trader and of a market commentator.
+- Facts:
+  - The manuscript reported detection rates but not the sign of the detected regimes. On the published inputs all 501 detections of 2024 and 2025 are persistent positive; the call leg is positive by construction (every call-only window has 30 positive days and no flip, so magnitude alone decides). On the complete SPY series the 60 detections of 2024 and 2025 are 30 positive (26 in 2024, 4 in 2025) and 30 negative (window ends 2025-03-18 to 2025-04-29); 2022 (102) and 2026 (22) are all negative. gpt-6-luna gives the rule's type in every jointly detected window (605 of 605 on `full_spy`, 486 of 486 on `ex0dte_spy`; 100% on every arm).
+  - The paper did not say what the LLM is for when it equals the rule in 99.7% of windows, nor that it tests labels and not price effects.
+  - No year of `new_full` for SPY, QQQ or IWM keeps one sign (positive-day share by year 8.7-69.4%, 12.7-83.3%, 0.4-37.7%); the published inputs were positive on each of the 565 days from 2023-09-29 to 2025-12-31.
+- Decisions:
+  - Report the sign: one paragraph in Section 4.2, one sentence in 4.4 (type agreement), one clause in Discussion 5.1. The counts come from new columns of `detection_by_year.csv` (`n_detect_positive`, `n_detect_negative`, `n_both_detect`, `type_agree_pct`), not from hand counts.
+  - Discussion 5.2 states that the rule is the better labelling instrument on this task and that the model is the object of the test.
+  - Threats: the study tests labels, not price behaviour; such a test needs its own design because GEX depends on the price path. Future work in the Conclusion names that test. No new experiment.
+  - Implications: the lineage check starts with the legs of a net exposure (call leg persistent by construction; the published inputs one-signed for 565 days).
+- Outcome: report re-run (every other results file byte-identical; the database and parquet sources give the same CSVs), figure images byte-identical (five manifests updated), manuscript parts 04_02, 04_04, 05 and 06 changed; added to the Overleaf hold set.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -446,3 +461,4 @@
 - 2026-11-02: D-23 added (structure, title, data release, AI-use wording, corresponding author, CRediT, research questions, reference audit).
 - 2026-11-03: D-24 added (missing trading days; rebuild after the database repair; NYSE-calendar flag).
 - 2026-11-03 (evening): D-24 outcome recorded (rebuild, re-run, reload, manuscript numbers).
+- 2026-11-07: D-26 added (sign of the detected regimes, role of the LLM, labels not price effects, leg check).

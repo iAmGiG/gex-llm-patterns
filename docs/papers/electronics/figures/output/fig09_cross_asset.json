@@ -377,10 +377,10 @@
     ]
   },
   "figure": "fig09_cross_asset",
-  "generated_utc": "2026-11-04T05:45:02+00:00",
+  "generated_utc": "2026-11-07T15:42:27+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "0c52c14ed37f3b7b13cb44d9db0ba8ec75e87bc8",
+  "git_sha": "c6c4756c07b357c12792230d52395d124f31c5c6",
   "outputs": {
     "pdf": {
       "bytes": 25498,
@@ -403,15 +403,15 @@
         "inputs_fingerprint": "255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4"
+        "sha256": "1e96163984339d6c10844d38f3ee474e25acb375c8ed361219809999cf55b1f2"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-04T05:43:55+00:00",
+      "generated_at": "2026-11-07T15:41:53+00:00",
       "inputs_fingerprint": "255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6",
-      "sha256": "9994a77f855ece01d6c0dcd2569442c6620c9d3c569838239aa7f7ca5c75adec"
+      "script_sha256": "835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943",
+      "sha256": "883d971119fcf5659249fc882615215e302e2fbc2dfc90f8cbe9b5d648d635fa"
     }
   },
   "rows": {
@@ -456,14 +456,14 @@
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     },
     {
-      "bytes": 66429,
+      "bytes": 70948,
       "path": "docs/papers/electronics/results/detection_by_year.csv",
-      "sha256": "e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4"
+      "sha256": "1e96163984339d6c10844d38f3ee474e25acb375c8ed361219809999cf55b1f2"
     },
     {
-      "bytes": 176803,
+      "bytes": 176965,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "9994a77f855ece01d6c0dcd2569442c6620c9d3c569838239aa7f7ca5c75adec"
+      "sha256": "883d971119fcf5659249fc882615215e302e2fbc2dfc90f8cbe9b5d648d635fa"
     }
   ],
   "versions": {
