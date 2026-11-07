@@ -23,6 +23,9 @@ import pandas as pd
 
 from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repository root, for the src.* imports
+from src.cache.unified_cache import UnifiedCacheManager  # noqa: E402
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -175,7 +178,7 @@ def main():
     logger.info(f"Symbols to backfill: {symbols}")
 
     # Initialize API client
-    client = AlphaVantageGEXClient()
+    client = AlphaVantageGEXClient(cache_manager=UnifiedCacheManager())  # the package no longer defaults to it (#269)
 
     total_updated = 0
 

@@ -17,7 +17,7 @@ from typing import Any, Dict, Optional
 
 import pandas as pd
 
-from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 

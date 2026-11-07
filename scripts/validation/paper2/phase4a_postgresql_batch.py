@@ -320,7 +320,7 @@ def retrieve_results(batch_id: str):
     from openai import OpenAI
 
     sys.path.insert(0, '/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns')
-    from gex_db_infrastructure.cache.research_cache import ResearchCache
+    from src.cache.research_cache import ResearchCache
 
     client = OpenAI()
 

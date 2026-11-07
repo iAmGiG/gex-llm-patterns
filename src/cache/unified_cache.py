@@ -53,7 +53,7 @@ class UnifiedCacheManager:
         Issue #180: Deprecated wrapper methods removed.
         """
         if self._sqlite_options is None:
-            from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+            from src.cache.sqlite_options_manager import SQLiteOptionsManager
 
             self._sqlite_options = SQLiteOptionsManager()
         return self._sqlite_options
@@ -92,10 +92,17 @@ class UnifiedCacheManager:
     def get_market_data(self, symbol, start_date: str = None, end_date: str = None):
         """Get real market data.
 
+        Loads and concatenates ALL historical pickle files for a symbol,
+        then applies date filtering. This ensures sufficient data is available
+        for rolling calculations like realized volatility (RV-20 needs 20+ days).
+
         Args:
             symbol: Stock symbol
             start_date: Optional start date filter
             end_date: Optional end date filter
+
+        Returns:
+            DataFrame with OHLCV data indexed by date, or None if no data found
         """
         try:
             symbol_dir = self.market_data_dir / symbol.upper()
@@ -103,21 +110,40 @@ class UnifiedCacheManager:
             if not symbol_dir.exists():
                 return None
 
-            # Find files that might contain our data
+            # Collect ALL pickle files for this symbol
+            all_dfs = []
             for file_path in symbol_dir.glob("*.pickle"):
-                df = pd.read_pickle(file_path)
+                try:
+                    df = pd.read_pickle(file_path)
+                    if df is not None and not df.empty:
+                        all_dfs.append(df)
+                except Exception as e:
+                    self.logger.warning(f"Failed to load {file_path}: {e}")
+                    continue
 
-                # Apply date filtering if specified
-                if start_date:
-                    df = df[df.index >= start_date]
-                if end_date:
-                    df = df[df.index <= end_date]
+            if not all_dfs:
+                return None
 
-                if not df.empty:
-                    self.logger.info(f"Loaded {len(df)} {symbol} market records")
-                    return df
+            # Concatenate all historical data
+            combined = pd.concat(all_dfs, ignore_index=False)
 
-            return None
+            # Remove duplicate indices (keep first occurrence)
+            combined = combined[~combined.index.duplicated(keep='first')]
+
+            # Sort by date index
+            combined = combined.sort_index()
+
+            # Apply date filtering after concatenation
+            if start_date:
+                combined = combined[combined.index >= start_date]
+            if end_date:
+                combined = combined[combined.index <= end_date]
+
+            if combined.empty:
+                return None
+
+            self.logger.info(f"Loaded {len(combined)} {symbol} market records")
+            return combined
 
         except Exception as e:
             self.logger.error(f"Failed to load {symbol} market data: {e}")

@@ -37,7 +37,7 @@ sys.path.insert(0, str(PROJECT_ROOT))  # noqa: E402
 
 # pylint: disable=wrong-import-position
 
-from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
+from src.cache.unified_cache import UnifiedCacheManager
 from gex_db_infrastructure.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
 from src.llm.mechanics_prompt_builder import MechanicsPromptBuilder
 

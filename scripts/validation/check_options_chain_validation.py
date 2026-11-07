@@ -285,7 +285,7 @@ def test_sqlite_integration():
     import tempfile
     import uuid
 
-    from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+    from src.cache.sqlite_options_manager import SQLiteOptionsManager
 
     # Use unique temp files to avoid Windows file locking issues
     tmpdir = tempfile.gettempdir()

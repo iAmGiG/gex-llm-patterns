@@ -37,7 +37,7 @@ except ImportError:
 # Local imports
 from gex_db_infrastructure.cache.gex_cache_manager import GEXCacheManager
 from src.utils.date_utils import today_str
-from gex_db_infrastructure.validation.outcome_calculator import OutcomeCalculator
+from src.validation.outcome_calculator import OutcomeCalculator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

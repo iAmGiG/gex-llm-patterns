@@ -13,7 +13,7 @@ sys.path.insert(0, str(project_root))
 
 import pandas as pd
 
-from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
+from src.cache.unified_cache import UnifiedCacheManager
 from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 

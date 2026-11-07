@@ -28,7 +28,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from gex_db_infrastructure.cache.options_db_manager import SQLiteOptionsManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from gex_db_infrastructure.data_sources.historical_gex_builder import HistoricalGEXDatabaseBuilder
 from gex_db_infrastructure.gex.gex_calculator import GEXCalculator

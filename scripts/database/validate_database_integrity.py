@@ -12,7 +12,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from gex_db_infrastructure.cache.options_db_manager import SQLiteOptionsManager
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repository root, for the src.* imports
+from src.cache.sqlite_options_manager import SQLiteOptionsManager  # noqa: E402
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 

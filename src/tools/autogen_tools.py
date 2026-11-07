@@ -67,7 +67,9 @@ import pandas as pd
 from autogen_core.tools import FunctionTool
 
 # Project imports - only tools actually used
-from gex_db_infrastructure.cache import SQLiteOptionsManager, PostgreSQLOptionsManager, UnifiedCacheManager
+from gex_db_infrastructure.cache import PostgreSQLOptionsManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.unified_cache import UnifiedCacheManager
 from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
 # from gex_db_infrastructure.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
@@ -94,7 +96,7 @@ ALL_AGENTS = [DATA_AGENT, GEX_AGENT, ANALYSIS_AGENT]
 # UnifiedCacheManager is used for market data and GEX calculations (not options)
 options_db = PostgreSQLOptionsManager()  # Primary database for options data
 cache_manager = UnifiedCacheManager()  # For market data and GEX (not options)
-alpha_vantage_client = AlphaVantageGEXClient()
+alpha_vantage_client = AlphaVantageGEXClient(cache_manager=UnifiedCacheManager())  # the package no longer defaults to it (#269)
 live_gex = LiveGEXInterface()
 validator = OptionsDataValidator()  # Used for GEX calculation data cleaning (different from ingress validation)
 
@@ -638,7 +640,7 @@ def process_historical_gex_range(
             start_date = add_business_days(end_date, -30)
 
         # Initialize concurrent processor
-        from gex_db_infrastructure.cache.concurrent_gex_processor import ConcurrentGEXProcessor
+        from src.cache.concurrent_gex_processor import ConcurrentGEXProcessor
 
         processor = ConcurrentGEXProcessor(max_workers=max_workers, unified_cache_manager=cache_manager)
 
