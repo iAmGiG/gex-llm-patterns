@@ -1,9 +1,9 @@
-generated_at: '2026-11-04T04:41:36+00:00'
+generated_at: '2026-11-07T15:41:53+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
-  sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-  common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
-  git_sha: b9969016420c6c1bcc6dde223399647210a88b0c
+  sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+  common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
+  git_sha: c6c4756c07b357c12792230d52395d124f31c5c6
 environment:
   python: 3.12.12
   pandas: 2.3.3
@@ -17,7 +17,8 @@ parameters:
   only: null
 contract:
   detection_by_year.csv: 'long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct,
-    ci_lo_pct, ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows'
+    ci_lo_pct, ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows; n_detect_positive
+    / n_detect_negative split n_detect by regime sign'
   detection_by_year_wide.csv: 'derived copy of the yearly rows in the shape of the written spec: clf_rate, clf_ci_lo,
     clf_ci_hi, llm_rate, llm_ci_lo, llm_ci_hi as FRACTIONS in [0, 1]; agree_pct in percent (no figure reads it)'
   bridge_agreement.csv: n_pairs and n_ref_det_oth_det / _not, n_ref_not_oth_det / _not; the columns n, both_detect,
@@ -1629,7 +1630,7 @@ sections:
     files:
     - series_comparison.csv
     summary:
-      rows: 98
+      rows: 106
       exact_match_pct_by_year:
         jan2026_phase4a__vs__new_full:
           SPY:
@@ -1734,6 +1735,15 @@ sections:
             2023: 39.35743
             2024: 100.0
             2025: 100.0
+        call_only__vs__new_full:
+          SPY:
+            2020: 0.0
+            2021: 0.0
+            2022: 0.0
+            2023: 0.0
+            2024: 0.0
+            2025: 0.0
+            2026: 0.0
       sign_agree_pct_by_year:
         jan2026_phase4a__vs__new_full:
           SPY:
@@ -1838,6 +1848,15 @@ sections:
             2023: 59.036145
             2024: 100.0
             2025: 100.0
+        call_only__vs__new_full:
+          SPY:
+            2020: 63.095238
+            2021: 69.444444
+            2022: 19.123506
+            2023: 40.8
+            2024: 62.301587
+            2025: 54.0
+            2026: 40.206186
   ex0dte_decomposition:
     status: written
     files:
@@ -2310,9 +2329,9 @@ sections:
           model: null
         diff_pp: 88.023952
         bootstrap_diff_ci_pp:
-        - 80.761334
-        - 94.950758
-        p_bootstrap: 0.00049975
+        - 80.360721
+        - 94.921875
+        p_bootstrap: 5.96046e-08
         p_nonoverlap: 0.00012207
       - name: series_contrast
         family: series
@@ -2331,9 +2350,9 @@ sections:
           model: gpt-6-luna
         diff_pp: 87.42515
         bootstrap_diff_ci_pp:
-        - 80.326644
-        - 93.936022
-        p_bootstrap: 0.00049975
+        - 80.079681
+        - 94.08284
+        p_bootstrap: 5.96046e-08
         p_nonoverlap: 0.00012207
       - name: series_contrast
         family: series
@@ -2394,9 +2413,9 @@ sections:
           model: null
         diff_pp: -2.788845
         bootstrap_diff_ci_pp:
-        - -8.76771
-        - 2.761341
-        p_bootstrap: 0.369
+        - -8.669355
+        - 2.788845
+        p_bootstrap: 0.36083
         p_nonoverlap: 1.0
       - name: series_contrast
         family: series
@@ -2457,9 +2476,9 @@ sections:
           model: gpt-6-luna
         diff_pp: -2.788845
         bootstrap_diff_ci_pp:
-        - -8.767145
-        - 2.40976
-        p_bootstrap: 0.376
+        - -8.617234
+        - 2.579365
+        p_bootstrap: 0.358838
         p_nonoverlap: 1.0
       - name: series_contrast
         family: series
@@ -2478,9 +2497,9 @@ sections:
           model: null
         diff_pp: 88.023952
         bootstrap_diff_ci_pp:
-        - 80.761334
-        - 94.950758
-        p_bootstrap: 0.00049975
+        - 80.360721
+        - 94.921875
+        p_bootstrap: 5.96046e-08
         p_nonoverlap: 0.00012207
       - name: series_contrast
         family: series
@@ -2499,9 +2518,9 @@ sections:
           model: gpt-6-luna
         diff_pp: 87.42515
         bootstrap_diff_ci_pp:
-        - 80.326644
-        - 93.936022
-        p_bootstrap: 0.00049975
+        - 80.079681
+        - 94.08284
+        p_bootstrap: 5.96046e-08
         p_nonoverlap: 0.00012207
       - name: series_contrast
         family: label
@@ -2543,7 +2562,7 @@ sections:
         bootstrap_diff_ci_pp:
         - -1.875
         - 0.0
-        p_bootstrap: 0.646
+        p_bootstrap: 0.632812
         p_nonoverlap: 1.0
       - name: series_contrast
         family: label
@@ -3040,9 +3059,9 @@ sections:
           model: null
         diff_pp: 69.058296
         bootstrap_diff_ci_pp:
-        - 31.56478
+        - 28.86646
         - 93.253968
-        p_bootstrap: 0.002
+        p_bootstrap: 0.003174
         p_nonoverlap: 0.040559
       - name: phase_contrast
         family: null
@@ -3061,9 +3080,9 @@ sections:
           model: o4-mini
         diff_pp: 69.058296
         bootstrap_diff_ci_pp:
-        - 31.56478
+        - 28.86646
         - 93.253968
-        p_bootstrap: 0.002
+        p_bootstrap: 0.003174
         p_nonoverlap: 0.040559
       - name: phase_contrast
         family: null
@@ -3082,9 +3101,9 @@ sections:
           model: gpt-6-luna
         diff_pp: 69.058296
         bootstrap_diff_ci_pp:
-        - 31.56478
+        - 28.86646
         - 93.253968
-        p_bootstrap: 0.002
+        p_bootstrap: 0.003174
         p_nonoverlap: 0.040559
       - name: phase_contrast
         family: null
@@ -3103,9 +3122,9 @@ sections:
           model: null
         diff_pp: 69.058296
         bootstrap_diff_ci_pp:
-        - 31.56478
+        - 28.86646
         - 93.253968
-        p_bootstrap: 0.002
+        p_bootstrap: 0.003174
         p_nonoverlap: 0.040559
       - name: phase_contrast
         family: null
@@ -3124,9 +3143,9 @@ sections:
           model: gpt-6-luna
         diff_pp: 68.609865
         bootstrap_diff_ci_pp:
-        - 29.677987
+        - 27.220092
         - 93.253968
-        p_bootstrap: 0.003
+        p_bootstrap: 0.005371
         p_nonoverlap: 0.040559
   cost_ledger:
     status: written
@@ -3523,11 +3542,11 @@ files:
     sha256: f86034f28a40c11c7b9ef7d8cdf100bce96e4231d8c9569c7b5fe61c201a9fac
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -3540,15 +3559,15 @@ files:
     - bridge_incl_recovered
     - test_retest
     - notes
-    bytes: 117473
-    sha256: a2e677294011e3f174dfce03e05274c5e842fb0e01c27575f09a4a1089082a97
+    bytes: 117944
+    sha256: 2263f7f6cbdfe865f7ba4732d6b85109bf232d0713ae6015c68a9a68fec51cbc
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   cost_ledger.csv:
     rows: 46
     columns:
@@ -3588,11 +3607,11 @@ files:
     sha256: 9683288bd8c857c7bfa794b47644f4dd35bac762bd40586a1c8dcd52c61e42b8
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -3605,15 +3624,15 @@ files:
     - by_status
     - runs_without_est_cost
     - reconciliation
-    bytes: 7158
-    sha256: cb2db85b34ac8fde7a2a5988f9323bac0bbc822e81be65ad4c532bbf8fbcc439
+    bytes: 7322
+    sha256: d86a44dbe7bfad195c862fca7d614461d4aacb8668b2b2be8348266edb8fa2df
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   detection_by_year.csv:
     rows: 492
     columns:
@@ -3642,15 +3661,19 @@ files:
     - metrics_agree_pct
     - sign_flips_exact_pct
     - median_ratio_reported_to_computed
-    bytes: 66429
-    sha256: e340f41197a61c083e0c39b4566598dbe590a26bfee48b8cf2ed8a4777844bb4
+    - n_detect_positive
+    - n_detect_negative
+    - n_both_detect
+    - type_agree_pct
+    bytes: 70948
+    sha256: 1e96163984339d6c10844d38f3ee474e25acb375c8ed361219809999cf55b1f2
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   detection_by_year_wide.csv:
     rows: 441
     columns:
@@ -3678,11 +3701,11 @@ files:
     sha256: 7ca5031506e3667addbb6a18d08ea55f148a0e9b9a43c526f23bebceea0e4dc9
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   disagreements.csv:
     rows: 60
     columns:
@@ -3712,11 +3735,11 @@ files:
     sha256: 77bc84271048fb96d7fd29e8aab7b5caf65e0c63e82b43887ebca488c3b81a18
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -3748,11 +3771,11 @@ files:
     sha256: 0adff916ed255c3fbaf5f5d3c5bd9c58fb8a7f69a12319b88f716cc2bcc5bc0c
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -3776,11 +3799,11 @@ files:
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   llm_parse_stats.csv:
     rows: 34
     columns:
@@ -3811,11 +3834,11 @@ files:
     sha256: 3b36f914abe31d425e4e6635203568f73b0b8e6ffdd2a927f78d5b54cec7c6c5
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   post_publication_2026.csv:
     rows: 1959
     columns:
@@ -3853,11 +3876,11 @@ files:
     sha256: abe8244b2153ab0711bdf3591812c0fa69449742f4333fb94fe4cc0e18fcd373
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   post_publication_2026_summary.csv:
     rows: 42
     columns:
@@ -3881,11 +3904,11 @@ files:
     sha256: 0d4dfe88021efe5ebabc5917dc101405ebd3ef8ca897a36c55b2bce73348559e
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   reported_vs_computed.csv:
     rows: 353
     columns:
@@ -3912,13 +3935,13 @@ files:
     sha256: 383a8388a1f3d980b3f30290750f763e12b44b286d114ba73a6d7743533bbd90
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   series_comparison.csv:
-    rows: 98
+    rows: 106
     columns:
     - series_a
     - series_b
@@ -3935,30 +3958,30 @@ files:
     - median_ratio_a_over_b
     - sign_agree_pct
     - exact_match_pct
-    bytes: 13169
-    sha256: d20b8734013fd3067ac7f05d345829aa66dde77613c1cad0703d48fdde663492
+    bytes: 14215
+    sha256: f4b24afd4576ff16188ba07c6c516b3807a470526dabf8485b999af57a29a8ba
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
   stats.yaml:
     keys:
     - meta
     - headline_contrasts
     - rates
     - contrasts
-    bytes: 182225
-    sha256: d20b1964dfe25f3ad472a3c0454f5730a4a0dd202f82cde10a4f473e94c68461
+    bytes: 187902
+    sha256: 48a72f730c78acdd8873c3a89e6707ba86c46b2f91d57c6267bfd1d713dcc0fb
     produced_with:
       inputs_fingerprint: 255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8
-      script_sha256: ac6ed22ee4789b3ff6d144673941def7c71addccc5ff7d5ed0528daa7a79ac44
-      common_sha256: 1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f
+      script_sha256: 835cb2c19ddfd4dd494911ae51b50b39880f4ded81acb368473bf673340eb943
+      common_sha256: 8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-04T04:41:36+00:00'
+      generated_at: '2026-11-07T15:41:53+00:00'
 untracked_files: []
 warnings: []
 diagnostics:
@@ -4364,12 +4387,12 @@ diagnostics:
       change_pp: -1.282051
     - arm: r1_o4mini
       symbol: SPY
-      n_all: 1476
-      n_nyse_missing: 87
-      n_without: 1389
-      rate_all_pct: 45.189702
-      rate_without_pct: 45.932325
-      change_pp: 0.742624
+      n_all: 1412
+      n_nyse_missing: 84
+      n_without: 1328
+      rate_all_pct: 45.750708
+      rate_without_pct: 46.536145
+      change_pp: 0.785436
     - arm: r1_p3_o4mini
       symbol: SPY
       n_all: 223
@@ -5021,6 +5044,15 @@ headline:
         2023: 39.35743
         2024: 100.0
         2025: 100.0
+    call_only__vs__new_full:
+      SPY:
+        2020: 0.0
+        2021: 0.0
+        2022: 0.0
+        2023: 0.0
+        2024: 0.0
+        2025: 0.0
+        2026: 0.0
   ex0dte:
     classifier_rate_pct_matched_by_year:
       new_full:
@@ -5217,9 +5249,9 @@ headline:
       model: null
     diff_pp: 88.023952
     bootstrap_diff_ci_pp:
-    - 80.761334
-    - 94.950758
-    p_bootstrap: 0.00049975
+    - 80.360721
+    - 94.921875
+    p_bootstrap: 5.96046e-08
     p_nonoverlap: 0.00012207
   - name: series_contrast
     family: series
@@ -5238,9 +5270,9 @@ headline:
       model: gpt-6-luna
     diff_pp: 87.42515
     bootstrap_diff_ci_pp:
-    - 80.326644
-    - 93.936022
-    p_bootstrap: 0.00049975
+    - 80.079681
+    - 94.08284
+    p_bootstrap: 5.96046e-08
     p_nonoverlap: 0.00012207
   - name: series_contrast
     family: series
@@ -5301,9 +5333,9 @@ headline:
       model: null
     diff_pp: -2.788845
     bootstrap_diff_ci_pp:
-    - -8.76771
-    - 2.761341
-    p_bootstrap: 0.369
+    - -8.669355
+    - 2.788845
+    p_bootstrap: 0.36083
     p_nonoverlap: 1.0
   - name: series_contrast
     family: series
@@ -5364,9 +5396,9 @@ headline:
       model: gpt-6-luna
     diff_pp: -2.788845
     bootstrap_diff_ci_pp:
-    - -8.767145
-    - 2.40976
-    p_bootstrap: 0.376
+    - -8.617234
+    - 2.579365
+    p_bootstrap: 0.358838
     p_nonoverlap: 1.0
   - name: series_contrast
     family: series
@@ -5385,9 +5417,9 @@ headline:
       model: null
     diff_pp: 88.023952
     bootstrap_diff_ci_pp:
-    - 80.761334
-    - 94.950758
-    p_bootstrap: 0.00049975
+    - 80.360721
+    - 94.921875
+    p_bootstrap: 5.96046e-08
     p_nonoverlap: 0.00012207
   - name: series_contrast
     family: series
@@ -5406,9 +5438,9 @@ headline:
       model: gpt-6-luna
     diff_pp: 87.42515
     bootstrap_diff_ci_pp:
-    - 80.326644
-    - 93.936022
-    p_bootstrap: 0.00049975
+    - 80.079681
+    - 94.08284
+    p_bootstrap: 5.96046e-08
     p_nonoverlap: 0.00012207
   - name: series_contrast
     family: label
@@ -5450,7 +5482,7 @@ headline:
     bootstrap_diff_ci_pp:
     - -1.875
     - 0.0
-    p_bootstrap: 0.646
+    p_bootstrap: 0.632812
     p_nonoverlap: 1.0
   - name: series_contrast
     family: label
@@ -5947,9 +5979,9 @@ headline:
       model: null
     diff_pp: 69.058296
     bootstrap_diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_bootstrap: 0.002
+    p_bootstrap: 0.003174
     p_nonoverlap: 0.040559
   - name: phase_contrast
     family: null
@@ -5968,9 +6000,9 @@ headline:
       model: o4-mini
     diff_pp: 69.058296
     bootstrap_diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_bootstrap: 0.002
+    p_bootstrap: 0.003174
     p_nonoverlap: 0.040559
   - name: phase_contrast
     family: null
@@ -5989,9 +6021,9 @@ headline:
       model: gpt-6-luna
     diff_pp: 69.058296
     bootstrap_diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_bootstrap: 0.002
+    p_bootstrap: 0.003174
     p_nonoverlap: 0.040559
   - name: phase_contrast
     family: null
@@ -6010,9 +6042,9 @@ headline:
       model: null
     diff_pp: 69.058296
     bootstrap_diff_ci_pp:
-    - 31.56478
+    - 28.86646
     - 93.253968
-    p_bootstrap: 0.002
+    p_bootstrap: 0.003174
     p_nonoverlap: 0.040559
   - name: phase_contrast
     family: null
@@ -6031,9 +6063,9 @@ headline:
       model: gpt-6-luna
     diff_pp: 68.609865
     bootstrap_diff_ci_pp:
-    - 29.677987
+    - 27.220092
     - 93.253968
-    p_bootstrap: 0.003
+    p_bootstrap: 0.005371
     p_nonoverlap: 0.040559
   post_publication:
     definition: window_end on or after 2026-01-01 (ends_in_2026); entirely_2026 = window_start on or after 2026-01-01

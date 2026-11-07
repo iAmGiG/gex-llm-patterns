@@ -9,9 +9,9 @@
       "sha256": "bb77560b21ce6fac60f4428e013ce2f31f6dcac2e7e16996361626af75cbec9b"
     },
     {
-      "git": "modified",
+      "git": "clean",
       "path": "docs/papers/electronics/figures/scripts/figdata.py",
-      "sha256": "613c75abb7788b8464e58cd0bf8adfb86f64bcbe4b825b64975adf35d35ce949"
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
     },
     {
       "git": "clean",
@@ -21,7 +21,7 @@
     {
       "git": "clean",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "1c3673ad6412873077db69dba961402878ba6bd72fe16e523b1399fa43d8b22f"
+      "sha256": "8ca81aea2ea4b3449fc157c2307d79a459bc748e7612b6a7f829065e93fe7664"
     }
   ],
   "extra": {
@@ -63,10 +63,10 @@
     }
   },
   "figure": "fig02_convention_window",
-  "generated_utc": "2026-11-03T21:28:27+00:00",
+  "generated_utc": "2026-11-04T05:44:36+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "ed479b37f86cc57b9744a5609ea353edf6f4c401",
+  "git_sha": "0c52c14ed37f3b7b13cb44d9db0ba8ec75e87bc8",
   "outputs": {
     "pdf": {
       "bytes": 22492,
@@ -86,11 +86,11 @@
   "results": {
     "files": {},
     "report_yaml": {
-      "generated_at": "2026-11-03T21:23:43+00:00",
+      "generated_at": "2026-11-04T05:43:55+00:00",
       "inputs_fingerprint": "255a58ddfa6310b0f942c1303b86e9a123085dd173c6f1294f7a951497cc97e8",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "dbc46d524a15314aa763f5b710d0e209b8897741864f4275f6da78a6e7fe9c12",
-      "sha256": "f6c9a32efb50a564a119fe045d45598a969eee9ec2b22b81f2f924903eeb5db5"
+      "script_sha256": "3d5abcce2ec81e1a1a9b99f43cc645a06d9a553f3ba66f96fa30ef1d88711fe6",
+      "sha256": "9994a77f855ece01d6c0dcd2569442c6620c9d3c569838239aa7f7ca5c75adec"
     }
   },
   "rows": {
@@ -146,9 +146,9 @@
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     },
     {
-      "bytes": 175871,
+      "bytes": 176803,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "f6c9a32efb50a564a119fe045d45598a969eee9ec2b22b81f2f924903eeb5db5"
+      "sha256": "9994a77f855ece01d6c0dcd2569442c6620c9d3c569838239aa7f7ca5c75adec"
     }
   ],
   "versions": {

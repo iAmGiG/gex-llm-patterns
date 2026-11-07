@@ -61,9 +61,14 @@ def pair_label(pair: Pair) -> str:
     return f"{first[0].upper()}{first[1:]} vs {second}"
 
 
+# Pairs 05_report.py writes for a table, not for this figure: call_only_vs_new_full supplies the call-only means of
+# Appendix B (days shared with new_full); the call-only sign is positive by construction, so its row would say nothing.
+NOT_DRAWN: Tuple[Pair, ...] = (("call_only", "new_full"),)
+
+
 def ordered_pairs(frame: pd.DataFrame) -> List[Pair]:
-    """Pairs present in the CSV: the narrative order first, any further pair after it (nothing is dropped)."""
-    present = {(a, b) for a, b in frame[["series_a", "series_b"]].drop_duplicates().itertuples(index=False)}
+    """Pairs present in the CSV: the narrative order first, any further pair after it (only NOT_DRAWN is left out)."""
+    present = {(a, b) for a, b in frame[["series_a", "series_b"]].drop_duplicates().itertuples(index=False)} - set(NOT_DRAWN)
     known = [p for p in PAIR_ORDER if p in present]
     return known + sorted(present - set(known))
 

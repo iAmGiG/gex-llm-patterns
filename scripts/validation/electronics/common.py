@@ -24,6 +24,7 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -694,7 +695,11 @@ def nyse_trading_days(start: date, end: date) -> List[date]:
     return days
 INTRADAY_T0_KEY = "intraday_t0"  # composite windows: new_full for T-29..T-1, intraday_late (final_rush) at T+0
 
-QUIET_WINDOW_UTC = ((21, 50), (22, 45))  # daily ingest + daily-summary cron; no DDL, loads or raw scans inside it
+# The database maintainer's rules (gex-database-infrastructure): no DDL, loads or raw scans while the monitors' daily
+# ingest and summary cron runs, and no loads while the market is open (New York time, so the UTC hours follow DST).
+QUIET_WINDOW_UTC = ((21, 50), (22, 57))
+MARKET_HOURS_ET = ((9, 25), (16, 20))  # on NYSE trading days
+_NEW_YORK = ZoneInfo("America/New_York")
 
 
 def in_quiet_window(now: Optional[datetime] = None) -> bool:
@@ -704,10 +709,61 @@ def in_quiet_window(now: Optional[datetime] = None) -> bool:
     return h0 * 60 + m0 <= t <= h1 * 60 + m1
 
 
-def assert_not_quiet(ignore: bool = False) -> None:
-    """Refuse DB writes / raw scans during the upstream cron window unless explicitly overridden."""
-    if in_quiet_window() and not ignore:
-        raise RuntimeError("inside the 21:50-22:45 UTC quiet window; pass --ignore-busy-window to override")
+def in_market_hours(now: Optional[datetime] = None) -> bool:
+    """True from 09:25 to 16:20 New York time on an NYSE trading day."""
+    local = (now or datetime.now(timezone.utc)).astimezone(_NEW_YORK)
+    if not nyse_trading_days(local.date(), local.date()):
+        return False
+    (h0, m0), (h1, m1) = MARKET_HOURS_ET
+    t = local.hour * 60 + local.minute
+    return h0 * 60 + m0 <= t <= h1 * 60 + m1
+
+
+def busy_reason(now: Optional[datetime] = None, writes: bool = True) -> Optional[str]:
+    """Why the database must not be used now (None when it may): the cron window always, market hours for writes."""
+    if in_quiet_window(now):
+        (h0, m0), (h1, m1) = QUIET_WINDOW_UTC
+        return f"the {h0:02d}:{m0:02d}-{h1:02d}:{m1:02d} UTC quiet window (daily rebuild of the monitors)"
+    if writes and in_market_hours(now):
+        (h0, m0), (h1, m1) = MARKET_HOURS_ET
+        return f"NYSE market hours ({h0:02d}:{m0:02d}-{h1:02d}:{m1:02d} New York time)"
+    return None
+
+
+def assert_not_quiet(ignore: bool = False, now: Optional[datetime] = None) -> None:
+    """Refuse DB writes / raw scans in the cron window or during market hours unless explicitly overridden."""
+    reason = busy_reason(now)
+    if reason and not ignore:
+        raise RuntimeError(f"inside {reason}; pass --ignore-busy-window to override")
+
+
+def latest_answers(frame: "pd.DataFrame", key: Sequence[str],
+                   run_times: Optional[Dict[str, Any]] = None) -> "pd.DataFrame":
+    """One row per natural key: the latest ``created_at``, the one rule of 05_report, 06_condense and 07_load_tables.
+
+    A row without ``created_at`` (answers stored before the column existed) takes its run's ``ingested_at`` from
+    ``run_times`` when given; a row still without one sorts first, so it loses to any dated row. Ties keep the row
+    that comes last in the input order. The frame's own ``created_at`` values are left as they were.
+    """
+    import pandas as pd
+
+    stamp = pd.to_datetime(frame["created_at"], utc=True) if "created_at" in frame.columns else pd.Series(
+        pd.NaT, index=frame.index, dtype="datetime64[ns, UTC]")
+    if run_times and "run_id" in frame.columns:
+        filled = pd.to_datetime(frame["run_id"].map(run_times), utc=True)
+        stamp = stamp.fillna(filled)
+    order = stamp.sort_values(kind="stable", na_position="first").index
+    return frame.loc[order].drop_duplicates(list(key), keep="last")
+
+
+def run_ingest_times(runs: "pd.DataFrame") -> Dict[str, Any]:
+    """run_id -> ingested_at (the stamp latest_answers gives an answer without created_at)."""
+    import pandas as pd
+
+    if runs is None or not len(runs) or "ingested_at" not in runs.columns:
+        return {}
+    times = pd.to_datetime(runs["ingested_at"], utc=True)
+    return {r: t for r, t in zip(runs["run_id"], times) if pd.notna(t)}
 BUDGET_USD_HARD_STOP = 12.0  # refuse to submit when projected + ledger spend would exceed this (balance $16.86 on 2026-10-28)
 PILOT_WINDOWS = 40  # balanced on clf_should_detect
 REPEAT_FRACTION = 0.05  # duplicate windows per arm for test-retest (or a full repeat of bridge_jan)

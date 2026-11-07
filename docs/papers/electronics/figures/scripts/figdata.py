@@ -164,6 +164,8 @@ class Inputs:
             names = set(pq.read_schema(path).names)
             missing = [c for c in read_columns if c not in names]
             extra = ["created_at"] if kind == "detections" and "created_at" in names else []  # absent before 2026-10-30
+            if kind == "detections" and "run_id" in names and "run_id" not in read_columns:
+                extra.append("run_id")  # an answer without created_at is dated by its run (latest-answer rule)
             if missing:
                 self.fail(f"{theme.display_path(path)} lacks column(s) {missing}")
             filters = [(c, "in", sorted(set(v))) for c, v in wanted.items() if v is not None and c in names]
@@ -182,8 +184,16 @@ class Inputs:
         if key and kind == "detections" and "created_at" in frame.columns and frame.duplicated(list(key)).any():
             # A window re-asked after its inputs changed has an older and a newer answer in different run files;
             # keep the latest, as 05_report.py, 06_condense.py and 07_load_tables.py do.
+            # The rule of common.latest_answers: an answer without created_at takes its run's ingested_at.
             before = len(frame)
-            frame = frame.sort_values("created_at", kind="stable", na_position="first").drop_duplicates(list(key), keep="last")
+            stamp = pd.to_datetime(frame["created_at"], utc=True)
+            if "run_id" in frame.columns:
+                stamp = stamp.fillna(pd.to_datetime(frame["run_id"].map(_run_ingest_times_from(self.tables_dir / "runs")),
+                                                    utc=True))
+            keep = frame.loc[stamp.sort_values(kind="stable", na_position="first").index].drop_duplicates(list(key), keep="last").index
+            # rows in the order the plots have always drawn them (by created_at, undated first), so overlapping markers
+            # are painted in the same sequence
+            frame = frame[frame.index.isin(keep)].sort_values("created_at", kind="stable", na_position="first")
             logger.info("detections: %d superseded answer(s) dropped (latest created_at kept per natural key)", before - len(frame))
         if key and frame.duplicated(list(key)).any():
             clash = int(frame.duplicated(list(key)).sum())
@@ -191,6 +201,16 @@ class Inputs:
             self.fail(f"{kind} parquet files contain {clash} duplicate rows for the natural key {key}, e.g. {sample}; "
                       f"export one row per key (a repeat run needs its own arm name) before plotting")
         return frame[requested]
+
+
+def _run_ingest_times_from(directory: Path) -> Dict[str, Any]:
+    """run_id -> ingested_at of every runs parquet under ``directory``."""
+    files = sorted(directory.glob("*.parquet")) if directory.is_dir() else []
+    if not files:
+        return {}
+    runs = pd.concat([pq.read_table(f, columns=["run_id", "ingested_at"]).to_pandas() for f in files], ignore_index=True)
+    times = pd.to_datetime(runs["ingested_at"], utc=True)
+    return {r: t for r, t in zip(runs["run_id"], times) if pd.notna(t)}
 
 
 def _fmt(values: Optional[Iterable[str]]) -> str:

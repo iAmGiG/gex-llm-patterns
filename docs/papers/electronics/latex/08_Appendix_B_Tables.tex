@@ -7,8 +7,8 @@ Tables~\ref{tab:app:series}--\ref{tab:app:llm} give the numbers behind the figur
 
 \begin{table}[H]
 \centering
-\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means in Section~\ref{sec:results:inputs} use all days of \ident{new_full}, so they can differ slightly. A dash marks a year outside the series.}
-% src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, old_bs_vs_new_full, new_full_vs_new_ex0dte
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means of the complete series in Section~\ref{sec:results:inputs} are taken over the days it shares with the published inputs, so they can differ slightly from the \ident{new_full} column (\$6.48 against \$6.46~billion in 2024). A dash marks a year outside the series.}
+% src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_new_full, old_bs_vs_new_full, new_full_vs_new_ex0dte
 \label{tab:app:series}
 \footnotesize
 \begin{tabular}{@{}lrrrrrr@{}}
@@ -30,10 +30,10 @@ Year & Days & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & \id
 2020 & 252 & 3.24 & 10.51 & 2.76 & 2.57 & 3.24 \\
 2021 & 252 & 4.97 & 17.13 & 3.98 & 3.50 & 4.99 \\
 2022 & 251 & 5.48 & 9.27 & 4.42 & 4.62 & 5.46 \\
-2023 & 250 & 10.62 & 17.04 & 8.39 & 4.59 & 6.10 \\
+2023 & 250 & 10.62 & 17.09 & 8.39 & 4.59 & 6.10 \\
 2024 & 252 & 20.19 & 20.19 & 16.19 & 4.13 & 6.46 \\
 2025 & 250 & 19.21 & 19.21 & 14.71 & 4.55 & 7.13 \\
-2026 & 194 & -- & -- & 6.00 & 5.77 & 8.38 \\
+2026 & 194 & -- & 21.68 & 6.00 & 5.77 & 8.38 \\
 \bottomrule
 \end{tabular}
 \end{table}
