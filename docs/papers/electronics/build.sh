@@ -28,7 +28,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Section files input by the main file, in order.
 SECTIONS=(01_Introduction 02_Related_Work 03_Methods
   04_01_Inputs 04_02_Replay 04_03_Bridge 04_04_Complete 04_05_Ablation 04_06_Deep 04_07_Cross 04_08_Post 04_09_Intraday
-  04_10_Fidelity 04_11_Dated 05_Discussion 06_Conclusion 07_Appendix_A_Prompt 08_Appendix_B_Tables 09_Appendix_C_Data)
+  04_10_Fidelity 04_11_Dated 04_12_Open 05_Discussion 06_Conclusion 07_Appendix_A_Prompt 08_Appendix_B_Tables 09_Appendix_C_Data)
 SUPPLEMENT="Regan_Xie_Electronics_Supplement"
 SUPPLEMENT_PARTS=(S1_Series_SQL S2_Run_Ledger)
 

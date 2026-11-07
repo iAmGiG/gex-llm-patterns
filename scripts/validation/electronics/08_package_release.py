@@ -6,8 +6,9 @@ Writes data/backups/gex_llm/release/regan_xie_electronics_tables_<date>.zip with
 answers that a later answer replaced, a README describing them, and SHA-256 checksums. The detections file holds
 exactly the answers the article counts (the latest per natural key, the rule of common.latest_answers that
 05_report.py, 06_condense.py and 07_load_tables.py use); `detections_replaced.parquet` keeps the 1,049 answers that
-the re-run of 2026-11-03 replaced, each with the run that replaced it, so the re-run can be audited.
-The Batch JSONL files are not included: the detections hold every parsed answer and its raw text.
+the re-run of 2026-11-03 replaced and the open-weights answers cut off at the token limit that a retry replaced,
+each with the run that replaced it, so both can be audited.
+The Batch and local JSONL files are not included: the detections hold every parsed answer and its raw text.
 The zip stays out of git (nothing raw goes to the GitHub remote); an author publishes it on Zenodo.
 
 Local paths are made relative to the repository. The package is refused if any text cell still holds an absolute
@@ -75,26 +76,31 @@ Code, condensed tables and result files: https://github.com/iAmGiG/gex-llm-patte
 - `series.parquet`: one row per series, symbol and trading day: the daily GEX number shown to the model.
 - `windows.parquet`: one row per series, symbol and window end: the 30 values as shown to the model, their sha256
   and the verdict of the deterministic rule (`clf_*`).
-- `runs.parquet`: one row per Batch job, pilot or backfilled run: identifiers, file hashes, token counts and cost.
+- `runs.parquet`: one row per Batch job, local run, pilot or backfilled run: identifiers, file hashes, token counts and
+  cost (a local run also records its engine, weights revision and GPU in `run_metadata.local`).
 - `detections.parquet`: one row per natural key (`arm`, `series_key`, `symbol`, `window_end`, `model`,
   `prompt_version`): the answer the article counts. Verdict, reported metrics, reasoning, raw response, parse status.
   An answer that replaced an earlier one names it in `detection_metadata.supersedes`.
-- `detections_replaced.parquet`: the answers that a later answer to the same key replaced ({n_replaced:,} rows,
-  all from the re-run of 2026-11-03 after the database added missing trading days), with `replaced_by_run_id`.
+- `detections_replaced.parquet`: the answers that a later answer to the same key replaced ({n_replaced:,} rows:
+  {n_rerun:,} replaced by the re-run of 2026-11-03 after the database added missing trading days, and {n_retry:,}
+  open-weights answers cut off at the limit of 4,000 completion tokens and replaced by a retry at 8,000), with
+  `replaced_by_run_id`.
   They are kept for audit and are not counted anywhere in the article.
 
 The current answer of a key is the one with the latest `created_at`; an answer without one (stored before the
 column existed) is dated by its run's `ingested_at`. Join detections to windows on `series_key` (for arm
 `intraday_spy` the windows are `intraday_t0`), `symbol` and `window_end`. The arm `r1_o4mini` holds the published
 o4-mini answers; the 64 answers flagged `detection_metadata.recovered_2026` are not part of the published result.
-Repeats (test-retest) are stored as arms ending in `#rep1`. The series keys and arms are defined in Tables 1 and 3
+Repeats (test-retest) are stored as arms ending in `#rep1`. Arms that begin with `oss_` hold the answers of the
+open-weights model gpt-oss-20b, run locally with vLLM at a pinned revision; the rest of their name is the gpt-6-luna
+arm that answered the same windows. The series keys and arms are defined in Tables 1 and 3
 of the article, and the column definitions are in `scripts/validation/electronics/sql/gex_llm_regime_schema.sql`
 of the repository. Paths in `runs` are relative to the repository root.
 
 ## What is not here
 
 The raw option chains are not included: they come from a licensed vendor and are not redistributed. The series keep
-daily aggregates only. The verbatim Batch input and output files are not included either.
+daily aggregates only. The verbatim Batch and local input and output files are not included either.
 
 ## Note on two series
 
@@ -170,6 +176,19 @@ def split_detections(detections: pd.DataFrame, run_times: Dict) -> Tuple[pd.Data
     return current, replaced
 
 
+def retry_runs(runs: pd.DataFrame) -> set:
+    """run_ids of the retry runs (run_metadata.retry_of, written by 04_llm_runner.py retry)."""
+    found = set()
+    for run_id, meta in zip(runs["run_id"], runs["run_metadata"]):
+        if isinstance(meta, (bytes, bytearray)):
+            meta = meta.decode()
+        if isinstance(meta, str):
+            meta = json.loads(meta) if meta else {}
+        if isinstance(meta, dict) and meta.get("retry_of"):
+            found.add(run_id)
+    return found
+
+
 def parquet_bytes(frame: pd.DataFrame, order: List[str]) -> bytes:
     buffer = io.BytesIO()
     frame.sort_values([c for c in order if c in frame.columns], kind="stable").reset_index(drop=True).to_parquet(
@@ -200,7 +219,10 @@ def main(argv=None) -> int:
         files.append((f"{name}.parquet", data))
         listing.append(f"| `{name}.parquet` | {len(frame):,} | {len(data) / 1e6:.1f} MB |")
     table = "| File | Rows | Size |\n|---|---|---|\n" + "\n".join(listing)
-    readme = README.format(table=table, n_replaced=len(tables["detections_replaced"])).encode()
+    replaced = tables["detections_replaced"]
+    n_retry = int(replaced["replaced_by_run_id"].isin(retry_runs(tables["runs"])).sum())
+    readme = README.format(table=table, n_replaced=len(replaced), n_rerun=len(replaced) - n_retry,
+                           n_retry=n_retry).encode()
     sums = [f"{hashlib.sha256(readme).hexdigest()}  README.md"]
     target = args.out / f"regan_xie_electronics_tables_{date.today():%Y%m%d}.zip"
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:

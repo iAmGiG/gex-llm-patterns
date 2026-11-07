@@ -37,8 +37,10 @@ SERIES_OF_ARMS = {"jan2026_phase4a", "old_bs", "new_full", "new_ex0dte"}  # SPY 
 
 
 def spy_arms() -> List[str]:
-    """Registered SPY arms that call a model on a daily series (registry order); the intraday check has its own figure."""
-    return [a.key for a in theme.common.ARMS.values() if a.llm and a.symbol == SYMBOL and a.series_key in SERIES_OF_ARMS]
+    """Registered gpt-6-luna SPY arms on a daily series (registry order); the intraday check has its own figure, and the
+    open-weights arms (D-29) are reported in Section 4.12, not here."""
+    return [a.key for a in theme.common.ARMS.values() if a.llm and a.symbol == SYMBOL and a.series_key in SERIES_OF_ARMS
+            and theme.common.arm_model(a) == theme.common.MODEL]
 
 
 def required_arms() -> List[str]:

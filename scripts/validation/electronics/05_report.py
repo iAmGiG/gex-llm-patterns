@@ -1223,7 +1223,8 @@ def bridge_gate(bridge: List[Dict[str, Any]], incl: List[Dict[str, Any]]) -> Opt
     ``met`` is None, not False, when kappa is undefined (one rater is constant over all pairs); ``agree_pct`` is then
     the number to read.  The same comparison with the recovered answers added is reported next to it.
     """
-    primary = [b for b in bridge if b["ref_arm"] == BRIDGE_REFERENCE_ARM and arm_role(b["other_arm"]) == "primary"]
+    primary = [b for b in bridge if b["ref_arm"] == BRIDGE_REFERENCE_ARM and arm_role(b["other_arm"]) == "primary"
+               and b["other_model"] == common.MODEL]  # the gate is the gpt-6-luna bridge; open-weights arms are descriptive
     if not primary:
         return None
     best = max(primary, key=lambda b: b["n_pairs"])
@@ -1270,6 +1271,17 @@ def bridge_pairs(parsed: pd.DataFrame) -> Iterator[Tuple[str, pd.DataFrame, pd.D
                     yield comparison, ref_group, oth_group
 
 
+OPEN_ARM_PREFIX = "oss_"  # an open-weights arm is the gpt-6-luna arm of the same name with this prefix (common.ARMS)
+
+
+def model_pair_groups(parsed: pd.DataFrame) -> Iterator[Tuple[str, pd.DataFrame]]:
+    """(gpt-6-luna twin arm, parsed rows) for every primary open-weights arm and symbol (repeats excluded)."""
+    local = parsed[(parsed["arm_role"] == "primary") & parsed["model"].isin(common.LOCAL_MODELS)]
+    for (arm, _model, _series, _symbol), group in local.groupby(["arm", "model", "series_key", "symbol"]):
+        if arm.startswith(OPEN_ARM_PREFIX) and arm[len(OPEN_ARM_PREFIX):] in common.ARMS:
+            yield arm[len(OPEN_ARM_PREFIX):], group
+
+
 def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
     parsed = ctx.data.detections[ctx.data.detections["parsed"]]
     rows: List[Dict[str, Any]] = []
@@ -1295,6 +1307,18 @@ def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
         if result:
             rows += result[0]
             retest.append(result[1])
+    model_pairs: List[Dict[str, Any]] = []
+    for twin_arm, oth_group in model_pair_groups(parsed):
+        ref_group = parsed[(parsed["arm"] == twin_arm) & (parsed["model"] == common.MODEL)
+                           & (parsed["series_key"] == oth_group["series_key"].iloc[0])
+                           & (parsed["symbol"] == oth_group["symbol"].iloc[0])]
+        if ref_group.empty:
+            ctx.warn(f"bridge: open-weights arm {oth_group['arm'].iloc[0]} has no parsed gpt-6-luna twin {twin_arm}")
+            continue
+        result = compare_detections(ctx, "model_pair", ref_group, oth_group, ["symbol", "window_end"])
+        if result:
+            rows += result[0]
+            model_pairs.append(result[1])
     if not rows:
         raise SectionSkipped("no published-o4-mini/luna pairs (r1_o4mini on jan2026_phase4a, r1_p3_o4mini, r1_p4_o4mini) and no "
                              "repeat arms")
@@ -1307,8 +1331,12 @@ def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
         "series_key": BRIDGE_SERIES, "primary_label": "regime_detected",
         "references": [{"arm": arm, "series_key": series_key, "role": "gate" if arm == BRIDGE_REFERENCE_ARM else "descriptive"}
                        for arm, series_key in BRIDGE_REFERENCES],
-        "gate": gate, "bridge": bridge, "bridge_incl_recovered": incl, "test_retest": retest,
+        "gate": gate, "bridge": bridge, "bridge_incl_recovered": incl, "test_retest": retest, "model_pair": model_pairs,
         "notes": ["Pairs are windows parsed in both arms; the classifier label comes from the shared window.",
+                  f"model_pair compares each open-weights arm ({', '.join(sorted(common.LOCAL_MODELS))}, arms "
+                  f"{OPEN_ARM_PREFIX}<arm>, decision D-29) with its gpt-6-luna twin <arm> on the same windows (reference = "
+                  "gpt-6-luna); the open-weights arms are compared with the published answers in bridge as well, for "
+                  "description, and never feed the gate.",
                   f"bridge_incl_recovered repeats the comparison with the answers recovered in 2026 added to the reference "
                   f"(reference arm <arm>{ALL_SUFFIX}); the gate uses the published answers only.",
                   f"Only {BRIDGE_REFERENCE_ARM} on {BRIDGE_SERIES} feeds the gate; r1_p3_o4mini / r1_p4_o4mini (dated Nov-2025 "
@@ -1326,7 +1354,7 @@ def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
         return [{k: b[k] for k in ("ref_arm", "other_arm", "n_pairs", "agree_pct", "kappa", *extra)} for b in blocks]
 
     return {"rows": len(frame), "gate": gate, "bridge": brief(bridge, ("rate_diff_pp", "p_mcnemar_exact")),
-            "bridge_incl_recovered": brief(incl),
+            "bridge_incl_recovered": brief(incl), "model_pair": brief(model_pairs, ("rate_diff_pp", "p_mcnemar_exact")),
             "test_retest": [{k: r[k] for k in ("ref_arm", "other_arm", "n_pairs", "agree_pct", "kappa")} for r in retest]}
 
 
@@ -1403,10 +1431,13 @@ def section_series_comparison(ctx: Context) -> Dict[str, Any]:
 
 # --------------------------------------------------------------------------- shared LLM label lookup
 def primary_llm_labels(ctx: Context, window_series_key: str, symbol: Optional[str] = None) -> pd.DataFrame:
-    """Parsed detections of the registered LLM arm that scored ``window_series_key`` windows (largest arm/model)."""
+    """Parsed gpt-6-luna detections of the registered LLM arm that scored ``window_series_key`` windows (largest arm).
+
+    Only common.MODEL counts: the open-weights arms (D-29) score the same windows, but every section that uses these
+    labels reports the gpt-6-luna result; the open-weights comparison is the model_pair block of bridge_agreement."""
     det = ctx.data.detections
     sel = det[det["parsed"] & (det["repeat_index"] == 0) & (det["arm_role"] == "primary")
-              & (det["window_series_key"] == window_series_key)]
+              & (det["window_series_key"] == window_series_key) & (det["model"] == common.MODEL)]
     if symbol is not None:
         sel = sel[sel["symbol"] == symbol]
     if sel.empty:
@@ -2167,7 +2198,8 @@ def section_reported_vs_computed(ctx: Context) -> Dict[str, Any]:
     basis ``arm``: every parsed answer of an arm that has a stored window (``r1_*`` = the published answers, ``r1_*_all``
     with the recovered ones).  basis ``bridge_pairs``: only the windows parsed by both raters of a bridge comparison
     (published o4-mini against a gpt-6-luna arm on the same series), one row per rater, so the two medians describe the
-    same windows (the 'median reported / computed mean |GEX|' row of the bridge table).
+    same windows (the 'median reported / computed mean |GEX|' row of the bridge table).  The open-weights arms (D-29)
+    appear under basis ``arm`` only: a bridge pair with them would repeat the reference rows on another window set.
     """
     det = ctx.data.detections
     scored = with_recovered_variants(det)
@@ -2179,6 +2211,8 @@ def section_reported_vs_computed(ctx: Context) -> Dict[str, Any]:
                          "model": model, "series_key": series_key, "symbol": symbol, "scope": scope, "year": year,
                          **ratio_summary(sub["avg_magnitude_billions"], sub["clf_avg_magnitude"])})
     for comparison, ref_group, oth_group in bridge_pairs(det[det["parsed"]]):
+        if oth_group["model"].iloc[0] != common.MODEL:
+            continue
         pairs = pair_frame(ref_group, oth_group, ["symbol", "window_end"])
         for scope, year, sub in iter_scopes(pairs, "window_end"):
             for rater, group, column in (("reference", ref_group, "mag_ref"), ("other", oth_group, "mag_oth")):

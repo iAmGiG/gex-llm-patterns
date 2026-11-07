@@ -315,6 +315,11 @@ docs/papers/paper2/jfqa/build.bat
 # verdicts and labels without text, written by scripts/validation/electronics/06_condense.py)
 # and docs/papers/electronics/results/ (the report).
 data/backups/gex_llm/**/*.jsonl
+# open-weights runs (D-29): vLLM's log per chunk stays on disk; a chunk claim exists only while a worker runs it
+data/backups/gex_llm/**/local_*.log
+data/backups/gex_llm/**/claim_*
+# the scratch driver scripts and logs of the parallel workers of 2026-11-07 (kept on disk as a record of the run)
+data/backups/gex_llm/worker_logs/
 data/backups/gex_llm/tables/series/
 data/backups/gex_llm/tables/windows/
 data/backups/gex_llm/tables/detections/

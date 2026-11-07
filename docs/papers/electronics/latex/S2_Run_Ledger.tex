@@ -1,7 +1,7 @@
 \section{Run Ledger}
 \label{sup:ledger}
 
-Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every model run of the study: the identifiers, the token usage and the cost. The arms are defined in Section~3.6 of the article.
+Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every Batch job and the backfilled runs of the study: the identifiers, the token usage and the cost. Table~\ref{tab:ledger3} lists the local runs of the open-weights model gpt-oss-20b (Section~3.5 of the article), which cost nothing. The arms are defined in Section~3.6 of the article.
 
 % src: cost_ledger.csv, rows with counts_toward_budget = True (column recomputed_cost_usd; it equals est_cost_usd in every row); total equals cost_ledger.yaml budget.spent_usd (10.020749); the eight rows with the timestamp 20261103T04... are the re-requests of 2026-11-03; backfill rows budget_class = backfill
 \begin{table}[H]
@@ -79,6 +79,43 @@ Total (this study) & 35{,}833 & 68{,}576{,}609 & 26{,}324{,}356 & 10.02 & \\
 \path{r1_o4mini_phase4a_20260104} & 1{,}476 & 2{,}655{,}324 & 2{,}928{,}992 & 7.90 & backfill \\
 \path{r1_p3_o4mini_20251120} & 223 & 414{,}557 & 405{,}127 & 1.12 & backfill \\
 \path{r1_p4_o4mini_20251120} & 223 & 414{,}557 & 325{,}436 & 0.94 & backfill \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% src: cost_ledger.csv rows with model = gpt-oss-20b (n_requests, prompt_tokens, completion_tokens, status); runs parquet run_metadata.local.seconds (GPU minutes) and run_metadata.retry_of (the retry runs)
+\begin{table}[H]
+\centering
+\caption{Run ledger (continued): the local runs of gpt-oss-20b, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each. The GPU minutes include the start of the engine and depend on the load that other users put on the shared GPU (the two longest runs shared their GPU with other jobs). The four runs marked \emph{retry} request again the answers that ended at the limit of 4{,}000 completion tokens, at 8{,}000 tokens; their answers replace the cut-off ones. The run with the timestamp 20261107T205228Z holds six test-retest repeats that a second generation step added while other chunks of the arm were still running, so \ident{oss_ex0dte_spy} carries 241 repeats instead of 235.}
+\label{tab:ledger3}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & GPU minutes & Status \\
+\midrule
+\path{pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0} & 40 & 74{,}400 & 66{,}286 & 4.1 & ingested \\
+\path{oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0} & 775 & 1{,}441{,}500 & 1{,}657{,}168 & 114.8 & ingested \\
+\path{oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c1} & 775 & 1{,}441{,}500 & 980{,}476 & 28.3 & ingested \\
+\path{oss_bridge_jan_gpt-oss-20b_local_20261107T222800Z_c0} & 3 & 5{,}580 & 6{,}554 & 2.6 & retry \\
+\path{oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c0} & 1{,}232 & 2{,}291{,}520 & 2{,}260{,}858 & 46.1 & ingested \\
+\path{oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c1} & 1{,}232 & 2{,}291{,}520 & 2{,}501{,}916 & 27.7 & ingested \\
+\path{oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c2} & 1{,}231 & 2{,}289{,}660 & 2{,}504{,}596 & 26.8 & ingested \\
+\path{oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c3} & 1{,}231 & 2{,}289{,}660 & 2{,}559{,}220 & 27.0 & ingested \\
+\path{oss_full_spy_gpt-oss-20b_local_20261107T222803Z_c0} & 7 & 13{,}020 & 14{,}541 & 2.7 & retry \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c0} & 1{,}232 & 2{,}291{,}520 & 2{,}157{,}801 & 64.7 & ingested \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c1} & 1{,}232 & 2{,}291{,}520 & 2{,}401{,}169 & 60.4 & ingested \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c2} & 1{,}231 & 2{,}289{,}660 & 2{,}322{,}398 & 122.7 & ingested \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c3} & 1{,}231 & 2{,}289{,}660 & 2{,}406{,}970 & 44.4 & ingested \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T205228Z_c0} & 6 & 11{,}160 & 8{,}319 & 1.8 & ingested \\
+\path{oss_ex0dte_spy_gpt-oss-20b_local_20261107T223708Z_c0} & 2 & 3{,}720 & 3{,}635 & 1.7 & retry \\
+\path{oss_p34_obf_2024_gpt-oss-20b_local_20261107T181626Z_c0} & 234 & 435{,}240 & 325{,}779 & 8.7 & ingested \\
+\path{oss_p34_dated_2024_gpt-oss-20b_local_20261107T182922Z_c0} & 234 & 449{,}280 & 378{,}043 & 5.4 & ingested \\
+\path{oss_p34_dated_2024_gpt-oss-20b_local_20261107T222807Z_c0} & 2 & 3{,}840 & 3{,}684 & 2.3 & retry \\
+\path{oss_p34_obf_2020_gpt-oss-20b_local_20261107T183458Z_c0} & 234 & 435{,}240 & 263{,}783 & 4.3 & ingested \\
+\path{oss_p34_dated_2020_gpt-oss-20b_local_20261107T183929Z_c0} & 234 & 449{,}280 & 292{,}327 & 4.3 & ingested \\
+\midrule
+Total (local) & 12{,}398 & 23{,}088{,}480 & 23{,}115{,}523 & 600.7 & \\
 \bottomrule
 \end{tabular}
 \end{table}

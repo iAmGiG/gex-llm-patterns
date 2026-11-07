@@ -98,7 +98,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     frame = inputs.csv("post_publication_2026.csv", CORE_COLUMNS)
     frame["window_end"] = pd.to_datetime(frame["window_end"])
     frame["clf_should_detect"] = figllm.as_flag(frame["clf_should_detect"])
-    flag_columns = [c for c in frame.columns if c.startswith("llm_") and not c.startswith("llm_type_")]
+    # gpt-6-luna arms only: an open-weights arm (D-29) scores the same windows and would tie on the count
+    allowed = set(figllm.registered_llm_arms())
+    flag_columns = [c for c in frame.columns if c.startswith("llm_") and not c.startswith("llm_type_")
+                    and c[len("llm_"):] in allowed]
     for column in flag_columns:
         frame[column] = figllm.as_flag(frame[column])
 

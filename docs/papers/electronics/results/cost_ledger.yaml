@@ -21,6 +21,16 @@ pricing_usd_per_mtok:
     batch:
       input: 0.55
       output: 2.2
+  gpt-oss-20b:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
 budget:
   rule: a run is spend when common.counts_toward_budget(run) holds (model gpt-6-luna, an LLM arm or an arm outside
     the registry, no run_metadata 'backfill') and it has left the machine (status not 'generated'); the backfill
@@ -39,7 +49,27 @@ budget:
     - r1_p3_o4mini_20251120
     - r1_p4_o4mini_20251120
     other_model_usd: 0.0
-    other_model_runs: []
+    other_model_runs:
+    - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0
+    - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c1
+    - oss_bridge_jan_gpt-oss-20b_local_20261107T222800Z_c0
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c0
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c1
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c2
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c3
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T205228Z_c0
+    - oss_ex0dte_spy_gpt-oss-20b_local_20261107T223708Z_c0
+    - oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c0
+    - oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c1
+    - oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c2
+    - oss_full_spy_gpt-oss-20b_local_20261107T184402Z_c3
+    - oss_full_spy_gpt-oss-20b_local_20261107T222803Z_c0
+    - oss_p34_dated_2020_gpt-oss-20b_local_20261107T183929Z_c0
+    - oss_p34_dated_2024_gpt-oss-20b_local_20261107T182922Z_c0
+    - oss_p34_dated_2024_gpt-oss-20b_local_20261107T222807Z_c0
+    - oss_p34_obf_2020_gpt-oss-20b_local_20261107T183458Z_c0
+    - oss_p34_obf_2024_gpt-oss-20b_local_20261107T181626Z_c0
+    - pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0
 totals:
   counted:
     runs: 43
@@ -58,21 +88,21 @@ totals:
     est_cost_usd: 9.967462
     cost_per_request_usd: 0.005186
   other_model:
-    runs: 0
-    n_requests: 0
-    prompt_tokens: 0
-    completion_tokens: 0
-    reasoning_tokens: 0
+    runs: 20
+    n_requests: 12398
+    prompt_tokens: 23088480
+    completion_tokens: 23115523
+    reasoning_tokens: 20636890
     est_cost_usd: 0.0
-    cost_per_request_usd: null
+    cost_per_request_usd: 0.0
   all_stored_runs:
-    runs: 46
-    n_requests: 37755
-    prompt_tokens: 72061047
-    completion_tokens: 29983911
-    reasoning_tokens: 22907849
+    runs: 66
+    n_requests: 50153
+    prompt_tokens: 95149527
+    completion_tokens: 53099434
+    reasoning_tokens: 43544739
     est_cost_usd: 19.988211
-    cost_per_request_usd: 0.000529419
+    cost_per_request_usd: 0.000398545
 by_arm:
 - arm: bridge_jan
   runs: 2
@@ -162,6 +192,62 @@ by_arm:
   est_cost_usd: 0.016546
   est_cost_usd_counted: 0.016546
   cost_per_request_usd: 0.000306414
+- arm: oss_bridge_jan
+  runs: 3
+  n_requests: 1553
+  prompt_tokens: 2888580
+  completion_tokens: 2644198
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_ex0dte_spy
+  runs: 6
+  n_requests: 4934
+  prompt_tokens: 9177240
+  completion_tokens: 9300292
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_full_spy
+  runs: 5
+  n_requests: 4933
+  prompt_tokens: 9175380
+  completion_tokens: 9841131
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_p34_dated_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 449280
+  completion_tokens: 292327
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_p34_dated_2024
+  runs: 2
+  n_requests: 236
+  prompt_tokens: 453120
+  completion_tokens: 381727
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_p34_obf_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 435240
+  completion_tokens: 263783
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: oss_p34_obf_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 435240
+  completion_tokens: 325779
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: p34_dated_2020
   runs: 1
   n_requests: 234
@@ -202,6 +288,14 @@ by_arm:
   est_cost_usd: 0.02166
   est_cost_usd_counted: 0.02166
   cost_per_request_usd: 0.000541488
+- arm: pilot_oss_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 74400
+  completion_tokens: 66286
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: r1_o4mini
   runs: 1
   n_requests: 1476
@@ -235,6 +329,14 @@ by_model:
   est_cost_usd: 10.020749
   est_cost_usd_counted: 10.020749
   cost_per_request_usd: 0.000279651
+- model: gpt-oss-20b
+  runs: 20
+  n_requests: 12398
+  prompt_tokens: 23088480
+  completion_tokens: 23115523
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - model: o4-mini
   runs: 2
   n_requests: 446
@@ -260,6 +362,14 @@ by_mode:
   est_cost_usd: 19.966552
   est_cost_usd_counted: 9.99909
   cost_per_request_usd: 0.000529406
+- mode: local
+  runs: 20
+  n_requests: 12398
+  prompt_tokens: 23088480
+  completion_tokens: 23115523
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - mode: sync
   runs: 1
   n_requests: 40
@@ -270,17 +380,17 @@ by_mode:
   cost_per_request_usd: 0.000541488
 by_status:
 - status: ingested
-  runs: 46
-  n_requests: 37755
-  prompt_tokens: 72061047
-  completion_tokens: 29983911
+  runs: 66
+  n_requests: 50153
+  prompt_tokens: 95149527
+  completion_tokens: 53099434
   est_cost_usd: 19.988211
   est_cost_usd_counted: 10.020749
-  cost_per_request_usd: 0.000529419
+  cost_per_request_usd: 0.000398545
 runs_without_est_cost: []
 reconciliation:
-  runs_compared_with_detection_usage: 46
-  runs_with_token_gap: 18
+  runs_compared_with_detection_usage: 66
+  runs_with_token_gap: 26
   max_abs_cost_gap_usd: 0.0
   note: 'gaps compare the run totals with the sum over that run''s detection rows; cost_gap_usd compares est_cost_usd
     with the token usage priced by common.PRICING_USD_PER_MTOK. A run whose answers were later replaced (the 2026-11-03

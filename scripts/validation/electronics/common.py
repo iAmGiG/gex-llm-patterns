@@ -217,11 +217,22 @@ class Arm:
     end: Optional[date] = None
     llm: bool = True  # False = classifier/backfill only, never submitted to a model
     window_series_key: Optional[str] = None  # windows are read from this series when it differs (composites)
+    model: Optional[str] = None  # None = MODEL (gpt-6-luna through the Batch API); OPEN_MODEL = local open-weights run
 
 
 def arm_window_series(arm: "Arm") -> str:
     """Series key under which the arm's windows are stored (composites differ from the detection series)."""
     return arm.window_series_key or arm.series_key
+
+
+def arm_model(arm: "Arm") -> str:
+    """Model that answers the arm's requests: MODEL unless the arm names another."""
+    return arm.model or MODEL
+
+
+def is_local_model(model: str) -> bool:
+    """True for a model that runs on this machine (vLLM, 04_llm_runner.py 'local'), never through the OpenAI API."""
+    return model in LOCAL_MODELS
 
 
 ARMS: Dict[str, Arm] = {
@@ -248,6 +259,22 @@ ARMS: Dict[str, Arm] = {
     "intraday_spy": Arm("intraday_spy", "intraday_late", "SPY", 3, "Late-session intraday snapshot at T+0 vs EOD, SPY 2026",
                         window_series_key="intraday_t0"),
     "bridge_old": Arm("bridge_old", "old_bs", "SPY", 4, "Optional: pre-rebuild daily-table convention, SPY"),
+    # Open-weights arms (D-29): the same windows, prompt and request body as their gpt-6-luna twins, answered by
+    # gpt-oss-20b with fixed weights on a local GPU, so that the arm can be re-run after the API model is retired.
+    "oss_bridge_jan": Arm("oss_bridge_jan", "jan2026_phase4a", "SPY", 5,
+                          "gpt-oss-20b (open weights) on the exact published inputs: bridge to o4-mini", model="gpt-oss-20b"),
+    "oss_full_spy": Arm("oss_full_spy", "new_full", "SPY", 5, "gpt-oss-20b on the complete SPY series, 2008-2026",
+                        model="gpt-oss-20b"),
+    "oss_ex0dte_spy": Arm("oss_ex0dte_spy", "new_ex0dte", "SPY", 5, "gpt-oss-20b on the 0DTE-excluded SPY series, 2008-2026",
+                          model="gpt-oss-20b"),
+    "oss_p34_obf_2024": Arm("oss_p34_obf_2024", "p3_2024", "SPY", 5, "gpt-oss-20b, Phase 3 inputs with Day-T labels",
+                            model="gpt-oss-20b"),
+    "oss_p34_dated_2024": Arm("oss_p34_dated_2024", "p3_2024_dated", "SPY", 5, "gpt-oss-20b, Phase 3 inputs with the dates",
+                              model="gpt-oss-20b"),
+    "oss_p34_obf_2020": Arm("oss_p34_obf_2020", "p4_2020", "SPY", 5, "gpt-oss-20b, Phase 4 inputs with Day-T labels",
+                            model="gpt-oss-20b"),
+    "oss_p34_dated_2020": Arm("oss_p34_dated_2020", "p4_2020_dated", "SPY", 5, "gpt-oss-20b, Phase 4 inputs with the dates",
+                              model="gpt-oss-20b"),
 }
 
 
@@ -268,11 +295,28 @@ RESPONSE_FORMAT = "json_schema"  # the one protocol change vs Phase 4A; disclose
 BATCH_COMPLETION_WINDOW = "24h"
 R1_MODEL = "o4-mini-2025-04-16"
 
+# Open-weights model (D-29), run locally with vLLM's offline batch runner on the same request files. The weights are
+# pinned to one Hugging Face revision; vLLM lives in its own conda env (never in AutoGex, which the monitors share).
+OPEN_MODEL = "gpt-oss-20b"  # served model name, stored as runs.model / detections.model
+OPEN_MODEL_REPO = "openai/gpt-oss-20b"  # Apache-2.0, released 2025-08-04
+OPEN_MODEL_REVISION = "6cee5e81ee83917806bbde320786a8fb61efebee"
+LOCAL_MODELS = frozenset({OPEN_MODEL})
+VLLM_VERSION = "0.32.0"
+OPENWEIGHTS_PYTHON = Path.home() / "miniconda3" / "envs" / "openweights" / "bin" / "python"
+LOCAL_MAX_MODEL_LEN = 8192  # prompt about 1,900 tokens + MAX_COMPLETION_TOKENS (RETRY cap needs a larger value)
+LOCAL_GPU_MEMORY_UTILIZATION = 0.22  # share of one 80 GB A100: 13.8 GiB weights + about 5 GiB KV cache (152k tokens,
+# 18 concurrent requests at 8,192 tokens; smoke test 2026-11-07); the GPUs are shared with other users
+LOCAL_ENGINE_ARGS: Tuple[str, ...] = ()  # further vLLM engine arguments, recorded with every local run
+# FlashInfer's top-k/top-p sampler compiles a kernel at start-up; the PyTorch sampler needs no compiler (no top-k or
+# top-p is set, so sampling is plain temperature sampling at the model's default temperature 1.0 either way)
+LOCAL_ENGINE_ENV: Dict[str, str] = {"VLLM_USE_FLASHINFER_SAMPLER": "0"}
+
 # USD per 1M tokens: (input, output). Batch is 50% of standard.
 PRICING_USD_PER_MTOK: Dict[str, Dict[str, Tuple[float, float]]] = {
     "gpt-6-luna": {"standard": (0.10, 0.50), "batch": (0.05, 0.25)},
     "o4-mini": {"standard": (1.10, 4.40), "batch": (0.55, 2.20)},
     "o4-mini-2025-04-16": {"standard": (1.10, 4.40), "batch": (0.55, 2.20)},
+    "gpt-oss-20b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},  # local GPU, no API charge
 }
 
 REGIME_TYPES = ("persistent_positive", "persistent_negative", "transitional", "low_conviction")
