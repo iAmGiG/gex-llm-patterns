@@ -38,7 +38,9 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 classifier on those windows), metrics_agree_pct, sign_flips_exact_pct,
                                 median_ratio_reported_to_computed, n_detect_positive and n_detect_negative (the
                                 detections by regime sign), n_both_detect and type_agree_pct (LLM rows: windows that
-                                the model and the classifier both detect, and the share of them with the same type).
+                                the model and the classifier both detect, and the share of them with the same type),
+                                n_shape_ok and max_mean_abs_gex_bn (classifier rows: windows meeting the persistence
+                                and stability criteria whatever their magnitude, and the largest window mean |GEX|).
     detection_by_year_wide.csv  derived copy of the yearly rows in the shape of the written spec (no figure reads it):
                                 series_key, symbol, year, n, clf_rate, clf_ci_lo, clf_ci_hi, arm, model, n_parsed,
                                 llm_rate, llm_ci_lo, llm_ci_hi, agree_pct, kappa, arm_role, n_windows, n_compared,
@@ -946,11 +948,24 @@ DETECTION_COLUMNS = [
     "n_windows", "n_parsed", "n", "n_detect", "rate_pct", "ci_lo_pct", "ci_hi_pct", "n_indep_30d",
     "mean_abs_gex_bn", "n_compared", "clf_rate_matched_pct", "clf_mean_abs_gex_bn_matched",
     "agree_pct", "kappa", "metrics_agree_pct", "sign_flips_exact_pct", "median_ratio_reported_to_computed",
-    "n_detect_positive", "n_detect_negative", "n_both_detect", "type_agree_pct",
+    "n_detect_positive", "n_detect_negative", "n_both_detect", "type_agree_pct", "n_shape_ok", "max_mean_abs_gex_bn",
 ]
 DETECTION_INT_COLUMNS = ["year", "n_windows", "n_parsed", "n", "n_detect", "n_indep_30d", "n_compared",
-                         "n_detect_positive", "n_detect_negative", "n_both_detect"]
+                         "n_detect_positive", "n_detect_negative", "n_both_detect", "n_shape_ok"]
 POSITIVE, NEGATIVE = "persistent_positive", "persistent_negative"
+
+
+def shape_ok(frame: pd.DataFrame) -> pd.Series:
+    """Windows that meet the persistence and stability criteria of the classifier, whatever their magnitude.
+
+    The same comparisons as RegimeClassifier._classify_regime_type (int(30 * persistence) days of one sign, at most
+    max_sign_flips flips) on the stored counts, so the share shows the rate the rule would give without the fixed
+    dollar criterion.
+    """
+    clf = common.classifier()
+    min_days = int(30 * clf.persistence_threshold)
+    persistent = (frame["clf_positive_days"] >= min_days) | (frame["clf_negative_days"] >= min_days)
+    return persistent & (frame["clf_sign_flips"] <= clf.max_sign_flips)
 
 
 def sign_counts(detected: pd.Series, regime_type: pd.Series) -> Dict[str, int]:
@@ -1002,6 +1017,8 @@ def classifier_rows(win: pd.DataFrame) -> List[Dict[str, Any]]:
                 **sign_counts(sub["clf_should_detect"], sub["clf_regime_type"]),
                 "n_indep_30d": independent_count(sub),
                 "mean_abs_gex_bn": sub["clf_avg_magnitude"].mean() / 1e9,
+                "n_shape_ok": int(shape_ok(sub).sum()),
+                "max_mean_abs_gex_bn": sub["clf_avg_magnitude"].max() / 1e9,
             })
     return rows
 
@@ -2258,7 +2275,8 @@ CAVEATS = (
 CONTRACT = {
     "detection_by_year.csv": "long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct, ci_lo_pct, "
                              "ci_hi_pct); arm r1_o4mini = published subset, r1_o4mini_all = with the recovered windows; "
-                             "n_detect_positive / n_detect_negative split n_detect by regime sign",
+                             "n_detect_positive / n_detect_negative split n_detect by regime sign; n_shape_ok = classifier windows meeting "
+                             "persistence and stability whatever the magnitude",
     "detection_by_year_wide.csv": "derived copy of the yearly rows in the shape of the written spec: clf_rate, clf_ci_lo, "
                                   "clf_ci_hi, llm_rate, llm_ci_lo, llm_ci_hi as FRACTIONS in [0, 1]; agree_pct in percent "
                                   "(no figure reads it)",
@@ -2281,6 +2299,22 @@ def coverage(df: pd.DataFrame, keys: Sequence[str], date_column: str, flag_colum
     return grouped.to_dict("records")
 
 
+def floor_years(win: pd.DataFrame, threshold: float, whole: set) -> List[Dict[str, Any]]:
+    """Per (series, symbol) outside ``whole``: the years whose largest window mean |GEX| stays below ``threshold``."""
+    year = pd.to_datetime(win["window_end"]).dt.year
+    peak = win.assign(year=year).groupby(["series_key", "symbol", "year"])["clf_avg_magnitude"].max()
+    out = []
+    for (series_key, symbol), years in peak.groupby(level=["series_key", "symbol"], sort=True):
+        if (series_key, symbol) in whole:
+            continue
+        below = years[years < threshold]
+        if len(below):
+            out.append({"series_key": series_key, "symbol": symbol,
+                        "years": [int(y) for y in below.index.get_level_values("year")],
+                        "max_window_mean_abs_gex_bn": float(below.max() / 1e9)})
+    return out
+
+
 def classifier_diagnostics(win: pd.DataFrame) -> Dict[str, Any]:
     """Thresholds in force and the (series, symbol) groups where no window can reach the magnitude threshold."""
     if win.empty:
@@ -2297,6 +2331,10 @@ def classifier_diagnostics(win: pd.DataFrame) -> Dict[str, Any]:
                           "max_window_mean_abs_gex_bn": r.max_mean_abs_gex_usd / 1e9} for r in floor.itertuples()],
         "floor_effect_note": "no window of these groups reaches the fixed magnitude threshold, so the classifier "
                              "detects nothing there in any year (pre-registered thresholds; not a modelling result)",
+        "floor_years": floor_years(win, clf.magnitude_threshold, set(zip(floor["series_key"], floor["symbol"]))),
+        "floor_years_note": "years (by window end) in which no window of a series and symbol reaches the fixed "
+                            "magnitude threshold, for the groups that reach it in other years; GEX grows with the "
+                            "square of the price, so a fixed dollar threshold binds in the early years",
         "clf_versions": sorted(win["clf_version"].dropna().unique()),
         "window_rules": {f"{k[0]}:{k[1]}": int(v) for k, v in win.groupby(["series_key", "window_rule"]).size().items()},
     }
