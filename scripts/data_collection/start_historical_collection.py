@@ -12,7 +12,9 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-from gex_db_infrastructure.data_sources.historical_collector import HistoricalOptionsCollector
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repository root, for the src.* imports
+
+from src.data_sources.historical_collector import HistoricalOptionsCollector  # noqa: E402
 
 
 def setup_logging(log_level="INFO", log_file=None):

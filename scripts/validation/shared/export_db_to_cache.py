@@ -15,7 +15,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repository root, for the src.* imports
+from src.cache.unified_cache import UnifiedCacheManager  # noqa: E402
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent

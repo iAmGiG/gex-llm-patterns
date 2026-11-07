@@ -19,9 +19,9 @@ from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 
-from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
-from gex_db_infrastructure.cache.unified_cache import UnifiedCacheManager
+from src.cache.unified_cache import UnifiedCacheManager
 from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 from src.utils.date_utils import now_iso, today_str
 
@@ -91,7 +91,9 @@ class HistoricalOptionsCollector:
             self.logger.info("Using legacy pickle storage")
 
         # Initialize API client (shares cache if using pickle)
-        self.client = AlphaVantageGEXClient(cache_manager=self.cache if not use_sqlite else None)
+        # The package client no longer defaults to a pickle cache (gex-database-infrastructure 2.0.0); pass the local one
+        # so fetch_underlying_price keeps reading .cache/market_data as before (#269)
+        self.client = AlphaVantageGEXClient(cache_manager=self.cache if self.cache is not None else UnifiedCacheManager())
 
         # Collection statistics
         self.stats = {

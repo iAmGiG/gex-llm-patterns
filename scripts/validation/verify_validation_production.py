@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import logging
 
-from gex_db_infrastructure.cache.sqlite_options_manager import SQLiteOptionsManager
+from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
@@ -30,7 +30,7 @@ def test_validation_on_real_data():
     # Initialize clients
     print("\n[1] Initializing Alpha Vantage client and SQLite manager...")
     av_client = AlphaVantageGEXClient()
-    db_manager = SQLiteOptionsManager(# db_path=".cache/options_historical.db"  # Migrated to PostgreSQL, enable_validation=True)
+    db_manager = SQLiteOptionsManager(enable_validation=True)  # db_path default .cache/options_historical.db (migrated to PostgreSQL)
 
     # Fetch real data
     symbol = "SPY"
