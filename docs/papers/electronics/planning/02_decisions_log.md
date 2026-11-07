@@ -43,6 +43,7 @@
 | D-24 | 2026-11-03 | Missing trading days | 2026-05-06 fill and spot-less repair upstream; rebuild and re-run of changed windows; NYSE-calendar flag |
 | D-25 | 2026-11-04 | Code audit | Exact block bootstrap up to ten quarters; one Methods sentence for the Sandy closure; deposit holds current plus replaced answers |
 | D-26 | 2026-11-07 | Reader-facing additions | Sign of the detected regimes, the role of the LLM against the rule, labels not price effects, a leg check among the practices |
+| D-27 | 2026-11-07 | Nominal floor and positioning | Pre-2014 zeros read as a floor of the fixed dollar threshold, with size-free shares; sign convention stated as an imputation; 'must' softened |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -351,6 +352,21 @@
   - Implications: the lineage check starts with the legs of a net exposure (call leg persistent by construction; the published inputs one-signed for 565 days).
 - Outcome: report re-run (every other results file byte-identical; the database and parquet sources give the same CSVs), figure images byte-identical (five manifests updated), manuscript parts 04_02, 04_04, 05 and 06 changed; added to the Overleaf hold set.
 
+### D-27 Nominal floor over time and the positioning assumption (2026-11-07)
+
+- Date: 2026-11-07. Decided by Chris, after a reading from the side of an Austrian-school critic (nominal magnitudes compared across years of monetary expansion, aggregate constructs, 'must' where agents choose).
+- Facts:
+  - Before 2014 no SPY window reaches the USD 5B mean on any of the three series (largest 30-day mean 3.91B `new_full`, 3.65B `new_ex0dte`, 4.03B `old_bs`); `new_ex0dte` also stays below it in 2021 (4.74B). 772 of the 1,482 `new_full` windows ending 2008-2013 meet the persistence and stability criteria (703 negative) and fail on magnitude alone. The manuscript read the zero as no detection 'including the financial crisis' and drew on it in Discussion 5.1.
+  - GEX scales with the square of the price; SPY's yearly mean price rose from USD 94.98 (2009) to 724.03 (2026), 58-fold in the square.
+  - Without the magnitude criterion (same comparisons as `RegimeClassifier._classify_regime_type`; checked against the classifier with the magnitude threshold off), the share of windows with a persistent sign falls: SPY 52.1% (2008-13), 41.9%, 28.8%, 12.0% (2024-25), 11.3% (2026); QQQ 51.0% (2011-13) to 13.4%; IWM 80.0% to 35.7%. From 2023 the criterion does not bind for SPY, so the headline comparison is unaffected.
+  - Equation 1 assigns the sign by option type (dealers long calls, short puts); open interest does not record the dealer side, and the paper did not say so. The Background said market makers 'must' keep books delta-neutral.
+- Decisions:
+  - Section 4.6 states the floor, the 772 windows and the size-free shares; its gap paragraph no longer reads 2008-2013 as a test of the ablation; the fig08 caption names the floor. Discussion 5.1 restates the pre-2020 reading; a threat covers thresholds fixed over time; the Conclusion's scope names it.
+  - Background and a threat state that GEX imputes dealer positions; the Conclusion's scope names it.
+  - Background: 'Market makers who hedge their books toward delta-neutral turn accumulated gamma into hedging flows'.
+  - Counts come from new `detection_by_year.csv` columns `n_shape_ok` and `max_mean_abs_gex_bn` and from `report.yaml` diagnostics.floor_years. No new experiment, no model arm.
+- Outcome: report re-run (other results files byte-identical), figure images byte-identical (five manifests updated), parts 02, 04_06, 05 and 06 changed.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -462,3 +478,4 @@
 - 2026-11-03: D-24 added (missing trading days; rebuild after the database repair; NYSE-calendar flag).
 - 2026-11-03 (evening): D-24 outcome recorded (rebuild, re-run, reload, manuscript numbers).
 - 2026-11-07: D-26 added (sign of the detected regimes, role of the LLM, labels not price effects, leg check).
+- 2026-11-07: D-27 added (nominal floor over time with size-free shares, sign convention as an imputation, 'must' softened).
