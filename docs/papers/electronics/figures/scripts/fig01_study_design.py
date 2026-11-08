@@ -93,12 +93,12 @@ def wrap_items(items: Sequence[str], separator: str, fig, width_in: float, fonts
     return "\n".join(lines + [current])
 
 
-OPEN_GAP = 0.06  # inches between the gpt-6-luna arms and the open-weights group (D-29)
+OPEN_GAP = 0.06  # inches between the gpt-6-luna arms and the open-weights groups (D-29, D-30)
 
 
-def arm_summary(coverage: pd.DataFrame) -> Tuple[List[Dict[str, Any]], int, Dict[str, Any]]:
-    """Registered arms with rows (registry order), the number of other requests (pilot, repeats), and the open-weights
-    group (D-29): its arms, pilot and repeats are drawn as one line, so they are counted apart from the rest."""
+def arm_summary(coverage: pd.DataFrame) -> Tuple[List[Dict[str, Any]], int, List[Dict[str, Any]]]:
+    """Registered arms with rows (registry order), the number of other requests (pilot, repeats), and one group per
+    open-weights model (D-29, D-30): its arms, pilot and repeats are drawn as one line, so they are counted apart."""
     local = coverage["model"].isin(theme.common.LOCAL_MODELS)
     open_rows = coverage[local]
     coverage = coverage[~local]
@@ -106,9 +106,10 @@ def arm_summary(coverage: pd.DataFrame) -> Tuple[List[Dict[str, Any]], int, Dict
     arms = [{"key": a, "label": theme.arm_label(a), "rows": int(coverage.loc[coverage["arm"] == a, "rows"].sum()),
              "models": sorted(coverage.loc[coverage["arm"] == a, "model"].unique())} for a in registered]
     other = int(coverage.loc[~coverage["arm"].isin(registered), "rows"].sum())
-    open_group = {"models": sorted(open_rows["model"].unique()), "rows": int(open_rows["rows"].sum()),
-                  "arms": sorted(a for a in open_rows["arm"].unique() if a in theme.common.ARMS)}
-    return arms, other, open_group
+    open_groups = [{"models": [model], "rows": int(rows["rows"].sum()),
+                    "arms": sorted(a for a in rows["arm"].unique() if a in theme.common.ARMS)}
+                   for model, rows in open_rows.groupby("model", sort=True)]
+    return arms, other, open_groups
 
 
 def written_results(report: Dict[str, Any]) -> List[str]:
@@ -203,7 +204,7 @@ def draw_windows(canvas: Canvas, n_windows: int, last_end: str, middle: float) -
 
 def draw_labels(canvas: Canvas, thresholds: Dict[str, float], n_windows: int, models: Sequence[str],
                 arms: Sequence[Dict[str, Any]], other_requests: int, cost: float, bottom: float, middle: float,
-                open_group: Dict[str, Any]) -> None:
+                open_groups: Sequence[Dict[str, Any]]) -> None:
     """A frame around the two label sources: the deterministic rule and the model arms with their counts and cost."""
     x0, x1 = COLUMNS["labels"]
     canvas.box(x0, TOP, x1, bottom)
@@ -230,12 +231,13 @@ def draw_labels(canvas: Canvas, thresholds: Dict[str, float], n_windows: int, mo
         canvas.text(ix0 + PAD + 0.14, y, "pilot and repeat requests", color=theme.INK_SECONDARY, container=box)
         canvas.text(ix1 - PAD, y, f"{other_requests:,}", ha="right", color=theme.INK_SECONDARY, container=box)
         y += ARM_LINE
-    if open_group["rows"]:  # its own header: these arms are not answered by the model named above
+    if open_groups:  # their own headers: these arms are not answered by the model named above
         y += OPEN_GAP
-        canvas.text(ix0 + PAD, y, f"{', '.join(open_group['models'])}, open weights, local GPU", bold=True, container=box)
+    for group in open_groups:
+        canvas.text(ix0 + PAD, y, f"{', '.join(group['models'])}, open weights, local GPU", bold=True, container=box)
         y += ARM_LINE
-        canvas.text(ix0 + PAD + 0.14, y, f"{len(open_group['arms'])} arms with pilot and repeats", container=box)
-        canvas.text(ix1 - PAD, y, f"{open_group['rows']:,}", ha="right", container=box)
+        canvas.text(ix0 + PAD + 0.14, y, f"{len(group['arms'])} arms with pilot and repeats", container=box)
+        canvas.text(ix1 - PAD, y, f"{group['rows']:,}", ha="right", container=box)
         y += ARM_LINE
     canvas.text(ix0 + PAD, y + 0.04, f"Cost of all runs: USD {cost:,.2f}", bold=True, container=box)
     canvas.arrow((COLUMNS["windows"][1] + 0.03, middle), (x0 - 0.03, middle))
@@ -261,7 +263,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     report = inputs.yaml("report.yaml")
     windows = figdata.report_coverage(inputs, report, "windows")
     series = series_summary(figdata.report_coverage(inputs, report, "series"), windows)
-    arms, other_requests, open_group = arm_summary(figdata.report_coverage(inputs, report, "detections"))
+    arms, other_requests, open_groups = arm_summary(figdata.report_coverage(inputs, report, "detections"))
     models = sorted({m for a in arms for m in a["models"] if not m.startswith("o4-mini")})
     if not series or not models:
         inputs.fail("report.yaml lists no series, or no registered arm answered by a current model")
@@ -275,8 +277,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # series column gives, the frame (and the figure) grow by the difference.
     series_bottom = TOP + len(series) * (SERIES_BOX_H + SERIES_GAP) - SERIES_GAP
     labels_bottom = (TOP + GROUP_PAD + RULE_BOX_H + 0.10 + 0.06 + 2 * LINE + 0.04
-                     + (len(arms) + (1 if other_requests else 0) + (2 if open_group["rows"] else 0)) * ARM_LINE
-                     + (OPEN_GAP if open_group["rows"] else 0) + 0.04 + LINE + PAD + GROUP_PAD)
+                     + (len(arms) + (1 if other_requests else 0) + 2 * len(open_groups)) * ARM_LINE
+                     + (OPEN_GAP if open_groups else 0) + 0.04 + LINE + PAD + GROUP_PAD)
     extra_height = max(0.0, labels_bottom - series_bottom)
     height = HEIGHT_IN + extra_height
     fig = theme.new_figure(height)
@@ -286,14 +288,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     bottom = draw_series(canvas, series) + extra_height
     middle = (TOP + bottom) / 2
     draw_windows(canvas, n_windows, last_end, middle)
-    draw_labels(canvas, thresholds, n_windows, models, arms, other_requests, cost, bottom, middle, open_group)
+    draw_labels(canvas, thresholds, n_windows, models, arms, other_requests, cost, bottom, middle, open_groups)
     draw_results(canvas, results, bottom)
     canvas.check()
 
     extra = {"series": {e["key"]: {"symbols": e["symbols"], "rows": e["rows"], "span": e["span"], "windows": e["windows"]}
                         for e in series},
              "windows": n_windows, "last_window_end": last_end, "arms": {a["key"]: a["rows"] for a in arms},
-             "other_requests": other_requests, "open_weights": open_group, "cost_usd": cost, "results_written": results, "thresholds": thresholds}
+             "other_requests": other_requests, "open_weights": open_groups, "cost_usd": cost, "results_written": results, "thresholds": thresholds}
     theme.finish(fig, FIG_ID, args, inputs.sources, inputs.rows, extra)
     return 0
 

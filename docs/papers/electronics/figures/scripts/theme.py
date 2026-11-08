@@ -158,6 +158,13 @@ ARM_LABELS: Dict[str, str] = {
     "oss_p34_dated_2024": "gpt-oss, 2024 baseline, dated",
     "oss_p34_obf_2020": "gpt-oss, 2020 baseline, Day-T labels",
     "oss_p34_dated_2020": "gpt-oss, 2020 baseline, dated",
+    "llama_bridge_jan": "Llama, published inputs",
+    "llama_full_spy": "Llama, complete, SPY",
+    "llama_ex0dte_spy": "Llama, ex-0DTE, SPY",
+    "llama_p34_obf_2024": "Llama, 2024 baseline, Day-T labels",
+    "llama_p34_dated_2024": "Llama, 2024 baseline, dated",
+    "llama_p34_obf_2020": "Llama, 2020 baseline, Day-T labels",
+    "llama_p34_dated_2020": "Llama, 2020 baseline, dated",
 }
 
 SEQUENTIAL_BLUE = ["#F3F7FC", "#CDE2FB", "#86B6EF", "#3987E5", "#1C5CAB", "#0D366B"]  # one hue, light to dark

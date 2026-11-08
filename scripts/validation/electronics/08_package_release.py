@@ -92,15 +92,20 @@ column existed) is dated by its run's `ingested_at`. Join detections to windows 
 `intraday_spy` the windows are `intraday_t0`), `symbol` and `window_end`. The arm `r1_o4mini` holds the published
 o4-mini answers; the 64 answers flagged `detection_metadata.recovered_2026` are not part of the published result.
 Repeats (test-retest) are stored as arms ending in `#rep1`. Arms that begin with `oss_` hold the answers of the
-open-weights model gpt-oss-20b, run locally with vLLM at a pinned revision; the rest of their name is the gpt-6-luna
-arm that answered the same windows. The series keys and arms are defined in Tables 1 and 3
+open-weights model gpt-oss-20b and arms that begin with `llama_` those of Llama 3.1 8B Instruct, both run locally with
+vLLM at a pinned revision; the rest of their name is the gpt-6-luna arm that answered the same windows. The series keys and arms are defined in Tables 1 and 3
 of the article, and the column definitions are in `scripts/validation/electronics/sql/gex_llm_regime_schema.sql`
 of the repository. Paths in `runs` are relative to the repository root.
 
 ## What is not here
 
-The raw option chains are not included: they come from a licensed vendor and are not redistributed. The series keep
-daily aggregates only. The verbatim Batch and local input and output files are not included either.
+The raw option chains are not included because of their size; the series keep the daily aggregates that every label
+and answer depends on. The verbatim Batch and local input and output files are not included either.
+
+## Licence and source
+
+The tables are released under the Creative Commons Attribution 4.0 International licence (CC BY 4.0). The options data
+behind the series come from Alpha Vantage under a premium API subscription whose terms permit this use.
 
 ## Note on two series
 

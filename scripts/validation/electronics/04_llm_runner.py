@@ -825,7 +825,7 @@ def create_run(store: Store, *, arm: str, series_key: str, symbol: str, requests
         rows.append(new_run_row(
             run_id=f"{base}_c{k}", arm=arm, series_key=series_key, symbol=symbol, model=model,
             model_created_at=model_created_at, prompt_version=common.PROMPT_VERSION,
-            reasoning_effort=common.REASONING_EFFORT, response_format=common.RESPONSE_FORMAT,
+            reasoning_effort=common.model_reasoning_effort(model), response_format=common.RESPONSE_FORMAT,
             max_completion_tokens=max_completion_tokens, mode=mode, input_sha256=common.sha256_file(path),
             backup_dir=str(run_dir), window_end_min=min(r.window_end for r in chunk),
             window_end_max=max(r.window_end for r in chunk), n_requests=len(chunk), status="generated",
@@ -1237,6 +1237,12 @@ def gpu_memory() -> List[Dict[str, Any]]:
     return gpus
 
 
+def engine_utilization(args: argparse.Namespace, model: str) -> float:
+    """--gpu-memory-utilization when given, else the model's own share (common.LOCAL_SPECS)."""
+    given = getattr(args, "gpu_memory_utilization", None)
+    return given if given is not None else common.local_spec(model).gpu_memory_utilization
+
+
 def pick_gpu(requested: Optional[int], utilization: float, margin_mib: int, wait_minutes: float = 0.0) -> Dict[str, Any]:
     """The requested GPU, or the one with the most free memory; refuses when it cannot hold the engine plus a margin
     for the other users of the shared GPUs, after waiting up to ``wait_minutes`` for room (checked every minute)."""
@@ -1277,11 +1283,13 @@ def run_local_chunk(store: Store, run: Dict[str, Any], args: argparse.Namespace)
     version = openweights_vllm_version()
     if version != common.VLLM_VERSION:
         raise RunnerError(f"the openweights env has vllm {version}, the protocol pins {common.VLLM_VERSION}")
-    gpu = pick_gpu(args.gpu, args.gpu_memory_utilization, args.margin_mib, args.wait_gpu)
+    spec = common.local_spec(run["model"])
+    utilization = engine_utilization(args, run["model"])
+    gpu = pick_gpu(args.gpu, utilization, args.margin_mib, args.wait_gpu)
     max_len = max(common.LOCAL_MAX_MODEL_LEN, int(run["max_completion_tokens"]) + 4096)
-    engine = ["--model", common.OPEN_MODEL_REPO, "--revision", common.OPEN_MODEL_REVISION,
-              "--served-model-name", run["model"], "--gpu-memory-utilization", str(args.gpu_memory_utilization),
-              "--max-model-len", str(max_len), "--seed", str(DEFAULT_SEED), *common.LOCAL_ENGINE_ARGS]  # fmt: skip
+    engine = ["--model", spec.repo, "--revision", spec.revision,
+              "--served-model-name", run["model"], "--gpu-memory-utilization", str(utilization),
+              "--max-model-len", str(max_len), "--seed", str(DEFAULT_SEED), *spec.engine_args]  # fmt: skip
     partial = paths.output.with_name(paths.output.name + ".part")
     log_path = paths.input.with_name(f"local_{run['run_metadata']['chunk_index']}.log")
     command = [str(common.OPENWEIGHTS_PYTHON), "-m", "vllm.entrypoints.openai.run_batch", "-i", str(paths.input),
@@ -1289,11 +1297,10 @@ def run_local_chunk(store: Store, run: Dict[str, Any], args: argparse.Namespace)
     # offline: the weights of the pinned revision must already be in the Hugging Face cache (see the README runbook),
     # so a run never fetches anything and cannot pick up other files of the repository
     env = {**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu["index"]), "PYTHONNOUSERSITE": "1", "HF_HUB_OFFLINE": "1",
-           "VLLM_NO_USAGE_STATS": "1", "DO_NOT_TRACK": "1", "HF_HUB_DISABLE_TELEMETRY": "1", **common.LOCAL_ENGINE_ENV,
+           "VLLM_NO_USAGE_STATS": "1", "DO_NOT_TRACK": "1", "HF_HUB_DISABLE_TELEMETRY": "1", **spec.engine_env,
            "PATH": f"{common.OPENWEIGHTS_PYTHON.parent}{os.pathsep}{os.environ.get('PATH', '')}"}  # fmt: skip
     log.info("%s: %d requests on GPU %d (%s, %s MiB free), vllm %s, %s@%s", run["run_id"], run["n_requests"],
-             gpu["index"], gpu["name"], f"{gpu['free_mib']:,}", version, common.OPEN_MODEL_REPO,
-             common.OPEN_MODEL_REVISION[:12])  # fmt: skip
+             gpu["index"], gpu["name"], f"{gpu['free_mib']:,}", version, spec.repo, spec.revision[:12])  # fmt: skip
     started = common.utcnow()
     with open(log_path, "ab") as fh:
         result = subprocess.run(command, env=env, stdout=fh, stderr=subprocess.STDOUT, cwd=str(common.REPO_ROOT))
@@ -1303,8 +1310,8 @@ def run_local_chunk(store: Store, run: Dict[str, Any], args: argparse.Namespace)
     os.replace(partial, paths.output)
     n_lines = len(read_jsonl(paths.output))
     record = {"backend": "vllm.entrypoints.openai.run_batch", "vllm_version": version,
-              "model_repo": common.OPEN_MODEL_REPO, "model_revision": common.OPEN_MODEL_REVISION,
-              "served_model_name": run["model"], "engine_args": engine, "engine_env": dict(common.LOCAL_ENGINE_ENV),
+              "model_repo": spec.repo, "model_revision": spec.revision, "model_license": spec.license,
+              "served_model_name": run["model"], "engine_args": engine, "engine_env": dict(spec.engine_env),
               "gpu": gpu,
               "started_at": started.isoformat(), "completed_at": finished.isoformat(),
               "seconds": round((finished - started).total_seconds(), 1), "returncode": result.returncode,
@@ -1781,7 +1788,7 @@ def cmd_pilot(store: Store, args: argparse.Namespace) -> int:
     requests = [build_request(make_custom_id(pilot_arm, w), w, common.MAX_COMPLETION_TOKENS, model) for w in sample]
     if common.is_local_model(model):  # open weights: one local chunk, no API call and no budget
         openweights_vllm_version()  # refuse before any run row is written: env missing or GPU full
-        pick_gpu(args.gpu, args.gpu_memory_utilization, args.margin_mib, args.wait_gpu)
+        pick_gpu(args.gpu, engine_utilization(args, model), args.margin_mib, args.wait_gpu)
         run = create_run(store, arm=pilot_arm, series_key=window_series, symbol=arm.symbol, requests=requests,
                          mode="local", max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=len(requests),
                          metadata={"selection": {"n": len(requests), "seed": args.seed, "balanced_on": "clf_should_detect"}},
@@ -2007,8 +2014,10 @@ def build_parser() -> argparse.ArgumentParser:
     gpu = argparse.ArgumentParser(add_help=False)
     group = gpu.add_argument_group("local GPU (open-weights arms)")
     group.add_argument("--gpu", type=_bounded_int(0), help="GPU index (default: the one with the most free memory)")
-    group.add_argument("--gpu-memory-utilization", type=_fraction, default=common.LOCAL_GPU_MEMORY_UTILIZATION,
-                       help="share of the GPU's memory vLLM may take (default: %(default)s; the GPUs are shared)")  # fmt: skip
+    group.add_argument("--gpu-memory-utilization", type=_fraction, default=None,
+                       help="share of the GPU's memory vLLM may take (default: the model's own, "
+                            + ", ".join(f"{m} {s.gpu_memory_utilization}" for m, s in sorted(common.LOCAL_SPECS.items()))
+                            + "; the GPUs are shared)")  # fmt: skip
     group.add_argument("--margin-mib", type=_bounded_int(0), default=4096,
                        help="free memory to leave to the other users of the GPU (default: %(default)s MiB)")  # fmt: skip
     group.add_argument("--wait-gpu", type=float, default=0.0,

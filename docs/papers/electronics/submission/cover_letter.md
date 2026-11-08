@@ -43,8 +43,9 @@ evidence is public in the project repository (`docs/papers/CORRECTIONS.md`).
 
 **Data, code and the use of AI tools.** Code, condensed per-window tables and every result file are available at
 https://github.com/iAmGiG/gex-llm-patterns. The full tables (inputs, labels and model answers) will be deposited at
-Zenodo. <!-- TODO(authors): DOI, or "available on request" if Alpha Vantage does not allow the deposit. --> The raw
-options data are licensed and are not redistributed. gpt-6-luna and gpt-oss-20b are the objects of the study. As stated in the
+Zenodo. <!-- TODO(authors): DOI once the record is created (issue #274); the vendor's terms allow the deposit (D-31). --> The
+options data come from Alpha Vantage under a premium subscription whose terms permit this use; the raw option chains
+are not part of the deposit because of their size. gpt-6-luna and gpt-oss-20b are the objects of the study. As stated in the
 Acknowledgments, the authors used Claude Code to write the analysis code and to draft and revise the text, and they take
 full responsibility for the content.
 

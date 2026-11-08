@@ -1271,15 +1271,13 @@ def bridge_pairs(parsed: pd.DataFrame) -> Iterator[Tuple[str, pd.DataFrame, pd.D
                     yield comparison, ref_group, oth_group
 
 
-OPEN_ARM_PREFIX = "oss_"  # an open-weights arm is the gpt-6-luna arm of the same name with this prefix (common.ARMS)
-
-
 def model_pair_groups(parsed: pd.DataFrame) -> Iterator[Tuple[str, pd.DataFrame]]:
     """(gpt-6-luna twin arm, parsed rows) for every primary open-weights arm and symbol (repeats excluded)."""
     local = parsed[(parsed["arm_role"] == "primary") & parsed["model"].isin(common.LOCAL_MODELS)]
-    for (arm, _model, _series, _symbol), group in local.groupby(["arm", "model", "series_key", "symbol"]):
-        if arm.startswith(OPEN_ARM_PREFIX) and arm[len(OPEN_ARM_PREFIX):] in common.ARMS:
-            yield arm[len(OPEN_ARM_PREFIX):], group
+    for (arm, model, _series, _symbol), group in local.groupby(["arm", "model", "series_key", "symbol"]):
+        prefix = common.local_spec(model).arm_prefix  # the arm is its gpt-6-luna twin with the model's prefix
+        if arm.startswith(prefix) and arm[len(prefix):] in common.ARMS:
+            yield arm[len(prefix):], group
 
 
 def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
@@ -1333,8 +1331,9 @@ def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
                        for arm, series_key in BRIDGE_REFERENCES],
         "gate": gate, "bridge": bridge, "bridge_incl_recovered": incl, "test_retest": retest, "model_pair": model_pairs,
         "notes": ["Pairs are windows parsed in both arms; the classifier label comes from the shared window.",
-                  f"model_pair compares each open-weights arm ({', '.join(sorted(common.LOCAL_MODELS))}, arms "
-                  f"{OPEN_ARM_PREFIX}<arm>, decision D-29) with its gpt-6-luna twin <arm> on the same windows (reference = "
+                  "model_pair compares each open-weights arm ("
+                  + "; ".join(f"{m}: arms {spec.arm_prefix}<arm>" for m, spec in sorted(common.LOCAL_SPECS.items()))
+                  + ", decisions D-29 and D-30) with its gpt-6-luna twin <arm> on the same windows (reference = "
                   "gpt-6-luna); the open-weights arms are compared with the published answers in bridge as well, for "
                   "description, and never feed the gate.",
                   f"bridge_incl_recovered repeats the comparison with the answers recovered in 2026 added to the reference "

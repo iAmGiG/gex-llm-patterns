@@ -182,10 +182,10 @@ COMMENT ON COLUMN backups.gex_llm_regime_runs.run_id IS '<arm>_<model>_<mode>_<U
 COMMENT ON COLUMN backups.gex_llm_regime_runs.arm IS 'Experiment arm: bridge_jan, full_spy, ex0dte_spy, p34_obf_2024, p34_dated_2024, p34_obf_2020, p34_dated_2020, full_qqq, full_iwm, full_qqq_scaled, full_iwm_scaled, ex0dte_qqq, ex0dte_iwm, intraday_spy, bridge_old; pilot_<arm> for a synchronous pilot; r1_o4mini, r1_p3_o4mini, r1_p4_o4mini for the backfills; a test-retest repeat of an arm is stored as <arm>#rep1';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.series_key IS 'Series the arm reads (see gex_llm_regime_series.series_key)';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.symbol IS 'Underlying ETF ticker';
-COMMENT ON COLUMN backups.gex_llm_regime_runs.model IS 'Model alias sent to the API (gpt-6-luna; the alias carries no dated snapshot, see model_created_at); backfills: o4-mini-2025-04-16 (r1_o4mini), o4-mini (r1_p3_o4mini, r1_p4_o4mini, as the November files record it); gpt-oss-20b for the local open-weights arms oss_* (openai/gpt-oss-20b at a pinned revision, see run_metadata.local)';
+COMMENT ON COLUMN backups.gex_llm_regime_runs.model IS 'Model alias sent to the API (gpt-6-luna; the alias carries no dated snapshot, see model_created_at); backfills: o4-mini-2025-04-16 (r1_o4mini), o4-mini (r1_p3_o4mini, r1_p4_o4mini, as the November files record it); local open-weights arms: gpt-oss-20b (arms oss_*, openai/gpt-oss-20b) and llama-3.1-8b-instruct (arms llama_*, meta-llama/Llama-3.1-8B-Instruct), each at a pinned revision, see run_metadata.local';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.model_created_at IS 'created timestamp of the model object as returned by GET /v1/models/<model> at submit time';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.prompt_version IS 'v2.0_postgresql = the unchanged Phase 4A prompt text';
-COMMENT ON COLUMN backups.gex_llm_regime_runs.reasoning_effort IS 'reasoning_effort request field (medium for all arms)';
+COMMENT ON COLUMN backups.gex_llm_regime_runs.reasoning_effort IS 'reasoning_effort request field (medium for every arm except llama_*: Llama 3.1 has no reasoning mode, so the field is not sent and is null)';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.response_format IS 'json_schema (strict) | none';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.max_completion_tokens IS 'max_completion_tokens request field';
 COMMENT ON COLUMN backups.gex_llm_regime_runs.mode IS 'batch | sync | local';
@@ -260,7 +260,7 @@ COMMENT ON COLUMN backups.gex_llm_regime_detections.arm IS 'Experiment arm (see 
 COMMENT ON COLUMN backups.gex_llm_regime_detections.series_key IS 'Series of the window';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.symbol IS 'Underlying ETF ticker';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.window_end IS 'trading_date of day T+0 of the window';
-COMMENT ON COLUMN backups.gex_llm_regime_detections.model IS 'Model alias (gpt-6-luna), the open-weights model (gpt-oss-20b, arms oss_*) or the id of a backfill (o4-mini-2025-04-16 for r1_o4mini; o4-mini for r1_p3_o4mini and r1_p4_o4mini)';
+COMMENT ON COLUMN backups.gex_llm_regime_detections.model IS 'Model alias (gpt-6-luna), an open-weights model (gpt-oss-20b, arms oss_*; llama-3.1-8b-instruct, arms llama_*) or the id of a backfill (o4-mini-2025-04-16 for r1_o4mini; o4-mini for r1_p3_o4mini and r1_p4_o4mini)';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.prompt_version IS 'v2.0_postgresql';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.custom_id IS 'Batch custom_id: <arm>|<symbol>|<window_end>, with the suffix #rep1 on a test-retest repeat; window-<date> for r1_o4mini; the November 2025 custom_ids for r1_p3_o4mini and r1_p4_o4mini';
 COMMENT ON COLUMN backups.gex_llm_regime_detections.response_id IS 'OpenAI response id (chatcmpl-...) when available';
