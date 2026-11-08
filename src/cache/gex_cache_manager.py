@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """GEX Calculation Caching System Pre-computed gamma exposure storage for efficient multi-symbol, multi-timeframe
 analysis."""
 

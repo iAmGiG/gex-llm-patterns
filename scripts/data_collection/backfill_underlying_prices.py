@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from src.data_sources.retired_vendors import RetiredVendorClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repository root, for the src.* imports
 from src.cache.unified_cache import UnifiedCacheManager  # noqa: E402
@@ -61,7 +61,7 @@ def get_dates_needing_backfill(db_path: str, symbol: str) -> list:
     return result["trading_date"].tolist()
 
 
-def fetch_all_prices_for_symbol(client: AlphaVantageGEXClient, symbol: str) -> dict:
+def fetch_all_prices_for_symbol(client: RetiredVendorClient, symbol: str) -> dict:
     """Fetch all historical prices for a symbol in one API call.
 
     Returns:
@@ -178,7 +178,8 @@ def main():
     logger.info(f"Symbols to backfill: {symbols}")
 
     # Initialize API client
-    client = AlphaVantageGEXClient(cache_manager=UnifiedCacheManager())  # the package no longer defaults to it (#269)
+    # Alpha Vantage was retired on 2026-10-10 and its package client is removed (issue #272)
+    raise RuntimeError("Alpha Vantage was retired on 2026-10-10; backfill_underlying_prices has no price source left")
 
     total_updated = 0
 

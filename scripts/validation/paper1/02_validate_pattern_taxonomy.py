@@ -20,9 +20,9 @@ from src.agents.market_mechanics_agent import MarketMechanicsAgent
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
-from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
+from src.validation.data_obfuscation import DataObfuscator
 from src.validation.outcome_calculator import OutcomeCalculator
-from gex_db_infrastructure.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
+from src.validation.pattern_taxonomy import PatternTaxonomy, ValidationCriteria
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

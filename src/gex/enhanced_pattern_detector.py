@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """Enhanced Pattern Detector with Contrarian Logic Updated based on statistical analysis showing GAMMA_TRAP works as
 contrarian indicator."""
 

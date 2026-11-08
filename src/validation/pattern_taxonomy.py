@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """
 Pattern Taxonomy Framework - Mechanical vs Narrative Classification
 Distinguishes real structural patterns from market folklore

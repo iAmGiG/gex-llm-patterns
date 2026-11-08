@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """
 Live GEX Interface - Uses only cached options data
 Replaces SampleDataGEXInterface for production use with live data
@@ -8,8 +9,8 @@ import logging
 import pandas as pd
 
 from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
-from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
-from gex_db_infrastructure.validation.options_data_validator import OptionsDataValidator
+from src.validation.data_obfuscation import DataObfuscator
+from src.validation.options_data_validator import OptionsDataValidator
 
 logger = logging.getLogger(__name__)
 

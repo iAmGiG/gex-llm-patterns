@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """Options Data Validator Validates and cleans Alpha Vantage options data for GEX calculations."""
 
 import logging

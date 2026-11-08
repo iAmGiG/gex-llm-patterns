@@ -267,10 +267,10 @@ def test_with_alpha_vantage_demo():
 
     try:
         # Use the updated Alpha Vantage client (Issue #180: Skip cache, fetch live only)
-        from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+        from src.data_sources.retired_vendors import RetiredVendorClient
 
         # Initialize client without cache (demo fetches live data)
-        client = AlphaVantageGEXClient(cache_manager=None)
+        client = RetiredVendorClient()  # Alpha Vantage retired 2026-10-10 (issue #272): the fetch below raises RuntimeError
 
         # Test the new fetch_historical_options method
         print("Fetching IBM options data...")

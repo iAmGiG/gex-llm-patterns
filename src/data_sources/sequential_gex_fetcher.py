@@ -24,7 +24,7 @@ import sqlite3
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from gex_db_infrastructure.cache.gex_cache_manager import GEXCacheManager
+from src.cache.gex_cache_manager import GEXCacheManager
 from src.cache.unified_cache import UnifiedCacheManager
 
 logger = logging.getLogger(__name__)

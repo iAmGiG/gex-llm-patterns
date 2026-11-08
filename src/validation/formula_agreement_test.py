@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """Formula Agreement Test: Normalized vs Absolute GEX Comparison
 
 Tests whether LLM regime detection is calculation-independent by comparing:
