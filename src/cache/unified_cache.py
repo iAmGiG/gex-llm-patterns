@@ -319,7 +319,7 @@ class UnifiedCacheManager:
     def gex_cache(self):
         """Lazy-loaded GEX cache manager."""
         if self._gex_cache is None:
-            from gex_db_infrastructure.cache.gex_cache_manager import GEXCacheManager
+            from src.cache.gex_cache_manager import GEXCacheManager
 
             self._gex_cache = GEXCacheManager(str(self.base_dir))
         return self._gex_cache
@@ -349,7 +349,7 @@ class UnifiedCacheManager:
                 return None
 
             # 3. Calculate GEX using live data engine
-            from gex_db_infrastructure.gex.live_gex_interface import LiveGEXInterface
+            from src.gex.live_gex_interface import LiveGEXInterface
 
             gex_interface = LiveGEXInterface()
 

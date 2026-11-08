@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """Options Chain Quality Validation (Issue #16)
 
 Validates options chain data at ingress before storage in SQLite database.

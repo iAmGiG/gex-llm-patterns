@@ -13,7 +13,7 @@ import logging
 
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from src.data_sources.retired_vendors import RetiredVendorClient
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -29,7 +29,7 @@ def test_validation_on_real_data():
 
     # Initialize clients
     print("\n[1] Initializing Alpha Vantage client and SQLite manager...")
-    av_client = AlphaVantageGEXClient()
+    av_client = RetiredVendorClient()  # Alpha Vantage retired 2026-10-10 (issue #272): the fetch below raises RuntimeError
     db_manager = SQLiteOptionsManager(enable_validation=True)  # db_path default .cache/options_historical.db (migrated to PostgreSQL)
 
     # Fetch real data

@@ -22,7 +22,7 @@ import pandas as pd
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from src.data_sources.retired_vendors import RetiredVendorClient
 from src.utils.date_utils import now_iso, today_str
 
 # Add project root to path for imports
@@ -91,9 +91,8 @@ class HistoricalOptionsCollector:
             self.logger.info("Using legacy pickle storage")
 
         # Initialize API client (shares cache if using pickle)
-        # The package client no longer defaults to a pickle cache (gex-database-infrastructure 2.0.0); pass the local one
-        # so fetch_underlying_price keeps reading .cache/market_data as before (#269)
-        self.client = AlphaVantageGEXClient(cache_manager=self.cache if self.cache is not None else UnifiedCacheManager())
+        # Alpha Vantage is retired (2026-10-10) and its package client is removed (issue #272): fetching raises RuntimeError
+        self.client = RetiredVendorClient()
 
         # Collection statistics
         self.stats = {

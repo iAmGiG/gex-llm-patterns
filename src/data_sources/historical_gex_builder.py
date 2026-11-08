@@ -39,7 +39,6 @@ from gex_db_infrastructure.cache.postgresql_options_manager import PostgreSQLOpt
 from src.cache.unified_cache import UnifiedCacheManager
 from gex_db_infrastructure.data_sources.fed_data_integration import FedDataIntegration
 from src.data_sources.historical_collector import HistoricalOptionsCollector
-from gex_db_infrastructure.data_sources.polygon_client import PolygonClient
 from gex_db_infrastructure.gex.gex_calculator import GEXCalculator
 from src.utils.date_utils import calculate_duration_minutes, now_iso, now_timestamp, parse_date_string
 
@@ -99,12 +98,10 @@ class HistoricalGEXDatabaseBuilder:
             logging.warning(f"Fed integration not available: {e}")
 
         # Initialize stock data client
-        try:
-            self.stock_client = PolygonClient()
-            self.has_stock_data = True
-        except Exception as e:
-            self.has_stock_data = False
-            logging.warning(f"Stock data client not available: {e}")
+        # Polygon.io access ended 2026-11-01 and its client is retired (issue #272): no stock client
+        self.stock_client = None
+        self.has_stock_data = False
+        logging.warning("Stock data client not available: Polygon.io access ended 2026-11-01")
 
         # Database setup (Issue #140: Use unified consolidated_historical.db)
         self.db_path = Path(database_path) if database_path else self.cache.base_dir / "consolidated_historical.db"

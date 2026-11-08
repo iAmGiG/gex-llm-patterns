@@ -19,8 +19,7 @@ import pandas as pd
 
 from src.backtesting.portfolio import Portfolio
 from src.backtesting.results import BacktestResults
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
-from src.cache.unified_cache import UnifiedCacheManager
+from src.data_sources.retired_vendors import RetiredVendorClient
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +73,7 @@ class BacktestEngine:
         self.commission_per_share = commission_per_share
         self.portfolio = Portfolio(initial_capital, commission_per_share)
         self._price_cache: Dict[str, pd.DataFrame] = {}
-        self.av_client = AlphaVantageGEXClient(cache_manager=UnifiedCacheManager())  # the package no longer defaults to it (#269)
+        self.av_client = RetiredVendorClient()  # Alpha Vantage retired 2026-10-10 (issue #272): fetching raises RuntimeError
 
     def get_price_data(
         self,

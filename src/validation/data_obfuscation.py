@@ -1,3 +1,4 @@
+# Copied from gex-database-infrastructure fc70767, which retires it (issue #272).
 """Data Obfuscation Utilities for LLM Trading Validation.
 
 This module provides functions to remove temporal and ticker references
@@ -18,7 +19,7 @@ Transformations:
     - Context: Remove market event references (COVID, Fed, specific years)
 
 Usage:
-    from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
+    from src.validation.data_obfuscation import DataObfuscator
 
     obfuscator = DataObfuscator()
 

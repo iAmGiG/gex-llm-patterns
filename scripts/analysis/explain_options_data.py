@@ -14,7 +14,7 @@ sys.path.insert(0, str(project_root))
 import pandas as pd
 
 from src.cache.unified_cache import UnifiedCacheManager
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from src.data_sources.retired_vendors import RetiredVendorClient
 
 
 def explain_options_data():
@@ -25,7 +25,7 @@ def explain_options_data():
 
     # Get sample data
     cache = UnifiedCacheManager()
-    client = AlphaVantageGEXClient(cache_manager=cache)
+    client = RetiredVendorClient()  # Alpha Vantage retired 2026-10-10 (issue #272): the fetch below raises RuntimeError
     data = client.fetch_historical_options("SPY", "2024-01-08")
 
     # 1. Dataset Overview

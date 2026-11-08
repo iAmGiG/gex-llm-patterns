@@ -72,7 +72,7 @@ from src.cache.research_cache import ResearchCache  # noqa: E402
 from src.cache.unified_cache import UnifiedCacheManager  # noqa: E402
 from gex_db_infrastructure.data_sources.sequential_gex_fetcher import SequentialGEXFetcher
 from gex_db_infrastructure.validation.batch_regime_validator import BatchRegimeValidator
-from gex_db_infrastructure.validation.data_obfuscation import DataObfuscator
+from src.validation.data_obfuscation import DataObfuscator
 from gex_db_infrastructure.validation.regime_classifier import RegimeClassifier
 
 # Add project root to path

@@ -70,14 +70,14 @@ from autogen_core.tools import FunctionTool
 from gex_db_infrastructure.cache import PostgreSQLOptionsManager
 from src.cache.sqlite_options_manager import SQLiteOptionsManager
 from src.cache.unified_cache import UnifiedCacheManager
-from gex_db_infrastructure.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
+from src.data_sources.alpha_vantage_gex import AlphaVantageGEXClient
 
-# from gex_db_infrastructure.data_sources.polygon_client import PolygonClient  # Using Alpha Vantage Premium instead
-from gex_db_infrastructure.gex.live_gex_interface import LiveGEXInterface
+# PolygonClient import removed (Polygon access ended 2026-11-01); was already unused here (issue #272)
+from src.gex.live_gex_interface import LiveGEXInterface
 from src.utils.indicator_library import enhanced_gex_context, gex_volatility_regime
 from src.utils.market_intelligence import market_intelligence
 from src.utils.unified_reports_manager import reports_manager
-from gex_db_infrastructure.validation.options_data_validator import OptionsDataValidator
+from src.validation.options_data_validator import OptionsDataValidator
 
 logger = logging.getLogger(__name__)
 
