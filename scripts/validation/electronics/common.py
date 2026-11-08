@@ -292,6 +292,22 @@ ARMS: Dict[str, Arm] = {
                               model="llama-3.1-8b-instruct"),
     "llama_p34_dated_2020": Arm("llama_p34_dated_2020", "p4_2020_dated", "SPY", 6,
                                 "Llama 3.1 8B, Phase 4 inputs with the dates", model="llama-3.1-8b-instruct"),
+    # Third open-weights model (D-32): Llama 3.1 8B has no reasoning mode and failed the task in its pilot, so the same
+    # seven twins are answered by a reasoning model of another developer, Alibaba's Qwen3-8B in thinking mode.
+    "qwen_bridge_jan": Arm("qwen_bridge_jan", "jan2026_phase4a", "SPY", 7,
+                           "Qwen3-8B (open weights) on the exact published inputs: bridge to o4-mini", model="qwen3-8b"),
+    "qwen_full_spy": Arm("qwen_full_spy", "new_full", "SPY", 7, "Qwen3-8B on the complete SPY series, 2008-2026",
+                         model="qwen3-8b"),
+    "qwen_ex0dte_spy": Arm("qwen_ex0dte_spy", "new_ex0dte", "SPY", 7, "Qwen3-8B on the 0DTE-excluded SPY series, 2008-2026",
+                           model="qwen3-8b"),
+    "qwen_p34_obf_2024": Arm("qwen_p34_obf_2024", "p3_2024", "SPY", 7, "Qwen3-8B, Phase 3 inputs with Day-T labels",
+                             model="qwen3-8b"),
+    "qwen_p34_dated_2024": Arm("qwen_p34_dated_2024", "p3_2024_dated", "SPY", 7, "Qwen3-8B, Phase 3 inputs with the dates",
+                               model="qwen3-8b"),
+    "qwen_p34_obf_2020": Arm("qwen_p34_obf_2020", "p4_2020", "SPY", 7, "Qwen3-8B, Phase 4 inputs with Day-T labels",
+                             model="qwen3-8b"),
+    "qwen_p34_dated_2020": Arm("qwen_p34_dated_2020", "p4_2020_dated", "SPY", 7, "Qwen3-8B, Phase 4 inputs with the dates",
+                               model="qwen3-8b"),
 }
 
 
@@ -343,6 +359,12 @@ LOCAL_SPECS: Dict[str, LocalModel] = {
     "llama-3.1-8b-instruct": LocalModel("llama-3.1-8b-instruct", "meta-llama/Llama-3.1-8B-Instruct",
                                         "0e9e39f249a16976918f6564b8830bc894c89659", "Llama 3.1 Community License",
                                         "llama_", 0.27, (), _PYTORCH_SAMPLER, reasoning=False),
+    # 15.3 GiB weights (bf16, the release format) + about 7 GiB KV cache at 0.30 (144 KiB per token: about 50k tokens,
+    # room for long reasoning). Thinking mode (the chat template's default); vLLM separates the reasoning with its qwen3
+    # parser and applies the JSON schema after it. Sampling follows generation_config.json (temperature 0.6, top-p 0.95,
+    # top-k 20). reasoning_effort is sent as for gpt-oss-20b; the Qwen3 chat template does not use it.
+    "qwen3-8b": LocalModel("qwen3-8b", "Qwen/Qwen3-8B", "b968826d9c46dd6066d109eabc6255188de91218", "Apache-2.0",
+                           "qwen_", 0.30, ("--reasoning-parser", "qwen3"), _PYTORCH_SAMPLER),
 }
 LOCAL_MODELS = frozenset(LOCAL_SPECS)
 OPEN_MODEL = "gpt-oss-20b"  # the first open-weights model (D-29)
@@ -373,6 +395,7 @@ PRICING_USD_PER_MTOK: Dict[str, Dict[str, Tuple[float, float]]] = {
     "o4-mini-2025-04-16": {"standard": (1.10, 4.40), "batch": (0.55, 2.20)},
     "gpt-oss-20b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},  # local GPU, no API charge
     "llama-3.1-8b-instruct": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
+    "qwen3-8b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
 }
 
 REGIME_TYPES = ("persistent_positive", "persistent_negative", "transitional", "low_conviction")

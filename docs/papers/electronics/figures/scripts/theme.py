@@ -165,6 +165,13 @@ ARM_LABELS: Dict[str, str] = {
     "llama_p34_dated_2024": "Llama, 2024 baseline, dated",
     "llama_p34_obf_2020": "Llama, 2020 baseline, Day-T labels",
     "llama_p34_dated_2020": "Llama, 2020 baseline, dated",
+    "qwen_bridge_jan": "Qwen3, published inputs",
+    "qwen_full_spy": "Qwen3, complete, SPY",
+    "qwen_ex0dte_spy": "Qwen3, ex-0DTE, SPY",
+    "qwen_p34_obf_2024": "Qwen3, 2024 baseline, Day-T labels",
+    "qwen_p34_dated_2024": "Qwen3, 2024 baseline, dated",
+    "qwen_p34_obf_2020": "Qwen3, 2020 baseline, Day-T labels",
+    "qwen_p34_dated_2020": "Qwen3, 2020 baseline, dated",
 }
 
 SEQUENTIAL_BLUE = ["#F3F7FC", "#CDE2FB", "#86B6EF", "#3987E5", "#1C5CAB", "#0D366B"]  # one hue, light to dark

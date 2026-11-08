@@ -174,7 +174,7 @@ Row counts are as built on 2026-10-29.
   `regime_detected` (model) and `clf_should_detect` (rule) are the primary labels, the four-way `regime_type` is
   secondary.
 
-### 3.3 Arms (`common.ARMS`: 32 keys, 29 of them call a model; the seven `oss_*` arms of D-29 and the seven `llama_*` arms of D-30 are in Step 4b)
+### 3.3 Arms (`common.ARMS`: 39 keys, 36 of them call a model; the seven `oss_*` arms of D-29, the seven `llama_*` arms of D-30 and the seven `qwen_*` arms of D-32 are in Step 4b)
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
 answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
@@ -446,7 +446,7 @@ spend (section 3.4).
 `04_llm_runner.py` has ten subcommands. Run `python $E/04_llm_runner.py <command> --help` for the options. Every
 command takes the storage flags `--parquet-only` (never connect to Postgres), `--rollback` (section 5.4),
 `--backup-root DIR` (run directories and parquet copies, and the windows, live under that folder: use it to rehearse
-without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 29 with `llm = True` (15 for gpt-6-luna, 7 for each of the two open-weights models, Step 4b).
+without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 36 with `llm = True` (15 for gpt-6-luna, 7 for each of the three open-weights models, Step 4b).
 
 | Command | Does | Cost |
 |---------|------|------|
@@ -593,12 +593,14 @@ each chunk also goes to `tables/runs/<run_id>_c<k>.parquet` and its detections t
 `tables/detections/<run_id>_c<k>.parquet`. Run status moves `generated`, `submitted`, `in_progress`, then
 `completed`, `failed`, `expired` or `cancelled`, then `ingested`.
 
-### Step 4b. Open-weights arms (D-29, D-30, local GPU)
+### Step 4b. Open-weights arms (D-29, D-30, D-32, local GPU)
 
 The seven `oss_*` arms send the gpt-6-luna request body unchanged, except the model name, to `gpt-oss-20b`
 (`openai/gpt-oss-20b`, Apache-2.0), and the seven `llama_*` arms send it to `llama-3.1-8b-instruct`
 (`meta-llama/Llama-3.1-8B-Instruct`, Llama 3.1 Community License) without `reasoning_effort`, since Llama 3.1 has no
-reasoning mode (`common.model_reasoning_effort`). Both are answered on this machine by vLLM's offline batch runner at the
+reasoning mode (`common.model_reasoning_effort`), and the seven `qwen_*` arms send it to `qwen3-8b` (`Qwen/Qwen3-8B`,
+Apache-2.0) in thinking mode, with vLLM's `qwen3` reasoning parser so that the JSON schema applies after the reasoning.
+All three are answered on this machine by vLLM's offline batch runner at the
 revision pinned in `common.LOCAL_SPECS`, which also holds each model's arm prefix, GPU share and engine settings. Their runs have mode `local`, cost nothing and never count toward the budget; `submit`, `poll`,
 `retrieve` and `requeue` refuse or skip them, and `ingest` reads their output like a downloaded batch.
 
@@ -618,6 +620,10 @@ PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface
   print(snapshot_download('meta-llama/Llama-3.1-8B-Instruct', revision='0e9e39f249a16976918f6564b8830bc894c89659', \
   allow_patterns=['config.json', 'generation_config.json', 'model.safetensors.index.json', 'special_tokens_map.json', \
   'tokenizer.json', 'tokenizer_config.json', 'model-*.safetensors', 'LICENSE', 'USE_POLICY.md']))"
+PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface_hub import snapshot_download; \
+  print(snapshot_download('Qwen/Qwen3-8B', revision='b968826d9c46dd6066d109eabc6255188de91218', \
+  allow_patterns=['config.json', 'generation_config.json', 'merges.txt', 'model-*.safetensors', \
+  'model.safetensors.index.json', 'tokenizer.json', 'tokenizer_config.json', 'vocab.json', 'LICENSE']))"
 ```
 
 The package versions of the env as run are in `environment/openweights.lock.txt` (`pip freeze`); `environment/autogex.conda.txt` holds
@@ -625,7 +631,7 @@ The package versions of the env as run are in `environment/openweights.lock.txt`
 
 The GPUs have no scheduler and are shared with other users: `local` takes the GPU with the most free memory (or
 `--gpu N`), lets vLLM use `--gpu-memory-utilization` of it (default: the model's own share in `common.LOCAL_SPECS`, 0.22 of
-80 GB for gpt-oss-20b, about 18 GB, and 0.27 for Llama 3.1 8B in bf16, about 22 GB) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
+80 GB for gpt-oss-20b, about 18 GB, 0.27 for Llama 3.1 8B in bf16, about 22 GB, and 0.30 for Qwen3-8B, about 24 GB) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
 for up to M minutes instead of refusing. The engine runs at `--max-model-len` 8,192 (a retry run at 8,000 completion
 tokens gets 12,096), seed 261, and `VLLM_USE_FLASHINFER_SAMPLER=0` (the FlashInfer sampler needs a JIT build with
 `ninja`; the PyTorch sampler does not). The engine arguments and environment, the vLLM version, the weights revision,
