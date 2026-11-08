@@ -354,17 +354,19 @@ LOCAL_SPECS: Dict[str, LocalModel] = {
     # at 8,192 tokens; smoke test 2026-11-07). No top-k or top-p is set: temperature sampling at the default 1.0.
     "gpt-oss-20b": LocalModel("gpt-oss-20b", "openai/gpt-oss-20b", "6cee5e81ee83917806bbde320786a8fb61efebee",
                               "Apache-2.0", "oss_", 0.22, (), _PYTORCH_SAMPLER),
-    # 15.0 GiB weights (bf16, the release format) + about 5 GiB KV cache at 0.27 (128 KiB per token: about 40k tokens).
-    # Sampling follows the repository's generation_config.json (temperature 0.6, top-p 0.9). No reasoning mode.
+    # 15.0 GiB weights (bf16, the release format) + about 1.5 GiB KV cache at 0.22 (128 KiB per token: about 12k tokens,
+    # enough for answers of about 200 tokens). The pilot ran at 0.27; the arms use 0.22 because the shared GPUs rarely
+    # had the 26 GB that 0.27 needs (2026-11-08). Sampling follows generation_config.json (temperature 0.6, top-p 0.9).
+    # No reasoning mode.
     "llama-3.1-8b-instruct": LocalModel("llama-3.1-8b-instruct", "meta-llama/Llama-3.1-8B-Instruct",
                                         "0e9e39f249a16976918f6564b8830bc894c89659", "Llama 3.1 Community License",
-                                        "llama_", 0.27, (), _PYTORCH_SAMPLER, reasoning=False),
-    # 15.3 GiB weights (bf16, the release format) + about 7 GiB KV cache at 0.30 (144 KiB per token: about 50k tokens,
+                                        "llama_", 0.22, (), _PYTORCH_SAMPLER, reasoning=False),
+    # 15.3 GiB weights (bf16, the release format) + about 4.5 GiB KV cache at 0.27 (144 KiB per token: about 33k tokens,
     # room for long reasoning). Thinking mode (the chat template's default); vLLM separates the reasoning with its qwen3
     # parser and applies the JSON schema after it. Sampling follows generation_config.json (temperature 0.6, top-p 0.95,
     # top-k 20). reasoning_effort is sent as for gpt-oss-20b; the Qwen3 chat template does not use it.
     "qwen3-8b": LocalModel("qwen3-8b", "Qwen/Qwen3-8B", "b968826d9c46dd6066d109eabc6255188de91218", "Apache-2.0",
-                           "qwen_", 0.30, ("--reasoning-parser", "qwen3"), _PYTORCH_SAMPLER),
+                           "qwen_", 0.27, ("--reasoning-parser", "qwen3"), _PYTORCH_SAMPLER),
 }
 LOCAL_MODELS = frozenset(LOCAL_SPECS)
 OPEN_MODEL = "gpt-oss-20b"  # the first open-weights model (D-29)
