@@ -737,14 +737,16 @@ def refuse_duplicate_requests(store: Store, todo: Sequence[Dict[str, Any]]) -> N
 
 
 # --------------------------------------------------------------------------- requests and runs
-def build_request(custom_id: str, window: Dict[str, Any], max_completion_tokens: int) -> Request:
-    """One Batch line: the unchanged Phase 4A prompt for ``window`` in the luna request body."""
+def build_request(custom_id: str, window: Dict[str, Any], max_completion_tokens: int,
+                  model: str = common.MODEL) -> Request:  # fmt: skip
+    """One Batch line: the unchanged Phase 4A prompt for ``window`` in the luna request body (only ``model`` differs
+    for an open-weights arm)."""
     sequence = window["gex_sequence"]
     values = [day.get("net_gex_usd") for day in sequence]
     if len(sequence) != common.WINDOW_DAYS or any(v is None or v != v for v in values):
         raise RunnerError(f"window {window['series_key']}/{window['symbol']}/{window['window_end']} "
                           f"must hold {common.WINDOW_DAYS} numeric daily values")  # fmt: skip
-    body = common.chat_body(common.build_prompt(sequence), max_completion_tokens=max_completion_tokens)
+    body = common.chat_body(common.build_prompt(sequence), model=model, max_completion_tokens=max_completion_tokens)
     line = {"custom_id": custom_id, "method": "POST", "url": "/v1/chat/completions", "body": body}
     return Request(custom_id, window["window_end"], line)
 
@@ -761,11 +763,16 @@ def split_even(items: Sequence[Request], max_size: int) -> List[Sequence[Request
     return chunks
 
 
-def unique_run_id(arm: str, mode: str) -> str:
+def unique_run_id(arm: str, mode: str, model: str = common.MODEL) -> str:
     when = common.utcnow()
-    while (common.BACKUP_ROOT / common.make_run_id(arm, common.MODEL, mode, when)).exists():
+    while (common.BACKUP_ROOT / common.make_run_id(arm, model, mode, when)).exists():
         when += timedelta(seconds=1)  # run ids have one-second resolution
-    return common.make_run_id(arm, common.MODEL, mode, when)
+    return common.make_run_id(arm, model, mode, when)
+
+
+def run_mode(model: str) -> str:
+    """'local' for a model run on this machine with vLLM, else 'batch' (OpenAI Batch API)."""
+    return "local" if common.is_local_model(model) else "batch"
 
 
 def new_run_row(**fields: Any) -> Dict[str, Any]:
@@ -794,12 +801,12 @@ def chunk_runs(store: Store, run_id: str) -> List[Dict[str, Any]]:
 
 def create_run(store: Store, *, arm: str, series_key: str, symbol: str, requests: Sequence[Request], mode: str,
                max_completion_tokens: int, chunk_size: int, metadata: Dict[str, Any],
-               model_created_at: Optional[datetime] = None) -> List[Dict[str, Any]]:  # fmt: skip
+               model_created_at: Optional[datetime] = None, model: str = common.MODEL) -> List[Dict[str, Any]]:  # fmt: skip
     """Write ``input_<k>.jsonl`` for ``requests`` and one 'generated' runs row per chunk; returns the rows."""
-    base = unique_run_id(arm, mode)
+    base = unique_run_id(arm, mode, model)
     run_dir = common.run_backup_dir(base)
     pricing = "batch" if mode == "batch" else "standard"
-    per_request = common.estimate_cost_usd(common.MODEL, pricing, PROJECTED_PROMPT_TOKENS, PROJECTED_COMPLETION_TOKENS)
+    per_request = common.estimate_cost_usd(model, pricing, PROJECTED_PROMPT_TOKENS, PROJECTED_COMPLETION_TOKENS)
     chunks = split_even(requests, chunk_size)
     shared = {
         "parent_run_id": base,
@@ -816,7 +823,7 @@ def create_run(store: Store, *, arm: str, series_key: str, symbol: str, requests
         path = run_dir / f"input_{k}.jsonl"
         write_atomic(path, jsonl_bytes(r.line for r in chunk))
         rows.append(new_run_row(
-            run_id=f"{base}_c{k}", arm=arm, series_key=series_key, symbol=symbol, model=common.MODEL,
+            run_id=f"{base}_c{k}", arm=arm, series_key=series_key, symbol=symbol, model=model,
             model_created_at=model_created_at, prompt_version=common.PROMPT_VERSION,
             reasoning_effort=common.REASONING_EFFORT, response_format=common.RESPONSE_FORMAT,
             max_completion_tokens=max_completion_tokens, mode=mode, input_sha256=common.sha256_file(path),
@@ -828,7 +835,7 @@ def create_run(store: Store, *, arm: str, series_key: str, symbol: str, requests
         ))  # fmt: skip
     write_json(run_dir / "manifest.json", {
         "run_id": base, "arm": arm, "series_key": series_key, "symbol": symbol, "mode": mode,
-        "model": common.MODEL, "prompt_version": common.PROMPT_VERSION, "generated_at": now,
+        "model": model, "prompt_version": common.PROMPT_VERSION, "generated_at": now,
         "max_completion_tokens": max_completion_tokens, "git_sha": common.git_sha(), **shared,
         "chunks": [{"run_id": r["run_id"], "input_file": chunk_paths(r).input.name, "n_requests": r["n_requests"],
                     "input_sha256": r["input_sha256"], "window_end_min": r["window_end_min"],
@@ -1070,8 +1077,9 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
                     "on every LLM arm; a later generate with a positive fraction can still add them to answered windows",
                     arm.key, 100 * common.REPEAT_FRACTION)  # fmt: skip
     repeat_arm = arm.key + REPEAT_ARM_SUFFIX
-    index = store.detection_index([arm.key, repeat_arm], common.MODEL, common.PROMPT_VERSION)
-    held = {} if args.include_inflight else pending_requests(store, [arm.key], common.MODEL, common.PROMPT_VERSION)
+    model = common.arm_model(arm)
+    index = store.detection_index([arm.key, repeat_arm], model, common.PROMPT_VERSION)
+    held = {} if args.include_inflight else pending_requests(store, [arm.key], model, common.PROMPT_VERSION)
 
     current = {w["window_end"]: prompt_hash(w) for w in pool}
 
@@ -1096,10 +1104,13 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
     else:
         originals = todo[: args.limit]
     # Repeats top up to the target share of the windows that hold (or are about to hold) an original answer, so
-    # running generate again never adds a second batch of repeats.
+    # running generate again never adds a second batch of repeats.  Windows held by a pending run or awaiting a retry
+    # count as well: without them, a generate run while chunks were in flight topped the repeats up to the share of
+    # the finished windows only (6 extra repeats of oss_ex0dte_spy, 2026-11-07).
     answered = originals + done
-    repeat_states = {w["window_end"]: state(w, repeat_arm) for w in answered}
-    target = round(args.repeat_fraction * len(answered))
+    holding = answered + awaiting + in_flight
+    repeat_states = {w["window_end"]: state(w, repeat_arm) for w in holding}
+    target = round(args.repeat_fraction * len(holding))
     requested = sum(s not in ("open", "stale") for s in repeat_states.values())  # done, in flight or awaiting retry
     stale_repeats = [w for w in answered if repeat_states[w["window_end"]] == "stale"]  # asked again, same rule
     candidates = [w for w in answered if repeat_states[w["window_end"]] == "open"]
@@ -1120,9 +1131,11 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
         log.info("nothing to generate")
         return 0
 
-    requests = [build_request(make_custom_id(arm.key, w), w, common.MAX_COMPLETION_TOKENS) for w in originals]
-    requests += [build_request(make_custom_id(arm.key, w, REPEAT_INDEX), w, common.MAX_COMPLETION_TOKENS) for w in repeats]
-    created = common.model_created_at(common.openai_client()) if args.online else None
+    requests = [build_request(make_custom_id(arm.key, w), w, common.MAX_COMPLETION_TOKENS, model) for w in originals]
+    requests += [build_request(make_custom_id(arm.key, w, REPEAT_INDEX), w, common.MAX_COMPLETION_TOKENS, model)
+                 for w in repeats]  # fmt: skip
+    mode = run_mode(model)
+    created = common.model_created_at(common.openai_client()) if args.online and mode == "batch" else None
     selection = {"end_min": start, "end_max": end, "limit": args.limit, "sample": args.sample, "seed": args.seed,
                  "repeat_fraction": args.repeat_fraction, "include_done": args.include_done,
                  "include_inflight": args.include_inflight, "n_windows_in_range": len(pool),
@@ -1134,8 +1147,8 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
                  "n_repeats": len(repeats), "repeat_target": target, "repeats_already_requested": requested,
                  "windows_source": "db" if args.from_db else str(common.parquet_path("windows", window_series, arm.symbol))}
     rows = create_run(store, arm=arm.key, series_key=window_series, symbol=arm.symbol, requests=requests,
-                      mode="batch", max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=args.chunk_size,
-                      metadata={"selection": selection}, model_created_at=created)  # fmt: skip
+                      mode=mode, max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=args.chunk_size,
+                      metadata={"selection": selection}, model_created_at=created, model=model)  # fmt: skip
     print_generated(rows)
     return 0
 
@@ -1148,7 +1161,8 @@ def print_generated(rows: Sequence[Dict[str, Any]]) -> None:
     for row in rows:
         print(f"  {row['run_id']}: {row['n_requests']} requests, windows {row['window_end_min']}..{row['window_end_max']}, "
               f"{chunk_paths(row).input} sha256 {row['input_sha256'][:12]}")  # fmt: skip
-    print(f"next: {Path(__file__).name} {'submit' if rows[0]['mode'] == 'batch' else 'ingest'} --run-id {run_id}")
+    step = {"batch": "submit", "local": "local"}.get(rows[0]["mode"], "ingest")
+    print(f"next: {Path(__file__).name} {step} --run-id {run_id}")
     print(f"RUN_ID={run_id}")
 
 
@@ -1167,6 +1181,9 @@ def verify_input(run: Dict[str, Any]) -> None:
 def cmd_submit(store: Store, args: argparse.Namespace) -> int:
     """Upload each 'generated' chunk and create its batch; every chunk is recorded the moment its batch exists."""
     chunks = chunk_runs(store, args.run_id)
+    local = [r["run_id"] for r in chunks if r["mode"] == "local"]
+    if local:
+        raise RunnerError(f"{local[0]} is a local open-weights run: use the 'local' subcommand, never the API")
     todo = [r for r in chunks if r["status"] == "generated"]
     for run in chunks:
         if run not in todo:
@@ -1203,6 +1220,231 @@ def cmd_submit(store: Store, args: argparse.Namespace) -> int:
             store.save_runs([row])
         log.info("%s: batch %s (%s), input file %s", row["run_id"], batch.id, batch.status, batch.input_file_id)
     print(f"submitted {len(todo)} chunk(s); next: {Path(__file__).name} poll --run-id {args.run_id} --wait")
+    return 0
+
+
+def gpu_memory() -> List[Dict[str, Any]]:
+    """index, name, free and total MiB of every GPU on this machine (nvidia-smi)."""
+    try:
+        out = subprocess.run(["nvidia-smi", "--query-gpu=index,name,memory.free,memory.total",
+                              "--format=csv,noheader,nounits"], capture_output=True, text=True, check=True).stdout  # fmt: skip
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RunnerError(f"nvidia-smi failed ({exc}); a local run needs a GPU") from exc
+    gpus = []
+    for line in out.strip().splitlines():
+        index, name, free, total = (part.strip() for part in line.split(","))
+        gpus.append({"index": int(index), "name": name, "free_mib": int(free), "total_mib": int(total)})
+    return gpus
+
+
+def pick_gpu(requested: Optional[int], utilization: float, margin_mib: int, wait_minutes: float = 0.0) -> Dict[str, Any]:
+    """The requested GPU, or the one with the most free memory; refuses when it cannot hold the engine plus a margin
+    for the other users of the shared GPUs, after waiting up to ``wait_minutes`` for room (checked every minute)."""
+    deadline = time.monotonic() + 60 * wait_minutes
+    while True:
+        gpus = [g for g in gpu_memory() if requested is None or g["index"] == requested]
+        if not gpus:
+            raise RunnerError(f"no GPU with index {requested}")
+        best = max(gpus, key=lambda g: g["free_mib"])
+        need = utilization * best["total_mib"] + margin_mib
+        if best["free_mib"] >= need:
+            return best
+        message = (f"GPU {best['index']} has {best['free_mib']:,} MiB free; the engine needs {need:,.0f} MiB "
+                   f"({utilization:.0%} of {best['total_mib']:,} plus a {margin_mib:,} MiB margin)")  # fmt: skip
+        if time.monotonic() > deadline:
+            raise RunnerError(message)
+        log.info("%s; waiting for room", message)
+        time.sleep(60)
+
+
+def openweights_vllm_version() -> str:
+    """vLLM version installed in the open-weights env; refuses when the env is missing."""
+    python = common.OPENWEIGHTS_PYTHON
+    if not python.exists():
+        raise RunnerError(f"{python} not found: create the 'openweights' conda env with vllm=={common.VLLM_VERSION}")
+    out = subprocess.run([str(python), "-I", "-c", "import vllm; print(vllm.__version__)"], capture_output=True,
+                         text=True, env={**os.environ, "PYTHONNOUSERSITE": "1"})  # fmt: skip
+    if out.returncode != 0:
+        raise RunnerError(f"vllm is not importable in {python}: {out.stderr.strip()[-500:]}")
+    return out.stdout.strip()
+
+
+def run_local_chunk(store: Store, run: Dict[str, Any], args: argparse.Namespace) -> Dict[str, Any]:
+    """Answer one generated chunk with vLLM's offline batch runner; the output file has the Batch API's line format,
+    so 'ingest' treats it like a downloaded batch.  Engine, weights revision and GPU are stored next to it."""
+    verify_input(run)
+    paths = chunk_paths(run)
+    version = openweights_vllm_version()
+    if version != common.VLLM_VERSION:
+        raise RunnerError(f"the openweights env has vllm {version}, the protocol pins {common.VLLM_VERSION}")
+    gpu = pick_gpu(args.gpu, args.gpu_memory_utilization, args.margin_mib, args.wait_gpu)
+    max_len = max(common.LOCAL_MAX_MODEL_LEN, int(run["max_completion_tokens"]) + 4096)
+    engine = ["--model", common.OPEN_MODEL_REPO, "--revision", common.OPEN_MODEL_REVISION,
+              "--served-model-name", run["model"], "--gpu-memory-utilization", str(args.gpu_memory_utilization),
+              "--max-model-len", str(max_len), "--seed", str(DEFAULT_SEED), *common.LOCAL_ENGINE_ARGS]  # fmt: skip
+    partial = paths.output.with_name(paths.output.name + ".part")
+    log_path = paths.input.with_name(f"local_{run['run_metadata']['chunk_index']}.log")
+    command = [str(common.OPENWEIGHTS_PYTHON), "-m", "vllm.entrypoints.openai.run_batch", "-i", str(paths.input),
+               "-o", str(partial), *engine]  # fmt: skip
+    # offline: the weights of the pinned revision must already be in the Hugging Face cache (see the README runbook),
+    # so a run never fetches anything and cannot pick up other files of the repository
+    env = {**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu["index"]), "PYTHONNOUSERSITE": "1", "HF_HUB_OFFLINE": "1",
+           "VLLM_NO_USAGE_STATS": "1", "DO_NOT_TRACK": "1", "HF_HUB_DISABLE_TELEMETRY": "1", **common.LOCAL_ENGINE_ENV,
+           "PATH": f"{common.OPENWEIGHTS_PYTHON.parent}{os.pathsep}{os.environ.get('PATH', '')}"}  # fmt: skip
+    log.info("%s: %d requests on GPU %d (%s, %s MiB free), vllm %s, %s@%s", run["run_id"], run["n_requests"],
+             gpu["index"], gpu["name"], f"{gpu['free_mib']:,}", version, common.OPEN_MODEL_REPO,
+             common.OPEN_MODEL_REVISION[:12])  # fmt: skip
+    started = common.utcnow()
+    with open(log_path, "ab") as fh:
+        result = subprocess.run(command, env=env, stdout=fh, stderr=subprocess.STDOUT, cwd=str(common.REPO_ROOT))
+    finished = common.utcnow()
+    if result.returncode != 0:
+        raise RunnerError(f"{run['run_id']}: vllm exited with {result.returncode}; see {log_path}")
+    os.replace(partial, paths.output)
+    n_lines = len(read_jsonl(paths.output))
+    record = {"backend": "vllm.entrypoints.openai.run_batch", "vllm_version": version,
+              "model_repo": common.OPEN_MODEL_REPO, "model_revision": common.OPEN_MODEL_REVISION,
+              "served_model_name": run["model"], "engine_args": engine, "engine_env": dict(common.LOCAL_ENGINE_ENV),
+              "gpu": gpu,
+              "started_at": started.isoformat(), "completed_at": finished.isoformat(),
+              "seconds": round((finished - started).total_seconds(), 1), "returncode": result.returncode,
+              "n_output_lines": n_lines, "log_file": log_path.name}  # fmt: skip
+    write_json(paths.batch, record)
+    if n_lines != run["n_requests"]:
+        log.warning("%s: %d output lines for %d requests", run["run_id"], n_lines, run["n_requests"])
+    row = dict(run, status="completed", submitted_at=started, completed_at=finished,
+               output_sha256=common.sha256_file(paths.output))  # fmt: skip
+    row["run_metadata"] = {**(run["run_metadata"] or {}), "local": record}
+    with store.transaction():
+        store.save_runs([row])
+    log.info("%s: %d answers in %.0f s", run["run_id"], n_lines, record["seconds"])
+    return row
+
+
+def claim_path(run: Dict[str, Any]) -> Path:
+    return chunk_paths(run).input.with_name(f"claim_{run['run_metadata']['chunk_index']}")
+
+
+def stale_claim(path: Path) -> bool:
+    """True when the worker that claimed a chunk is gone: no claim file, or its process no longer runs on this host.
+
+    A claim made on another host is never judged stale here."""
+    try:
+        claim = json.loads(path.read_text())
+    except FileNotFoundError:
+        return True
+    except ValueError:
+        return False  # being written right now
+    if claim.get("host") != os.uname().nodename:
+        return False
+    try:
+        os.kill(int(claim["pid"]), 0)
+    except ProcessLookupError:
+        return True
+    except (PermissionError, KeyError, ValueError, TypeError):
+        return False
+    return False
+
+
+def claimable(run: Dict[str, Any]) -> bool:
+    """A local chunk that a worker may take: 'generated', or 'submitted' by a worker that is gone."""
+    return run["status"] == "generated" or (run["mode"] == "local" and run["status"] == "submitted"
+                                             and stale_claim(claim_path(run)))  # fmt: skip
+
+
+def claim_chunk(store: Store, run: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Claim a local chunk for this process, so that several workers can share the chunks of a run.
+
+    The claim is the exclusive creation of ``claim_<k>`` next to the input (atomic, also on NFS); the chunk's row is
+    then re-read and moved to 'submitted', which every other worker and ``generate`` treat as taken.  The claim of a
+    worker that is gone (``stale_claim``) is taken over.  Returns the claimed row, or None when another worker has the
+    chunk or it is no longer claimable.
+    """
+    path = claim_path(run)
+    for _ in range(2):
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+            break
+        except FileExistsError:
+            if not stale_claim(path):
+                return None
+            log.warning("%s: taking over the claim of a worker that is gone (%s)", run["run_id"], path.read_text().strip())
+            with contextlib.suppress(FileNotFoundError):
+                os.remove(path)
+    else:
+        return None
+    claim = {"host": os.uname().nodename, "pid": os.getpid(), "claimed_at": common.utcnow().isoformat()}
+    with os.fdopen(fd, "w") as fh:
+        fh.write(common.dumps(claim) + "\n")
+    current = next((r for r in store.load_runs() if r["run_id"] == run["run_id"]), None)
+    if current is None or current["status"] not in ("generated", "submitted"):
+        os.remove(path)
+        return None
+    row = dict(current, status="submitted", submitted_at=common.utcnow())
+    row["run_metadata"] = {**(current["run_metadata"] or {}), "local_claim": claim}
+    with store.transaction():
+        store.save_runs([row])
+    return row
+
+
+def release_chunk(store: Store, run: Dict[str, Any], failures: Sequence[str]) -> None:
+    """Hand a claimed chunk back ('generated', claim file removed) after its attempts failed; the failures are kept."""
+    meta = dict(run["run_metadata"] or {})
+    meta.pop("local_claim", None)
+    meta["local_failures"] = [*meta.get("local_failures", []), *failures]
+    row = dict(run, status="generated", submitted_at=None, run_metadata=meta)
+    with store.transaction():
+        store.save_runs([row])
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(claim_path(run))
+
+
+def cmd_local(store: Store, args: argparse.Namespace) -> int:
+    """Run the generated chunks of a local open-weights run on a GPU of this machine (no API call, no cost).
+
+    Each chunk is claimed first (``claim_chunk``), so several workers, one per GPU, can run on the same run id and
+    share its chunks.  A chunk whose engine fails (for example when the other users of the GPU took the memory while
+    it started) is tried ``--attempts`` times, two minutes apart, and then handed back."""
+    chunks = chunk_runs(store, args.run_id)
+    foreign = [r["run_id"] for r in chunks if r["mode"] != "local"]
+    if foreign:
+        raise RunnerError(f"{foreign[0]} is not a local run (mode {chunks[0]['mode']}): use 'submit'")
+    todo = [r for r in chunks if claimable(r)]
+    for run in chunks:
+        if run not in todo:
+            log.info("%s is %s: skipping", run["run_id"], "taken by a running worker" if run["status"] == "submitted" else
+                     f"already {run['status']}")  # fmt: skip
+    if todo and not args.force:
+        refuse_duplicate_requests(store, todo)
+    done = []
+    for run in todo:
+        claimed = claim_chunk(store, run)
+        if claimed is None:
+            log.info("%s is taken by another worker: skipping", run["run_id"])
+            continue
+        failures: List[str] = []
+        while True:
+            try:
+                finished = run_local_chunk(store, claimed, args)
+                break
+            except RunnerError as exc:
+                failures.append(f"{common.utcnow().isoformat()} {exc}")
+                if len(failures) >= args.attempts:
+                    release_chunk(store, claimed, failures)
+                    raise
+                log.warning("%s: attempt %d of %d failed (%s); retrying in 120 s", claimed["run_id"], len(failures),
+                            args.attempts, exc)  # fmt: skip
+                time.sleep(120)
+        with contextlib.suppress(FileNotFoundError):
+            os.remove(claim_path(claimed))
+        if failures:
+            finished["run_metadata"] = {**finished["run_metadata"], "local_failures": failures}
+            with store.transaction():
+                store.save_runs([finished])
+        if args.ingest:
+            ingest_chunks(store, [finished], args.from_db)
+        done.append(finished)
+    print(f"ran {len(done)} chunk(s) locally" + ("" if args.ingest else f"; next: {Path(__file__).name} ingest --run-id {args.run_id}"))
     return 0
 
 
@@ -1535,7 +1777,20 @@ def cmd_pilot(store: Store, args: argparse.Namespace) -> int:
     sample = balanced_sample(windows, args.n, args.seed, pilot_arm)
     if not sample:
         raise RunnerError(f"no {window_series}/{arm.symbol} windows to sample")
-    requests = [build_request(make_custom_id(pilot_arm, w), w, common.MAX_COMPLETION_TOKENS) for w in sample]
+    model = common.arm_model(arm)
+    requests = [build_request(make_custom_id(pilot_arm, w), w, common.MAX_COMPLETION_TOKENS, model) for w in sample]
+    if common.is_local_model(model):  # open weights: one local chunk, no API call and no budget
+        openweights_vllm_version()  # refuse before any run row is written: env missing or GPU full
+        pick_gpu(args.gpu, args.gpu_memory_utilization, args.margin_mib, args.wait_gpu)
+        run = create_run(store, arm=pilot_arm, series_key=window_series, symbol=arm.symbol, requests=requests,
+                         mode="local", max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=len(requests),
+                         metadata={"selection": {"n": len(requests), "seed": args.seed, "balanced_on": "clf_should_detect"}},
+                         model=model)[0]  # fmt: skip
+        run = run_local_chunk(store, run, args)
+        [(updated, rows)] = ingest_chunks(store, [run], args.from_db)
+        print_pilot_summary(updated, rows, {w["window_end"]: w for w in windows}, arm.series_key)
+        print(f"RUN_ID={updated['run_metadata']['parent_run_id']}")
+        return 0
     per_request = common.estimate_cost_usd(common.MODEL, "standard", PROJECTED_PROMPT_TOKENS, PROJECTED_COMPLETION_TOKENS)
     check_budget(store, per_request * len(requests), args.budget, args.force, f"pilot of {len(requests)} synchronous calls")
     client = common.openai_client()
@@ -1590,12 +1845,13 @@ def cmd_retry(store: Store, args: argparse.Namespace) -> int:
     vanished = sorted({str(r["window_end"]) for r in cut_off if r["window_end"] not in windows})
     if vanished:
         raise RunnerError(f"windows {vanished[:3]} are no longer in the windows table")
-    requests = [build_request(r["custom_id"], windows[r["window_end"]], common.RETRY_MAX_COMPLETION_TOKENS)
+    requests = [build_request(r["custom_id"], windows[r["window_end"]], common.RETRY_MAX_COMPLETION_TOKENS, first["model"])
                 for r in sorted(cut_off, key=lambda r: (r["window_end"], r["custom_id"]))]  # fmt: skip
     rows = create_run(store, arm=first["arm"], series_key=first["series_key"], symbol=first["symbol"],
-                      requests=requests, mode="batch", max_completion_tokens=common.RETRY_MAX_COMPLETION_TOKENS,
-                      chunk_size=args.chunk_size,
-                      metadata={"retry_of": [r["run_id"] for r in chunks], "reason": "finish_reason=length"})  # fmt: skip
+                      requests=requests, mode=run_mode(first["model"]),
+                      max_completion_tokens=common.RETRY_MAX_COMPLETION_TOKENS, chunk_size=args.chunk_size,
+                      metadata={"retry_of": [r["run_id"] for r in chunks], "reason": "finish_reason=length"},
+                      model=first["model"])  # fmt: skip
     print_generated(rows)
     return 0
 
@@ -1636,18 +1892,25 @@ def cmd_status(store: Store, args: argparse.Namespace) -> int:
     print(f"\ncost ledger: ${spent:.4f} committed over {len(counted_runs)} run(s); budget {usd(args.budget)}, "
           f"${args.budget - spent:.4f} left")  # fmt: skip
     outside = [r for r in every if not common.counts_toward_budget(r)]
+    local = [r for r in outside if r["mode"] == "local"]  # open-weights runs (D-29): no API, no cost
+    outside = [r for r in outside if r["mode"] != "local"]
     if outside:
         total = sum(float(r["est_cost_usd"] or 0.0) for r in outside)
         print(f"* outside the budget, paid before the current balance and never counted (${total:.4f} over "
               f"{len(outside)} backfilled run(s)): "
               + ", ".join(f"{r['run_id']} ${float(r['est_cost_usd'] or 0.0):.4f}" for r in outside))  # fmt: skip
-    index = store.detection_index(None, common.MODEL, common.PROMPT_VERSION)
-    held = pending_requests(store, None, common.MODEL, common.PROMPT_VERSION)
+    if local:
+        print(f"* local runs (open weights, no API cost): {len(local)} run(s), "
+              f"{sum(int(r['n_requests'] or 0) for r in local):,} requests")  # fmt: skip
     states: Dict[str, Counter] = {}
-    current = status_prompt_hashes(store, {k[0] for k, v in index.items() if any(x.prompt_sha256 for x in v)}, getattr(args, "from_db", False))
-    for key in sorted(set(index) | set(held)):
-        stored = window_state(index.get(key, ()), current.get(key))
-        states.setdefault(key[0], Counter())["inflight" if key in held and stored != "done" else stored] += 1
+    for model in (common.MODEL, *sorted(common.LOCAL_MODELS)):  # arm labels are unique to one model
+        index = store.detection_index(None, model, common.PROMPT_VERSION)
+        held = pending_requests(store, None, model, common.PROMPT_VERSION)
+        current = status_prompt_hashes(store, {k[0] for k, v in index.items() if any(x.prompt_sha256 for x in v)},
+                                       getattr(args, "from_db", False))  # fmt: skip
+        for key in sorted(set(index) | set(held)):
+            stored = window_state(index.get(key, ()), current.get(key))
+            states.setdefault(key[0], Counter())["inflight" if key in held and stored != "done" else stored] += 1
     if states:
         print(f"\n{'arm':<20} {'windows':>8} {'done':>6} {'stale':>6} {'retry':>6} {'inflight':>8} {'open':>6}   "
               "(state of each window across all runs)")  # fmt: skip
@@ -1741,11 +2004,30 @@ def build_parser() -> argparse.ArgumentParser:
     command("ingest", cmd_ingest, "parse retrieved answers into detections (idempotent)", source).add_argument(
         "--run-id", required=True)  # fmt: skip
 
-    p = command("pilot", cmd_pilot, "synchronous calls on a classifier-balanced sample (spends money)", source, spend)
+    gpu = argparse.ArgumentParser(add_help=False)
+    group = gpu.add_argument_group("local GPU (open-weights arms)")
+    group.add_argument("--gpu", type=_bounded_int(0), help="GPU index (default: the one with the most free memory)")
+    group.add_argument("--gpu-memory-utilization", type=_fraction, default=common.LOCAL_GPU_MEMORY_UTILIZATION,
+                       help="share of the GPU's memory vLLM may take (default: %(default)s; the GPUs are shared)")  # fmt: skip
+    group.add_argument("--margin-mib", type=_bounded_int(0), default=4096,
+                       help="free memory to leave to the other users of the GPU (default: %(default)s MiB)")  # fmt: skip
+    group.add_argument("--wait-gpu", type=float, default=0.0,
+                       help="minutes to wait for a GPU with enough free memory before refusing (default: %(default)s)")  # fmt: skip
+
+    p = command("pilot", cmd_pilot, "synchronous calls on a classifier-balanced sample (spends money; local arms: free)",
+                source, spend, gpu)  # fmt: skip
     p.add_argument("--arm", required=True, choices=arms)
     p.add_argument("--n", type=_bounded_int(2), default=common.PILOT_WINDOWS, help="windows (default: %(default)s)")
     p.add_argument("--seed", type=int, default=DEFAULT_SEED)
     p.add_argument("--workers", type=_bounded_int(1, 16), default=4, help="parallel calls (default: %(default)s)")
+
+    p = command("local", cmd_local, "answer the generated chunks of an open-weights run on a local GPU with vLLM (no cost)",
+                source, gpu)  # fmt: skip
+    p.add_argument("--run-id", required=True)
+    p.add_argument("--ingest", action="store_true", help="ingest each chunk's answers right after it finishes")
+    p.add_argument("--force", action="store_true", help="run chunks that repeat requests already sent or answered")
+    p.add_argument("--attempts", type=_bounded_int(1), default=3,
+                   help="engine starts per chunk before it is handed back (default: %(default)s)")  # fmt: skip
 
     p = command("requeue", cmd_requeue, "send chunks rejected at validation (quota) again, same files", budget)
     p.add_argument("--run-id", help="restrict to this run (default: every rejected chunk that counts as spend)")

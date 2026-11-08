@@ -131,8 +131,10 @@ CLASSIFIER_COLUMNS = ("series_key", "symbol", "window_end", "clf_should_detect",
 
 
 def registered_llm_arms() -> List[str]:
-    """Arms whose answers the figures may use: the published o4-mini backfill and every registered gpt-6-luna arm."""
-    return [PUBLISHED_ARM, *[key for key, arm in common.ARMS.items() if arm.llm]]
+    """Arms whose answers the figures may use: the published o4-mini backfill and every registered gpt-6-luna arm.
+
+    The open-weights arms (D-29) are reported in tables, not in these figures, so they are left out here."""
+    return [PUBLISHED_ARM, *[key for key, arm in common.ARMS.items() if arm.llm and common.arm_model(arm) == common.MODEL]]
 
 
 def load_answer_pairs(inputs: figdata.Inputs, arms: Sequence[str]) -> Tuple[pd.DataFrame, Dict[str, int]]:
@@ -163,11 +165,13 @@ def load_answer_pairs(inputs: figdata.Inputs, arms: Sequence[str]) -> Tuple[pd.D
 
 
 def model_group(model: str) -> Optional[str]:
-    """'o4-mini' for the published model, 'luna' for gpt-6-luna, None for anything else."""
+    """'o4-mini' for the published model, 'luna' for gpt-6-luna, 'gpt-oss' for the open-weights model, None otherwise."""
     if str(model).startswith("o4-mini"):
         return "o4-mini"
     if str(model).startswith(common.MODEL):
         return "luna"
+    if str(model) in common.LOCAL_MODELS:
+        return "gpt-oss"
     return None
 
 

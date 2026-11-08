@@ -1,0 +1,36 @@
+{
+  "backend": "vllm.entrypoints.openai.run_batch",
+  "completed_at": "2026-11-07T21:05:40.563310+00:00",
+  "engine_args": [
+    "--model",
+    "openai/gpt-oss-20b",
+    "--revision",
+    "6cee5e81ee83917806bbde320786a8fb61efebee",
+    "--served-model-name",
+    "gpt-oss-20b",
+    "--gpu-memory-utilization",
+    "0.22",
+    "--max-model-len",
+    "8192",
+    "--seed",
+    "261"
+  ],
+  "engine_env": {
+    "VLLM_USE_FLASHINFER_SAMPLER": "0"
+  },
+  "gpu": {
+    "free_mib": 25589,
+    "index": 0,
+    "name": "NVIDIA A100-SXM4-80GB",
+    "total_mib": 81920
+  },
+  "log_file": "local_0.log",
+  "model_repo": "openai/gpt-oss-20b",
+  "model_revision": "6cee5e81ee83917806bbde320786a8fb61efebee",
+  "n_output_lines": 775,
+  "returncode": 0,
+  "seconds": 6890.4,
+  "served_model_name": "gpt-oss-20b",
+  "started_at": "2026-11-07T19:10:50.126422+00:00",
+  "vllm_version": "0.32.0"
+}

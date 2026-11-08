@@ -1,0 +1,91 @@
+{
+  "arm": "oss_ex0dte_spy",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "0b7163db16fe1aba271548567d706e8aab58e03bfd0daf77f935a2b28bec04fd",
+      "n_requests": 1232,
+      "run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c0",
+      "window_end_max": "2013-01-03",
+      "window_end_min": "2008-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "a011110475947bf66cba8043a4323c056f2b0b5ef89937efbf924a6846942687",
+      "n_requests": 1232,
+      "run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c1",
+      "window_end_max": "2017-11-22",
+      "window_end_min": "2013-01-04"
+    },
+    {
+      "input_file": "input_2.jsonl",
+      "input_sha256": "072ee27d135af4987b5c4dc96acbcbdd5a73abbb576afdc6cc78bb4409273ab7",
+      "n_requests": 1231,
+      "run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c2",
+      "window_end_max": "2022-10-19",
+      "window_end_min": "2017-11-24"
+    },
+    {
+      "input_file": "input_3.jsonl",
+      "input_sha256": "4853c3162eb558435bdc1a0743c577de9b189d1f04ad9eccaea7f13e8599a773",
+      "n_requests": 1231,
+      "run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z_c3",
+      "window_end_max": "2026-10-09",
+      "window_end_min": "2008-04-16"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "3f1460ae01724d7bbef3212765c126f67487ef642f0c52a7f695b7eac21d8770",
+    "common.py": "e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00"
+  },
+  "generated_at": "2026-11-07T19:10:22.792239+00:00",
+  "git_sha": "0295c061512630def45c2cf15335d4ab0a779827",
+  "infra_git_sha": "dc5803979986ea098ca7ee1d2be10a6e7af3d61f",
+  "max_completion_tokens": 4000,
+  "mode": "local",
+  "model": "gpt-oss-20b",
+  "n_chunks": 4,
+  "package_versions": {
+    "numpy": "2.4.0",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.11",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "standard",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "oss_ex0dte_spy_gpt-oss-20b_local_20261107T191022Z",
+  "selection": {
+    "end_max": "2026-10-09",
+    "end_min": "2008-01-01",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 4691,
+    "n_repeats": 235,
+    "n_stale": 0,
+    "n_stale_repeats": 0,
+    "n_stale_selected": 0,
+    "n_windows_in_range": 4691,
+    "pool_window_end_max": "2026-10-09",
+    "pool_window_end_min": "2008-02-13",
+    "repeat_fraction": 0.05,
+    "repeat_target": 235,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "new_ex0dte",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet"
+  },
+  "series_key": "new_ex0dte",
+  "symbol": "SPY"
+}

@@ -174,7 +174,7 @@ Row counts are as built on 2026-10-29.
   `regime_detected` (model) and `clf_should_detect` (rule) are the primary labels, the four-way `regime_type` is
   secondary.
 
-### 3.3 Arms (`common.ARMS`: 18 keys, 15 of them call a model)
+### 3.3 Arms (`common.ARMS`: 25 keys, 22 of them call a model; the seven `oss_*` arms of D-29 are in Step 4b)
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
 answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
@@ -443,15 +443,16 @@ spend (section 3.4).
 
 ### Step 4. LLM runner
 
-`04_llm_runner.py` has nine subcommands. Run `python $E/04_llm_runner.py <command> --help` for the options. Every
+`04_llm_runner.py` has ten subcommands. Run `python $E/04_llm_runner.py <command> --help` for the options. Every
 command takes the storage flags `--parquet-only` (never connect to Postgres), `--rollback` (section 5.4),
 `--backup-root DIR` (run directories and parquet copies, and the windows, live under that folder: use it to rehearse
-without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 15 with `llm = True`.
+without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 22 with `llm = True` (15 for gpt-6-luna, 7 for the open-weights model, Step 4b).
 
 | Command | Does | Cost |
 |---------|------|------|
 | `pilot --arm A` | synchronous calls on a sample balanced on the classifier verdict; recorded and ingested like a run | spends (standard rates) |
 | `generate --arm A` | selects windows, writes the Batch input chunks and `generated` runs rows | free, no network |
+| `local --run-id R [--ingest]` | open-weights arms only: answers the generated chunks with vLLM on a local GPU (Step 4b) | free (GPU time) |
 | `submit --run-id R` | uploads each chunk and creates its Batch job | spends |
 | `poll --run-id R [--wait]` | refreshes batch status and usage | free |
 | `retrieve --run-id R` | downloads output and error files verbatim | free |
@@ -591,6 +592,56 @@ largest completion in the probe was 1,224 tokens, so retries should be rare.
 each chunk also goes to `tables/runs/<run_id>_c<k>.parquet` and its detections to
 `tables/detections/<run_id>_c<k>.parquet`. Run status moves `generated`, `submitted`, `in_progress`, then
 `completed`, `failed`, `expired` or `cancelled`, then `ingested`.
+
+### Step 4b. Open-weights arms (D-29, local GPU)
+
+The seven `oss_*` arms send the gpt-6-luna request body unchanged, except the model name, to `gpt-oss-20b`
+(`openai/gpt-oss-20b`, Apache-2.0, revision `common.OPEN_MODEL_REVISION`), answered on this machine by vLLM's offline
+batch runner. Their runs have mode `local`, cost nothing and never count toward the budget; `submit`, `poll`,
+`retrieve` and `requeue` refuse or skip them, and `ingest` reads their output like a downloaded batch.
+
+One-time setup (a separate env: never install into AutoGex, which the production monitors share), then the weights of
+the pinned revision into the Hugging Face cache (the top-level files only; the repository also holds `original/` and
+`metal/` copies that vLLM does not need). Every local run is offline (`HF_HUB_OFFLINE=1`), so it uses exactly that
+revision:
+
+```bash
+conda create -y -n openweights python=3.12 pip
+PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/pip install "vllm==0.32.0"
+PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface_hub import snapshot_download; \
+  print(snapshot_download('openai/gpt-oss-20b', revision='6cee5e81ee83917806bbde320786a8fb61efebee', \
+  allow_patterns=['*.json', '*.jinja', 'model-*.safetensors', 'LICENSE', 'USAGE_POLICY']))"
+```
+
+The GPUs have no scheduler and are shared with other users: `local` takes the GPU with the most free memory (or
+`--gpu N`), lets vLLM use `--gpu-memory-utilization` of it (default `common.LOCAL_GPU_MEMORY_UTILIZATION`, 0.22 of
+80 GB, about 18 GB) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
+for up to M minutes instead of refusing. The engine runs at `--max-model-len` 8,192 (a retry run at 8,000 completion
+tokens gets 12,096), seed 261, and `VLLM_USE_FLASHINFER_SAMPLER=0` (the FlashInfer sampler needs a JIT build with
+`ninja`; the PyTorch sampler does not). The engine arguments and environment, the vLLM version, the weights revision,
+the GPU and the run time are written to `batch_<k>.json` and the run row (`run_metadata.local`); vLLM's log is
+`local_<k>.log` in the run directory (git-ignored, like the JSONL files).
+
+```bash
+python $E/04_llm_runner.py pilot --parquet-only --arm oss_bridge_jan          # 40 windows, balanced on the rule
+python $E/04_llm_runner.py generate --parquet-only --arm oss_full_spy         # 5% repeats as D-09
+python $E/04_llm_runner.py local --parquet-only --run-id $RUN_ID --ingest      # hours on a shared A100
+python $E/04_llm_runner.py retry --parquet-only --run-id $RUN_ID               # answers cut off at 4,000 tokens
+python $E/04_llm_runner.py local --parquet-only --run-id $RETRY_RUN_ID --ingest
+```
+
+**Several GPUs at once.** Start one `local` per GPU on the same run (`--gpu N`); each worker claims a chunk before it
+runs it, so two workers never answer the same chunk. A claim is the file `claim_<k>` in the run directory (created
+exclusively, holding host and pid) plus status `submitted` on the chunk's row; a worker skips a chunk whose claim
+belongs to a live process and takes over a claim whose process has died on this host, so a crashed worker can simply
+be started again. vLLM can fail at start-up when another user takes the memory between the check and the allocation
+("No available memory for the cache blocks"): `--attempts` (default 3) retries the chunk after 120 s each time, and
+after the last failure the chunk goes back to `generated` with the failures in `run_metadata.local_failures`. With
+`--ingest` each chunk is ingested as soon as it is answered. Run long jobs in a detached `screen` session, not in a
+shell that ends with the login. Do not run `generate` for an arm while its chunks are still being answered unless
+you need to: it is safe (in-flight windows are not requested again and count toward the repeat target), but the
+repeat target of a run generated before the fix of 2026-11-07 counted finished windows only, which gave
+`oss_ex0dte_spy` six extra repeats (run `..._20261107T205228Z`, 241 repeats instead of 235).
 
 ### Step 5. Report
 

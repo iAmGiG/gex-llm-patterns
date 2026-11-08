@@ -44,6 +44,8 @@
 | D-25 | 2026-11-04 | Code audit | Exact block bootstrap up to ten quarters; one Methods sentence for the Sandy closure; deposit holds current plus replaced answers |
 | D-26 | 2026-11-07 | Reader-facing additions | Sign of the detected regimes, the role of the LLM against the rule, labels not price effects, a leg check among the practices |
 | D-27 | 2026-11-07 | Nominal floor and positioning | Pre-2014 zeros read as a floor of the fixed dollar threshold, with size-free shares; sign convention stated as an imputation; 'must' softened |
+| D-28 | 2026-11-07 | Scale as a clue to the period | Threat sentence: undated windows still carry their era in the dollar scale; the dated-label test and the agreement with the rule bound its effect |
+| D-29 | 2026-11-07 | Open-weights arm | gpt-oss-20b with pinned weights, run locally with vLLM on the gpt-6-luna request files (seven arms, no API cost) |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -367,6 +369,21 @@
   - Counts come from new `detection_by_year.csv` columns `n_shape_ok` and `max_mean_abs_gex_bn` and from `report.yaml` diagnostics.floor_years. No new experiment, no model arm.
 - Outcome: report re-run (other results files byte-identical), figure images byte-identical (five manifests updated), parts 02, 04_06, 05 and 06 changed.
 
+### D-28 Scale of the series as a clue to the period (2026-11-07)
+
+- Date: 2026-11-07. Decided by Chris, from the recommendations after D-27.
+- Fact: relative day labels remove the dates but not the scale. The 30-day mean |GEX| of the `new_full` SPY windows averages USD 1.16B in 2010 and 6.48B in 2024 (`detection_by_year.csv`, classifier rows, `mean_abs_gex_bn`), so an undated window can indicate its era; the paper did not say so although its title names temporal obfuscation.
+- Decision: one threat in Discussion 5.3 states it and bounds it with two stored results: the dated and the relative labels give the same verdict in 445 of 446 baseline windows (Section 4.11), and gpt-6-luna agrees with the date-blind rule in 99.7% of the `full_spy` windows (Section 4.4).
+- Outcome: part 05 changed; no result file changed.
+
+### D-29 Open-weights arm: gpt-oss-20b on local GPUs (2026-11-07)
+
+- Date: 2026-11-07. Decided by Chris (model chosen from gpt-oss-20b, Qwen3-8B, or both).
+- Why: Section 1.1 motivates the study with model retirement, yet every model arm used one closed alias without a dated snapshot, and Discussion 5.3 concedes one provider and one model family. Fixed open weights give one arm that anyone can re-run after the API model is retired.
+- Protocol: the gpt-6-luna request body unchanged (prompt, strict JSON schema, reasoning effort medium, completion cap 4,000, no temperature or seed in the body) except the model name; `openai/gpt-oss-20b` (Apache-2.0) at revision `6cee5e81ee83917806bbde320786a8fb61efebee`, vLLM 0.32.0 offline batch runner (`vllm.entrypoints.openai.run_batch`) in the separate conda env `openweights`, Hugging Face cache offline, engine seed 261, one shared A100 per job (GPU memory share 0.22, about 18 GB, chosen after the first jobs met other users' allocations; the GPU with the most free memory, or a fixed one per worker), maximum model length 8,192 (12,096 for a retry at 8,000 completion tokens), PyTorch sampler (`VLLM_USE_FLASHINFER_SAMPLER=0`, the FlashInfer sampler needs a JIT build). Several workers can share a run, each on its own GPU: a chunk is claimed before it runs (`claim_<k>`), a failed engine start is retried after 120 s (three attempts), and every chunk is ingested as soon as it is answered. Arms `oss_bridge_jan`, `oss_full_spy`, `oss_ex0dte_spy`, `oss_p34_obf_2024`, `oss_p34_dated_2024`, `oss_p34_obf_2020`, `oss_p34_dated_2020` (common.ARMS, `model='gpt-oss-20b'`), 5% repeats as D-09, a 40-window pilot first. Runs carry mode `local`; they cost nothing and never count toward the budget.
+- Gpt-oss-20b is from the same provider as gpt-6-luna, so the arm answers the retirement threat and not the one-provider threat (Qwen3-8B was the second-provider option, not chosen).
+- Outcome (2026-11-07, results/ of that night): all seven arms and the pilot answered on local A100s, three GPUs in parallel: 12,398 requests (11,750 windows, 594 repeats, the 40-window pilot, 14 retries at 8,000 tokens), 10.0 GPU-hours, no cost. 11,748 of 11,750 windows hold a parsed answer: two answers of `oss_full_spy` close the reasoning string with a typographic quote followed by control tokens and are not retried (the protocol retries only length cut-offs); one bridge answer with the same defect needed the fallback parser; all 14 length cut-offs parsed at 8,000. Results (Section 4.12, Table `tab:open`): against o4-mini on the 1,412 published windows 99.6%, kappa 0.991 (gpt-6-luna 0.993); against gpt-6-luna 99.2% (bridge, kappa 0.984), 99.4% (`full_spy`, 0.973) and 99.6% (`ex0dte_spy`, 0.976); against the rule 99.7% (0.988) and 99.9% (0.992); 2024-2025 on `new_full` 62 of 502 (12.4%; rule 60, gpt-6-luna 63), on `new_ex0dte` 75 of 502 (14.9%; rule 74); period shift -10.1 points (bootstrap p 0.103); 2024 baseline 185 of 223 with Day-T labels and 183 with dates (6 discordant windows; bootstrap p 0.633, exact McNemar 0.688 at stride one, 1.000 on the non-overlapping subsample), 2020 27 of 223 under both; 2024-vs-2020 contrast 70.9 points (phi 0.709) with Day-T labels and 70.0 (0.701) with dates; repeats give the first verdict again in 593 of 594 windows. Paper: Section 4.12 (`04_12_Open.tex`), Methods 3.5 and 3.6 paragraphs, the `oss_*` rows of Table 3, Table S3, RQ8, contribution (vii), one abstract sentence, the conclusion, and the one-provider threat rewritten as one developer. Found on the way and fixed: `generate` while chunks were in flight added 6 repeats to `oss_ex0dte_spy` (241 instead of 235; the repeat target now counts in-flight and retry windows); `05_report.py` `primary_llm_labels` (largest arm per series) and fig10 (count ties broken by column name) would have switched gpt-6-luna numbers to gpt-oss-20b, so both, and fig05, read gpt-6-luna only; fig01 draws the open-weights arms as one group. Every gpt-6-luna number and every figure but fig01 is unchanged.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -479,3 +496,5 @@
 - 2026-11-03 (evening): D-24 outcome recorded (rebuild, re-run, reload, manuscript numbers).
 - 2026-11-07: D-26 added (sign of the detected regimes, role of the LLM, labels not price effects, leg check).
 - 2026-11-07: D-27 added (nominal floor over time with size-free shares, sign convention as an imputation, 'must' softened).
+- 2026-11-07: D-28 added (scale of the series as a clue to the period); D-29 added (open-weights arm, gpt-oss-20b; outcome pending).
+- 2026-11-07 (night): D-29 outcome recorded (seven arms run; Section 4.12 written; tables loaded into the database).

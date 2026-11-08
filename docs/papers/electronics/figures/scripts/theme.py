@@ -151,6 +151,13 @@ ARM_LABELS: Dict[str, str] = {
     "full_qqq_scaled": "luna, complete, QQQ, scaled",
     "full_iwm_scaled": "luna, complete, IWM, scaled",
     "intraday_spy": "luna, intraday T+0, SPY",
+    "oss_bridge_jan": "gpt-oss, published inputs",
+    "oss_full_spy": "gpt-oss, complete, SPY",
+    "oss_ex0dte_spy": "gpt-oss, ex-0DTE, SPY",
+    "oss_p34_obf_2024": "gpt-oss, 2024 baseline, Day-T labels",
+    "oss_p34_dated_2024": "gpt-oss, 2024 baseline, dated",
+    "oss_p34_obf_2020": "gpt-oss, 2020 baseline, Day-T labels",
+    "oss_p34_dated_2020": "gpt-oss, 2020 baseline, dated",
 }
 
 SEQUENTIAL_BLUE = ["#F3F7FC", "#CDE2FB", "#86B6EF", "#3987E5", "#1C5CAB", "#0D366B"]  # one hue, light to dark
