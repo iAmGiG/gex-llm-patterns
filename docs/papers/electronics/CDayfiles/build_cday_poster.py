@@ -18,8 +18,13 @@ install into AutoGex):
 
     ~/miniconda3/envs/gamma-sieve/bin/python docs/papers/electronics/CDayfiles/build_cday_poster.py
 
-Output: docs/papers/electronics/CDayfiles/Regan_Xie_CDay_Poster.pptx.  For print, export the PDF from
-PowerPoint (File > Export > PDF); a LibreOffice export substitutes the fonts.
+Output: docs/papers/electronics/CDayfiles/Regan_Xie_CDay_Poster.pptx.  Its PDF, Regan_Xie_CDay_Poster.pdf, is a
+LibreOffice export (Liberation Sans for Arial, metric-compatible), made on this machine with the Docker image
+cregan1/lo-render:1:
+    docker run --rm -u $(id -u):$(id -g) -e HOME=/tmp/home -v $PWD/docs/papers/electronics/CDayfiles:/work cregan1/lo-render:1 \
+        bash -c "mkdir -p /tmp/home && soffice -env:UserInstallation=file:///tmp/home/lo --headless --convert-to pdf \
+        --outdir /work /work/Regan_Xie_CDay_Poster.pptx"
+A PDF exported from PowerPoint (File > Export > PDF) keeps the original fonts.
 """
 from __future__ import annotations
 
