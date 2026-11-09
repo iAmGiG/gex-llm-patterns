@@ -1,7 +1,7 @@
 \section{Run Ledger}
 \label{sup:ledger}
 
-Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every Batch job and the backfilled runs of the study: the identifiers, the token usage and the cost. Table~\ref{tab:ledger3} lists the local runs of the open-weights model gpt-oss-20b (Section~3.5 of the article), which cost nothing. The arms are defined in Section~3.6 of the article.
+Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every Batch job and the backfilled runs of the study: the identifiers, the token usage and the cost. Tables~\ref{tab:ledger3} and~\ref{tab:ledger4} list the local runs of the open-weights models gpt-oss-20b and Llama~3.1~8B (Section~3.5 of the article), which cost nothing. The arms are defined in Section~3.6 of the article.
 
 % src: cost_ledger.csv, rows with counts_toward_budget = True (column recomputed_cost_usd; it equals est_cost_usd in every row); total equals cost_ledger.yaml budget.spent_usd (10.020749); the eight rows with the timestamp 20261103T04... are the re-requests of 2026-11-03; backfill rows budget_class = backfill
 \begin{table}[H]
@@ -116,6 +116,38 @@ Run identifier & Requests & Prompt tokens & Completion tokens & GPU minutes & St
 \path{oss_p34_dated_2020_gpt-oss-20b_local_20261107T183929Z_c0} & 234 & 449{,}280 & 292{,}327 & 4.3 & ingested \\
 \midrule
 Total (local) & 12{,}398 & 23{,}088{,}480 & 23{,}115{,}523 & 600.7 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% src: cost_ledger.csv rows with model = llama-3.1-8b-instruct (n_requests, prompt_tokens, completion_tokens, status); runs parquet run_metadata.local.seconds (GPU minutes)
+\begin{table}[H]
+\centering
+\caption{Run ledger (continued): the local runs of Llama~3.1~8B, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each, as in Table~\ref{tab:ledger3}. No answer reached the token limit, so there are no retry runs.}
+\label{tab:ledger4}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrl@{}}
+\toprule
+Run identifier & Requests & Prompt tokens & Completion tokens & GPU minutes & Status \\
+\midrule
+\path{pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0} & 40 & 72{,}800 & 6{,}712 & 3.1 & ingested \\
+\path{llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c0} & 775 & 1{,}410{,}500 & 131{,}970 & 29.9 & ingested \\
+\path{llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c1} & 775 & 1{,}410{,}500 & 129{,}347 & 8.4 & ingested \\
+\path{llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c0} & 1{,}232 & 2{,}242{,}240 & 212{,}867 & 17.3 & ingested \\
+\path{llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c1} & 1{,}232 & 2{,}242{,}240 & 210{,}077 & 17.4 & ingested \\
+\path{llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c2} & 1{,}231 & 2{,}240{,}420 & 208{,}263 & 9.4 & ingested \\
+\path{llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c3} & 1{,}231 & 2{,}240{,}420 & 208{,}043 & 7.7 & ingested \\
+\path{llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c0} & 1{,}232 & 2{,}242{,}240 & 212{,}383 & 28.8 & ingested \\
+\path{llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c1} & 1{,}232 & 2{,}242{,}240 & 209{,}825 & 17.5 & ingested \\
+\path{llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c2} & 1{,}231 & 2{,}240{,}420 & 207{,}502 & 18.7 & ingested \\
+\path{llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c3} & 1{,}231 & 2{,}240{,}420 & 208{,}475 & 18.6 & ingested \\
+\path{llama_p34_obf_2024_llama-31-8b-instruct_local_20261108T175239Z_c0} & 234 & 425{,}880 & 39{,}334 & 6.5 & ingested \\
+\path{llama_p34_dated_2024_llama-31-8b-instruct_local_20261108T175242Z_c0} & 234 & 439{,}920 & 39{,}353 & 5.0 & ingested \\
+\path{llama_p34_obf_2020_llama-31-8b-instruct_local_20261108T175244Z_c0} & 234 & 425{,}880 & 39{,}178 & 5.2 & ingested \\
+\path{llama_p34_dated_2020_llama-31-8b-instruct_local_20261108T175248Z_c0} & 234 & 439{,}920 & 39{,}430 & 5.0 & ingested \\
+\midrule
+Total (local) & 12{,}378 & 22{,}556{,}040 & 2{,}102{,}759 & 198.4 & \\
 \bottomrule
 \end{tabular}
 \end{table}

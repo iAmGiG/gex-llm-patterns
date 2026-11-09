@@ -146,7 +146,7 @@ The bridge carries a gate. Cohen's kappa between \ident{bridge_jan} and the 1{,}
 % src: common.py OPEN_MODEL_REPO, OPEN_MODEL_REVISION, VLLM_VERSION, LOCAL_MAX_MODEL_LEN, LOCAL_GPU_MEMORY_UTILIZATION, LOCAL_ENGINE_ENV; runs parquet run_metadata.local (engine_args, engine_env, model_revision, vllm_version, gpu); local_<k>.log (structured_outputs_config backend auto, reasoning_parser openai_gptoss); HF snapshot generation_config.json (do_sample true, no temperature); planning/02_decisions_log.md D-29
 A third model answers seven arms (Section~\ref{sec:methods:arms}). The alias gpt-6-luna can be retired as o4-mini was, so these arms use a model whose weights can be run again: gpt-oss-20b \cite{openai2025gptoss}, an open-weights model released by OpenAI under the Apache-2.0 licence, at the fixed revision \texttt{6cee5e81} of its public repository \path{openai/gpt-oss-20b}. It runs on the authors' NVIDIA A100 GPUs with the offline batch runner of vLLM~0.32.0 \cite{kwon2023vllm}, which reads request files in the format of the Batch API, and the weights are read from a local copy of that revision without network access. The request body is that of gpt-6-luna with only the model name changed: the same prompt, \ident{reasoning_effort} = \ident{medium}, the strict JSON schema and the limit of 4{,}000 completion tokens, with one more request at 8{,}000 tokens for an answer cut off at the limit. vLLM applies the schema through its structured-output decoding once the reasoning channel of the model has ended. No temperature is sent, so the engine samples at its default of 1.0, with the engine seed fixed at 261; answers still need not repeat exactly, because requests share the engine in batches whose composition varies. The engine arguments, the vLLM version, the weights revision, the GPU and the run time are stored with every run. These runs are \ident{local} in the run ledger: they use no API and cost nothing beyond the GPU time, so they do not enter the cost of the study.
 
-% src: common.py LOCAL_SPECS['llama-3.1-8b-instruct'] (repo, revision, license, gpu_memory_utilization 0.27, reasoning False), model_reasoning_effort; HF snapshot 0e9e39f2 generation_config.json (do_sample true, temperature 0.6, top_p 0.9; read 2026-11-08); planning/02_decisions_log.md D-30
+% src: common.py LOCAL_SPECS['llama-3.1-8b-instruct'] (repo, revision, license, gpu_memory_utilization 0.22, the pilot at 0.27, reasoning False), model_reasoning_effort; HF snapshot 0e9e39f2 generation_config.json (do_sample true, temperature 0.6, top_p 0.9; read 2026-11-08); planning/02_decisions_log.md D-30
 gpt-oss-20b comes from the developer of gpt-6-luna, so a fourth model answers seven more arms: Llama~3.1~8B~Instruct \cite{grattafiori2024llama3}, released by Meta under the Llama~3.1 Community License, at the fixed revision \texttt{0e9e39f2} of \path{meta-llama/Llama-3.1-8B-Instruct}, in its release precision (bfloat16). It runs in the same way as gpt-oss-20b, on the same engine. Llama~3.1 has no reasoning mode, so its requests carry no \ident{reasoning_effort}; the body is otherwise unchanged. The schema lists the verdict first and the reasoning last, and the structured-output decoding follows that order, so this model writes its verdict before any reasoning, whereas the three reasoning models reason before they write the JSON object. Sampling follows the defaults of the repository (temperature 0.6, top-p 0.9), with the same engine seed.
 
 
@@ -167,11 +167,11 @@ The open-weights arms carry the prefix \ident{oss_} for gpt-oss-20b and \ident{l
 
 \begin{table}[H]
 \centering
-\caption{Experimental arms and run matrix. Windows, requests and cost come from the run ledger (Tables~S1--S3 of the Supplementary Materials). Requests include the test-retest repeats and the 1{,}121 re-requests of 2026-11-03 (Section~\ref{sec:methods:storage}), and the pilot ran synchronously at standard prices. Batch costs use \$0.05 and \$0.25 per million input and output tokens. The three o4-mini backfills are not spend of this study. The arms with the prefix \ident{oss_} and their pilot ran gpt-oss-20b on local GPUs (Section~\ref{sec:methods:model}) and cost nothing; their requests include the 5\% repeats and 14 retries at 8{,}000 tokens.}
+\caption{Experimental arms and run matrix. Windows, requests and cost come from the run ledger (Tables~S1--S4 of the Supplementary Materials). Requests include the test-retest repeats and the 1{,}121 re-requests of 2026-11-03 (Section~\ref{sec:methods:storage}), and the pilot ran synchronously at standard prices. Batch costs use \$0.05 and \$0.25 per million input and output tokens. The three o4-mini backfills are not spend of this study. The arms with the prefix \ident{oss_} and their pilot ran gpt-oss-20b on local GPUs (Section~\ref{sec:methods:model}) and cost nothing; their requests include the 5\% repeats and 14 retries at 8{,}000 tokens. The arms with the prefix \ident{llama_} ran Llama~3.1~8B in the same way; none of its answers needed a retry.}
 % src: llm_parse_stats.csv (n_rows of primary runs = windows); cost_ledger.yaml by_arm (n_requests, est_cost_usd_counted)
 \label{tab:arms}
 \footnotesize
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llllrrr@{}}
 \toprule
 Arm & Series & Symbol & Window ends & Windows & Requests & Cost (USD) \\
@@ -206,9 +206,20 @@ Arm & Series & Symbol & Window ends & Windows & Requests & Cost (USD) \\
 \ident{oss_p34_dated_2020} & \ident{p4_2020_dated} & SPY & 2020 & 223 & 234 & local \\
 \ident{pilot_oss_bridge_jan} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 40 & 40 & local \\
 \midrule
+% src: llm_parse_stats.csv n_rows of the llama arms; cost_ledger.csv model=llama-3.1-8b-instruct, n_requests summed per arm (repeats included; no retries)
+\ident{llama_bridge_jan} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 1{,}476 & 1{,}550 & local \\
+\ident{llama_full_spy} & \ident{new_full} & SPY & 2008--2026 & 4{,}691 & 4{,}926 & local \\
+\ident{llama_ex0dte_spy} & \ident{new_ex0dte} & SPY & 2008--2026 & 4{,}691 & 4{,}926 & local \\
+\ident{llama_p34_obf_2024} & \ident{p3_2024} & SPY & 2024 & 223 & 234 & local \\
+\ident{llama_p34_dated_2024} & \ident{p3_2024_dated} & SPY & 2024 & 223 & 234 & local \\
+\ident{llama_p34_obf_2020} & \ident{p4_2020} & SPY & 2020 & 223 & 234 & local \\
+\ident{llama_p34_dated_2020} & \ident{p4_2020_dated} & SPY & 2020 & 223 & 234 & local \\
+\ident{pilot_llama_bridge_jan} & \ident{jan2026_phase4a} & SPY & 2020--2025 & 40 & 40 & local \\
+\midrule
 % src: cost_ledger.yaml totals.counted (n_requests, est_cost_usd); totals.other_model (n_requests 12{,}398, est_cost_usd 0.0)
 Total, gpt-6-luna & & & & & 35{,}833 & 10.02 \\
 Total, gpt-oss-20b & & & & & 12{,}398 & local \\
+Total, Llama~3.1~8B & & & & & 12{,}378 & local \\
 \bottomrule
 \end{tabular}
 \end{table}
