@@ -1,0 +1,37 @@
+{
+  "backend": "vllm.entrypoints.openai.run_batch",
+  "completed_at": "2026-11-08T20:15:58.918461+00:00",
+  "engine_args": [
+    "--model",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "--revision",
+    "0e9e39f249a16976918f6564b8830bc894c89659",
+    "--served-model-name",
+    "llama-3.1-8b-instruct",
+    "--gpu-memory-utilization",
+    "0.22",
+    "--max-model-len",
+    "8192",
+    "--seed",
+    "261"
+  ],
+  "engine_env": {
+    "VLLM_USE_FLASHINFER_SAMPLER": "0"
+  },
+  "gpu": {
+    "free_mib": 33015,
+    "index": 2,
+    "name": "NVIDIA A100-SXM4-80GB",
+    "total_mib": 81920
+  },
+  "log_file": "local_3.log",
+  "model_license": "Llama 3.1 Community License",
+  "model_repo": "meta-llama/Llama-3.1-8B-Instruct",
+  "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+  "n_output_lines": 1231,
+  "returncode": 0,
+  "seconds": 1116.9,
+  "served_model_name": "llama-3.1-8b-instruct",
+  "started_at": "2026-11-08T19:57:21.998901+00:00",
+  "vllm_version": "0.32.0"
+}

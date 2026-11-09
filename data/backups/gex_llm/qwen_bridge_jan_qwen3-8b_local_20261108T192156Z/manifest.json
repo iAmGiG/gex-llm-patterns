@@ -1,0 +1,147 @@
+{
+  "arm": "qwen_bridge_jan",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "e59573c47b6320731de94e335c0259fb3c83dbf48180fd04c6400fff0c0fa6ef",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c0",
+      "window_end_max": "2020-09-03",
+      "window_end_min": "2020-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "699c5ac4dc9282498cbf2e15750e703d88ce4c2ebf6ad680bf72c51d37209037",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c1",
+      "window_end_max": "2021-03-29",
+      "window_end_min": "2020-09-04"
+    },
+    {
+      "input_file": "input_2.jsonl",
+      "input_sha256": "ffd63bca45c314cf1419a33538c5236e3eca94aea262ad890c373c6f0140f4ea",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c2",
+      "window_end_max": "2021-10-18",
+      "window_end_min": "2021-03-30"
+    },
+    {
+      "input_file": "input_3.jsonl",
+      "input_sha256": "0f38ff0c49487477f6de0abfd5e4a4256f1ed804699e5cc5b7cce1ae434e1631",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c3",
+      "window_end_max": "2022-05-10",
+      "window_end_min": "2021-10-19"
+    },
+    {
+      "input_file": "input_4.jsonl",
+      "input_sha256": "a0af079ee1ebf88fc397802851d908cf3eef38f71b3abfacb5257c6d56667c9b",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c4",
+      "window_end_max": "2022-11-30",
+      "window_end_min": "2022-05-11"
+    },
+    {
+      "input_file": "input_5.jsonl",
+      "input_sha256": "e6b8861fa111ead87473e87c3f02663445235fe65900b7b13e5e1a753a1d569a",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c5",
+      "window_end_max": "2023-06-26",
+      "window_end_min": "2022-12-01"
+    },
+    {
+      "input_file": "input_6.jsonl",
+      "input_sha256": "8d1d04a8c7669d4756287d1a33c3d7c8c4b98f09180688829f9f61700a94f74a",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c6",
+      "window_end_max": "2024-01-18",
+      "window_end_min": "2023-06-27"
+    },
+    {
+      "input_file": "input_7.jsonl",
+      "input_sha256": "f85da198155d10bba02a932db1ab5ac106475b73f52b667682b4d08298aa3263",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c7",
+      "window_end_max": "2024-08-12",
+      "window_end_min": "2024-01-19"
+    },
+    {
+      "input_file": "input_8.jsonl",
+      "input_sha256": "4a91364c53ec796b4d47ac8fca89a7ede7db9fd8d8bfcb5bc7dd1222e5d00280",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c8",
+      "window_end_max": "2025-03-06",
+      "window_end_min": "2024-08-13"
+    },
+    {
+      "input_file": "input_9.jsonl",
+      "input_sha256": "c537b397372c4ce9d256082fd76178ca1f13f3a9a17f6c045f2be68ef527b6e3",
+      "n_requests": 141,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c9",
+      "window_end_max": "2025-09-26",
+      "window_end_min": "2025-03-07"
+    },
+    {
+      "input_file": "input_10.jsonl",
+      "input_sha256": "a0ab6e881b3c1931731f36cf5cd755b07b925b954df5ba7e46e3f659e0ba09bc",
+      "n_requests": 140,
+      "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c10",
+      "window_end_max": "2025-12-31",
+      "window_end_min": "2020-02-20"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "ce97125b0eb34629ca31dbf7c4ac623666ad866077a3f15fb66d5bb0eadb63d1",
+    "common.py": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+  },
+  "generated_at": "2026-11-08T19:21:56.827861+00:00",
+  "git_sha": "0ff2c9febfe3200fbed19415ccbcba5c1a4974dc",
+  "infra_git_sha": "9cfba6dad6ce703fc9282da377fe08935737e0e5",
+  "max_completion_tokens": 4000,
+  "mode": "local",
+  "model": "qwen3-8b",
+  "n_chunks": 11,
+  "package_versions": {
+    "numpy": "2.4.6",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.13",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "standard",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "qwen_bridge_jan_qwen3-8b_local_20261108T192156Z",
+  "selection": {
+    "end_max": "2025-12-31",
+    "end_min": "2020-01-02",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 1476,
+    "n_repeats": 74,
+    "n_stale": 0,
+    "n_stale_repeats": 0,
+    "n_stale_selected": 0,
+    "n_windows_in_range": 1476,
+    "pool_window_end_max": "2025-12-31",
+    "pool_window_end_min": "2020-02-13",
+    "repeat_fraction": 0.05,
+    "repeat_target": 74,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "jan2026_phase4a",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet"
+  },
+  "series_key": "jan2026_phase4a",
+  "symbol": "SPY"
+}

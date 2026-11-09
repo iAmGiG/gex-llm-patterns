@@ -1,0 +1,75 @@
+{
+  "arm": "qwen_p34_dated_2020",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "58616a1e9df25976fcd94098d0c4af662191e920368438b5b177add1e153c9c2",
+      "n_requests": 117,
+      "run_id": "qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c0",
+      "window_end_max": "2020-07-31",
+      "window_end_min": "2020-02-13"
+    },
+    {
+      "input_file": "input_1.jsonl",
+      "input_sha256": "2c0809c83d449e318b3b056c221cb4ef053bd3e4a50079c558f1b1bc15b4e542",
+      "n_requests": 117,
+      "run_id": "qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c1",
+      "window_end_max": "2020-12-31",
+      "window_end_min": "2020-02-20"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "ce97125b0eb34629ca31dbf7c4ac623666ad866077a3f15fb66d5bb0eadb63d1",
+    "common.py": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+  },
+  "generated_at": "2026-11-08T19:21:51.335502+00:00",
+  "git_sha": "0ff2c9febfe3200fbed19415ccbcba5c1a4974dc",
+  "infra_git_sha": "9cfba6dad6ce703fc9282da377fe08935737e0e5",
+  "max_completion_tokens": 4000,
+  "mode": "local",
+  "model": "qwen3-8b",
+  "n_chunks": 2,
+  "package_versions": {
+    "numpy": "2.4.6",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.13",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "standard",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z",
+  "selection": {
+    "end_max": "2020-12-31",
+    "end_min": "2020-01-02",
+    "include_done": false,
+    "include_inflight": false,
+    "limit": null,
+    "n_awaiting_retry": 0,
+    "n_done": 0,
+    "n_in_flight": 0,
+    "n_originals": 223,
+    "n_repeats": 11,
+    "n_stale": 0,
+    "n_stale_repeats": 0,
+    "n_stale_selected": 0,
+    "n_windows_in_range": 223,
+    "pool_window_end_max": "2020-12-31",
+    "pool_window_end_min": "2020-02-13",
+    "repeat_fraction": 0.05,
+    "repeat_target": 11,
+    "repeats_already_requested": 0,
+    "sample": "all",
+    "seed": 261,
+    "windows_series": "p4_2020_dated",
+    "windows_source": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet"
+  },
+  "series_key": "p4_2020_dated",
+  "symbol": "SPY"
+}

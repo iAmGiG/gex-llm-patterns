@@ -1,0 +1,47 @@
+{
+  "arm": "pilot_llama_bridge_jan",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "4d6c2ed36a6893604d082a7400ba6a7ef5cbe03af01daf62afc0766a6a5ec56a",
+      "n_requests": 40,
+      "run_id": "pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0",
+      "window_end_max": "2025-12-11",
+      "window_end_min": "2020-03-12"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "ce97125b0eb34629ca31dbf7c4ac623666ad866077a3f15fb66d5bb0eadb63d1",
+    "common.py": "5362835ada654ae4569cf3b0ef3b307dbeed1293c0dde6a91932cd4c70e5207c"
+  },
+  "generated_at": "2026-11-08T17:44:07.101133+00:00",
+  "git_sha": "131df2d21a6e06db6e1bb092f14c08ca3c21b240",
+  "infra_git_sha": "9cfba6dad6ce703fc9282da377fe08935737e0e5",
+  "max_completion_tokens": 4000,
+  "mode": "local",
+  "model": "llama-3.1-8b-instruct",
+  "n_chunks": 1,
+  "package_versions": {
+    "numpy": "2.4.6",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.13",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "standard",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "run_id": "pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z",
+  "selection": {
+    "balanced_on": "clf_should_detect",
+    "n": 40,
+    "seed": 261
+  },
+  "series_key": "jan2026_phase4a",
+  "symbol": "SPY"
+}

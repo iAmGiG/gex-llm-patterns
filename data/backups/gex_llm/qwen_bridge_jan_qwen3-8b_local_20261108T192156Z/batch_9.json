@@ -1,0 +1,39 @@
+{
+  "backend": "vllm.entrypoints.openai.run_batch",
+  "completed_at": "2026-11-08T22:46:40.296236+00:00",
+  "engine_args": [
+    "--model",
+    "Qwen/Qwen3-8B",
+    "--revision",
+    "b968826d9c46dd6066d109eabc6255188de91218",
+    "--served-model-name",
+    "qwen3-8b",
+    "--gpu-memory-utilization",
+    "0.27",
+    "--max-model-len",
+    "8192",
+    "--seed",
+    "261",
+    "--reasoning-parser",
+    "qwen3"
+  ],
+  "engine_env": {
+    "VLLM_USE_FLASHINFER_SAMPLER": "0"
+  },
+  "gpu": {
+    "free_mib": 33015,
+    "index": 2,
+    "name": "NVIDIA A100-SXM4-80GB",
+    "total_mib": 81920
+  },
+  "log_file": "local_9.log",
+  "model_license": "Apache-2.0",
+  "model_repo": "Qwen/Qwen3-8B",
+  "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "n_output_lines": 141,
+  "returncode": 0,
+  "seconds": 883.6,
+  "served_model_name": "qwen3-8b",
+  "started_at": "2026-11-08T22:31:56.720928+00:00",
+  "vllm_version": "0.32.0"
+}

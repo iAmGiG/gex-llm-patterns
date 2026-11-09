@@ -1,0 +1,46 @@
+{
+  "arm": "pilot_qwen_bridge_jan",
+  "chunks": [
+    {
+      "input_file": "input_0.jsonl",
+      "input_sha256": "1ed9450e8ba5ff96dc8e1fc64db1b3a91e767ed6df73c5f3a636c475b62e6bb4",
+      "n_requests": 23,
+      "run_id": "pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z_c0",
+      "window_end_max": "2024-06-10",
+      "window_end_min": "2020-04-29"
+    }
+  ],
+  "code_sha256": {
+    "04_llm_runner.py": "ce97125b0eb34629ca31dbf7c4ac623666ad866077a3f15fb66d5bb0eadb63d1",
+    "common.py": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+  },
+  "generated_at": "2026-11-08T18:34:30.435117+00:00",
+  "git_sha": "0ff2c9febfe3200fbed19415ccbcba5c1a4974dc",
+  "infra_git_sha": "9cfba6dad6ce703fc9282da377fe08935737e0e5",
+  "max_completion_tokens": 8000,
+  "mode": "local",
+  "model": "qwen3-8b",
+  "n_chunks": 1,
+  "package_versions": {
+    "numpy": "2.4.6",
+    "openai": "2.14.0",
+    "pandas": "2.3.3",
+    "psycopg2": "2.9.13",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12"
+  },
+  "parent_run_id": "pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z",
+  "projection_basis": {
+    "completion_tokens": 900,
+    "pricing": "standard",
+    "prompt_tokens": 1911
+  },
+  "prompt_version": "v2.0_postgresql",
+  "reason": "finish_reason=length",
+  "retry_of": [
+    "pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z_c0"
+  ],
+  "run_id": "pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z",
+  "series_key": "jan2026_phase4a",
+  "symbol": "SPY"
+}
