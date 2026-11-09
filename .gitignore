@@ -307,20 +307,14 @@ tmpclaude*
 docs/papers/paper2/jfqa/build.bat
 .vscode/tasks.json
 
-# Electronics extension (issue #261): nothing raw goes to the remote.  The OpenAI batch files
-# (every JSONL) and the full tables (series, windows, detections with the model's text) stay on
-# disk under data/backups/gex_llm/ and are loaded into the research database
-# (backups.gex_llm_regime_*).  Git keeps the condensed material only: run provenance
-# (tables/runs, manifests, batch objects), data/backups/gex_llm/condensed/ (per-window
-# verdicts and labels without text, written by scripts/validation/electronics/06_condense.py)
-# and docs/papers/electronics/results/ (the report).
+# Electronics extension (issue #261): nothing raw goes to the remote.  The batch files (every JSONL),
+# the full tables (series, windows, detections with the model's text) and, since 2026-11-09, the per-run
+# provenance files (tables/runs/*.parquet, <run_id>/manifest.json, <run_id>/batch_<k>.json) stay on disk
+# under data/backups/gex_llm/ and are loaded into the research database (backups.gex_llm_regime_*).
+# Git keeps data/backups/gex_llm/condensed/ only (written by scripts/validation/electronics/06_condense.py
+# after each ingest: verdicts and labels without text, a series index, and the run provenance as two
+# compressed files, runs.csv.gz and run_records.jsonl.gz) and docs/papers/electronics/results/ (the report).
+data/backups/gex_llm/*
+!data/backups/gex_llm/condensed/
 data/backups/gex_llm/**/*.jsonl
-# open-weights runs (D-29): vLLM's log per chunk stays on disk; a chunk claim exists only while a worker runs it
-data/backups/gex_llm/**/local_*.log
-data/backups/gex_llm/**/claim_*
-# the scratch driver scripts and logs of the parallel workers of 2026-11-07 (kept on disk as a record of the run)
-data/backups/gex_llm/worker_logs/
-data/backups/gex_llm/tables/series/
-data/backups/gex_llm/tables/windows/
-data/backups/gex_llm/tables/detections/
 !docs/papers/electronics/build.sh

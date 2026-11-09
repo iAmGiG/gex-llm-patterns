@@ -849,16 +849,17 @@ psql -h 127.0.0.1 -d gex_options -X -At -c "select relname from pg_class where r
 `docs/009` asks for three copies of everything a project stores: Postgres, parquet and raw files in the project
 repository. The authors' rule (2026-10-30): **nothing raw goes to the remote**. Every JSONL and every full table
 (series, windows, detections with the model's text) stays on this machine's disk and is loaded into the research
-database; git keeps the condensed material only.
+database; git keeps the condensed material only (since 2026-11-09 the run provenance too, as two compressed files
+written by `06_condense.py`, so a run adds no files to git).
 
 | Copy | Location | In git |
 |------|----------|--------|
 | 1. Postgres | `backups.gex_llm_regime_*` after approval (the database repository dumps the whole database weekly) | n/a |
 | 2. Parquet (full tables) | `data/backups/gex_llm/tables/{series,windows,detections}/` | ignored: loaded into Postgres, rebuilt by 01-04 |
-| | `data/backups/gex_llm/tables/runs/` (run provenance: batch ids, file ids, sha256, tokens, cost) | tracked |
+| | `data/backups/gex_llm/tables/runs/` (run provenance: batch ids, file ids, sha256, tokens, cost) | ignored since 2026-11-09: in git as `condensed/runs.csv.gz` |
 | 3. Raw files | `data/backups/gex_llm/<run_id>/input*.jsonl`, `output*.jsonl`, `errors*.jsonl` | ignored: never on the remote |
-| | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | tracked |
-| Condensed | `data/backups/gex_llm/condensed/detections.csv.gz` (verdicts and metrics, no text), `windows.csv.gz` (labels and input sha256, no sequences), `series_index.csv`; written by `06_condense.py` | tracked |
+| | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | ignored since 2026-11-09: in git as `condensed/run_records.jsonl.gz` |
+| Condensed | `data/backups/gex_llm/condensed/detections.csv.gz` (verdicts and metrics, no text), `windows.csv.gz` (labels and input sha256, no sequences), `series_index.csv`, `runs.csv.gz` (one row per run), `run_records.jsonl.gz` (every manifest and batch record); written by `06_condense.py` | tracked |
 | Results | `docs/papers/electronics/results/`, `docs/papers/electronics/figures/output/` | tracked |
 | Inputs with one copy | `reports/validation/paper2_regime_windows/batch_jobs/` (January and November batch files and their `batch_*_metadata.json`), `.cache/research_cache.db`, `config/` | ignored |
 | Published result records | `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`, `phase4_baseline_2020.yaml` | tracked |
@@ -874,15 +875,15 @@ data/backups/gex_llm/
 |-- tables/
 |   |-- series/        <series>_<symbol>.parquet                  (copy 2, ignored)
 |   |-- windows/       <series>_<symbol>.parquet                  (copy 2, ignored)
-|   |-- runs/          r1_o4mini.parquet, r1_p3_o4mini.parquet, r1_p4_o4mini.parquet, <run_id>_c<k>.parquet   (copy 2, tracked)
+|   |-- runs/          r1_o4mini.parquet, r1_p3_o4mini.parquet, r1_p4_o4mini.parquet, <run_id>_c<k>.parquet   (copy 2, ignored)
 |   `-- detections/    the same names                                                                          (copy 2, ignored)
-|-- condensed/         detections.csv.gz, windows.csv.gz, series_index.csv                                      (tracked)
+|-- condensed/         detections.csv.gz, windows.csv.gz, series_index.csv, runs.csv.gz, run_records.jsonl.gz  (tracked)
 |-- r1_o4mini_phase4a_20260104/   r1_p3_o4mini_20251120/   r1_p4_o4mini_20251120/
-|                      input.jsonl, output.jsonl (ignored), manifest.json (tracked)
+|                      input.jsonl, output.jsonl, manifest.json (ignored)
 `-- <arm>_gpt-6-luna_batch_<UTC stamp>/
     |-- input_<k>.jsonl, output_<k>.jsonl, errors_<k>.jsonl      (copy 3, ignored)
-    |-- batch_<k>.json                                           (copy 3, tracked)
-    `-- manifest.json                                            (copy 3, tracked)
+    |-- batch_<k>.json                                           (copy 3, ignored)
+    `-- manifest.json                                            (copy 3, ignored)
 docs/papers/electronics/results/       csv and yaml of 05_report.py, env_check_<stamp>.json
 docs/papers/electronics/figures/output/  png, pdf and a provenance manifest per figure
 ```

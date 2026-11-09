@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """Write the condensed copies that the repository tracks (gex-llm-patterns #261).
 
-Nothing raw goes to the remote: the OpenAI batch files (JSONL) and the full tables (series, windows,
+Nothing raw goes to the remote: the batch files (JSONL) and the full tables (series, windows,
 detections with the model's text) stay on disk under data/backups/gex_llm/ and are loaded into the
-research database (backups.gex_llm_regime_*).  Git keeps, besides docs/papers/electronics/results/
-and the run provenance (tables/runs, manifests, batch objects), the three files written here:
+research database (backups.gex_llm_regime_*).  Git keeps, besides docs/papers/electronics/results/,
+only the five files written here (the per-run files on disk are ignored since 2026-11-09):
 
   data/backups/gex_llm/condensed/detections.csv.gz   one row per stored model answer: verdict, type,
                                                       confidence, the five reported metrics, parse status,
@@ -13,6 +13,12 @@ and the run provenance (tables/runs, manifests, batch objects), the three files 
                                                       the deterministic classifier columns -- no sequences
   data/backups/gex_llm/condensed/series_index.csv    one row per (series_key, symbol): rows, range, source,
                                                       builder version -- no values
+  data/backups/gex_llm/condensed/runs.csv.gz         run provenance, one row per Batch job, local run chunk, pilot
+                                                      or backfilled run (the tables/runs parquet, latest row per
+                                                      run_id): batch and file ids or the engine record, sha256,
+                                                      tokens, cost, run_metadata as JSON text
+  data/backups/gex_llm/condensed/run_records.jsonl.gz  every manifest.json and batch_<k>.json of the run folders,
+                                                      one line {"path", "record"} per file, sorted by path
 
 Every detection rate and agreement figure of the paper can be recomputed from the condensed detections
 and windows (join on series_key, symbol, window_end); the other numbers are in results/, and the daily
@@ -22,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import gzip
 import json
 import sys
 from pathlib import Path
@@ -57,6 +64,14 @@ def meta(text):
     return text if isinstance(text, dict) else json.loads(text)
 
 
+def run_records(root: Path) -> bytes:
+    """manifest.json and batch_<k>.json of every run folder under root, gzip with a fixed header (same files, same bytes)."""
+    paths = sorted(p for p in root.glob("*/*.json") if p.name == "manifest.json" or p.name.startswith("batch_"))
+    lines = [json.dumps({"path": p.relative_to(root).as_posix(), "record": json.loads(p.read_text())}, sort_keys=True)
+             for p in paths]
+    return gzip.compress(("\n".join(lines) + "\n").encode(), compresslevel=9, mtime=0)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, default=OUT, help=f"output folder (default: {OUT})")
@@ -68,7 +83,8 @@ def main(argv=None) -> int:
     # common.latest_answers that 05 and 07 use too (an answer without created_at takes its run's ingested_at).
     key = ["arm", "series_key", "symbol", "window_end", "model", "prompt_version"]
     n_all = len(detections)
-    detections = common.latest_answers(detections, key, common.run_ingest_times(load("runs")))
+    runs = load("runs")
+    detections = common.latest_answers(detections, key, common.run_ingest_times(runs))
     if len(detections) < n_all:
         print(f"detections: {n_all - len(detections):,} superseded answer(s) dropped (latest created_at kept)")
     d = detections[DETECTION_COLUMNS].sort_values(["arm", "symbol", "window_end", "custom_id"], kind="stable")
@@ -91,10 +107,15 @@ def main(argv=None) -> int:
         lambda m: meta(m).get("builder_sha256")).values
     g.to_csv(args.out / "series_index.csv", index=False)
 
+    r = common.latest_answers(runs, ["run_id"]).sort_values("run_id", kind="stable")  # one row per run, as 07 loads them
+    r.to_csv(args.out / "runs.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
+    (args.out / "run_records.jsonl.gz").write_bytes(run_records(common.PARQUET_ROOT.parent))
+
     for path in sorted(args.out.iterdir()):
         shown = path.relative_to(common.REPO_ROOT) if path.resolve().is_relative_to(common.REPO_ROOT) else path
         print(f"{path.stat().st_size:>10,d}  {shown}")
-    print(f"detections {len(d):,} rows ({d['arm'].nunique()} arms) | windows {len(w):,} rows | series {len(g)} (series, symbol) pairs")
+    print(f"detections {len(d):,} rows ({d['arm'].nunique()} arms) | windows {len(w):,} rows | series {len(g)} (series, symbol) pairs"
+          f" | runs {len(r):,} rows")
     return 0
 
 
