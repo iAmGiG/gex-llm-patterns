@@ -80,7 +80,11 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 other), ref_arm, arm, arm_role, model, series_key, symbol, scope, year, n, median_ratio,
                                 q25_ratio, q75_ratio, ratio_within_5pct_pct, median_abs_diff_bn, median_reported_bn,
                                 median_computed_bn
-    stats.yaml                  overlap-aware inference: rates per label source and period, series / label / scale contrasts,
+    missing_answer_bounds.csv   per registered arm with unparsed answers and period: the rate over parsed windows, the
+                                unparsed windows by the rule's verdict, the share parsed among the windows the rule detects
+                                and among those it does not, and the bounds lower_pct (unparsed = not detected) and
+                                upper_pct (unparsed = detected) over all windows of the arm (D-32)
+    stats.yaml                 overlap-aware inference: rates per label source and period, series / label / scale contrasts,
                                 period shifts, Phase 3 vs Phase 4, and headline_contrasts (the ones the text quotes)
     cost_ledger.csv/yaml        per run, arm and model, reconciled with per-request token usage; budget counts only runs for
                                 which common.counts_toward_budget holds, the backfills are listed apart (not_spend)
@@ -2232,6 +2236,64 @@ def section_reported_vs_computed(ctx: Context) -> Dict[str, Any]:
             "median_ratio_by_arm": arms[["arm", "model", "series_key", "symbol", "n", "median_ratio"]].to_dict("records")}
 
 
+# --------------------------------------------------------------------------- 12. missing_answer_bounds.csv
+BOUNDS_COLUMNS = [
+    "arm", "arm_role", "model", "series_key", "symbol", "period", "n_windows", "n_parsed", "parsed_pct",
+    "n_detected_parsed", "rate_parsed_pct", "n_unparsed", "n_unparsed_clf_detect", "n_unparsed_clf_no_detect",
+    "n_unparsed_no_window", "parsed_pct_clf_detect", "parsed_pct_clf_no_detect", "lower_pct", "upper_pct", "clf_rate_pct",
+]
+BOUNDS_INT_COLUMNS = ["n_windows", "n_parsed", "n_detected_parsed", "n_unparsed", "n_unparsed_clf_detect",
+                      "n_unparsed_clf_no_detect", "n_unparsed_no_window"]
+
+
+def section_missing_answer_bounds(ctx: Context) -> Dict[str, Any]:
+    """Detection-rate bounds for every registered arm with unparsed answers (D-32).
+
+    A rate over the parsed windows is biased when the windows without an answer are not a random subset (Qwen3-8B's
+    answers that do not finish within the token caps are mostly windows the rule does not detect).  Per arm and period
+    of ``PERIODS``: the rate over parsed windows, the unparsed windows split by the rule's verdict, the share parsed among
+    the windows the rule detects and among those it does not, and two bounds over all windows of the arm: ``lower_pct``
+    counts every unparsed window as not detected, ``upper_pct`` as detected.  Repeats, pilots and backfills are left out.
+    """
+    det = ctx.data.detections
+    if det.empty:
+        raise SectionSkipped("no detections")
+    det = det[det["arm_role"] == "primary"]
+    arms = sorted(set(det.loc[~det["parsed"], "arm"]))
+    rows = []
+    for (arm, model, series_key, symbol), group in det[det["arm"].isin(arms)].groupby(
+            ["arm", "model", "series_key", "symbol"], sort=True):
+        years = group["window_end"].dt.year
+        for period, first, last in PERIODS:
+            sub = group[years.between(first if first is not None else years.min(), last if last is not None else years.max())]
+            if sub.empty:
+                continue
+            parsed = sub["parsed"]
+            clf = sub["clf_should_detect"]
+            k = int(sub.loc[parsed, "regime_detected"].astype(bool).sum())
+            unparsed = sub[~parsed]
+            n, n_parsed, n_unparsed = len(sub), int(parsed.sum()), len(unparsed)
+            clf_yes, clf_no = clf.notna() & clf.astype("boolean").fillna(False), clf.notna() & ~clf.astype("boolean").fillna(True)
+            rows.append({
+                "arm": arm, "arm_role": arm_role(arm), "model": model, "series_key": series_key, "symbol": symbol,
+                "period": period, "n_windows": n, "n_parsed": n_parsed, "parsed_pct": 100.0 * n_parsed / n,
+                "n_detected_parsed": k, "rate_parsed_pct": (100.0 * k / n_parsed) if n_parsed else math.nan,
+                "n_unparsed": n_unparsed, "n_unparsed_clf_detect": int((~parsed & clf_yes).sum()),
+                "n_unparsed_clf_no_detect": int((~parsed & clf_no).sum()),
+                "n_unparsed_no_window": int((~parsed & clf.isna()).sum()),
+                "parsed_pct_clf_detect": (100.0 * (parsed & clf_yes).sum() / clf_yes.sum()) if clf_yes.any() else math.nan,
+                "parsed_pct_clf_no_detect": (100.0 * (parsed & clf_no).sum() / clf_no.sum()) if clf_no.any() else math.nan,
+                "lower_pct": 100.0 * k / n, "upper_pct": 100.0 * (k + n_unparsed) / n,
+                "clf_rate_pct": (100.0 * clf_yes.sum() / clf.notna().sum()) if clf.notna().any() else math.nan,
+            })
+    frame = sort_rows(pd.DataFrame(rows, columns=BOUNDS_COLUMNS), ["arm", "series_key", "symbol", "period"])
+    ctx.write_csv("missing_answer_bounds.csv", frame, BOUNDS_INT_COLUMNS)
+    overall = frame[frame["period"] == "all"]
+    return {"rows": len(frame), "arms": sorted(set(frame["arm"])),
+            "unparsed_total": int(overall["n_unparsed"].sum()),
+            "unparsed_clf_no_detect": int(overall["n_unparsed_clf_no_detect"].sum())}
+
+
 # --------------------------------------------------------------------------- sections and orchestration
 class Section:
     """A named report section, its output files and the function that produces them."""
@@ -2253,6 +2315,7 @@ SECTIONS = (
     Section("disagreements", ("disagreements.csv",), section_disagreements),
     Section("llm_parse_stats", ("llm_parse_stats.csv",), section_llm_parse_stats),
     Section("reported_vs_computed", ("reported_vs_computed.csv",), section_reported_vs_computed),
+    Section("missing_answer_bounds", ("missing_answer_bounds.csv",), section_missing_answer_bounds),
 )
 
 
