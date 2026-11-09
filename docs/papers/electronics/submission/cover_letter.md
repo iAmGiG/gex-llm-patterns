@@ -56,5 +56,5 @@ submission and declare no conflict of interest. The study received no external f
 
 Sincerely,
 
-Christopher Regan (corresponding author), Kennesaw State University, cregan1@kennesaw.edu
+Christopher Regan (corresponding author), Kennesaw State University, cregan1@students.kennesaw.edu
 Ying Xie, Kennesaw State University

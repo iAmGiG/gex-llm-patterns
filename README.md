@@ -223,5 +223,5 @@ GNU Affero General Public License v3.0 — see [LICENSE](LICENSE).
 ---
 
 **Last Updated**: April 2026
-**Contact**: Christopher Regan (`cregan1@kennesaw.edu`) · Ying Xie (`yxie2@kennesaw.edu`)
+**Contact**: Christopher Regan (`cregan1@students.kennesaw.edu`) · Ying Xie (`yxie2@kennesaw.edu`)
 **Institution**: Kennesaw State University, College of Computing and Software Engineering
