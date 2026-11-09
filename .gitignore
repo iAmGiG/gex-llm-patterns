@@ -318,3 +318,7 @@ data/backups/gex_llm/*
 !data/backups/gex_llm/condensed/
 data/backups/gex_llm/**/*.jsonl
 !docs/papers/electronics/build.sh
+
+# C-Day poster template supplied by Dr. Xie (another student's finished poster): kept on this machine only;
+# docs/papers/electronics/CDayfiles/build_cday_poster.py reads it to build Regan_Xie_CDay_Poster.pptx
+docs/papers/electronics/CDayfiles/ThresholdGatedRL_Poster*.pptx
