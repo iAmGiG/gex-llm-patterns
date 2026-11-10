@@ -1,0 +1,102 @@
+\section{Open-Weights Models: Detail}
+\label{sec:s:open}
+
+Section~4.12 of the article compares the three open-weights models in one table. This section gives the detail per model: the rates of gpt-oss-20b next to the rule and gpt-6-luna (Table~\ref{tab:s:oss}), the verdicts and the reported metrics of Llama~3.1~8B (Table~\ref{tab:s:llama}), and the answered windows of Qwen3-8B by the verdict of the rule, with the bounds of its detection rate (Table~\ref{tab:s:qwen}). The runs are listed in Tables~\ref{tab:ledger3}--\ref{tab:ledger5}. Rates and agreements are over the first pass of each arm; the repeats enter only the test-retest counts.
+
+\subsection{gpt-oss-20b}
+\label{sec:s:open:oss}
+
+% src: llm_parse_stats.csv model=gpt-oss-20b (n_rows, n_parsed, n_fallback, n_failed, n_missing, n_rerun_at_retry_cap, mean_completion_tokens); llm_parse_stats.csv gpt-6-luna arms bridge_jan, full_spy, ex0dte_spy (mean_completion_tokens 736 to 788); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=oss_bridge_jan scope=all (646, 0, 6, 760; p_mcnemar_exact 0.03125); stats.yaml period_shift oss_bridge_jan (diff_pp 82.359, bootstrap p 0.0005), oss_full_spy (diff_pp -10.137, p_boot 0.103) and classifier new_full (-10.2, 0.108); stats.yaml rates llm oss_ex0dte_spy 2024-2025 (75 of 502), classifier new_ex0dte (74 of 502), llm ex0dte_spy (77 of 502)
+Fourteen first-pass answers of gpt-oss-20b ended at the limit of 4{,}000 completion tokens; each was requested again at 8{,}000 tokens, and every retry parsed. The two windows without a parsed answer are windows of \ident{oss_full_spy} whose answer closes the reasoning field with a typographic quotation mark followed by control tokens of the model, so that no parser recovers the JSON object; one answer of \ident{oss_bridge_jan} with the same defect was recovered by the fallback parser. The answers are longer than those of gpt-6-luna: between 1{,}126 and 1{,}995 completion tokens per arm on average, against 736 to 788 on the bridge and the complete series. On the published inputs gpt-oss-20b detects every window that o4-mini detects and adds 6 detections where gpt-6-luna adds 5 (exact McNemar test at stride one $p=0.031$); its rise from 2020--2023 to 2024--2025 is 82.4 percentage points (quarter-block bootstrap $p=0.0005$). On the complete series its change between the same periods is $-$10.1 percentage points (bootstrap $p=0.103$), against $-$10.2 for the rule ($p=0.108$). Without same-day expiries it detects 75 of the 502 windows of 2024 and 2025 (14.9\%), against 14.7\% for the rule and 15.3\% for gpt-6-luna, so for this model, too, removing them does not restore the published rates.
+
+% src: bridge_agreement.csv comparison=model_pair scope=all (n_pairs, confusion counts, agree_pct, kappa, n_disagree_with_clf, n_disagree_ref_matches_clf, n_disagree_other_matches_clf, p_mcnemar_exact; full_spy 602/14/15/4058, ex0dte_spy 485/10/11/4185, bridge_jan 666/5/7/798)
+gpt-oss-20b and gpt-6-luna give the same verdict in 99.4\% of the windows of the complete series (4{,}660 of 4{,}689; kappa 0.973) and in 99.6\% without same-day expiries (4{,}670 of 4{,}691; kappa 0.976). Where they differ, the rule sides with gpt-oss-20b in 16 and with gpt-6-luna in 13 of the 29 windows of \ident{new_full}, and in 14 and 7 of the 21 windows of \ident{new_ex0dte}. On the windows that both answered, the two models detect almost the same number (gpt-6-luna 616 and gpt-oss-20b 617 on \ident{new_full}, 495 and 496 on \ident{new_ex0dte}; exact McNemar test $p=1.000$ in both). On the published inputs they agree in 99.2\% of the 1{,}476 windows (kappa 0.984), with 6 of the 12 differences resolved in favour of each.
+
+% src: stats.yaml contrasts series_contrast family=label arm=oss_p34_obf_2024 vs oss_p34_dated_2024 (rate_a 82.959641, rate_b 82.06278, windows_only_a 4, windows_only_b 2, naive_stride1 p_mcnemar_exact 0.6875, bootstrap [0.0, 2.371542] p 0.632812, nonoverlap n 8 p 1.0) and arm=oss_p34_obf_2020 (12.107623 both); phase_contrast oss_p34_obf_2024 vs oss_p34_obf_2020 (diff_pp 70.852018, phi 0.709384, p_fisher_exact 0.040559) and oss_p34_dated (69.955, 0.700743); bridge_agreement.csv comparison=bridge ref_arm=r1_p3_o4mini other_arm=oss_p34_dated_2024 (181, 0, 2, 40); detection_by_year.csv arm=oss_p34_obf_2024 scope=all (agree_pct 98.206278, kappa 0.939104)
+With relative labels gpt-oss-20b detects 185 of the 223 windows of the 2024 baseline (83.0\%) and with the dates 183 (82.1\%); the two labelings differ in 6 windows, 4 detected with relative labels only and 2 with dates only (paired quarter-block bootstrap interval [0.0, 2.4] percentage points, $p=0.633$; exact McNemar test $p=0.688$ at stride one and $p=1.000$ on the non-overlapping subsample of 8 windows), and in 2020 both labelings detect 27 of 223. With the dates it differs from the published o4-mini answers in 2 windows of 2024, both detected by gpt-oss-20b only, and in none of 2020. The 2024-versus-2020 contrast is 70.9 percentage points with relative labels ($\varphi=0.709$) and 70.0 with dates ($\varphi=0.701$), with the Fisher test on the non-overlapping subsample at $p=0.041$ in both cases. The 2024 baseline with relative labels is the arm where gpt-oss-20b departs most from the rule (185 detections against 181; agreement 98.2\%, kappa 0.939).
+
+% src: bridge_agreement.csv comparison=test_retest ref_arm=oss_* scope=all (n_pairs, agree_pct); detection_by_year.csv label_source=llm scope=all (sign_flips_exact_pct oss_full_spy 93.410109, full_spy 93.370284); reported_vs_computed.csv basis=arm scope=all (ratio_within_5pct_pct oss_full_spy 99.50949, full_spy 98.720955)
+Repeated requests give the first verdict again in 74 of 74 bridge windows, 234 of 235 windows of the complete series, 241 of 241 windows without same-day expiries and 11 of 11 in each baseline arm. The reported metrics match the computed ones about as well as those of gpt-6-luna: on the complete series the reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value in 99.5\% of the answers (gpt-6-luna 98.7\%), and the sign-flip count is exact in 93.4\% (gpt-6-luna 93.4\%).
+
+\begin{table}[H]
+\centering
+\caption{gpt-oss-20b: detection rate in percent (detected windows in brackets) of the deterministic rule, of gpt-6-luna and of gpt-oss-20b on the same windows, and the agreement of gpt-oss-20b with gpt-6-luna and with the rule in percent (Cohen's kappa in brackets). Windows are those with a parsed answer of gpt-oss-20b; the rule and gpt-6-luna rates are over all windows of the arm.}
+% src: detection_by_year.csv scope=all (label_source=classifier rate_pct of jan2026_phase4a, new_full, new_ex0dte, p3_2024, p3_2024_dated, p4_2020, p4_2020_dated; label_source=llm rate_pct and n_compared of the gpt-6-luna twins and of the oss arms; agree_pct and kappa of the oss arms against the rule); bridge_agreement.csv comparison=model_pair scope=all (agree_pct, kappa)
+\label{tab:s:oss}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Arm & Windows & Rule & gpt-6-luna & gpt-oss-20b & vs gpt-6-luna & vs rule \\
+\midrule
+\ident{oss_bridge_jan} & 1{,}476 & 45.2 (667) & 45.5 (671) & 45.6 (673) & 99.2 (0.984) & 99.6 (0.992) \\
+\ident{oss_full_spy} & 4{,}689 & 13.0 (609) & 13.2 (617) & 13.2 (617) & 99.4 (0.973) & 99.7 (0.988) \\
+\ident{oss_ex0dte_spy} & 4{,}691 & 10.5 (491) & 10.6 (495) & 10.6 (496) & 99.6 (0.976) & 99.9 (0.992) \\
+\ident{oss_p34_obf_2024} & 223 & 81.2 (181) & 80.7 (180) & 83.0 (185) & 97.8 (0.925) & 98.2 (0.939) \\
+\ident{oss_p34_dated_2024} & 223 & 81.2 (181) & 81.2 (181) & 82.1 (183) & 99.1 (0.970) & 99.1 (0.970) \\
+\ident{oss_p34_obf_2020} & 223 & 12.1 (27) & 12.1 (27) & 12.1 (27) & 100.0 (1.000) & 100.0 (1.000) \\
+\ident{oss_p34_dated_2020} & 223 & 12.1 (27) & 12.1 (27) & 12.1 (27) & 100.0 (1.000) & 100.0 (1.000) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Llama~3.1~8B}
+\label{sec:s:open:llama}
+
+% src: llm_parse_stats.csv model=llama-3.1-8b-instruct (n_rows, n_parsed = n_ok, n_finish_length 0, mean_completion_tokens 167 to 171); detections parquet llama_full_spy and llama_ex0dte_spy (the one regime_detected = false answer of each: window_end 2010-01-28); bridge_agreement.csv comparison=test_retest ref_arm=llama_* (74 + 235 + 235 + 4 x 11 = 588 pairs, agree_pct 100.0); detection_by_year.csv label_source=llm scope=all arm=llama_* (agree_pct, kappa, sign_flips_exact_pct 2.690583 to 13.901345); reported_vs_computed.csv basis=arm scope=all (ratio_within_5pct_pct llama_* 14.349776 to 64.125561); detections parquet llama_full_spy_..._20261108T175252Z_c0 custom_id llama_full_spy|SPY|2008-02-27 (reported 10 positive and 20 negative days, 66.67% persistence, 2.45 bn, 4 flips; reasoning quoted)
+Every answer of Llama~3.1~8B parses at the first attempt and none comes near the token limit (about 170 completion tokens on average). The one window that it does not detect in each complete series is the same window, ending 2010-01-28. Because it detects nearly every window, its agreement with the rule equals the detection rate of the rule (45.2\% on the bridge, 13.0\% and 10.5\% on the complete series, 81.2\% and 12.1\% on the baselines), with kappa 0.000 in every arm, and repeated requests return the first verdict in all 588 repeated windows. Its reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value in 14.3\% to 64.1\% of the answers per arm and its sign-flip count is exact in 2.7\% to 13.9\% (Table~\ref{tab:s:llama}). For the window of \ident{new_full} ending 2008-02-27 it reports 10 positive and 20 negative days and writes that ``the persistence percentage of 66.67\% meets the 70\% threshold'' and that ``the average magnitude of \$2.45B is greater than the \$5B threshold''.
+
+% src: detection_by_year.csv label_source=llm scope=all arm=llama_* (n_windows, n_detect, agree_pct, kappa, sign_flips_exact_pct); reported_vs_computed.csv basis=arm scope=all (ratio_within_5pct_pct); bridge_agreement.csv comparison=test_retest ref_arm=llama_* (n_pairs, agree_pct)
+\begin{table}[H]
+\centering
+\caption{Llama~3.1~8B: windows, windows detected, agreement with the rule in percent (Cohen's kappa in brackets), the share of answers whose reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value, the share whose sign-flip count is exact, and the repeated requests that returned the first verdict. Every answer parsed.}
+\label{tab:s:llama}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Arm & Windows & Detected & vs rule & Mean $|\mathrm{GEX}|$ within 5\% & Flips exact & Repeats equal \\
+\midrule
+\ident{llama_bridge_jan} & 1{,}476 & 1{,}476 & 45.2 (0.000) & 41.6 & 12.1 & 74 of 74 \\
+\ident{llama_full_spy} & 4{,}691 & 4{,}690 & 13.0 (0.000) & 19.1 & 11.0 & 235 of 235 \\
+\ident{llama_ex0dte_spy} & 4{,}691 & 4{,}690 & 10.5 (0.000) & 16.1 & 13.1 & 235 of 235 \\
+\ident{llama_p34_obf_2024} & 223 & 223 & 81.2 (0.000) & 64.1 & 6.3 & 11 of 11 \\
+\ident{llama_p34_dated_2024} & 223 & 223 & 81.2 (0.000) & 62.3 & 5.8 & 11 of 11 \\
+\ident{llama_p34_obf_2020} & 223 & 223 & 12.1 (0.000) & 14.3 & 13.9 & 11 of 11 \\
+\ident{llama_p34_dated_2020} & 223 & 223 & 12.1 (0.000) & 23.8 & 2.7 & 11 of 11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Qwen3-8B}
+\label{sec:s:open:qwen}
+
+% src: missing_answer_bounds.csv period=all (n_unparsed_clf_no_detect: qwen_p34_obf_2024 9, qwen_p34_dated_2024 23 of the 42 rule-rejected windows); llm_parse_stats.csv model=qwen3-8b (n_rows, n_parsed; qwen_p34_obf_2020 223, qwen_p34_dated_2020 218); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=qwen_bridge_jan (1,287 pairs: 643, 2, 12, 630; n_disagree_ref_matches_clf 14; p_mcnemar_exact 0.0129), ref_arm=r1_p3_o4mini other_arm=qwen_p34_dated_2024 (197 pairs: 178, 0, 9, 10; p 0.0039), ref_arm=r1_p4_o4mini other_arm=qwen_p34_dated_2020 (218 pairs: 26, 0, 1, 191)
+Table~\ref{tab:s:qwen} gives the share of windows that Qwen3-8B answered in each arm, split by the verdict of the rule, its agreement on the answered windows and the bounds of its detection rate. On the 2020 baselines it answers 223 and 218 of the 223 windows; on the 2024 baseline it answers 33 of the 42 windows that the rule rejects with relative labels and 19 of them with dates. On the published inputs it answers 1{,}287 of the 1{,}412 published windows and differs from o4-mini in 14 (12 detected by Qwen3-8B only), and in all 14 the rule sides with o4-mini (exact McNemar test at stride one $p=0.013$). With the dates it differs from the published o4-mini answers in 9 of the 197 windows of 2024 that it answered, all detected by Qwen3-8B only ($p=0.004$), and in 1 of the 218 of 2020.
+
+% src: disagreements.csv arm=qwen_* arm_role=primary (108 rows; 99 with llm_detected true and clf_detected false: clf_sign_flips > 5 with persistence and magnitude met in 83, 52 of them with 6 flips, llm_sign_flips 3 to 5; clf_avg_magnitude_bn < 5 with the other criteria met in 14, of which 9 between 4.968 and 4.99993 with llm_avg_magnitude_bn 4.97 to 5.00; persistence 66.7 in 1; magnitude 0.81 and 7 flips in 1 (qwen_ex0dte_spy 2008-12-17); 9 with llm_detected false and clf_detected true: llm_avg_magnitude_bn below 5 where clf_avg_magnitude_bn is above in 7, llm_persistence_pct 56.67 against 73.33 in 1, llm_sign_flips 6 against 4 in 1); reported_vs_computed.csv basis=arm scope=all qwen_* (ratio_within_5pct_pct 96.860987 to 99.528302); detection_by_year.csv label_source=llm scope=all qwen_* (sign_flips_exact_pct 86.294416 to 100.0; qwen_full_spy 87.303852, full_spy 93.370284); bridge_agreement.csv comparison=test_retest ref_arm=qwen_* (57/57, 193/195, 196/197, 7/7, 5/5, 11/11, 11/11 pairs answered in both passes)
+Of the 99 windows that Qwen3-8B detects and the rule rejects, 83 fail only the limit of five sign flips: they have six to ten flips (52 have six), and Qwen3-8B reports three to five. Of the others, 14 fail only the magnitude criterion (9 of them with a computed mean $|\mathrm{GEX}|$ between \$4.96 and \$5.00 billion, which Qwen3-8B reports as \$4.97 to \$5.00 billion and accepts), 1 fails only the persistence criterion and 1 fails both the magnitude criterion and the flip limit. In the 9 windows that the rule detects and Qwen3-8B does not, it reports a mean $|\mathrm{GEX}|$ below \$5 billion where the computed mean is above it in 7, a lower persistence in 1 and more sign flips in 1. Its reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value in 96.9\% to 99.5\% of the answered windows per arm, and its sign-flip count is exact in 86.3\% to 100.0\% (87.3\% on the complete series, against 93.4\% for gpt-6-luna). Repeated requests give the first verdict again in 57 of 57 bridge windows, 193 of 195 windows of the complete series, 196 of 197 without same-day expiries and 34 of 34 in the baselines, counting the windows answered in both passes.
+
+% src: llm_parse_stats.csv model=qwen3-8b arm_role=primary (n_rows, n_parsed); missing_answer_bounds.csv period=all (parsed_pct_clf_detect, parsed_pct_clf_no_detect, lower_pct, upper_pct, clf_rate_pct; qwen_p34_obf_2020 has no unparsed answer: rate 12.1 exact); detection_by_year.csv label_source=llm scope=all qwen_* (agree_pct, kappa); bridge_agreement.csv comparison=model_pair scope=all other_arm=qwen_* (agree_pct, kappa)
+\begin{table}[H]
+\centering
+\caption{Qwen3-8B: windows of each arm, the share answered within 8{,}000 completion tokens (all windows, and the windows that the rule detects and rejects), the agreement with the rule and with gpt-6-luna on the answered windows (Cohen's kappa in brackets), and the bounds of the detection rate over all windows (lower: every unanswered window counted as not detected; upper: as detected), next to the rate of the rule. All values in percent.}
+\label{tab:s:qwen}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+& & \multicolumn{3}{c}{Answered} & \multicolumn{2}{c}{Agreement} & \multicolumn{2}{c}{Detection rate} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+Arm & Windows & All & Rule detects & Rule rejects & Rule & gpt-6-luna & Bounds & Rule \\
+\midrule
+\ident{qwen_bridge_jan} & 1{,}476 & 91.1 & 99.9 & 83.9 & 98.9 (0.978) & 98.6 (0.972) & 45.9--54.7 & 45.2 \\
+\ident{qwen_full_spy} & 4{,}691 & 89.7 & 98.9 & 88.3 & 98.7 (0.948) & 98.5 (0.941) & 13.8--24.2 & 13.0 \\
+\ident{qwen_ex0dte_spy} & 4{,}691 & 92.0 & 98.6 & 91.3 & 99.4 (0.973) & 99.3 (0.966) & 10.7--18.7 & 10.5 \\
+\ident{qwen_p34_obf_2024} & 223 & 95.1 & 98.9 & 78.6 & 98.1 (0.924) & 97.6 (0.907) & 82.1--87.0 & 81.2 \\
+\ident{qwen_p34_dated_2024} & 223 & 88.3 & 98.3 & 45.2 & 95.4 (0.668) & 95.4 (0.668) & 83.9--95.5 & 81.2 \\
+\ident{qwen_p34_obf_2020} & 223 & 100.0 & 100.0 & 100.0 & 100.0 (1.000) & 100.0 (1.000) & 12.1 & 12.1 \\
+\ident{qwen_p34_dated_2020} & 223 & 97.8 & 96.3 & 98.0 & 99.5 (0.979) & 99.5 (0.979) & 12.1--14.3 & 12.1 \\
+\bottomrule
+\end{tabular}
+\end{table}

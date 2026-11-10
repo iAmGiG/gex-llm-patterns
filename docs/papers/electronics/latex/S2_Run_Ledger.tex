@@ -1,7 +1,7 @@
 \section{Run Ledger}
 \label{sup:ledger}
 
-Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every Batch job and the backfilled runs of the study: the identifiers, the token usage and the cost. Tables~\ref{tab:ledger3} and~\ref{tab:ledger4} list the local runs of the open-weights models gpt-oss-20b and Llama~3.1~8B (Section~3.5 of the article), which cost nothing. The arms are defined in Section~3.6 of the article.
+Tables~\ref{tab:ledger} and~\ref{tab:ledger2} list every Batch job and the backfilled runs of the study: the identifiers, the token usage and the cost. Tables~\ref{tab:ledger3}, \ref{tab:ledger4} and~\ref{tab:ledger5} list the local runs of the open-weights models gpt-oss-20b, Llama~3.1~8B and Qwen3-8B (Section~3.5 of the article), which cost nothing. The arms are defined in Section~3.6 of the article.
 
 % src: cost_ledger.csv, rows with counts_toward_budget = True (column recomputed_cost_usd; it equals est_cost_usd in every row); total equals cost_ledger.yaml budget.spent_usd (10.020749); the eight rows with the timestamp 20261103T04... are the re-requests of 2026-11-03; backfill rows budget_class = backfill
 \begin{table}[H]
@@ -148,6 +148,39 @@ Run identifier & Requests & Prompt tokens & Completion tokens & GPU minutes & St
 \path{llama_p34_dated_2020_llama-31-8b-instruct_local_20261108T175248Z_c0} & 234 & 439{,}920 & 39{,}430 & 5.0 & ingested \\
 \midrule
 Total (local) & 12{,}378 & 22{,}556{,}040 & 2{,}102{,}759 & 198.4 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% src: cost_ledger.csv rows with model = qwen3-8b (n_requests, prompt_tokens, completion_tokens), summed per run (98 chunks); runs parquet run_metadata.local.seconds (GPU minutes, summed per run) and run_metadata.retry_of (the retry runs: 10,022 requests); planning/02_decisions_log.md D-32
+\begin{table}[H]
+\centering
+\caption{Run ledger (continued): the local runs of Qwen3-8B, answered by vLLM~0.32.0 as in Table~\ref{tab:ledger3}, one row per run with its chunks summed (the first passes ran in chunks of about 150 requests). The runs marked \emph{retry} request again, at 8{,}000 tokens, the answers that ended at the limit of 4{,}000 completion tokens (10{,}022 of the 12{,}378 first-pass requests); their answers replace the cut-off ones. The GPU minutes depend on the load of the shared GPUs: the engine took 27\% to 45\% of the memory of a GPU that other users were also using, and the retry runs, whose answers are the longest, ran in a few large chunks.}
+\label{tab:ledger5}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.9cm}rrrrrl@{}}
+\toprule
+Run identifier & Chunks & Requests & Prompt tokens & Completion tokens & GPU minutes & Status \\
+\midrule
+\path{pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z} & 1 & 40 & 76{,}798 & 135{,}241 & 22.9 & ingested \\
+\path{pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z} & 1 & 23 & 43{,}956 & 145{,}048 & 39.9 & retry \\
+\path{qwen_bridge_jan_qwen3-8b_local_20261108T192156Z} & 11 & 1{,}550 & 2{,}975{,}715 & 5{,}358{,}907 & 439.9 & ingested \\
+\path{qwen_bridge_jan_qwen3-8b_local_20261109T024816Z} & 1 & 943 & 1{,}802{,}285 & 5{,}767{,}338 & 105.9 & retry \\
+\path{qwen_full_spy_qwen3-8b_local_20261108T192201Z} & 33 & 4{,}926 & 9{,}405{,}419 & 19{,}293{,}423 & 874.0 & ingested \\
+\path{qwen_full_spy_qwen3-8b_local_20261109T091006Z} & 3 & 4{,}330 & 8{,}267{,}043 & 25{,}928{,}654 & 1{,}194.9 & retry \\
+\path{qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z} & 33 & 4{,}926 & 9{,}398{,}225 & 19{,}187{,}223 & 821.2 & ingested \\
+\path{qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z} & 3 & 4{,}246 & 8{,}100{,}071 & 25{,}024{,}896 & 1{,}901.6 & retry \\
+\path{qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z} & 2 & 234 & 453{,}258 & 687{,}018 & 64.7 & ingested \\
+\path{qwen_p34_obf_2024_qwen3-8b_local_20261108T203436Z} & 1 & 93 & 180{,}141 & 586{,}172 & 39.2 & retry \\
+\path{qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z} & 2 & 234 & 490{,}698 & 740{,}581 & 66.8 & ingested \\
+\path{qwen_p34_dated_2024_qwen3-8b_local_20261109T074945Z} & 1 & 99 & 207{,}603 & 630{,}281 & 83.5 & retry \\
+\path{qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z} & 2 & 234 & 446{,}296 & 836{,}123 & 97.4 & ingested \\
+\path{qwen_p34_obf_2020_qwen3-8b_local_20261108T214528Z} & 1 & 115 & 219{,}345 & 496{,}658 & 16.3 & retry \\
+\path{qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z} & 2 & 234 & 483{,}731 & 901{,}531 & 119.9 & ingested \\
+\path{qwen_p34_dated_2020_qwen3-8b_local_20261108T231634Z} & 1 & 173 & 357{,}629 & 847{,}291 & 19.2 & retry \\
+\midrule
+Total (local) & 98 & 22{,}400 & 42{,}908{,}213 & 106{,}566{,}385 & 5{,}907.3 & \\
 \bottomrule
 \end{tabular}
 \end{table}
