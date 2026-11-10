@@ -10,8 +10,8 @@ table, the five pictures and the QR code.
 
 Every number comes from docs/papers/electronics/results/ (stats.yaml, bridge_agreement.csv,
 post_publication_2026_summary.csv) or from the manuscript text that cites it (04_02, 04_05 to 04_08, 04_11,
-04_12); the Llama 3.1 8B numbers are those of Section 4.12 (D-30). The Qwen3-8B arms (D-32) are still running
-and are not on the poster.
+04_12); the Llama 3.1 8B and Qwen3-8B numbers are those of Section 4.12 and results/missing_answer_bounds.csv (D-30,
+D-32). The charts show the five labelers of the Llama draft; Qwen3-8B appears in the agreement box and the conclusions.
 
 Run with an environment that has python-pptx, Pillow and qrcode (on this machine the gamma-sieve env; never
 install into AutoGex):
@@ -93,7 +93,7 @@ METHODS = [(0, "Data"),
            (0, "Models"),
            (3, "**o4-mini:** the published answers (January 2026), now retired."),
            (3, "**gpt-6-luna:** OpenAI Batch API; all its runs cost USD 10.02."),
-           (3, "**gpt-oss-20b, Llama\u00a03.1\u00a08B:** open weights at fixed revisions, vLLM on local A100 GPUs."),
+           (3, "**gpt-oss-20b, Llama\u00a03.1\u00a08B, Qwen3-8B:** open weights at fixed revisions, vLLM on local A100 GPUs."),
            (0, "Statistics"),
            (1, "Cohen’s κ for agreement; Wilson and quarter-block bootstrap intervals, since the windows overlap. "
                "Every input, prompt and answer is stored.")]
@@ -156,14 +156,15 @@ SIDE_NOTE = [(0, "Same-day expiries carry **41–46% of |net GEX|** in 2024–26
                  "Before 2014 and for QQQ and IWM **no window reaches $5B**.")]
 
 AGREEMENT_TITLE = "Agreement (Cohen’s κ)"
-# bridge_agreement.csv: r1_o4mini vs bridge_jan kappa 0.992871; detection_by_year.csv oss_full_spy vs rule kappa
-# 0.987793; llama arms kappa 0.000 (04_12)
-AGREEMENT = [("κ = 0.993", "o4-mini vs gpt-6-luna"), ("κ = 0.988", "gpt-oss-20b vs rule"), ("κ = 0.000", "Llama 3.1 8B vs rule")]
-AGREEMENT_NOTE = [(0, "Overlap-aware bootstrap, rule 2024–25: **12.0% [5.1, 19.6]**")]
+# detection_by_year.csv scope=all, against the rule on the complete series: oss_full_spy kappa 0.987793,
+# qwen_full_spy kappa 0.948367 (4,206 answered of 4,691 windows = 89.7%), llama arms kappa 0.000 (04_12); the o4-mini
+# vs gpt-6-luna bridge (99.6%) is the second callout
+AGREEMENT = [("κ = 0.988", "gpt-oss-20b vs rule"), ("κ = 0.948", "Qwen3-8B vs rule*"), ("κ = 0.000", "Llama 3.1 8B vs rule")]
+AGREEMENT_NOTE = [(0, "*Windows it answered (90%). Bootstrap, rule 2024–25: **12.0% [5.1, 19.6]**")]
 
 CONCLUSIONS = [(0, "**RQ1 ✓** Published 2024–25 inputs: call leg only. Complete series: 12.0%, and no rise after 2023."),
                (1, "**RQ2 ✓** gpt-6-luna matches o4-mini (99.6%) and the rule (99.7%); dates change 1 of 223 verdicts."),
-               (2, "**RQ3 ✓** Without 0DTE 14.7%, 2026 11.3%, gpt-oss-20b 12.4%. Llama\u00a03.1\u00a08B says “detected” almost always (κ = 0)."),
+               (2, "**RQ3 ✓** Without 0DTE 14.7%, 2026 11.3%, gpt-oss-20b 12.4%, Qwen3-8B 14.5–35.1%. Llama\u00a03.1\u00a08B: “detected” almost always."),
                (3, "**Next:** thresholds scaled by symbol and price, intraday open interest, more model families.")]
 TAKE_HOME = [(0, "**Take-home:** a detection rate is only as sound as its input series; version the data and test a "
                  "contrast, not a level.")]

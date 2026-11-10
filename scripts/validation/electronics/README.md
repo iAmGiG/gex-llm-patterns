@@ -51,7 +51,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
 | 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
 | 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
-| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the 1,049 answers the 2026-11-03 re-run replaced, README, checksums; repository-relative paths; refused on any local path or credential; not tracked by git) |
+| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the answers that a later answer replaced (11,085 on 2026-11-10: 1,049 by the 2026-11-03 re-run, 14 gpt-oss-20b and 10,022 Qwen3-8B answers by the retry at 8,000 tokens), README, checksums; repository-relative paths; refused on any local path or credential; not tracked by git) |
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
@@ -631,7 +631,7 @@ The package versions of the env as run are in `environment/openweights.lock.txt`
 
 The GPUs have no scheduler and are shared with other users: `local` takes the GPU with the most free memory (or
 `--gpu N`), lets vLLM use `--gpu-memory-utilization` of it (default: the model's own share in `common.LOCAL_SPECS`, 0.22 of
-80 GB for gpt-oss-20b, about 18 GB, 0.27 for Llama 3.1 8B in bf16, about 22 GB, and 0.30 for Qwen3-8B, about 24 GB) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
+80 GB for gpt-oss-20b, about 18 GB, 0.22 for Llama 3.1 8B in bf16, about 18 GB (its pilot ran at 0.27), and 0.27 for Qwen3-8B, about 22 GB; a worker may pass a larger share when the GPU has room, as the Qwen workers did up to 0.45) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
 for up to M minutes instead of refusing. The engine runs at `--max-model-len` 8,192 (a retry run at 8,000 completion
 tokens gets 12,096), seed 261, and `VLLM_USE_FLASHINFER_SAMPLER=0` (the FlashInfer sampler needs a JIT build with
 `ninja`; the PyTorch sampler does not). The engine arguments and environment, the vLLM version, the weights revision,
