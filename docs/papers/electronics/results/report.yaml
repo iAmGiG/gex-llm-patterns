@@ -1,19 +1,19 @@
-generated_at: '2026-11-07T23:09:47+00:00'
+generated_at: '2026-11-10T02:37:51+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
-  sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-  common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
-  git_sha: 0295c061512630def45c2cf15335d4ab0a779827
+  sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+  common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
+  git_sha: 0448277119d3217e035389951135565857d060bc
 environment:
   python: 3.12.12
   pandas: 2.3.3
-  numpy: 2.4.0
-  scipy: 1.16.3
+  numpy: 2.4.6
+  scipy: 1.18.1
   pyyaml: 6.0.3
 parameters:
   seed: 261
   n_boot: 2000
-  results_dir: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/docs/papers/electronics/results
+  results_dir: docs/papers/electronics/results
   only: null
 contract:
   detection_by_year.csv: 'long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct,
@@ -312,6 +312,62 @@ source:
     rows: 54
     sha256: dcc6c0bda79889cb6e49faa3f54339732f9d14d98f65e28173eb52e590f299c3
   - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c0.parquet
+    rows: 775
+    sha256: 9387c36753174227848faf4b42821b10467ac696ad2dd42bf2acef4383397a5c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c1.parquet
+    rows: 775
+    sha256: 0bcf7170d467c58909730dbe757c65d93da39a6a8131b339e072a38eacdf7100
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c0.parquet
+    rows: 1232
+    sha256: 40f15feaae9e8a439e26e2f374c054b7e705548fc052b9f6e4c3de34fff38f0e
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c1.parquet
+    rows: 1232
+    sha256: f154a274d4281c95df38b4c3e66ae9f68262d7de757f3584840d63e92c9242f9
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c2.parquet
+    rows: 1231
+    sha256: 05996bf0eaf1b47213b2c0aa4e7b7dc5c335dc4be7451959bedcfd5785866740
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c3.parquet
+    rows: 1231
+    sha256: d04e0f81158411ddb526132a9ebf91ba302238761bad2481f951c8a911112a05
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c0.parquet
+    rows: 1232
+    sha256: 643949592523cffa2fca727625920cc1bc537995deb97a85983e9871c8fbebf0
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c1.parquet
+    rows: 1232
+    sha256: da1aa26ba2f31ea9454195506d7d153ec5e42169cf10c3598dde5a2c4c9c9419
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c2.parquet
+    rows: 1231
+    sha256: f589c9e16c60000658850203594de45a3ae95be8859488af62431066b722f737
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c3.parquet
+    rows: 1231
+    sha256: 00bfd33ec9b9059599cd95259761f40ae2bef6220b3c894b039d755761c5666d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_p34_dated_2020_llama-31-8b-instruct_local_20261108T175248Z_c0.parquet
+    rows: 234
+    sha256: 92e261acc2c8d32db7a70fd5bd119b3e4c6eb2af8ba841a55e182fbd89d3185d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_p34_dated_2024_llama-31-8b-instruct_local_20261108T175242Z_c0.parquet
+    rows: 234
+    sha256: baa9075606c4a5e2a25a5c914b56497e9c20082542288eba086d727fa50453b1
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_p34_obf_2020_llama-31-8b-instruct_local_20261108T175244Z_c0.parquet
+    rows: 234
+    sha256: 2dfb7ac479181dd385aa4878ea31b60e9321c22264d8a5092f955e5f5a1ed17f
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/llama_p34_obf_2024_llama-31-8b-instruct_local_20261108T175239Z_c0.parquet
+    rows: 234
+    sha256: d91fc5ef00566544431f6c008f541d5c399beaef626c68edb6fb494c6fe1862e
+  - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0.parquet
     rows: 775
     sha256: feb5e233607de684df35c006b8965e1a4c505cd54fc660d5ede688aa0992cddc
@@ -408,9 +464,405 @@ source:
     rows: 40
     sha256: 7a4f8c80ff20df3ee7709a260d7b96e1223d9a8a98010b4883d7432e3759c6a8
   - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0.parquet
+    rows: 40
+    sha256: fef588243cb8b9593d2592bb7d9c16bed5e995805d724f9ddac53a2f3bf9aa76
+  - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0.parquet
     rows: 40
     sha256: 3db4cc29fe24b89377256221af2c8a2fe6ecddfd531e8a02a3838d8b57e0761d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z_c0.parquet
+    rows: 40
+    sha256: ca9e96fc1393f9762de509957ca92dd54c0233270948f96948fee5795a5f9726
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z_c0.parquet
+    rows: 23
+    sha256: ab54aa503f4a867a035467a32b9a4cb011f47cfa10604db303e5d549907877ca
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c0.parquet
+    rows: 141
+    sha256: b9d67942556a01add4224720031ec94626aa5ef771e712cc881e4df314922875
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c1.parquet
+    rows: 141
+    sha256: 5023034a0755c6375bfd9ddd2f85f31d1e6de91e4f0fccba398f40523cf861b4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c10.parquet
+    rows: 140
+    sha256: 8c8d9449b028d5c3f809c18c8aa91847c4d735219b4d2c27459ce4ec3a2a09e5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c2.parquet
+    rows: 141
+    sha256: 35aac12fe708f7ea07c4c55e7958630160d554be13c756bea06d4147d721f7d6
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c3.parquet
+    rows: 141
+    sha256: 686d8234cd64862db5879bdea80e68c2c4a9ade5458521a650c5211533b53f58
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c4.parquet
+    rows: 141
+    sha256: 316ba6f3df521607ebc8ef4fc5aa597822909c7b7440da8ba6a65817084fdcc2
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c5.parquet
+    rows: 141
+    sha256: 0ac3314e39f0b7458067e8aabe369acabf18ca492eae8f3d2df67689807e3485
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c6.parquet
+    rows: 141
+    sha256: e30e70d88936271767bf7ad16f48ce2b18c6570942adf486ea8ac30030e19a7a
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c7.parquet
+    rows: 141
+    sha256: 0f73d43808841ec618d473b9b43742b4069f024920ce5e791b490b69115114d0
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c8.parquet
+    rows: 141
+    sha256: d7da490a85a5ef27671f9921f0d1875082afbe2a0ddea47c3f502fb1b52809f5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c9.parquet
+    rows: 141
+    sha256: cd732a8a2e93e2cb74c99fdbbcd3812562fe6863d4784fbf941798510afc53db
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_bridge_jan_qwen3-8b_local_20261109T024816Z_c0.parquet
+    rows: 943
+    sha256: fa03a8bf1bb9657a3a5060e633c124a2176b18c7fbaf7788a03e1fa28ad1f2a8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c0.parquet
+    rows: 150
+    sha256: 9eb87d5f56d5a77ff9f2efad61fd40aa3dfb7baa6e360485e42690e24d741aa3
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c1.parquet
+    rows: 150
+    sha256: e91641ec4e8a2553d0afea82693b24d166f9e31a3f0d1cf884683beb27fd2e02
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c10.parquet
+    rows: 149
+    sha256: 48bcdb3072cd2b8d20231c290b2e1d8b121461cdac3516dd067c3472c0b4531e
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c11.parquet
+    rows: 149
+    sha256: ce5f1fcdaeeb4fccfc77b05a305759e4064e0e0897846724c089956043d00cd7
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c12.parquet
+    rows: 149
+    sha256: 92445b66f5543e3cbbae3886df1b03439238c709170911890024b21fe481c767
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c13.parquet
+    rows: 149
+    sha256: a27a3f63aa837a2f61e98b46b6c4d09375893f8e3055b3b1995113c0298461c1
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c14.parquet
+    rows: 149
+    sha256: 1300b03da021cb52f4ed1972fd6971475988455f0695e99fcc5c59f22b74c9d6
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c15.parquet
+    rows: 149
+    sha256: 2aca19bdb3dc4e37d2e5a4537322094920e064a6bfd377a64f72a654468662c2
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c16.parquet
+    rows: 149
+    sha256: 75c011a4c5ead7dc5703d90b90a977f86d1134255fa7bf47ad5093afc62cbbf4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c17.parquet
+    rows: 149
+    sha256: f756d2e307c6ff91929d69b542ba5828da7246b3cb622fec98a52d4d8bea55c8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c18.parquet
+    rows: 149
+    sha256: 32ed98ec7b8f910b81f7864b3292280a4cad642cc985cc25bf873112de39a37c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c19.parquet
+    rows: 149
+    sha256: 79e47e45e3ee4c019e503f59ac0b093ee786832a1d05484527007e9533e938e8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c2.parquet
+    rows: 150
+    sha256: 60884a283b5dba5975e53a87569fece3d7298e7e6cff4f3759974e014a1a7e28
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c20.parquet
+    rows: 149
+    sha256: 8d7cdca21b979d77b9bcb026131fd175347264a4d35b4e88a4ea61f0a6d83f1a
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c21.parquet
+    rows: 149
+    sha256: eb470d225ebbffceb239fe84a0dc15a6ba0d35fe526af946cd6463cbe870a908
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c22.parquet
+    rows: 149
+    sha256: 6601572c13a64e2d13443da8ea5c47d29f2a189d288aba4a4411b1209717a6ea
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c23.parquet
+    rows: 149
+    sha256: aa472f400dff4009c63896c0db58dae67a8e20075d2120bc583340b8e89ada4d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c24.parquet
+    rows: 149
+    sha256: 0cd49897de94786c599bd23fc82daf319ad3699f108e0c16959295734303121c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c25.parquet
+    rows: 149
+    sha256: 8f0792412be818d9b13ef729f6d7671030f2469a772274847b3a8d671b27c7b8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c26.parquet
+    rows: 149
+    sha256: d8561a80a284bac496cfb703647f2f8e1b56c8e5442760f2d2d2958b1f5e9af2
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c27.parquet
+    rows: 149
+    sha256: f4cbbd4fb63e46fad243819db6c46f6edb607d5a404a9ed8a9b6fdbf108c2831
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c28.parquet
+    rows: 149
+    sha256: 5c1da7c02365ce019daaed02215d7b6cca09cd37a59bb5f2e4c0243016089ab7
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c29.parquet
+    rows: 149
+    sha256: 4057ca4c711311a61ece227b226dab742ae797de55ece159fd2eaf7681a79e2c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c3.parquet
+    rows: 150
+    sha256: f66c7c73979bbabef70640b30e8ac91814eaafee0b3789022892eca2e62beaa1
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c30.parquet
+    rows: 149
+    sha256: b24907a384316686d0d2528db1053b19c93bfd36f4d65d34d4b5630991f2cb89
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c31.parquet
+    rows: 149
+    sha256: 8fea99cd5e7292bb3f5a2a26bc2e397efd14c7c450253d008ce2910934fd0862
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c32.parquet
+    rows: 149
+    sha256: 993e51fa32ac93e3ff48fb3c3cd0dc2cfc5527d9ea2e23582945d2676c7a8048
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c4.parquet
+    rows: 150
+    sha256: 0796f3d2f9266831a9f56dadd016ae6c6a4ff1b2a5d240720251e89bdfec3fd4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c5.parquet
+    rows: 150
+    sha256: 858124fcffb6ba03015bf90dee2c663edf83eee3ff6933c82712ceec2bb3b748
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c6.parquet
+    rows: 150
+    sha256: da81a325d679cfbc256f4dadc68d5120a9347659908174fcb09c1e640c97b05f
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c7.parquet
+    rows: 150
+    sha256: 8f185666321956f6670a402c5f54a630aa8066a92148807afca560f659b88c93
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c8.parquet
+    rows: 150
+    sha256: 4cae79949c467cc0f48ed5d77d5ec2b2422ed6e4da382d20fc0f100d36e4dc5d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c9.parquet
+    rows: 149
+    sha256: b1015e23c9da5517d4c6b537ad63930321ec11134262f88e70c31d29c2a291de
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c0.parquet
+    rows: 1416
+    sha256: 77ebdf397d19c66c126843c9751c95a0d3c1a92f294a9d66d510c0ed54906ac1
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c1.parquet
+    rows: 1415
+    sha256: 182458e3aaa8249ddccd4b659ee623ea7075c3657f371ff039a35d12868f4c73
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c2.parquet
+    rows: 1415
+    sha256: c5dfb3f10119a2ee8cc15a1c723fe1b9025e601c8ebd279fdf9a6d3fdd103adf
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c0.parquet
+    rows: 150
+    sha256: 70de3c15bc4157c9e4e1d38cf26b4644bab7644d6d854f29da5f8d8d2227bdb0
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c1.parquet
+    rows: 150
+    sha256: 1385d9f590294e89008ee071fcc8e94b128fe28164c8dea54c7e1e09008783ba
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c10.parquet
+    rows: 149
+    sha256: 1bd837e5858ed1f61ebb966c563362c88d8d01d60c73ac4adbfd6da524d1c410
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c11.parquet
+    rows: 149
+    sha256: ef25933f2c4891916f46c4d3cf64b33f20620c937640fbef0c835e6972d23606
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c12.parquet
+    rows: 149
+    sha256: e3383a2bc9ca792a2c28d8aae52a6b01a196dacad3210d94eede7c6f3f4663dd
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c13.parquet
+    rows: 149
+    sha256: e87465586317916236f507972c9dffa47d3b120d599afbb53f3e2a6f6883fd58
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c14.parquet
+    rows: 149
+    sha256: 855c58110a2dd8138819779a3558116346c863409c7950245e5caae7c6588208
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c15.parquet
+    rows: 149
+    sha256: 53d993450f337c6aaa4a461926a2066a14b4d1d78a8315cea353ed7215ffda00
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c16.parquet
+    rows: 149
+    sha256: d0b9c8f37e792bc4e6bc40aedae2de142080f68e16997910087831abb43078e4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c17.parquet
+    rows: 149
+    sha256: fdeb339737a06ce1ff6a56dc7855e005fe2bd4e80cdc621524086e4e44fac50c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c18.parquet
+    rows: 149
+    sha256: b8377365072d039c15a305e65df702a8ee50de83d9e2830c886cfde4e21b92fc
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c19.parquet
+    rows: 149
+    sha256: f8c37dd6159cc122d548adafb50b7cf6b933d578ac2355c7625946f91ab17449
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c2.parquet
+    rows: 150
+    sha256: 410cc31196a795c794d9a59b5dd891e972187dd0722268afdbf68f6dc2cc0d33
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c20.parquet
+    rows: 149
+    sha256: 9eb715e00632db1fc414003c5caebc0de6e2a29cc29a6aa916309cc820aa8dbc
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c21.parquet
+    rows: 149
+    sha256: cde1841d6ae73de5c03701bb3f398e55b4838969bd4ac67bd1245b54063c6990
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c22.parquet
+    rows: 149
+    sha256: 8de2b98dfe67dd032b1a435ad89e2df31f5061eebac1ae6dff7fd365db9195a1
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c23.parquet
+    rows: 149
+    sha256: f7162738b9c2e32ee8a12cdb69ffd0ea3a28c4145aed2ecbc55bd67f639a5ab4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c24.parquet
+    rows: 149
+    sha256: d755aafa1daf4904a247ae7801d70fb47e82e3571175db9daaf37d3a002594f0
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c25.parquet
+    rows: 149
+    sha256: 8689b359794a392a9ac60f1e35fb87022a093047afc790747c99954bdb02e7c5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c26.parquet
+    rows: 149
+    sha256: f77fe6755266b5e21803493c4fe5aa45ab4d3f2be59f211cd40a683be4ca455c
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c27.parquet
+    rows: 149
+    sha256: 9a29bf5b5372a2b2b7e35fb4c6482d3d1bab6af167f69bcb61957b5923a5812d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c28.parquet
+    rows: 149
+    sha256: a5d7cfbf46154cb4ee5fdd20f27e23013e352340ddd01c98fc28b80c575270a8
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c29.parquet
+    rows: 149
+    sha256: 38f3a01b8f4541928470ee81fa3f450a6742147bb89e4e2ba51344f94fd70524
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c3.parquet
+    rows: 150
+    sha256: 4e5f832eab2c088be7cb30f40a98210a6af8f9be5f816ac4249b00f457702339
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c30.parquet
+    rows: 149
+    sha256: 12a90a5698bea7b6bf48dc1c00d0c66dd5b7473708bc35855c354bc55a860e02
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c31.parquet
+    rows: 149
+    sha256: 235e2368bc91faf4109d74d7de03296f65ef5e38278734176077616556b905ea
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c32.parquet
+    rows: 149
+    sha256: f48ce6e123b85ff18cbc10842aefd3479bbed32aeb72fa73c2a093ccc8ce3acd
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c4.parquet
+    rows: 150
+    sha256: a28242a4b610ee5ba39d43507fcb6532cdda9bcc050d68861caa3ae3bdfbbcc5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c5.parquet
+    rows: 150
+    sha256: 8d728316523d0ee622fd2e0fa28f565b91ad27beb024cd32863d9a141197c750
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c6.parquet
+    rows: 150
+    sha256: dbe2976869e48fb25259b7ced27594c85c8fb113779cc451ac76fcbea170511d
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c7.parquet
+    rows: 150
+    sha256: 3d9461eb305b71fc97cd488544be24b33ed7eae46ef9b67fa78529342a1c15af
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c8.parquet
+    rows: 150
+    sha256: 6d5168b477c14c029fdd13537a875a7ab2360323475667faa7a99dcaef7f82e5
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c9.parquet
+    rows: 149
+    sha256: 18405554429bda7bc499c12dbf2827c8b8aca5682d984cd042b1b909b2311aef
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c0.parquet
+    rows: 1444
+    sha256: 0292c9118f0a00536e5286b5927fbaefbae90c8a27099c661f7e4bf6bfd734d4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c1.parquet
+    rows: 1443
+    sha256: 142845b009b5c6646f9124629060b957d315048f2c5b0d378751181511e7486e
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c2.parquet
+    rows: 1443
+    sha256: 3a6f635eec495aaac42411f82aa688a54d209dabe079674d973ace7077dc3d50
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c0.parquet
+    rows: 117
+    sha256: 3b225569f28a2956f4e20ff193190dbc507b3dcf2b76432cdcca9a4d1bad3365
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c1.parquet
+    rows: 117
+    sha256: 246c72561186bdce43fb2e6c55ce8e2e16d92dbc322099d6b9ca179e15cb08fd
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2020_qwen3-8b_local_20261108T231634Z_c0.parquet
+    rows: 173
+    sha256: e9af4c2e9c80187dd089876c38bc84fef120f70f5ebd47e5fefcc28a51b8a347
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c0.parquet
+    rows: 117
+    sha256: ea57ed756877973813606f15d0a64d4197df1cc6b1f3deb2c1f32ca03bc75396
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c1.parquet
+    rows: 117
+    sha256: 43022647b96092bc7cdc480dc9896e32ab0f3795ddc65bf476fbf439bdaf1ea4
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_dated_2024_qwen3-8b_local_20261109T074945Z_c0.parquet
+    rows: 99
+    sha256: f800f5a87b7a143c8b6c7ca68b0177d789122350f37a8b01528b2852f62d0e36
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c0.parquet
+    rows: 117
+    sha256: 9521d453b1172067b90cc8318be65aebf08d5fc553721caf3723b3e61d6a6230
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c1.parquet
+    rows: 117
+    sha256: d0b063af6d79624e5b917042561c1b7a67bd406bdb3117cfeb9ba947ceead69f
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2020_qwen3-8b_local_20261108T214528Z_c0.parquet
+    rows: 115
+    sha256: 7b08882f9fe2763702d01bf493dbac4dffd8d1f0d69269664550726bd721ec85
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c0.parquet
+    rows: 117
+    sha256: a1e3ed14c507f9044aaceb9c2a2a9a85cd652f5266138b5a0aa81273ad75b97f
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c1.parquet
+    rows: 117
+    sha256: 5b706efc6165718d65c1772fad668978064850ae5c07de1334ae6c447305c7f9
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/qwen_p34_obf_2024_qwen3-8b_local_20261108T203436Z_c0.parquet
+    rows: 93
+    sha256: 897fcdaaba310fd33336dfbcd738afbd6e01541e5fdb98028cf87abe035b42a3
   - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_o4mini.parquet
     rows: 1476
@@ -576,6 +1028,62 @@ source:
     rows: 1
     sha256: 7f875925d50f9e6df010a7470d5298039738afaf52db826890d83a01b84e6dd3
   - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c0.parquet
+    rows: 1
+    sha256: 64f7763ee62098cc101629e5fecaeb84dcddfb572d25fca1fe94b98e7f42da4b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c1.parquet
+    rows: 1
+    sha256: c12267b3c9a3e02334c50aa0dfb5cda7c0788c1ea81ebf3054f58a6c1a2e0bea
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c0.parquet
+    rows: 1
+    sha256: 442f4e14fa9127fa8df0bf1757867bedf47bf05080fdff401addfd8092aa74e5
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c1.parquet
+    rows: 1
+    sha256: d5d3b4b6f8f9bb60f34908dbd3b57bf537329f003ef5fed6e71e7d654dde5c7b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c2.parquet
+    rows: 1
+    sha256: 0336256100100fee9f353ce43cc0cee637308c5393bb0ef7352b792ea15391de
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c3.parquet
+    rows: 1
+    sha256: b7007ded924842e02b0b020e0b090988d8d465340060b2efa8289fd20b74e111
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c0.parquet
+    rows: 1
+    sha256: 404776b283a9e7c72c77f05bc0c53fc49d8626e1e49f0d20d3036b44afda0957
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c1.parquet
+    rows: 1
+    sha256: 85f1706960a9930a4250db565b6375052c9e29eefd4d1c8d9ed720483d94445b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c2.parquet
+    rows: 1
+    sha256: 73786765c2ee9ecad4069322e4b9aeb83f57cc580477eaabf283ff0e693c8c2b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c3.parquet
+    rows: 1
+    sha256: 2cf450a1fee97a18904290edad09d12f3aa8eab92c9591220d1eb2efe464f1a6
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_p34_dated_2020_llama-31-8b-instruct_local_20261108T175248Z_c0.parquet
+    rows: 1
+    sha256: 6cd4a35b2df5d97f3926bc06dcb9d1707ee2e04de8eadb2caf803b5c8805d5ca
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_p34_dated_2024_llama-31-8b-instruct_local_20261108T175242Z_c0.parquet
+    rows: 1
+    sha256: 759e7f58b2e32fc833e2847fddd1e2f4fc30ab7800048252b362b42d2a1bf447
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_p34_obf_2020_llama-31-8b-instruct_local_20261108T175244Z_c0.parquet
+    rows: 1
+    sha256: 49108439c70174ddf3317ea1c32de20662a2935b132e5e3275eb1d4273d79475
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/llama_p34_obf_2024_llama-31-8b-instruct_local_20261108T175239Z_c0.parquet
+    rows: 1
+    sha256: cdbe7304d1de55d72b21a78e7f49be59716e35ca9b54dbf19265ef58673a5475
+  - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0.parquet
     rows: 1
     sha256: dddc6993a9808ea70d87058578b41b28d8922183aa49e1d3fe111ee502bc0ff7
@@ -672,9 +1180,405 @@ source:
     rows: 1
     sha256: 5fef3cbc649dd05ff4c8371b0a5ca43fbb4e16b5331284acbab8bd4798fcd632
   - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0.parquet
+    rows: 1
+    sha256: dadad0df153199b65173924cd6ed5322c1a224e70cb5ae78295266f3124a6052
+  - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0.parquet
     rows: 1
     sha256: 8cc6de43deb70da2787251cababe7138cb35479398ff480675b09d2263bda546
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z_c0.parquet
+    rows: 1
+    sha256: c55bb2d01fb6525393be36983a8a12d74268bbd19d8df589580fd230c98779a8
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z_c0.parquet
+    rows: 1
+    sha256: fbc79b12e78d05bda5094fec86983f4235572e65e75615cfe24a619d534b63cc
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c0.parquet
+    rows: 1
+    sha256: 7c55814437d93eff398266f6370dce8ad1548e51101f5ff10730187671804ba3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c1.parquet
+    rows: 1
+    sha256: 1c4d173d2f94c2c9260fb6250804ecf71a6ee7587b6594c728c4d03d5ff19e4d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c10.parquet
+    rows: 1
+    sha256: 6dbc33b1de715805b9092d26b0410c2692b84fc6ac5b9bbb1a899775d64fa518
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c2.parquet
+    rows: 1
+    sha256: b36dc4e698178e95ae1c5502305aa95812e6db609344db0af47e642598e800db
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c3.parquet
+    rows: 1
+    sha256: 51dda8338d7a8e5738cbded9ff08d3e5466a10ba2ab0f9d40a8257df7a68441d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c4.parquet
+    rows: 1
+    sha256: cc21d4349568bcd113b412300afb930f335556fe0f6662ae752f1f9ea70439ad
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c5.parquet
+    rows: 1
+    sha256: 422b0dc6be5dcf307ffc86039ba85a3dce6a013ae4897317138b925d26e64825
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c6.parquet
+    rows: 1
+    sha256: 0ffb89dcb75af55796da7817f2cd5e5601aa8e01f2401482d4e60d420c143391
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c7.parquet
+    rows: 1
+    sha256: b025b6e9cbee9eebc26a8cd389750986cb84e5c626b6f1574f4746fa5d593a69
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c8.parquet
+    rows: 1
+    sha256: 69057b478f500d7e9cf3b730fb0a6dcb8f901f13e108620e25b01b21ec735189
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c9.parquet
+    rows: 1
+    sha256: 08841f9f32bd0f14e34b6e219e52a8341b0052bbaa0c53af3e24592fbc7e923d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_bridge_jan_qwen3-8b_local_20261109T024816Z_c0.parquet
+    rows: 1
+    sha256: 8fa6fccbd1c9fb92efa3a5fc3a6a0ec922839a2d0effa3c13417b5e4ae9922af
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c0.parquet
+    rows: 1
+    sha256: d156d8c462962908582c571a4ece76f80f3d98c252ed4359c986ac709f0f559f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c1.parquet
+    rows: 1
+    sha256: 15d38a5bcff65d6018f80f8c0f8507dc7a2373944a85575eac86119178d0e646
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c10.parquet
+    rows: 1
+    sha256: 108c879d27379c8e0fc5e9dae0853b06caab2f1f3888929ec444ee10a4f006be
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c11.parquet
+    rows: 1
+    sha256: 86858d7bc9e3c74d80d20003abb6f89dc0dbf614a30ffa895260c1d5fdcd708b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c12.parquet
+    rows: 1
+    sha256: eb5ef02cdfe339fb6e648cb81538d0496cc2ba759a5a438e79f30dc97fee68db
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c13.parquet
+    rows: 1
+    sha256: ccbed1eec0a740efbcff797809e241008c262927f093e2beddf84cce2b75b38f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c14.parquet
+    rows: 1
+    sha256: bd12d4c87d1f5fe022834c61915c5a944a414fddc3a585062d247d7d84a16f99
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c15.parquet
+    rows: 1
+    sha256: fee9226df942c6159d7b0075bfac17ad313c23f4dfa0be628349943323ff12c1
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c16.parquet
+    rows: 1
+    sha256: 87deb5ff046c8f1a240379412f75c935a316cba0c9272f0f55053c2ac74cdd30
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c17.parquet
+    rows: 1
+    sha256: 6da2b9deee4c1159296437cebc772d638a57efcad38828cf3ebe73005c049819
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c18.parquet
+    rows: 1
+    sha256: 0a69d6e5a6b0738c2c172e2deed025cc1d5d6989ea4107cfee19ff9b97066f5b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c19.parquet
+    rows: 1
+    sha256: 16cc0e53853ffa5b8a580795c8411fa96362309eb58f37d3db928a65035880f0
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c2.parquet
+    rows: 1
+    sha256: 9946613a13e61b43d4dd1cafc8d9539c6034011b32d31186f2eb971c11d227be
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c20.parquet
+    rows: 1
+    sha256: 40cce0cff81f469725938a6e4e66cf26cb26e7f7ca941d40900cd736c57bf48d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c21.parquet
+    rows: 1
+    sha256: ae10d47bfe776d7460fcfc525463b8fb6a687e4bc8d4144ec5454ff651a6807d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c22.parquet
+    rows: 1
+    sha256: f9edb6f1b04049f4f1c8a229033e8bf7b67e7d3dfa144636d3adc60e8dd4ed25
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c23.parquet
+    rows: 1
+    sha256: cc913277e91154c29354a6254232c9c6c8fef2370847fd5692f5e34468d39eca
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c24.parquet
+    rows: 1
+    sha256: 9856132ac56fb523c346db5db163b37bdc30a1e35bc54191c7fbcf4e38e9a803
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c25.parquet
+    rows: 1
+    sha256: 7cc7ef515f2b38b591f04f643064bff1ef7a0da5f88c47d049be800875ecfaf6
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c26.parquet
+    rows: 1
+    sha256: f88aeaf11e5993fcdc47c9eb00b5a3802fb26e624dcb7b6c5a42ff3ecf4de88a
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c27.parquet
+    rows: 1
+    sha256: d22d0a363c79c181d10ee13c3261d25f1e69ae954ce60cff38fb38414a833d8d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c28.parquet
+    rows: 1
+    sha256: cc21cd57d34ebc34ea1e1f3394a97750bdc29d9062eb414512339aeef65407eb
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c29.parquet
+    rows: 1
+    sha256: 8bafa7c703e85184b4c896f9ec8473a9bed6fa463739b0ed00cb254fafada648
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c3.parquet
+    rows: 1
+    sha256: bfee1339affb5fe48a01e7b23175ac8d8119e3dadc0b3745c493baf3ce024730
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c30.parquet
+    rows: 1
+    sha256: 96bce5da1d758837460c1d68e480ca63f782998a203ac1ce9ac364fbb978b64f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c31.parquet
+    rows: 1
+    sha256: 807832aefa9529b743c6f2b49a630d4d96abee1f579b4f7b1428d781af078caa
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c32.parquet
+    rows: 1
+    sha256: 45376e71a2a9f85992c90f851800c40cb707bb71e2cf15fe91d1d938d262a190
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c4.parquet
+    rows: 1
+    sha256: d9728c21ed9ba397726c091eca1784f875d5ad709aaa74680e12ed791516279e
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c5.parquet
+    rows: 1
+    sha256: b43a87b7d5ccc2544f1fd097e5b6ca12863f9b713d2b96270d858ea6f9e446b6
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c6.parquet
+    rows: 1
+    sha256: ac4a858689de39c093e598e18fb6259e63e394a1481a5dafd9a1fb1be5e4c6c6
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c7.parquet
+    rows: 1
+    sha256: 17d9c6cc7ed16822673adcd823a2314ff2f124f3a0f9910c3ac51e30eb98d141
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c8.parquet
+    rows: 1
+    sha256: b76bd4177c3b53db5b642b7d02573d3d8c3e8979f27d69dcf10deb7b7c71013e
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c9.parquet
+    rows: 1
+    sha256: fc105da0f15fa13c843677a225d942be25db1358ceebb15519117ce66548effe
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c0.parquet
+    rows: 1
+    sha256: 15eb927d85676702dbf5dec0d6875ba14814736dc11474834c589c689850cacd
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c1.parquet
+    rows: 1
+    sha256: 1e604245fe00aef8346a22589564e66032bfb8238a4bd6cf1fce9db64fd7a89f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c2.parquet
+    rows: 1
+    sha256: e39f414d2eddda43fe48a35ddb02d8d88bbc88f2ca040670b380f32565ddaf09
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c0.parquet
+    rows: 1
+    sha256: c5e4b87ac05180b6a018006c7ced1773398fbb9cfc84c43577157760d8e946a0
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c1.parquet
+    rows: 1
+    sha256: 30c9c2581701a03b81bb3c3252d0e914a46d1ed6bcf6e60d67a95861702f3fc3
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c10.parquet
+    rows: 1
+    sha256: 8dd8694099dc9c5e7e03cf545d610227ffab3bf1ed5e0413ba8dc7a8d720a192
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c11.parquet
+    rows: 1
+    sha256: e07861e1b13dd6ecca19f0ecb417cb6ff16fffd54ae67f21eae9314c25fe47d5
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c12.parquet
+    rows: 1
+    sha256: e7873927de3ca0b032601fd51535babedf3330412e035b8974203810ffb77469
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c13.parquet
+    rows: 1
+    sha256: 7e5ae16178f7cd47bb936bb53c294183ab0fed03498477367fe3ab9cfaea9365
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c14.parquet
+    rows: 1
+    sha256: 6de8923063b86f3da8ea0fd926df31b8f2f3d7afa214b19be09888387e6ca605
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c15.parquet
+    rows: 1
+    sha256: 41c75cb3a20c875c84df33078237c0782f05bfe18aebae40f50a1eec740de719
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c16.parquet
+    rows: 1
+    sha256: 45fd1ccacb42ccc5fc0bffc2efc314890e8b3c2a18f84e1766cc93ac6d4d4d95
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c17.parquet
+    rows: 1
+    sha256: 47a631329d49a303a1587f4ef782a03e1633a8096a63bfcf92bacbde9eff5921
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c18.parquet
+    rows: 1
+    sha256: 7b5ad202f954a0c78b0573ea4acbd959a1ed1de33684e472bf26fdc16d8912bc
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c19.parquet
+    rows: 1
+    sha256: 3192c70a95c9f5135a8abe70be7477a527dd2527ca3c559bfd9402f5476ce0d0
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c2.parquet
+    rows: 1
+    sha256: 30aaf274088fc52422554ace9b0f57dd655332489c99f63c906163b55d09c45b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c20.parquet
+    rows: 1
+    sha256: 9f64a6126299762011f9c0bd0aa520b21b397e04861dd1aef44b540d07451b3d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c21.parquet
+    rows: 1
+    sha256: e66900628da138dbaf06a1f7ae5ef2df870294aeb43015ebd894fcddc5cf89d8
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c22.parquet
+    rows: 1
+    sha256: 355f3024210c2154055545784ae763c446a8827eb8f3b7473a4dabab64e57234
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c23.parquet
+    rows: 1
+    sha256: 0be4b77f1522bbf8a1785f2a8d9d632a99640e58173f316459dffd710f2570fd
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c24.parquet
+    rows: 1
+    sha256: 09be86ed1cd881091184b679ad54dfb94b80e72b4578754f6b4bd9548f0331a8
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c25.parquet
+    rows: 1
+    sha256: 529596c2f98000a7ac1054b130fafc0aac6172072da81a3b05ec4b6ca533fdf5
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c26.parquet
+    rows: 1
+    sha256: d170e3b14402be59d0b3b0123a3df0f0c01cf1979c0da319d7d411f4dc1ab7ed
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c27.parquet
+    rows: 1
+    sha256: f1143d72e8370d0452ce55375e9dbca457aa811f2e4cd1c4acc91aaddce5282a
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c28.parquet
+    rows: 1
+    sha256: fe4f0c826ae5800e4a275f9e89d7246f6a49037f7354a011f00dd98184fa2b94
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c29.parquet
+    rows: 1
+    sha256: 5bea39d5815ed462d94620b909d668c3dc11d1ebe8e186dbb8162953b7a0d52b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c3.parquet
+    rows: 1
+    sha256: cd9d706630c9bc2e8170175fdc8b2bcc7bf825c175f3d428ac3475d0db4fff47
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c30.parquet
+    rows: 1
+    sha256: 54145ec24771a7d87a6f298f4f862805e006a18b3578b2b9e299d08161483879
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c31.parquet
+    rows: 1
+    sha256: d45ed1a21b9f93448b6c686ed4345f1c476e417269192b7b6bfe475305ecbbdf
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c32.parquet
+    rows: 1
+    sha256: 5b38b731e0f32bfcc197dca4826f4907ff1db0296894ee88ae3f5cd5b014946c
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c4.parquet
+    rows: 1
+    sha256: 79d3d02ce0c7ed54d615eac2368c2e65f0958e113662cdba107d756f98bb046b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c5.parquet
+    rows: 1
+    sha256: 70ad2950a62e148aed777918e6d7276bd124effa6df1de8c1f350ee5bbc18203
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c6.parquet
+    rows: 1
+    sha256: 4010ef17f74e21a60b1577eda3cb13d34ac421871addb0aa2d8210231821a24d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c7.parquet
+    rows: 1
+    sha256: 05c4c171819e8cb8b34e4de679974f85a25add0c8dbb36689a64756ffaa36a6a
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c8.parquet
+    rows: 1
+    sha256: 13c791b1c11402531d7ba6b0aa5994e2ef344f7468f679cca6b767fbb789c098
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261108T192201Z_c9.parquet
+    rows: 1
+    sha256: 2db2739eaeba3326e553d6a411b393c8c5beb8a376cf87e6a701cc24e87da5ec
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c0.parquet
+    rows: 1
+    sha256: eb93f3616da0a4a5e09ff3829cf640716a6346c83f2dd2762620f3b9056c7a6d
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c1.parquet
+    rows: 1
+    sha256: c75e5a864f70b64f9499ce4a5281a1b134ab1e3287d69bdacf412c52600e494a
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_full_spy_qwen3-8b_local_20261109T091006Z_c2.parquet
+    rows: 1
+    sha256: 5918cff9d5624a4249a926561812efe82ac498f49916a96b0cebafbc702d89d6
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c0.parquet
+    rows: 1
+    sha256: 8856a1f9b7bf592acad55cc69bef8c3fcfc8fda5f4ab81d66664aed06383ae9b
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c1.parquet
+    rows: 1
+    sha256: 8df01e1cb281f7607869ffaf8cfe1ff658f73508f2881ff19b76179bbaa13648
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2020_qwen3-8b_local_20261108T231634Z_c0.parquet
+    rows: 1
+    sha256: 43cabcd58cbfa6dda1eb85641efd2d8737a28f3a362bc6419065bec8996a559f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c0.parquet
+    rows: 1
+    sha256: eb3262a9cd2a19f9aa78fe7cd8d5b6a2b80f67d59944b36b214d25952ddb660f
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c1.parquet
+    rows: 1
+    sha256: 573b425e4ac8559c3ae85c0b1f5a03b295d291aa23bd99a6c1a20f91878eb833
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_dated_2024_qwen3-8b_local_20261109T074945Z_c0.parquet
+    rows: 1
+    sha256: 27180bd6e124551581390ae745490e000f62751e69e863a4a5c0e9b302e6b9a0
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c0.parquet
+    rows: 1
+    sha256: 242845fb3a8a9e6909a7d4d2b56cc8bec3848e7cc2ef610e7a808ce8deba63c2
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c1.parquet
+    rows: 1
+    sha256: a6674ed00649a3ba80df0cc584b58eaa11b203877205f199310f5cb53f286ab2
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2020_qwen3-8b_local_20261108T214528Z_c0.parquet
+    rows: 1
+    sha256: 298a35c427ba393ce8afb1b4bdcd614e008812b0347aa0ce30d54d337e0a3704
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c0.parquet
+    rows: 1
+    sha256: 80610c950f8afd08adef597f48952b6bcdd8dfca5049e6621e2310e0ad5083e5
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c1.parquet
+    rows: 1
+    sha256: 01ae362dd95f0843f5a050dea0bad3d6552bdbd52604c6fcc89b04de90a0c3df
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/qwen_p34_obf_2024_qwen3-8b_local_20261108T203436Z_c0.parquet
+    rows: 1
+    sha256: a68357b54d158224fbcb4e2d2f761f7db3c3c9a59ae728598fafe8a327cc7887
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/r1_o4mini.parquet
     rows: 1
@@ -690,9 +1594,9 @@ source:
   max_created_at:
     series: '2026-11-03T03:59:19.961463+00:00'
     windows: '2026-11-03T04:00:12.004395+00:00'
-    detections: '2026-11-07T23:08:47.904171+00:00'
-    runs: '2026-11-07T22:37:08.765159+00:00'
-inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
+    detections: '2026-11-10T02:25:31.655535+00:00'
+    runs: '2026-11-09T09:10:06.400910+00:00'
+inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
 inputs:
   series:
     rows: 39027
@@ -861,7 +1765,7 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
   detections:
-    rows: 49090
+    rows: 73846
     coverage:
     - arm: bridge_jan
       model: gpt-6-luna
@@ -1038,6 +1942,118 @@ inputs:
       rows: 3
       first: '2026-09-10'
       last: '2026-09-28'
+      recovered_2026_rows: 0
+    - arm: llama_bridge_jan
+      model: llama-3.1-8b-instruct
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+      recovered_2026_rows: 0
+    - arm: llama_bridge_jan#rep1
+      model: llama-3.1-8b-instruct
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 74
+      first: '2020-05-08'
+      last: '2025-10-20'
+      recovered_2026_rows: 0
+    - arm: llama_ex0dte_spy
+      model: llama-3.1-8b-instruct
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 4691
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: llama_ex0dte_spy#rep1
+      model: llama-3.1-8b-instruct
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 235
+      first: '2008-04-24'
+      last: '2026-10-08'
+      recovered_2026_rows: 0
+    - arm: llama_full_spy
+      model: llama-3.1-8b-instruct
+      series_key: new_full
+      symbol: SPY
+      rows: 4691
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: llama_full_spy#rep1
+      model: llama-3.1-8b-instruct
+      series_key: new_full
+      symbol: SPY
+      rows: 235
+      first: '2008-03-13'
+      last: '2026-08-28'
+      recovered_2026_rows: 0
+    - arm: llama_p34_dated_2020
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: llama_p34_dated_2020#rep1
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 11
+      first: '2020-02-24'
+      last: '2020-12-29'
+      recovered_2026_rows: 0
+    - arm: llama_p34_dated_2024
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: llama_p34_dated_2024#rep1
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 11
+      first: '2024-02-23'
+      last: '2024-12-16'
+      recovered_2026_rows: 0
+    - arm: llama_p34_obf_2020
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: llama_p34_obf_2020#rep1
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020
+      symbol: SPY
+      rows: 11
+      first: '2020-03-05'
+      last: '2020-12-24'
+      recovered_2026_rows: 0
+    - arm: llama_p34_obf_2024
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: llama_p34_obf_2024#rep1
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024
+      symbol: SPY
+      rows: 11
+      first: '2024-02-16'
+      last: '2024-11-21'
       recovered_2026_rows: 0
     - arm: oss_bridge_jan
       model: gpt-oss-20b
@@ -1223,6 +2239,14 @@ inputs:
       first: '2020-04-27'
       last: '2025-11-26'
       recovered_2026_rows: 0
+    - arm: pilot_llama_bridge_jan
+      model: llama-3.1-8b-instruct
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 40
+      first: '2020-03-12'
+      last: '2025-12-11'
+      recovered_2026_rows: 0
     - arm: pilot_oss_bridge_jan
       model: gpt-oss-20b
       series_key: jan2026_phase4a
@@ -1230,6 +2254,126 @@ inputs:
       rows: 40
       first: '2020-09-29'
       last: '2025-10-24'
+      recovered_2026_rows: 0
+    - arm: pilot_qwen_bridge_jan
+      model: qwen3-8b
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 40
+      first: '2020-04-29'
+      last: '2025-12-05'
+      recovered_2026_rows: 0
+    - arm: qwen_bridge_jan
+      model: qwen3-8b
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 1476
+      first: '2020-02-13'
+      last: '2025-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_bridge_jan#rep1
+      model: qwen3-8b
+      series_key: jan2026_phase4a
+      symbol: SPY
+      rows: 74
+      first: '2020-02-20'
+      last: '2025-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_ex0dte_spy
+      model: qwen3-8b
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 4691
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: qwen_ex0dte_spy#rep1
+      model: qwen3-8b
+      series_key: new_ex0dte
+      symbol: SPY
+      rows: 235
+      first: '2008-02-14'
+      last: '2026-10-05'
+      recovered_2026_rows: 0
+    - arm: qwen_full_spy
+      model: qwen3-8b
+      series_key: new_full
+      symbol: SPY
+      rows: 4691
+      first: '2008-02-13'
+      last: '2026-10-09'
+      recovered_2026_rows: 0
+    - arm: qwen_full_spy#rep1
+      model: qwen3-8b
+      series_key: new_full
+      symbol: SPY
+      rows: 235
+      first: '2008-04-09'
+      last: '2026-09-24'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_dated_2020
+      model: qwen3-8b
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_dated_2020#rep1
+      model: qwen3-8b
+      series_key: p4_2020_dated
+      symbol: SPY
+      rows: 11
+      first: '2020-02-20'
+      last: '2020-12-03'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_dated_2024
+      model: qwen3-8b
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_dated_2024#rep1
+      model: qwen3-8b
+      series_key: p3_2024_dated
+      symbol: SPY
+      rows: 11
+      first: '2024-03-14'
+      last: '2024-12-20'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_obf_2020
+      model: qwen3-8b
+      series_key: p4_2020
+      symbol: SPY
+      rows: 223
+      first: '2020-02-13'
+      last: '2020-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_obf_2020#rep1
+      model: qwen3-8b
+      series_key: p4_2020
+      symbol: SPY
+      rows: 11
+      first: '2020-02-24'
+      last: '2020-12-29'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_obf_2024
+      model: qwen3-8b
+      series_key: p3_2024
+      symbol: SPY
+      rows: 223
+      first: '2024-02-13'
+      last: '2024-12-31'
+      recovered_2026_rows: 0
+    - arm: qwen_p34_obf_2024#rep1
+      model: qwen3-8b
+      series_key: p3_2024
+      symbol: SPY
+      rows: 11
+      first: '2024-02-20'
+      last: '2024-12-26'
       recovered_2026_rows: 0
     - arm: r1_o4mini
       model: o4-mini-2025-04-16
@@ -1255,10 +2399,10 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
       recovered_2026_rows: 0
-    parsed_rows: 49088
+    parsed_rows: 72750
     recovered_2026_rows: 64
   runs:
-    rows: 66
+    rows: 179
 sections:
   detection_by_year:
     status: written
@@ -1266,7 +2410,7 @@ sections:
     - detection_by_year.csv
     - detection_by_year_wide.csv
     summary:
-      rows: 609
+      rows: 843
       classifier_rate_pct_by_year:
         jan2026_phase4a:
           SPY:
@@ -1479,6 +2623,22 @@ sections:
             2023: 19.277108
             2024: 100.0
             2025: 100.0
+        llama_bridge_jan:
+          llama-3.1-8b-instruct:
+            2020: 100.0
+            2021: 100.0
+            2022: 100.0
+            2023: 100.0
+            2024: 100.0
+            2025: 100.0
+        qwen_bridge_jan:
+          qwen3-8b:
+            2020: 12.871287
+            2021: 7.567568
+            2022: 36.595745
+            2023: 22.522523
+            2024: 100.0
+            2025: 100.0
         bridge_old:
           gpt-6-luna:
             2008: 0.0
@@ -1581,6 +2741,48 @@ sections:
             2024: 11.111111
             2025: 13.6
             2026: 11.85567
+        llama_full_spy:
+          llama-3.1-8b-instruct:
+            2008: 100.0
+            2009: 100.0
+            2010: 99.603175
+            2011: 100.0
+            2012: 100.0
+            2013: 100.0
+            2014: 100.0
+            2015: 100.0
+            2016: 100.0
+            2017: 100.0
+            2018: 100.0
+            2019: 100.0
+            2020: 100.0
+            2021: 100.0
+            2022: 100.0
+            2023: 100.0
+            2024: 100.0
+            2025: 100.0
+            2026: 100.0
+        qwen_full_spy:
+          qwen3-8b:
+            2008: 0.0
+            2009: 0.485437
+            2010: 0.420168
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 9.52381
+            2015: 9.543568
+            2016: 30.901288
+            2017: 34.934498
+            2018: 42.035398
+            2019: 10.0
+            2020: 23.684211
+            2021: 8.947368
+            2022: 43.265306
+            2023: 26.90583
+            2024: 16.842105
+            2025: 19.617225
+            2026: 13.664596
         ex0dte_iwm:
           gpt-6-luna:
             2020: 0.0
@@ -1641,6 +2843,48 @@ sections:
             2024: 13.492063
             2025: 16.4
             2026: 21.134021
+        llama_ex0dte_spy:
+          llama-3.1-8b-instruct:
+            2008: 100.0
+            2009: 100.0
+            2010: 99.603175
+            2011: 100.0
+            2012: 100.0
+            2013: 100.0
+            2014: 100.0
+            2015: 100.0
+            2016: 100.0
+            2017: 100.0
+            2018: 100.0
+            2019: 100.0
+            2020: 100.0
+            2021: 100.0
+            2022: 100.0
+            2023: 100.0
+            2024: 100.0
+            2025: 100.0
+            2026: 100.0
+        qwen_ex0dte_spy:
+          qwen3-8b:
+            2008: 0.465116
+            2009: 0.462963
+            2010: 0.0
+            2011: 0.0
+            2012: 0.0
+            2013: 0.0
+            2014: 8.823529
+            2015: 1.639344
+            2016: 23.175966
+            2017: 20.737327
+            2018: 25.0
+            2019: 3.153153
+            2020: 11.353712
+            2021: 0.0
+            2022: 39.240506
+            2023: 29.535865
+            2024: 16.525424
+            2025: 17.90393
+            2026: 23.163842
         intraday_spy:
           gpt-6-luna:
             2026: 0.0
@@ -1668,6 +2912,12 @@ sections:
         oss_p34_obf_2024:
           gpt-oss-20b:
             2024: 82.959641
+        llama_p34_obf_2024:
+          llama-3.1-8b-instruct:
+            2024: 100.0
+        qwen_p34_obf_2024:
+          qwen3-8b:
+            2024: 86.320755
         r1_p3_o4mini:
           o4-mini:
             2024: 81.165919
@@ -1677,11 +2927,23 @@ sections:
         oss_p34_dated_2024:
           gpt-oss-20b:
             2024: 82.06278
+        llama_p34_dated_2024:
+          llama-3.1-8b-instruct:
+            2024: 100.0
+        qwen_p34_dated_2024:
+          qwen3-8b:
+            2024: 94.923858
         p34_obf_2020:
           gpt-6-luna:
             2020: 12.107623
         oss_p34_obf_2020:
           gpt-oss-20b:
+            2020: 12.107623
+        llama_p34_obf_2020:
+          llama-3.1-8b-instruct:
+            2020: 100.0
+        qwen_p34_obf_2020:
+          qwen3-8b:
             2020: 12.107623
         r1_p4_o4mini:
           o4-mini:
@@ -1692,6 +2954,12 @@ sections:
         oss_p34_dated_2020:
           gpt-oss-20b:
             2020: 12.107623
+        llama_p34_dated_2020:
+          llama-3.1-8b-instruct:
+            2020: 100.0
+        qwen_p34_dated_2020:
+          qwen3-8b:
+            2020: 12.385321
       llm_vs_classifier_all_years:
       - arm: r1_o4mini
         model: o4-mini-2025-04-16
@@ -1717,6 +2985,22 @@ sections:
         n_compared: 1476.0
         agree_pct: 99.593496
         kappa: 0.9918
+      - arm: llama_bridge_jan
+        model: llama-3.1-8b-instruct
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_parsed: 1476.0
+        n_compared: 1476.0
+        agree_pct: 45.189702
+        kappa: 0.0
+      - arm: qwen_bridge_jan
+        model: qwen3-8b
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_parsed: 1345.0
+        n_compared: 1345.0
+        agree_pct: 98.884758
+        kappa: 0.977697
       - arm: bridge_old
         model: gpt-6-luna
         series_key: old_bs
@@ -1757,6 +3041,22 @@ sections:
         n_compared: 4689.0
         agree_pct: 99.722755
         kappa: 0.987793
+      - arm: llama_full_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_full
+        symbol: SPY
+        n_parsed: 4691.0
+        n_compared: 4691.0
+        agree_pct: 13.003624
+        kappa: 6.36191e-05
+      - arm: qwen_full_spy
+        model: qwen3-8b
+        series_key: new_full
+        symbol: SPY
+        n_parsed: 4206.0
+        n_compared: 4206.0
+        agree_pct: 98.692344
+        kappa: 0.948367
       - arm: ex0dte_iwm
         model: gpt-6-luna
         series_key: new_ex0dte
@@ -1789,6 +3089,22 @@ sections:
         n_compared: 4691.0
         agree_pct: 99.850778
         kappa: 0.992074
+      - arm: llama_ex0dte_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_ex0dte
+        symbol: SPY
+        n_parsed: 4691.0
+        n_compared: 4691.0
+        agree_pct: 10.488169
+        kappa: 4.98515e-05
+      - arm: qwen_ex0dte_spy
+        model: qwen3-8b
+        series_key: new_ex0dte
+        symbol: SPY
+        n_parsed: 4317.0
+        n_compared: 4317.0
+        agree_pct: 99.444058
+        kappa: 0.972522
       - arm: intraday_spy
         model: gpt-6-luna
         series_key: intraday_t0
@@ -1829,6 +3145,22 @@ sections:
         n_compared: 223.0
         agree_pct: 98.206278
         kappa: 0.939104
+      - arm: llama_p34_obf_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 81.165919
+        kappa: 0.0
+      - arm: qwen_p34_obf_2024
+        model: qwen3-8b
+        series_key: p3_2024
+        symbol: SPY
+        n_parsed: 212.0
+        n_compared: 212.0
+        agree_pct: 98.113208
+        kappa: 0.924488
       - arm: r1_p3_o4mini
         model: o4-mini
         series_key: p3_2024_dated
@@ -1853,6 +3185,22 @@ sections:
         n_compared: 223.0
         agree_pct: 99.103139
         kappa: 0.970119
+      - arm: llama_p34_dated_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 81.165919
+        kappa: 0.0
+      - arm: qwen_p34_dated_2024
+        model: qwen3-8b
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_parsed: 197.0
+        n_compared: 197.0
+        agree_pct: 95.431472
+        kappa: 0.667542
       - arm: p34_obf_2020
         model: gpt-6-luna
         series_key: p4_2020
@@ -1863,6 +3211,22 @@ sections:
         kappa: 1.0
       - arm: oss_p34_obf_2020
         model: gpt-oss-20b
+        series_key: p4_2020
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 100.0
+        kappa: 1.0
+      - arm: llama_p34_obf_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 12.107623
+        kappa: 0.0
+      - arm: qwen_p34_obf_2020
+        model: qwen3-8b
         series_key: p4_2020
         symbol: SPY
         n_parsed: 223.0
@@ -1893,6 +3257,22 @@ sections:
         n_compared: 223.0
         agree_pct: 100.0
         kappa: 1.0
+      - arm: llama_p34_dated_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_parsed: 223.0
+        n_compared: 223.0
+        agree_pct: 12.107623
+        kappa: 0.0
+      - arm: qwen_p34_dated_2020
+        model: qwen3-8b
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_parsed: 218.0
+        n_compared: 218.0
+        agree_pct: 99.541284
+        kappa: 0.978522
       recovered_2026:
         windows: 64
         arms:
@@ -1904,7 +3284,7 @@ sections:
     - bridge_agreement.csv
     - bridge_agreement.yaml
     summary:
-      rows: 292
+      rows: 548
       gate:
         comparison: r1_o4mini vs bridge_jan
         metric: cohen_kappa
@@ -1929,12 +3309,33 @@ sections:
         rate_diff_pp: -0.354108
         p_mcnemar_exact: 0.0625
       - ref_arm: r1_o4mini
+        other_arm: llama_bridge_jan
+        n_pairs: 1412
+        agree_pct: 45.750708
+        kappa: 0.0
+        rate_diff_pp: -54.249292
+        p_mcnemar_exact: 5.15292e-231
+      - ref_arm: r1_o4mini
         other_arm: oss_bridge_jan
         n_pairs: 1412
         agree_pct: 99.575071
         kappa: 0.991446
         rate_diff_pp: -0.424929
         p_mcnemar_exact: 0.03125
+      - ref_arm: r1_o4mini
+        other_arm: qwen_bridge_jan
+        n_pairs: 1287
+        agree_pct: 98.912199
+        kappa: 0.978243
+        rate_diff_pp: -0.777001
+        p_mcnemar_exact: 0.012939
+      - ref_arm: r1_p3_o4mini
+        other_arm: llama_p34_dated_2024
+        n_pairs: 223
+        agree_pct: 81.165919
+        kappa: 0.0
+        rate_diff_pp: -18.834081
+        p_mcnemar_exact: 4.54747e-13
       - ref_arm: r1_p3_o4mini
         other_arm: oss_p34_dated_2024
         n_pairs: 223
@@ -1949,6 +3350,20 @@ sections:
         kappa: 1.0
         rate_diff_pp: 0.0
         p_mcnemar_exact: 1.0
+      - ref_arm: r1_p3_o4mini
+        other_arm: qwen_p34_dated_2024
+        n_pairs: 197
+        agree_pct: 95.431472
+        kappa: 0.667542
+        rate_diff_pp: -4.568528
+        p_mcnemar_exact: 0.003906
+      - ref_arm: r1_p4_o4mini
+        other_arm: llama_p34_dated_2020
+        n_pairs: 223
+        agree_pct: 12.107623
+        kappa: 0.0
+        rate_diff_pp: -87.892377
+        p_mcnemar_exact: 1.99136e-59
       - ref_arm: r1_p4_o4mini
         other_arm: oss_p34_dated_2020
         n_pairs: 223
@@ -1963,6 +3378,13 @@ sections:
         kappa: 1.0
         rate_diff_pp: 0.0
         p_mcnemar_exact: 1.0
+      - ref_arm: r1_p4_o4mini
+        other_arm: qwen_p34_dated_2020
+        n_pairs: 218
+        agree_pct: 99.541284
+        kappa: 0.978522
+        rate_diff_pp: -0.458716
+        p_mcnemar_exact: 1.0
       bridge_incl_recovered:
       - ref_arm: r1_o4mini_all
         other_arm: bridge_jan
@@ -1970,11 +3392,70 @@ sections:
         agree_pct: 99.593496
         kappa: 0.991798
       - ref_arm: r1_o4mini_all
+        other_arm: llama_bridge_jan
+        n_pairs: 1476
+        agree_pct: 45.189702
+        kappa: 0.0
+      - ref_arm: r1_o4mini_all
         other_arm: oss_bridge_jan
         n_pairs: 1476
         agree_pct: 99.593496
         kappa: 0.9918
+      - ref_arm: r1_o4mini_all
+        other_arm: qwen_bridge_jan
+        n_pairs: 1345
+        agree_pct: 98.884758
+        kappa: 0.977697
       model_pair:
+      - ref_arm: bridge_jan
+        other_arm: llama_bridge_jan
+        n_pairs: 1476
+        agree_pct: 45.460705
+        kappa: 0.0
+        rate_diff_pp: -54.539295
+        p_mcnemar_exact: 9.37311e-243
+      - ref_arm: ex0dte_spy
+        other_arm: llama_ex0dte_spy
+        n_pairs: 4691
+        agree_pct: 10.573438
+        kappa: 5.03056e-05
+        rate_diff_pp: -89.426562
+        p_mcnemar_exact: 0.0
+      - ref_arm: full_spy
+        other_arm: llama_full_spy
+        n_pairs: 4691
+        agree_pct: 13.174163
+        kappa: 6.45814e-05
+        rate_diff_pp: -86.825837
+        p_mcnemar_exact: 0.0
+      - ref_arm: p34_dated_2020
+        other_arm: llama_p34_dated_2020
+        n_pairs: 223
+        agree_pct: 12.107623
+        kappa: 0.0
+        rate_diff_pp: -87.892377
+        p_mcnemar_exact: 1.99136e-59
+      - ref_arm: p34_dated_2024
+        other_arm: llama_p34_dated_2024
+        n_pairs: 223
+        agree_pct: 81.165919
+        kappa: 0.0
+        rate_diff_pp: -18.834081
+        p_mcnemar_exact: 4.54747e-13
+      - ref_arm: p34_obf_2020
+        other_arm: llama_p34_obf_2020
+        n_pairs: 223
+        agree_pct: 12.107623
+        kappa: 0.0
+        rate_diff_pp: -87.892377
+        p_mcnemar_exact: 1.99136e-59
+      - ref_arm: p34_obf_2024
+        other_arm: llama_p34_obf_2024
+        n_pairs: 223
+        agree_pct: 80.717489
+        kappa: 0.0
+        rate_diff_pp: -19.282511
+        p_mcnemar_exact: 2.27374e-13
       - ref_arm: bridge_jan
         other_arm: oss_bridge_jan
         n_pairs: 1476
@@ -2023,6 +3504,55 @@ sections:
         agree_pct: 97.757848
         kappa: 0.924637
         rate_diff_pp: -2.242152
+        p_mcnemar_exact: 0.0625
+      - ref_arm: bridge_jan
+        other_arm: qwen_bridge_jan
+        n_pairs: 1345
+        agree_pct: 98.587361
+        kappa: 0.971748
+        rate_diff_pp: -0.520446
+        p_mcnemar_exact: 0.167068
+      - ref_arm: ex0dte_spy
+        other_arm: qwen_ex0dte_spy
+        n_pairs: 4317
+        agree_pct: 99.305073
+        kappa: 0.965773
+        rate_diff_pp: -0.324299
+        p_mcnemar_exact: 0.016125
+      - ref_arm: full_spy
+        other_arm: qwen_full_spy
+        n_pairs: 4206
+        agree_pct: 98.50214
+        kappa: 0.941087
+        rate_diff_pp: -0.974798
+        p_mcnemar_exact: 1.6735e-07
+      - ref_arm: p34_dated_2020
+        other_arm: qwen_p34_dated_2020
+        n_pairs: 218
+        agree_pct: 99.541284
+        kappa: 0.978522
+        rate_diff_pp: -0.458716
+        p_mcnemar_exact: 1.0
+      - ref_arm: p34_dated_2024
+        other_arm: qwen_p34_dated_2024
+        n_pairs: 197
+        agree_pct: 95.431472
+        kappa: 0.667542
+        rate_diff_pp: -4.568528
+        p_mcnemar_exact: 0.003906
+      - ref_arm: p34_obf_2020
+        other_arm: qwen_p34_obf_2020
+        n_pairs: 223
+        agree_pct: 100.0
+        kappa: 1.0
+        rate_diff_pp: 0.0
+        p_mcnemar_exact: 1.0
+      - ref_arm: p34_obf_2024
+        other_arm: qwen_p34_obf_2024
+        n_pairs: 212
+        agree_pct: 97.641509
+        kappa: 0.906887
+        rate_diff_pp: -2.358491
         p_mcnemar_exact: 0.0625
       test_retest:
       - ref_arm: bridge_jan
@@ -2080,6 +3610,41 @@ sections:
         n_pairs: 3
         agree_pct: 100.0
         kappa: null
+      - ref_arm: llama_bridge_jan
+        other_arm: llama_bridge_jan#rep1
+        n_pairs: 74
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_ex0dte_spy
+        other_arm: llama_ex0dte_spy#rep1
+        n_pairs: 235
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_full_spy
+        other_arm: llama_full_spy#rep1
+        n_pairs: 235
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_p34_dated_2020
+        other_arm: llama_p34_dated_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_p34_dated_2024
+        other_arm: llama_p34_dated_2024#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_p34_obf_2020
+        other_arm: llama_p34_obf_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: llama_p34_obf_2024
+        other_arm: llama_p34_obf_2024#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: null
       - ref_arm: oss_bridge_jan
         other_arm: oss_bridge_jan#rep1
         n_pairs: 74
@@ -2133,6 +3698,41 @@ sections:
       - ref_arm: p34_obf_2024
         other_arm: p34_obf_2024#rep1
         n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: qwen_bridge_jan
+        other_arm: qwen_bridge_jan#rep1
+        n_pairs: 57
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: qwen_ex0dte_spy
+        other_arm: qwen_ex0dte_spy#rep1
+        n_pairs: 197
+        agree_pct: 99.492386
+        kappa: 0.971544
+      - ref_arm: qwen_full_spy
+        other_arm: qwen_full_spy#rep1
+        n_pairs: 195
+        agree_pct: 98.974359
+        kappa: 0.959502
+      - ref_arm: qwen_p34_dated_2020
+        other_arm: qwen_p34_dated_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: qwen_p34_dated_2024
+        other_arm: qwen_p34_dated_2024#rep1
+        n_pairs: 5
+        agree_pct: 100.0
+        kappa: null
+      - ref_arm: qwen_p34_obf_2020
+        other_arm: qwen_p34_obf_2020#rep1
+        n_pairs: 11
+        agree_pct: 100.0
+        kappa: 1.0
+      - ref_arm: qwen_p34_obf_2024
+        other_arm: qwen_p34_obf_2024#rep1
+        n_pairs: 7
         agree_pct: 100.0
         kappa: 1.0
   series_comparison:
@@ -2639,6 +4239,14 @@ sections:
           n: 194
           rate_pct: 11.85567
           agree_with_clf_pct: 99.484536
+        llm_llama_full_spy:
+          n: 194
+          rate_pct: 100.0
+          agree_with_clf_pct: 11.340206
+        llm_qwen_full_spy:
+          n: 161
+          rate_pct: 13.664596
+          agree_with_clf_pct: 100.0
         entirely_2026:
           n_windows: 165
           window_end_first: '2026-02-13'
@@ -2653,6 +4261,14 @@ sections:
             n: 165
             rate_pct: 13.939394
             agree_with_clf_pct: 99.393939
+          llm_llama_full_spy:
+            n: 165
+            rate_pct: 100.0
+            agree_with_clf_pct: 13.333333
+          llm_qwen_full_spy:
+            n: 135
+            rate_pct: 16.296296
+            agree_with_clf_pct: 100.0
       - series_key: new_ex0dte
         symbol: IWM
         n_windows: 194
@@ -2710,6 +4326,14 @@ sections:
           n: 194
           rate_pct: 21.134021
           agree_with_clf_pct: 100.0
+        llm_llama_ex0dte_spy:
+          n: 194
+          rate_pct: 100.0
+          agree_with_clf_pct: 21.134021
+        llm_qwen_ex0dte_spy:
+          n: 177
+          rate_pct: 23.163842
+          agree_with_clf_pct: 100.0
         entirely_2026:
           n_windows: 165
           window_end_first: '2026-02-13'
@@ -2723,6 +4347,14 @@ sections:
           llm_oss_ex0dte_spy:
             n: 165
             rate_pct: 24.848485
+            agree_with_clf_pct: 100.0
+          llm_llama_ex0dte_spy:
+            n: 165
+            rate_pct: 100.0
+            agree_with_clf_pct: 24.848485
+          llm_qwen_ex0dte_spy:
+            n: 150
+            rate_pct: 27.333333
             agree_with_clf_pct: 100.0
       - series_key: intraday_t0
         symbol: SPY
@@ -2811,8 +4443,12 @@ sections:
       - full_qqq_scaled#rep1
       - full_spy#rep1
       - intraday_spy#rep1
+      - llama_ex0dte_spy#rep1
+      - llama_full_spy#rep1
       - oss_ex0dte_spy#rep1
       - oss_full_spy#rep1
+      - qwen_ex0dte_spy#rep1
+      - qwen_full_spy#rep1
   intraday:
     status: written
     files:
@@ -2837,8 +4473,8 @@ sections:
     files:
     - stats.yaml
     summary:
-      rates: 199
-      contrasts: 106
+      rates: 257
+      contrasts: 140
       headline_contrasts:
       - name: series_contrast
         family: series
@@ -2903,6 +4539,48 @@ sections:
         - 94.324853
         p_bootstrap: 5.96046e-08
         p_nonoverlap: 0.00012207
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: llama_bridge_jan
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: llama_full_spy
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: qwen_bridge_jan
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: qwen_full_spy
+          model: qwen3-8b
+        diff_pp: 81.704261
+        bootstrap_diff_ci_pp:
+        - 71.464646
+        - 90.883978
+        p_bootstrap: 5.96046e-08
+        p_nonoverlap: 0.000244141
       - name: series_contrast
         family: series
         period: 2024-2025
@@ -3054,6 +4732,48 @@ sections:
         family: series
         period: 2024-2025
         a:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: llama_full_spy
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: llama_ex0dte_spy
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: qwen_full_spy
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: qwen_ex0dte_spy
+          model: qwen3-8b
+        diff_pp: -0.536193
+        bootstrap_diff_ci_pp:
+        - -8.396947
+        - 6.830601
+        p_bootstrap: 0.944576
+        p_nonoverlap: 0.5
+      - name: series_contrast
+        family: series
+        period: 2024-2025
+        a:
           kind: classifier
           series_key: old_bs
           symbol: SPY
@@ -3159,6 +4879,48 @@ sections:
         family: label
         period: all
         a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: llama_p34_obf_2024
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: llama_p34_dated_2024
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: qwen_p34_obf_2024
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: qwen_p34_dated_2024
+          model: qwen3-8b
+        diff_pp: -2.105263
+        bootstrap_diff_ci_pp:
+        - -6.25
+        - 0.0
+        p_bootstrap: 0.125
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
           kind: classifier
           series_key: p4_2020
           symbol: SPY
@@ -3217,6 +4979,48 @@ sections:
         - 0.0
         - 0.0
         p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: llama_p34_obf_2020
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: llama_p34_dated_2020
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: series_contrast
+        family: label
+        period: all
+        a:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: qwen_p34_obf_2020
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: qwen_p34_dated_2020
+          model: qwen3-8b
+        diff_pp: -0.458716
+        bootstrap_diff_ci_pp:
+        - -1.2
+        - 0.0
+        p_bootstrap: 0.632812
         p_nonoverlap: 1.0
       - name: series_contrast
         family: scale
@@ -3531,6 +5335,38 @@ sections:
         period: 2024-2025 vs 2020-2023
         a:
           kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: llama_bridge_jan
+          model: llama-3.1-8b-instruct
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: jan2026_phase4a
+          symbol: SPY
+          arm: qwen_bridge_jan
+          model: qwen3-8b
+        b: null
+        diff_pp: 79.146919
+        bootstrap_diff_ci_pp:
+        - 66.248554
+        - 90.047422
+        p_bootstrap: 0.00049975
+        p_nonoverlap: 1.02512e-08
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
           series_key: old_bs
           symbol: SPY
           arm: bridge_old
@@ -3611,6 +5447,38 @@ sections:
         period: 2024-2025 vs 2020-2023
         a:
           kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: llama_full_spy
+          model: llama-3.1-8b-instruct
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_full
+          symbol: SPY
+          arm: qwen_full_spy
+          model: qwen3-8b
+        b: null
+        diff_pp: -8.453696
+        bootstrap_diff_ci_pp:
+        - -22.48854
+        - 6.432848
+        p_bootstrap: 0.261
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
           series_key: new_ex0dte
           symbol: IWM
           arm: ex0dte_iwm
@@ -3668,6 +5536,38 @@ sections:
         bootstrap_diff_ci_pp:
         - -16.846323
         - 11.587158
+        p_bootstrap: 0.604
+        p_nonoverlap: 0.731166
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: llama_ex0dte_spy
+          model: llama-3.1-8b-instruct
+        b: null
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: period_shift
+        family: null
+        period: 2024-2025 vs 2020-2023
+        a:
+          kind: llm
+          series_key: new_ex0dte
+          symbol: SPY
+          arm: qwen_ex0dte_spy
+          model: qwen3-8b
+        b: null
+        diff_pp: -3.610677
+        bootstrap_diff_ci_pp:
+        - -17.664216
+        - 12.256442
         p_bootstrap: 0.604
         p_nonoverlap: 0.731166
       - name: period_shift
@@ -3788,6 +5688,48 @@ sections:
         p_nonoverlap: 0.040559
       - name: phase_contrast
         family: null
+        period: p3_2024_dated vs p4_2020_dated
+        a:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: llama_p34_dated_2024
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: llama_p34_dated_2020
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: phase_contrast
+        family: null
+        period: p3_2024_dated vs p4_2020_dated
+        a:
+          kind: llm
+          series_key: p3_2024_dated
+          symbol: SPY
+          arm: qwen_p34_dated_2024
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: p4_2020_dated
+          symbol: SPY
+          arm: qwen_p34_dated_2020
+          model: qwen3-8b
+        diff_pp: 82.538537
+        bootstrap_diff_ci_pp:
+        - 62.210285
+        - 95.385366
+        p_bootstrap: 1.52588e-05
+        p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
         period: p3_2024 vs p4_2020
         a:
           kind: classifier
@@ -3849,13 +5791,55 @@ sections:
         - 93.253968
         p_bootstrap: 0.002441
         p_nonoverlap: 0.040559
+      - name: phase_contrast
+        family: null
+        period: p3_2024 vs p4_2020
+        a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: llama_p34_obf_2024
+          model: llama-3.1-8b-instruct
+        b:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: llama_p34_obf_2020
+          model: llama-3.1-8b-instruct
+        diff_pp: 0.0
+        bootstrap_diff_ci_pp:
+        - 0.0
+        - 0.0
+        p_bootstrap: 1.0
+        p_nonoverlap: 1.0
+      - name: phase_contrast
+        family: null
+        period: p3_2024 vs p4_2020
+        a:
+          kind: llm
+          series_key: p3_2024
+          symbol: SPY
+          arm: qwen_p34_obf_2024
+          model: qwen3-8b
+        b:
+          kind: llm
+          series_key: p4_2020
+          symbol: SPY
+          arm: qwen_p34_obf_2020
+          model: qwen3-8b
+        diff_pp: 74.213131
+        bootstrap_diff_ci_pp:
+        - 39.112939
+        - 93.253968
+        p_bootstrap: 0.000488281
+        p_nonoverlap: 0.040559
   cost_ledger:
     status: written
     files:
     - cost_ledger.csv
     - cost_ledger.yaml
     summary:
-      rows: 66
+      rows: 179
       est_cost_usd: 10.020749
       spent_usd: 10.020749
       committed_usd: 10.020749
@@ -3868,7 +5852,7 @@ sections:
     files:
     - disagreements.csv
     summary:
-      rows: 92
+      rows: 9765
       by_arm:
       - arm: r1_o4mini
         model: o4-mini-2025-04-16
@@ -4045,22 +6029,120 @@ sections:
         n_scored: 223
         n_disagree: 0
         disagree_pct: 0.0
+      - arm: llama_bridge_jan
+        model: llama-3.1-8b-instruct
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_scored: 1476
+        n_disagree: 809
+        disagree_pct: 54.810298
+      - arm: llama_full_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_full
+        symbol: SPY
+        n_scored: 4691
+        n_disagree: 4081
+        disagree_pct: 86.996376
+      - arm: llama_ex0dte_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_ex0dte
+        symbol: SPY
+        n_scored: 4691
+        n_disagree: 4199
+        disagree_pct: 89.511831
+      - arm: llama_p34_obf_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 42
+        disagree_pct: 18.834081
+      - arm: llama_p34_dated_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 42
+        disagree_pct: 18.834081
+      - arm: llama_p34_obf_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 196
+        disagree_pct: 87.892377
+      - arm: llama_p34_dated_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 196
+        disagree_pct: 87.892377
+      - arm: qwen_bridge_jan
+        model: qwen3-8b
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n_scored: 1345
+        n_disagree: 15
+        disagree_pct: 1.115242
+      - arm: qwen_full_spy
+        model: qwen3-8b
+        series_key: new_full
+        symbol: SPY
+        n_scored: 4206
+        n_disagree: 55
+        disagree_pct: 1.307656
+      - arm: qwen_ex0dte_spy
+        model: qwen3-8b
+        series_key: new_ex0dte
+        symbol: SPY
+        n_scored: 4317
+        n_disagree: 24
+        disagree_pct: 0.555942
+      - arm: qwen_p34_obf_2024
+        model: qwen3-8b
+        series_key: p3_2024
+        symbol: SPY
+        n_scored: 212
+        n_disagree: 4
+        disagree_pct: 1.886792
+      - arm: qwen_p34_dated_2024
+        model: qwen3-8b
+        series_key: p3_2024_dated
+        symbol: SPY
+        n_scored: 197
+        n_disagree: 9
+        disagree_pct: 4.568528
+      - arm: qwen_p34_obf_2020
+        model: qwen3-8b
+        series_key: p4_2020
+        symbol: SPY
+        n_scored: 223
+        n_disagree: 0
+        disagree_pct: 0.0
+      - arm: qwen_p34_dated_2020
+        model: qwen3-8b
+        series_key: p4_2020_dated
+        symbol: SPY
+        n_scored: 218
+        n_disagree: 1
+        disagree_pct: 0.458716
   llm_parse_stats:
     status: written
     files:
     - llm_parse_stats.csv
     summary:
-      rows: 49
-      luna_rows: 47088
-      luna_parsed: 47086
-      luna_finish_length: 0
-      luna_rerun_at_retry_cap: 14
+      rows: 79
+      luna_rows: 71764
+      luna_parsed: 70672
+      luna_finish_length: 1090
+      luna_rerun_at_retry_cap: 10013
   reported_vs_computed:
     status: written
     files:
     - reported_vs_computed.csv
     summary:
-      rows: 470
+      rows: 704
       bridge_pairs:
       - comparison: bridge
         ref_arm: r1_o4mini
@@ -4285,9 +6367,109 @@ sections:
         symbol: SPY
         n: 223
         median_ratio: 1.0
+      - arm: llama_bridge_jan
+        model: llama-3.1-8b-instruct
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1476
+        median_ratio: 1.023349
+      - arm: llama_full_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_full
+        symbol: SPY
+        n: 4691
+        median_ratio: 1.102546
+      - arm: llama_ex0dte_spy
+        model: llama-3.1-8b-instruct
+        series_key: new_ex0dte
+        symbol: SPY
+        n: 4691
+        median_ratio: 1.142946
+      - arm: llama_p34_obf_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024
+        symbol: SPY
+        n: 223
+        median_ratio: 0.999256
+      - arm: llama_p34_dated_2024
+        model: llama-3.1-8b-instruct
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.00109
+      - arm: llama_p34_obf_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020
+        symbol: SPY
+        n: 223
+        median_ratio: 1.166038
+      - arm: llama_p34_dated_2020
+        model: llama-3.1-8b-instruct
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 223
+        median_ratio: 1.126187
+      - arm: qwen_bridge_jan
+        model: qwen3-8b
+        series_key: jan2026_phase4a
+        symbol: SPY
+        n: 1345
+        median_ratio: 0.999901
+      - arm: qwen_full_spy
+        model: qwen3-8b
+        series_key: new_full
+        symbol: SPY
+        n: 4206
+        median_ratio: 0.999928
+      - arm: qwen_ex0dte_spy
+        model: qwen3-8b
+        series_key: new_ex0dte
+        symbol: SPY
+        n: 4317
+        median_ratio: 0.999928
+      - arm: qwen_p34_obf_2024
+        model: qwen3-8b
+        series_key: p3_2024
+        symbol: SPY
+        n: 212
+        median_ratio: 0.999959
+      - arm: qwen_p34_dated_2024
+        model: qwen3-8b
+        series_key: p3_2024_dated
+        symbol: SPY
+        n: 197
+        median_ratio: 0.999965
+      - arm: qwen_p34_obf_2020
+        model: qwen3-8b
+        series_key: p4_2020
+        symbol: SPY
+        n: 223
+        median_ratio: 1.0
+      - arm: qwen_p34_dated_2020
+        model: qwen3-8b
+        series_key: p4_2020_dated
+        symbol: SPY
+        n: 218
+        median_ratio: 1.0
+  missing_answer_bounds:
+    status: written
+    files:
+    - missing_answer_bounds.csv
+    summary:
+      rows: 34
+      arms:
+      - oss_full_spy
+      - qwen_bridge_jan
+      - qwen_ex0dte_spy
+      - qwen_full_spy
+      - qwen_p34_dated_2020
+      - qwen_p34_dated_2024
+      - qwen_p34_obf_2024
+      unparsed_total: 1034
+      unparsed_clf_no_detect: 1012
 files:
   bridge_agreement.csv:
-    rows: 292
+    rows: 548
     columns:
     - comparison
     - ref_arm
@@ -4331,15 +6513,15 @@ files:
     - only_r1
     - only_luna
     - neither
-    bytes: 63443
-    sha256: 2102e8125006c73d1e48b2821d775cb4948b237a35914d519cdb9104e9789ab0
+    bytes: 124565
+    sha256: d1841930901987df1fa130d1a7c1fc4863354caf9282b2f5f008837171300c91
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -4353,17 +6535,17 @@ files:
     - test_retest
     - model_pair
     - notes
-    bytes: 211552
-    sha256: cd36ad0449c805e6ed9cc6c93f8710db3d791969296f6e524f0b565c1d6f6b23
+    bytes: 400753
+    sha256: dc4c9faeba0e7ac766f45647d7e1965c5680c4a39225f140661fd1343272da10
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   cost_ledger.csv:
-    rows: 66
+    rows: 179
     columns:
     - run_id
     - arm
@@ -4397,15 +6579,15 @@ files:
     - completed_at
     - ingested_at
     - git_sha
-    bytes: 22635
-    sha256: b43b0d08adf29ba225c70de786670f9df5d9a3081cf34ca6967b78a25f266cee
+    bytes: 61352
+    sha256: 4a08cdebb40dc492bbdd82e48a628e44d67985177022978c127b415e895f8279
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -4418,17 +6600,17 @@ files:
     - by_status
     - runs_without_est_cost
     - reconciliation
-    bytes: 10509
-    sha256: e6400044d0e5b4f3b3df8b27d948f5725ad1530e9721e6537c22ffda30aa923e
+    bytes: 20826
+    sha256: 5818d24739dc3750758de3edda3ddb4c754ea65c0298106932a74ba440d49a95
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   detection_by_year.csv:
-    rows: 609
+    rows: 843
     columns:
     - label_source
     - arm
@@ -4461,17 +6643,17 @@ files:
     - type_agree_pct
     - n_shape_ok
     - max_mean_abs_gex_bn
-    bytes: 94967
-    sha256: 4883a73cfba125c9509d0d597a7c950b3047b5a07d827c81d4104f39a3b78995
+    bytes: 138773
+    sha256: 9808665d65b12d1461983e348acbbfdea26faef533203d7278ee8848e59fa539
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   detection_by_year_wide.csv:
-    rows: 543
+    rows: 747
     columns:
     - series_key
     - symbol
@@ -4493,17 +6675,17 @@ files:
     - n_compared
     - clf_rate_matched
     - n_indep_30d
-    bytes: 62177
-    sha256: c49821c47d500b8fccf63fe93ff7719bee44ea5c14b7071e3388134279e41894
+    bytes: 92254
+    sha256: 63193abbb71e305de1c7b6c40c31ab2d98d99ca9df9bb6186cb1ab445ba67195
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   disagreements.csv:
-    rows: 92
+    rows: 9765
     columns:
     - arm
     - arm_role
@@ -4527,15 +6709,15 @@ files:
     - clf_sign_flips
     - metrics_agree
     - finish_reason
-    bytes: 15676
-    sha256: 6c5c38c1cc15858122906a71b2759cd54a1935f4431e20cf8e00915379a8fd0b
+    bytes: 1758378
+    sha256: cc7541989385fc3f32c4060b4ffec6c7473794052f0d4532eb07402977c269da
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -4566,12 +6748,12 @@ files:
     bytes: 7573
     sha256: 0adff916ed255c3fbaf5f5d3c5bd9c58fb8a7f69a12319b88f716cc2bcc5bc0c
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -4594,14 +6776,14 @@ files:
     bytes: 6799
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   llm_parse_stats.csv:
-    rows: 49
+    rows: 79
     columns:
     - arm
     - arm_role
@@ -4626,15 +6808,47 @@ files:
     - mean_completion_tokens
     - max_completion_tokens_used
     - mean_reasoning_tokens
-    bytes: 6372
-    sha256: 6bc1162d7e179c3bcfd98d2bdda15646749425160d12df9fb20ccee6b88ddcdd
+    bytes: 10316
+    sha256: 4329e299ba091d8f240774ce44052b8c9c1716a54a35e87a858b19cada845658
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
+  missing_answer_bounds.csv:
+    rows: 34
+    columns:
+    - arm
+    - arm_role
+    - model
+    - series_key
+    - symbol
+    - period
+    - n_windows
+    - n_parsed
+    - parsed_pct
+    - n_detected_parsed
+    - rate_parsed_pct
+    - n_unparsed
+    - n_unparsed_clf_detect
+    - n_unparsed_clf_no_detect
+    - n_unparsed_no_window
+    - parsed_pct_clf_detect
+    - parsed_pct_clf_no_detect
+    - lower_pct
+    - upper_pct
+    - clf_rate_pct
+    bytes: 4998
+    sha256: 779532050b8e74cb161912d649bcfc9a16bb8da3e1922a3773af05659cb548e9
+    produced_with:
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-10T02:37:51+00:00'
   post_publication_2026.csv:
     rows: 1959
     columns:
@@ -4672,17 +6886,25 @@ files:
     - llm_type_oss_full_spy
     - llm_oss_ex0dte_spy
     - llm_type_oss_ex0dte_spy
-    bytes: 248381
-    sha256: 6b4dc2ee0f4277f8cd2f18dc72e1f7f8b91147bea7522780f91b839f48ad2b68
+    - llm_llama_full_spy
+    - llm_type_llama_full_spy
+    - llm_llama_ex0dte_spy
+    - llm_type_llama_ex0dte_spy
+    - llm_qwen_full_spy
+    - llm_type_qwen_full_spy
+    - llm_qwen_ex0dte_spy
+    - llm_type_qwen_ex0dte_spy
+    bytes: 279359
+    sha256: 0b8ef640ba4a74f9d2f9a336b39a828168b201639cdbbe0be8f685c8ff9bdee1
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   post_publication_2026_summary.csv:
-    rows: 46
+    rows: 54
     columns:
     - definition
     - series_key
@@ -4700,17 +6922,17 @@ files:
     - window_end_first
     - window_end_last
     - mean_abs_gex_bn
-    bytes: 5622
-    sha256: 04eb6f8c9b5989580408127d23108e168b451d943b189fe274ebe0d05d54b9ae
+    bytes: 6732
+    sha256: bd794343717ce123bb458a42e609d42762c5de3b8a1cb17ecbb7779dd70735a4
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   reported_vs_computed.csv:
-    rows: 470
+    rows: 704
     columns:
     - basis
     - comparison
@@ -4731,15 +6953,15 @@ files:
     - median_abs_diff_bn
     - median_reported_bn
     - median_computed_bn
-    bytes: 60495
-    sha256: 3f8f0bcab179138fb2d9b4954f210ca6ab570542fda9cbac66026c770a61c754
+    bytes: 91867
+    sha256: 5c43cdb152a9aa0070979fe1cdebf43693bdb3303cc2d6db286f63a6c9919cf4
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   series_comparison.csv:
     rows: 106
     columns:
@@ -4761,27 +6983,27 @@ files:
     bytes: 14215
     sha256: f4b24afd4576ff16188ba07c6c516b3807a470526dabf8485b999af57a29a8ba
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
   stats.yaml:
     keys:
     - meta
     - headline_contrasts
     - rates
     - contrasts
-    bytes: 223230
-    sha256: 8f36ecc0164d4008b27be996db3ab8bc5857d5030f9ee926393c2f30b371e41a
+    bytes: 293329
+    sha256: 64d709564947fac13bbe9d6f47281f8c890d03c3c8481990c661f721f8b765a7
     produced_with:
-      inputs_fingerprint: 11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21
-      script_sha256: 24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f
-      common_sha256: e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00
+      inputs_fingerprint: 124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14
+      script_sha256: fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf
+      common_sha256: 32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-07T23:09:47+00:00'
+      generated_at: '2026-11-10T02:37:51+00:00'
 untracked_files: []
 warnings: []
 diagnostics:
@@ -5185,6 +7407,62 @@ diagnostics:
       rate_all_pct: 0.0
       rate_without_pct: 0.0
       change_pp: 0.0
+    - arm: llama_bridge_jan
+      symbol: SPY
+      n_all: 1476
+      n_nyse_missing: 87
+      n_without: 1389
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
+    - arm: llama_ex0dte_spy
+      symbol: SPY
+      n_all: 4691
+      n_nyse_missing: 87
+      n_without: 4604
+      rate_all_pct: 99.978683
+      rate_without_pct: 99.97828
+      change_pp: -0.000402827
+    - arm: llama_full_spy
+      symbol: SPY
+      n_all: 4691
+      n_nyse_missing: 87
+      n_without: 4604
+      rate_all_pct: 99.978683
+      rate_without_pct: 99.97828
+      change_pp: -0.000402827
+    - arm: llama_p34_dated_2020
+      symbol: SPY
+      n_all: 223
+      n_nyse_missing: 29
+      n_without: 194
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
+    - arm: llama_p34_dated_2024
+      symbol: SPY
+      n_all: 223
+      n_nyse_missing: 0
+      n_without: 223
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
+    - arm: llama_p34_obf_2020
+      symbol: SPY
+      n_all: 223
+      n_nyse_missing: 29
+      n_without: 194
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
+    - arm: llama_p34_obf_2024
+      symbol: SPY
+      n_all: 223
+      n_nyse_missing: 0
+      n_without: 223
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
     - arm: oss_bridge_jan
       symbol: SPY
       n_all: 1476
@@ -5281,6 +7559,14 @@ diagnostics:
       rate_all_pct: 50.0
       rate_without_pct: 48.717949
       change_pp: -1.282051
+    - arm: pilot_llama_bridge_jan
+      symbol: SPY
+      n_all: 40
+      n_nyse_missing: 4
+      n_without: 36
+      rate_all_pct: 100.0
+      rate_without_pct: 100.0
+      change_pp: 0.0
     - arm: pilot_oss_bridge_jan
       symbol: SPY
       n_all: 40
@@ -5289,6 +7575,70 @@ diagnostics:
       rate_all_pct: 50.0
       rate_without_pct: 45.945946
       change_pp: -4.054054
+    - arm: pilot_qwen_bridge_jan
+      symbol: SPY
+      n_all: 36
+      n_nyse_missing: 5
+      n_without: 31
+      rate_all_pct: 55.555556
+      rate_without_pct: 58.064516
+      change_pp: 2.508961
+    - arm: qwen_bridge_jan
+      symbol: SPY
+      n_all: 1345
+      n_nyse_missing: 80
+      n_without: 1265
+      rate_all_pct: 50.334572
+      rate_without_pct: 51.225296
+      change_pp: 0.890724
+    - arm: qwen_ex0dte_spy
+      symbol: SPY
+      n_all: 4317
+      n_nyse_missing: 83
+      n_without: 4234
+      rate_all_pct: 11.628446
+      rate_without_pct: 11.525744
+      change_pp: -0.102702
+    - arm: qwen_full_spy
+      symbol: SPY
+      n_all: 4206
+      n_nyse_missing: 83
+      n_without: 4123
+      rate_all_pct: 15.430338
+      rate_without_pct: 15.30439
+      change_pp: -0.125948
+    - arm: qwen_p34_dated_2020
+      symbol: SPY
+      n_all: 218
+      n_nyse_missing: 28
+      n_without: 190
+      rate_all_pct: 12.385321
+      rate_without_pct: 14.210526
+      change_pp: 1.825205
+    - arm: qwen_p34_dated_2024
+      symbol: SPY
+      n_all: 197
+      n_nyse_missing: 0
+      n_without: 197
+      rate_all_pct: 94.923858
+      rate_without_pct: 94.923858
+      change_pp: 0.0
+    - arm: qwen_p34_obf_2020
+      symbol: SPY
+      n_all: 223
+      n_nyse_missing: 29
+      n_without: 194
+      rate_all_pct: 12.107623
+      rate_without_pct: 13.917526
+      change_pp: 1.809902
+    - arm: qwen_p34_obf_2024
+      symbol: SPY
+      n_all: 212
+      n_nyse_missing: 0
+      n_without: 212
+      rate_all_pct: 86.320755
+      rate_without_pct: 86.320755
+      change_pp: 0.0
     - arm: r1_o4mini
       symbol: SPY
       n_all: 1412
@@ -5428,6 +7778,22 @@ headline:
         2023: 19.277108
         2024: 100.0
         2025: 100.0
+    llama_bridge_jan:
+      llama-3.1-8b-instruct:
+        2020: 100.0
+        2021: 100.0
+        2022: 100.0
+        2023: 100.0
+        2024: 100.0
+        2025: 100.0
+    qwen_bridge_jan:
+      qwen3-8b:
+        2020: 12.871287
+        2021: 7.567568
+        2022: 36.595745
+        2023: 22.522523
+        2024: 100.0
+        2025: 100.0
     bridge_old:
       gpt-6-luna:
         2008: 0.0
@@ -5530,6 +7896,48 @@ headline:
         2024: 11.111111
         2025: 13.6
         2026: 11.85567
+    llama_full_spy:
+      llama-3.1-8b-instruct:
+        2008: 100.0
+        2009: 100.0
+        2010: 99.603175
+        2011: 100.0
+        2012: 100.0
+        2013: 100.0
+        2014: 100.0
+        2015: 100.0
+        2016: 100.0
+        2017: 100.0
+        2018: 100.0
+        2019: 100.0
+        2020: 100.0
+        2021: 100.0
+        2022: 100.0
+        2023: 100.0
+        2024: 100.0
+        2025: 100.0
+        2026: 100.0
+    qwen_full_spy:
+      qwen3-8b:
+        2008: 0.0
+        2009: 0.485437
+        2010: 0.420168
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 9.52381
+        2015: 9.543568
+        2016: 30.901288
+        2017: 34.934498
+        2018: 42.035398
+        2019: 10.0
+        2020: 23.684211
+        2021: 8.947368
+        2022: 43.265306
+        2023: 26.90583
+        2024: 16.842105
+        2025: 19.617225
+        2026: 13.664596
     ex0dte_iwm:
       gpt-6-luna:
         2020: 0.0
@@ -5590,6 +7998,48 @@ headline:
         2024: 13.492063
         2025: 16.4
         2026: 21.134021
+    llama_ex0dte_spy:
+      llama-3.1-8b-instruct:
+        2008: 100.0
+        2009: 100.0
+        2010: 99.603175
+        2011: 100.0
+        2012: 100.0
+        2013: 100.0
+        2014: 100.0
+        2015: 100.0
+        2016: 100.0
+        2017: 100.0
+        2018: 100.0
+        2019: 100.0
+        2020: 100.0
+        2021: 100.0
+        2022: 100.0
+        2023: 100.0
+        2024: 100.0
+        2025: 100.0
+        2026: 100.0
+    qwen_ex0dte_spy:
+      qwen3-8b:
+        2008: 0.465116
+        2009: 0.462963
+        2010: 0.0
+        2011: 0.0
+        2012: 0.0
+        2013: 0.0
+        2014: 8.823529
+        2015: 1.639344
+        2016: 23.175966
+        2017: 20.737327
+        2018: 25.0
+        2019: 3.153153
+        2020: 11.353712
+        2021: 0.0
+        2022: 39.240506
+        2023: 29.535865
+        2024: 16.525424
+        2025: 17.90393
+        2026: 23.163842
     intraday_spy:
       gpt-6-luna:
         2026: 0.0
@@ -5617,6 +8067,12 @@ headline:
     oss_p34_obf_2024:
       gpt-oss-20b:
         2024: 82.959641
+    llama_p34_obf_2024:
+      llama-3.1-8b-instruct:
+        2024: 100.0
+    qwen_p34_obf_2024:
+      qwen3-8b:
+        2024: 86.320755
     r1_p3_o4mini:
       o4-mini:
         2024: 81.165919
@@ -5626,11 +8082,23 @@ headline:
     oss_p34_dated_2024:
       gpt-oss-20b:
         2024: 82.06278
+    llama_p34_dated_2024:
+      llama-3.1-8b-instruct:
+        2024: 100.0
+    qwen_p34_dated_2024:
+      qwen3-8b:
+        2024: 94.923858
     p34_obf_2020:
       gpt-6-luna:
         2020: 12.107623
     oss_p34_obf_2020:
       gpt-oss-20b:
+        2020: 12.107623
+    llama_p34_obf_2020:
+      llama-3.1-8b-instruct:
+        2020: 100.0
+    qwen_p34_obf_2020:
+      qwen3-8b:
         2020: 12.107623
     r1_p4_o4mini:
       o4-mini:
@@ -5641,6 +8109,12 @@ headline:
     oss_p34_dated_2020:
       gpt-oss-20b:
         2020: 12.107623
+    llama_p34_dated_2020:
+      llama-3.1-8b-instruct:
+        2020: 100.0
+    qwen_p34_dated_2020:
+      qwen3-8b:
+        2020: 12.385321
   llm_vs_classifier_all_years:
   - arm: r1_o4mini
     model: o4-mini-2025-04-16
@@ -5666,6 +8140,22 @@ headline:
     n_compared: 1476.0
     agree_pct: 99.593496
     kappa: 0.9918
+  - arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+    series_key: jan2026_phase4a
+    symbol: SPY
+    n_parsed: 1476.0
+    n_compared: 1476.0
+    agree_pct: 45.189702
+    kappa: 0.0
+  - arm: qwen_bridge_jan
+    model: qwen3-8b
+    series_key: jan2026_phase4a
+    symbol: SPY
+    n_parsed: 1345.0
+    n_compared: 1345.0
+    agree_pct: 98.884758
+    kappa: 0.977697
   - arm: bridge_old
     model: gpt-6-luna
     series_key: old_bs
@@ -5706,6 +8196,22 @@ headline:
     n_compared: 4689.0
     agree_pct: 99.722755
     kappa: 0.987793
+  - arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+    series_key: new_full
+    symbol: SPY
+    n_parsed: 4691.0
+    n_compared: 4691.0
+    agree_pct: 13.003624
+    kappa: 6.36191e-05
+  - arm: qwen_full_spy
+    model: qwen3-8b
+    series_key: new_full
+    symbol: SPY
+    n_parsed: 4206.0
+    n_compared: 4206.0
+    agree_pct: 98.692344
+    kappa: 0.948367
   - arm: ex0dte_iwm
     model: gpt-6-luna
     series_key: new_ex0dte
@@ -5738,6 +8244,22 @@ headline:
     n_compared: 4691.0
     agree_pct: 99.850778
     kappa: 0.992074
+  - arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+    series_key: new_ex0dte
+    symbol: SPY
+    n_parsed: 4691.0
+    n_compared: 4691.0
+    agree_pct: 10.488169
+    kappa: 4.98515e-05
+  - arm: qwen_ex0dte_spy
+    model: qwen3-8b
+    series_key: new_ex0dte
+    symbol: SPY
+    n_parsed: 4317.0
+    n_compared: 4317.0
+    agree_pct: 99.444058
+    kappa: 0.972522
   - arm: intraday_spy
     model: gpt-6-luna
     series_key: intraday_t0
@@ -5778,6 +8300,22 @@ headline:
     n_compared: 223.0
     agree_pct: 98.206278
     kappa: 0.939104
+  - arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+    series_key: p3_2024
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 81.165919
+    kappa: 0.0
+  - arm: qwen_p34_obf_2024
+    model: qwen3-8b
+    series_key: p3_2024
+    symbol: SPY
+    n_parsed: 212.0
+    n_compared: 212.0
+    agree_pct: 98.113208
+    kappa: 0.924488
   - arm: r1_p3_o4mini
     model: o4-mini
     series_key: p3_2024_dated
@@ -5802,6 +8340,22 @@ headline:
     n_compared: 223.0
     agree_pct: 99.103139
     kappa: 0.970119
+  - arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+    series_key: p3_2024_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 81.165919
+    kappa: 0.0
+  - arm: qwen_p34_dated_2024
+    model: qwen3-8b
+    series_key: p3_2024_dated
+    symbol: SPY
+    n_parsed: 197.0
+    n_compared: 197.0
+    agree_pct: 95.431472
+    kappa: 0.667542
   - arm: p34_obf_2020
     model: gpt-6-luna
     series_key: p4_2020
@@ -5812,6 +8366,22 @@ headline:
     kappa: 1.0
   - arm: oss_p34_obf_2020
     model: gpt-oss-20b
+    series_key: p4_2020
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 100.0
+    kappa: 1.0
+  - arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+    series_key: p4_2020
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 12.107623
+    kappa: 0.0
+  - arm: qwen_p34_obf_2020
+    model: qwen3-8b
     series_key: p4_2020
     symbol: SPY
     n_parsed: 223.0
@@ -5842,6 +8412,22 @@ headline:
     n_compared: 223.0
     agree_pct: 100.0
     kappa: 1.0
+  - arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+    series_key: p4_2020_dated
+    symbol: SPY
+    n_parsed: 223.0
+    n_compared: 223.0
+    agree_pct: 12.107623
+    kappa: 0.0
+  - arm: qwen_p34_dated_2020
+    model: qwen3-8b
+    series_key: p4_2020_dated
+    symbol: SPY
+    n_parsed: 218.0
+    n_compared: 218.0
+    agree_pct: 99.541284
+    kappa: 0.978522
   bridge:
     gate:
       comparison: r1_o4mini vs bridge_jan
@@ -5867,12 +8453,33 @@ headline:
       rate_diff_pp: -0.354108
       p_mcnemar_exact: 0.0625
     - ref_arm: r1_o4mini
+      other_arm: llama_bridge_jan
+      n_pairs: 1412
+      agree_pct: 45.750708
+      kappa: 0.0
+      rate_diff_pp: -54.249292
+      p_mcnemar_exact: 5.15292e-231
+    - ref_arm: r1_o4mini
       other_arm: oss_bridge_jan
       n_pairs: 1412
       agree_pct: 99.575071
       kappa: 0.991446
       rate_diff_pp: -0.424929
       p_mcnemar_exact: 0.03125
+    - ref_arm: r1_o4mini
+      other_arm: qwen_bridge_jan
+      n_pairs: 1287
+      agree_pct: 98.912199
+      kappa: 0.978243
+      rate_diff_pp: -0.777001
+      p_mcnemar_exact: 0.012939
+    - ref_arm: r1_p3_o4mini
+      other_arm: llama_p34_dated_2024
+      n_pairs: 223
+      agree_pct: 81.165919
+      kappa: 0.0
+      rate_diff_pp: -18.834081
+      p_mcnemar_exact: 4.54747e-13
     - ref_arm: r1_p3_o4mini
       other_arm: oss_p34_dated_2024
       n_pairs: 223
@@ -5887,6 +8494,20 @@ headline:
       kappa: 1.0
       rate_diff_pp: 0.0
       p_mcnemar_exact: 1.0
+    - ref_arm: r1_p3_o4mini
+      other_arm: qwen_p34_dated_2024
+      n_pairs: 197
+      agree_pct: 95.431472
+      kappa: 0.667542
+      rate_diff_pp: -4.568528
+      p_mcnemar_exact: 0.003906
+    - ref_arm: r1_p4_o4mini
+      other_arm: llama_p34_dated_2020
+      n_pairs: 223
+      agree_pct: 12.107623
+      kappa: 0.0
+      rate_diff_pp: -87.892377
+      p_mcnemar_exact: 1.99136e-59
     - ref_arm: r1_p4_o4mini
       other_arm: oss_p34_dated_2020
       n_pairs: 223
@@ -5901,6 +8522,13 @@ headline:
       kappa: 1.0
       rate_diff_pp: 0.0
       p_mcnemar_exact: 1.0
+    - ref_arm: r1_p4_o4mini
+      other_arm: qwen_p34_dated_2020
+      n_pairs: 218
+      agree_pct: 99.541284
+      kappa: 0.978522
+      rate_diff_pp: -0.458716
+      p_mcnemar_exact: 1.0
     bridge_incl_recovered:
     - ref_arm: r1_o4mini_all
       other_arm: bridge_jan
@@ -5908,10 +8536,20 @@ headline:
       agree_pct: 99.593496
       kappa: 0.991798
     - ref_arm: r1_o4mini_all
+      other_arm: llama_bridge_jan
+      n_pairs: 1476
+      agree_pct: 45.189702
+      kappa: 0.0
+    - ref_arm: r1_o4mini_all
       other_arm: oss_bridge_jan
       n_pairs: 1476
       agree_pct: 99.593496
       kappa: 0.9918
+    - ref_arm: r1_o4mini_all
+      other_arm: qwen_bridge_jan
+      n_pairs: 1345
+      agree_pct: 98.884758
+      kappa: 0.977697
     test_retest:
     - ref_arm: bridge_jan
       other_arm: bridge_jan#rep1
@@ -5968,6 +8606,41 @@ headline:
       n_pairs: 3
       agree_pct: 100.0
       kappa: null
+    - ref_arm: llama_bridge_jan
+      other_arm: llama_bridge_jan#rep1
+      n_pairs: 74
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_ex0dte_spy
+      other_arm: llama_ex0dte_spy#rep1
+      n_pairs: 235
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_full_spy
+      other_arm: llama_full_spy#rep1
+      n_pairs: 235
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_p34_dated_2020
+      other_arm: llama_p34_dated_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_p34_dated_2024
+      other_arm: llama_p34_dated_2024#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_p34_obf_2020
+      other_arm: llama_p34_obf_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: llama_p34_obf_2024
+      other_arm: llama_p34_obf_2024#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: null
     - ref_arm: oss_bridge_jan
       other_arm: oss_bridge_jan#rep1
       n_pairs: 74
@@ -6021,6 +8694,41 @@ headline:
     - ref_arm: p34_obf_2024
       other_arm: p34_obf_2024#rep1
       n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: qwen_bridge_jan
+      other_arm: qwen_bridge_jan#rep1
+      n_pairs: 57
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: qwen_ex0dte_spy
+      other_arm: qwen_ex0dte_spy#rep1
+      n_pairs: 197
+      agree_pct: 99.492386
+      kappa: 0.971544
+    - ref_arm: qwen_full_spy
+      other_arm: qwen_full_spy#rep1
+      n_pairs: 195
+      agree_pct: 98.974359
+      kappa: 0.959502
+    - ref_arm: qwen_p34_dated_2020
+      other_arm: qwen_p34_dated_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: qwen_p34_dated_2024
+      other_arm: qwen_p34_dated_2024#rep1
+      n_pairs: 5
+      agree_pct: 100.0
+      kappa: null
+    - ref_arm: qwen_p34_obf_2020
+      other_arm: qwen_p34_obf_2020#rep1
+      n_pairs: 11
+      agree_pct: 100.0
+      kappa: 1.0
+    - ref_arm: qwen_p34_obf_2024
+      other_arm: qwen_p34_obf_2024#rep1
+      n_pairs: 7
       agree_pct: 100.0
       kappa: 1.0
   series_exact_match_pct_by_year:
@@ -6382,6 +9090,48 @@ headline:
     family: series
     period: 2024-2025
     a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: llama_bridge_jan
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: llama_full_spy
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: qwen_bridge_jan
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: qwen_full_spy
+      model: qwen3-8b
+    diff_pp: 81.704261
+    bootstrap_diff_ci_pp:
+    - 71.464646
+    - 90.883978
+    p_bootstrap: 5.96046e-08
+    p_nonoverlap: 0.000244141
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
       kind: classifier
       series_key: new_full
       symbol: IWM
@@ -6529,6 +9279,48 @@ headline:
     family: series
     period: 2024-2025
     a:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: llama_full_spy
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: llama_ex0dte_spy
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: qwen_full_spy
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: qwen_ex0dte_spy
+      model: qwen3-8b
+    diff_pp: -0.536193
+    bootstrap_diff_ci_pp:
+    - -8.396947
+    - 6.830601
+    p_bootstrap: 0.944576
+    p_nonoverlap: 0.5
+  - name: series_contrast
+    family: series
+    period: 2024-2025
+    a:
       kind: classifier
       series_key: old_bs
       symbol: SPY
@@ -6634,6 +9426,48 @@ headline:
     family: label
     period: all
     a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: llama_p34_obf_2024
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: llama_p34_dated_2024
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: qwen_p34_obf_2024
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: qwen_p34_dated_2024
+      model: qwen3-8b
+    diff_pp: -2.105263
+    bootstrap_diff_ci_pp:
+    - -6.25
+    - 0.0
+    p_bootstrap: 0.125
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
       kind: classifier
       series_key: p4_2020
       symbol: SPY
@@ -6692,6 +9526,48 @@ headline:
     - 0.0
     - 0.0
     p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: llama_p34_obf_2020
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: llama_p34_dated_2020
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: series_contrast
+    family: label
+    period: all
+    a:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: qwen_p34_obf_2020
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: qwen_p34_dated_2020
+      model: qwen3-8b
+    diff_pp: -0.458716
+    bootstrap_diff_ci_pp:
+    - -1.2
+    - 0.0
+    p_bootstrap: 0.632812
     p_nonoverlap: 1.0
   - name: series_contrast
     family: scale
@@ -7006,6 +9882,38 @@ headline:
     period: 2024-2025 vs 2020-2023
     a:
       kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: llama_bridge_jan
+      model: llama-3.1-8b-instruct
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: jan2026_phase4a
+      symbol: SPY
+      arm: qwen_bridge_jan
+      model: qwen3-8b
+    b: null
+    diff_pp: 79.146919
+    bootstrap_diff_ci_pp:
+    - 66.248554
+    - 90.047422
+    p_bootstrap: 0.00049975
+    p_nonoverlap: 1.02512e-08
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
       series_key: old_bs
       symbol: SPY
       arm: bridge_old
@@ -7086,6 +9994,38 @@ headline:
     period: 2024-2025 vs 2020-2023
     a:
       kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: llama_full_spy
+      model: llama-3.1-8b-instruct
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_full
+      symbol: SPY
+      arm: qwen_full_spy
+      model: qwen3-8b
+    b: null
+    diff_pp: -8.453696
+    bootstrap_diff_ci_pp:
+    - -22.48854
+    - 6.432848
+    p_bootstrap: 0.261
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
       series_key: new_ex0dte
       symbol: IWM
       arm: ex0dte_iwm
@@ -7143,6 +10083,38 @@ headline:
     bootstrap_diff_ci_pp:
     - -16.846323
     - 11.587158
+    p_bootstrap: 0.604
+    p_nonoverlap: 0.731166
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: llama_ex0dte_spy
+      model: llama-3.1-8b-instruct
+    b: null
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: period_shift
+    family: null
+    period: 2024-2025 vs 2020-2023
+    a:
+      kind: llm
+      series_key: new_ex0dte
+      symbol: SPY
+      arm: qwen_ex0dte_spy
+      model: qwen3-8b
+    b: null
+    diff_pp: -3.610677
+    bootstrap_diff_ci_pp:
+    - -17.664216
+    - 12.256442
     p_bootstrap: 0.604
     p_nonoverlap: 0.731166
   - name: period_shift
@@ -7263,6 +10235,48 @@ headline:
     p_nonoverlap: 0.040559
   - name: phase_contrast
     family: null
+    period: p3_2024_dated vs p4_2020_dated
+    a:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: llama_p34_dated_2024
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: llama_p34_dated_2020
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: phase_contrast
+    family: null
+    period: p3_2024_dated vs p4_2020_dated
+    a:
+      kind: llm
+      series_key: p3_2024_dated
+      symbol: SPY
+      arm: qwen_p34_dated_2024
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: p4_2020_dated
+      symbol: SPY
+      arm: qwen_p34_dated_2020
+      model: qwen3-8b
+    diff_pp: 82.538537
+    bootstrap_diff_ci_pp:
+    - 62.210285
+    - 95.385366
+    p_bootstrap: 1.52588e-05
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
     period: p3_2024 vs p4_2020
     a:
       kind: classifier
@@ -7323,6 +10337,48 @@ headline:
     - 32.164948
     - 93.253968
     p_bootstrap: 0.002441
+    p_nonoverlap: 0.040559
+  - name: phase_contrast
+    family: null
+    period: p3_2024 vs p4_2020
+    a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: llama_p34_obf_2024
+      model: llama-3.1-8b-instruct
+    b:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: llama_p34_obf_2020
+      model: llama-3.1-8b-instruct
+    diff_pp: 0.0
+    bootstrap_diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_bootstrap: 1.0
+    p_nonoverlap: 1.0
+  - name: phase_contrast
+    family: null
+    period: p3_2024 vs p4_2020
+    a:
+      kind: llm
+      series_key: p3_2024
+      symbol: SPY
+      arm: qwen_p34_obf_2024
+      model: qwen3-8b
+    b:
+      kind: llm
+      series_key: p4_2020
+      symbol: SPY
+      arm: qwen_p34_obf_2020
+      model: qwen3-8b
+    diff_pp: 74.213131
+    bootstrap_diff_ci_pp:
+    - 39.112939
+    - 93.253968
+    p_bootstrap: 0.000488281
     p_nonoverlap: 0.040559
   post_publication:
     definition: window_end on or after 2026-01-01 (ends_in_2026); entirely_2026 = window_start on or after 2026-01-01
@@ -7406,6 +10462,14 @@ headline:
         n: 194
         rate_pct: 11.85567
         agree_with_clf_pct: 99.484536
+      llm_llama_full_spy:
+        n: 194
+        rate_pct: 100.0
+        agree_with_clf_pct: 11.340206
+      llm_qwen_full_spy:
+        n: 161
+        rate_pct: 13.664596
+        agree_with_clf_pct: 100.0
       entirely_2026:
         n_windows: 165
         window_end_first: '2026-02-13'
@@ -7420,6 +10484,14 @@ headline:
           n: 165
           rate_pct: 13.939394
           agree_with_clf_pct: 99.393939
+        llm_llama_full_spy:
+          n: 165
+          rate_pct: 100.0
+          agree_with_clf_pct: 13.333333
+        llm_qwen_full_spy:
+          n: 135
+          rate_pct: 16.296296
+          agree_with_clf_pct: 100.0
     - series_key: new_ex0dte
       symbol: IWM
       n_windows: 194
@@ -7477,6 +10549,14 @@ headline:
         n: 194
         rate_pct: 21.134021
         agree_with_clf_pct: 100.0
+      llm_llama_ex0dte_spy:
+        n: 194
+        rate_pct: 100.0
+        agree_with_clf_pct: 21.134021
+      llm_qwen_ex0dte_spy:
+        n: 177
+        rate_pct: 23.163842
+        agree_with_clf_pct: 100.0
       entirely_2026:
         n_windows: 165
         window_end_first: '2026-02-13'
@@ -7490,6 +10570,14 @@ headline:
         llm_oss_ex0dte_spy:
           n: 165
           rate_pct: 24.848485
+          agree_with_clf_pct: 100.0
+        llm_llama_ex0dte_spy:
+          n: 165
+          rate_pct: 100.0
+          agree_with_clf_pct: 24.848485
+        llm_qwen_ex0dte_spy:
+          n: 150
+          rate_pct: 27.333333
           agree_with_clf_pct: 100.0
     - series_key: intraday_t0
       symbol: SPY
@@ -7805,6 +10893,90 @@ headline:
       series_key: p4_2020_dated
       symbol: SPY
       n: 223
+      median_ratio: 1.0
+    - arm: llama_bridge_jan
+      model: llama-3.1-8b-instruct
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1476
+      median_ratio: 1.023349
+    - arm: llama_full_spy
+      model: llama-3.1-8b-instruct
+      series_key: new_full
+      symbol: SPY
+      n: 4691
+      median_ratio: 1.102546
+    - arm: llama_ex0dte_spy
+      model: llama-3.1-8b-instruct
+      series_key: new_ex0dte
+      symbol: SPY
+      n: 4691
+      median_ratio: 1.142946
+    - arm: llama_p34_obf_2024
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024
+      symbol: SPY
+      n: 223
+      median_ratio: 0.999256
+    - arm: llama_p34_dated_2024
+      model: llama-3.1-8b-instruct
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.00109
+    - arm: llama_p34_obf_2020
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020
+      symbol: SPY
+      n: 223
+      median_ratio: 1.166038
+    - arm: llama_p34_dated_2020
+      model: llama-3.1-8b-instruct
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 223
+      median_ratio: 1.126187
+    - arm: qwen_bridge_jan
+      model: qwen3-8b
+      series_key: jan2026_phase4a
+      symbol: SPY
+      n: 1345
+      median_ratio: 0.999901
+    - arm: qwen_full_spy
+      model: qwen3-8b
+      series_key: new_full
+      symbol: SPY
+      n: 4206
+      median_ratio: 0.999928
+    - arm: qwen_ex0dte_spy
+      model: qwen3-8b
+      series_key: new_ex0dte
+      symbol: SPY
+      n: 4317
+      median_ratio: 0.999928
+    - arm: qwen_p34_obf_2024
+      model: qwen3-8b
+      series_key: p3_2024
+      symbol: SPY
+      n: 212
+      median_ratio: 0.999959
+    - arm: qwen_p34_dated_2024
+      model: qwen3-8b
+      series_key: p3_2024_dated
+      symbol: SPY
+      n: 197
+      median_ratio: 0.999965
+    - arm: qwen_p34_obf_2020
+      model: qwen3-8b
+      series_key: p4_2020
+      symbol: SPY
+      n: 223
+      median_ratio: 1.0
+    - arm: qwen_p34_dated_2020
+      model: qwen3-8b
+      series_key: p4_2020_dated
+      symbol: SPY
+      n: 218
       median_ratio: 1.0
   cost:
     est_cost_usd: 10.020749

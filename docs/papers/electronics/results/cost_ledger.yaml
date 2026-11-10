@@ -31,6 +31,26 @@ pricing_usd_per_mtok:
     local:
       input: 0.0
       output: 0.0
+  llama-3.1-8b-instruct:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
+  qwen3-8b:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
 budget:
   rule: a run is spend when common.counts_toward_budget(run) holds (model gpt-6-luna, an LLM arm or an arm outside
     the registry, no run_metadata 'backfill') and it has left the machine (status not 'generated'); the backfill
@@ -50,6 +70,20 @@ budget:
     - r1_p4_o4mini_20251120
     other_model_usd: 0.0
     other_model_runs:
+    - llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c0
+    - llama_bridge_jan_llama-31-8b-instruct_local_20261108T175235Z_c1
+    - llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c0
+    - llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c1
+    - llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c2
+    - llama_ex0dte_spy_llama-31-8b-instruct_local_20261108T175256Z_c3
+    - llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c0
+    - llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c1
+    - llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c2
+    - llama_full_spy_llama-31-8b-instruct_local_20261108T175252Z_c3
+    - llama_p34_dated_2020_llama-31-8b-instruct_local_20261108T175248Z_c0
+    - llama_p34_dated_2024_llama-31-8b-instruct_local_20261108T175242Z_c0
+    - llama_p34_obf_2020_llama-31-8b-instruct_local_20261108T175244Z_c0
+    - llama_p34_obf_2024_llama-31-8b-instruct_local_20261108T175239Z_c0
     - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0
     - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c1
     - oss_bridge_jan_gpt-oss-20b_local_20261107T222800Z_c0
@@ -69,7 +103,106 @@ budget:
     - oss_p34_dated_2024_gpt-oss-20b_local_20261107T222807Z_c0
     - oss_p34_obf_2020_gpt-oss-20b_local_20261107T183458Z_c0
     - oss_p34_obf_2024_gpt-oss-20b_local_20261107T181626Z_c0
+    - pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0
     - pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0
+    - pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z_c0
+    - pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z_c0
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c0
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c1
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c10
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c2
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c3
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c4
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c5
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c6
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c7
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c8
+    - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c9
+    - qwen_bridge_jan_qwen3-8b_local_20261109T024816Z_c0
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c0
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c1
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c10
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c11
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c12
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c13
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c14
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c15
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c16
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c17
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c18
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c19
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c2
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c20
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c21
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c22
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c23
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c24
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c25
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c26
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c27
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c28
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c29
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c3
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c30
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c31
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c32
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c4
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c5
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c6
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c7
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c8
+    - qwen_ex0dte_spy_qwen3-8b_local_20261108T192208Z_c9
+    - qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c0
+    - qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c1
+    - qwen_ex0dte_spy_qwen3-8b_local_20261109T075954Z_c2
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c0
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c1
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c10
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c11
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c12
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c13
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c14
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c15
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c16
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c17
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c18
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c19
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c2
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c20
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c21
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c22
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c23
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c24
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c25
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c26
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c27
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c28
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c29
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c3
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c30
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c31
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c32
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c4
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c5
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c6
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c7
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c8
+    - qwen_full_spy_qwen3-8b_local_20261108T192201Z_c9
+    - qwen_full_spy_qwen3-8b_local_20261109T091006Z_c0
+    - qwen_full_spy_qwen3-8b_local_20261109T091006Z_c1
+    - qwen_full_spy_qwen3-8b_local_20261109T091006Z_c2
+    - qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c0
+    - qwen_p34_dated_2020_qwen3-8b_local_20261108T192151Z_c1
+    - qwen_p34_dated_2020_qwen3-8b_local_20261108T231634Z_c0
+    - qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c0
+    - qwen_p34_dated_2024_qwen3-8b_local_20261108T192145Z_c1
+    - qwen_p34_dated_2024_qwen3-8b_local_20261109T074945Z_c0
+    - qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c0
+    - qwen_p34_obf_2020_qwen3-8b_local_20261108T192148Z_c1
+    - qwen_p34_obf_2020_qwen3-8b_local_20261108T214528Z_c0
+    - qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c0
+    - qwen_p34_obf_2024_qwen3-8b_local_20261108T192142Z_c1
+    - qwen_p34_obf_2024_qwen3-8b_local_20261108T203436Z_c0
 totals:
   counted:
     runs: 43
@@ -88,21 +221,21 @@ totals:
     est_cost_usd: 9.967462
     cost_per_request_usd: 0.005186
   other_model:
-    runs: 20
-    n_requests: 12398
-    prompt_tokens: 23088480
-    completion_tokens: 23115523
-    reasoning_tokens: 20636890
+    runs: 133
+    n_requests: 47176
+    prompt_tokens: 88552733
+    completion_tokens: 131784667
+    reasoning_tokens: 125242806
     est_cost_usd: 0.0
     cost_per_request_usd: 0.0
   all_stored_runs:
-    runs: 66
-    n_requests: 50153
-    prompt_tokens: 95149527
-    completion_tokens: 53099434
-    reasoning_tokens: 43544739
+    runs: 179
+    n_requests: 84931
+    prompt_tokens: 160613780
+    completion_tokens: 161768578
+    reasoning_tokens: 148150655
     est_cost_usd: 19.988211
-    cost_per_request_usd: 0.000398545
+    cost_per_request_usd: 0.000235346
 by_arm:
 - arm: bridge_jan
   runs: 2
@@ -192,6 +325,62 @@ by_arm:
   est_cost_usd: 0.016546
   est_cost_usd_counted: 0.016546
   cost_per_request_usd: 0.000306414
+- arm: llama_bridge_jan
+  runs: 2
+  n_requests: 1550
+  prompt_tokens: 2821000
+  completion_tokens: 261317
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_ex0dte_spy
+  runs: 4
+  n_requests: 4926
+  prompt_tokens: 8965320
+  completion_tokens: 838185
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_full_spy
+  runs: 4
+  n_requests: 4926
+  prompt_tokens: 8965320
+  completion_tokens: 839250
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_p34_dated_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 439920
+  completion_tokens: 39430
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_p34_dated_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 439920
+  completion_tokens: 39353
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_p34_obf_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 425880
+  completion_tokens: 39178
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llama_p34_obf_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 425880
+  completion_tokens: 39334
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: oss_bridge_jan
   runs: 3
   n_requests: 1553
@@ -288,11 +477,83 @@ by_arm:
   est_cost_usd: 0.02166
   est_cost_usd_counted: 0.02166
   cost_per_request_usd: 0.000541488
+- arm: pilot_llama_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 72800
+  completion_tokens: 6712
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: pilot_oss_bridge_jan
   runs: 1
   n_requests: 40
   prompt_tokens: 74400
   completion_tokens: 66286
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: pilot_qwen_bridge_jan
+  runs: 2
+  n_requests: 63
+  prompt_tokens: 120754
+  completion_tokens: 280289
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_bridge_jan
+  runs: 12
+  n_requests: 2493
+  prompt_tokens: 4778000
+  completion_tokens: 11126245
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_ex0dte_spy
+  runs: 36
+  n_requests: 9172
+  prompt_tokens: 17498296
+  completion_tokens: 44212119
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_full_spy
+  runs: 36
+  n_requests: 9256
+  prompt_tokens: 17672462
+  completion_tokens: 45222077
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_p34_dated_2020
+  runs: 3
+  n_requests: 407
+  prompt_tokens: 841360
+  completion_tokens: 1748822
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_p34_dated_2024
+  runs: 3
+  n_requests: 333
+  prompt_tokens: 698301
+  completion_tokens: 1370862
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_p34_obf_2020
+  runs: 3
+  n_requests: 349
+  prompt_tokens: 665641
+  completion_tokens: 1332781
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: qwen_p34_obf_2024
+  runs: 3
+  n_requests: 327
+  prompt_tokens: 633399
+  completion_tokens: 1273190
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
@@ -337,6 +598,14 @@ by_model:
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
+- model: llama-3.1-8b-instruct
+  runs: 15
+  n_requests: 12378
+  prompt_tokens: 22556040
+  completion_tokens: 2102759
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - model: o4-mini
   runs: 2
   n_requests: 446
@@ -353,6 +622,14 @@ by_model:
   est_cost_usd: 7.904211
   est_cost_usd_counted: null
   cost_per_request_usd: 0.005355
+- model: qwen3-8b
+  runs: 98
+  n_requests: 22400
+  prompt_tokens: 42908213
+  completion_tokens: 106566385
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 by_mode:
 - mode: batch
   runs: 45
@@ -363,10 +640,10 @@ by_mode:
   est_cost_usd_counted: 9.99909
   cost_per_request_usd: 0.000529406
 - mode: local
-  runs: 20
-  n_requests: 12398
-  prompt_tokens: 23088480
-  completion_tokens: 23115523
+  runs: 133
+  n_requests: 47176
+  prompt_tokens: 88552733
+  completion_tokens: 131784667
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
@@ -380,17 +657,17 @@ by_mode:
   cost_per_request_usd: 0.000541488
 by_status:
 - status: ingested
-  runs: 66
-  n_requests: 50153
-  prompt_tokens: 95149527
-  completion_tokens: 53099434
+  runs: 179
+  n_requests: 84931
+  prompt_tokens: 160613780
+  completion_tokens: 161768578
   est_cost_usd: 19.988211
   est_cost_usd_counted: 10.020749
-  cost_per_request_usd: 0.000398545
+  cost_per_request_usd: 0.000235346
 runs_without_est_cost: []
 reconciliation:
-  runs_compared_with_detection_usage: 66
-  runs_with_token_gap: 26
+  runs_compared_with_detection_usage: 178
+  runs_with_token_gap: 111
   max_abs_cost_gap_usd: 0.0
   note: 'gaps compare the run totals with the sum over that run''s detection rows; cost_gap_usd compares est_cost_usd
     with the token usage priced by common.PRICING_USD_PER_MTOK. A run whose answers were later replaced (the 2026-11-03

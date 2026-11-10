@@ -14,19 +14,19 @@
       "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
     },
     {
-      "git": "modified",
+      "git": "clean",
       "path": "docs/papers/electronics/figures/scripts/figllm.py",
-      "sha256": "e052acceaf1cdf2fd3201263f8900eaf0df9e9be7ade3dd7146e122322ee7526"
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
     },
     {
-      "git": "modified",
+      "git": "clean",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "baecc741a3336ac418b0b793efb2ac2cfc399daefc997814b8e936d8d8dfabd3"
+      "sha256": "09467fd51cd6ba51f026c6747ea4c77c2e67564ffea4ede0179f59fa2078b369"
     },
     {
-      "git": "modified",
+      "git": "clean",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "e56798d708e2634e1ecf0ebaf499f41865fa30cc7d2eb40e423c6ce9c0848c00"
+      "sha256": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
     }
   ],
   "extra": {
@@ -1002,10 +1002,10 @@
     ]
   },
   "figure": "fig12_threshold_sensitivity",
-  "generated_utc": "2026-11-07T23:14:02+00:00",
+  "generated_utc": "2026-11-10T02:48:22+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "0295c061512630def45c2cf15335d4ab0a779827",
+  "git_sha": "485a05cd88b1fd4a9f4a9d74f3e92adbb45aa7d7",
   "outputs": {
     "pdf": {
       "bytes": 23651,
@@ -1025,11 +1025,11 @@
   "results": {
     "files": {},
     "report_yaml": {
-      "generated_at": "2026-11-07T23:09:47+00:00",
-      "inputs_fingerprint": "11cdcadd82ece314c79e37ec7b7f398be80875c5dc3b0fc46c8bc61e87054d21",
+      "generated_at": "2026-11-10T02:37:51+00:00",
+      "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "24028aa3af46fc1ce1b97aacaa258b34f7c32527407c0ae23ac0d23345d86a3f",
-      "sha256": "bf36fd661e804adfecfd9ac515ee5ed5e2618429e15b04c2d6a59c586a8bf4ab"
+      "script_sha256": "fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
     }
   },
   "rows": {
@@ -1050,7 +1050,7 @@
   ],
   "versions": {
     "matplotlib": "3.10.8",
-    "numpy": "2.4.0",
+    "numpy": "2.4.6",
     "pandas": "2.3.3",
     "pillow": "12.1.0",
     "pyarrow": "23.0.0",
