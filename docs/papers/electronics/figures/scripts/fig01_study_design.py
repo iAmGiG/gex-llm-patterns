@@ -231,14 +231,19 @@ def draw_labels(canvas: Canvas, thresholds: Dict[str, float], n_windows: int, mo
         canvas.text(ix0 + PAD + 0.14, y, "pilot and repeat requests", color=theme.INK_SECONDARY, container=box)
         canvas.text(ix1 - PAD, y, f"{other_requests:,}", ha="right", color=theme.INK_SECONDARY, container=box)
         y += ARM_LINE
-    if open_groups:  # their own headers: these arms are not answered by the model named above
+    if open_groups:  # their own header: these arms are not answered by the model named above
         y += OPEN_GAP
-    for group in open_groups:
-        canvas.text(ix0 + PAD, y, f"{', '.join(group['models'])}, open weights, local GPU", bold=True, container=box)
+        canvas.text(ix0 + PAD, y, "Open weights, local GPU", bold=True, container=box)
         y += ARM_LINE
-        canvas.text(ix0 + PAD + 0.14, y, f"{len(group['arms'])} arms with pilot and repeats", container=box)
-        canvas.text(ix1 - PAD, y, f"{group['rows']:,}", ha="right", container=box)
+        counts = {len(g["arms"]) for g in open_groups}
+        each = f"{counts.pop()} arms each" if len(counts) == 1 else "arms"
+        canvas.text(ix0 + PAD, y, f"{each}, with pilot and repeats", color=theme.INK_SECONDARY, container=box)
         y += ARM_LINE
+        for group in open_groups:
+            label = ", ".join(group["models"]) + ("" if each != "arms" else f" ({len(group['arms'])} arms)")
+            canvas.text(ix0 + PAD + 0.14, y, label, container=box)
+            canvas.text(ix1 - PAD, y, f"{group['rows']:,}", ha="right", container=box)
+            y += ARM_LINE
     canvas.text(ix0 + PAD, y + 0.04, f"Cost of all runs: USD {cost:,.2f}", bold=True, container=box)
     canvas.arrow((COLUMNS["windows"][1] + 0.03, middle), (x0 - 0.03, middle))
 
@@ -277,7 +282,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # series column gives, the frame (and the figure) grow by the difference.
     series_bottom = TOP + len(series) * (SERIES_BOX_H + SERIES_GAP) - SERIES_GAP
     labels_bottom = (TOP + GROUP_PAD + RULE_BOX_H + 0.10 + 0.06 + 2 * LINE + 0.04
-                     + (len(arms) + (1 if other_requests else 0) + 2 * len(open_groups)) * ARM_LINE
+                     + (len(arms) + (1 if other_requests else 0) + (2 + len(open_groups) if open_groups else 0)) * ARM_LINE
                      + (OPEN_GAP if open_groups else 0) + 0.04 + LINE + PAD + GROUP_PAD)
     extra_height = max(0.0, labels_bottom - series_bottom)
     height = HEIGHT_IN + extra_height
