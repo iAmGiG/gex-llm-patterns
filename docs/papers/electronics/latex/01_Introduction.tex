@@ -22,7 +22,7 @@ Relative to all three publications, the new elements are:
 \item overlap-aware inference;
 \item an obfuscated-versus-dated rerun of the Phase~3 and~4 baselines;
 \item a disclosed per-symbol scaling for QQQ and IWM; and
-\item a third model with open weights, gpt-oss-20b, run locally at a fixed revision on seven arms.
+\item three open-weights models (gpt-oss-20b, Llama~3.1~8B and Qwen3-8B) of three developers, run locally at fixed revisions on seven arms.
 \end{enumerate}
 The recap of the earlier design is limited to Section~\ref{sec:methods}.
 
@@ -38,7 +38,7 @@ We address eight questions:
 \item Do the answers hold for 2008--2019, for QQQ and IWM, and in the post-publication period (2026)?
 \item Does a late-session intraday snapshot reproduce the end-of-day label?
 \item Does the 2024-versus-2020 contrast of the earlier baseline runs, whose prompts carried calendar dates, persist when the dates are replaced by relative day labels?
-\item Do open-weights models of other developers, run locally at fixed revisions, give the verdicts of gpt-6-luna and of the rule?
+\item Do open-weights models, from OpenAI and from two other developers, run locally at fixed revisions, give the verdicts of gpt-6-luna and of the rule?
 \end{enumerate}
 RQ1 is answered in Sections~\ref{sec:results:inputs}--\ref{sec:results:replay}, RQ2 in Section~\ref{sec:results:bridge}, RQ3 in Sections~\ref{sec:results:complete} and~\ref{sec:results:fidelity}, RQ4 in Section~\ref{sec:results:ablation}, RQ5 in Sections~\ref{sec:results:deep}--\ref{sec:results:post}, RQ6 in Section~\ref{sec:results:intraday}, RQ7 in Section~\ref{sec:results:dated} and RQ8 in Section~\ref{sec:results:open}.
 
@@ -59,7 +59,7 @@ This article makes seven contributions.
 (iv)~It applies overlap-aware statistics to stride-one windows: the quarter-block bootstrap and a non-overlapping subsample next to the Wilson intervals. Wilson and bootstrap intervals are reported for the pooled rule rate (Section~\ref{sec:methods:statistics} for the method, Section~\ref{sec:results:replay} for the values).
 (v)~It stores every input, prompt and response in result tables (73{,}846 answers), from which each table and figure of this article is generated (Section~\ref{sec:methods:storage}).
 (vi)~It reruns the Phase~3 and~4 baselines with relative day labels instead of calendar dates. For 2024, gpt-6-luna detects 180 of 223 windows (80.7\%) with relative labels and 181 of 223 (81.2\%) with dates, so the visible dates changed nothing that the data can detect (Section~\ref{sec:results:dated}).
-(vii)~It repeats seven arms with three open-weights models of three developers at fixed revisions on local GPUs. gpt-oss-20b agrees with gpt-6-luna in 99.4\% of the windows of the complete series and reproduces the bridge and the absence of a date effect, so these results do not depend on the hosted alias. Qwen3-8B agrees with the rule in 98.7\% of the windows of the complete series that it answers, but it leaves 8.8\% of all windows unanswered, so its 2024--2025 rate is reported as bounds (14.5\% to 35.1\%), still far below the published 100\%. Llama~3.1~8B, which does not reason before its verdict, detects a regime in almost every window (Section~\ref{sec:results:open}).
+(vii)~It repeats seven arms with three open-weights models of three developers at fixed revisions on local GPUs. gpt-oss-20b agrees with gpt-6-luna in 99.4\% of the windows of the complete series and reproduces the bridge and the absence of a date effect, so these results do not depend on the hosted alias. Qwen3-8B agrees with the rule in 98.7\% of the windows of the complete series that it answers, but it leaves 8.8\% of all windows unanswered, so its 2024--2025 rate is reported as bounds (14.5\% to 35.1\%, with 103 of 502 windows unanswered), still far below the published 100\%. Llama~3.1~8B, which does not reason before its verdict, detects a regime in almost every window (Section~\ref{sec:results:open}).
 
 \subsection{Organization}
 \label{sec:introduction:organization}
