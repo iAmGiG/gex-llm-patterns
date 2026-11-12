@@ -28,9 +28,11 @@ Appendix A. Its experiments, results, figures and tables are new. Relative to al
 4. inference that accounts for overlapping windows (quarter-block bootstrap, non-overlapping subsamples);
 5. a rerun of the 2024 and 2020 baselines with and without calendar dates;
 6. a disclosed per-symbol scaling for QQQ and IWM; and
-7. a third model with open weights, gpt-oss-20b, run locally at a fixed revision on seven arms, so that the bridge
-   and the main arms stay reproducible after API models are retired (agreement with gpt-6-luna 99.4% on the complete
-   series; Section 4.12).
+7. three models with open weights from three developers, run locally at fixed revisions on seven arms, so that the
+   bridge and the main arms stay reproducible after API models are retired and are not tied to one developer:
+   gpt-oss-20b agrees with gpt-6-luna on 99.4% of the complete series; Qwen3-8B agrees with the rule on 98.7% of the
+   windows it answers, and its 2024-2025 rate is bounded at 14.5-35.1%; Llama 3.1 8B, without a reasoning phase,
+   detects almost every window (Section 4.12).
 
 **Data statement.** While preparing the extension we found that the daily inputs of the published 2024-2025 windows
 carried only the call leg of the options chain: an upstream database load had dropped the put rows. The article states
@@ -43,8 +45,9 @@ evidence is public in the project repository (`docs/papers/CORRECTIONS.md`).
 
 **Data, code and the use of AI tools.** Code, condensed per-window tables and every result file are available at
 https://github.com/iAmGiG/gex-llm-patterns. The full tables (inputs, labels and model answers) will be deposited at
-Zenodo. <!-- TODO(authors): DOI, or "available on request" if Alpha Vantage does not allow the deposit. --> The raw
-options data are licensed and are not redistributed. gpt-6-luna and gpt-oss-20b are the objects of the study. As stated in the
+Zenodo. <!-- TODO(authors): DOI once the record is created (issue #274); the vendor's terms allow the deposit (D-31). --> The
+options data come from Alpha Vantage under a premium subscription whose terms permit this use; the raw option chains
+are not part of the deposit because of their size. gpt-6-luna and the three open-weights models are the objects of the study. As stated in the
 Acknowledgments, the authors used Claude Code to write the analysis code and to draft and revise the text, and they take
 full responsibility for the content.
 
@@ -55,5 +58,5 @@ submission and declare no conflict of interest. The study received no external f
 
 Sincerely,
 
-Christopher Regan (corresponding author), Kennesaw State University, cregan1@kennesaw.edu
+Christopher Regan (corresponding author), Kennesaw State University, cregan1@students.kennesaw.edu
 Ying Xie, Kennesaw State University

@@ -97,6 +97,48 @@ headline_contrasts:
   family: series
   period: 2024-2025
   a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: series
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  diff_pp: 81.704261
+  bootstrap_diff_ci_pp:
+  - 71.464646
+  - 90.883978
+  p_bootstrap: 5.96046e-08
+  p_nonoverlap: 0.000244141
+- name: series_contrast
+  family: series
+  period: 2024-2025
+  a:
     kind: classifier
     series_key: new_full
     symbol: IWM
@@ -244,6 +286,48 @@ headline_contrasts:
   family: series
   period: 2024-2025
   a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: series
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  diff_pp: -0.536193
+  bootstrap_diff_ci_pp:
+  - -8.396947
+  - 6.830601
+  p_bootstrap: 0.944576
+  p_nonoverlap: 0.5
+- name: series_contrast
+  family: series
+  period: 2024-2025
+  a:
     kind: classifier
     series_key: old_bs
     symbol: SPY
@@ -349,6 +433,48 @@ headline_contrasts:
   family: label
   period: all
   a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: label
+  period: all
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  diff_pp: -2.105263
+  bootstrap_diff_ci_pp:
+  - -6.25
+  - 0.0
+  p_bootstrap: 0.125
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: label
+  period: all
+  a:
     kind: classifier
     series_key: p4_2020
     symbol: SPY
@@ -407,6 +533,48 @@ headline_contrasts:
   - 0.0
   - 0.0
   p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: label
+  period: all
+  a:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: series_contrast
+  family: label
+  period: all
+  a:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  diff_pp: -0.458716
+  bootstrap_diff_ci_pp:
+  - -1.2
+  - 0.0
+  p_bootstrap: 0.632812
   p_nonoverlap: 1.0
 - name: series_contrast
   family: scale
@@ -721,6 +889,38 @@ headline_contrasts:
   period: 2024-2025 vs 2020-2023
   a:
     kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b: null
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b: null
+  diff_pp: 79.146919
+  bootstrap_diff_ci_pp:
+  - 66.248554
+  - 90.047422
+  p_bootstrap: 0.00049975
+  p_nonoverlap: 1.02512e-08
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
     series_key: old_bs
     symbol: SPY
     arm: bridge_old
@@ -801,6 +1001,38 @@ headline_contrasts:
   period: 2024-2025 vs 2020-2023
   a:
     kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b: null
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b: null
+  diff_pp: -8.453696
+  bootstrap_diff_ci_pp:
+  - -22.48854
+  - 6.432848
+  p_bootstrap: 0.261
+  p_nonoverlap: 1.0
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
     series_key: new_ex0dte
     symbol: IWM
     arm: ex0dte_iwm
@@ -858,6 +1090,38 @@ headline_contrasts:
   bootstrap_diff_ci_pp:
   - -16.846323
   - 11.587158
+  p_bootstrap: 0.604
+  p_nonoverlap: 0.731166
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  b: null
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: period_shift
+  family: null
+  period: 2024-2025 vs 2020-2023
+  a:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  b: null
+  diff_pp: -3.610677
+  bootstrap_diff_ci_pp:
+  - -17.664216
+  - 12.256442
   p_bootstrap: 0.604
   p_nonoverlap: 0.731166
 - name: period_shift
@@ -978,6 +1242,48 @@ headline_contrasts:
   p_nonoverlap: 0.040559
 - name: phase_contrast
   family: null
+  period: p3_2024_dated vs p4_2020_dated
+  a:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: phase_contrast
+  family: null
+  period: p3_2024_dated vs p4_2020_dated
+  a:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  diff_pp: 82.538537
+  bootstrap_diff_ci_pp:
+  - 62.210285
+  - 95.385366
+  p_bootstrap: 1.52588e-05
+  p_nonoverlap: 0.040559
+- name: phase_contrast
+  family: null
   period: p3_2024 vs p4_2020
   a:
     kind: classifier
@@ -1038,6 +1344,48 @@ headline_contrasts:
   - 32.164948
   - 93.253968
   p_bootstrap: 0.002441
+  p_nonoverlap: 0.040559
+- name: phase_contrast
+  family: null
+  period: p3_2024 vs p4_2020
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  diff_pp: 0.0
+  bootstrap_diff_ci_pp:
+  - 0.0
+  - 0.0
+  p_bootstrap: 1.0
+  p_nonoverlap: 1.0
+- name: phase_contrast
+  family: null
+  period: p3_2024 vs p4_2020
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
+  diff_pp: 74.213131
+  bootstrap_diff_ci_pp:
+  - 39.112939
+  - 93.253968
+  p_bootstrap: 0.000488281
   p_nonoverlap: 0.040559
 rates:
 - labeller:
@@ -4111,6 +4459,316 @@ rates:
     - 51.020408
 - labeller:
     kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  period: '2024'
+  n: 251
+  k: 251
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.492608
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  period: '2025'
+  n: 250
+  k: 250
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  period: 2020-2023
+  n: 975
+  k: 975
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.60755
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 33
+    k: 33
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 89.573
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  period: 2024-2025
+  n: 501
+  k: 501
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 17
+    k: 17
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 81.568186
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 1476
+  k: 1476
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.740414
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 24
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 50
+    k: 50
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 92.86524
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  period: '2024'
+  n: 251
+  k: 251
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.492608
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  period: '2025'
+  n: 250
+  k: 250
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  period: 2020-2023
+  n: 844
+  k: 176
+  rate_pct: 20.853081
+  wilson_ci_pct:
+  - 18.24736
+  - 23.722923
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 9.952578
+    - 33.751446
+  nonoverlap_30d:
+    n: 33
+    k: 6
+    rate_pct: 18.181818
+    wilson_ci_pct:
+    - 8.610768
+    - 34.388232
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 15.625
+    - 27.272727
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  period: 2024-2025
+  n: 501
+  k: 501
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 17
+    k: 17
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 81.568186
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  period: all
+  n: 1345
+  k: 677
+  rate_pct: 50.334572
+  wilson_ci_pct:
+  - 47.665361
+  - 53.001878
+  bootstrap_quarter:
+    n_blocks: 24
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 33.105437
+    - 67.12137
+  nonoverlap_30d:
+    n: 50
+    k: 23
+    rate_pct: 46.0
+    wilson_ci_pct:
+    - 32.969652
+    - 59.601129
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 44.897959
+    - 51.020408
+- labeller:
+    kind: llm
     series_key: old_bs
     symbol: SPY
     arm: bridge_old
@@ -5196,6 +5854,440 @@ rates:
     - 16.56051
 - labeller:
     kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: '2024'
+  n: 252
+  k: 252
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.4985
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: '2025'
+  n: 250
+  k: 250
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: 2020-2023
+  n: 1005
+  k: 1005
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 34
+    k: 34
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 89.848545
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: 2024-2025
+  n: 502
+  k: 502
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 17
+    k: 17
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 81.568186
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: 2008-2019
+  n: 2990
+  k: 2989
+  rate_pct: 99.966555
+  wilson_ci_pct:
+  - 99.810788
+  - 99.994096
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 99.898645
+    - 100.0
+  nonoverlap_30d:
+    n: 100
+    k: 100
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 96.30065
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 99.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: '2026'
+  n: 194
+  k: 194
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.058315
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 7
+    k: 7
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 64.566956
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 4691
+  k: 4690
+  rate_pct: 99.978683
+  wilson_ci_pct:
+  - 99.87934
+  - 99.996237
+  bootstrap_quarter:
+    n_blocks: 76
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 99.934951
+    - 100.0
+  nonoverlap_30d:
+    n: 157
+    k: 157
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 97.611649
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 99.358974
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: '2024'
+  n: 190
+  k: 32
+  rate_pct: 16.842105
+  wilson_ci_pct:
+  - 12.19004
+  - 22.808385
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 5.607477
+    - 31.081081
+  nonoverlap_30d:
+    n: 9
+    k: 3
+    rate_pct: 33.333333
+    wilson_ci_pct:
+    - 12.058382
+    - 64.579786
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 33.333333
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: '2025'
+  n: 209
+  k: 41
+  rate_pct: 19.617225
+  wilson_ci_pct:
+  - 14.802652
+  - 25.528522
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 6.796117
+    - 33.175355
+  nonoverlap_30d:
+    n: 9
+    k: 2
+    rate_pct: 22.222222
+    wilson_ci_pct:
+    - 6.322511
+    - 54.741103
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 11.111111
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: 2020-2023
+  n: 886
+  k: 237
+  rate_pct: 26.749436
+  wilson_ci_pct:
+  - 23.939674
+  - 29.759943
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 16.70483
+    - 38.123905
+  nonoverlap_30d:
+    n: 34
+    k: 10
+    rate_pct: 29.411765
+    wilson_ci_pct:
+    - 16.834631
+    - 46.16891
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 18.181818
+    - 29.411765
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: 2024-2025
+  n: 399
+  k: 73
+  rate_pct: 18.295739
+  wilson_ci_pct:
+  - 14.810449
+  - 22.385687
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 9.116022
+    - 28.535354
+  nonoverlap_30d:
+    n: 17
+    k: 5
+    rate_pct: 29.411765
+    wilson_ci_pct:
+    - 13.27999
+    - 53.13311
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 5.882353
+    - 29.411765
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: 2008-2019
+  n: 2760
+  k: 317
+  rate_pct: 11.485507
+  wilson_ci_pct:
+  - 10.34913
+  - 12.728947
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 5.680757
+    - 18.348846
+  nonoverlap_30d:
+    n: 100
+    k: 15
+    rate_pct: 15.0
+    wilson_ci_pct:
+    - 9.305985
+    - 23.28356
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 8.080808
+    - 15.151515
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: '2026'
+  n: 161
+  k: 22
+  rate_pct: 13.664596
+  wilson_ci_pct:
+  - 9.200086
+  - 19.822624
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.0
+    - 26.455026
+  nonoverlap_30d:
+    n: 7
+    k: 1
+    rate_pct: 14.285714
+    wilson_ci_pct:
+    - 2.567962
+    - 51.312783
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 16.666667
+- labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  period: all
+  n: 4206
+  k: 649
+  rate_pct: 15.430338
+  wilson_ci_pct:
+  - 14.370212
+  - 16.553553
+  bootstrap_quarter:
+    n_blocks: 76
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 10.601289
+    - 20.552686
+  nonoverlap_30d:
+    n: 156
+    k: 24
+    rate_pct: 15.384615
+    wilson_ci_pct:
+    - 10.561655
+    - 21.871394
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 14.193548
+    - 16.025641
+- labeller:
+    kind: llm
     series_key: new_ex0dte
     symbol: IWM
     arm: ex0dte_iwm
@@ -6002,6 +7094,440 @@ rates:
     - 14.012739
 - labeller:
     kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: '2024'
+  n: 252
+  k: 252
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.4985
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: '2025'
+  n: 250
+  k: 250
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 9
+    k: 9
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 70.085495
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: 2020-2023
+  n: 1005
+  k: 1005
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 34
+    k: 34
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 89.848545
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: 2024-2025
+  n: 502
+  k: 502
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 17
+    k: 17
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 81.568186
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: 2008-2019
+  n: 2990
+  k: 2989
+  rate_pct: 99.966555
+  wilson_ci_pct:
+  - 99.810788
+  - 99.994096
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 99.898645
+    - 100.0
+  nonoverlap_30d:
+    n: 100
+    k: 100
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 96.30065
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 99.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: '2026'
+  n: 194
+  k: 194
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.058315
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 7
+    k: 7
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 64.566956
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 4691
+  k: 4690
+  rate_pct: 99.978683
+  wilson_ci_pct:
+  - 99.87934
+  - 99.996237
+  bootstrap_quarter:
+    n_blocks: 76
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 99.934951
+    - 100.0
+  nonoverlap_30d:
+    n: 157
+    k: 157
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 97.611649
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 99.358974
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: '2024'
+  n: 236
+  k: 39
+  rate_pct: 16.525424
+  wilson_ci_pct:
+  - 12.330646
+  - 21.792503
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 7.723577
+    - 25.102881
+  nonoverlap_30d:
+    n: 9
+    k: 2
+    rate_pct: 22.222222
+    wilson_ci_pct:
+    - 6.322511
+    - 54.741103
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 33.333333
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: '2025'
+  n: 229
+  k: 41
+  rate_pct: 17.90393
+  wilson_ci_pct:
+  - 13.480668
+  - 23.386245
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.0
+    - 39.30131
+  nonoverlap_30d:
+    n: 9
+    k: 2
+    rate_pct: 22.222222
+    wilson_ci_pct:
+    - 6.322511
+    - 54.741103
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 11.111111
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: 2020-2023
+  n: 908
+  k: 189
+  rate_pct: 20.814978
+  wilson_ci_pct:
+  - 18.299958
+  - 23.575902
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 11.20889
+    - 31.937097
+  nonoverlap_30d:
+    n: 34
+    k: 8
+    rate_pct: 23.529412
+    wilson_ci_pct:
+    - 12.436986
+    - 39.996138
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 12.121212
+    - 23.529412
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: 2024-2025
+  n: 465
+  k: 80
+  rate_pct: 17.204301
+  wilson_ci_pct:
+  - 14.04615
+  - 20.899876
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    ci_pct:
+    - 7.068607
+    - 29.157667
+  nonoverlap_30d:
+    n: 17
+    k: 3
+    rate_pct: 17.647059
+    wilson_ci_pct:
+    - 6.191127
+    - 41.029459
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 5.882353
+    - 29.411765
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: 2008-2019
+  n: 2767
+  k: 192
+  rate_pct: 6.938923
+  wilson_ci_pct:
+  - 6.050564
+  - 7.946681
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 2.898902
+    - 12.059361
+  nonoverlap_30d:
+    n: 100
+    k: 5
+    rate_pct: 5.0
+    wilson_ci_pct:
+    - 2.154368
+    - 11.175047
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 4.040404
+    - 10.0
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: '2026'
+  n: 177
+  k: 41
+  rate_pct: 23.163842
+  wilson_ci_pct:
+  - 17.558775
+  - 29.909023
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.0
+    - 41.538462
+  nonoverlap_30d:
+    n: 7
+    k: 1
+    rate_pct: 14.285714
+    wilson_ci_pct:
+    - 2.567962
+    - 51.312783
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 14.285714
+    - 33.333333
+- labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  period: all
+  n: 4317
+  k: 502
+  rate_pct: 11.628446
+  wilson_ci_pct:
+  - 10.706121
+  - 12.618999
+  bootstrap_quarter:
+    n_blocks: 76
+    method: monte_carlo
+    n_draws: 2000
+    ci_pct:
+    - 7.665685
+    - 15.917783
+  nonoverlap_30d:
+    n: 157
+    k: 15
+    rate_pct: 9.55414
+    wilson_ci_pct:
+    - 5.8756
+    - 15.164658
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 8.974359
+    - 13.461538
+- labeller:
+    kind: llm
     series_key: intraday_t0
     symbol: SPY
     arm: intraday_spy
@@ -6622,6 +8148,192 @@ rates:
     - 87.5
 - labeller:
     kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  period: '2024'
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  period: 2024-2025
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  period: '2024'
+  n: 212
+  k: 183
+  rate_pct: 86.320755
+  wilson_ci_pct:
+  - 81.04472
+  - 90.303945
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 57.746479
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 71.428571
+    - 87.5
+- labeller:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  period: 2024-2025
+  n: 212
+  k: 183
+  rate_pct: 86.320755
+  wilson_ci_pct:
+  - 81.04472
+  - 90.303945
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 57.746479
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 71.428571
+    - 87.5
+- labeller:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  period: all
+  n: 212
+  k: 183
+  rate_pct: 86.320755
+  wilson_ci_pct:
+  - 81.04472
+  - 90.303945
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 57.746479
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 71.428571
+    - 87.5
+- labeller:
+    kind: llm
     series_key: p3_2024_dated
     symbol: SPY
     arm: r1_p3_o4mini
@@ -6899,6 +8611,192 @@ rates:
     rate_pct_range_over_starts:
     - 71.428571
     - 87.5
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  period: '2024'
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  period: 2024-2025
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  period: '2024'
+  n: 197
+  k: 187
+  rate_pct: 94.923858
+  wilson_ci_pct:
+  - 90.90953
+  - 97.219685
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 81.415929
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 85.714286
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  period: 2024-2025
+  n: 197
+  k: 187
+  rate_pct: 94.923858
+  wilson_ci_pct:
+  - 90.90953
+  - 97.219685
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 81.415929
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 85.714286
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  period: all
+  n: 197
+  k: 187
+  rate_pct: 94.923858
+  wilson_ci_pct:
+  - 90.90953
+  - 97.219685
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 81.415929
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 7
+    rate_pct: 87.5
+    wilson_ci_pct:
+    - 52.911182
+    - 97.758251
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 85.714286
+    - 100.0
 - labeller:
     kind: llm
     series_key: p4_2020
@@ -6998,6 +8896,130 @@ rates:
     symbol: SPY
     arm: oss_p34_obf_2020
     model: gpt-oss-20b
+  period: all
+  n: 223
+  k: 27
+  rate_pct: 12.107623
+  wilson_ci_pct:
+  - 8.45595
+  - 17.042678
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.0
+    - 27.835052
+  nonoverlap_30d:
+    n: 8
+    k: 2
+    rate_pct: 25.0
+    wilson_ci_pct:
+    - 7.147921
+    - 59.072457
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  period: 2020-2023
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
+  period: 2020-2023
+  n: 223
+  k: 27
+  rate_pct: 12.107623
+  wilson_ci_pct:
+  - 8.45595
+  - 17.042678
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.0
+    - 27.835052
+  nonoverlap_30d:
+    n: 8
+    k: 2
+    rate_pct: 25.0
+    wilson_ci_pct:
+    - 7.147921
+    - 59.072457
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
   period: all
   n: 223
   k: 27
@@ -7198,6 +9220,130 @@ rates:
     ci_pct:
     - 0.0
     - 27.835052
+  nonoverlap_30d:
+    n: 8
+    k: 2
+    rate_pct: 25.0
+    wilson_ci_pct:
+    - 7.147921
+    - 59.072457
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  period: 2020-2023
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  period: all
+  n: 223
+  k: 223
+  rate_pct: 100.0
+  wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 100.0
+    - 100.0
+  nonoverlap_30d:
+    n: 8
+    k: 8
+    rate_pct: 100.0
+    wilson_ci_pct:
+    - 67.559244
+    - 100.0
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 100.0
+    - 100.0
+- labeller:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  period: 2020-2023
+  n: 218
+  k: 27
+  rate_pct: 12.385321
+  wilson_ci_pct:
+  - 8.653206
+  - 17.420125
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.806452
+    - 27.659574
+  nonoverlap_30d:
+    n: 8
+    k: 2
+    rate_pct: 25.0
+    wilson_ci_pct:
+    - 7.147921
+    - 59.072457
+    n_starts: 30
+    rate_pct_range_over_starts:
+    - 0.0
+    - 25.0
+- labeller:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  period: all
+  n: 218
+  k: 27
+  rate_pct: 12.385321
+  wilson_ci_pct:
+  - 8.653206
+  - 17.420125
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    ci_pct:
+    - 0.806452
+    - 27.659574
   nonoverlap_30d:
     n: 8
     k: 2
@@ -7774,6 +9920,382 @@ contrasts:
     windows_only_a: 0
     windows_only_b: 3
     p_mcnemar_exact: 0.25
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2024'
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 251
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.492608
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.492608
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2025'
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 250
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 501
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 17
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2020-2023
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 975
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 99.60755
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 99.60755
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 33
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2024'
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  n_common_windows: 190
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.018247
+  - 100.0
+  rate_b_pct: 16.842105
+  rate_b_wilson_ci_pct:
+  - 12.19004
+  - 22.808385
+  diff_pp: 83.157895
+  windows_only_a: 158
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 5.47382e-48
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 68.918919
+    - 94.392523
+    p_two_sided: 0.003906
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 33.333333
+    diff_pp: 66.666667
+    windows_only_a: 6
+    windows_only_b: 0
+    p_mcnemar_exact: 0.03125
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2025'
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  n_common_windows: 209
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.195155
+  - 100.0
+  rate_b_pct: 19.617225
+  rate_b_wilson_ci_pct:
+  - 14.802652
+  - 25.528522
+  diff_pp: 80.382775
+  windows_only_a: 168
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 5.34553e-51
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 66.824645
+    - 93.203883
+    p_two_sided: 0.003906
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 22.222222
+    diff_pp: 77.777778
+    windows_only_a: 7
+    windows_only_b: 0
+    p_mcnemar_exact: 0.015625
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  n_common_windows: 399
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 99.046409
+  - 100.0
+  rate_b_pct: 18.295739
+  rate_b_wilson_ci_pct:
+  - 14.810449
+  - 22.385687
+  diff_pp: 81.704261
+  windows_only_a: 326
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.46302e-98
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    diff_ci_pp:
+    - 71.464646
+    - 90.883978
+    p_two_sided: 5.96046e-08
+  nonoverlap_30d:
+    n: 17
+    rate_a_pct: 100.0
+    rate_b_pct: 23.529412
+    diff_pp: 76.470588
+    windows_only_a: 13
+    windows_only_b: 0
+    p_mcnemar_exact: 0.000244141
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2020-2023
+  a:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  n_common_windows: 760
+  rate_a_pct: 21.973684
+  rate_a_wilson_ci_pct:
+  - 19.174829
+  - 25.054435
+  rate_b_pct: 25.394737
+  rate_b_wilson_ci_pct:
+  - 22.429239
+  - 28.607721
+  diff_pp: -3.421053
+  windows_only_a: 19
+  windows_only_b: 45
+  naive_stride1:
+    p_mcnemar_exact: 0.001563
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - -8.735567
+    - 3.152614
+    p_two_sided: 0.273
+  nonoverlap_30d:
+    n: 33
+    rate_a_pct: 27.272727
+    rate_b_pct: 24.242424
+    diff_pp: 3.030303
+    windows_only_a: 2
+    windows_only_b: 1
+    p_mcnemar_exact: 1.0
 - name: series_contrast
   family: series
   design: paired by window_end (windows present in both series)
@@ -9659,6 +12181,570 @@ contrasts:
   design: paired by window_end (windows present in both series)
   period: '2024'
   a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 252
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.4985
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.4985
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2025'
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 250
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.48667
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 502
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 17
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2008-2019
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 2990
+  rate_a_pct: 99.966555
+  rate_a_wilson_ci_pct:
+  - 99.810788
+  - 99.994096
+  rate_b_pct: 99.966555
+  rate_b_wilson_ci_pct:
+  - 99.810788
+  - 99.994096
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 100
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2020-2023
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 1005
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 34
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2026'
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_common_windows: 194
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.058315
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.058315
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 7
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2024'
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 180
+  rate_a_pct: 17.222222
+  rate_a_wilson_ci_pct:
+  - 12.406396
+  - 23.407865
+  rate_b_pct: 19.444444
+  rate_b_wilson_ci_pct:
+  - 14.326402
+  - 25.839434
+  diff_pp: -2.222222
+  windows_only_a: 14
+  windows_only_b: 18
+  naive_stride1:
+    p_mcnemar_exact: 0.596615
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - -14.52514
+    - 11.25
+    p_two_sided: 0.8125
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 33.333333
+    rate_b_pct: 22.222222
+    diff_pp: 11.111111
+    windows_only_a: 1
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2025'
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 193
+  rate_a_pct: 20.207254
+  rate_a_wilson_ci_pct:
+  - 15.14911
+  - 26.428238
+  rate_b_pct: 19.170984
+  rate_b_wilson_ci_pct:
+  - 14.240663
+  - 25.304593
+  diff_pp: 1.036269
+  windows_only_a: 7
+  windows_only_b: 5
+  naive_stride1:
+    p_mcnemar_exact: 0.774414
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - -7.368421
+    - 8.520179
+    p_two_sided: 0.734375
+  nonoverlap_30d:
+    n: 9
+    rate_a_pct: 22.222222
+    rate_b_pct: 22.222222
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2024-2025
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 373
+  rate_a_pct: 18.766756
+  rate_a_wilson_ci_pct:
+  - 15.130182
+  - 23.040103
+  rate_b_pct: 19.302949
+  rate_b_wilson_ci_pct:
+  - 15.618776
+  - 23.612964
+  diff_pp: -0.536193
+  windows_only_a: 21
+  windows_only_b: 23
+  naive_stride1:
+    p_mcnemar_exact: 0.880396
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 8
+    method: exact
+    n_draws: 16777216
+    diff_ci_pp:
+    - -8.396947
+    - 6.830601
+    p_two_sided: 0.944576
+  nonoverlap_30d:
+    n: 17
+    rate_a_pct: 29.411765
+    rate_b_pct: 17.647059
+    diff_pp: 11.764706
+    windows_only_a: 2
+    windows_only_b: 0
+    p_mcnemar_exact: 0.5
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2008-2019
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 2570
+  rate_a_pct: 11.750973
+  rate_a_wilson_ci_pct:
+  - 10.562668
+  - 13.053451
+  rate_b_pct: 7.237354
+  rate_b_wilson_ci_pct:
+  - 6.298146
+  - 8.304209
+  diff_pp: 4.513619
+  windows_only_a: 123
+  windows_only_b: 7
+  naive_stride1:
+    p_mcnemar_exact: 1.64421e-28
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 48
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 2.058489
+    - 7.271321
+    p_two_sided: 0.00049975
+  nonoverlap_30d:
+    n: 100
+    rate_a_pct: 13.0
+    rate_b_pct: 8.0
+    diff_pp: 5.0
+    windows_only_a: 6
+    windows_only_b: 1
+    p_mcnemar_exact: 0.125
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: 2020-2023
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 809
+  rate_a_pct: 28.059333
+  rate_a_wilson_ci_pct:
+  - 25.072616
+  - 31.25343
+  rate_b_pct: 22.249691
+  rate_b_wilson_ci_pct:
+  - 19.518542
+  - 25.243134
+  diff_pp: 5.809642
+  windows_only_a: 79
+  windows_only_b: 32
+  naive_stride1:
+    p_mcnemar_exact: 9.45105e-06
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 16
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.471657
+    - 11.37703
+    p_two_sided: 0.04
+  nonoverlap_30d:
+    n: 34
+    rate_a_pct: 29.411765
+    rate_b_pct: 20.588235
+    diff_pp: 8.823529
+    windows_only_a: 4
+    windows_only_b: 1
+    p_mcnemar_exact: 0.375
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2026'
+  a:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_common_windows: 147
+  rate_a_pct: 14.965986
+  rate_a_wilson_ci_pct:
+  - 10.095761
+  - 21.620624
+  rate_b_pct: 23.809524
+  rate_b_wilson_ci_pct:
+  - 17.646926
+  - 31.306101
+  diff_pp: -8.843537
+  windows_only_a: 0
+  windows_only_b: 13
+  naive_stride1:
+    p_mcnemar_exact: 0.000244141
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - -23.636364
+    - 0.0
+    p_two_sided: 0.632812
+  nonoverlap_30d:
+    n: 7
+    rate_a_pct: 14.285714
+    rate_b_pct: 14.285714
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: series
+  design: paired by window_end (windows present in both series)
+  period: '2024'
+  a:
     kind: classifier
     series_key: old_bs
     symbol: SPY
@@ -10364,6 +13450,100 @@ contrasts:
   design: paired by window_end (windows present in both series)
   period: all
   a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  n_common_windows: 223
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 8
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: label
+  design: paired by window_end (windows present in both series)
+  period: all
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  n_common_windows: 190
+  rate_a_pct: 93.684211
+  rate_a_wilson_ci_pct:
+  - 89.28646
+  - 96.350535
+  rate_b_pct: 95.789474
+  rate_b_wilson_ci_pct:
+  - 91.91281
+  - 97.851269
+  diff_pp: -2.105263
+  windows_only_a: 1
+  windows_only_b: 5
+  naive_stride1:
+    p_mcnemar_exact: 0.21875
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - -6.25
+    - 0.0
+    p_two_sided: 0.125
+  nonoverlap_30d:
+    n: 8
+    rate_a_pct: 87.5
+    rate_b_pct: 87.5
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: label
+  design: paired by window_end (windows present in both series)
+  period: all
+  a:
     kind: classifier
     series_key: p4_2020
     symbol: SPY
@@ -10492,6 +13672,100 @@ contrasts:
     - 0.0
     - 0.0
     p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 8
+    rate_a_pct: 25.0
+    rate_b_pct: 25.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: label
+  design: paired by window_end (windows present in both series)
+  period: all
+  a:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  n_common_windows: 223
+  rate_a_pct: 100.0
+  rate_a_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  rate_b_pct: 100.0
+  rate_b_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  diff_pp: 0.0
+  windows_only_a: 0
+  windows_only_b: 0
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n: 8
+    rate_a_pct: 100.0
+    rate_b_pct: 100.0
+    diff_pp: 0.0
+    windows_only_a: 0
+    windows_only_b: 0
+    p_mcnemar_exact: 1.0
+- name: series_contrast
+  family: label
+  design: paired by window_end (windows present in both series)
+  period: all
+  a:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  n_common_windows: 218
+  rate_a_pct: 11.926606
+  rate_a_wilson_ci_pct:
+  - 8.270349
+  - 16.901438
+  rate_b_pct: 12.385321
+  rate_b_wilson_ci_pct:
+  - 8.653206
+  - 17.420125
+  diff_pp: -0.458716
+  windows_only_a: 0
+  windows_only_b: 1
+  naive_stride1:
+    p_mcnemar_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks: 4
+    method: exact
+    n_draws: 256
+    diff_ci_pp:
+    - -1.2
+    - 0.0
+    p_two_sided: 0.632812
   nonoverlap_30d:
     n: 8
     rate_a_pct: 25.0
@@ -11325,6 +14599,96 @@ contrasts:
   late: 2024-2025
   labeller:
     kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: llama_bridge_jan
+    model: llama-3.1-8b-instruct
+  n_early: 975
+  rate_early_pct: 100.0
+  rate_early_wilson_ci_pct:
+  - 99.60755
+  - 100.0
+  n_late: 501
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  diff_pp: 0.0
+  newcombe_wilson_ci_pp:
+  - -0.760924
+  - 0.39245
+  phi: null
+  naive_stride1:
+    p_fisher_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n_early: 33
+    n_late: 17
+    rate_early_pct: 100.0
+    rate_late_pct: 100.0
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
+    series_key: jan2026_phase4a
+    symbol: SPY
+    arm: qwen_bridge_jan
+    model: qwen3-8b
+  n_early: 844
+  rate_early_pct: 20.853081
+  rate_early_wilson_ci_pct:
+  - 18.24736
+  - 23.722923
+  n_late: 501
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 99.239076
+  - 100.0
+  diff_pp: 79.146919
+  newcombe_wilson_ci_pp:
+  - 76.177913
+  - 81.75264
+  phi: 0.765317
+  naive_stride1:
+    p_fisher_exact: 9.88829e-218
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 66.248554
+    - 90.047422
+    p_two_sided: 0.00049975
+  nonoverlap_30d:
+    n_early: 33
+    n_late: 17
+    rate_early_pct: 18.181818
+    rate_late_pct: 100.0
+    diff_pp: 81.818182
+    p_fisher_exact: 1.02512e-08
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
     series_key: old_bs
     symbol: SPY
     arm: bridge_old
@@ -11550,6 +14914,96 @@ contrasts:
   late: 2024-2025
   labeller:
     kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: llama_full_spy
+    model: llama-3.1-8b-instruct
+  n_early: 1005
+  rate_early_pct: 100.0
+  rate_early_wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  n_late: 502
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  diff_pp: 0.0
+  newcombe_wilson_ci_pp:
+  - -0.75942
+  - 0.380779
+  phi: null
+  naive_stride1:
+    p_fisher_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n_early: 34
+    n_late: 17
+    rate_early_pct: 100.0
+    rate_late_pct: 100.0
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
+    series_key: new_full
+    symbol: SPY
+    arm: qwen_full_spy
+    model: qwen3-8b
+  n_early: 886
+  rate_early_pct: 26.749436
+  rate_early_wilson_ci_pct:
+  - 23.939674
+  - 29.759943
+  n_late: 399
+  rate_late_pct: 18.295739
+  rate_late_wilson_ci_pct:
+  - 14.810449
+  - 22.385687
+  diff_pp: -8.453696
+  newcombe_wilson_ci_pp:
+  - -13.059172
+  - -3.491597
+  phi: -0.091425
+  naive_stride1:
+    p_fisher_exact: 0.000928446
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - -22.48854
+    - 6.432848
+    p_two_sided: 0.261
+  nonoverlap_30d:
+    n_early: 34
+    n_late: 17
+    rate_early_pct: 29.411765
+    rate_late_pct: 29.411765
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
     series_key: new_ex0dte
     symbol: IWM
     arm: ex0dte_iwm
@@ -11715,6 +15169,96 @@ contrasts:
     diff_ci_pp:
     - -16.846323
     - 11.587158
+    p_two_sided: 0.604
+  nonoverlap_30d:
+    n_early: 34
+    n_late: 17
+    rate_early_pct: 23.529412
+    rate_late_pct: 17.647059
+    diff_pp: -5.882353
+    p_fisher_exact: 0.731166
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: llama_ex0dte_spy
+    model: llama-3.1-8b-instruct
+  n_early: 1005
+  rate_early_pct: 100.0
+  rate_early_wilson_ci_pct:
+  - 99.619221
+  - 100.0
+  n_late: 502
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 99.24058
+  - 100.0
+  diff_pp: 0.0
+  newcombe_wilson_ci_pp:
+  - -0.75942
+  - 0.380779
+  phi: null
+  naive_stride1:
+    p_fisher_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n_early: 34
+    n_late: 17
+    rate_early_pct: 100.0
+    rate_late_pct: 100.0
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: period_shift
+  design: unpaired
+  period: 2024-2025 vs 2020-2023
+  early: 2020-2023
+  late: 2024-2025
+  labeller:
+    kind: llm
+    series_key: new_ex0dte
+    symbol: SPY
+    arm: qwen_ex0dte_spy
+    model: qwen3-8b
+  n_early: 908
+  rate_early_pct: 20.814978
+  rate_early_wilson_ci_pct:
+  - 18.299958
+  - 23.575902
+  n_late: 465
+  rate_late_pct: 17.204301
+  rate_late_wilson_ci_pct:
+  - 14.04615
+  - 20.899876
+  diff_pp: -3.610677
+  newcombe_wilson_ci_pp:
+  - -7.80551
+  - 0.859513
+  phi: -0.043052
+  naive_stride1:
+    p_fisher_exact: 0.114493
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 16
+    n_blocks_late: 8
+    method: monte_carlo
+    n_draws: 2000
+    diff_ci_pp:
+    - -17.664216
+    - 12.256442
     p_two_sided: 0.604
   nonoverlap_30d:
     n_early: 34
@@ -12019,6 +15563,108 @@ contrasts:
     p_fisher_exact: 0.040559
 - name: phase_contrast
   design: unpaired
+  period: p3_2024_dated vs p4_2020_dated
+  early: p4_2020_dated
+  late: p3_2024_dated
+  a:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: llama_p34_dated_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: llama_p34_dated_2020
+    model: llama-3.1-8b-instruct
+  n_early: 223
+  rate_early_pct: 100.0
+  rate_early_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  n_late: 223
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  diff_pp: 0.0
+  newcombe_wilson_ci_pp:
+  - -1.693455
+  - 1.693455
+  phi: null
+  naive_stride1:
+    p_fisher_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 4
+    n_blocks_late: 4
+    method: exact
+    n_draws: 65536
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n_early: 8
+    n_late: 8
+    rate_early_pct: 100.0
+    rate_late_pct: 100.0
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: phase_contrast
+  design: unpaired
+  period: p3_2024_dated vs p4_2020_dated
+  early: p4_2020_dated
+  late: p3_2024_dated
+  a:
+    kind: llm
+    series_key: p3_2024_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020_dated
+    symbol: SPY
+    arm: qwen_p34_dated_2020
+    model: qwen3-8b
+  n_early: 218
+  rate_early_pct: 12.385321
+  rate_early_wilson_ci_pct:
+  - 8.653206
+  - 17.420125
+  n_late: 197
+  rate_late_pct: 94.923858
+  rate_late_wilson_ci_pct:
+  - 90.90953
+  - 97.219685
+  diff_pp: 82.538537
+  newcombe_wilson_ci_pp:
+  - 76.099276
+  - 86.920261
+  phi: 0.824733
+  naive_stride1:
+    p_fisher_exact: 1.73049e-73
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 4
+    n_blocks_late: 4
+    method: exact
+    n_draws: 65536
+    diff_ci_pp:
+    - 62.210285
+    - 95.385366
+    p_two_sided: 1.52588e-05
+  nonoverlap_30d:
+    n_early: 8
+    n_late: 8
+    rate_early_pct: 25.0
+    rate_late_pct: 87.5
+    diff_pp: 62.5
+    p_fisher_exact: 0.040559
+- name: phase_contrast
+  design: unpaired
   period: p3_2024 vs p4_2020
   early: p4_2020
   late: p3_2024
@@ -12163,6 +15809,108 @@ contrasts:
     - 32.164948
     - 93.253968
     p_two_sided: 0.002441
+  nonoverlap_30d:
+    n_early: 8
+    n_late: 8
+    rate_early_pct: 25.0
+    rate_late_pct: 87.5
+    diff_pp: 62.5
+    p_fisher_exact: 0.040559
+- name: phase_contrast
+  design: unpaired
+  period: p3_2024 vs p4_2020
+  early: p4_2020
+  late: p3_2024
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: llama_p34_obf_2024
+    model: llama-3.1-8b-instruct
+  b:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: llama_p34_obf_2020
+    model: llama-3.1-8b-instruct
+  n_early: 223
+  rate_early_pct: 100.0
+  rate_early_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  n_late: 223
+  rate_late_pct: 100.0
+  rate_late_wilson_ci_pct:
+  - 98.306545
+  - 100.0
+  diff_pp: 0.0
+  newcombe_wilson_ci_pp:
+  - -1.693455
+  - 1.693455
+  phi: null
+  naive_stride1:
+    p_fisher_exact: 1.0
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 4
+    n_blocks_late: 4
+    method: exact
+    n_draws: 65536
+    diff_ci_pp:
+    - 0.0
+    - 0.0
+    p_two_sided: 1.0
+  nonoverlap_30d:
+    n_early: 8
+    n_late: 8
+    rate_early_pct: 100.0
+    rate_late_pct: 100.0
+    diff_pp: 0.0
+    p_fisher_exact: 1.0
+- name: phase_contrast
+  design: unpaired
+  period: p3_2024 vs p4_2020
+  early: p4_2020
+  late: p3_2024
+  a:
+    kind: llm
+    series_key: p3_2024
+    symbol: SPY
+    arm: qwen_p34_obf_2024
+    model: qwen3-8b
+  b:
+    kind: llm
+    series_key: p4_2020
+    symbol: SPY
+    arm: qwen_p34_obf_2020
+    model: qwen3-8b
+  n_early: 223
+  rate_early_pct: 12.107623
+  rate_early_wilson_ci_pct:
+  - 8.45595
+  - 17.042678
+  n_late: 212
+  rate_late_pct: 86.320755
+  rate_late_wilson_ci_pct:
+  - 81.04472
+  - 90.303945
+  diff_pp: 74.213131
+  newcombe_wilson_ci_pp:
+  - 66.988777
+  - 79.616882
+  phi: 0.742335
+  naive_stride1:
+    p_fisher_exact: 8.11164e-60
+    caveat: treats overlapping windows as independent; anti-conservative
+  bootstrap_quarter:
+    n_blocks_early: 4
+    n_blocks_late: 4
+    method: exact
+    n_draws: 65536
+    diff_ci_pp:
+    - 39.112939
+    - 93.253968
+    p_two_sided: 0.000488281
   nonoverlap_30d:
     n_early: 8
     n_late: 8

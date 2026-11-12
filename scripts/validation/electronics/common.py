@@ -217,7 +217,7 @@ class Arm:
     end: Optional[date] = None
     llm: bool = True  # False = classifier/backfill only, never submitted to a model
     window_series_key: Optional[str] = None  # windows are read from this series when it differs (composites)
-    model: Optional[str] = None  # None = MODEL (gpt-6-luna through the Batch API); OPEN_MODEL = local open-weights run
+    model: Optional[str] = None  # None = MODEL (gpt-6-luna through the Batch API); a LOCAL_SPECS key = local open-weights run
 
 
 def arm_window_series(arm: "Arm") -> str:
@@ -275,6 +275,39 @@ ARMS: Dict[str, Arm] = {
                             model="gpt-oss-20b"),
     "oss_p34_dated_2020": Arm("oss_p34_dated_2020", "p4_2020_dated", "SPY", 5, "gpt-oss-20b, Phase 4 inputs with the dates",
                               model="gpt-oss-20b"),
+    # Second open-weights model (D-30): the same seven twins answered by Meta's Llama 3.1 8B Instruct, so that the
+    # open-weights result does not rest on models of one developer.
+    "llama_bridge_jan": Arm("llama_bridge_jan", "jan2026_phase4a", "SPY", 6,
+                            "Llama 3.1 8B (open weights) on the exact published inputs: bridge to o4-mini",
+                            model="llama-3.1-8b-instruct"),
+    "llama_full_spy": Arm("llama_full_spy", "new_full", "SPY", 6, "Llama 3.1 8B on the complete SPY series, 2008-2026",
+                          model="llama-3.1-8b-instruct"),
+    "llama_ex0dte_spy": Arm("llama_ex0dte_spy", "new_ex0dte", "SPY", 6,
+                            "Llama 3.1 8B on the 0DTE-excluded SPY series, 2008-2026", model="llama-3.1-8b-instruct"),
+    "llama_p34_obf_2024": Arm("llama_p34_obf_2024", "p3_2024", "SPY", 6, "Llama 3.1 8B, Phase 3 inputs with Day-T labels",
+                              model="llama-3.1-8b-instruct"),
+    "llama_p34_dated_2024": Arm("llama_p34_dated_2024", "p3_2024_dated", "SPY", 6,
+                                "Llama 3.1 8B, Phase 3 inputs with the dates", model="llama-3.1-8b-instruct"),
+    "llama_p34_obf_2020": Arm("llama_p34_obf_2020", "p4_2020", "SPY", 6, "Llama 3.1 8B, Phase 4 inputs with Day-T labels",
+                              model="llama-3.1-8b-instruct"),
+    "llama_p34_dated_2020": Arm("llama_p34_dated_2020", "p4_2020_dated", "SPY", 6,
+                                "Llama 3.1 8B, Phase 4 inputs with the dates", model="llama-3.1-8b-instruct"),
+    # Third open-weights model (D-32): Llama 3.1 8B has no reasoning mode and failed the task in its pilot, so the same
+    # seven twins are answered by a reasoning model of another developer, Alibaba's Qwen3-8B in thinking mode.
+    "qwen_bridge_jan": Arm("qwen_bridge_jan", "jan2026_phase4a", "SPY", 7,
+                           "Qwen3-8B (open weights) on the exact published inputs: bridge to o4-mini", model="qwen3-8b"),
+    "qwen_full_spy": Arm("qwen_full_spy", "new_full", "SPY", 7, "Qwen3-8B on the complete SPY series, 2008-2026",
+                         model="qwen3-8b"),
+    "qwen_ex0dte_spy": Arm("qwen_ex0dte_spy", "new_ex0dte", "SPY", 7, "Qwen3-8B on the 0DTE-excluded SPY series, 2008-2026",
+                           model="qwen3-8b"),
+    "qwen_p34_obf_2024": Arm("qwen_p34_obf_2024", "p3_2024", "SPY", 7, "Qwen3-8B, Phase 3 inputs with Day-T labels",
+                             model="qwen3-8b"),
+    "qwen_p34_dated_2024": Arm("qwen_p34_dated_2024", "p3_2024_dated", "SPY", 7, "Qwen3-8B, Phase 3 inputs with the dates",
+                               model="qwen3-8b"),
+    "qwen_p34_obf_2020": Arm("qwen_p34_obf_2020", "p4_2020", "SPY", 7, "Qwen3-8B, Phase 4 inputs with Day-T labels",
+                             model="qwen3-8b"),
+    "qwen_p34_dated_2020": Arm("qwen_p34_dated_2020", "p4_2020_dated", "SPY", 7, "Qwen3-8B, Phase 4 inputs with the dates",
+                               model="qwen3-8b"),
 }
 
 
@@ -295,21 +328,67 @@ RESPONSE_FORMAT = "json_schema"  # the one protocol change vs Phase 4A; disclose
 BATCH_COMPLETION_WINDOW = "24h"
 R1_MODEL = "o4-mini-2025-04-16"
 
-# Open-weights model (D-29), run locally with vLLM's offline batch runner on the same request files. The weights are
-# pinned to one Hugging Face revision; vLLM lives in its own conda env (never in AutoGex, which the monitors share).
-OPEN_MODEL = "gpt-oss-20b"  # served model name, stored as runs.model / detections.model
-OPEN_MODEL_REPO = "openai/gpt-oss-20b"  # Apache-2.0, released 2025-08-04
-OPEN_MODEL_REVISION = "6cee5e81ee83917806bbde320786a8fb61efebee"
-LOCAL_MODELS = frozenset({OPEN_MODEL})
+# Open-weights models (D-29, D-30), run locally with vLLM's offline batch runner on the same request files. The weights
+# are pinned to one Hugging Face revision; vLLM lives in its own conda env (never in AutoGex, which the monitors share).
+@dataclass(frozen=True)
+class LocalModel:
+    """An open-weights model answered on this machine (04_llm_runner.py 'local'); its arms are the gpt-6-luna arm of
+    the same name with ``arm_prefix``."""
+
+    name: str  # served model name, stored as runs.model / detections.model
+    repo: str  # Hugging Face repository
+    revision: str  # pinned commit of the repository
+    license: str
+    arm_prefix: str
+    gpu_memory_utilization: float  # share of one 80 GB A100 the engine may take (the GPUs are shared with other users)
+    engine_args: Tuple[str, ...] = ()  # further vLLM engine arguments, recorded with every local run
+    engine_env: Dict[str, str] = field(default_factory=dict)
+    reasoning: bool = True  # False: no reasoning mode, so the request body carries no reasoning_effort
+
+
+# FlashInfer's top-k/top-p sampler compiles a kernel at start-up (it needs ninja and nvcc); the PyTorch sampler needs
+# no compiler and samples the same distribution
+_PYTORCH_SAMPLER = {"VLLM_USE_FLASHINFER_SAMPLER": "0"}
+LOCAL_SPECS: Dict[str, LocalModel] = {
+    # 13.8 GiB weights (MXFP4, the release format) + about 5 GiB KV cache at 0.22 (152k tokens, 18 concurrent requests
+    # at 8,192 tokens; smoke test 2026-11-07). No top-k or top-p is set: temperature sampling at the default 1.0.
+    "gpt-oss-20b": LocalModel("gpt-oss-20b", "openai/gpt-oss-20b", "6cee5e81ee83917806bbde320786a8fb61efebee",
+                              "Apache-2.0", "oss_", 0.22, (), _PYTORCH_SAMPLER),
+    # 15.0 GiB weights (bf16, the release format) + about 1.5 GiB KV cache at 0.22 (128 KiB per token: about 12k tokens,
+    # enough for answers of about 200 tokens). The pilot ran at 0.27; the arms use 0.22 because the shared GPUs rarely
+    # had the 26 GB that 0.27 needs (2026-11-08). Sampling follows generation_config.json (temperature 0.6, top-p 0.9).
+    # No reasoning mode.
+    "llama-3.1-8b-instruct": LocalModel("llama-3.1-8b-instruct", "meta-llama/Llama-3.1-8B-Instruct",
+                                        "0e9e39f249a16976918f6564b8830bc894c89659", "Llama 3.1 Community License",
+                                        "llama_", 0.22, (), _PYTORCH_SAMPLER, reasoning=False),
+    # 15.3 GiB weights (bf16, the release format) + about 4.5 GiB KV cache at 0.27 (144 KiB per token: about 33k tokens,
+    # room for long reasoning). Thinking mode (the chat template's default); vLLM separates the reasoning with its qwen3
+    # parser and applies the JSON schema after it. Sampling follows generation_config.json (temperature 0.6, top-p 0.95,
+    # top-k 20). reasoning_effort is sent as for gpt-oss-20b; the Qwen3 chat template does not use it.
+    "qwen3-8b": LocalModel("qwen3-8b", "Qwen/Qwen3-8B", "b968826d9c46dd6066d109eabc6255188de91218", "Apache-2.0",
+                           "qwen_", 0.27, ("--reasoning-parser", "qwen3"), _PYTORCH_SAMPLER),
+}
+LOCAL_MODELS = frozenset(LOCAL_SPECS)
+OPEN_MODEL = "gpt-oss-20b"  # the first open-weights model (D-29)
+OPEN_MODEL_REPO = LOCAL_SPECS[OPEN_MODEL].repo
+OPEN_MODEL_REVISION = LOCAL_SPECS[OPEN_MODEL].revision
 VLLM_VERSION = "0.32.0"
 OPENWEIGHTS_PYTHON = Path.home() / "miniconda3" / "envs" / "openweights" / "bin" / "python"
 LOCAL_MAX_MODEL_LEN = 8192  # prompt about 1,900 tokens + MAX_COMPLETION_TOKENS (RETRY cap needs a larger value)
-LOCAL_GPU_MEMORY_UTILIZATION = 0.22  # share of one 80 GB A100: 13.8 GiB weights + about 5 GiB KV cache (152k tokens,
-# 18 concurrent requests at 8,192 tokens; smoke test 2026-11-07); the GPUs are shared with other users
-LOCAL_ENGINE_ARGS: Tuple[str, ...] = ()  # further vLLM engine arguments, recorded with every local run
-# FlashInfer's top-k/top-p sampler compiles a kernel at start-up; the PyTorch sampler needs no compiler (no top-k or
-# top-p is set, so sampling is plain temperature sampling at the model's default temperature 1.0 either way)
-LOCAL_ENGINE_ENV: Dict[str, str] = {"VLLM_USE_FLASHINFER_SAMPLER": "0"}
+
+
+def local_spec(model: str) -> LocalModel:
+    """The open-weights spec of ``model``; refuses a model that does not run locally."""
+    try:
+        return LOCAL_SPECS[model]
+    except KeyError:
+        raise ValueError(f"{model!r} is not an open-weights model (known: {sorted(LOCAL_SPECS)})") from None
+
+
+def model_reasoning_effort(model: str) -> Optional[str]:
+    """reasoning_effort sent for ``model``: REASONING_EFFORT, or None for a local model without a reasoning mode."""
+    spec = LOCAL_SPECS.get(model)
+    return None if spec is not None and not spec.reasoning else REASONING_EFFORT
 
 # USD per 1M tokens: (input, output). Batch is 50% of standard.
 PRICING_USD_PER_MTOK: Dict[str, Dict[str, Tuple[float, float]]] = {
@@ -317,6 +396,8 @@ PRICING_USD_PER_MTOK: Dict[str, Dict[str, Tuple[float, float]]] = {
     "o4-mini": {"standard": (1.10, 4.40), "batch": (0.55, 2.20)},
     "o4-mini-2025-04-16": {"standard": (1.10, 4.40), "batch": (0.55, 2.20)},
     "gpt-oss-20b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},  # local GPU, no API charge
+    "llama-3.1-8b-instruct": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
+    "qwen3-8b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
 }
 
 REGIME_TYPES = ("persistent_positive", "persistent_negative", "transitional", "low_conviction")
@@ -580,15 +661,16 @@ def metrics_agree(llm: Dict[str, Any], clf: Dict[str, Any]) -> bool:
 T_RATES_VIEW = "backups.gex_llm_regime_rates_summary"
 
 
-def chat_body(prompt: str, model: str = MODEL, reasoning_effort: str = REASONING_EFFORT,
+def chat_body(prompt: str, model: str = MODEL, reasoning_effort: Optional[str] = REASONING_EFFORT,
               max_completion_tokens: int = MAX_COMPLETION_TOKENS, response_format: str = RESPONSE_FORMAT) -> Dict[str, Any]:
-    """Request body shared by the Batch JSONL and the synchronous pilot."""
+    """Request body shared by the Batch JSONL and the synchronous pilot.  A local model without a reasoning mode
+    (LocalModel.reasoning False) gets no reasoning_effort; every other body is unchanged."""
     body: Dict[str, Any] = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "max_completion_tokens": max_completion_tokens,
     }
-    if reasoning_effort:
+    if reasoning_effort and model_reasoning_effort(model):
         body["reasoning_effort"] = reasoning_effort
     if response_format == "json_schema":
         body["response_format"] = {"type": "json_schema", "json_schema": REGIME_JSON_SCHEMA}

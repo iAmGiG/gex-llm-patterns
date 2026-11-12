@@ -51,7 +51,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
 | 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
 | 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
-| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the 1,049 answers the 2026-11-03 re-run replaced, README, checksums; repository-relative paths; refused on any local path or credential; not tracked by git) |
+| 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the answers that a later answer replaced (11,085 on 2026-11-10: 1,049 by the 2026-11-03 re-run, 14 gpt-oss-20b and 10,022 Qwen3-8B answers by the retry at 8,000 tokens), README, checksums; repository-relative paths; refused on any local path or credential; not tracked by git) |
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
@@ -174,7 +174,7 @@ Row counts are as built on 2026-10-29.
   `regime_detected` (model) and `clf_should_detect` (rule) are the primary labels, the four-way `regime_type` is
   secondary.
 
-### 3.3 Arms (`common.ARMS`: 25 keys, 22 of them call a model; the seven `oss_*` arms of D-29 are in Step 4b)
+### 3.3 Arms (`common.ARMS`: 39 keys, 36 of them call a model; the seven `oss_*` arms of D-29, the seven `llama_*` arms of D-30 and the seven `qwen_*` arms of D-32 are in Step 4b)
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
 answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
@@ -446,7 +446,7 @@ spend (section 3.4).
 `04_llm_runner.py` has ten subcommands. Run `python $E/04_llm_runner.py <command> --help` for the options. Every
 command takes the storage flags `--parquet-only` (never connect to Postgres), `--rollback` (section 5.4),
 `--backup-root DIR` (run directories and parquet copies, and the windows, live under that folder: use it to rehearse
-without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 22 with `llm = True` (15 for gpt-6-luna, 7 for the open-weights model, Step 4b).
+without touching the shared tree) and `--ignore-busy-window`. The arms it accepts are the 36 with `llm = True` (15 for gpt-6-luna, 7 for each of the three open-weights models, Step 4b).
 
 | Command | Does | Cost |
 |---------|------|------|
@@ -593,11 +593,15 @@ each chunk also goes to `tables/runs/<run_id>_c<k>.parquet` and its detections t
 `tables/detections/<run_id>_c<k>.parquet`. Run status moves `generated`, `submitted`, `in_progress`, then
 `completed`, `failed`, `expired` or `cancelled`, then `ingested`.
 
-### Step 4b. Open-weights arms (D-29, local GPU)
+### Step 4b. Open-weights arms (D-29, D-30, D-32, local GPU)
 
 The seven `oss_*` arms send the gpt-6-luna request body unchanged, except the model name, to `gpt-oss-20b`
-(`openai/gpt-oss-20b`, Apache-2.0, revision `common.OPEN_MODEL_REVISION`), answered on this machine by vLLM's offline
-batch runner. Their runs have mode `local`, cost nothing and never count toward the budget; `submit`, `poll`,
+(`openai/gpt-oss-20b`, Apache-2.0), and the seven `llama_*` arms send it to `llama-3.1-8b-instruct`
+(`meta-llama/Llama-3.1-8B-Instruct`, Llama 3.1 Community License) without `reasoning_effort`, since Llama 3.1 has no
+reasoning mode (`common.model_reasoning_effort`), and the seven `qwen_*` arms send it to `qwen3-8b` (`Qwen/Qwen3-8B`,
+Apache-2.0) in thinking mode, with vLLM's `qwen3` reasoning parser so that the JSON schema applies after the reasoning.
+All three are answered on this machine by vLLM's offline batch runner at the
+revision pinned in `common.LOCAL_SPECS`, which also holds each model's arm prefix, GPU share and engine settings. Their runs have mode `local`, cost nothing and never count toward the budget; `submit`, `poll`,
 `retrieve` and `requeue` refuse or skip them, and `ingest` reads their output like a downloaded batch.
 
 One-time setup (a separate env: never install into AutoGex, which the production monitors share), then the weights of
@@ -611,11 +615,23 @@ PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/pip install "vllm==0.32.0"
 PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface_hub import snapshot_download; \
   print(snapshot_download('openai/gpt-oss-20b', revision='6cee5e81ee83917806bbde320786a8fb61efebee', \
   allow_patterns=['*.json', '*.jinja', 'model-*.safetensors', 'LICENSE', 'USAGE_POLICY']))"
+# Llama is gated: accept Meta's licence on the model page with the account of the Hugging Face token first
+PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface_hub import snapshot_download; \
+  print(snapshot_download('meta-llama/Llama-3.1-8B-Instruct', revision='0e9e39f249a16976918f6564b8830bc894c89659', \
+  allow_patterns=['config.json', 'generation_config.json', 'model.safetensors.index.json', 'special_tokens_map.json', \
+  'tokenizer.json', 'tokenizer_config.json', 'model-*.safetensors', 'LICENSE', 'USE_POLICY.md']))"
+PYTHONNOUSERSITE=1 ~/miniconda3/envs/openweights/bin/python -c "from huggingface_hub import snapshot_download; \
+  print(snapshot_download('Qwen/Qwen3-8B', revision='b968826d9c46dd6066d109eabc6255188de91218', \
+  allow_patterns=['config.json', 'generation_config.json', 'merges.txt', 'model-*.safetensors', \
+  'model.safetensors.index.json', 'tokenizer.json', 'tokenizer_config.json', 'vocab.json', 'LICENSE']))"
 ```
 
+The package versions of the env as run are in `environment/openweights.lock.txt` (`pip freeze`); `environment/autogex.conda.txt` holds
+`conda list --export` of the shared AutoGex env, which runs every other step.
+
 The GPUs have no scheduler and are shared with other users: `local` takes the GPU with the most free memory (or
-`--gpu N`), lets vLLM use `--gpu-memory-utilization` of it (default `common.LOCAL_GPU_MEMORY_UTILIZATION`, 0.22 of
-80 GB, about 18 GB) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
+`--gpu N`), lets vLLM use `--gpu-memory-utilization` of it (default: the model's own share in `common.LOCAL_SPECS`, 0.22 of
+80 GB for gpt-oss-20b, about 18 GB, 0.22 for Llama 3.1 8B in bf16, about 18 GB (its pilot ran at 0.27), and 0.27 for Qwen3-8B, about 22 GB; a worker may pass a larger share when the GPU has room, as the Qwen workers did up to 0.45) and refuses unless that plus `--margin-mib` (4,096) is free; `--wait-gpu M` checks once a minute
 for up to M minutes instead of refusing. The engine runs at `--max-model-len` 8,192 (a retry run at 8,000 completion
 tokens gets 12,096), seed 261, and `VLLM_USE_FLASHINFER_SAMPLER=0` (the FlashInfer sampler needs a JIT build with
 `ninja`; the PyTorch sampler does not). The engine arguments and environment, the vLLM version, the weights revision,
@@ -833,16 +849,17 @@ psql -h 127.0.0.1 -d gex_options -X -At -c "select relname from pg_class where r
 `docs/009` asks for three copies of everything a project stores: Postgres, parquet and raw files in the project
 repository. The authors' rule (2026-10-30): **nothing raw goes to the remote**. Every JSONL and every full table
 (series, windows, detections with the model's text) stays on this machine's disk and is loaded into the research
-database; git keeps the condensed material only.
+database; git keeps the condensed material only (since 2026-11-09 the run provenance too, as two compressed files
+written by `06_condense.py`, so a run adds no files to git).
 
 | Copy | Location | In git |
 |------|----------|--------|
 | 1. Postgres | `backups.gex_llm_regime_*` after approval (the database repository dumps the whole database weekly) | n/a |
 | 2. Parquet (full tables) | `data/backups/gex_llm/tables/{series,windows,detections}/` | ignored: loaded into Postgres, rebuilt by 01-04 |
-| | `data/backups/gex_llm/tables/runs/` (run provenance: batch ids, file ids, sha256, tokens, cost) | tracked |
+| | `data/backups/gex_llm/tables/runs/` (run provenance: batch ids, file ids, sha256, tokens, cost) | ignored since 2026-11-09: in git as `condensed/runs.csv.gz` |
 | 3. Raw files | `data/backups/gex_llm/<run_id>/input*.jsonl`, `output*.jsonl`, `errors*.jsonl` | ignored: never on the remote |
-| | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | tracked |
-| Condensed | `data/backups/gex_llm/condensed/detections.csv.gz` (verdicts and metrics, no text), `windows.csv.gz` (labels and input sha256, no sequences), `series_index.csv`; written by `06_condense.py` | tracked |
+| | `data/backups/gex_llm/<run_id>/manifest.json`, `batch_<k>.json` | ignored since 2026-11-09: in git as `condensed/run_records.jsonl.gz` |
+| Condensed | `data/backups/gex_llm/condensed/detections.csv.gz` (verdicts and metrics, no text), `windows.csv.gz` (labels and input sha256, no sequences), `series_index.csv`, `runs.csv.gz` (one row per run), `run_records.jsonl.gz` (every manifest and batch record); written by `06_condense.py` | tracked |
 | Results | `docs/papers/electronics/results/`, `docs/papers/electronics/figures/output/` | tracked |
 | Inputs with one copy | `reports/validation/paper2_regime_windows/batch_jobs/` (January and November batch files and their `batch_*_metadata.json`), `.cache/research_cache.db`, `config/` | ignored |
 | Published result records | `reports/validation/paper2_regime_windows/phase3_baseline_2024_full_year.yaml`, `phase4_baseline_2020.yaml` | tracked |
@@ -858,15 +875,15 @@ data/backups/gex_llm/
 |-- tables/
 |   |-- series/        <series>_<symbol>.parquet                  (copy 2, ignored)
 |   |-- windows/       <series>_<symbol>.parquet                  (copy 2, ignored)
-|   |-- runs/          r1_o4mini.parquet, r1_p3_o4mini.parquet, r1_p4_o4mini.parquet, <run_id>_c<k>.parquet   (copy 2, tracked)
+|   |-- runs/          r1_o4mini.parquet, r1_p3_o4mini.parquet, r1_p4_o4mini.parquet, <run_id>_c<k>.parquet   (copy 2, ignored)
 |   `-- detections/    the same names                                                                          (copy 2, ignored)
-|-- condensed/         detections.csv.gz, windows.csv.gz, series_index.csv                                      (tracked)
+|-- condensed/         detections.csv.gz, windows.csv.gz, series_index.csv, runs.csv.gz, run_records.jsonl.gz  (tracked)
 |-- r1_o4mini_phase4a_20260104/   r1_p3_o4mini_20251120/   r1_p4_o4mini_20251120/
-|                      input.jsonl, output.jsonl (ignored), manifest.json (tracked)
+|                      input.jsonl, output.jsonl, manifest.json (ignored)
 `-- <arm>_gpt-6-luna_batch_<UTC stamp>/
     |-- input_<k>.jsonl, output_<k>.jsonl, errors_<k>.jsonl      (copy 3, ignored)
-    |-- batch_<k>.json                                           (copy 3, tracked)
-    `-- manifest.json                                            (copy 3, tracked)
+    |-- batch_<k>.json                                           (copy 3, ignored)
+    `-- manifest.json                                            (copy 3, ignored)
 docs/papers/electronics/results/       csv and yaml of 05_report.py, env_check_<stamp>.json
 docs/papers/electronics/figures/output/  png, pdf and a provenance manifest per figure
 ```

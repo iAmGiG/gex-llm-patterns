@@ -158,6 +158,20 @@ ARM_LABELS: Dict[str, str] = {
     "oss_p34_dated_2024": "gpt-oss, 2024 baseline, dated",
     "oss_p34_obf_2020": "gpt-oss, 2020 baseline, Day-T labels",
     "oss_p34_dated_2020": "gpt-oss, 2020 baseline, dated",
+    "llama_bridge_jan": "Llama, published inputs",
+    "llama_full_spy": "Llama, complete, SPY",
+    "llama_ex0dte_spy": "Llama, ex-0DTE, SPY",
+    "llama_p34_obf_2024": "Llama, 2024 baseline, Day-T labels",
+    "llama_p34_dated_2024": "Llama, 2024 baseline, dated",
+    "llama_p34_obf_2020": "Llama, 2020 baseline, Day-T labels",
+    "llama_p34_dated_2020": "Llama, 2020 baseline, dated",
+    "qwen_bridge_jan": "Qwen3, published inputs",
+    "qwen_full_spy": "Qwen3, complete, SPY",
+    "qwen_ex0dte_spy": "Qwen3, ex-0DTE, SPY",
+    "qwen_p34_obf_2024": "Qwen3, 2024 baseline, Day-T labels",
+    "qwen_p34_dated_2024": "Qwen3, 2024 baseline, dated",
+    "qwen_p34_obf_2020": "Qwen3, 2020 baseline, Day-T labels",
+    "qwen_p34_dated_2020": "Qwen3, 2020 baseline, dated",
 }
 
 SEQUENTIAL_BLUE = ["#F3F7FC", "#CDE2FB", "#86B6EF", "#3987E5", "#1C5CAB", "#0D366B"]  # one hue, light to dark
@@ -380,7 +394,7 @@ PARTIAL_YEAR_NOTE = f"* {PARTIAL_YEAR}: windows ending up to {common.WINDOW_END_
 # Hyphens that are part of a name rather than a minus sign or a range.  "Day T-29" is deliberately not listed: that
 # hyphen is a minus and is typed with um().  A listed name is replaced by a letter before the text is searched, so the
 # characters around it keep their context ("o4-mini-2025-04-16" -> "X-2025-04-16", an ISO date after a name).
-_HYPHEN_WHITELIST = ("gpt-6", "o4-mini", "ex-0DTE", "non-")
+_HYPHEN_WHITELIST = ("gpt-6", "o4-mini", "llama-3.1-8b-instruct", "qwen3-8b", "ex-0DTE", "non-")
 _NAME_PLACEHOLDER = "X"
 _ASCII_MINUS = re.compile(r"(?<![\d\w])-\d|(?<=\bT)-\d")  # -5, (-5), T-29 (a hyphen where U+2212 belongs)
 _YEAR_RANGE = re.compile(r"\b(?:19|20)\d\d-(?:19|20)\d\d\b")  # 2008-2019

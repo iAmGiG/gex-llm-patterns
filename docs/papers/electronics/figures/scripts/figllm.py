@@ -165,13 +165,14 @@ def load_answer_pairs(inputs: figdata.Inputs, arms: Sequence[str]) -> Tuple[pd.D
 
 
 def model_group(model: str) -> Optional[str]:
-    """'o4-mini' for the published model, 'luna' for gpt-6-luna, 'gpt-oss' for the open-weights model, None otherwise."""
+    """'o4-mini' for the published model, 'luna' for gpt-6-luna, 'gpt-oss', 'llama' or 'qwen' for an open-weights model,
+    None otherwise."""
     if str(model).startswith("o4-mini"):
         return "o4-mini"
     if str(model).startswith(common.MODEL):
         return "luna"
     if str(model) in common.LOCAL_MODELS:
-        return "gpt-oss"
+        return next((name for name in ("llama", "qwen") if str(model).startswith(name)), "gpt-oss")
     return None
 
 
