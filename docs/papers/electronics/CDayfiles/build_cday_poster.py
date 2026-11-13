@@ -6,7 +6,7 @@ finished poster, so it stays out of the repository: .gitignore lists it; put the
 section cards, a results band with four stat callouts, three figures and three native bar charts. This script
 keeps every shape, colour and position of the template and replaces only the content: text (run formatting is
 copied from the template paragraph named for each new paragraph), the data of the four native charts, the
-table, the five pictures and the QR code.
+table, the five pictures and the QR codes (Data Atlas and repository).
 
 Every number comes from docs/papers/electronics/results/ (stats.yaml, bridge_agreement.csv,
 post_publication_2026_summary.csv) or from the manuscript text that cites it (04_02, 04_05 to 04_08, 04_11,
@@ -41,7 +41,8 @@ from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.opc.constants import RELATIONSHIP_TYPE as RT
 from pptx.oxml.ns import qn
-from pptx.util import Emu, Inches
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Emu, Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 PAPER = HERE.parent
@@ -49,12 +50,17 @@ TEMPLATE = HERE / "ThresholdGatedRL_Poster 2.pptx"
 OUTPUT = HERE / "Regan_Xie_CDay_Poster.pptx"
 FIGURES = PAPER / "figures" / "output"
 REPO_URL = "https://github.com/iAmGiG/gex-llm-patterns"
+# the GEX database's Data Atlas (a claude.ai artifact shared with anyone who has the link), shown at C-Day as the visual
+ATLAS_URL = "https://claude.ai/artifact/PMdu5wvbotNM2okt73hL9o"
 
 GOLD, BLACK, GREY_D, GREY_M, GREY_L, RED = "FFC629", "141414", "5A5A5A", "8C8C8C", "C8C8C8", "C2412D"
 
 # --------------------------------------------------------------------------------------------------------------
 # Content.  A paragraph is (template paragraph index, text) or (index, text, options); **...** marks bold runs.
 # --------------------------------------------------------------------------------------------------------------
+# C-Day project ID (acceptance notice, 2026-11-13), in the template's "XX-000" box at the top left. The template's
+# 120 pt would wrap the longer ID inside that box, so it is set smaller.
+POSTER_ID, POSTER_ID_SZ = "1339-GRP", 8800
 TITLE = [(0, "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation:"),
          (1, "A Re-Run on Complete Inputs with a Controlled LLM Re-Test")]
 AUTHORS = [(0, "Christopher Regan  ·  Ying Xie"),
@@ -172,7 +178,7 @@ ACK = [(0, "KSU CCSE for computing resources; Alpha Vantage for options data.")]
 CONTACT = [(0, "**Christopher Regan**  cregan1@students.kennesaw.edu"),
            (1, "**Ying Xie**  yxie2@kennesaw.edu"),
            (2, "Code: github.com/iAmGiG/gex-llm-patterns"),
-           (3, "Repository: scan the QR code")]
+           (3, "Scan: the database’s Data Atlas (left), the code (right)")]
 REFS_SZ = {"sz": 1600}  # 17 pt in the template; three two-line references need 16 pt to fit the box
 REFERENCES = [(0, "1. Regan C., Xie Y. Validating LLM structural reasoning: detecting persistent market regimes through "
                   "temporal obfuscation. AIAI 2026, IFIP AICT, 127–140.", REFS_SZ),
@@ -333,6 +339,19 @@ def nudge(slide, ids, dy: float = 0.0, dh: float = 0.0) -> None:
         sh.height = Emu(sh.height + Inches(dh))
 
 
+def add_caption(slide, text: str, box) -> None:
+    """A one-line centred label under a QR code (x, y, w, h in inches)."""
+    tb = slide.shapes.add_textbox(*(Inches(v) for v in box))
+    tb.name = f"QR caption {text}"
+    tf = tb.text_frame
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    para = tf.paragraphs[0]
+    para.alignment = PP_ALIGN.CENTER
+    run = para.add_run()
+    run.text = text
+    run.font.name, run.font.size, run.font.bold = "Arial", Pt(16), True
+
+
 def qr_png(url: str, path: Path) -> Path:
     img = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=20, border=1)
     img.add_data(url)
@@ -348,6 +367,8 @@ def main() -> int:
     S = lambda i: shape(slide, i)  # noqa: E731
 
     # header
+    set_text(S(13), POSTER_ID)
+    S(13).text_frame._txBody.find(".//" + qn("a:rPr")).set("sz", str(POSTER_ID_SZ))
     set_paragraphs(S(14), TITLE)
     set_paragraphs(S(15), AUTHORS)
 
@@ -402,15 +423,28 @@ def main() -> int:
     set_paragraphs(S(141), ACK)
     set_paragraphs(S(148), CONTACT)
     set_paragraphs(S(154), REFERENCES)
+    # Contact card: two QR codes side by side with a caption each (Data Atlas, code); the text box gives up the width
+    qr, gap, right = 1.6, 0.3, 46.55                       # inches; right edge of the template's QR
+    top = S(147).top / 914400
+    repo_x, atlas_x = right - qr, right - 2 * qr - gap
+    S(148).width = Inches(atlas_x - 0.2 - S(148).left / 914400)
     with tempfile.TemporaryDirectory() as tmp:
-        replace_picture(slide, S(147), qr_png(REPO_URL, Path(tmp) / "qr.png"), f"QR code: {REPO_URL}")
+        replace_picture(slide, S(147), qr_png(REPO_URL, Path(tmp) / "qr.png"), f"QR code: {REPO_URL}",
+                        box=(repo_x, top, qr, qr))
+        atlas = slide.shapes.add_picture(str(qr_png(ATLAS_URL, Path(tmp) / "qr_atlas.png")),
+                                         Inches(atlas_x), Inches(top), Inches(qr), Inches(qr))
+    atlas.name = "Picture QR Atlas"
+    atlas._element.nvPicPr.cNvPr.set("descr", f"QR code: {ATLAS_URL}")
+    add_caption(slide, "Data Atlas", (atlas_x, top + qr + 0.04, qr, 0.32))
+    add_caption(slide, "Code", (repo_x, top + qr + 0.04, qr, 0.32))
     # the Conclusions card has room to spare and the References card has none: shorten the one, lift the three cards
     # below it and give References the difference
     lift = 0.35
     nudge(slide, (128, 129), dh=-lift)                                     # Conclusions card (shadow, body)
     nudge(slide, (134, 135), dy=-lift)                                     # take-home box and text
     nudge(slide, (136, 137, 138, 139, 140, 141), dy=-lift)                 # Acknowledgments
-    nudge(slide, (142, 143, 144, 145, 146, 148, "Picture 146"), dy=-lift)  # Contact Information and QR code
+    nudge(slide, (142, 143, 144, 145, 146, 148, "Picture 146", "Picture QR Atlas", "QR caption Data Atlas",
+                  "QR caption Code"), dy=-lift)                    # Contact Information, QR codes and captions
     nudge(slide, (151, 152, 153), dy=-lift)                                # References header, rule, title
     nudge(slide, (149, 150, 154), dy=-lift, dh=lift)                       # References card and text
     prs.core_properties.title = "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation (C-Day poster)"
