@@ -232,7 +232,7 @@ ledger.
    open questions of the decisions log first (spend, agreement gate, primary analyses).
 2. `run_all.py` for the figures, then fill every `\tbd{}` and `% TODO(...)` of the sections from `results/`; write the
    abstract and choose the title.
-3. Publish the data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL). The vendor's terms allow the deposit: Chris confirmed on 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data (D-31). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), then add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The database tables are the authoritative copy (Section 3.7).
+3. Publish the data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL), and `08_package_release.py --check <zip>` confirms that the zip alone regenerates `results/`. The vendor's terms allow the deposit: Chris confirmed on 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data (D-31). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), then add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The database tables are the authoritative copy (Section 3.7).
 4. `build.sh --strict` must end with `STRICT: ok`, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
 
 ## Keeping Appendix A and Supplement S1 in step with the code

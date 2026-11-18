@@ -2,7 +2,8 @@
 """Package the four full result tables for the Zenodo deposit (gex-llm-patterns #261).
 
 Writes data/backups/gex_llm/release/regan_xie_electronics_tables_<date>.zip with one parquet file per table
-(gex_llm_regime_series, _windows, _runs and _detections, one row per natural key), a second detections file with the
+(gex_llm_regime_series, _windows, _runs and _detections, one row per natural key) in the folder layout that
+05_report.py reads (series/, windows/, runs/, detections/), a second detections file with the
 answers that a later answer replaced, a README describing them, and SHA-256 checksums. The detections file holds
 exactly the answers the article counts (the latest per natural key, the rule of common.latest_answers that
 05_report.py, 06_condense.py and 07_load_tables.py use); `detections_replaced.parquet` keeps the 1,049 answers that
@@ -13,8 +14,12 @@ The zip stays out of git (nothing raw goes to the GitHub remote); an author publ
 
 Local paths are made relative to the repository. The package is refused if any text cell still holds an absolute
 local path, looks like a credential (OpenAI keys, bearer tokens, "key/secret/token/password = value" pairs) or
-contains one of the secret values of config/config.json. Run after the last ingest:
+contains one of the secret values of config/config.json. Booleans, dates and numbers keep their types (only text
+cells are rewritten). Run after the last ingest:
     python scripts/validation/electronics/08_package_release.py
+    python scripts/validation/electronics/08_package_release.py --check <zip>   # regenerate results/ from the zip
+--check unzips into a temporary folder, runs 05_report.py --source parquet on it and compares every result file with
+docs/papers/electronics/results/ (report.yaml is compared without its provenance block, which names local files).
 """
 from __future__ import annotations
 
@@ -23,7 +28,9 @@ import hashlib
 import io
 import json
 import re
+import subprocess
 import sys
+import tempfile
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -71,14 +78,17 @@ Code, condensed tables and result files: https://github.com/iAmGiG/gex-llm-patte
 
 {table}
 
+The four tables sit in the folder layout that the repository's `05_report.py` reads, so the article's result files
+can be regenerated from this deposit alone (see "Regenerate the results" below).
+
 `SHA256SUMS` holds the checksum of every file.
 
-- `series.parquet`: one row per series, symbol and trading day: the daily GEX number shown to the model.
-- `windows.parquet`: one row per series, symbol and window end: the 30 values as shown to the model, their sha256
+- `series/series.parquet`: one row per series, symbol and trading day: the daily GEX number shown to the model.
+- `windows/windows.parquet`: one row per series, symbol and window end: the 30 values as shown to the model, their sha256
   and the verdict of the deterministic rule (`clf_*`).
-- `runs.parquet`: one row per Batch job, local run, pilot or backfilled run: identifiers, file hashes, token counts and
+- `runs/runs.parquet`: one row per Batch job, local run, pilot or backfilled run: identifiers, file hashes, token counts and
   cost (a local run also records its engine, weights revision and GPU in `run_metadata.local`).
-- `detections.parquet`: one row per natural key (`arm`, `series_key`, `symbol`, `window_end`, `model`,
+- `detections/detections.parquet`: one row per natural key (`arm`, `series_key`, `symbol`, `window_end`, `model`,
   `prompt_version`): the answer the article counts. Verdict, reported metrics, reasoning, raw response, parse status.
   An answer that replaced an earlier one names it in `detection_metadata.supersedes`.
 - `detections_replaced.parquet`: the answers that a later answer to the same key replaced ({n_replaced:,} rows:
@@ -96,6 +106,17 @@ open-weights model gpt-oss-20b, arms that begin with `llama_` those of Llama 3.1
 `qwen_` those of Qwen3-8B, all run locally with vLLM at a pinned revision; the rest of their name is the gpt-6-luna arm that answered the same windows. The series keys and arms are defined in Tables 1 and 3
 of the article, and the column definitions are in `scripts/validation/electronics/sql/gex_llm_regime_schema.sql`
 of the repository. Paths in `runs` are relative to the repository root.
+
+## Regenerate the results
+
+With a clone of the repository (Python 3.10 or later, pandas, pyarrow, scipy, PyYAML) and this zip unzipped into
+`deposit/`:
+
+    python scripts/validation/electronics/05_report.py --source parquet --parquet-root deposit --results-dir out
+
+Every file in `out/` then equals the one in `docs/papers/electronics/results/` of the repository, except the
+provenance block of `report.yaml` (date, commit, local file list and the fingerprint of the author-side files the
+tables were read from). `detections_replaced.parquet` stays outside the four folders: the report does not read it.
 
 ## What is not here
 
@@ -127,12 +148,26 @@ def text_columns(frame: pd.DataFrame) -> List[str]:
 
 
 def relativize(frame: pd.DataFrame) -> pd.DataFrame:
-    """Local absolute paths under the repository (any mount) become repository-relative, in plain and JSON text."""
+    """Local absolute paths under the repository (any mount) become repository-relative, in plain and JSON text.
+
+    Only str cells are rewritten. An object column can also hold booleans with gaps (regime_detected, metrics_agree
+    once the per-run files are concatenated) or dates; casting those to str stored 'True'/'False' and '2024-01-02'
+    as text in the deposits up to 20261110, which 05_report.py could not read."""
     out = frame.copy()
     for col in text_columns(out):
-        mask = out[col].notna()
-        out.loc[mask, col] = out.loc[mask, col].astype(str).str.replace(REPO_PREFIX, "", regex=True)
+        mask = out[col].map(lambda v: isinstance(v, str)).astype(bool)
+        if mask.any():
+            out.loc[mask, col] = out.loc[mask, col].str.replace(REPO_PREFIX, "", regex=True)
     return out
+
+
+def check_types(name: str, before: pd.DataFrame, after: pd.DataFrame) -> None:
+    """Refuse the package if relativize changed the type of any non-text cell (booleans and dates stay typed)."""
+    for col in before.columns:
+        kinds_before = before[col].map(lambda v: type(v).__name__).value_counts().to_dict()
+        kinds_after = after[col].map(lambda v: type(v).__name__).value_counts().to_dict()
+        if kinds_before != kinds_after:
+            raise SystemExit(f"{name}: column {col} changed type ({kinds_before} -> {kinds_after}); not packaged")
 
 
 def config_secrets() -> List[str]:
@@ -201,10 +236,76 @@ def parquet_bytes(frame: pd.DataFrame, order: List[str]) -> bytes:
     return buffer.getvalue()
 
 
+MEMBER = {"series": "series/series.parquet", "windows": "windows/windows.parquet", "runs": "runs/runs.parquet",
+          "detections": "detections/detections.parquet", "detections_replaced": "detections_replaced.parquet"}
+
+
+PROVENANCE = {"generated_at", "git_sha", "results_dir", "source", "inputs_fingerprint", "parquet_root"}
+
+
+def strip_provenance(node):
+    """report.yaml without the keys that name the run rather than the results (date, commit, local files)."""
+    if isinstance(node, dict):
+        return {k: strip_provenance(v) for k, v in node.items() if k not in PROVENANCE}
+    if isinstance(node, list):
+        return [strip_provenance(v) for v in node]
+    return node
+
+
+def differences(a, b, where: str = "") -> List[str]:
+    """Paths at which two parsed YAML documents differ (at most 20)."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        out: List[str] = []
+        for k in sorted(set(a) | set(b), key=str):
+            out += differences(a.get(k), b.get(k), f"{where}/{k}") if k in a and k in b else [f"{where}/{k}"]
+        return out[:20]
+    if isinstance(a, list) and isinstance(b, list) and len(a) == len(b):
+        out = []
+        for i, (x, y) in enumerate(zip(a, b)):
+            out += differences(x, y, f"{where}[{i}]")
+        return out[:20]
+    return [] if a == b else [where or "/"]
+
+
+def check_zip(target: Path) -> int:
+    """Unzip into a temporary folder, run 05_report.py on it and compare the result files with results/."""
+    import yaml
+    with tempfile.TemporaryDirectory() as tmp:
+        root, out = Path(tmp) / "deposit", Path(tmp) / "out"
+        with zipfile.ZipFile(target) as z:
+            z.extractall(root)
+        done = subprocess.run([sys.executable, str(HERE / "05_report.py"), "--source", "parquet", "--parquet-root",
+                               str(root), "--results-dir", str(out)], capture_output=True, text=True)
+        if done.returncode != 0:
+            print(done.stdout[-2000:], done.stderr[-2000:], sep="\n")
+            print(f"CHECK FAILED: 05_report.py exited with {done.returncode} on {target.name}")
+            return 1
+        bad = []
+        for ref in sorted(common.RESULTS_DIR.iterdir()):
+            new = out / ref.name
+            if not ref.is_file():
+                continue
+            if not new.exists():
+                bad.append(f"{ref.name}: not produced")
+            elif ref.name == "report.yaml":
+                a, b = (strip_provenance(yaml.safe_load(p.read_text())) for p in (ref, new))
+                bad.extend(f"report.yaml: {where} differs" for where in differences(a, b))
+            elif ref.read_bytes() != new.read_bytes():
+                bad.append(f"{ref.name}: differs")
+        for line in bad:
+            print("  " + line)
+        print(f"CHECK {'FAILED' if bad else 'ok'}: {target.name} regenerates {'not all of' if bad else 'all of'} "
+              f"{common.RESULTS_DIR}")
+        return 1 if bad else 0
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, default=common.PARQUET_ROOT.parent / "release", help="output folder")
+    parser.add_argument("--check", type=Path, metavar="ZIP", help="only check that ZIP regenerates results/")
     args = parser.parse_args(argv)
+    if args.check:
+        return check_zip(args.check)
     args.out.mkdir(parents=True, exist_ok=True)
     secrets = config_secrets()
     tables: Dict[str, pd.DataFrame] = {kind: load(kind) for kind in KINDS}
@@ -218,11 +319,12 @@ def main(argv=None) -> int:
     files: List[Tuple[str, bytes]] = []
     listing = []
     for name, frame in tables.items():
-        frame = relativize(frame)
-        check_clean(name, frame, secrets)
-        data = parquet_bytes(frame, SORT.get(name, SORT["detections"]))
-        files.append((f"{name}.parquet", data))
-        listing.append(f"| `{name}.parquet` | {len(frame):,} | {len(data) / 1e6:.1f} MB |")
+        clean = relativize(frame)
+        check_types(name, frame, clean)
+        check_clean(name, clean, secrets)
+        data = parquet_bytes(clean, SORT.get(name, SORT["detections"]))
+        files.append((MEMBER[name], data))
+        listing.append(f"| `{MEMBER[name]}` | {len(clean):,} | {len(data) / 1e6:.1f} MB |")
     table = "| File | Rows | Size |\n|---|---|---|\n" + "\n".join(listing)
     replaced = tables["detections_replaced"]
     n_retry = int(replaced["replaced_by_run_id"].isin(retry_runs(tables["runs"])).sum())
@@ -238,6 +340,7 @@ def main(argv=None) -> int:
         z.writestr(zipfile.ZipInfo("SHA256SUMS", ZIP_TIME), "\n".join(sums) + "\n", zipfile.ZIP_DEFLATED)
     print(f"{target} ({target.stat().st_size / 1e6:.1f} MB)")
     print("rows:", {name: f"{len(frame):,}" for name, frame in tables.items()})
+    print(f"check it with: python {Path(__file__).relative_to(common.REPO_ROOT)} --check {target}")
     return 0
 
 
