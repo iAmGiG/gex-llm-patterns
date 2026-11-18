@@ -3,8 +3,8 @@
 Scripts, SQL and conventions behind the extended Paper 2 study for the MDPI *Electronics* Special Issue
 ("Timely AI Advancements and Interdisciplinary Synergies for Intelligent Modeling").
 Tracking issue: [iAmGiG/gex-llm-patterns#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261)
-(context: #260; upstream root cause: gex-database-infrastructure #24). Merged to `main` (PRs #263, #264, #265); new work
-starts on a branch from `origin/main`.
+(context: #260; upstream root cause: gex-database-infrastructure #24). Merged to `main` by pull request (#263 to #265 first,
+the latest is #280 of 2026-11-18); new work starts on a branch from `origin/main`.
 
 ## 1. Purpose and at a glance
 
@@ -25,21 +25,25 @@ been filed and the paper does not present itself as a correction), and this fold
    series (the `*_scaled` arms); and
 5. stores every input, label and answer, so that each number in the manuscript can be regenerated from stored tables.
 
-Written against the scripts and the contract on 2026-10-29 and brought up to date on 2026-10-31 (HEAD `9088874` plus the working tree).
-The `--help` of each script is authoritative for flags. Read
+Written against the scripts and the contract on 2026-10-29. The state notes were refreshed on 2026-11-18 (`main` at `b148094`), and
+the statements that the audit of 2026-11-12 to 2026-11-18 found stale or contradictory were corrected then; the arm tables of
+section 3.3 are still the projections of 2026-10-29. The `--help` of each script is authoritative for flags. Read
 [00_design.md](../../../docs/papers/electronics/planning/00_design.md) for the reasoning,
 [02_decisions_log.md](../../../docs/papers/electronics/planning/02_decisions_log.md) for decisions (D-nn) and open
 questions (Q-nn), and this file for how to run things. `common.py` and `sql/gex_llm_regime_schema.sql` are the contract
 between the scripts: every table, DataFrame and parquet file uses the column names of that SQL file.
 
-> **State on 2026-10-31** (re-check with `00_env_check.py --require-tables` and `04_llm_runner.py status` instead of
+> **State on 2026-11-18** (re-check with `00_env_check.py --require-tables` and `04_llm_runner.py status` instead of
 > trusting this paragraph): the tables `backups.gex_llm_regime_*` exist (documentation PR #165 of the database
 > repository merged and the schema applied by its maintainer on 2026-10-30 20:32 UTC) and hold the parquet copies
-> (`07_load_tables.py`, 21:02 UTC: 38,936 series rows, 38,501 windows, 38 runs, 31,523 detections). All 18 arms were
-> submitted (34 Batch chunks, 34,672 requests); 33 chunks are stored and the last QQQ ex-0DTE chunk is finishing.
-> Re-run `07_load_tables.py` after every ingest, outside 21:50 to 22:57 UTC and outside market hours (weekdays
-> 13:25 to 20:20 UTC; 14:25 to 21:20 UTC from 2026-11-02), the maintainer's windows. The bridge gate is passed
-> (agreement 99.6 %, kappa 0.99 against the published o4-mini labels).
+> (`07_load_tables.py`; last load 2026-11-10 02:44 UTC: 39,027 series rows, 38,592 windows, 179 runs, 73,846 answers, the
+> latest per window). All 18 Batch-era arms are stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers, no API call (35,833 gpt-6-luna requests, $10.02, bridge gate passed:
+> agreement 99.6 %, kappa 0.99 against the published o4-mini labels), and three open-weights models answered the same
+> seven arms each (step 4b; 39 arms in `common.ARMS`). **The parquet copies are the system of record**: every script
+> writes parquet, `07_load_tables.py` is a pure upsert into the tables (it never deletes a row whose key left the parquet),
+> and the committed `results/` were written from the parquet (`report.yaml` has `source.kind: parquet`). The database is a
+> loaded copy. Re-run `07_load_tables.py` after every ingest, outside 21:50 to 22:57 UTC and outside market hours (weekdays
+> 13:25 to 20:20 UTC; 14:25 to 21:20 UTC from 2026-11-02), the maintainer's windows.
 
 | Step | Script | Cost | Reads | Writes by default |
 |------|--------|------|-------|-------------------|
@@ -49,9 +53,18 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 | 3 | `03_backfill_round1.py` | free | January and November batch files, `.cache/research_cache.db` (read-only), the Phase 3/4 result YAMLs | `r1_o4mini_phase4a_20260104/`, `r1_p3_o4mini_20251120/`, `r1_p4_o4mini_20251120/` and `tables/{runs,detections}/r1_*.parquet` |
 | 4 | `04_llm_runner.py` | `pilot` and `submit` spend money, every other subcommand is free | windows parquet (or `--from-db`) | run directories and `tables/{runs,detections}/<run_id>_c<k>.parquet` |
 | 5 | `05_report.py` | free | the four tables (parquet or Postgres) | `docs/papers/electronics/results/*.csv\|yaml` |
-| 6 | `06_condense.py` | free | the parquet tables | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv}` (the copies git tracks) |
+| 6 | `06_condense.py` | free | the parquet tables, the per-run manifests and batch records | `data/backups/gex_llm/condensed/{detections.csv.gz,windows.csv.gz,series_index.csv,runs.csv.gz,run_records.jsonl.gz}` (the copies git tracks; run it after every ingest) |
 | 7 | `07_load_tables.py` | free | the parquet tables | `backups.gex_llm_regime_{series,windows,runs,detections}` (upsert, ANALYZE; tables created 2026-10-30, PR #165) |
 | 8 | `08_package_release.py` | free | the parquet tables | `data/backups/gex_llm/release/*.zip` (the Zenodo deposit: one parquet per table with the current answer per key, `detections_replaced.parquet` with the answers that a later answer replaced (11,085 on 2026-11-10: 1,049 by the 2026-11-03 re-run, 14 gpt-oss-20b and 10,022 Qwen3-8B answers by the retry at 8,000 tokens), README, checksums; the four tables in the `series/ windows/ runs/ detections/` layout that `05_report.py` reads, booleans and dates kept typed; repository-relative paths; refused on any local path or credential; not tracked by git. `--check <zip>` unzips it, runs `05_report.py --source parquet` on it and compares every file with `results/`) |
+
+**Which copy a command reads.** Steps 1 to 3 write parquet by default. Steps 4 and 5 default to `auto`: `04_llm_runner.py`
+commits to Postgres when `backups.gex_llm_regime_runs` and `_detections` exist and otherwise writes parquet only, and
+`05_report.py --source auto` reads Postgres when the connection works and all four tables exist, otherwise the parquet copies;
+the fallback is only logged at info level. The open-weights commands (step 4b) use `--parquet-only` and the tables are loaded
+with step 7. To regenerate the paper's numbers say the source: `05_report.py --source parquet`. The two sources
+fingerprint their inputs differently (database: row counts and latest `created_at`; parquet: sha256 per file), so a report
+read from the database carries another `inputs_fingerprint` than the committed one, and nothing compares the two copies
+automatically.
 
 Later steps: figures (`docs/papers/electronics/figures/scripts/`) and the manuscript
 (`docs/papers/electronics/build.sh`) read only what step 5 and the parquet copies hold.
@@ -82,8 +95,15 @@ cd /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns
 export E=scripts/validation/electronics        # shorthand used in the examples below
 ```
 
-* Audited baseline (`00_env_check.py` warns when a version drifts): Python 3.12.12, numpy 2.4.0, pandas 2.3.3,
-  pyarrow 23.0.0, psycopg2 2.9.11, openai 2.14.0, scipy 1.16.3, statsmodels 0.14.6, matplotlib 3.10.8, pyyaml 6.0.3.
+* Audited baseline (`00_env_check.py` warns when a version drifts): Python 3.12.12, numpy 2.4.6, pandas 2.3.3,
+  pyarrow 23.0.0, psycopg2 2.9.13, openai 2.14.0, scipy 1.18.1, statsmodels 0.14.6, matplotlib 3.10.8, pyyaml 6.0.3 (the
+  versions in `environment/autogex.conda.txt`; the baseline table inside `00_env_check.py` still says scipy 1.16, so the check
+  warns about scipy 1.18.1 until it is updated).
+* `environment/autogex.conda.txt` and `environment/openweights.lock.txt` are records of the two environments as they were
+  run, not recipes: 125 of the 182 package lines of the AutoGex file are `pypi_0` entries, so `conda create --file` is not
+  expected to work, and the Python version of the other file is only in its comment. `requirements.txt` of the repository
+  root is the loose Paper 1 and 2 list, not the reproducibility record, and it lists `json-repair`, which must stay
+  uninstalled here.
 * **Never install or upgrade packages.** The AutoGex env is shared with the production monitors. `json_repair` is
   deliberately absent (section 8).
 * Database: PostgreSQL 18.1, database `gex_options` on `127.0.0.1`, user `cregan1` (trust authentication,
@@ -178,8 +198,8 @@ Row counts are as built on 2026-10-29.
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
 answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
-`new_ex0dte` hold 4,691 SPY, 3,878 QQQ and 4,691 IWM windows, and the 1,121 changed or new windows were asked again:
-step 4, stale answers); requests and cost use
+`new_ex0dte` hold 4,691 SPY, 3,878 QQQ and 4,691 IWM windows, `new_full_scaled` 1,671 (QQQ) and 1,672 (IWM), and the 1,121 changed or new windows were asked again:
+step 4, stale answers; the Windows, Requests and cost columns below are the projections of 2026-10-29 and were not recomputed); requests and cost use
 the Batch figure of **$0.30 per 1,000 requests** (section 3.4) and leave out the 5 % test-retest sample (section 4,
 step 4), which adds 5 % to every arm.
 
@@ -281,7 +301,7 @@ The other series (rule applied; every window of the series; the 2026 windows end
 
 How to read it (details and evidence: `planning/00_design.md` section 2 and `planning/forensics/`):
 
-* From 2023-09-29 to 2025-12-31 the January inputs equal the call leg alone (565 of 565 days within 0.005 B); before
+* From 2023-09-29 to 2025-12-31 the January inputs equal the call leg alone (565 of 565 days within 0.005 B; the report's `exact_match_pct` uses a tolerance of 0.006 B); before
   that they equal today's full net GEX on 900 of 940 days (39 scattered days are call-only, the first on 2021-09-17;
   2022-05-31 matches neither). The raw table the January run read had lost the put rows of the 604 SPY dates written
   through a faulty loader, where `option_type` defaulted to `call` (upstream gex-database-infrastructure #24, fixed and
@@ -456,7 +476,7 @@ without touching the shared tree) and `--ignore-busy-window`. The arms it accept
 | `submit --run-id R` | uploads each chunk and creates its Batch job | spends |
 | `poll --run-id R [--wait]` | refreshes batch status and usage | free |
 | `retrieve --run-id R` | downloads output and error files verbatim | free |
-| `ingest --run-id R` | parses answers into detections and updates the run rows; idempotent | free |
+| `ingest --run-id R` | parses answers into detections and updates the run rows; idempotent for the newest run of each window, and it refuses an older chunk once a later run has answered its keys (`mark_superseded`) | free |
 | `requeue [--run-id R] [--wait]` | sends chunks that the Batch API rejected at validation (enqueued-token quota) again, with the same files; `--wait` retries every `--interval` seconds (default 300) for up to `--max-hours` (24) | spends, like `submit` |
 | `retry --run-id R` | new run for answers cut off by the token limit, at 8,000 tokens | free until submitted |
 | `status` | runs, cost ledger, per-arm window state (done, stale, retry, inflight, open) | free |
@@ -662,8 +682,8 @@ repeat target of a run generated before the fix of 2026-11-07 counted finished w
 ### Step 5. Report
 
 ```bash
-python $E/05_report.py                        # auto: Postgres if all four tables exist, else the parquet copies
-python $E/05_report.py --source parquet
+python $E/05_report.py                        # --source auto (default): Postgres if the connection works and all four tables exist, else the parquet copies
+python $E/05_report.py --source parquet       # the paper's numbers: the parquet copies are the system of record
 python $E/05_report.py --only stats cost_ledger
 python $E/05_report.py --source parquet --parquet-root /tmp/t/tables --results-dir /tmp/t/results   # test data
 python $E/05_report.py --check-conventions    # do 05, common.py and 04 agree on the repeat labels?
@@ -678,7 +698,8 @@ failed, 1 = a section failed, 2 = nothing was produced (no section wrote a file,
 a `--parquet-root` that does not exist, an unreadable parquet file, `--source db` without the four tables; these stop at
 once with an error message).
 Section names (for `--only`): `detection_by_year`, `bridge_agreement`, `series_comparison`, `ex0dte_decomposition`,
-`post_publication_2026`, `intraday`, `stats`, `cost_ledger`, `disagreements`, `llm_parse_stats`, `reported_vs_computed`.
+`post_publication_2026`, `intraday`, `stats`, `cost_ledger`, `disagreements`, `llm_parse_stats`, `reported_vs_computed`,
+`missing_answer_bounds`.
 
 ### Step 6. Figures and manuscript
 
@@ -763,7 +784,8 @@ rates are percentages, intervals are Wilson 95 %, and `n_indep_30d` counts non-o
 | File | Content (key columns) |
 |------|------------------------|
 | `detection_by_year.csv` | LONG: one row per classifier (series, symbol, year) and per LLM (arm, model, series, symbol, year) plus `scope = all`. `label_source` (classifier or llm), `arm`, `arm_role` (primary, backfill, backfill_all, repeat, pilot, other), `model`, `series_key`, `symbol`, `scope`, `year`, `n_windows`, `n_parsed`, `n`, `n_detect`, `rate_pct`, `ci_lo_pct`, `ci_hi_pct`, `n_indep_30d`, `mean_abs_gex_bn`, `n_compared`, `clf_rate_matched_pct`, `agree_pct`, `kappa`, `metrics_agree_pct`, `sign_flips_exact_pct`, `median_ratio_reported_to_computed`, `n_detect_positive` and `n_detect_negative` (detections by regime sign), `n_both_detect` and `type_agree_pct` (LLM rows: windows both the model and the classifier detect, and the share with the same type), `n_shape_ok` and `max_mean_abs_gex_bn` (classifier rows: windows meeting the persistence and stability criteria whatever their magnitude, and the largest window mean). Arm `r1_o4mini` is the published subset (1,412 windows); `r1_o4mini_all` adds the 64 recovered windows (an `_all` variant of `r1_p3_o4mini` or `r1_p4_o4mini` would exist only if some of their rows carried the flag) |
-| `detection_by_year_wide.csv` | derived copy of the yearly rows in the shape of the written spec (rates as fractions); no figure reads it |
+| `detection_by_year_wide.csv` | derived copy of the yearly rows in the shape of the written spec (rates as fractions); no figure reads it. For an LLM row, `n` and the `clf_*` columns are the classifier's values for the whole series-year while `llm_rate` is over the parsed windows only; `clf_rate_matched` is the matched rate |
+| `missing_answer_bounds.csv` | per registered arm with unparsed answers and period: the rate over parsed windows, the unparsed windows by the rule's verdict, the share parsed among the windows the rule detects and among those it does not, and the bounds `lower_pct` (unparsed = not detected) and `upper_pct` (unparsed = detected) over all windows of the arm (D-32) |
 | `bridge_agreement.csv`, `.yaml` | published o4-mini arms against the luna arms that read the same series: `comparison` (`bridge`, `bridge_incl_recovered`, `test_retest`), `ref_arm`, `other_arm`, `series_key`, `symbol`, `scope`, `year`, the 2x2 counts `n_pairs`, `n_ref_det_oth_det`, `n_ref_det_oth_not`, `n_ref_not_oth_det`, `n_ref_not_oth_not`, `agree_pct`, `kappa` with bootstrap intervals, McNemar and bootstrap p-values. The gate (`r1_o4mini` against `bridge_jan`, kappa on `regime_detected`, threshold 0.6, `met = null` when kappa is undefined) is in the yaml. `r1_p3_o4mini` / `r1_p4_o4mini` are compared with `p34_dated_2024` / `p34_dated_2020`; test-retest compares `<arm>` with `<arm>#rep1` |
 | `series_comparison.csv` | per series pair (`series_a`, `series_b`, `pair`), symbol and year: `n_days`, `mean_abs_a_bn`, `mean_abs_b_bn`, `sign_agree_pct`, `exact_match_pct` |
 | `ex0dte_decomposition.csv` | `new_full` against `new_ex0dte` by year and the 0DTE share of net GEX |
@@ -796,10 +818,13 @@ Four tables and one view in schema `backups`, named per the database repository'
 | `backups.gex_llm_regime_detections` | (`arm`, `series_key`, `symbol`, `window_end`, `model`, `prompt_version`): one model answer | 03, 04 |
 | view `backups.gex_llm_regime_rates_summary` | yearly LLM detection rate next to the classifier rate, by arm, over every stored row: a repeat arm (`<arm>#rep1`) is its own row and `r1_o4mini` includes the 64 recovered answers (4.0 % for 2021, not the published 3.7 %); the article's rates come from `05_report.py` | read-only |
 
-### 5.3 The gate
+### 5.3 The gate (passed 2026-10-30)
 
-None of these objects exists yet, and no script creates them. The database user does hold `CREATE` on schema `backups`
-(the environment check prints it), so the gate is a process rule, not a permission:
+The four tables and the view were created on 2026-10-30 20:32 UTC by the database repository's session, from
+`sql/gex_llm_regime_schema.sql` verbatim, after PR #165 was approved (decisions log D-14, addendum); no script in this folder
+creates them. The database user does hold `CREATE` on schema `backups` (the environment check prints it), so the gate is a
+process rule, not a permission, and it applies again to any change of the DDL. The steps below are the rule as it was
+followed:
 
 1. The database repository requires, before any DDL: the schema SQL in the project repository (here), backup
    documentation in `gex-database-infrastructure/docs/gex-llm-patterns/backup-schema.md`, cleanup instructions, a
@@ -817,9 +842,11 @@ None of these objects exists yet, and no script creates them. The database user 
    python $E/00_env_check.py --require-tables      # expect 5 of 5 objects
    ```
 
-4. Then load what exists: `01_build_series.py ... --db` and `02_build_windows.py ... --db` per series and symbol,
-   `03_backfill_round1.py --db`, and `04_llm_runner.py ingest --run-id R` for every run made earlier. From then on the
-   runner writes Postgres by itself unless `--parquet-only` is given, and `05_report.py --source auto` reads Postgres.
+4. Then load what exists. The first load on 2026-10-30 21:02 UTC and every later one was made with `07_load_tables.py` from the
+   parquet copies (the `--db` flags of 01 to 03 write Postgres directly). The
+   runner writes Postgres by itself in its default `auto` mode unless `--parquet-only` is given, and `05_report.py
+   --source auto` reads Postgres; the open-weights runs (step 4b) used `--parquet-only` and the committed `results/` were
+   read from the parquet copies (see the end of section 1).
 5. Removal: the `DROP VIEW` and `DROP TABLE` statements in the header of the SQL file.
 
 The archive tables `backups.*_pre_rebuild_20261004` are only ever read, in read-only sessions.
@@ -838,7 +865,7 @@ The archive tables `backups.*_pre_rebuild_20261004` are only ever read, in read-
 (`rollback verified: the database is unchanged`, `ROLLBACK done; gex_llm_regime objects before and after: none`,
 `rollback test passed`). `--db` and `--rollback` of 02 and 03, every Postgres write of 04 (`--rollback` and `status
 --rollback` included, because they apply the DDL) and the same flags of 01 refuse to run between 21:50 and 22:57 UTC, and during NYSE market hours
-(09:25-16:20 New York time on trading days), unless `--ignore-busy-window` is given. To look yourself (no rows until the DDL has been applied):
+(09:25-16:20 New York time on trading days), unless `--ignore-busy-window` is given. To look yourself (the tables and the view exist since 2026-10-30):
 
 ```bash
 psql -h 127.0.0.1 -d gex_options -X -At -c "select relname from pg_class where relnamespace = 'backups'::regnamespace and relname like 'gex_llm_regime%'"
@@ -914,9 +941,9 @@ files is an open decision (Q-09).
    use it. Parquet-only work and `05_report.py` are not affected. Judge by `date -u`.
 3. **Read-only sessions for every source read**, `statement_timeout = 600s` in every session, archive tables never
    written. Source reads of `01_build_series.py` identify themselves as `gex-llm-patterns 01_build_series`.
-4. **The tables `backups.gex_llm_regime_*` do not exist and no script creates them.** Only the maintainer applies the DDL
-   (section 5.3). Test a database path with `--rollback`, never by creating the objects; afterwards check that none
-   exists.
+4. **The tables `backups.gex_llm_regime_*` exist since 2026-10-30 and no script creates them.** Only the maintainer applies a
+   change of the DDL (section 5.3). Test a database path with `--rollback`, never by changing the objects; afterwards check
+   that the database is unchanged.
 5. **Never print the OpenAI key.** Do not `echo` it, `cat config/config.json`, or paste debug output that may hold
    request headers. The runner scrubs it from error text; the environment check prints only "present".
 6. **No paid call by accident.** `pilot` and `submit` are the only paid steps. Run `00_env_check.py` first,
@@ -1021,13 +1048,16 @@ November prompt; that is the point of the arm.
 
 ## 9. Gates and open decisions
 
-Some steps wait for the authors (Christopher Regan and Dr. Ying Xie) or for the database maintainer. The questions are
+Some steps waited for the authors (Christopher Regan and Dr. Ying Xie) or for the database maintainer. The questions are
 written out in `planning/02_decisions_log.md`; Q-01 (QQQ and IWM floor effect) is closed by D-18, which runs both the
-unscaled and the scaled arms.
+unscaled and the scaled arms. All arms of the registry have since been run (35,833 `gpt-6-luna` requests and the three
+open-weights models), so the gates below have been passed in practice; the decisions log of 2026-11-18 still lists Q-02 to
+Q-08 as open, and recording them as closed, or saying in the paper what was and was not fixed in advance, is for the
+authors to decide (audit finding C062).
 
 | Step | Waits for |
 |------|-----------|
-| any `--db` run, applying the DDL | the documentation PR and the maintainer's approval (D-14) |
+| any `--db` run, applying the DDL | the documentation PR and the maintainer's approval (D-14); done, schema applied 2026-10-30 |
 | `submit` of `bridge_jan` | the pilot result, and Q-05: the gate metric, window set and threshold fixed before the bridge result is seen |
 | the other priority-1 arms: `full_spy`, `ex0dte_spy`, the four `p34_*` arms (D-19) | the bridge gate; they run in priority order and the gate is read first |
 | the priority-2 arms: `full_qqq`, `full_iwm`, `full_qqq_scaled`, `full_iwm_scaled` (D-18) | Q-03 (spend, after the pilot cost is known) |
@@ -1039,7 +1069,7 @@ unscaled and the scaled arms.
 
 ---
 
-## 10. Known issues (2026-10-31)
+## 10. Known issues (2026-10-31, one entry added 2026-11-18)
 
 Found by following this runbook end to end against scratch copies of `data/backups/gex_llm/` with synthetic Batch
 output (`--backup-root`, `--parquet-root`, `--results-dir`; no API call), by exercising every `--rollback` path, and
@@ -1054,6 +1084,7 @@ one January answer the shared parser rejected (fenced with a raw control charact
 | 3 | `04_llm_runner.py generate --repeat-fraction 0` warns that D-09 asks for 5 % on every arm | the warning predates D-22, which keeps the 5 % duplicate sample as the default on every arm and the full repeat on `bridge_jan` | ignore the warning; the default is what D-22 says |
 | 4 | `submit` does not know the organization's enqueued-token limit (20 M tokens for gpt-6-luna) | the limit is only visible as `token_limit_exceeded` on a batch that has already been created (section 8) | submit everything, then run `04_llm_runner.py requeue --wait` in the background: it resends every rejected chunk with its original file as room frees |
 | 5 | Background collection stops when the Claude Code session that started it closes | the collector and requeue loops are child processes of that session | on resume, relaunch the collector loop and `requeue --wait`; `status` shows what is pending |
+| 6 | `00_env_check.py` passes and a local run fails on the environment | the check looks at the interpreter it runs in only, not at the `openweights` env; `04_llm_runner.py local` checks that env's vLLM version against `common.VLLM_VERSION` before a run | run `local` (or a pilot) to find out; do not trust the check for the open-weights env |
 
 ---
 
@@ -1061,14 +1092,18 @@ one January answer the shared parser rejected (fenced with a raw control charact
 
 | Path | Purpose |
 |------|---------|
-| `common.py` | contract: paths, database access, series (11) and arm (18) registry, model configuration, strict JSON schema, obfuscation (obfuscated and dated labels), prompt and classifier bridge, repeat labels, cost accounting and `counts_toward_budget`, quiet window, raw-backup layout, the loaders of the published batch files (`load_phase4a_inputs`, `phase4a_daily_series`, `load_phase4a_outputs`, `load_phase34_inputs`, `phase34_daily_series`, `load_phase34_outputs`). No side effects on import |
+| `common.py` | contract: paths, database access, series (11) and arm (39: 18 Batch-era and 21 open-weights) registry, model configuration, strict JSON schema, obfuscation (obfuscated and dated labels), prompt and classifier bridge, repeat labels, cost accounting and `counts_toward_budget`, quiet window, raw-backup layout, the loaders of the published batch files (`load_phase4a_inputs`, `phase4a_daily_series`, `load_phase4a_outputs`, `load_phase34_inputs`, `phase34_daily_series`, `load_phase34_outputs`). No side effects on import |
 | `sql/gex_llm_regime_schema.sql` | the four tables and the view; idempotent; every column commented; cleanup statements in the header |
 | `00_env_check.py` | pre-flight check |
 | `01_build_series.py` | daily GEX series |
 | `02_build_windows.py` | 30-day windows with the deterministic verdict and the hole detectors |
 | `03_backfill_round1.py` | the three published o4-mini runs as arms `r1_o4mini`, `r1_p3_o4mini`, `r1_p4_o4mini` |
-| `04_llm_runner.py` | gpt-6-luna Batch runner and cost ledger |
+| `04_llm_runner.py` | gpt-6-luna Batch runner, local open-weights runner and cost ledger |
 | `05_report.py` | paper tables, overlap-aware statistics, cost ledger |
+| `06_condense.py` | the condensed copies and the run provenance that git tracks |
+| `07_load_tables.py` | upserts the parquet tables into `backups.gex_llm_regime_*` |
+| `08_package_release.py` | the Zenodo zip (git-ignored); `--check <zip>` regenerates `results/` from it |
+| `environment/` | `autogex.conda.txt` and `openweights.lock.txt`: records of the two environments as run (section 2) |
 | `README.md` | this file |
 
 Related:
@@ -1083,6 +1118,7 @@ Related:
 | `docs/papers/electronics/figures/` | figure scripts (`scripts/`: twelve figures, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`) and output |
 | `docs/papers/electronics/latex/`, `build.sh` | manuscript (MDPI Electronics class) |
 | `docs/papers/electronics/README.md` | the paper folder: status, layout, build, data provenance |
+| `docs/papers/electronics/audit/2026-11-12/` | the pre-submission audit (local only, excluded through `.git/info/exclude`, never committed) |
 | `docs/papers/CORRECTIONS.md` | public record of the findings about the published results (no notice filed so far, a formal revision is a later step; the Electronics paper carries the corrected analysis) |
 | `src/llm/mechanics_prompt_builder.py`, `src/validation/regime_classifier.py`, `src/utils/json_parser.py` | the reused prompt builder, deterministic classifier and fallback JSON parser |
 | `gex-database-infrastructure/docs/009_PROJECT_BACKUP_STRATEGY.md`, `docs/gex-llm-patterns/backup-schema.md` | storage rules and the documentation this project owes the database repository |

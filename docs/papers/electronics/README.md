@@ -3,7 +3,7 @@
 Extended version of *Validating LLM Structural Reasoning: Detecting Persistent Market Regimes Through Temporal
 Obfuscation* (AIAI 2026, Springer IFIP AICT, pp. 127-140, doi:10.1007/978-3-032-30801-6_10), for the MDPI *Electronics* Special Issue "Timely AI Advancements and
 Interdisciplinary Synergies for Intelligent Modeling". Authors: Christopher Regan and Ying Xie (Kennesaw State
-University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261). Merged to `main` (PRs #263, #264, #265).
+University). Tracking issue: [#261](https://github.com/iAmGiG/gex-llm-patterns/issues/261), open until submission. Work reaches `main` by pull request (#263 to #265 first; the latest is #280, merged 2026-11-18).
 
 The extension has to consist of new experiments beyond the AIAI paper and the JRFM article (MDPI, manuscript
 jrfm-4256551), and it cites both. While it was being prepared, the exact inputs of the published Phase 4A run were
@@ -12,18 +12,21 @@ published 2024-versus-2020 baselines turned out to carry calendar dates. The art
 **re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
 extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
 
-## Status (2026-11-10)
+## Status (2026-11-18)
 
 | Part | State |
 |---|---|
-| Manuscript, [`latex/`](latex/) | Complete draft for co-author review: the article (49 pages) and a separate supplement (11 pages), rebuilt on 2026-11-03 after the database added missing trading days and extended on 2026-11-07 to 2026-11-10 by the three open-weights models (Section 4.12 with one comparison table; Supplement Section S3, Tables S6 to S8; run ledger Tables S3 to S5), one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` items remain: Dr. Xie confirms the CRediT roles, and the Zenodo DOI is added at submission (the vendor terms allow the deposit, D-31). On Overleaf for Dr. Xie's review since 2026-11-04. |
+| Manuscript, [`latex/`](latex/) | Complete draft: the article (50 pages) and a separate supplement (11 pages), rebuilt on 2026-11-03 after the database added missing trading days and extended on 2026-11-07 to 2026-11-10 by the three open-weights models (Section 4.12 with one comparison table; Supplement Section S3, Tables S6 to S8; run ledger Tables S3 to S5), one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` lines remain in the main file (Dr. Xie confirms the CRediT roles; the Zenodo DOI and the access date are added at submission, the vendor terms allow the deposit per D-31) and `submission/cover_letter.md` has its own TODOs (the sentence on the earlier articles, the DOI, the APC line). The pre-submission read-through (#276) was applied in #278. On Overleaf since 2026-11-04; Dr. Xie's review has not started. The blind review of the pre-submission audit recommends major revision (next rows). |
 | Figures, [`figures/`](figures/) | 12 figure scripts, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`; all 12 figures drawn from `results/` into `figures/output/` (PNG, PDF and a provenance manifest each). |
 | Results, `results/` | Written by `scripts/validation/electronics/05_report.py` from the parquet tables: detection rates by arm and year, bridge agreement, series comparison, 0DTE decomposition, post-publication period, intraday check, overlap-aware statistics, cost ledger, disagreements, parse statistics. Re-run after the last chunk. |
-| Model runs | All 18 Batch-era arms run and stored: 35,833 gpt-6-luna requests, including the 1,121 windows asked again after the database fill of 2026-11-03, $10.02. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). Three open-weights models answered the same seven arms on local GPUs at no cost: gpt-oss-20b (D-29, 2026-11-07: 12,398 requests, 10.0 GPU-hours; agreement with gpt-6-luna 99.4 % on the complete SPY series, kappa 0.97), Llama 3.1 8B (D-30, 2026-11-08: 12,378 requests, 3.3 GPU-hours; detects almost every window, kappa 0 against the rule) and Qwen3-8B (D-32, 2026-11-08 to 2026-11-10: 22,400 requests including 10,022 retries, 98.5 GPU-hours; 91.2 % of windows answered, agreement with the rule 98.7 % on the answered windows of the complete series, 2024-2025 rate bounded at 14.5 % to 35.1 %). |
+| Model runs | 18 Batch-era arms stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers (no API call); 35,833 gpt-6-luna requests, including the 1,121 windows asked again after the database fill of 2026-11-03, $10.02. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). Three open-weights models answered the same seven arms on local GPUs at no cost: gpt-oss-20b (D-29, 2026-11-07: 12,398 requests, 10.0 GPU-hours; agreement with gpt-6-luna 99.4 % on the complete SPY series, kappa 0.97), Llama 3.1 8B (D-30, 2026-11-08: 12,378 requests, 3.3 GPU-hours; detects almost every window, kappa 0 against the rule) and Qwen3-8B (D-32, 2026-11-08 to 2026-11-10: 22,400 requests including 10,022 retries, 98.5 GPU-hours; 91.2 % of windows answered, agreement with the rule 98.7 % on the answered windows of the complete series, 2024-2025 rate bounded at 14.5 % to 35.1 %). |
 | Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 39 arms, 21 of them open-weights), `00` to `08` (environment check, series, windows, backfill, runner, report, condensed copies, database load, Zenodo package), the schema SQL and the README. |
-| Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`; first load 2026-10-30 21:02 UTC, reloaded 2026-11-03 21:28 UTC after the database fill 2026-11-07 23:15 UTC after the gpt-oss-20b runs and 2026-11-10 02:44 UTC after the Llama and Qwen runs: 38,592 windows, 179 runs, 73,846 answers, the latest per window; schema comments applied the same day). Checked on 2026-11-04 against the database's notice of data changes (gex-database-infrastructure #211): the stored SPY, QQQ and IWM series equal the live daily table on every day through 2026-10-09. Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps `data/backups/gex_llm/condensed/` (with the run provenance as two compressed files since 2026-11-09) and `results/`. |
+| Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`; first load 2026-10-30 21:02 UTC, reloaded 2026-11-03 21:28 UTC after the database fill, 2026-11-07 23:15 UTC after the gpt-oss-20b runs and 2026-11-10 02:44 UTC after the Llama and Qwen runs: 38,592 windows, 179 runs, 73,846 answers, the latest per window; schema comments applied the same day). Checked on 2026-11-04 against the database's notice of data changes (gex-database-infrastructure #211): the stored SPY, QQQ and IWM series equal the live daily table on every day through 2026-10-09. The parquet copies are the system of record: `results/report.yaml` records `source.kind: parquet`, and the database holds a loaded copy (`07_load_tables.py` only upserts). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps `data/backups/gex_llm/condensed/` (with the run provenance as two compressed files since 2026-11-09) and `results/`. |
 | Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
-| Submission | Not submitted. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page must be checked in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. PRs #263, #264 and #265 merged. Open before submission: Dr. Xie's review (CRediT roles, the wording of the data statement, the APC, the back matter, the data release, the corresponding author and the timing; asked 2026-11-04), the Zenodo record (D-31: the vendor terms allow the deposit; issue #274), and the deadline. Decisions so far are in [`planning/02_decisions_log.md`](planning/02_decisions_log.md). |
+| Zenodo deposit | `08_package_release.py` (PR #280, 2026-11-18) keeps booleans and dates typed, writes the folder layout `05_report.py` reads (`series/ windows/ runs/ detections/`) and has `--check <zip>`, which regenerates every file of `results/` from the zip alone. `regan_xie_electronics_tables_20261118.zip` passes; the 20261110 zip does not. The zip is git-ignored; the Zenodo record and DOI do not exist yet (issue #274). |
+| Pre-submission audit (2026-11-12 to 2026-11-18) | Kept locally in `audit/2026-11-12/` (excluded through `.git/info/exclude`, never committed unless Chris decides to). It audited `main` at `46c17ca` with #280 taken into account and changed no code or text. The numbers reproduce: a clean-room re-implementation of the rule gives the stored verdict on 38,592 of 38,592 windows, `results/` regenerates byte for byte, and no stored result is wrong (of 4,288 numbers in the manuscript, cover letter and README, 4,203 trace to a stored source, 8 mismatch and 32 are untraceable, all Minor or Nit). The paper review (four referees and an editor desk check) recommends major revision, not rejection; the audit's verdict is not ready as it stands, ready after one focused revision. The problems are framing, power, wording and disclosure, not arithmetic. Open items before submission (the authors decide each; full list and order in `audit/2026-11-12/phase4_grooming.md`, group P1): the written basis for the CC BY deposit (B094), custody of the inputs that exist only on this disk (B079: the January batch input and the three r1_* input/output pairs), tags for the git commits stamped in `results/report.yaml` and the figure manifests (B085), and then the Zenodo record and DOI; CRediT, Dr. Xie's approval and the AI-use statement; which AIAI and JRFM claims the paper withdraws and what notice status it states (including the 39 earlier call-only days that touch 332 of 911 pre-break published windows); the framing of the LLM arms (they cannot separate recall from rule-following, because the rule is in the prompt), of the complete series (complete is not validated) and of the no-rise claim (no margin); the false or stale sentences (the Llama schema sentence, the 58-fold spot-squared argument, citation defects, four unsourced numbers in Methods); `build.sh --strict` failing on `TODO(authors)`; and, last, cutting the body by about a third. Most of these run on stored data with no new model calls. |
+| Poster | The C-Day poster (`CDayfiles/`, built by `build_cday_poster.py` from Dr. Xie's template; PR #279 added the project ID 1339-GRP and a Data Atlas QR code) was accepted at the Fall 2026 CCSE Computing Showcase. |
+| Submission | Not submitted; #261 stays open until it is. Deadline unconfirmed: the invitation gives none and MDPI's Special Issue page returns 403 to automated fetches, so it must be read in a browser; one unofficial source says 15 March 2027 and an expansion of at least 50% over the conference paper. Open before submission: Dr. Xie's review (not started; CRediT roles, the wording of the data statement, the APC, the back matter, the data release, the corresponding author and the timing; asked 2026-11-04), the Zenodo record (D-31 records that the vendor terms allow the deposit; the audit asks for the basis in writing; issue #274), the email on the MDPI submission form, and the deadline. Decisions so far are in [`planning/02_decisions_log.md`](planning/02_decisions_log.md) (D-01 to D-32). |
 
 ## What is new relative to AIAI 2026 and the JRFM article
 
@@ -88,8 +91,11 @@ docs/papers/electronics/
   latex/              Regan_Xie_Electronics.tex and one file per part: 01_Introduction, 02_Related_Work, 03_Methods,
                       04_01_Inputs ... 04_12_Open, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
                       08_Appendix_B_Tables, 09_Appendix_C_Data; references.bib
-                      Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL and S2_Run_Ledger
+                      Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger and S3_Open_Weights
   overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)
+  submission/         cover_letter.md
+  CDayfiles/          the C-Day poster (.pptx, PDF) and build_cday_poster.py
+  audit/2026-11-12/   the pre-submission audit (local only, excluded through .git/info/exclude, not tracked)
   figures/scripts/    figNN_<name>.py (12), run_all.py, theme.py, figdata.py, figllm.py
   figures/output/     figNN_<name>.png (300 dpi), .pdf and a provenance manifest .json; written by the scripts
   results/            CSV and YAML tables written by 05_report.py; the only numbers the manuscript may quote
@@ -120,9 +126,10 @@ docs/papers/electronics/build.sh --clean    # remove the TeX build files (the PD
 - The summary prints the undefined references and citations, the bibtex warnings, the missing figures, the unresolved
   `\tbd` placeholders (in total, for the main file and for every file; comments do not count), a working title left in
   `\Title`, the open `% TODO(` markers and the overfull boxes. `--strict` fails on the first five of these and on a
-  reference that still changed in the last pass; the TODO markers and the overfull boxes are only reported. The main
-  file keeps three `\tbd` on purpose (abstract, and the access date and the data release of the Data Availability
-  Statement); they are the last ones to fill.
+  reference that still changed in the last pass; the TODO markers and the overfull boxes are only reported. The
+  sources hold no live `\tbd` now: the abstract is written, and the access date and the data release of the Data
+  Availability Statement are `% TODO(authors)` comments. `--strict` does not fail on those comments, so it can print
+  `STRICT: ok` while they are open (audit finding B106): check them by hand until it does.
 
 ## Figures
 
@@ -149,8 +156,11 @@ of the manuscript are `fig12_threshold_sensitivity`, `fig05_llm_arms_by_year` an
 column commented): `backups.gex_llm_regime_series` (the daily values shown to the model), `_windows` (30-day windows
 with the exact input vector, its sha256 and the deterministic label), `_runs` (one row per OpenAI Batch job or pilot,
 written at submit time so the batch id is never lost), `_detections` (one row per window and run) and the view
-`_rates_summary`. They are standalone: no foreign keys into the core tables. Until the DDL is approved the same columns
-are written as parquet to `data/backups/gex_llm/tables/{series,windows,runs,detections}/`; raw batch files and manifests
+`_rates_summary`. They are standalone: no foreign keys into the core tables. The DDL was applied on 2026-10-30. The same columns
+are kept as parquet in `data/backups/gex_llm/tables/{series,windows,runs,detections}/`, which is the system of record: the
+scripts write the parquet, `07_load_tables.py` upserts it into the tables, and the paper's `05_report.py` run reads the
+parquet (`--source parquet`; the default `--source auto` reads Postgres when all four tables exist, so state the source
+when reproducing). Raw batch files and manifests
 per run are in `data/backups/gex_llm/<run_id>/`. Nothing raw goes to the remote: every JSONL and the full series, windows
 and detections tables are git-ignored and loaded into the database, and so are the per-run provenance files (`tables/runs/`,
 `manifest.json`, `batch_<k>.json`); git keeps `data/backups/gex_llm/condensed/` (verdicts and labels without text, and the run
@@ -159,8 +169,8 @@ provenance as `runs.csv.gz` and `run_records.jsonl.gz`, all from `06_condense.py
 **Series and arms.** `common.SERIES` holds 11 series: the six of the study (`jan2026_phase4a`, `call_only`, `old_bs`,
 `new_full`, `new_ex0dte`, `intraday_late`) and the derived inputs of the rerun arms (`new_full_scaled`, `p3_2024`,
 `p3_2024_dated`, `p4_2020`, `p4_2020_dated`; the Phase 3/4 series use their own calendar, window rule J, and the
-`_dated` ones carry the ISO dates sent in November 2025). `common.ARMS` holds 18 arms: 15 model arms and three
-backfills of stored `o4-mini` answers. The definitions are in Section S1 of the supplement, in the pipeline README
+`_dated` ones carry the ISO dates sent in November 2025). `common.ARMS` holds 39 arms: 18 Batch-era arms (15 `gpt-6-luna` arms and three
+backfills of stored `o4-mini` answers) and 21 open-weights arms (the seven `oss_*`, seven `llama_*` and seven `qwen_*` arms). The definitions are in Section S1 of the supplement, in the pipeline README
 (section 3) and in the decisions log (D-04 to D-08).
 
 **Run ids.** `<arm>_<model>_<mode>_<UTC timestamp>`, with `_c<k>` appended for each chunk of at most 1,500 requests; a
@@ -206,7 +216,8 @@ ledger.
   the put-row loss; [#64](https://github.com/iAmGiG/gex-database-infrastructure/issues/64), the intraday T-1 chain.
 - gex-database-infrastructure `docs/009_PROJECT_BACKUP_STRATEGY.md`, which the storage follows (three copies:
   Postgres, parquet, raw JSONL; documentation before DDL); the documentation for these tables is
-  `docs/gex-llm-patterns/backup-schema.md` on branch `docs/gex-llm-regime-tables`.
+  `docs/gex-llm-patterns/backup-schema.md` (documentation PR #165 of that repository, merged).
+- Sub-issues of #261: #273 (Llama 3.1 8B and Qwen3-8B arms) and #275 (environment lock files), both closed by #278; #274 (Zenodo record and DOI), open; #276 (pre-submission read-through), applied in #278, with the email on the MDPI form and the optional cuts for length remaining.
 - [#164](https://github.com/iAmGiG/gex-llm-patterns/issues/164) of this repository (closed): the earlier upgrade of the
   Paper 1 revision to `o4-mini`, the model that is now retired and has to be bridged.
 
@@ -222,18 +233,26 @@ ledger.
 | `01_build_series.py` | the daily GEX series, one (series, symbol) per run |
 | `02_build_windows.py` | 30-day windows and deterministic labels (no model, no cost) |
 | `03_backfill_round1.py` | the published `o4-mini` answers as arms `r1_o4mini`, `r1_p3_o4mini` and `r1_p4_o4mini` (no API call) |
-| `04_llm_runner.py` | `gpt-6-luna` Batch runs: generate, submit, poll, retrieve, ingest, pilot, retry, status, with a cost ledger |
+| `04_llm_runner.py` | `gpt-6-luna` Batch runs (generate, submit, poll, retrieve, ingest, pilot, retry, requeue, status, with a cost ledger) and the local open-weights runs (`local`) |
 | `05_report.py` | every table and number of the manuscript, written to `results/` |
+| `06_condense.py` | the condensed copies git tracks (`data/backups/gex_llm/condensed/`); run after every ingest |
+| `07_load_tables.py` | upserts the parquet tables into `backups.gex_llm_regime_*` |
+| `08_package_release.py` | the Zenodo zip (git-ignored); `--check <zip>` regenerates `results/` from it |
 | `sql/gex_llm_regime_schema.sql` | the DDL, idempotent, applied only after approval |
 
 ## Before submission
 
-1. Run steps 0 to 5 of the pipeline README (series, windows, backfills, pilot, bridge gate, arms, report); decide the
-   open questions of the decisions log first (spend, agreement gate, primary analyses).
-2. `run_all.py` for the figures, then fill every `\tbd{}` and `% TODO(...)` of the sections from `results/`; write the
-   abstract and choose the title.
-3. Publish the data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL), and `08_package_release.py --check <zip>` confirms that the zip alone regenerates `results/`. The vendor's terms allow the deposit: Chris confirmed on 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data (D-31). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), then add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The database tables are the authoritative copy (Section 3.7).
-4. `build.sh --strict` must end with `STRICT: ok`, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
+The pipeline steps, the runs, the figures and the report are done. What remains is the audit's list (Status table, row
+Pre-submission audit; the detail is in the local `audit/2026-11-12/phase4_grooming.md`, group P1) and the author items.
+The decisions are the authors'.
+
+1. Text and claims: the framing items of the audit (title, abstract, Discussion, the no-rise claim), the false or stale
+   sentences, the statement of which earlier claims are withdrawn and what notice status is stated, then the cut of the
+   body. Fill the abstract and Data Availability placeholders last, from `results/`.
+2. Back matter: Dr. Xie confirms the CRediT roles and approves the submission; the AI-use statement; the email on the
+   MDPI form; the APC; the Special Issue deadline from MDPI's page (read in a browser).
+3. Data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL), and `08_package_release.py --check <zip>` confirms that the zip alone regenerates `results/` (`regan_xie_electronics_tables_20261118.zip` passes). D-31 records Chris's statement of 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data; the audit (B094) asks for that basis in writing before the CC BY deposit and notes that vendor-derived per-strike rows are tracked in the public repository (B095). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The parquet tables are the system of record, the database tables a loaded copy.
+4. `build.sh --strict` must end with `STRICT: ok`; until it fails on `TODO(authors)`, also confirm by hand that none is left, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
 
 ## Keeping Appendix A and Supplement S1 in step with the code
 
