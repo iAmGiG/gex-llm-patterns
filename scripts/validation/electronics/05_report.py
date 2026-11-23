@@ -1337,7 +1337,7 @@ def section_bridge_agreement(ctx: Context) -> Dict[str, Any]:
         "notes": ["Pairs are windows parsed in both arms; the classifier label comes from the shared window.",
                   "model_pair compares each open-weights arm ("
                   + "; ".join(f"{m}: arms {spec.arm_prefix}<arm>" for m, spec in sorted(common.LOCAL_SPECS.items()))
-                  + ", decisions D-29 and D-30) with its gpt-6-luna twin <arm> on the same windows (reference = "
+                  + ", decisions D-29, D-30, D-32, D-33 and D-34) with its gpt-6-luna twin <arm> on the same windows (reference = "
                   "gpt-6-luna); the open-weights arms are compared with the published answers in bridge as well, for "
                   "description, and never feed the gate.",
                   f"bridge_incl_recovered repeats the comparison with the answers recovered in 2026 added to the reference "
@@ -2353,7 +2353,7 @@ CAVEATS = (
     "Windows have stride 1 and overlap; Wilson intervals in detection_by_year.csv are descriptive. Inference is in stats.yaml "
     "(quarter-block bootstrap and non-overlapping 30-day subsample next to every p-value).",
     "Rates are shares of parsed windows; parse failures are counted in n_windows but not in n.",
-    "The fixed persistence/magnitude/flip thresholds are a pre-registered design decision; a scaled-threshold variant is a "
+    "The fixed persistence/magnitude/flip thresholds are a design decision fixed before the runs; a scaled-threshold variant is a "
     "protocol change the authors must approve.",
     "2026 windows are the post-publication period, not out-of-sample (gpt-6-luna was created 2026-09-14). "
     "post_publication_2026_summary.csv gives the rates for windows that end in 2026 and for those that lie entirely in 2026.",
@@ -2426,7 +2426,7 @@ def classifier_diagnostics(win: pd.DataFrame) -> Dict[str, Any]:
         "floor_effect": [{"series_key": r.series_key, "symbol": r.symbol, "n_windows": int(r.n_windows),
                           "max_window_mean_abs_gex_bn": r.max_mean_abs_gex_usd / 1e9} for r in floor.itertuples()],
         "floor_effect_note": "no window of these groups reaches the fixed magnitude threshold, so the classifier "
-                             "detects nothing there in any year (pre-registered thresholds; not a modelling result)",
+                             "detects nothing there in any year (thresholds fixed before the runs; not a modelling result)",
         "floor_years": floor_years(win, clf.magnitude_threshold, set(zip(floor["series_key"], floor["symbol"]))),
         "floor_years_note": "years (by window end) in which no window of a series and symbol reaches the fixed "
                             "magnitude threshold, for the groups that reach it in other years; GEX grows with the "

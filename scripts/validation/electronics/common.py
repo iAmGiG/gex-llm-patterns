@@ -308,6 +308,36 @@ ARMS: Dict[str, Arm] = {
                              model="qwen3-8b"),
     "qwen_p34_dated_2020": Arm("qwen_p34_dated_2020", "p4_2020_dated", "SPY", 7, "Qwen3-8B, Phase 4 inputs with the dates",
                                model="qwen3-8b"),
+    # D-33: the seven Llama 3.1 8B twins once more with the reasoning field first in the JSON schema (model label
+    # llama-3.1-8b-instruct-rf), to test whether the verdict-first order explains the failure of the llama_* arms.
+    "llamarf_bridge_jan": Arm("llamarf_bridge_jan", "jan2026_phase4a", "SPY", 8,
+                              "Llama 3.1 8B, reasoning-first schema on the exact published inputs: bridge to o4-mini",
+                              model="llama-3.1-8b-instruct-rf"),
+    "llamarf_full_spy": Arm("llamarf_full_spy", "new_full", "SPY", 8,
+                            "Llama 3.1 8B, reasoning-first schema on the complete SPY series, 2008-2026",
+                            model="llama-3.1-8b-instruct-rf"),
+    "llamarf_ex0dte_spy": Arm("llamarf_ex0dte_spy", "new_ex0dte", "SPY", 8,
+                              "Llama 3.1 8B, reasoning-first schema on the 0DTE-excluded SPY series, 2008-2026",
+                              model="llama-3.1-8b-instruct-rf"),
+    "llamarf_p34_obf_2024": Arm("llamarf_p34_obf_2024", "p3_2024", "SPY", 8,
+                                "Llama 3.1 8B, reasoning-first schema, Phase 3 inputs with Day-T labels",
+                                model="llama-3.1-8b-instruct-rf"),
+    "llamarf_p34_dated_2024": Arm("llamarf_p34_dated_2024", "p3_2024_dated", "SPY", 8,
+                                  "Llama 3.1 8B, reasoning-first schema, Phase 3 inputs with the dates",
+                                  model="llama-3.1-8b-instruct-rf"),
+    "llamarf_p34_obf_2020": Arm("llamarf_p34_obf_2020", "p4_2020", "SPY", 8,
+                                "Llama 3.1 8B, reasoning-first schema, Phase 4 inputs with Day-T labels",
+                                model="llama-3.1-8b-instruct-rf"),
+    "llamarf_p34_dated_2020": Arm("llamarf_p34_dated_2020", "p4_2020_dated", "SPY", 8,
+                                  "Llama 3.1 8B, reasoning-first schema, Phase 4 inputs with the dates",
+                                  model="llama-3.1-8b-instruct-rf"),
+    # D-34: decoding control on the exact published inputs. gpt-oss-20b and Llama 3.1 8B (verdict-first schema) with
+    # temperature 0 in every request, against their default sampling in oss_bridge_jan and llama_bridge_jan.
+    "osst0_bridge_jan": Arm("osst0_bridge_jan", "jan2026_phase4a", "SPY", 9,
+                            "gpt-oss-20b at temperature 0 on the exact published inputs", model="gpt-oss-20b-t0"),
+    "llamat0_bridge_jan": Arm("llamat0_bridge_jan", "jan2026_phase4a", "SPY", 9,
+                              "Llama 3.1 8B at temperature 0 on the exact published inputs",
+                              model="llama-3.1-8b-instruct-t0"),
 }
 
 
@@ -344,7 +374,15 @@ class LocalModel:
     engine_args: Tuple[str, ...] = ()  # further vLLM engine arguments, recorded with every local run
     engine_env: Dict[str, str] = field(default_factory=dict)
     reasoning: bool = True  # False: no reasoning mode, so the request body carries no reasoning_effort
+    # Protocol variants (D-33, D-34). Both are empty for the models of D-29, D-30 and D-32, whose request bodies must
+    # stay byte-identical to the stored ones.
+    schema_order: Tuple[str, ...] = ()  # property order of the JSON schema in the request; () = REGIME_JSON_SCHEMA's
+    sampling: Dict[str, Any] = field(default_factory=dict)  # sampling parameters sent with every request
 
+
+# Property order of the reasoning-first schema (D-33): reasoning, the five metrics, then the type and the verdict.
+REASONING_FIRST_ORDER = ("reasoning", "positive_days", "negative_days", "avg_magnitude_billions", "sign_flips",
+                         "persistence_pct", "regime_type", "regime_detected", "confidence")
 
 # FlashInfer's top-k/top-p sampler compiles a kernel at start-up (it needs ninja and nvcc); the PyTorch sampler needs
 # no compiler and samples the same distribution
@@ -367,6 +405,21 @@ LOCAL_SPECS: Dict[str, LocalModel] = {
     # top-k 20). reasoning_effort is sent as for gpt-oss-20b; the Qwen3 chat template does not use it.
     "qwen3-8b": LocalModel("qwen3-8b", "Qwen/Qwen3-8B", "b968826d9c46dd6066d109eabc6255188de91218", "Apache-2.0",
                            "qwen_", 0.27, ("--reasoning-parser", "qwen3"), _PYTORCH_SAMPLER),
+    # D-33: Llama 3.1 8B again, same weights and engine, with the reasoning field first in the JSON schema, so that
+    # the model writes its reasoning and the five metrics before the verdict (the order of the 40-window exploratory
+    # run of 2026-11-08). Its own served name keeps its answers apart from the verdict-first arms.
+    "llama-3.1-8b-instruct-rf": LocalModel("llama-3.1-8b-instruct-rf", "meta-llama/Llama-3.1-8B-Instruct",
+                                           "0e9e39f249a16976918f6564b8830bc894c89659", "Llama 3.1 Community License",
+                                           "llamarf_", 0.22, (), _PYTORCH_SAMPLER, reasoning=False,
+                                           schema_order=REASONING_FIRST_ORDER),
+    # D-34: decoding control. The same weights, engine and schema as gpt-oss-20b and llama-3.1-8b-instruct, with
+    # temperature 0 (greedy decoding) sent in every request instead of each model's default sampling.
+    "gpt-oss-20b-t0": LocalModel("gpt-oss-20b-t0", "openai/gpt-oss-20b", "6cee5e81ee83917806bbde320786a8fb61efebee",
+                                 "Apache-2.0", "osst0_", 0.22, (), _PYTORCH_SAMPLER, sampling={"temperature": 0.0}),
+    "llama-3.1-8b-instruct-t0": LocalModel("llama-3.1-8b-instruct-t0", "meta-llama/Llama-3.1-8B-Instruct",
+                                           "0e9e39f249a16976918f6564b8830bc894c89659", "Llama 3.1 Community License",
+                                           "llamat0_", 0.22, (), _PYTORCH_SAMPLER, reasoning=False,
+                                           sampling={"temperature": 0.0}),
 }
 LOCAL_MODELS = frozenset(LOCAL_SPECS)
 OPEN_MODEL = "gpt-oss-20b"  # the first open-weights model (D-29)
@@ -398,6 +451,9 @@ PRICING_USD_PER_MTOK: Dict[str, Dict[str, Tuple[float, float]]] = {
     "gpt-oss-20b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},  # local GPU, no API charge
     "llama-3.1-8b-instruct": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
     "qwen3-8b": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
+    "llama-3.1-8b-instruct-rf": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
+    "gpt-oss-20b-t0": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
+    "llama-3.1-8b-instruct-t0": {"standard": (0.0, 0.0), "batch": (0.0, 0.0), "local": (0.0, 0.0)},
 }
 
 REGIME_TYPES = ("persistent_positive", "persistent_negative", "transitional", "low_conviction")
@@ -423,6 +479,26 @@ REGIME_JSON_SCHEMA: Dict[str, Any] = {
                      "avg_magnitude_billions", "sign_flips", "persistence_pct", "confidence", "reasoning"],
     },
 }
+
+
+def regime_json_schema(model: str = MODEL) -> Dict[str, Any]:
+    """The JSON schema sent to ``model``: REGIME_JSON_SCHEMA itself, or the same schema with the properties in the
+    model's ``schema_order`` (LocalModel, D-33).  Guided decoding writes the fields in the order of the schema."""
+    spec = LOCAL_SPECS.get(model)
+    order = spec.schema_order if spec is not None else ()
+    if not order:
+        return REGIME_JSON_SCHEMA
+    properties = REGIME_JSON_SCHEMA["schema"]["properties"]
+    if sorted(order) != sorted(properties):
+        raise ValueError(f"schema_order of {model!r} must name each schema property once")
+    schema = dict(REGIME_JSON_SCHEMA["schema"], properties={k: properties[k] for k in order}, required=list(order))
+    return dict(REGIME_JSON_SCHEMA, schema=schema)
+
+
+def model_sampling(model: str) -> Dict[str, Any]:
+    """Sampling parameters sent with every request to ``model`` (LocalModel.sampling, D-34); {} = the model's defaults."""
+    spec = LOCAL_SPECS.get(model)
+    return dict(spec.sampling) if spec is not None else {}
 
 
 def estimate_cost_usd(model: str, mode: str, prompt_tokens: int, completion_tokens: int) -> float:
@@ -664,7 +740,8 @@ T_RATES_VIEW = "backups.gex_llm_regime_rates_summary"
 def chat_body(prompt: str, model: str = MODEL, reasoning_effort: Optional[str] = REASONING_EFFORT,
               max_completion_tokens: int = MAX_COMPLETION_TOKENS, response_format: str = RESPONSE_FORMAT) -> Dict[str, Any]:
     """Request body shared by the Batch JSONL and the synchronous pilot.  A local model without a reasoning mode
-    (LocalModel.reasoning False) gets no reasoning_effort; every other body is unchanged."""
+    (LocalModel.reasoning False) gets no reasoning_effort; a protocol variant (D-33, D-34) gets its own schema order
+    or sampling parameters; every other body is unchanged."""
     body: Dict[str, Any] = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -673,7 +750,8 @@ def chat_body(prompt: str, model: str = MODEL, reasoning_effort: Optional[str] =
     if reasoning_effort and model_reasoning_effort(model):
         body["reasoning_effort"] = reasoning_effort
     if response_format == "json_schema":
-        body["response_format"] = {"type": "json_schema", "json_schema": REGIME_JSON_SCHEMA}
+        body["response_format"] = {"type": "json_schema", "json_schema": regime_json_schema(model)}
+    body.update(model_sampling(model))
     return body
 
 
