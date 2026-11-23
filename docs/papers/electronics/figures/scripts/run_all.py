@@ -39,6 +39,8 @@ import theme
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 MANUSCRIPT = theme.common.PAPER_DIR / "latex" / "Regan_Xie_Electronics.tex"
+SUPPLEMENT = theme.common.PAPER_DIR / "latex" / "Regan_Xie_Electronics_Supplement.tex"  # registers the figures of its own sections
+MANUSCRIPT_FILES = (MANUSCRIPT, SUPPLEMENT)  # the files whose \newcommand{\figXxx}{stem} lines are the figure registry of the paper
 STEM_PATTERN = re.compile(r"^(?:fig)?(\d{1,2})(?:_.*)?$")
 MACRO_PATTERN = re.compile(r"\\newcommand\{\\fig[A-Za-z]+\}\{(fig\d{2}_[A-Za-z0-9_]+)\}")
 OUTPUT_KINDS = ("png", "pdf", "json")
@@ -114,8 +116,18 @@ def declared(script: Path) -> Dict[str, Any]:
 
 
 def manuscript_stems() -> Optional[List[str]]:
-    """Figure stems the manuscript registers (\\newcommand{\\figXxx}{figNN_name}), or None without a manuscript."""
-    return MACRO_PATTERN.findall(MANUSCRIPT.read_text()) if MANUSCRIPT.is_file() else None
+    """Figure stems the article and its supplement register (\\newcommand{\\figXxx}{figNN_name}), or None without the article.
+
+    The supplement registers the figures of its own sections (cross-asset and intraday); a stem that both files register
+    is listed once.  A missing supplement is not an error: its figures are then reported as not included.
+    """
+    if not MANUSCRIPT.is_file():
+        return None
+    stems: List[str] = []
+    for path in MANUSCRIPT_FILES:
+        if path.is_file():
+            stems += [stem for stem in MACRO_PATTERN.findall(path.read_text()) if stem not in stems]
+    return stems
 
 
 def summary_line(info: Dict[str, Any]) -> str:
@@ -195,7 +207,7 @@ def check_figures(figures: Sequence[Figure], output_dir: Path) -> int:
     wanted = set(manuscript or ())
     notes = [f"script not in the registry: {stem}" for stem in stray]
     notes += [f"manuscript includes {stem}, which is not in the registry" for stem in sorted(wanted - registered)]
-    notes += [f"registry figure {fig.stem} is not included by the manuscript" for fig in FIGURES
+    notes += [f"registry figure {fig.stem} is not included by the manuscript or its supplement" for fig in FIGURES
               if manuscript is not None and fig.stem not in wanted]
     for note in notes:
         print(f"note: {note}")
