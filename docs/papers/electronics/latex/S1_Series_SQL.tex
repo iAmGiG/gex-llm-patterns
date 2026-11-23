@@ -99,10 +99,10 @@ ORDER BY d, snapshot_timestamp DESC;
 
 \textbf{Call leg only (\ident{call_only}).} The sum of the call terms \texttt{g} of the third statement over all expiries, same-day expiries included, with the put terms dropped. In the rebuilt summary table this is \ident{net_call_gex} (up to the float4 rounding of the stored column), which the second statement returns as \texttt{call\_gex\_30}.
 
-\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol (Section~3.6 of the article), which the following statement computes (tested read-only on 2026-10-29). The factor and the number of days are stored with the series.
+\textbf{Scaled series (\ident{new_full_scaled}).} The \ident{new_full} values of QQQ and IWM multiplied by one fixed factor per symbol (Section~3.6 of the article), which the following statement computes (tested read-only on 2026-10-29). The factor is the median ratio of SPY's volume-weighted open-interest notional to the symbol's; \ident{total_weighted_oi} is built from volume times open interest. The factor and the number of days are stored with the series.
 
 \begin{lstlisting}[style=appcode]
--- new_full_scaled: factor of one symbol = median over 2020-01-01..2026-10-09 of the ratio of SPY's open-interest notional to the symbol's.
+-- new_full_scaled: factor of one symbol = median over 2020-01-01..2026-10-09 of the ratio of SPY's volume-weighted open-interest notional to the symbol's.
 -- Parameter :sym is QQQ or IWM; the scaled values are the new_full values of the symbol times this factor.
 WITH n AS (SELECT symbol, trading_date, total_weighted_oi::float8 * 100.0 * underlying_price::float8 AS notional
            FROM gex.options_daily_summary

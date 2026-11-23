@@ -51,7 +51,8 @@
 
 % Figure registry: manuscript figures in order of first citation -> stems of ../figures/output/<stem>.png.
 % File numbers follow the figure list of the data audit (design memo, issue #261); manuscript numbers follow the text,
-% so Figures 5, 7 and 12 sit at file numbers 12, 05 and 07.  Keep this block in step with ../figures/scripts.
+% so Figures 5, 7, 9 and 10 sit at file numbers 12, 05, 10 and 07.  fig09 (cross-asset) and fig11 (intraday) are in the
+% supplement (Regan_Xie_Electronics_Supplement.tex registers them).  Keep this block in step with ../figures/scripts.
 \newcommand{\figDesign}{fig01_study_design}
 \newcommand{\figWindow}{fig02_convention_window}
 \newcommand{\figSeries}{fig03_series_comparison}
@@ -60,9 +61,7 @@
 \newcommand{\figBridge}{fig06_bridge_agreement}
 \newcommand{\figComplete}{fig05_llm_arms_by_year}
 \newcommand{\figDeep}{fig08_deep_baseline}
-\newcommand{\figCross}{fig09_cross_asset}
 \newcommand{\figPost}{fig10_post_publication_2026}
-\newcommand{\figIntraday}{fig11_intraday_vs_eod}
 \newcommand{\figFidelity}{fig07_llm_classifier_fidelity}
 
 % \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
@@ -78,7 +77,7 @@
   \endgroup}
 
 %=================================================================
-\Title{Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test}
+\Title{Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Inputs with Both Option Legs and a Rule-Following Test of a Current LLM}
 
 % Author ORCID IDs
 \newcommand{\orcidauthorA}{0009-0009-3777-6148}
@@ -102,17 +101,15 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 (AIAI 2026), Chania, Crete, Greece, 16--19 July 2026 \cite{regan2026regimes}}
 
 % Abstract: one paragraph, IMRaD without headings, at most 200 words (MDPI).
-% src: Section 4.2 (rule, 2024--2025 pooled: 501 of 501 published inputs, 60 of 502 complete series); 4.3 (bridge agreement 99.6, kappa 0.993);
-%      4.4 (gpt-6-luna 63 of 502 = 12.5); 4.10 (agreement 99.7, kappa 0.985); 4.5 (ex-0DTE 14.7 vs 12.0); 4.11 (180 vs 181 of 223); all from results/stats.yaml and detection_by_year*.csv
-% src (files): stats.yaml rates classifier jan2026_phase4a 2024-2025 k=501 n=501; new_full k=60 n=502; arm full_spy 63 of 502; bridge_agreement.yaml agree 99.6459 kappa 0.992871;
-%      detection_by_year.csv arm=full_spy scope=all agree_pct 99.658921 kappa 0.984988 n_compared 4691; stats.yaml rates new_ex0dte 2024-2025 rate_pct 14.741036 vs new_full 11.952191
-%      open-weights sentence (Section 4.12, tab:open): detection_by_year.csv scope=all agree_pct with the rule oss_full_spy 99.722755 and qwen_full_spy 98.692344 (answered windows);
-%      llama_* n_detect (4,690 of 4,691 per complete series; every window of the bridge and baselines), kappa 0.000
+% src: Section 4.2 (rule, 2024--2025 pooled: 501 of 501 published inputs, 60 of 502 complete series; period shift -10.2 points, bootstrap interval -23.2 to 2.0); 4.3 (bridge agreement 99.6, kappa 0.993);
+%      4.4 (gpt-6-luna 63 of 502 = 12.5); 4.8 (agreement 99.7 of 4,691 windows); 4.9 (180 vs 181 of 223); all from results/stats.yaml and detection_by_year*.csv
+% src (files): stats.yaml rates classifier jan2026_phase4a 2024-2025 k=501 n=501; new_full k=60 n=502; arm full_spy 63 of 502; headline_contrasts name=period_shift series_key=new_full symbol=SPY (diff_pp -10.236863, bootstrap_diff_ci_pp [-23.167616, 2.001953]);
+%      bridge_agreement.yaml agree 99.6459 kappa 0.992871; detection_by_year.csv arm=full_spy scope=all agree_pct 99.658921 n_compared 4691; dated vs obfuscated 180 vs 181 of 223 (stats.yaml)
 % note: 501 windows on the published inputs, 502 on the complete series (see Section 4.2)
-\abstract{Temporal obfuscation tests whether a large language model (LLM) reasons about numbers or recalls market history. Our earlier work reported that an LLM detects persistent dealer-gamma regimes in 30-day windows of obfuscated daily gamma exposure (GEX) of SPY, with a sharp rise after 2023. We re-run that test on the complete data. The published 2024--2025 inputs lacked the put leg of the options chain. We assembled six daily series, replayed the deterministic rule, bridged o4-mini to gpt-6-luna on the published inputs, reran two baselines with relative day labels, and repeated seven arms with three open-weights models. On the published inputs the rule detects all 501 windows of 2024--2025; on the complete series it detects 60 of 502 (12.0\%), and gpt-6-luna 63 (12.5\%). o4-mini and gpt-6-luna agree on 99.6\% of the published windows (Cohen's kappa 0.993), and gpt-6-luna follows the rule in 99.7\% of 4,691 windows (kappa 0.985). Two open-weights reasoning models follow the rule where they answer; a non-reasoning model detects nearly every window. Removing same-day expiries gives 14.7\%, not the published rate. With relative labels gpt-6-luna detects 80.7\% of the 2024 baseline, against 81.2\% with dates. The complete series shows no post-2023 increase that the data distinguish from zero.}
+\abstract{Temporal obfuscation removes dates and tickers so that a large language model (LLM) sees only numbers and stated criteria. Our earlier work reported that an LLM detects persistent dealer-gamma regimes in 30-day windows of obfuscated SPY gamma exposure (GEX), with a sharp rise after 2023. We re-run that test on complete inputs, with both the call and the put leg of the chain; the published 2024--2025 inputs had the call leg only. We replayed the deterministic rule on six series, bridged o4-mini to gpt-6-luna and reran two baselines with relative day labels. On the published inputs the rule detects all 501 windows of 2024--2025; on the complete series it detects 60 of 502 (12.0\%), and gpt-6-luna 63 (12.5\%). The models agree on 99.6\% of the published windows (kappa 0.993), and gpt-6-luna follows the rule in 99.7\% of 4,691 windows. The prompt states the criteria and the rule is the reference label, so the arms test rule-following and cannot separate recall from reasoning. The shift after 2023 is $-$10.2 points (bootstrap interval $-$23.2 to 2.0): no evidence of a rise at the nominal rule. Dated and relative labels show no detectable difference (180 against 181 of 223), without a positive control.}
 
 % Keywords (semicolon-separated per MDPI style, 3--10)
-\keyword{LLM validation; regime detection; gamma exposure; 0DTE options; temporal obfuscation; data provenance; reproducibility}
+\keyword{LLM validation; regime detection; gamma exposure; same-day-expiry options; temporal obfuscation; data provenance; reproducibility}
 
 % Listing styles (the listings package is loaded above).  "prompt" typesets <=, >= and -> as symbols; it is used for the
 % prompt only, because the SQL contains the operators literally.  The two penalties are set to 0 inside the listing because
@@ -141,12 +138,9 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \input{./04_04_Complete}
 \input{./04_05_Ablation}
 \input{./04_06_Deep}
-\input{./04_07_Cross}
-\input{./04_08_Post}
-\input{./04_09_Intraday}
-\input{./04_10_Fidelity}
-\input{./04_11_Dated}
-\input{./04_12_Open}
+\input{./04_07_Post}
+\input{./04_08_Fidelity}
+\input{./04_09_Dated}
 
 \input{./05_Discussion}
 \input{./06_Conclusion}
@@ -162,7 +156,7 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \vspace{6pt}
 
 % TODO(authors): Dr. Xie to confirm the CRediT roles; the text below is the JRFM statement.
-\supplementary{The following supporting information is available with this article: Section~S1, series definitions in SQL; Section~S2 and Tables~S1--S5, run ledger; Section~S3 and Tables~S6--S8, detail of the open-weights models.}
+\supplementary{The following supporting information is available with this article: Section~S1, series definitions in SQL; Section~S2 and Tables~S1 and~S2, run ledger; Section~S3, Tables~S3 and~S4 and Figure~S1, cross-asset replication; Section~S4, Table~S5 and Figure~S2, intraday check; Section~S5 and Table~S6, fidelity by arm.}
 
 \authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
 
@@ -171,9 +165,9 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \conflictsofinterest{The authors declare no conflict of interest.}
 
 % TODO(authors): add the Zenodo DOI once the record is created (issue #274) and update the access date at submission. The vendor's terms allow the deposit (decision D-31, 2026-11-08).
-\dataavailability{All code, the condensed per-window tables and the result files are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on 2 November 2026). The full tables (daily series, windows, runs and detections) are deposited at Zenodo; the DOI is added at submission. The options data were obtained from Alpha Vantage under a premium API subscription whose terms permit this use; the raw option chains are not part of the deposit, which holds the daily aggregates shown to the models.}
+\dataavailability{All code, the condensed per-window tables and the result files are available at \url{https://github.com/iAmGiG/gex-llm-patterns} (accessed on 2 November 2026). The full tables (daily series, windows, runs and detections) are deposited at Zenodo, in a deposit that a companion manuscript shares and that also holds the answers it reports; the DOI is added at submission. The options data were obtained from Alpha Vantage under a premium API subscription whose terms permit this use; the raw option chains are not part of the deposit, which holds the daily aggregates shown to the models.}
 
-\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for historical options market data, accessed under a premium API subscription. OpenAI's gpt-6-luna is the subject of investigation in this study and was accessed through the OpenAI Batch API; the open-weights models gpt-oss-20b (OpenAI), Llama~3.1~8B~Instruct (Meta) and Qwen3-8B (Alibaba) were run on these computational resources with vLLM. During this study the authors used Anthropic's Claude Code (\url{https://www.anthropic.com/claude-code}; accessed on 2 November 2026), a command-line AI coding assistant, with the models Claude Opus 5.5, Claude Fable 5.1 and Claude Sonnet 5.5 (used in October and November 2026), to write the analysis code and to draft and revise the manuscript text from the stored results. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
+\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. This research was conducted as part of the first author's doctoral dissertation. We thank Alpha Vantage for historical options market data, accessed under a premium API subscription. OpenAI's gpt-6-luna is the subject of investigation in this study and was accessed through the OpenAI Batch API. During this study the authors used Anthropic's Claude Code (\url{https://www.anthropic.com/claude-code}; accessed on 2 November 2026), a command-line AI coding assistant, with the models Claude Opus 5.5, Claude Fable 5.1 and Claude Sonnet 5.5 (used in October and November 2026), to write the analysis code and to draft and revise the manuscript text from the stored results. The authors have reviewed and edited the output and take full responsibility for the content of this publication.}
 
 \institutionalreview{Not applicable.}
 
@@ -188,7 +182,6 @@ API & Application Programming Interface \\
 EOD & End of day (the daily closing snapshot) \\
 ETF & Exchange-Traded Fund \\
 GEX & Gamma Exposure \\
-GPU & Graphics Processing Unit \\
 ISO & International Organization for Standardization \\
 LLM & Large Language Model \\
 OI & Open Interest \\
