@@ -1,0 +1,134 @@
+{
+  "argv": [
+    "bf01_reproduction_ladder.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/fig01_study_design.py",
+      "sha256": "7a3d2bd61ec0fa62008168322717428aa1fc22315cff9ecca1438b5eede1095d"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "09467fd51cd6ba51f026c6747ea4c77c2e67564ffea4ede0179f59fa2078b369"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+    }
+  ],
+  "extra": {
+    "boxes": [
+      {
+        "gpu_hours": 10.0,
+        "model": "gpt-oss-20b",
+        "pending": false,
+        "requests": 12398
+      },
+      {
+        "gpu_hours": 3.3,
+        "model": "llama-3.1-8b-instruct",
+        "pending": false,
+        "requests": 12378
+      },
+      {
+        "gpu_hours": 98.5,
+        "model": "qwen3-8b",
+        "pending": false,
+        "requests": 22400
+      },
+      {
+        "model": "llama-3.1-8b-instruct-rf",
+        "pending": true
+      },
+      {
+        "model": "gpt-oss-20b-t0 / llama-3.1-8b-instruct-t0",
+        "pending": true
+      }
+    ],
+    "bridge": {
+      "agree_pct": 99.646,
+      "kappa": 0.9929,
+      "n_pairs": 1412
+    },
+    "openweights_code": {
+      "docs/papers/openweights/figures/scripts/bf01_reproduction_ladder.py": "539ae6c38ea74d7985ef7953953c801678816bf6f687cfefbf879210ca05babd",
+      "docs/papers/openweights/figures/scripts/figopen.py": "45062d93b392979e4f50cbb31416cb2bd3d0f2eba514b35a5e88966474495dcc"
+    }
+  },
+  "figure": "bf01_reproduction_ladder",
+  "generated_utc": "2026-11-23T23:30:14+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
+  "outputs": {
+    "pdf": {
+      "bytes": 17732,
+      "path": "docs/papers/openweights/figures/output/bf01_reproduction_ladder.pdf",
+      "sha256": "0c564696182b064c1705ce3afd4f27dc3ebe83e36a6d8781cf8355dae19a26f5"
+    },
+    "png": {
+      "bytes": 192233,
+      "path": "docs/papers/openweights/figures/output/bf01_reproduction_ladder.png",
+      "pixels": [
+        1842,
+        900
+      ],
+      "sha256": "774068962d268f0147693b5011f1891a9d2b9bb52cd9993f65b87be89cd707ec"
+    }
+  },
+  "results": {
+    "files": {
+      "bridge_agreement.csv": {
+        "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "d1841930901987df1fa130d1a7c1fc4863354caf9282b2f5f008837171300c91"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-11-10T02:37:51+00:00",
+      "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
+    }
+  },
+  "rows": {
+    "data/backups/gex_llm/condensed/runs.csv.gz": 179,
+    "docs/papers/electronics/results/bridge_agreement.csv": 548
+  },
+  "sources": [
+    {
+      "bytes": 58727,
+      "path": "data/backups/gex_llm/condensed/runs.csv.gz",
+      "sha256": "0c03069353cb57e2c12c6909d32b8594166ffb68ad12d2ed6301dbc5ba2b5d1b"
+    },
+    {
+      "bytes": 124565,
+      "path": "docs/papers/electronics/results/bridge_agreement.csv",
+      "sha256": "d1841930901987df1fa130d1a7c1fc4863354caf9282b2f5f008837171300c91"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

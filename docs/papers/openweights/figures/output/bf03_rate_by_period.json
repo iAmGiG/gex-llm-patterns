@@ -1,0 +1,161 @@
+{
+  "argv": [
+    "bf03_rate_by_period.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "09467fd51cd6ba51f026c6747ea4c77c2e67564ffea4ede0179f59fa2078b369"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+    }
+  ],
+  "extra": {
+    "arm": "full_spy",
+    "openweights_code": {
+      "docs/papers/openweights/figures/scripts/bf03_rate_by_period.py": "6fc040ee0b889beb99516908cb3ca0df513a7ed0116181f707b3035a0fbe2655",
+      "docs/papers/openweights/figures/scripts/figopen.py": "45062d93b392979e4f50cbb31416cb2bd3d0f2eba514b35a5e88966474495dcc"
+    },
+    "rates_by_period": {
+      "2008-2019": {
+        "llama": 99.967,
+        "luna": 10.167,
+        "oss": 10.241,
+        "qwen_answered": 11.486,
+        "qwen_lower": 10.602,
+        "qwen_upper": 18.294,
+        "rule": 10.167,
+        "rule_check_clf_rate_pct": 10.167
+      },
+      "2020-2023": {
+        "llama": 100.0,
+        "luna": 22.687,
+        "oss": 22.488,
+        "qwen_answered": 26.749,
+        "qwen_lower": 23.582,
+        "qwen_upper": 35.423,
+        "rule": 22.189,
+        "rule_check_clf_rate_pct": 22.189
+      },
+      "2024-2025": {
+        "llama": 100.0,
+        "luna": 12.55,
+        "oss": 12.351,
+        "qwen_answered": 18.296,
+        "qwen_lower": 14.542,
+        "qwen_upper": 35.06,
+        "rule": 11.952,
+        "rule_check_clf_rate_pct": 11.952
+      },
+      "2026": {
+        "llama": 100.0,
+        "luna": 11.34,
+        "oss": 11.856,
+        "qwen_answered": 13.665,
+        "qwen_lower": 11.34,
+        "qwen_upper": 28.351,
+        "rule": 11.34,
+        "rule_check_clf_rate_pct": 11.34
+      },
+      "answered_pct_rule_detects": {
+        "bridge_jan": 99.85,
+        "ex0dte_spy": 98.574,
+        "full_spy": 98.851,
+        "p34_dated_2020": 96.296,
+        "p34_dated_2024": 98.343,
+        "p34_obf_2024": 98.895
+      },
+      "answered_pct_rule_rejects": {
+        "bridge_jan": 83.931,
+        "ex0dte_spy": 91.262,
+        "full_spy": 88.29,
+        "p34_dated_2020": 97.959,
+        "p34_dated_2024": 45.238,
+        "p34_obf_2024": 78.571
+      }
+    }
+  },
+  "figure": "bf03_rate_by_period",
+  "generated_utc": "2026-11-23T23:29:56+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
+  "outputs": {
+    "pdf": {
+      "bytes": 18141,
+      "path": "docs/papers/openweights/figures/output/bf03_rate_by_period.pdf",
+      "sha256": "8d81cdd7d2700cc608e419445e7d389fdb26c9ae0fa934e073f7c15c3a5011e9"
+    },
+    "png": {
+      "bytes": 153883,
+      "path": "docs/papers/openweights/figures/output/bf03_rate_by_period.png",
+      "pixels": [
+        1842,
+        930
+      ],
+      "sha256": "7259d45f7c97fa40780acf4600abc9a622fbbf9091271e77f3f30e066f1e0fad"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "9808665d65b12d1461983e348acbbfdea26faef533203d7278ee8848e59fa539"
+      },
+      "missing_answer_bounds.csv": {
+        "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "779532050b8e74cb161912d649bcfc9a16bb8da3e1922a3773af05659cb548e9"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-11-10T02:37:51+00:00",
+      "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 843,
+    "docs/papers/electronics/results/missing_answer_bounds.csv": 34
+  },
+  "sources": [
+    {
+      "bytes": 138773,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "9808665d65b12d1461983e348acbbfdea26faef533203d7278ee8848e59fa539"
+    },
+    {
+      "bytes": 4998,
+      "path": "docs/papers/electronics/results/missing_answer_bounds.csv",
+      "sha256": "779532050b8e74cb161912d649bcfc9a16bb8da3e1922a3773af05659cb548e9"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

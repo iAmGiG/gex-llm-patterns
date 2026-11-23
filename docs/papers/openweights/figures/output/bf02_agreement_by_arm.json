@@ -1,0 +1,160 @@
+{
+  "argv": [
+    "bf02_agreement_by_arm.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "09467fd51cd6ba51f026c6747ea4c77c2e67564ffea4ede0179f59fa2078b369"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+    }
+  ],
+  "extra": {
+    "arms": [
+      "bridge_jan",
+      "full_spy",
+      "ex0dte_spy",
+      "p34_obf_2024",
+      "p34_dated_2024",
+      "p34_obf_2020",
+      "p34_dated_2020"
+    ],
+    "models_drawn": [
+      "oss",
+      "llama",
+      "qwen"
+    ],
+    "openweights_code": {
+      "docs/papers/openweights/figures/scripts/bf02_agreement_by_arm.py": "a91a4b33766b481f6aa4e2d6fdfbcc16641330b686eccacf9bad170f7a5c8235",
+      "docs/papers/openweights/figures/scripts/figopen.py": "45062d93b392979e4f50cbb31416cb2bd3d0f2eba514b35a5e88966474495dcc"
+    },
+    "values": {
+      "llama:agree_pct": [
+        45.1897,
+        13.0036,
+        10.4882,
+        81.1659,
+        81.1659,
+        12.1076,
+        12.1076
+      ],
+      "llama:kappa": [
+        0.0,
+        0.0001,
+        0.0001,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "oss:agree_pct": [
+        99.5935,
+        99.7228,
+        99.8508,
+        98.2063,
+        99.1031,
+        100.0,
+        100.0
+      ],
+      "oss:kappa": [
+        0.9918,
+        0.9878,
+        0.9921,
+        0.9391,
+        0.9701,
+        1.0,
+        1.0
+      ],
+      "qwen:agree_pct": [
+        98.8848,
+        98.6923,
+        99.4441,
+        98.1132,
+        95.4315,
+        100.0,
+        99.5413
+      ],
+      "qwen:kappa": [
+        0.9777,
+        0.9484,
+        0.9725,
+        0.9245,
+        0.6675,
+        1.0,
+        0.9785
+      ]
+    }
+  },
+  "figure": "bf02_agreement_by_arm",
+  "generated_utc": "2026-11-23T23:29:53+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
+  "outputs": {
+    "pdf": {
+      "bytes": 16950,
+      "path": "docs/papers/openweights/figures/output/bf02_agreement_by_arm.pdf",
+      "sha256": "3e6b38d1595131941d8a3e86dca78bdfe6d8f2929e0a1117ead26668045f909f"
+    },
+    "png": {
+      "bytes": 126981,
+      "path": "docs/papers/openweights/figures/output/bf02_agreement_by_arm.png",
+      "pixels": [
+        1842,
+        990
+      ],
+      "sha256": "75cbe248476faa98b049fd787bd077afd2ff331979d89d7215ef3e229d3ae6e0"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "9808665d65b12d1461983e348acbbfdea26faef533203d7278ee8848e59fa539"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-11-10T02:37:51+00:00",
+      "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 843
+  },
+  "sources": [
+    {
+      "bytes": 138773,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "9808665d65b12d1461983e348acbbfdea26faef533203d7278ee8848e59fa539"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

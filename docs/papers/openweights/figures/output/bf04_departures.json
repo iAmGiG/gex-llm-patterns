@@ -1,0 +1,128 @@
+{
+  "argv": [
+    "bf04_departures.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "09467fd51cd6ba51f026c6747ea4c77c2e67564ffea4ede0179f59fa2078b369"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "32824b1c1baf202b7a981e7e14eb6fd1360ccb6ca522dca638fad14ec2808577"
+    }
+  ],
+  "extra": {
+    "arms": [
+      "bridge_jan",
+      "ex0dte_spy",
+      "full_spy",
+      "p34_dated_2020",
+      "p34_dated_2024",
+      "p34_obf_2020",
+      "p34_obf_2024"
+    ],
+    "counts": {
+      "gpt-6-luna": {
+        "flips only": 24,
+        "magnitude only": 2,
+        "model rejects, rule detects": 11,
+        "persistence only": 0,
+        "two criteria": 0
+      },
+      "gpt-oss-20b": {
+        "flips only": 26,
+        "magnitude only": 2,
+        "model rejects, rule detects": 3,
+        "persistence only": 1,
+        "two criteria": 0
+      },
+      "qwen3-8b": {
+        "flips only": 83,
+        "magnitude only": 14,
+        "model rejects, rule detects": 9,
+        "persistence only": 1,
+        "two criteria": 1
+      }
+    },
+    "openweights_code": {
+      "docs/papers/openweights/figures/scripts/bf04_departures.py": "05f2012520dc3cf93c06c41b1659f1aecfd37480c6459a91815b5c68e4120da8",
+      "docs/papers/openweights/figures/scripts/figopen.py": "45062d93b392979e4f50cbb31416cb2bd3d0f2eba514b35a5e88966474495dcc"
+    }
+  },
+  "figure": "bf04_departures",
+  "generated_utc": "2026-11-23T23:29:59+00:00",
+  "git_dirty": true,
+  "git_dirty_tracked": true,
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
+  "outputs": {
+    "pdf": {
+      "bytes": 19492,
+      "path": "docs/papers/openweights/figures/output/bf04_departures.pdf",
+      "sha256": "606d6e361d7988641cdae09df42000adda1c20b7c20b7df77183dccf3ef3c148"
+    },
+    "png": {
+      "bytes": 143396,
+      "path": "docs/papers/openweights/figures/output/bf04_departures.png",
+      "pixels": [
+        1842,
+        870
+      ],
+      "sha256": "a201e11feac74bd9d4226cef5bfcd48463c9cac7768b93861eb4d32b925b3144"
+    }
+  },
+  "results": {
+    "files": {
+      "disagreements.csv": {
+        "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "cc7541989385fc3f32c4060b4ffec6c7473794052f0d4532eb07402977c269da"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-11-10T02:37:51+00:00",
+      "inputs_fingerprint": "124ef02a140c1b404aa04953db8c6ed88a24564c7a06165de687cdbf35820f14",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "fc4ab1c766874bade66ac25b85230c41a93f41ebe727885e430085f699c96adf",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/disagreements.csv": 9765,
+    "docs/papers/electronics/results/report.yaml": 15
+  },
+  "sources": [
+    {
+      "bytes": 1758378,
+      "path": "docs/papers/electronics/results/disagreements.csv",
+      "sha256": "cc7541989385fc3f32c4060b4ffec6c7473794052f0d4532eb07402977c269da"
+    },
+    {
+      "bytes": 330966,
+      "path": "docs/papers/electronics/results/report.yaml",
+      "sha256": "ef75b6ae3c6bf894bdf20b40c41e76c824f3efa54bac727dc2ee1782b087b6b2"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}
