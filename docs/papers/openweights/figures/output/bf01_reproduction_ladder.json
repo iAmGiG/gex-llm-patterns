@@ -69,10 +69,10 @@
     }
   },
   "figure": "bf01_reproduction_ladder",
-  "generated_utc": "2026-11-23T23:30:14+00:00",
-  "git_dirty": true,
-  "git_dirty_tracked": true,
-  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
+  "generated_utc": "2026-11-23T23:44:13+00:00",
+  "git_dirty": false,
+  "git_dirty_tracked": false,
+  "git_sha": "9f74657b2e9a37286a5fafb9b33104ef969ec755",
   "outputs": {
     "pdf": {
       "bytes": 17732,
