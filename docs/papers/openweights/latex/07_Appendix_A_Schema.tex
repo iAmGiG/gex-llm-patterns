@@ -1,0 +1,36 @@
+%  Appendix A: the order of the fields of the JSON schema.
+%  The prompt text and the complete strict schema are printed in Appendix A of the companion manuscript (Paper A) and are stored with the
+%  requests; this appendix lists only the property order, which is what the Llama runs vary.
+%=================================================================
+\section{Schema Field Order}
+\label{app:schema}
+
+The answer is constrained by a strict JSON schema with nine required fields: \ident{regime_detected} (boolean), \ident{regime_type} (one of four strings), \ident{positive_days}, \ident{negative_days}, \ident{sign_flips} and \ident{confidence} (integers), \ident{avg_magnitude_billions} and \ident{persistence_pct} (numbers) and \ident{reasoning} (string). The prompt and the complete schema are those of Paper A (Appendix~A of the companion manuscript \cite{regan2026rerun}) and of the stored requests; the deposit holds every request. vLLM decodes the fields in the order of the schema. The runs of this paper use two orders.
+
+% src: scripts/validation/electronics/common.py REGIME_JSON_SCHEMA (properties order and required order of the stored arms); exploratory_llama_reorder_20261108/input.jsonl response_format (the order of the exploratory run; local, git-ignored, kept with the deposit); planning/02_decisions_log.md D-30, D-33
+% TODO(runs): confirm that the full run D-33 uses the order below (the exploratory order) and say so in the caption sentence above.
+\begin{lstlisting}[style=appcode]
+Verdict first (all stored arms)
+  1 regime_detected          boolean
+  2 regime_type              persistent_positive | persistent_negative | transitional | low_conviction
+  3 positive_days            integer
+  4 negative_days            integer
+  5 avg_magnitude_billions   number
+  6 sign_flips               integer
+  7 persistence_pct          number
+  8 confidence               integer
+  9 reasoning                string
+
+Reasoning first (exploratory run of 40 windows; full run of decision D-33)
+  1 reasoning                string
+  2 positive_days            integer
+  3 negative_days            integer
+  4 avg_magnitude_billions   number
+  5 sign_flips               integer
+  6 persistence_pct          number
+  7 regime_type              persistent_positive | persistent_negative | transitional | low_conviction
+  8 regime_detected          boolean
+  9 confidence               integer
+\end{lstlisting}
+
+For gpt-oss-20b and Qwen3-8B the reasoning channel of the model ends before the JSON object starts (the reasoning parsers of vLLM separate it), so these models have reasoned before they write any field, whatever the order of the schema.

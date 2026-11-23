@@ -1,0 +1,26 @@
+\subsection{Tokens, Retries and GPU Time}
+\label{sec:results:cost}
+
+% src: runs.csv.gz (condensed/) mode=local n_requests, prompt_tokens, completion_tokens and run_metadata.local.seconds, run_metadata.retry_of per model (oss 12,398 requests, 14 retry, 36,043.5 s; Llama 12,378, 0, 11,904.2 s; Qwen 22,400, 10,022, 354,438.9 s); llm_parse_stats.csv model=<model> arm_role=primary on the seven arms (mean_completion_tokens row-weighted 1,865.5, 169.9, 5,367.8; gpt-6-luna 758.2, Paper A; n_parsed 11,748, 11,750, 10,718 of n_rows 11,750; n_finish_length after the retry 0, 0, 1,032); bridge_agreement.csv comparison=test_retest (see Section 4.7)
+Table~\ref{tab:cost} summarizes what the three models cost: GPU time, not money, on shared A100 GPUs at no API fee. The GPU hours are engine wall-clock time summed over chunks; they include the start of the engine and depend on the load that other users put on the GPU, so they are not a throughput benchmark. The tokens per answer are the better measure of the work: Qwen3-8B writes about three times as many completion tokens as gpt-oss-20b and 32 times as many as Llama~3.1~8B, and gpt-oss-20b about 2.5 times as many as the hosted alias. The 14 retries of gpt-oss-20b and the 10{,}022 of Qwen3-8B reached the first limit of 4{,}000 tokens; the second limit left 1{,}032 windows of Qwen3-8B without an answer.
+
+\begin{table}[H]
+\centering
+\caption{Requests, tokens and GPU time of the local runs. Requests include pilots, repeats and retries. Mean completion tokens (reasoning tokens included), unanswered windows and repeats refer to the seven arms; gpt-6-luna is a reference from Paper A. Unanswered windows have no parsed answer after the retry. GPU hours are summed engine wall-clock time on shared GPUs.}
+% src: as the comment above
+\label{tab:cost}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Model & Requests & Retries at 8{,}000 & Mean completion tokens & Unanswered windows & Repeats equal & GPU hours \\
+\midrule
+gpt-oss-20b & 12{,}398 & 14 & 1{,}865 & 2 of 11{,}750 & 593 of 594 & 10.0 \\
+Llama~3.1~8B & 12{,}378 & 0 & 170 & 0 of 11{,}750 & 588 of 588 & 3.3 \\
+Qwen3-8B & 22{,}400 & 10{,}022 & 5{,}368 & 1{,}032 of 11{,}750 & 480 of 483 & 98.5 \\
+gpt-6-luna (Paper A) & --- & 0 & 758 & 0 of 11{,}750 & --- & --- \\
+\midrule
+Total, three models & 47{,}176 & 10{,}036 & & 1{,}034 & & 111.8 \\
+\bottomrule
+\end{tabular}
+\end{table}

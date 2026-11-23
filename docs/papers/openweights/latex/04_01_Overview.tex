@@ -1,0 +1,37 @@
+\subsection{The Three Models Against the Rule}
+\label{sec:results:overview}
+
+% src: detection_by_year.csv label_source=llm scope=all arm_role=primary (n_windows, n_parsed, agree_pct, kappa of the oss_, llama_ and qwen_ arms); Table 3
+Table~\ref{tab:results} gives the verdicts of the three models against the rule on the seven arms, and Figure~\ref{fig:agree} shows them with the hosted reference. gpt-oss-20b agrees with the rule in 98.2\% to 100.0\% of the windows of an arm (kappa 0.939 to 1.000), Qwen3-8B in 95.4\% to 100.0\% of the windows that it answers (kappa 0.668 to 1.000), and Llama~3.1~8B with the verdict first in a share that equals the detection rate of the rule, with kappa 0.000 in every arm. The following sections describe each model, then the departures from the rule, the effect of the schema order and the repeatability.
+
+% src: detection_by_year.csv label_source=classifier scope=all (rate_pct of jan2026_phase4a, new_full, new_ex0dte, p3_2024, p3_2024_dated, p4_2020, p4_2020_dated, symbol SPY) and label_source=llm scope=all arm=bridge_jan, full_spy, ex0dte_spy, p34_* (rate_pct), from Paper A; agree_pct and kappa of the oss_, llama_ and qwen_ arms; n_parsed / n_windows of the qwen_ arms
+\begin{table}[H]
+\centering
+\caption{The open-weights models against the rule, by arm. Windows of the arm; detection rate in percent of the rule and of gpt-6-luna over all windows (both columns are results of Paper A, shown for reference); agreement with the rule in percent (Cohen's kappa in brackets) of each open-weights model on the windows that it answered; and the share of windows that Qwen3-8B answered within 8{,}000 completion tokens. gpt-oss-20b answered every window except two of \ident{oss_full_spy}, and Llama~3.1~8B every window. The \ident{bridge_jan} row compares with the rule over all 1{,}476 windows, not with o4-mini over the 1{,}412 stored verdicts.}
+\label{tab:results}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+& & \multicolumn{2}{c}{Rate (Paper A)} & \multicolumn{3}{c}{Agreement with the rule} & Qwen3-8B \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-7}
+Arm & Windows & Rule & gpt-6-luna & gpt-oss-20b & Llama~3.1~8B & Qwen3-8B & answered \\
+\midrule
+\ident{bridge_jan} & 1{,}476 & 45.2 & 45.5 & 99.6 (0.992) & 45.2 (0.000) & 98.9 (0.978) & 91.1 \\
+\ident{full_spy} & 4{,}691 & 13.0 & 13.2 & 99.7 (0.988) & 13.0 (0.000) & 98.7 (0.948) & 89.7 \\
+\ident{ex0dte_spy} & 4{,}691 & 10.5 & 10.6 & 99.9 (0.992) & 10.5 (0.000) & 99.4 (0.973) & 92.0 \\
+\ident{p34_obf_2024} & 223 & 81.2 & 80.7 & 98.2 (0.939) & 81.2 (0.000) & 98.1 (0.924) & 95.1 \\
+\ident{p34_dated_2024} & 223 & 81.2 & 81.2 & 99.1 (0.970) & 81.2 (0.000) & 95.4 (0.668) & 88.3 \\
+\ident{p34_obf_2020} & 223 & 12.1 & 12.1 & 100.0 (1.000) & 12.1 (0.000) & 100.0 (1.000) & 100.0 \\
+\ident{p34_dated_2020} & 223 & 12.1 & 12.1 & 100.0 (1.000) & 12.1 (0.000) & 99.5 (0.979) & 97.8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figAgree}
+\caption{Agreement with the rule (a) and Cohen's kappa (b) by arm, for each model; the hollow grey diamond is gpt-6-luna on the same arm, a result of Paper A. Agreement is over the windows that the model answered. Windows have stride one and no interval is drawn. \textbf{Read this figure as:} the three reasoning-capable arms sit near the top right, and the Llama~3.1~8B markers sit at the detection rate of the rule on the left and at kappa zero.}
+% src: figures/output/bf02_agreement_by_arm.json (values: agree_pct and kappa per arm of detection_by_year.csv scope=all)
+\label{fig:agree}
+\end{figure}

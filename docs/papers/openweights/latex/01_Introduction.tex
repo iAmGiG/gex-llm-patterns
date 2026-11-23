@@ -1,0 +1,43 @@
+\section{Introduction}
+\label{sec:introduction}
+
+An evaluation of a language model can be repeated only while its model can be called. Hosted models are retired, and the alias that replaces one may behave differently \cite{chen2024chatgpt}; settings meant to make a model deterministic do not always do so \cite{atil2025nondeterminism}. A study that stores its answers keeps its numbers, but nobody can ask whether they would come out again. This paper asks how far an evaluation can be reproduced after its hosted model is gone, and what a local replacement costs.
+
+\subsection{Setting}
+\label{sec:introduction:setting}
+
+% src: planning/02_decisions_log.md D-01 (o4-mini endpoint returns model_not_found); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=bridge_jan scope=all (n_pairs 1412, agree_pct 99.645, kappa 0.993) cited from the companion paper
+The evaluation is one that we published earlier. A deterministic rule with three thresholds labels a 30-day window of obfuscated daily SPY gamma exposure (GEX) as a persistent regime or not, and a language model is shown the same window and the rule and has to give the verdict \cite{regan2025obfuscation,regan2026regimes,regan2026jrfm}. The published run used o4-mini, which has since been retired (its endpoint returns \ident{model_not_found}); only its stored answers survive. A companion manuscript \cite{regan2026rerun}, called Paper A below, reruns the test on the complete input series, shows that gpt-6-luna reproduces the o4-mini verdicts on the published inputs and follows the rule on the complete series, and documents the lineage of the published inputs. This paper uses that setting and does not report those findings as its own; a number of Paper A is always labelled as such.
+
+Because the prompt states the rule, a verdict that agrees with the rule shows that the model applies the stated criteria to 30 rounded values. It does not show that the model reasons about gamma exposure without the criteria. We treat rule-following on stated criteria as a reproducibility target: a task with a known correct answer for every window, on which a replacement model can be scored window by window.
+
+\subsection{Research Questions}
+\label{sec:introduction:rqs}
+
+The retired model can be replaced by its hosted successor, which has no dated snapshot and can be retired in turn, or by a model with open weights, run locally at a pinned revision on the stored requests, which can be run again as long as the weights, the engine and a GPU exist. We ask four questions about the second route (Figure~\ref{fig:ladder}).
+\begin{enumerate}[label=RQ\arabic*.,leftmargin=*]
+\item Do open-weights models at pinned revisions give the verdicts that the retired model gave on the stored requests, and the verdicts of the hosted successor?
+\item Do they apply the stated criteria, that is, agree with the rule on the complete series and on the baselines, and where do they depart from it?
+\item What happens when a model does not finish its answer, or writes its verdict before it has reasoned, and how does the answer order of the schema matter?
+\item How repeatable are the answers, how much do sampling defaults matter, and what do tokens and GPU time cost?
+\end{enumerate}
+RQ1 and RQ2 are answered in Sections~\ref{sec:results:overview}--\ref{sec:results:departures}, RQ3 in Sections~\ref{sec:results:llama}--\ref{sec:results:qwen} and~\ref{sec:results:order}, RQ4 in Sections~\ref{sec:results:repeat} and~\ref{sec:results:cost}.
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figLadder}
+\caption{Reproduction ladder. Rung~1 and rung~2 are the retired model and its hosted alias, with the numbers of Paper A; rung~3 is the object of this paper: three open-weights models at pinned revisions answer the stored requests on local GPUs. Dashed boxes are runs still being made. \textbf{Read this figure as:} the requests are the same in every rung, and only rung~3 can be run again after the hosted models are gone.}
+% src: runs.csv.gz (condensed/) model, mode=local, n_requests, run_metadata.local.seconds (oss 12,398 requests and 10.0 GPU-hours; Llama 12,378 and 3.3; Qwen 22,400 and 98.5); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=bridge_jan scope=all (n_pairs 1412, agree_pct 99.6, kappa 0.99); the figure and its manifest: figures/output/bf01_reproduction_ladder.json
+\label{fig:ladder}
+\end{figure}
+
+\subsection{Contributions}
+\label{sec:introduction:contributions}
+
+% src: Section 4.1 (Table 2), Section 4.4 (missing_answer_bounds.csv), Section 4.6, Section 4.7, Section 4.8 (runs.csv.gz); counts as in the abstract
+This paper makes five contributions.
+(i)~A reproduction protocol for a retired-model evaluation: stored requests, open-weights models at pinned revisions, a fixed engine version and seed, and a comparison with the rule, with the stored verdicts of the retired model and with the hosted successor (Section~\ref{sec:methods}).
+(ii)~A comparison of three models of three developers on seven arms: gpt-oss-20b reproduces the stored verdicts and follows the rule, Qwen3-8B follows it where it answers, and Llama~3.1~8B with the verdict first does not (Sections~\ref{sec:results:overview}--\ref{sec:results:departures}).
+(iii)~Bounds on the detection rate for the windows that a model leaves unanswered, instead of a rate over the answered windows only (Section~\ref{sec:results:qwen}).
+(iv)~What is and is not known about the failure of the model without a reasoning phase: an exploratory run, a full run with the reasoning field first, and a control with temperature~0 (Sections~\ref{sec:results:order} and~\ref{sec:results:repeat}).
+(v)~Tokens, retries and GPU time per model, the sampling defaults and their source, and the limits of the design (Sections~\ref{sec:results:cost} and~\ref{sec:discussion:limits}). Every request and answer is stored and deposited in one record with Paper A.
