@@ -67,13 +67,13 @@ Every number in the text and the tables has a `% src:` comment naming the tracke
 
 * **D-33**: the seven Llama 3.1 8B arms again with the reasoning field first (label `llama-3.1-8b-instruct-rf`, arms
   `llamarf_*`). Only evidence so far: an exploratory 40-window run of 2026-11-08, outside the stored arms (32 of 40 detected, 26 of
-  40 equal to the rule; verdict-first pilot on the same windows: 40 detected, 20 equal). Fills Table 4 and Figure 5 (Section 4.6),
+  40 equal to the rule; verdict-first pilot on the same windows: 40 detected, 20 equal). Fills Table 3 and Figure 5 (Section 4.6),
   the abstract, Section 5.4 and the conclusion; add ledger rows to Table S2.
 * **D-34**: decoding control on the published inputs, gpt-oss-20b and Llama 3.1 8B (verdict first) with temperature 0
-  (labels `gpt-oss-20b-t0`, `llama-3.1-8b-instruct-t0`, arms `osst0_bridge_jan`, `llamat0_bridge_jan`). Fills Table 5 (Section 4.7),
+  (labels `gpt-oss-20b-t0`, `llama-3.1-8b-instruct-t0`, arms `osst0_bridge_jan`, `llamat0_bridge_jan`). Fills Table 4 (Section 4.7),
   the abstract, Section 5.4 and the conclusion.
 * After both runs: `05_report.py` rerun by the branch that owns it, `common.ARMS`/`theme.ARM_LABELS` extended there, then
-  `run_all.py`, update totals in the abstract/Table 1/Table 6 (`check_numbers.py` totals will change), `build.sh --final`.
+  `run_all.py`, update totals in the abstract/Table 1/Table 5 (`check_numbers.py` totals will change), `build.sh --final`.
 
 ## Open items for the authors
 

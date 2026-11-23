@@ -17,7 +17,7 @@ we do not claim more. TODO(runs): one sentence on the reasoning-first and temper
 
 This paper is a companion of a second manuscript by the same authors, which re-runs the underlying test on complete inputs and
 bridges the retired model to its hosted successor ("Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on
-Complete Inputs with a Controlled LLM Re-Test", in preparation). That manuscript owns the input series, the re-run and the bridge;
+Inputs with Both Option Legs and a Rule-Following Test of a Current LLM", in preparation). That manuscript owns the input series, the re-run and the bridge;
 this paper cites them and reports only the open-weights comparison. The two papers share one data deposit (Zenodo, DOI TODO(authors)).
 The earlier publications on which both build are cited in the text.
 

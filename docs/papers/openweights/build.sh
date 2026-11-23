@@ -87,7 +87,7 @@ SUP_PAGES=$(sed -n 's/^Output written on .* (\([0-9]*\) pages.*/\1/p' "$SUPPLEME
 # The article cites the supplement tables by number and the supplement cites two article numbers: they must match.
 number_of() { sed -n "s/.*newlabel{$2}{{\([^}]*\)}.*/\1/p" "$1" | head -1; }
 STALE=""
-for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6"; do
+for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:engine=S7"; do
   [ "$(number_of "$SUPPLEMENT.aux" "${pair%%=*}")" = "${pair##*=}" ] || STALE="$STALE ${pair%%=*}(is $(number_of "$SUPPLEMENT.aux" "${pair%%=*}"), the article says ${pair##*=})"
 done
 for pair in "tab:results=2" "sec:methods=3"; do
@@ -97,25 +97,27 @@ RERUN=$(count 'Rerun to get|Label\(s\) may have changed' "$MAIN.log")
 BIBWARN=$(count '^Warning' build_2_bibtex.log)
 MISSING=$(count '^Missing figure file' "$MAIN.log")
 OVERFULL=$(count '^Overfull' "$MAIN.log")
+SUP_OVERFULL=$(count '^Overfull' "$SUPPLEMENT.log")
 # The counts below must survive "no match" under pipefail: every grep that may find nothing sits in a { ...; } || true group.
 mark_in() {  # $1 = macro, $2 = file: occurrences in the text without comments, the macro definition excluded
   { sed -E 's/(^|[^\\])%.*$/\1/' "$2" | grep -v 'DeclareRobustCommand' | grep -o "\\\\$1" || true; } | wc -l
 }
+ALLSRC=("${SOURCES[@]}" "$SUPPLEMENT.tex" "${SUPPLEMENT_PARTS[@]/%/.tex}")   # article and supplement
 TBD=0; PENDING=0; TBD_BY_FILE=""; PENDING_BY_FILE=""
-for f in "${SOURCES[@]}"; do
+for f in "${ALLSRC[@]}"; do
   t=$(mark_in tbd "$f"); p=$(mark_in pending "$f")
   TBD=$((TBD + t)); PENDING=$((PENDING + p))
   TBD_BY_FILE="$TBD_BY_FILE ${f%.tex} $t,"; PENDING_BY_FILE="$PENDING_BY_FILE ${f%.tex} $p,"
 done
 TITLE_OPEN=$({ live | grep -c 'Working title' || true; })
-TODO_AUTHORS_SRC=$({ cat "${SOURCES[@]}" | grep -o 'TODO(authors)' || true; } | wc -l)
-TODO_RUNS_SRC=$({ cat "${SOURCES[@]}" "${SUPPLEMENT_PARTS[@]/%/.tex}" | grep -o 'TODO(runs)' || true; } | wc -l)
+TODO_AUTHORS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(authors)' || true; } | wc -l)
+TODO_RUNS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(runs)' || true; } | wc -l)
 
 echo "=== SUCCESS: latex/$MAIN.pdf (${PAGES:-?} pages; target 12-15) ==="
 echo "undefined references/citations: $UNDEF   bibtex warnings: $BIBWARN   missing figures: $MISSING   unresolved \\tbd: $TBD   \\pending: $PENDING   working title left: $TITLE_OPEN   overfull boxes: $OVERFULL"
 echo "open markers in the sources: TODO(authors) $TODO_AUTHORS_SRC, TODO(runs) $TODO_RUNS_SRC"
 echo "\\pending by file:${PENDING_BY_FILE%,}"
-echo "supplement: latex/$SUPPLEMENT.pdf (${SUP_PAGES:-?} pages), undefined references: $SUP_UNDEF"
+echo "supplement: latex/$SUPPLEMENT.pdf (${SUP_PAGES:-?} pages), undefined references: $SUP_UNDEF   overfull boxes: $SUP_OVERFULL"
 
 if [ "$STRICT" -eq 1 ]; then
   WHY=""

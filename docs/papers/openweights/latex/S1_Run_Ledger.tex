@@ -8,7 +8,7 @@ Tables~\ref{tab:s:led:oss}, \ref{tab:s:led:llama} and~\ref{tab:s:led:qwen} list 
 % src: cost_ledger.csv rows with model = gpt-oss-20b (n_requests, prompt_tokens, completion_tokens, status); runs parquet run_metadata.local.seconds (GPU minutes) and run_metadata.retry_of (the retry runs)
 \begin{table}[H]
 \centering
-\caption{Run ledger (continued): the local runs of gpt-oss-20b, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each. The GPU minutes include the start of the engine and depend on the load that other users put on the shared GPU (the two longest runs shared their GPU with other jobs). The four runs marked \emph{retry} request again the answers that ended at the limit of 4{,}000 completion tokens, at 8{,}000 tokens; their answers replace the cut-off ones. The run with the timestamp 20261107T205228Z holds six test-retest repeats that a second generation step added while other chunks of the arm were still running, so \ident{oss_ex0dte_spy} carries 241 repeats instead of 235.}
+\caption{Run ledger: the local runs of gpt-oss-20b, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each. The GPU minutes include the start of the engine and depend on the load that other users put on the shared GPUs. The four runs marked \emph{retry} request again the answers that ended at the limit of 4{,}000 completion tokens, at 8{,}000 tokens; their answers replace the cut-off ones. The run with the timestamp 20261107T205228Z holds six test-retest repeats that a second generation step added while other chunks of the arm were still running, so \ident{oss_ex0dte_spy} carries 241 repeats instead of 235.}
 \label{tab:s:led:oss}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -45,7 +45,7 @@ Total (local) & 12{,}398 & 23{,}088{,}480 & 23{,}115{,}523 & 600.7 & \\
 % src: cost_ledger.csv rows with model = llama-3.1-8b-instruct (n_requests, prompt_tokens, completion_tokens, status); runs parquet run_metadata.local.seconds (GPU minutes)
 \begin{table}[H]
 \centering
-\caption{Run ledger (continued): the local runs of Llama~3.1~8B, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each, as in Table~\ref{tab:s:led:oss}. No answer reached the token limit, so there are no retry runs.}
+\caption{Run ledger: the local runs of Llama~3.1~8B, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each, as in Table~\ref{tab:s:led:oss}. No answer reached the token limit, so there are no retry runs.}
 \label{tab:s:led:llama}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -77,7 +77,7 @@ Total (local) & 12{,}378 & 22{,}556{,}040 & 2{,}102{,}759 & 198.4 & \\
 % src: cost_ledger.csv rows with model = qwen3-8b (n_requests, prompt_tokens, completion_tokens), summed per run (98 chunks); runs parquet run_metadata.local.seconds (GPU minutes, summed per run) and run_metadata.retry_of (the retry runs: 10,022 requests); planning/02_decisions_log.md D-32
 \begin{table}[H]
 \centering
-\caption{Run ledger (continued): the local runs of Qwen3-8B, answered by vLLM~0.32.0 as in Table~\ref{tab:s:led:oss}, one row per run with its chunks summed (the first passes ran in chunks of about 150 requests). The runs marked \emph{retry} request again, at 8{,}000 tokens, the answers that ended at the limit of 4{,}000 completion tokens (10{,}022 of the 12{,}378 first-pass requests); their answers replace the cut-off ones. The GPU minutes depend on the load of the shared GPUs: the engine took 27\% to 45\% of the memory of a GPU that other users were also using, and the retry runs, whose answers are the longest, ran in a few large chunks.}
+\caption{Run ledger: the local runs of Qwen3-8B, answered by vLLM~0.32.0 as in Table~\ref{tab:s:led:oss}, one row per run with its chunks summed (the first passes ran in chunks of about 150 requests). The runs marked \emph{retry} request again, at 8{,}000 tokens, the answers that ended at the limit of 4{,}000 completion tokens (10{,}022 of the 12{,}378 first-pass requests); their answers replace the cut-off ones. The GPU minutes depend on the load of the shared GPUs: the engine took 27\% to 45\% of the memory of a GPU that other users were also using, and the retry runs, whose answers are the longest, ran in a few large chunks.}
 \label{tab:s:led:qwen}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
