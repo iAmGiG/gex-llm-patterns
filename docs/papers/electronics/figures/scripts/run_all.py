@@ -216,6 +216,12 @@ def check_figures(figures: Sequence[Figure], output_dir: Path) -> int:
 
 
 # --------------------------------------------------------------------------- run
+# Options a figure of this article is always drawn with (the script's default serves the shared pipeline).
+FIGURE_OPTIONS: Dict[str, Tuple[str, ...]] = {
+    "fig01_study_design": ("--exclude-local",),  # hosted and backfilled arms only; the local runs are the companion paper's
+}
+
+
 def run_figure(fig: Figure, passthrough: Sequence[str], output_dir: Path) -> Tuple[str, float]:
     """Run one script in its own process; returns (status, seconds) and prints what the script logged."""
     if not fig.script.is_file():
@@ -228,7 +234,8 @@ def run_figure(fig: Figure, passthrough: Sequence[str], output_dir: Path) -> Tup
     # files stale.
     before = [(p.stat().st_mtime_ns, p.stat().st_size) if p.is_file() else None for p in written]
     print(f"[{fig.id}] {fig.stem}")
-    done = subprocess.run([sys.executable, str(fig.script), *passthrough], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    extra = FIGURE_OPTIONS.get(fig.script.stem, ())
+    done = subprocess.run([sys.executable, str(fig.script), *passthrough, *extra], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                           text=True)
     seconds = time.time() - started
     for line in done.stdout.strip().splitlines():

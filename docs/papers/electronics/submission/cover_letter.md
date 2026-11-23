@@ -32,7 +32,7 @@ Appendix A. Its experiments, results, figures and tables are new. Relative to al
 The language-model arms test whether the model applies criteria that the prompt states; because the rule is in the
 prompt and is the reference label, they cannot separate recall from reasoning, and the article says so.
 
-**Companion manuscript.** A second manuscript, submitted separately, repeats seven of the arms with open-weights models
+**Companion manuscript.** A second manuscript, in preparation, repeats seven of the arms with open-weights models
 at fixed revisions on local hardware (the question of whether the bridge and the main arms stay reproducible after a
 hosted model is retired). It is cited in the article as a companion manuscript in preparation. The two manuscripts share
 one data deposit, which holds the answers of both. Nothing is reported as new in both: the article owns the lineage

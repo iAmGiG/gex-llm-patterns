@@ -106,7 +106,7 @@ for pair in "sup:series=S1" "sup:ledger=S2" "sup:cross=S3" "sup:intraday=S4" "su
 done
 RERUN=$(count 'Rerun to get|Label\(s\) may have changed' "$MAIN.log")
 BIBWARN=$(count '^Warning' build_2_bibtex.log)
-MISSING=$(count '^Missing figure file' "$MAIN.log")
+MISSING=$(( $(count '^Missing figure file' "$MAIN.log") + $(count '^Missing figure file' "$SUPPLEMENT.log") ))
 OVERFULL=$(count '^Overfull' "$MAIN.log")
 SUP_OVERFULL=$(count '^Overfull' "$SUPPLEMENT.log")
 # The counts below must survive "no match" under pipefail: every grep that may find nothing sits in a { ...; } || true group.
@@ -168,7 +168,7 @@ NOTE
     pdflatex -interaction=nonstopmode -halt-on-error "$SUPPLEMENT.tex" >/dev/null 2>&1
     pdflatex -interaction=nonstopmode -halt-on-error "$SUPPLEMENT.tex" >/dev/null 2>&1
     STAGE_UNDEF=$(grep -c -E '(LaTeX|natbib) Warning: (Reference|Citation).*undefined' "$MAIN.log" || true)
-    STAGE_MISSING=$(grep -c '^Missing figure file' "$MAIN.log" || true)
+    STAGE_MISSING=$(cat "$MAIN.log" "$SUPPLEMENT.log" | grep -c '^Missing figure file' || true)
     [ "$STAGE_UNDEF" -eq 0 ] && [ "$STAGE_MISSING" -eq 0 ] || { echo "package check failed: $STAGE_UNDEF undefined, $STAGE_MISSING missing figures" >&2; exit 1; }
     rm -f ./*.aux ./*.bbl ./*.blg ./*.log ./*.out ./*.toc ./*.fls ./*.pdf
     rm -f "$ZIP"; zip -qr "$ZIP" .

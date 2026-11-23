@@ -36,7 +36,7 @@ and the regime label is called a GEX label, not a demonstrated price regime.
   windows and the 39,027 daily rows are unchanged. The earlier totals of 39 arms, 179 runs and 73,846 answers covered
   both papers.
 
-## Status (2026-11-18)
+## Status (2026-11-23)
 
 | Part | State |
 |---|---|
