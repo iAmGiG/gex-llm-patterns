@@ -9,18 +9,42 @@ The extension has to consist of new experiments beyond the AIAI paper and the JR
 jrfm-4256551), and it cites both. While it was being prepared, the exact inputs of the published Phase 4A run were
 recovered and found to lack the put leg of dealer gamma exposure (GEX) from 2023-09-29 onward, and the inputs of the
 published 2024-versus-2020 baselines turned out to carry calendar dates. The article is therefore framed as a
-**re-run on the complete data with a controlled LLM re-test and a plain data statement**, not as an incremental
+**re-run on the complete data (both option legs) with a rule-following test of a current model and a plain data statement**, not as an incremental
 extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
+
+## Paper A of a two-paper split
+
+Since 2026-11-23 (co-author agreed) this folder holds **Paper A**, the invited extension. It asks whether the published
+regime result holds on complete inputs (both the call and the put leg) and whether a current hosted model (gpt-6-luna)
+reproduces the published answers of the retired o4-mini. The language-model arms test rule-following on criteria that the
+prompt states; they cannot separate recall from reasoning, and the paper says so. The title no longer says "controlled",
+and the regime label is called a GEX label, not a demonstrated price regime.
+
+- **Kept:** Sections 4.1 inputs, 4.2 replay, 4.3 bridge, 4.4 complete series, 4.5 same-day-expiry ablation, 4.6 deep
+  baseline, 4.7 post-publication period, 4.8 fidelity and 4.9 dated versus obfuscated labels (numbered after the split;
+  they were 4.1 to 4.6, 4.8, 4.10 and 4.11); Supplement S1 (series SQL) and S2 (the hosted run ledger).
+- **Moved to the supplement:** the cross-asset replication with the scaled QQQ and IWM series (S3, Table S3 and S4,
+  Figure S1), the intraday check (S4, Table S5, Figure S2) and the fidelity table by arm (S5, Table S6). Two body tables
+  moved too: the per-year table of gpt-6-luna on SPY is Appendix Table A3, and the QQQ and IWM columns are Table S4.
+- **Left for the companion paper:** Section 4.12, Supplement S3 of the old numbering, the local run ledgers, the
+  open-weights protocol of Methods 3.5 and 3.6 and the open-weights rows of the arms table. Paper A cites the companion
+  paper (`regan2026openweights`, a manuscript in preparation) in the Introduction, the Discussion and the conclusions and
+  says that the shared deposit holds those answers as well. Nothing is reported as new in both papers.
+- **Companion paper:** `docs/papers/openweights/` (written on its own branch; see the repository for its state).
+- **Totals for this paper** (as of 2026-11-10, from the condensed tables): 18 arms (15 gpt-6-luna, 3 backfills), 36,706
+  stored answers (34,784 + 1,922), 46 runs, 35,833 gpt-6-luna requests, an estimated $10.02 at list price; the 38,592
+  windows and the 39,027 daily rows are unchanged. The earlier totals of 39 arms, 179 runs and 73,846 answers covered
+  both papers.
 
 ## Status (2026-11-18)
 
 | Part | State |
 |---|---|
-| Manuscript, [`latex/`](latex/) | Complete draft: the article (50 pages) and a separate supplement (11 pages), rebuilt on 2026-11-03 after the database added missing trading days and extended on 2026-11-07 to 2026-11-10 by the three open-weights models (Section 4.12 with one comparison table; Supplement Section S3, Tables S6 to S8; run ledger Tables S3 to S5), one `.tex` file per part. `build.sh --strict` passes. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip`. Two `% TODO(authors)` lines remain in the main file (Dr. Xie confirms the CRediT roles; the Zenodo DOI and the access date are added at submission, the vendor terms allow the deposit per D-31) and `submission/cover_letter.md` has its own TODOs (the sentence on the earlier articles, the DOI, the APC line). The pre-submission read-through (#276) was applied in #278. On Overleaf since 2026-11-04; Dr. Xie's review has not started. The blind review of the pre-submission audit recommends major revision (next rows). |
+| Manuscript, [`latex/`](latex/) | Paper A of the two-paper split (decided 2026-11-23; see the next section): the article (42 pages: 32 of text, 7 of appendices, 3 of references; it was 51 before the split) and a separate supplement (10 pages), one `.tex` file per part. `build.sh --strict` passes; `build.sh --final` fails while a `TODO(authors)` remains. `build.sh --overleaf` writes `overleaf/Regan_Xie_Electronics_overleaf.zip` (stale until regenerated at hand-off). Two `% TODO(authors)` lines remain in the main file (Dr. Xie confirms the CRediT roles; the Zenodo DOI and the access date are added at submission, the vendor terms allow the deposit per D-31) and `submission/cover_letter.md` has its own TODOs (the sentence on the earlier articles, the DOI, the APC line). Which earlier claims the paper withdraws is an open decision of the authors (issue #291) and is not stated in the text. On Overleaf since 2026-11-04; Dr. Xie's review has not started, and the files that changed in the split must be uploaded again. The blind review of the pre-submission audit recommends major revision (see the audit row). |
 | Figures, [`figures/`](figures/) | 12 figure scripts, `run_all.py`, `theme.py`, `figdata.py`, `figllm.py`; all 12 figures drawn from `results/` into `figures/output/` (PNG, PDF and a provenance manifest each). |
 | Results, `results/` | Written by `scripts/validation/electronics/05_report.py` from the parquet tables: detection rates by arm and year, bridge agreement, series comparison, 0DTE decomposition, post-publication period, intraday check, overlap-aware statistics, cost ledger, disagreements, parse statistics. Re-run after the last chunk. |
-| Model runs | 18 Batch-era arms stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers (no API call); 35,833 gpt-6-luna requests, including the 1,121 windows asked again after the database fill of 2026-11-03, $10.02. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). Three open-weights models answered the same seven arms on local GPUs at no cost: gpt-oss-20b (D-29, 2026-11-07: 12,398 requests, 10.0 GPU-hours; agreement with gpt-6-luna 99.4 % on the complete SPY series, kappa 0.97), Llama 3.1 8B (D-30, 2026-11-08: 12,378 requests, 3.3 GPU-hours; detects almost every window, kappa 0 against the rule) and Qwen3-8B (D-32, 2026-11-08 to 2026-11-10: 22,400 requests including 10,022 retries, 98.5 GPU-hours; 91.2 % of windows answered, agreement with the rule 98.7 % on the answered windows of the complete series, 2024-2025 rate bounded at 14.5 % to 35.1 %). |
-| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract: 11 series and 39 arms, 21 of them open-weights), `00` to `08` (environment check, series, windows, backfill, runner, report, condensed copies, database load, Zenodo package), the schema SQL and the README. |
+| Model runs | 18 Batch-era arms stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers (no API call); 35,833 gpt-6-luna requests, including the 1,121 windows asked again after the database fill of 2026-11-03, estimated at $10.02 at list price; 36,706 stored answers of these arms (34,784 + 1,922), as of 2026-11-10. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). The open-weights runs belong to the companion paper (`docs/papers/openweights/`); their answers are in the same tables and in the same Zenodo deposit but are not used or reported here. |
+| Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract, shared with the companion paper: 11 series and 39 arms, 18 of them hosted or backfilled and the other 21 open-weights arms of the companion paper), `00` to `08` (environment check, series, windows, backfill, runner, report, condensed copies, database load, Zenodo package), the schema SQL and the README. |
 | Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`; first load 2026-10-30 21:02 UTC, reloaded 2026-11-03 21:28 UTC after the database fill, 2026-11-07 23:15 UTC after the gpt-oss-20b runs and 2026-11-10 02:44 UTC after the Llama and Qwen runs: 38,592 windows, 179 runs, 73,846 answers, the latest per window; schema comments applied the same day). Checked on 2026-11-04 against the database's notice of data changes (gex-database-infrastructure #211): the stored SPY, QQQ and IWM series equal the live daily table on every day through 2026-10-09. The parquet copies are the system of record: `results/report.yaml` records `source.kind: parquet`, and the database holds a loaded copy (`07_load_tables.py` only upserts). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps `data/backups/gex_llm/condensed/` (with the run provenance as two compressed files since 2026-11-09) and `results/`. |
 | Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
 | Zenodo deposit | `08_package_release.py` (PR #280, 2026-11-18) keeps booleans and dates typed, writes the folder layout `05_report.py` reads (`series/ windows/ runs/ detections/`) and has `--check <zip>`, which regenerates every file of `results/` from the zip alone. `regan_xie_electronics_tables_20261118.zip` passes; the 20261110 zip does not. The zip is git-ignored; the Zenodo record and DOI do not exist yet (issue #274). |
@@ -37,11 +61,11 @@ The JRFM article combines the IEEE BigData 2025 paper and the AIAI 2026 paper. T
    every result is recomputed on the complete series.
 2. **A model bridge.** `gpt-6-luna` re-labels the exact published inputs (the published `o4-mini` is retired), so the
    effect of the model is separated from the effect of the data.
-3. **Convention sensitivity.** The rebuilt series with and without same-day expiries (0DTE ablation), the pre-rebuild
-   archive and the call leg alone are compared by deterministic replay and by model.
-4. **Wider scope.** 2008 to 2019, before weekly and daily expirations; QQQ and IWM, unscaled (the fixed $5 B threshold
-   is a floor for them) and with a disclosed per-symbol scaling of the input series (`new_full_scaled`); the
-   post-publication period (windows ending in 2026); and a late-session intraday check.
+3. **Convention sensitivity.** The rebuilt series with and without same-day expiries (same-day-expiry ablation), the
+   pre-rebuild archive and the call leg alone are compared by deterministic replay and by model.
+4. **Wider scope.** 2008 to 2019, before weekly and daily expirations; the post-publication period (windows ending in
+   2026); and, in the supplement, QQQ and IWM, unscaled (the fixed $5 B threshold is a floor for them) and with a
+   disclosed per-symbol scaling of the input series (`new_full_scaled`), and a late-session intraday check.
 5. **A date-effect rerun.** The 2024 and 2020 baselines behind the published 81.2% versus 12.1% contrast were run with
    ISO dates as day labels and on two sign conventions. `gpt-6-luna` re-runs the identical values with the dates and
    with relative labels (arms `p34_*`) next to the stored `o4-mini` answers (`r1_p3_o4mini`, `r1_p4_o4mini`).
@@ -89,9 +113,11 @@ docs/papers/electronics/
   README.md           this file
   build.sh            build the PDFs and the Overleaf package (below)
   latex/              Regan_Xie_Electronics.tex and one file per part: 01_Introduction, 02_Related_Work, 03_Methods,
-                      04_01_Inputs ... 04_12_Open, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
+                      04_01_Inputs ... 04_09_Dated, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
                       08_Appendix_B_Tables, 09_Appendix_C_Data; references.bib
-                      Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger and S3_Open_Weights
+                      Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger, S3_Cross_Asset,
+                      S4_Intraday and S5_Fidelity
+  ../openweights/     the companion paper (Paper B), a separate folder
   overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)
   submission/         cover_letter.md
   CDayfiles/          the C-Day poster (.pptx, PDF) and build_cday_poster.py
@@ -107,6 +133,7 @@ docs/papers/electronics/
 ```bash
 docs/papers/electronics/build.sh            # pdflatex, bibtex, pdflatex, pdflatex; page count and warning summary
 docs/papers/electronics/build.sh --strict   # as above, then exit 1 unless the manuscript is submission-ready
+docs/papers/electronics/build.sh --final    # --strict, and fail while a TODO(authors) marker (CRediT, Zenodo DOI) remains
 docs/papers/electronics/build.sh --overleaf # as --strict, then write the self-contained Overleaf zip, compiled in a clean folder first
 docs/papers/electronics/build.sh --clean    # remove the TeX build files (the PDFs are kept)
 ```
@@ -125,11 +152,12 @@ docs/papers/electronics/build.sh --clean    # remove the TeX build files (the PD
 - A figure whose PNG does not exist yet is drawn as a boxed placeholder and logged as `Missing figure file`.
 - The summary prints the undefined references and citations, the bibtex warnings, the missing figures, the unresolved
   `\tbd` placeholders (in total, for the main file and for every file; comments do not count), a working title left in
-  `\Title`, the open `% TODO(` markers and the overfull boxes. `--strict` fails on the first five of these and on a
-  reference that still changed in the last pass; the TODO markers and the overfull boxes are only reported. The
-  sources hold no live `\tbd` now: the abstract is written, and the access date and the data release of the Data
-  Availability Statement are `% TODO(authors)` comments. `--strict` does not fail on those comments, so it can print
-  `STRICT: ok` while they are open (audit finding B106): check them by hand until it does.
+  `\Title`, the open `% TODO(` markers, the `TODO(authors)` markers and the overfull boxes (article and supplement; the
+  supplement parts are scanned too). `--strict` fails on the first five of these, on a reference that still changed in
+  the last pass and on a hand-typed number that does not match the `.aux` files: the supplement names sections and tables
+  of the article, and the article names sections, tables and figures of the supplement, by number, and the script checks
+  both directions. The TODO markers and the overfull boxes are only reported by `--strict` and `--overleaf`; `--final`
+  also fails while a `TODO(authors)` marker remains (audit finding B106). The sources hold no live `\tbd` now.
 
 ## Figures
 
@@ -147,8 +175,14 @@ width of the class (6.14 in, 8 to 9 pt, light theme), and writes the PNG, a PDF 
 row counts, git sha, library versions). A missing input stops the figure with a message that names it: there is no
 synthetic fallback. The manuscript includes `figures/output/<stem>.png` through the registry at the top of
 `latex/Regan_Xie_Electronics.tex`, which `run_all.py` reads, so a renamed script and a stale registry are reported.
-Manuscript figure numbers follow the text, file numbers follow the figure list of the data audit: Figures 5, 7 and 12
-of the manuscript are `fig12_threshold_sensitivity`, `fig05_llm_arms_by_year` and `fig07_llm_classifier_fidelity`.
+Manuscript figure numbers follow the text, file numbers follow the figure list of the data audit: Figures 5, 7, 9 and 10
+of the manuscript are `fig12_threshold_sensitivity`, `fig05_llm_arms_by_year`, `fig10_post_publication_2026` and
+`fig07_llm_classifier_fidelity`. `fig09_cross_asset` and `fig11_intraday_vs_eod` are Figures S1 and S2 of the supplement,
+which registers them in its own preamble; `run_all.py --check` reads the registry of the article and of the supplement.
+Two scripts have options for the split: `fig01_study_design.py --exclude-local` draws the hosted and backfilled arms only
+and names the date of the counts (the date of `results/report.yaml`), and `fig04_classifier_replay.py` draws every series
+on the windows that end from 2020-02-13 on, the span of the published inputs, so that the bars of 2020 share their windows
+(`--all-windows` draws every window of each series, as before; review item B013).
 
 ## Data provenance
 

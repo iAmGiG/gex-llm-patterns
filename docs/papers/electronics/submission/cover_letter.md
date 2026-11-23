@@ -1,14 +1,14 @@
-# Cover letter (draft, 2026-11-07)
+# Cover letter (draft, 2026-11-07; revised 2026-11-23 for the two-paper split)
 
 <!-- Draft for the MDPI submission form. Items marked TODO(authors) need Chris and Dr. Xie before submission.
-     Numbers are those of the manuscript as of commit 6a3ff03 (abstract, Sections 1.2, 3.3, 4.1-4.4), item 7 from
-     Section 4.12 (2026-11-07). -->
+     Numbers are those of the manuscript after the split (abstract, Sections 1.2, 3.3, 4.1-4.4); the open-weights
+     results moved to the companion manuscript and are not quoted here. -->
 
 Dear Guest Editors of the *Electronics* Special Issue "Timely AI Advancements and Interdisciplinary Synergies for
 Intelligent Modeling",
 
-We submit the article "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a
-Controlled LLM Re-Test" by Christopher Regan and Ying Xie (Kennesaw State University) for consideration in the Special
+We submit the article "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Inputs with Both Option
+Legs and a Rule-Following Test of a Current LLM" by Christopher Regan and Ying Xie (Kennesaw State University) for consideration in the Special
 Issue held jointly with EAAAI 2026 and AIAI 2026, following the invitation to extend our AIAI 2026 paper.
 
 **Relation to earlier publications.** The article extends "Validating LLM Structural Reasoning: Detecting Persistent
@@ -23,16 +23,20 @@ Appendix A. Its experiments, results, figures and tables are new. Relative to al
    rebuilt data;
 2. a second model, gpt-6-luna, bridged to the retired o4-mini on the exact published inputs (agreement 99.6%,
    Cohen's kappa 0.993);
-3. the years 2008-2019, three exchange-traded funds (SPY, QQQ, IWM), the post-publication year 2026 and an intraday
-   check;
+3. the years 2008-2019 and the post-publication year 2026, and, in the Supplementary Materials, the exchange-traded
+   funds QQQ and IWM next to SPY and an intraday check;
 4. inference that accounts for overlapping windows (quarter-block bootstrap, non-overlapping subsamples);
 5. a rerun of the 2024 and 2020 baselines with and without calendar dates;
-6. a disclosed per-symbol scaling for QQQ and IWM; and
-7. three models with open weights from three developers, run locally at fixed revisions on seven arms, so that the
-   bridge and the main arms stay reproducible after API models are retired and are not tied to one developer:
-   gpt-oss-20b agrees with gpt-6-luna on 99.4% of the complete series; Qwen3-8B agrees with the rule on 98.7% of the
-   windows it answers, and its 2024-2025 rate is bounded at 14.5-35.1%; Llama 3.1 8B, without a reasoning phase,
-   detects almost every window (Section 4.12).
+6. a disclosed per-symbol scaling for QQQ and IWM (Supplementary Materials).
+
+The language-model arms test whether the model applies criteria that the prompt states; because the rule is in the
+prompt and is the reference label, they cannot separate recall from reasoning, and the article says so.
+
+**Companion manuscript.** A second manuscript, submitted separately, repeats seven of the arms with open-weights models
+at fixed revisions on local hardware (the question of whether the bridge and the main arms stay reproducible after a
+hosted model is retired). It is cited in the article as a companion manuscript in preparation. The two manuscripts share
+one data deposit, which holds the answers of both. Nothing is reported as new in both: the article owns the lineage
+finding, the re-run and the bridge to gpt-6-luna; the companion manuscript owns every open-weights result.
 
 **Data statement.** While preparing the extension we found that the daily inputs of the published 2024-2025 windows
 carried only the call leg of the options chain: an upstream database load had dropped the put rows. The article states
@@ -47,7 +51,7 @@ evidence is public in the project repository (`docs/papers/CORRECTIONS.md`).
 https://github.com/iAmGiG/gex-llm-patterns. The full tables (inputs, labels and model answers) will be deposited at
 Zenodo. <!-- TODO(authors): DOI once the record is created (issue #274); the vendor's terms allow the deposit (D-31). --> The
 options data come from Alpha Vantage under a premium subscription whose terms permit this use; the raw option chains
-are not part of the deposit because of their size. gpt-6-luna and the three open-weights models are the objects of the study. As stated in the
+are not part of the deposit because of their size. gpt-6-luna is the object of the study. As stated in the
 Acknowledgments, the authors used Claude Code to write the analysis code and to draft and revise the text, and they take
 full responsibility for the content.
 
