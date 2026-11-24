@@ -8,7 +8,7 @@ Figure~\ref{fig:design} gives an overview. The daily series are defined in Secti
 \begin{figure}[H]
 \centering
 \resultfigure{\figDesign}
-\caption{Study design. Six daily GEX series, one of them the call-only diagnostic, and the derived inputs of the rerun arms (Table~\ref{tab:series}) are cut into 30-trading-day windows, labelled by the deterministic classifier and, for each arm of Table~\ref{tab:arms}, by gpt-6-luna through the Batch API (the three o4-mini backfills are stored answers of earlier runs). Boxes give the stored counts as of 2026-11-10 for the hosted and backfilled arms, and every input, label and response is stored (Section~\ref{sec:methods:storage}). \textbf{Read this figure as:} daily rows become 38{,}592 windows, every window carries a label from the rule, and each stored answer of these arms is compared with the label of its own window.}
+\caption{Study design. Six daily GEX series, one of them the call-only diagnostic, and the derived inputs of the rerun arms (Table~\ref{tab:series}) are cut into 30-trading-day windows, labelled by the deterministic classifier and, for each arm of Table~\ref{tab:arms}, by gpt-6-luna through the Batch API (the three o4-mini backfills are stored answers of earlier runs). Boxes give the stored counts as of 2026-11-24 for the hosted and backfilled arms, and every input, label and response is stored (Section~\ref{sec:methods:storage}). \textbf{Read this figure as:} daily rows become 38{,}592 windows, every window carries a label from the rule, and each stored answer of these arms is compared with the label of its own window.}
 % src: fig01_study_design.json extra.windows, extra.arms, extra.as_of (drawn with --exclude-local); report.yaml inputs
 \label{fig:design}
 \end{figure}

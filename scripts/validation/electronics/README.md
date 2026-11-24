@@ -39,7 +39,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 > (`07_load_tables.py`; last load 2026-11-10 02:44 UTC: 39,027 series rows, 38,592 windows, 179 runs, 73,846 answers, the
 > latest per window). All 18 Batch-era arms are stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers, no API call (35,833 gpt-6-luna requests, $10.02, bridge gate passed:
 > agreement 99.6 %, kappa 0.99 against the published o4-mini labels), and three open-weights models answered the same
-> seven arms each (step 4b; 39 arms in `common.ARMS`). **The parquet copies are the system of record**: every script
+> seven arms each (step 4b). On 2026-11-24 three protocol variants were added for the companion paper (D-33, D-34: 202 runs and 89,404 answers in the parquet copies, not yet loaded into the tables when this was written; 48 arms in `common.ARMS`). **The parquet copies are the system of record**: every script
 > writes parquet, `07_load_tables.py` is a pure upsert into the tables (it never deletes a row whose key left the parquet),
 > and the committed `results/` were written from the parquet (`report.yaml` has `source.kind: parquet`). The database is a
 > loaded copy. Re-run `07_load_tables.py` after every ingest, outside 21:50 to 22:57 UTC and outside market hours (weekdays
@@ -194,7 +194,7 @@ Row counts are as built on 2026-10-29.
   `regime_detected` (model) and `clf_should_detect` (rule) are the primary labels, the four-way `regime_type` is
   secondary.
 
-### 3.3 Arms (`common.ARMS`: 39 keys, 36 of them call a model; the seven `oss_*` arms of D-29, the seven `llama_*` arms of D-30 and the seven `qwen_*` arms of D-32 are in Step 4b)
+### 3.3 Arms (`common.ARMS`: 48 keys, 45 of them call a model; the seven `oss_*` arms of D-29, the seven `llama_*` arms of D-30, the seven `qwen_*` arms of D-32, the seven `llamarf_*` arms of D-33 and the two temperature-0 arms of D-34 are in Step 4b)
 
 An arm is one (series, symbol) combination sent to one model. Three arms are backfills of the published o4-mini
 answers (`llm = False`, priority 0, never submitted). Window counts are as built on 2026-10-29 (after the database fill of 2026-11-03 `new_full` and
@@ -613,7 +613,15 @@ each chunk also goes to `tables/runs/<run_id>_c<k>.parquet` and its detections t
 `tables/detections/<run_id>_c<k>.parquet`. Run status moves `generated`, `submitted`, `in_progress`, then
 `completed`, `failed`, `expired` or `cancelled`, then `ingested`.
 
-### Step 4b. Open-weights arms (D-29, D-30, D-32, local GPU)
+### Step 4b. Open-weights arms (D-29, D-30, D-32, D-33, D-34, local GPU)
+
+Protocol variants (2026-11-23, for the companion paper in `docs/papers/openweights/`): a `LocalModel` can carry a
+`schema_order` (the order of the JSON schema's properties) and `sampling` (parameters sent with every request). The
+seven `llamarf_*` arms (model label `llama-3.1-8b-instruct-rf`, D-33) are Llama 3.1 8B with the reasoning field first,
+and `osst0_bridge_jan` (`gpt-oss-20b-t0`) and `llamat0_bridge_jan` (`llama-3.1-8b-instruct-t0`) send `temperature: 0`
+(D-34). Each variant has its own model label, so its answers never share a key with the default arms. Start one worker
+per GPU and give each worker different runs first: two workers that pick the same GPU at the same moment both fail to
+start (2026-11-24); the chunk stays `generated` and runs unchanged on the next `local` call.
 
 The seven `oss_*` arms send the gpt-6-luna request body unchanged, except the model name, to `gpt-oss-20b`
 (`openai/gpt-oss-20b`, Apache-2.0), and the seven `llama_*` arms send it to `llama-3.1-8b-instruct`
