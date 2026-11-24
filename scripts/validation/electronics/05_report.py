@@ -2028,12 +2028,19 @@ def budget_class(run: pd.Series) -> str:
     return "backfill" if (registered is not None and not registered.llm) or meta.get("backfill") else "other_model"
 
 
+def count_of(total: Any) -> Any:
+    """A sum of counts as an int: a column with a missing value (a run in flight) is float, its whole-number sum is not."""
+    return int(total) if isinstance(total, (float, np.floating)) and float(total).is_integer() else total
+
+
 def totals_of(frame: pd.DataFrame) -> Dict[str, Any]:
     """Run, request, token and cost totals of a block of ledger rows (cost per request over the rows that have a cost)."""
     costed = frame[frame["est_cost_usd"].notna()]
     requests = costed["n_requests"].sum()
-    return {"runs": len(frame), "n_requests": frame["n_requests"].sum(), "prompt_tokens": frame["prompt_tokens"].sum(),
-            "completion_tokens": frame["completion_tokens"].sum(), "reasoning_tokens": frame["reasoning_tokens"].sum(),
+    return {"runs": len(frame), "n_requests": count_of(frame["n_requests"].sum()),
+            "prompt_tokens": count_of(frame["prompt_tokens"].sum()),
+            "completion_tokens": count_of(frame["completion_tokens"].sum()),
+            "reasoning_tokens": count_of(frame["reasoning_tokens"].sum()),
             "est_cost_usd": frame["est_cost_usd"].sum(),
             "cost_per_request_usd": float(costed["est_cost_usd"].sum() / requests) if requests else None}
 
@@ -2046,7 +2053,9 @@ def cost_groups(ledger: pd.DataFrame, key: str) -> List[Dict[str, Any]]:
         completion_tokens=("completion_tokens", "sum"), est_cost_usd=("est_cost_usd", lambda s: s.sum(min_count=1)),
         est_cost_usd_counted=("counted_cost", lambda s: s.sum(min_count=1)))
     grouped["cost_per_request_usd"] = grouped["est_cost_usd"] / grouped["n_requests"].where(grouped["n_requests"] > 0)
-    return grouped.reset_index().to_dict("records")
+    records = grouped.reset_index().to_dict("records")
+    return [{k: count_of(v) if k in ("n_requests", "prompt_tokens", "completion_tokens") else v for k, v in r.items()}
+            for r in records]
 
 
 def section_cost_ledger(ctx: Context) -> Dict[str, Any]:
