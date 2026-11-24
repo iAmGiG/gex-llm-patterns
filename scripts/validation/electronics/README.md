@@ -39,7 +39,7 @@ between the scripts: every table, DataFrame and parquet file uses the column nam
 > (`07_load_tables.py`; last load 2026-11-10 02:44 UTC: 39,027 series rows, 38,592 windows, 179 runs, 73,846 answers, the
 > latest per window). All 18 Batch-era arms are stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers, no API call (35,833 gpt-6-luna requests, $10.02, bridge gate passed:
 > agreement 99.6 %, kappa 0.99 against the published o4-mini labels), and three open-weights models answered the same
-> seven arms each (step 4b). On 2026-11-24 three protocol variants were added for the companion paper (D-33, D-34: 202 runs and 89,404 answers in the parquet copies, not yet loaded into the tables when this was written; 48 arms in `common.ARMS`). **The parquet copies are the system of record**: every script
+> seven arms each (step 4b). On 2026-11-24 three protocol variants were added for the companion paper (D-33, D-34; 48 arms in `common.ARMS`), and the tables were loaded again on 2026-11-24 03:43 UTC: 202 runs and 89,404 answers. **The parquet copies are the system of record**: every script
 > writes parquet, `07_load_tables.py` is a pure upsert into the tables (it never deletes a row whose key left the parquet),
 > and the committed `results/` were written from the parquet (`report.yaml` has `source.kind: parquet`). The database is a
 > loaded copy. Re-run `07_load_tables.py` after every ingest, outside 21:50 to 22:57 UTC and outside market hours (weekdays
