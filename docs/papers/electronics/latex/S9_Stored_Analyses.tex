@@ -1,0 +1,246 @@
+% Section S9 of the Supplementary Materials: analyses of the stored data that were added after the model runs (2026-11-24).
+% Every table row is produced from results/stored_*.csv and is checked against them by ../check_numbers.py (which regenerates the rows
+% and requires each to appear verbatim in this file); the prose numbers are checked there too.  No analysis in this section calls a model.
+\section{Further Analyses of the Stored Data}
+\label{sup:stored}
+
+This section reports analyses of the stored series, windows and answers that were added after the model runs, on 2026-11-24 (Section~3.8 of the article gives the order). They call no model. Unless stated otherwise the rule is the one of Section~3.1 of the article, the sample is SPY on the complete series (\ident{new_full}), and the intervals are 95\% percentile intervals of a moving-block bootstrap with blocks of 60 consecutive windows (5{,}000 draws, seed 261), the interval that the article reports as primary. All values come from the files \path{stored_*.csv} of \path{docs/papers/electronics/results/}; \path{stored_analyses.yaml} lists the files, the columns and the parameters.
+
+\subsection{Single-Criterion Comparators and Contested Windows}
+\label{sup:stored:e1}
+
+% src: stored_e1_comparators.csv arm=full_spy (period 2008-2019, 2020-2023, 2024-2025, all: n_windows, arm_agreement_pct with arm_agreement_lo_pct and _hi_pct, always_no_agreement_pct, flips_only_agreement_pct, magnitude_flips_agreement_pct)
+Table~\ref{tab:stored:comparators} compares gpt-6-luna with predictors that use less than the rule. In 2024 and 2025 the criterion on sign flips alone (detect if there are at most five) reproduces the rule on all 502 windows, and so does the pair of persistence and flips, so on those years the agreement of the model with the rule is not evidence that it weighs the three criteria. Over all years the flips criterion alone agrees on 63.7\% of the windows and the best two-criterion predictor, magnitude and flips, on 97.5\%, against 99.7\% for the model.
+
+\begin{table}[H]
+\centering
+\caption{Agreement with the rule (percent of windows), SPY, \ident{new_full}: gpt-6-luna (arm \ident{full_spy}, first pass, with a 95\% moving-block interval) and predictors that use fewer criteria than the rule: always not detected, sign flips at most five (flips only), and magnitude at least \$5 billion together with flips at most five. Windows are grouped by the year of their end.}
+\label{tab:stored:comparators}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Window ends & Windows & gpt-6-luna [95\% interval] & Always no & Flips only & Magnitude and flips \\
+\midrule
+2008--2019 & 2{,}990 & 99.9 [99.7, 100.0] & 89.8 & 47.2 & 97.3 \\
+2020--2023 & 1{,}005 & 99.3 [98.6, 99.8] & 77.8 & 88.2 & 96.7 \\
+2024--2025 & 502 & 99.0 [98.4, 99.8] & 88.0 & 100.0 & 100.0 \\
+All windows & 4{,}691 & 99.7 [99.4, 99.9] & 87.0 & 63.7 & 97.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% src: stored_e1_contested.csv arm=full_spy definition=pivotal (period 2008-2019, 2020-2023, 2024-2025, all: n_contested, contested_pct, arm_agree_pct and its interval, flips_only_agree_pct and its interval, always_yes_agree_pct, arm_uncontested_agree_pct); definition=margin1 n_contested 764; parameters in stored_analyses.yaml (contested_definitions)
+A window is contested when one criterion lies within a small margin of its threshold while the other two criteria pass: persistence of 20, 21 or 22 days, a mean $|\mathrm{GEX}|$ between \$4.5 and \$5.5 billion, or 6 sign flips (one above the limit, none below). The complete series has 521 contested windows (11.1\% of 4{,}691). Inside them gpt-6-luna agrees with the rule on 97.5\% (interval 95.7--98.9), the flips-only predictor on 71.8\% (61.8--81.5) and always-detected on 45.5\%; outside them the model agrees on 99.9\%. Thirteen of the 16 windows where the model differs from the rule are contested (Table~\ref{tab:stored:contested}). The comparison therefore separates the model from the single-criterion predictors where the criteria conflict, and it does not separate it from the rule itself, which is in the prompt. A wider margin (one day, \$1.0 billion, flips 4 to 6) gives 764 contested windows.
+
+\begin{table}[H]
+\centering
+\caption{Contested windows of the complete series (pivotal definition: one criterion within its margin of the threshold, the other two passing): number and share of the windows of each period, and agreement with the rule (percent, 95\% moving-block interval) of gpt-6-luna and of the flips-only predictor inside them, of always-detected, and of gpt-6-luna outside them.}
+\label{tab:stored:contested}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Window ends & Contested (\%) & gpt-6-luna & Flips only & Always yes & gpt-6-luna elsewhere \\
+\midrule
+2008--2019 & 275 (9.2) & 98.9 [97.2, 100.0] & 55.6 [40.4, 69.5] & 44.7 & 100.0 \\
+2020--2023 & 160 (15.9) & 95.6 [90.8, 98.8] & 85.6 [74.6, 93.7] & 48.8 & 100.0 \\
+2024--2025 & 76 (15.1) & 96.1 [94.1, 100.0] & 100.0 [100.0, 100.0] & 40.8 & 99.5 \\
+All windows & 521 (11.1) & 97.5 [95.7, 98.9] & 71.8 [61.8, 81.5] & 45.5 & 99.9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Weight of the Put Leg}
+\label{sup:stored:e2}
+
+% src: stored_e2_put_weight_grid.csv period=2024-2025 (threshold_bn 3.0, 5.0, 7.0; rate_pct); stored_e2_period_shift.csv threshold_bn=5.0 (baseline 2008-2019 and 2020-2023; shift_pp); stored_e2_sign_crossings.csv threshold_bn=5.0 (put_weight 0.849 for 2020-2023; 1.032 and 1.099 for 2008-2019); stored_analyses.yaml gates.per_analysis.E2 (call plus put equals the stored net on 4,691 of 4,691 windows)
+Table~\ref{tab:stored:putweight} multiplies the put leg of the complete series by a weight before the rule is applied (a weight of 1 is the stored series; the call plus the put equals the stored net GEX on all 4{,}691 windows) and varies the magnitude threshold from \$3 to \$7 billion. The 2024--2025 rate depends strongly on the weight: 17.9\% at a weight of 0.9 and 12.0\% at 1, with the threshold at \$5 billion. The sign of the shift against 2020 to 2023 changes at a weight of 0.85 (a rise of 4.6 points at 0.8, a fall of 4.8 points at 0.9), and the sign of the shift against 2008 to 2019 changes at weights of 1.03 and 1.10. The conclusion that there is no rise after 2023 therefore holds for the stored series, and it is sensitive to how the dealer side is imputed (Section~5.3 of the article).
+
+\begin{table}[H]
+\centering
+\caption{Rule rate in 2024 and 2025 (percent of 502 windows) by weight of the put leg for magnitude thresholds of \$3, \$5 and \$7 billion, and the shift of that rate against the rate of 2008--2019 (2{,}990 windows) and of 2020--2023 (1{,}005 windows) at a threshold of \$5 billion (points; negative is a fall).}
+\label{tab:stored:putweight}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Put weight & Rate at \$3B & Rate at \$5B & Rate at \$7B & Shift vs.\ 2008--2019 & Shift vs.\ 2020--2023 \\
+\midrule
+0.5 & 85.1 & 85.1 & 83.9 & 55.2 & 23.7 \\
+0.6 & 70.3 & 70.3 & 66.7 & 46.6 & 25.3 \\
+0.7 & 43.6 & 43.6 & 41.2 & 26.0 & 8.9 \\
+0.8 & 28.9 & 28.9 & 23.9 & 14.8 & 4.6 \\
+0.9 & 17.9 & 17.9 & 11.0 & 6.0 & $-$4.8 \\
+1 (stored) & 12.0 & 12.0 & 9.6 & 1.8 & $-$10.2 \\
+1.05 & 8.8 & 8.6 & 8.2 & $-$1.0 & $-$14.8 \\
+1.1 & 11.4 & 10.8 & 10.8 & 0.0 & $-$12.2 \\
+1.2 & 14.9 & 14.9 & 14.7 & 2.1 & $-$15.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Episodes, Effective Sample Size and Interval Methods}
+\label{sup:stored:e3}
+
+% src: stored_e3_ess.csv (source rule and gpt-6-luna: n_detected, n_episodes, windows_per_episode_mean, ess_acf, ess_batch_30, ess_batch_sqrt_n, n_nonoverlapping_30d 16.7); stored_e3_episodes.csv (rule: 7 runs of 4, 9, 12, 2, 30, 2 and 1 windows); stored_e3_intervals.csv (source, method, block_len: ci_lo_pct, ci_hi_pct)
+The 60 detections of the rule in 2024 and 2025 form 7 episodes of consecutive windows (4, 9, 12, 2, 30, 2 and 1 windows; the longest is the negative-GEX run of 2025-03-18 to 2025-04-29), so they are not 60 observations. The effective number of independent windows is between 29 and 42 of 502, depending on the estimator (Table~\ref{tab:stored:ess}), about twice the 16.7 windows of a non-overlapping subsample. Table~\ref{tab:stored:intervals} gives the interval for the rate by method. The Wilson interval, which treats the windows as independent, is the narrowest (9.4--15.1\%). The moving-block intervals run from 3.8\% to 24.1\% at 60 windows and lie between 3.4 and 24.9\% at the other block lengths; the episode bootstrap gives 4.3--26.2\%. The article reports the moving-block interval of 60 windows as the primary one.
+
+\begin{table}[H]
+\centering
+\caption{Detections in the 502 windows that end in 2024 and 2025 (SPY, \ident{new_full}), their episodes of consecutive windows, and the effective sample size by three estimators (autocorrelation of the detection flags; batch means with batches of 30 windows; batch means with batches of the square root of the number of windows).}
+\label{tab:stored:ess}
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Source & Detected & Episodes & Windows per episode & ESS (ACF) & ESS (batch 30) & ESS (batch $\sqrt{n}$) \\
+\midrule
+Rule & 60 & 7 & 8.6 & 31.7 & 29.4 & 41.8 \\
+gpt-6-luna & 63 & 11 & 5.7 & 33.7 & 31.1 & 44.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{95\% intervals (percent) for the detection rate of 2024 and 2025 (SPY, \ident{new_full}; 12.0\% for the rule, 12.5\% for gpt-6-luna) by method. Block lengths are in windows. The block methods use 5{,}000 draws (seed 261); the calendar-quarter bootstrap has 8 blocks.}
+\label{tab:stored:intervals}
+\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Method & Rule & gpt-6-luna \\
+\midrule
+Wilson, windows independent (502) & [9.4, 15.1] & [9.9, 15.7] \\
+Calendar-quarter bootstrap (8 blocks) & [5.1, 19.6] & [5.9, 19.9] \\
+Moving block, 30 windows & [3.4, 23.1] & [3.8, 23.5] \\
+Moving block, 60 windows (primary) & [3.8, 24.1] & [4.4, 23.5] \\
+Moving block, 90 windows & [4.4, 24.3] & [4.6, 24.3] \\
+Moving block, 120 windows & [5.6, 24.9] & [5.8, 25.1] \\
+Circular block, 60 windows & [3.8, 22.5] & [4.6, 22.7] \\
+Episode bootstrap & [4.3, 26.2] & [4.8, 25.4] \\
+Wilson at the effective sample size (ACF) & [5.0, 28.1] & [4.7, 26.6] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Shift After 2023 With a Margin}
+\label{sup:stored:e4}
+
+% src: stored_e4_shift_margin.csv threshold_bn=5.0 block_len=60 circular=False (window_set all and shared; baseline; n_baseline, rate_baseline_pct, rate_late_pct, shift_pp, ci_lo_pp, ci_hi_pp, upper_below_margin; margin_pp 5.0); stored_e4_summary.csv block_len=60 circular=False (n_thresholds 12, n_upper_below_margin 0 or 1, max_ci_hi_pp); stored_analyses.yaml parameters.margin_pp
+Table~\ref{tab:stored:shift} gives the 2024--2025 rate minus the rate of a baseline period, with a moving-block interval, for the windows of the complete series (all) and for the windows that the complete series shares with the published inputs (shared: 975 windows of 2020--2023 and 501 of 2024--2025, which leaves out the 29 windows of early 2020 that precede the published inputs; Section~4.2 of the article). The margin is fixed at 5 points: a rise of more than that is ruled out when the upper limit of the interval lies below 5. It does so in none of the rows of the table. Over the twelve magnitude thresholds from \$3 to \$10 billion, the upper limit lies below the margin for at most one threshold for every baseline at a block length of 60 windows, and for the baseline 2020--2023 over all windows the largest upper limit over the thresholds is 19.7 points. The data therefore do not rule out a rise of 5 points or more after 2023. On the shared windows the shift against 2020--2023 is $-$7.9 points (interval $-$20.9 to 8.6).
+
+\begin{table}[H]
+\centering
+\caption{Shift in the detection rate of the rule, 2024--2025 minus a baseline period (points), SPY, \ident{new_full}, threshold \$5 billion: window set (all windows, or the windows shared with the published inputs), baseline, its number of windows, the two rates (percent), the shift with its 95\% moving-block interval (60-window blocks), and whether the upper limit lies below the margin of 5 points. The 2024--2025 sample has 502 windows (501 in the shared set).}
+\label{tab:stored:shift}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Windows & Baseline & Windows & Baseline rate & 2024--25 rate & Shift & 95\% interval & Below 5? \\
+\midrule
+All & 2020-2023 & 1{,}005 & 22.2 & 12.0 & $-$10.2 & [$-$20.9, 8.5] & no \\
+All & 2020-2023 without 2022 & 754 & 16.0 & 12.0 & $-$4.1 & [$-$11.7, 14.0] & no \\
+All & 2008-2019 & 2{,}990 & 10.2 & 12.0 & 1.8 & [$-$7.7, 14.6] & no \\
+All & 2008-2023 & 3{,}995 & 13.2 & 12.0 & $-$1.2 & [$-$10.5, 12.4] & no \\
+Shared & 2020-2023 & 975 & 19.9 & 12.0 & $-$7.9 & [$-$20.9, 8.6] & no \\
+Shared & 2020-2023 without 2022 & 724 & 12.7 & 12.0 & $-$0.7 & [$-$10.2, 15.1] & no \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Scale-Free Thresholds}
+\label{sup:stored:e6}
+
+% src: stored_e6_scale_free.csv (variant, reference_years; period 2020-2023 and 2024-2025: rate_pct, n_detected); stored_e6_scale_free_shift.csv (baseline=2020-2023 block_len=60: shift_pp, ci_lo_pp, ci_hi_pp); stored_e6_scale_by_year.csv (mean spot, mean absolute net GEX, mean gross GEX by year); stored_analyses.yaml e6_scale_facts
+The dollar threshold of \$5 billion does not scale with the level of the market. Table~\ref{tab:stored:scalefree} replaces it by thresholds that follow the spot price (linear or squared) or the trailing gross GEX, each fixed on a reference period so that the variant is comparable with the stored rule (reference 2024--2025 reproduces the 60 detections of the rule in those years, except the squared-spot variant, which gives 57), and by the rule without the magnitude criterion. With these variants the rate of 2020 to 2023 is higher (27.3\% to 28.8\%) and the shift after 2023 is a fall of 15.3 to 17.4 points; every interval still reaches above zero, up to 3.9 points. With the scale fixed in 2020 instead, the squared-spot variant detects none of the windows of 2024 and 2025 and the shift is $-$7.9 points (interval $-$11.5 to $-$1.1). The variants therefore do not support a rise after 2023 either. Each variant depends on the reference period that fixes its scale, which is itself a choice.
+
+\begin{table}[H]
+\centering
+\caption{Detection rate of the rule with the \$5 billion threshold replaced by a scale-free variant: the reference years that fix the scale, the rates of 2020--2023 and of 2024--2025 (percent; windows detected in parentheses) and the shift between them (points, 95\% moving-block interval with 60-window blocks). The fixed threshold and the variant without the magnitude criterion need no reference years. The interval of the fixed threshold differs by a tenth of a point from that of Table~\ref{tab:stored:shift} because the bootstrap draws of the two analyses are seeded separately.}
+\label{tab:stored:scalefree}
+\footnotesize
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Threshold & Reference & Rate 2020--23 & Rate 2024--25 & Shift [95\% interval] \\
+\midrule
+Fixed \$5 billion (stored) & -- & 22.2 & 12.0 (60) & $-$10.2 [$-$20.8, 8.6] \\
+Threshold $\propto$ spot & 2024--2025 & 27.9 & 12.0 (60) & $-$15.9 [$-$27.6, 3.1] \\
+Threshold $\propto$ spot$^2$ & 2024--2025 & 28.8 & 11.4 (57) & $-$17.4 [$-$29.2, 1.9] \\
+Share of trailing gross GEX, calibrated & 2024--2025 & 27.3 & 12.0 (60) & $-$15.3 [$-$26.7, 3.5] \\
+12.5\% of trailing gross GEX & 2024--2025 & 27.4 & 12.0 (60) & $-$15.4 [$-$27.4, 3.9] \\
+No magnitude criterion & -- & 28.8 & 12.0 (60) & $-$16.8 [$-$28.6, 2.4] \\
+Threshold $\propto$ spot & 2020 & 14.0 & 6.4 (32) & $-$7.7 [$-$16.3, 7.8] \\
+Threshold $\propto$ spot$^2$ & 2020 & 7.9 & 0.0 (0) & $-$7.9 [$-$11.5, $-$1.1] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Same-Day-Expiry Pairs by Era}
+\label{sup:stored:e9}
+
+% src: stored_e9_pair_by_era.csv (era: n_windows, rate_full_pct, rate_ex0dte_pct, both, only_full, only_ex0dte, discordant, gap_pp, kappa); stored_e9_era_interaction.csv (threshold_bn=5.0 block_len=60: interaction_pp -11.2, ci_lo_pp -18.3, ci_hi_pp -5.0; ci_excludes_zero for thresholds 3.0 to 5.5 at all four block lengths, not for 6.0 to 7.0); stored_e9_same_day_share.csv (year; abs_0dte_share_of_abs_net, abs_0dte_share_of_gross, gross_removed_share, sign_flip_pct)
+Table~\ref{tab:stored:era} pairs the complete series with the series without same-day expiries window by window. In 2024 and 2025 the two series disagree on 40 of 502 windows (47 detected by both, 13 only with same-day expiries, 27 only without; 87 detected by either), so 46.0\% of the windows that either series detects change their label when same-day expiries are removed, a churn that the net difference of $-$2.8 points hides. The sign of the gap is not stable over time: it is $+$7.0 points in 2014--2022, $-$4.2 in 2023--2026 and $+$2.5 over all windows. The difference between the gap of 2023--2026 and that of 2014--2022 is $-$11.2 points at the \$5 billion threshold (interval $-$18.3 to $-$5.0) and its interval excludes zero for every threshold from \$3 to \$5.5 billion at every block length, but not from \$6 billion. The ablation therefore does not estimate a stable effect of same-day expiries on the rate: whether removing them lowers or raises the rate depends on the era, and the full-period gap of 2.5 points and the gap of $-$2.8 points in 2024--2025 have opposite signs.
+
+\begin{table}[H]
+\centering
+\caption{Same-day-expiry ablation by era, SPY: windows, rule rate on the complete series (full) and without same-day expiries (ex-0DTE) in percent, windows detected by both series, only by the complete series and only without same-day expiries, discordant windows (detected by one series only), the gap (full minus ex-0DTE rate, in points) and Cohen's kappa between the two label sets (-- where neither series detects a window).}
+\label{tab:stored:era}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrrrr@{}}
+\toprule
+Window ends & Windows & Full & Ex-0DTE & Both & Only full & Only ex-0DTE & Discordant & Gap & Kappa \\
+\midrule
+2008--2013 & 1{,}482 & 0.0 & 0.0 & 0 & 0 & 0 & 0 & 0.0 & -- \\
+2014--2022 & 2{,}263 & 20.8 & 13.8 & 290 & 181 & 23 & 204 & 7.0 & 0.688 \\
+2023--2026 & 946 & 14.6 & 18.8 & 107 & 31 & 71 & 102 & $-$4.2 & 0.614 \\
+2024--2025 & 502 & 12.0 & 14.7 & 47 & 13 & 27 & 40 & $-$2.8 & 0.656 \\
+All windows & 4{,}691 & 13.0 & 10.5 & 397 & 212 & 94 & 306 & 2.5 & 0.685 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The share of same-day expiries depends on the denominator. In 2024 same-day expiries are 45.9\% of the absolute net GEX but 7.6\% of the gross exposure (the sum of the calls and the absolute puts); removing them takes 18.0\% of the gross exposure, and 11.1\% of the days change the sign of the net (Table~\ref{tab:stored:share}). The share of the absolute net is a ratio of absolute net values that is large because net GEX is the difference of two larger quantities.
+
+\begin{table}[H]
+\centering
+\caption{Same-day-expiry (0DTE) part of SPY exposure by year (percent): the sum of the absolute same-day contribution over the sum of the absolute net GEX of the complete series, the same over the gross exposure (calls plus absolute puts), the share of the gross exposure that removing same-day expiries takes away, and the share of days on which the sign of the net GEX changes.}
+\label{tab:stored:share}
+\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Year & Of absolute net & Of gross & Gross removed & Days with sign change \\
+\midrule
+2019 & 22.1 & 3.6 & 10.1 & 2.4 \\
+2024 & 45.9 & 7.6 & 18.0 & 11.1 \\
+2025 & 43.9 & 8.1 & 20.0 & 13.2 \\
+2026 & 40.8 & 7.6 & 19.9 & 7.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Lineage of the Published Labels}
+\label{sup:stored:e13}
+
+% src: stored_e13_lineage_by_break.csv (published_vs complete, call_only, hybrid; part; n_windows, equal, different); stored_e13_day_match.csv (candidate call_only_call part from the break 565 of 565; complete_net before the break 900 of 940); stored_e13_lineage_by_year.csv comparison=published vs call_only year 2024 and 2025 (different 0); break_date 2023-09-29 in stored_analyses.yaml parameters
+Table~\ref{tab:stored:lineage} compares the January labels of the published inputs with the labels that three series give for the same windows. The break is 2023-09-29. Of the 911 published windows that end before it, 865 have the verdict of the complete series and 46 differ (the 39 earlier call-only days of Section~4.1 of the article); of the 536 windows that start on or after it, all 536 have the verdict of the call-only series and 78 have that of the complete series. A hybrid series, equal to the published inputs up to the break and to the call leg after it, reproduces the published verdict on 865 of the 911 windows before the break, on 28 of the 29 windows that span it and on all 536 windows after it. On the daily values, all 565 days from the break equal the call leg of the complete series, and 900 of the 940 earlier days equal the complete net GEX. Every window of 2024 and 2025 has the same verdict on the published inputs and on the call-only series. The labels of the published run therefore follow from the complete series until the break and from its call leg after it, which agrees with the data statement of Section~4.1 of the article.
+
+\begin{table}[H]
+\centering
+\caption{Verdict of the published inputs against the verdict of three other series on the same windows, by position of the window relative to the break of 2023-09-29: windows compared, windows with the same verdict, windows with a different verdict. The hybrid series is the published series up to the break and the call-only series after it.}
+\label{tab:stored:lineage}
+\footnotesize
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Series compared & Window position & Windows & Same verdict & Different \\
+\midrule
+Complete series & end before the break & 911 & 865 & 46 \\
+Complete series & span the break & 29 & 26 & 3 \\
+Complete series & start on or after it & 536 & 78 & 458 \\
+Call-only series & end before the break & 911 & 142 & 769 \\
+Call-only series & span the break & 29 & 10 & 19 \\
+Call-only series & start on or after it & 536 & 536 & 0 \\
+Hybrid (published, then call-only) & end before the break & 911 & 865 & 46 \\
+Hybrid (published, then call-only) & span the break & 29 & 28 & 1 \\
+Hybrid (published, then call-only) & start on or after it & 536 & 536 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
