@@ -394,7 +394,7 @@ def check_figdata(results: Path, tables: Path, work: Path) -> pd.DataFrame:
         "br_incl", "bridge_agreement.csv", lambda f: f.assign(comparison=f.comparison.replace({"bridge": "bridge_incl_recovered"})))),
         ("bridge_incl_recovered without an '_all' reference",))
     expect_exit("bridge_agreement: a test_retest row whose other arm is no repeat is refused", lambda: figdata.load_bridge_agreement(variant(
-        "br_rep", "bridge_agreement.csv", lambda f: f.assign(other_arm=f.other_arm.where(f.comparison != "test_retest", "p34_obf_2024")))),
+        "br_rep", "bridge_agreement.csv", lambda f: f.assign(other_arm=f.other_arm.where(f.comparison != "test_retest", "p34_obf_2024_" + f.other_arm)))),
         ("test_retest whose other arm",))
     expect_exit("a CSV read without a key refuses identical rows", lambda: variant("any_dup", "intraday.csv", lambda f: pd.concat([f, f.head(1)])).csv(
         "intraday.csv", ["window_end"]), ("repeats", "identical rows"))
