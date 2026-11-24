@@ -239,7 +239,11 @@ def read_all_answer_rows(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Dat
     runs = REPORT.prepare_table("runs", raw_tables["runs"], [])
     windows = REPORT.prepare_table("windows", raw_tables["windows"], [])
     frames = []
-    for path in sorted((root / "detections").rglob("*.parquet")):
+    # The Zenodo deposit (08_package_release.py) keeps the answers that a later answer replaced in detections_replaced.parquet
+    # next to the four table folders; the repository's tables hold every answer under detections/.
+    replaced = root / "detections_replaced.parquet"
+    paths = sorted((root / "detections").rglob("*.parquet")) + ([replaced] if replaced.exists() else [])
+    for path in paths:
         wanted = [c for c in pq.read_schema(path).names if c in DETECTION_COLUMNS]
         frames.append(pd.read_parquet(path, columns=wanted))
     raw = pd.concat(frames, ignore_index=True, sort=False)
