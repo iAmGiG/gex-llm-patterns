@@ -47,22 +47,22 @@ reconciliation:
     max_abs_diff_upper_pct: 0.0
     count_mismatch: 0
   final_rows_vs_report_detections:
-    final_rows_here: 89404
-    rows_in_report: 89404
+    final_rows_here: 89704
+    rows_in_report: 89704
     only_here: 0
     only_in_report: 0
     run_id_differs: 0
     parsed_differs: 0
-n_answer_rows: 100514
-n_final_rows: 89404
+n_answer_rows: 100814
+n_final_rows: 89704
 scanner_on_answered_rows:
-  n_answered_rows: 89356
-  n_same_verdict: 88062
+  n_answered_rows: 89656
+  n_same_verdict: 88362
   n_scanner_no_verdict: 1294
   by_model:
     gpt-6-luna:
-      n: 35833
-      n_same: 35833
+      n: 36133
+      n_same: 36133
     gpt-oss-20b:
       n: 12382
       n_same: 12382
@@ -197,7 +197,7 @@ files:
       period: calendar years of window_end
       n_windows: windows in the row
   unanswered_census_unanswered.csv:
-    rows: 263
+    rows: 265
     description: final answers of every model and arm by kind (answered, missing, failed, complete_at_cap), finish
       reason, whether the request cap was reached and the rule's verdict
     columns:

@@ -31,6 +31,8 @@ gpt-6-luna,full_spy,primary,4000.0,answered,stop,False,detect,609
 gpt-6-luna,full_spy,primary,4000.0,answered,stop,False,reject,4082
 gpt-6-luna,full_spy#rep1,repeat,4000.0,answered,stop,False,detect,24
 gpt-6-luna,full_spy#rep1,repeat,4000.0,answered,stop,False,reject,211
+gpt-6-luna,full_spy#rep2,repeat,4000.0,answered,stop,False,detect,150
+gpt-6-luna,full_spy#rep2,repeat,4000.0,answered,stop,False,reject,150
 gpt-6-luna,intraday_spy,primary,4000.0,answered,stop,False,reject,51
 gpt-6-luna,intraday_spy#rep1,repeat,4000.0,answered,stop,False,reject,3
 gpt-6-luna,p34_dated_2020,primary,4000.0,answered,stop,False,detect,27

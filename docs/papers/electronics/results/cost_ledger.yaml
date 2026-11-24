@@ -87,10 +87,10 @@ budget:
     of the published o4-mini batch of January 2026 (arm r1_o4mini; likewise r1_p3_o4mini and r1_p4_o4mini) is shown
     separately under not_spend and is never counted
   hard_stop_usd: 12.0
-  spent_usd: 10.020749
-  in_flight_projected_usd: 0.160275
-  committed_usd: 10.181024
-  remaining_to_hard_stop_usd: 1.818976
+  spent_usd: 10.107226
+  in_flight_projected_usd: 0.06411
+  committed_usd: 10.171336
+  remaining_to_hard_stop_usd: 1.828664
   generated_not_sent_projected_usd: 0.0
   not_spend:
     historical_backfill_usd: 9.967462
@@ -260,11 +260,11 @@ totals:
   counted:
     runs: 45
     n_requests: 36333
-    prompt_tokens: 68576609
-    completion_tokens: 26324356
-    reasoning_tokens: 19651017
-    est_cost_usd: 10.020749
-    cost_per_request_usd: 0.000279651
+    prompt_tokens: 69150509
+    completion_tokens: 26555485
+    reasoning_tokens: 19823812
+    est_cost_usd: 10.107226
+    cost_per_request_usd: 0.000279723
   backfill:
     runs: 3
     n_requests: 1922
@@ -284,11 +284,11 @@ totals:
   all_stored_runs:
     runs: 204
     n_requests: 101014
-    prompt_tokens: 189067480
-    completion_tokens: 167010894
-    reasoning_tokens: 150821564
-    est_cost_usd: 19.988211
-    cost_per_request_usd: 0.00019886
+    prompt_tokens: 189641380
+    completion_tokens: 167242023
+    reasoning_tokens: 150994359
+    est_cost_usd: 20.074688
+    cost_per_request_usd: 0.000199126
 by_arm:
 - arm: bridge_jan
   runs: 3
@@ -365,11 +365,11 @@ by_arm:
 - arm: full_spy
   runs: 6
   n_requests: 5553
-  prompt_tokens: 10048989
-  completion_tokens: 4142630
-  est_cost_usd: 1.538107
-  est_cost_usd_counted: 1.538107
-  cost_per_request_usd: 0.000276987
+  prompt_tokens: 10622889
+  completion_tokens: 4373759
+  est_cost_usd: 1.624584
+  est_cost_usd_counted: 1.624584
+  cost_per_request_usd: 0.00029256
 - arm: intraday_spy
   runs: 1
   n_requests: 54
@@ -734,11 +734,11 @@ by_model:
 - model: gpt-6-luna
   runs: 45
   n_requests: 36333
-  prompt_tokens: 68576609
-  completion_tokens: 26324356
-  est_cost_usd: 10.020749
-  est_cost_usd_counted: 10.020749
-  cost_per_request_usd: 0.000275803
+  prompt_tokens: 69150509
+  completion_tokens: 26555485
+  est_cost_usd: 10.107226
+  est_cost_usd_counted: 10.107226
+  cost_per_request_usd: 0.000278183
 - model: gpt-oss-20b
   runs: 20
   n_requests: 12398
@@ -807,11 +807,11 @@ by_mode:
 - mode: batch
   runs: 47
   n_requests: 38215
-  prompt_tokens: 71984527
-  completion_tokens: 29955896
-  est_cost_usd: 19.966552
-  est_cost_usd_counted: 9.99909
-  cost_per_request_usd: 0.000522479
+  prompt_tokens: 72558427
+  completion_tokens: 30187025
+  est_cost_usd: 20.053029
+  est_cost_usd_counted: 10.085567
+  cost_per_request_usd: 0.000524742
 - mode: local
   runs: 156
   n_requests: 62759
@@ -830,26 +830,25 @@ by_mode:
   cost_per_request_usd: 0.000541488
 by_status:
 - status: in_progress
-  runs: 2
-  n_requests: 500
+  runs: 1
+  n_requests: 200
   prompt_tokens: 0
   completion_tokens: 0
   est_cost_usd: null
   est_cost_usd_counted: null
   cost_per_request_usd: null
 - status: ingested
-  runs: 202
-  n_requests: 100514
-  prompt_tokens: 189067480
-  completion_tokens: 167010894
-  est_cost_usd: 19.988211
-  est_cost_usd_counted: 10.020749
-  cost_per_request_usd: 0.00019886
+  runs: 203
+  n_requests: 100814
+  prompt_tokens: 189641380
+  completion_tokens: 167242023
+  est_cost_usd: 20.074688
+  est_cost_usd_counted: 10.107226
+  cost_per_request_usd: 0.000199126
 runs_without_est_cost:
-- full_spy_gpt-6-luna_batch_20261124T045255Z_c0
 - bridge_jan_gpt-6-luna_batch_20261124T045259Z_c0
 reconciliation:
-  runs_compared_with_detection_usage: 201
+  runs_compared_with_detection_usage: 202
   runs_with_token_gap: 114
   max_abs_cost_gap_usd: 0.0
   note: 'gaps compare the run totals with the sum over that run''s detection rows; cost_gap_usd compares est_cost_usd
