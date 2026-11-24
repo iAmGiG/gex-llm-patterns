@@ -184,7 +184,7 @@ Dominant sign & negative & 2{,}513 & 2{,}374 & 94.5 & & \\
 % src: unanswered_contested_sensitivity.csv arm=qwen_full_spy, oss_full_spy, full_spy (gpt-6-luna, Paper A) stratum=contested (margin_set, margin_days, margin_billions, margin_flips_above, margin_flips_below, n_windows, answered_pct, agree_pct_answered); unanswered_analyses.yaml parameters contested_sets
 \begin{table}[H]
 \centering
-\caption{Agreement with the rule on contested windows of the complete series for four margin sets. A window is contested when exactly one criterion lies within its margin of its threshold and the other two pass: the days of persistence within $d$ of 21, the mean $|\mathrm{GEX}|$ within $b$ billion of \$5~billion, and the sign flips between $5-f_{-}$ and $5+f_{+}$. The set used in the article is \emph{pivotal}. Agreement is over the windows that the model answered; gpt-6-luna is a reference from Paper A.}
+\caption{Agreement with the rule on contested windows of the complete series for four margin sets. A window is contested when a criterion lies within its margin of its threshold and the other two pass (a window near on two criteria counts once): the days of persistence within $d$ of 21, the mean $|\mathrm{GEX}|$ within $b$ billion of \$5~billion, and the sign flips between $5-f_{-}$ and $5+f_{+}$. The set used in the article is \emph{pivotal}. Agreement is over the windows that the model answered; gpt-6-luna is a reference from Paper A.}
 \label{tab:s:contested}
 \scriptsize
 \setlength{\tabcolsep}{3pt}

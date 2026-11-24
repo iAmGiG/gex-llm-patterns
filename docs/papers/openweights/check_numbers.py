@@ -341,6 +341,9 @@ c = ca.loc[("qwen_full_spy", "contested")]
 check("contested windows", int(c.n_windows), 521); check("qwen contested answered", int(c.n_answered), 454); check("qwen contested answered share", round(c.answered_pct, 1), 87.1)
 check("qwen contested agree", round(c.agree_pct_answered, 1), 92.3); check("qwen contested kappa", round(c.kappa_answered, 3), 0.845)
 c = ca.loc[("qwen_full_spy", "not_contested")]
+check("qwen contested agree, unanswered as errors", round(ca.loc[("qwen_full_spy", "contested")].agree_pct_unans_error, 1), 80.4)
+ab = pd.read_csv(RES / "unanswered_answering_bands.csv").set_index(["model", "scope", "variable", "band"])
+check("qwen answered share at 11 or more flips", round(ab.loc[("qwen3-8b", "full_spy", "sign_flips", ">=11")].answered_pct, 1), 85.5)
 check("qwen not contested answered", int(c.n_answered), 3752); check("qwen not contested agree", round(c.agree_pct_answered, 1), 99.5)
 check("oss contested answered", int(ca.loc[("oss_full_spy", "contested")].n_answered), 521); check("oss contested agree", round(ca.loc[("oss_full_spy", "contested")].agree_pct_answered, 1), 98.3)
 check("luna contested agree (Paper A)", round(ca.loc[("full_spy", "contested")].agree_pct_answered, 1), 97.5)

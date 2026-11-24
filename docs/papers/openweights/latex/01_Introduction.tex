@@ -26,7 +26,7 @@ RQ1 and RQ2 are answered in Sections~\ref{sec:results:overview}--\ref{sec:result
 \begin{figure}[!t]
 \centering
 \resultfigure{\figLadder}
-\caption{Reproduction ladder. Rung~1 and rung~2 are the retired model and its hosted alias, with the numbers of Paper A; rung~3 is the object of this paper: three open-weights models at pinned revisions answer the stored requests on local GPUs. The reasoning-first and temperature-0 variants of Llama~3.1~8B and gpt-oss-20b are in the lower boxes (temperature 0: both models together). \textbf{Read this figure as:} the requests are the same in every rung, and only rung~3 can be run again after the hosted models are gone.}
+\caption{Reproduction ladder. Rung~1 and rung~2 are the retired model and its hosted alias, with the numbers of Paper A; rung~3 is the object of this paper: three open-weights models at pinned revisions answer the stored requests on local GPUs. The reasoning-first and temperature-0 variants of Llama~3.1~8B and gpt-oss-20b are in the lower boxes (temperature 0: both models together). GPU hours are engine time summed over the runs. \textbf{Read this figure as:} the requests are the same in every rung, and only rung~3 can be run again after the hosted models are gone.}
 % src: runs.csv.gz (condensed/) model, mode=local, n_requests, run_metadata.local.seconds (oss 12,398 requests and 10.0 GPU-hours; Llama 12,378 and 3.3; Qwen 22,400 and 98.5); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=bridge_jan scope=all (n_pairs 1412, agree_pct 99.6, kappa 0.99); the figure and its manifest: figures/output/bf01_reproduction_ladder.json
 \label{fig:ladder}
 \end{figure}
