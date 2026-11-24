@@ -1,9 +1,9 @@
-generated_at: '2026-11-24T03:34:10+00:00'
+generated_at: '2026-11-24T04:43:54+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
-  sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+  sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
   common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
-  git_sha: d4765a1e16cc1b98cbf5e23d4cd1b2199b147cb3
+  git_sha: b95ba6599a40f1ce7469ac73db3311312860227d
 environment:
   python: 3.12.12
   pandas: 2.3.3
@@ -13,7 +13,7 @@ environment:
 parameters:
   seed: 261
   n_boot: 2000
-  results_dir: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/docs/papers/electronics/results
+  results_dir: docs/papers/electronics/results
   only: null
 contract:
   detection_by_year.csv: 'long format: label_source classifier|llm, scope year|all, rates in percent (rate_pct,
@@ -7469,6 +7469,41 @@ sections:
       - qwen_p34_obf_2024
       unparsed_total: 1035
       unparsed_clf_no_detect: 1013
+  published_input_gaps:
+    status: written
+    files:
+    - published_input_gaps.csv
+    - published_input_gaps_by_year.csv
+    summary:
+      rows: 5
+      definition: 'Affected day: a trading day before 2023-09-29 of the published (jan2026_phase4a) SPY series on
+        which the published value equals the stored call-only value within 0.006B (the 0.01B rounding of the prompt)
+        and differs from the complete value (new_full) by more than that. The windows are the published windows
+        (30 consecutive rows of the published series) that end before 2023-09-29. ''Replaced'' recomputes the rule
+        on the same windows with each affected day set to the complete value rounded to 0.01B; nothing else changes.'
+      n_affected_days: 39
+      first_affected_day: '2021-09-17'
+      last_affected_day: '2023-09-27'
+      affected_days_by_year:
+        2021: 2
+        2022: 3
+        2023: 34
+      n_published_days_before_break: 940
+      n_equal_complete_before_break: 900
+      n_equal_neither_before_break: 1
+      equal_neither_days:
+        '2022-05-31':
+          published_bn: -1.33
+          call_only_bn: 9.159161
+          complete_bn: -1.227519
+      n_days_from_break: 565
+      n_days_from_break_equal_call_only: 565
+      n_days_from_break_equal_complete: 0
+      n_published_windows: 1476
+      n_recomputed_verdicts_not_equal_to_stored: 0
+      n_windows_before_break: 911
+      n_windows_with_affected_day: 332
+      n_verdicts_changed: 46
 files:
   bridge_agreement.csv:
     rows: 732
@@ -7519,11 +7554,11 @@ files:
     sha256: 79a6fff2e5b54694d935f22ca24d4e488804cb729098759b661ae5af0a501a58
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -7541,11 +7576,11 @@ files:
     sha256: 02938c1f2cd13355f1f39f4f07a45f2c0d15f0b1d403d2abe7836db2a84f1765
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   cost_ledger.csv:
     rows: 202
     columns:
@@ -7585,11 +7620,11 @@ files:
     sha256: 1ee4197c2eb277ad6aa82cdd88d080e02c75eb6d169d09ebc640629faab9b521
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -7606,11 +7641,11 @@ files:
     sha256: e788845416aa174665115eff2e34a3df201319cee97a39707d113dc4d2d28d75
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   detection_by_year.csv:
     rows: 1002
     columns:
@@ -7649,11 +7684,11 @@ files:
     sha256: c6a8f8ef2f75e0852c9f8a7c63b5b0302ba18cf2b0c419423aa1cd227d504910
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   detection_by_year_wide.csv:
     rows: 885
     columns:
@@ -7681,11 +7716,11 @@ files:
     sha256: 2f47636c90d25ae162f0f01639aa993ed850c6a0b2d34a258c5031bdfc1cdf12
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   disagreements.csv:
     rows: 15653
     columns:
@@ -7715,11 +7750,11 @@ files:
     sha256: 14e008ce86443cc2ed0121d7e629fa58e636a705905c8473d2b8eb12dd6a7306
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -7751,11 +7786,11 @@ files:
     sha256: 0adff916ed255c3fbaf5f5d3c5bd9c58fb8a7f69a12319b88f716cc2bcc5bc0c
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -7779,11 +7814,11 @@ files:
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   llm_parse_stats.csv:
     rows: 100
     columns:
@@ -7814,11 +7849,11 @@ files:
     sha256: 1c1981ef9db150a3fed724a56b1dd3e7961d3d3daa8085e89de2db1a54fda11b
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   missing_answer_bounds.csv:
     rows: 39
     columns:
@@ -7846,11 +7881,11 @@ files:
     sha256: c636f1d425bbe0f026b964476bbe05988571bcc0cd454115872471b875839c75
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   post_publication_2026.csv:
     rows: 1959
     columns:
@@ -7904,11 +7939,11 @@ files:
     sha256: f3970f4fa3736e22ab3e10dfcba7e10d5bccc46c9bac239c9e65f0d69a174c21
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   post_publication_2026_summary.csv:
     rows: 58
     columns:
@@ -7932,11 +7967,58 @@ files:
     sha256: 8150fb35946c714ef65bb83cd5fa300469501c4bd982a24a9536cd437eaa856a
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
+  published_input_gaps.csv:
+    rows: 39
+    columns:
+    - trading_date
+    - published_gex_bn
+    - call_only_gex_bn
+    - complete_gex_bn
+    - replacement_gex_bn
+    - sign_changes
+    - n_windows
+    bytes: 2073
+    sha256: 204a0d42e09665a4b44fca4df4eebe5b7fdef81faa3f317f5857748fdbfe4193
+    produced_with:
+      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T04:43:54+00:00'
+  published_input_gaps_by_year.csv:
+    rows: 5
+    columns:
+    - scope
+    - year
+    - window_end_first
+    - window_end_last
+    - n_windows
+    - n_windows_with_affected_day
+    - n_detect_published
+    - rate_published_pct
+    - n_detect_replaced
+    - rate_replaced_pct
+    - n_verdicts_changed
+    - n_changed_to_detect
+    - n_changed_to_not_detect
+    - n_detect_complete_series
+    - n_windows_complete_series
+    - rate_complete_series_pct
+    bytes: 734
+    sha256: 6d2e0495e47d3ed2ca24893c93b46d4a07021a96da61d20f198fd76ecdc1140d
+    produced_with:
+      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T04:43:54+00:00'
   reported_vs_computed.csv:
     rows: 863
     columns:
@@ -7963,11 +8045,11 @@ files:
     sha256: 94dae5659ed8682557a1bf5557335f7d82102b9b500365abec2b91559412648d
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   series_comparison.csv:
     rows: 106
     columns:
@@ -7990,11 +8072,11 @@ files:
     sha256: f4b24afd4576ff16188ba07c6c516b3807a470526dabf8485b999af57a29a8ba
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
   stats.yaml:
     keys:
     - meta
@@ -8005,11 +8087,11 @@ files:
     sha256: 954f16689423c2f1524b658c6945752b3b06eaf1b737643991f21a0ec6b0fffb
     produced_with:
       inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f
+      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T03:34:10+00:00'
+      generated_at: '2026-11-24T04:43:54+00:00'
 untracked_files: []
 warnings: []
 diagnostics:

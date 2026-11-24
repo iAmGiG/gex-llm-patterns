@@ -1,0 +1,6 @@
+scope,year,window_end_first,window_end_last,n_windows,n_windows_with_affected_day,n_detect_published,rate_published_pct,n_detect_replaced,rate_replaced_pct,n_verdicts_changed,n_changed_to_detect,n_changed_to_not_detect,n_detect_complete_series,n_windows_complete_series,rate_complete_series_pct
+year,2020,2020-02-13,2020-12-31,223,0,27,12.107623,27,12.107623,0,0,0,27,223,12.107623
+year,2021,2021-01-04,2021-12-31,252,39,10,3.968254,9,3.571429,1,0,1,9,252,3.571429
+year,2022,2022-01-03,2022-12-30,251,110,81,32.270916,102,40.63745,21,21,0,102,251,40.63745
+year,2023,2023-01-03,2023-09-28,185,183,3,1.621622,27,14.594595,24,24,0,27,185,14.594595
+all,,2020-02-13,2023-09-28,911,332,121,13.282108,165,18.111965,46,45,1,165,911,18.111965
