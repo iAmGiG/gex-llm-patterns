@@ -1,10 +1,12 @@
 %  Supplementary Materials of the Electronics manuscript (compiled on its own: pdflatex, twice).
-%  Section S1: series definitions in SQL.  Section S2: run ledger.  Section S3: open-weights models in detail.
-%  One \input per part, as in the article.
+%  Section S1: series definitions in SQL.  Section S2: run ledger.  Section S3: cross-asset replication (QQQ, IWM).
+%  Section S4: intraday check.  Section S5: fidelity of model answers by arm.
+%  One \input per part, as in the article.  Figures: the PNGs of ../figures/output (figures/ in the Overleaf package);
+%  the stems are registered below and in the main file, and run_all.py --check reads both.
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[T1]{fontenc}
-\usepackage{booktabs,tabularx,float,listings,xcolor,url,amsmath,amssymb}
+\usepackage{booktabs,tabularx,float,listings,xcolor,url,amsmath,amssymb,graphicx}
 \usepackage[hidelinks]{hyperref}
 \DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
 \lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
@@ -13,12 +15,29 @@
   aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
-\title{Supplementary Materials for\\ ``Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Complete Inputs with a Controlled LLM Re-Test''}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\emergencystretch=3em  % the long file paths of Section S1 cannot all break
+% Figure registry of the supplement (stems of ../figures/output/<stem>.png).
+\newcommand{\figCross}{fig09_cross_asset}
+\newcommand{\figIntraday}{fig11_intraday_vs_eod}
+\IfFileExists{figures/fig09_cross_asset.png}{\newcommand{\figdir}{figures}}{\newcommand{\figdir}{../figures/output}}
+\newcommand{\resultfigure}[1]{%
+  \begingroup
+  \edef\figstem{#1}%
+  \IfFileExists{\figdir/\figstem.png}%
+    {\includegraphics[width=\textwidth]{\figdir/\figstem.png}}%
+    {\GenericWarning{}{Missing figure file \figdir/\figstem.png}%
+     \fbox{\parbox[c][4cm][c]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{\centering\ttfamily
+       Missing figure file\\\expandafter\detokenize\expandafter{\figstem}.png}}}%
+  \endgroup}
+\title{Supplementary Materials for\\ ``Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Inputs with Both Option Legs and a Rule-Following Test of a Current LLM''}
 \author{Christopher Regan and Ying Xie}
 \date{}
 \begin{document}
 \maketitle
 \input{./S1_Series_SQL}
 \input{./S2_Run_Ledger}
-\input{./S3_Open_Weights}
+\input{./S3_Cross_Asset}
+\input{./S4_Intraday}
+\input{./S5_Fidelity}
 \end{document}

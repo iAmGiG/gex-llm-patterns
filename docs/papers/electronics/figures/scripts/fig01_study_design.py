@@ -13,6 +13,11 @@ Input  results/report.yaml (05_report.py):
   * headline.cost.est_cost_usd: total cost of the runs (the cost_ledger section must have been written);
   * sections: which result files exist.
   Series and arms are listed in registry order (common.SERIES / common.ARMS); only those that have rows are drawn.
+
+Options  --exclude-local   draw the hosted and backfilled arms only: no open-weights box, and the stored-answer counts are
+                           those of the gpt-6-luna and o4-mini arms (paper A of the two-paper split).  The default draws
+                           every arm of report.yaml.
+         The figure names the date of report.yaml (generated_at) as the date of the counts.
 """
 
 from __future__ import annotations
@@ -49,6 +54,8 @@ RESULT_LABELS: Dict[str, str] = {
 }
 STORED_IN = ("Every series value, window, label and answer is stored in backups.gex_llm_regime_series, _windows, _runs and "
              "_detections, with parquet copies and the raw Batch and local files. Counts from results/report.yaml.")
+STORED_IN_HOSTED = ("Every series value, window, label and answer is stored in backups.gex_llm_regime_series, _windows, _runs and "
+                    "_detections, with parquet copies and the raw Batch files. Counts from results/report.yaml.")
 
 
 # --------------------------------------------------------------------------- data
@@ -96,11 +103,12 @@ def wrap_items(items: Sequence[str], separator: str, fig, width_in: float, fonts
 OPEN_GAP = 0.06  # inches between the gpt-6-luna arms and the open-weights groups (D-29, D-30)
 
 
-def arm_summary(coverage: pd.DataFrame) -> Tuple[List[Dict[str, Any]], int, List[Dict[str, Any]]]:
+def arm_summary(coverage: pd.DataFrame, exclude_local: bool = False) -> Tuple[List[Dict[str, Any]], int, List[Dict[str, Any]]]:
     """Registered arms with rows (registry order), the number of other requests (pilot, repeats), and one group per
-    open-weights model (D-29, D-30): its arms, pilot and repeats are drawn as one line, so they are counted apart."""
+    open-weights model (D-29, D-30): its arms, pilot and repeats are drawn as one line, so they are counted apart.
+    With ``exclude_local`` the open-weights rows are dropped before anything is counted and no group is returned."""
     local = coverage["model"].isin(theme.common.LOCAL_MODELS)
-    open_rows = coverage[local]
+    open_rows = coverage[local] if not exclude_local else coverage[local].iloc[0:0]
     coverage = coverage[~local]
     registered = [a for a in theme.common.ARMS if a in set(coverage["arm"])]
     arms = [{"key": a, "label": theme.arm_label(a), "rows": int(coverage.loc[coverage["arm"] == a, "rows"].sum()),
@@ -248,7 +256,7 @@ def draw_labels(canvas: Canvas, thresholds: Dict[str, float], n_windows: int, mo
     canvas.arrow((COLUMNS["windows"][1] + 0.03, middle), (x0 - 0.03, middle))
 
 
-def draw_results(canvas: Canvas, results: Sequence[str], bottom: float) -> None:
+def draw_results(canvas: Canvas, results: Sequence[str], bottom: float, stored_in: str = STORED_IN) -> None:
     """The result tables the labels flow into, and where everything is stored."""
     left, right = COLUMNS["series"][0], COLUMNS["labels"][1]
     top = bottom + 0.26
@@ -259,16 +267,29 @@ def draw_results(canvas: Canvas, results: Sequence[str], bottom: float) -> None:
     canvas.arrow((centre, bottom + 0.03), (centre, top - 0.03))
     canvas.text(left + PAD, top + PAD, "Compared in the result tables", bold=True, container=box)
     canvas.text(left + PAD, top + PAD + LINE, listing, container=box)
-    canvas.text(left, top + height + 0.10, theme.wrap_to_width(STORED_IN, canvas.fig, width_in=right - left), color=theme.MUTED)
+    canvas.text(left, top + height + 0.10, theme.wrap_to_width(stored_in, canvas.fig, width_in=right - left), color=theme.MUTED)
+
+
+def add_arguments(parser) -> None:
+    parser.add_argument("--exclude-local", action="store_true",
+                        help="hosted and backfilled arms only: no open-weights box, counts over those arms")
+
+
+def as_of(report: Dict[str, Any]) -> str:
+    """Date of the stored counts: the day report.yaml was generated."""
+    try:
+        return str(report["generated_at"])[:10]
+    except (KeyError, TypeError):
+        return ""
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    args = theme.parse_args(FIG_ID, __doc__, argv)
+    args = theme.parse_args(FIG_ID, __doc__, argv, configure=add_arguments)
     inputs = figdata.Inputs(FIG_ID, args.results_dir, args.tables_dir)
     report = inputs.yaml("report.yaml")
     windows = figdata.report_coverage(inputs, report, "windows")
     series = series_summary(figdata.report_coverage(inputs, report, "series"), windows)
-    arms, other_requests, open_groups = arm_summary(figdata.report_coverage(inputs, report, "detections"))
+    arms, other_requests, open_groups = arm_summary(figdata.report_coverage(inputs, report, "detections"), args.exclude_local)
     models = sorted({m for a in arms for m in a["models"] if not m.startswith("o4-mini")})
     if not series or not models:
         inputs.fail("report.yaml lists no series, or no registered arm answered by a current model")
@@ -294,13 +315,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     middle = (TOP + bottom) / 2
     draw_windows(canvas, n_windows, last_end, middle)
     draw_labels(canvas, thresholds, n_windows, models, arms, other_requests, cost, bottom, middle, open_groups)
-    draw_results(canvas, results, bottom)
+    date = as_of(report)
+    stored_in = STORED_IN_HOSTED if args.exclude_local else STORED_IN
+    draw_results(canvas, results, bottom, stored_in=stored_in + (f" As of {date}." if date else ""))
     canvas.check()
 
     extra = {"series": {e["key"]: {"symbols": e["symbols"], "rows": e["rows"], "span": e["span"], "windows": e["windows"]}
                         for e in series},
              "windows": n_windows, "last_window_end": last_end, "arms": {a["key"]: a["rows"] for a in arms},
-             "other_requests": other_requests, "open_weights": open_groups, "cost_usd": cost, "results_written": results, "thresholds": thresholds}
+             "other_requests": other_requests, "open_weights": open_groups, "exclude_local": bool(args.exclude_local), "as_of": as_of(report), "cost_usd": cost, "results_written": results, "thresholds": thresholds}
     theme.finish(fig, FIG_ID, args, inputs.sources, inputs.rows, extra)
     return 0
 

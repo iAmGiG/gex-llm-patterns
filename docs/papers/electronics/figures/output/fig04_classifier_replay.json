@@ -4,9 +4,9 @@
   ],
   "code": [
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/fig04_classifier_replay.py",
-      "sha256": "c1e834caf911692caa333debf86d8c74fddb1981c06f0ea1cae081779a687448"
+      "sha256": "53de988414bf04ddfd23c5108ea73ef1b5bff9fe0610480262e9321a3d6a1533"
     },
     {
       "git": "clean",
@@ -53,7 +53,7 @@
         "2025": 250
       },
       "new_ex0dte": {
-        "2020": 252,
+        "2020": 223,
         "2021": 252,
         "2022": 251,
         "2023": 250,
@@ -61,7 +61,7 @@
         "2025": 250
       },
       "new_full": {
-        "2020": 252,
+        "2020": 223,
         "2021": 252,
         "2022": 251,
         "2023": 250,
@@ -69,7 +69,7 @@
         "2025": 250
       },
       "old_bs": {
-        "2020": 252,
+        "2020": 223,
         "2021": 252,
         "2022": 251,
         "2023": 249,
@@ -98,7 +98,7 @@
         "2025": 9
       },
       "new_ex0dte": {
-        "2020": 9,
+        "2020": 8,
         "2021": 9,
         "2022": 9,
         "2023": 9,
@@ -106,7 +106,7 @@
         "2025": 9
       },
       "new_full": {
-        "2020": 9,
+        "2020": 8,
         "2021": 9,
         "2022": 9,
         "2023": 9,
@@ -114,7 +114,7 @@
         "2025": 9
       },
       "old_bs": {
-        "2020": 9,
+        "2020": 8,
         "2021": 9,
         "2022": 9,
         "2023": 9,
@@ -166,7 +166,28 @@
       },
       "recovered_2026_total": 64
     },
+    "restricted_cells": {
+      "new_ex0dte": {
+        "2020": [
+          252,
+          223
+        ]
+      },
+      "new_full": {
+        "2020": [
+          252,
+          223
+        ]
+      },
+      "old_bs": {
+        "2020": [
+          252,
+          223
+        ]
+      }
+    },
     "symbol": "SPY",
+    "window_set": "windows ending on or after the first published window end",
     "years": [
       2020,
       2021,
@@ -227,24 +248,24 @@
     }
   },
   "figure": "fig04_classifier_replay",
-  "generated_utc": "2026-11-10T02:47:49+00:00",
+  "generated_utc": "2026-11-23T23:14:55+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "485a05cd88b1fd4a9f4a9d74f3e92adbb45aa7d7",
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
   "outputs": {
     "pdf": {
-      "bytes": 13992,
+      "bytes": 14090,
       "path": "docs/papers/electronics/figures/output/fig04_classifier_replay.pdf",
-      "sha256": "41609b34f01340d6ec29f94a6d28e86fd53f9bd4071f2b16632ad3873efb814f"
+      "sha256": "b8841108c4d9ceb56d3e0dee2940e376b9f15f53892cfe252ddc6162812c3ffc"
     },
     "png": {
-      "bytes": 145270,
+      "bytes": 173708,
       "path": "docs/papers/electronics/figures/output/fig04_classifier_replay.png",
       "pixels": [
         1842,
         1005
       ],
-      "sha256": "eb8a560348e39594f2012555af0892597781f490c7d4a57e9aa0921b920bf9e7"
+      "sha256": "ce90fe6e7326b1d8418edac8e528a8c1b37f932033fd3d04d8e72ec1a2b60d3c"
     }
   },
   "results": {
@@ -265,9 +286,15 @@
     }
   },
   "rows": {
+    "data/backups/gex_llm/condensed/windows.csv.gz": 18111,
     "docs/papers/electronics/results/detection_by_year.csv": 843
   },
   "sources": [
+    {
+      "bytes": 2272129,
+      "path": "data/backups/gex_llm/condensed/windows.csv.gz",
+      "sha256": "c7bcc1b157b3fd2011138426e178d7c6f0a8179c8242f2bceb8a5273db4943fa"
+    },
     {
       "bytes": 138773,
       "path": "docs/papers/electronics/results/detection_by_year.csv",

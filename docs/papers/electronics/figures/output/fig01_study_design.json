@@ -1,12 +1,15 @@
 {
   "argv": [
-    "fig01_study_design.py"
+    "fig01_study_design.py",
+    "--exclude-local",
+    "--tables-dir",
+    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
   ],
   "code": [
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/fig01_study_design.py",
-      "sha256": "7a3d2bd61ec0fa62008168322717428aa1fc22315cff9ecca1438b5eede1095d"
+      "sha256": "e783bce2935a8b347b88af60c481dc481587532db26f8e9bb9911f9a967ee24f"
     },
     {
       "git": "clean",
@@ -45,55 +48,11 @@
       "r1_p3_o4mini": 223,
       "r1_p4_o4mini": 223
     },
+    "as_of": "2026-11-10",
     "cost_usd": 10.020749,
+    "exclude_local": true,
     "last_window_end": "2026-10-09",
-    "open_weights": [
-      {
-        "arms": [
-          "oss_bridge_jan",
-          "oss_ex0dte_spy",
-          "oss_full_spy",
-          "oss_p34_dated_2020",
-          "oss_p34_dated_2024",
-          "oss_p34_obf_2020",
-          "oss_p34_obf_2024"
-        ],
-        "models": [
-          "gpt-oss-20b"
-        ],
-        "rows": 12384
-      },
-      {
-        "arms": [
-          "llama_bridge_jan",
-          "llama_ex0dte_spy",
-          "llama_full_spy",
-          "llama_p34_dated_2020",
-          "llama_p34_dated_2024",
-          "llama_p34_obf_2020",
-          "llama_p34_obf_2024"
-        ],
-        "models": [
-          "llama-3.1-8b-instruct"
-        ],
-        "rows": 12378
-      },
-      {
-        "arms": [
-          "qwen_bridge_jan",
-          "qwen_ex0dte_spy",
-          "qwen_full_spy",
-          "qwen_p34_dated_2020",
-          "qwen_p34_dated_2024",
-          "qwen_p34_obf_2020",
-          "qwen_p34_obf_2024"
-        ],
-        "models": [
-          "qwen3-8b"
-        ],
-        "rows": 12378
-      }
-    ],
+    "open_weights": [],
     "other_requests": 3032,
     "results_written": [
       "detection rate by year",
@@ -168,24 +127,24 @@
     "windows": 38592
   },
   "figure": "fig01_study_design",
-  "generated_utc": "2026-11-10T02:47:38+00:00",
+  "generated_utc": "2026-11-23T23:14:26+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "485a05cd88b1fd4a9f4a9d74f3e92adbb45aa7d7",
+  "git_sha": "0477dcebde43eaf557ec6491c2c64c9119fc9ef0",
   "outputs": {
     "pdf": {
-      "bytes": 23773,
+      "bytes": 23612,
       "path": "docs/papers/electronics/figures/output/fig01_study_design.pdf",
-      "sha256": "9725739d3c51ca12f96e3c9bf93d16b27357b56d96c47ce6c807dce84759807a"
+      "sha256": "798be454d679f75013c7cc54beee3f7870777a8c12b42b0c544229e0bd3d6600"
     },
     "png": {
-      "bytes": 519422,
+      "bytes": 482758,
       "path": "docs/papers/electronics/figures/output/fig01_study_design.png",
       "pixels": [
         1842,
-        1903
+        1690
       ],
-      "sha256": "d94b737a923b9e2fbd61697d8c5b095c4e2a12c15f550ea81eaffc7055f8b94f"
+      "sha256": "55a853ea8047bab79459f8aba65e3aefe2de3fdf2a8055ee7ed8911e8fe8883d"
     }
   },
   "results": {
