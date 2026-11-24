@@ -58,8 +58,9 @@ https://github.com/iAmGiG/gex-llm-patterns. The full tables (inputs, labels and 
 Zenodo. <!-- TODO(authors): DOI once the record is created (issue #274); the vendor's terms allow the deposit (D-31). --> The
 options data come from Alpha Vantage under a premium subscription whose terms permit this use; the raw option chains
 are not part of the deposit because of their size. gpt-6-luna is the object of the study. As stated in the
-Acknowledgments, the authors used Claude Code to write the analysis code and to draft and revise the text, and they take
-full responsibility for the content.
+Acknowledgments, the authors used Claude Code to write and run the analysis code, to draft and revise the text and to
+check the manuscript against the stored results; they decided the design, the analyses reported and the conclusions, and
+they take full responsibility for the content.
 
 The manuscript has not been published and is not under consideration elsewhere. All authors have approved the
 submission and declare no conflict of interest. The study received no external funding.

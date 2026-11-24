@@ -30,8 +30,8 @@ Statistic & o4-mini & gpt-6-luna & Both \\
 Windows with a parsed answer & 1{,}412 & 1{,}412 & 1{,}412 \\
 Detection rate (\%) & 45.8 & 46.1 & -- \\
 Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
-Agreement between models (\%) [95\% calendar-quarter bootstrap interval] & -- & -- & 99.6 [99.4, 99.9] \\
-Cohen's kappa [95\% calendar-quarter bootstrap interval] & -- & -- & 0.993 [0.986, 0.998] \\
+Agreement between models (\%) [95\% interval] & -- & -- & 99.6 [99.4, 99.9] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.993 [0.986, 0.998] \\
 McNemar exact p (stride one, all windows) & -- & -- & 0.063 \\
 Block-bootstrap p (calendar quarters) & -- & -- & 0.010 \\
 Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
@@ -41,20 +41,20 @@ Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
 Windows with a parsed answer & 1{,}476 & 1{,}476 & 1{,}476 \\
 Detection rate (\%) & 45.2 & 45.5 & -- \\
 Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
-Agreement between models (\%) [95\% calendar-quarter bootstrap interval] & -- & -- & 99.6 [99.3, 99.9] \\
-Cohen's kappa [95\% calendar-quarter bootstrap interval] & -- & -- & 0.992 [0.984, 0.997] \\
+Agreement between models (\%) [95\% interval] & -- & -- & 99.6 [99.3, 99.9] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.992 [0.984, 0.997] \\
 McNemar exact p (stride one, all windows) & -- & -- & 0.219 \\
 Block-bootstrap p (calendar quarters) & -- & -- & 0.121 \\
 \midrule
 % src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan other_arm=bridge_jan#rep1 scope=all
 \multicolumn{4}{@{}l}{\textit{Test-retest of gpt-6-luna (first pass against repeat pass)}} \\
 Windows with a parsed answer & -- & 1{,}476 & -- \\
-Agreement between passes (\%) [95\% calendar-quarter bootstrap interval] & -- & -- & 99.3 [98.6, 99.8] \\
-Cohen's kappa [95\% calendar-quarter bootstrap interval] & -- & -- & 0.985 [0.969, 0.996] \\
+Agreement between passes (\%) [95\% interval] & -- & -- & 99.3 [98.6, 99.8] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.985 [0.969, 0.996] \\
 \midrule
 % src: bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa, kappa_boot_lo, kappa_boot_hi); drift_summary.csv base_arm=full_spy repeat_index=2 (n_changed, n_toward_rule, n_away_from_rule)
-\multicolumn{4}{@{}l}{\textit{Later-date repeat of gpt-6-luna (2026-11-24; 300 windows of the complete series balanced on the rule, first answered 21 to 26 days earlier)}} \\
-Agreement between passes (\%) [95\% calendar-quarter bootstrap interval] & -- & -- & 98.0 [96.4, 99.3] \\
+\multicolumn{4}{@{}l}{\textit{Later-date repeat of gpt-6-luna (300 windows of the complete series, 21 to 26 days later)}} \\
+Agreement between passes (\%) [95\% interval] & -- & -- & 98.0 [96.4, 99.3] \\
 \bottomrule
 \end{tabular}
 \end{table}

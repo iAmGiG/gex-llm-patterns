@@ -28,7 +28,9 @@ The earlier publications on which both build are cited in the text.
 
 All code, condensed result tables and the figure scripts are in the repository named in the Data Availability Statement; every
 request and answer of the open-weights runs is in the deposit. No part of the manuscript is under consideration elsewhere.
-TODO(authors): confirm, and state the AI-assistance disclosure as in the manuscript.
+As stated in the Acknowledgments, the authors used Claude Code to write and run the analysis code, to draft and revise the text and to
+check the manuscript against the stored results; they decided the design, the runs and analyses reported and the conclusions, and they
+take full responsibility for the content. TODO(authors): confirm this paragraph.
 
 Sincerely,
 Christopher Regan and Ying Xie, Kennesaw State University
