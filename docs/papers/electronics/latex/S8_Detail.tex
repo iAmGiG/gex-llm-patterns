@@ -3,7 +3,7 @@
 \section{Detail on the Published Inputs and the Scope Checks}
 \label{sup:detail}
 
-Figure~\ref{fig:window} shows one window under four conventions, Table~\ref{tab:ablation} gives the same-day-expiry ablation by year, and Table~\ref{tab:post} and Figure~\ref{fig:post} give the post-publication period, Figures~\ref{fig:replay} and~\ref{fig:deep} the replay by year and 2008 to 2019, and Table~\ref{tab:windows} the windows; the article summarises these in Sections~3.4, 4.1, 4.2 and~4.5.
+Figure~\ref{fig:window} shows one window under four conventions, Table~\ref{tab:ablation} gives the same-day-expiry ablation by year, and Table~\ref{tab:post} and Figure~\ref{fig:post} give the post-publication period, Figures~\ref{fig:thresholds} and~\ref{fig:deep} the threshold sensitivity and 2008 to 2019, and Table~\ref{tab:windows} the windows; the article summarises these in Sections~3.4, 4.1, 4.2 and~4.5.
 
 \begin{figure}[H]
 \centering
@@ -80,11 +80,12 @@ Series & Window set & Windows & Classifier detects (\%) & gpt-6-luna detects (\%
 \label{fig:post}
 \end{figure}
 
+
 \begin{figure}[H]
 \centering
-\resultfigure{\figReplay}
-\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the complete series without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} the published labels and the rule on the published inputs agree window by window. In 2024 and 2025 the bars of the published inputs, the call-only series and the archive stand at 100\%, and the two bars of the complete series stand at 13.1\% and 10.3\% in 2024 and 16.4\% and 13.6\% in 2025. In 2020 the bars of the archive and of the complete series count the 223 windows that end from 2020-02-13, the span of the published inputs; on all 252 windows the complete series gives 22.2\% (Table~S8). The Wilson intervals are optimistic because the overlapping windows of a year are treated as independent.}
-\label{fig:replay}
+\resultfigure{\figThresholds}
+\caption{Sensitivity of the 2024--2025 detection rate to the persistence, magnitude and flip thresholds (45 threshold sets: persistence 60, 65, 70, 75 and 80\%, magnitude \$3, \$5 and \$7~billion, flip limit 3, 5 and 7; one panel per magnitude and flip limit, persistence on the horizontal axis) for the published inputs (\ident{jan2026_phase4a}) and the complete series (\ident{new_full}); the panel with the heavy frame holds the published thresholds. \textbf{Read this figure as:} the curve of the published inputs is flat at 100.0\% in all nine panels, and the curve of the complete series stays low and moves with the flip limit: it is highest, up to 29.3\%, with a limit of seven flips and lowest, 4.0\%, with three. At the published thresholds the complete series gives 12.0\%.}
+\label{fig:thresholds}
 \end{figure}
 
 \begin{figure}[H]

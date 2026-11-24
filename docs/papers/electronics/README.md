@@ -124,7 +124,7 @@ docs/papers/electronics/
                       06_Conclusion, 07_Appendix_A_Data; references.bib
                       Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger, S3_Cross_Asset,
                       S4_Intraday, S5_Fidelity, S6_Prompt (prompt, schema, request; was Appendix A of the article),
-                      S7_Tables (per-year tables; was Appendix B) and S8_Detail (one window, replay and 2008-2019
+                      S7_Tables (per-year tables; was Appendix B) and S8_Detail (one window, threshold sensitivity and 2008-2019
                       figures, ablation, post-publication and windows tables)
   ../openweights/     the companion paper (Paper B), a separate folder
   overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)

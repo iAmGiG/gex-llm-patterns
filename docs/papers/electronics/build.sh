@@ -101,7 +101,7 @@ for pair in "sec:methods:criteria=3.1" "sec:methods:series=3.2" "sec:methods:lin
   [ "$(number_of "${pair%%=*}")" = "${pair##*=}" ] || SUP_STALE="$SUP_STALE ${pair%%=*}(is $(number_of "${pair%%=*}"), supplement says ${pair##*=})"
 done
 # the article names these supplement labels by number
-for pair in "sup:series=S1" "sup:ledger=S2" "sup:cross=S3" "sup:intraday=S4" "sup:fidelity=S5" "sup:prompt=S6" "sup:tables=S7" "sup:detail=S8" "app:prompt:body=S6.2" "app:prompt:schema=S6.3" "tab:ledger=S1" "tab:ledger2=S2" "tab:cross=S3" "tab:s:llm=S4" "tab:intraday=S5" "tab:fidelity=S6" "tab:app:series=S7" "tab:app:replay=S8" "tab:complete=S9" "tab:ablation=S10" "tab:post=S11" "fig:cross=S1" "fig:intraday=S2" "fig:window=S3" "fig:post=S4" "fig:replay=S5" "fig:deep=S6" "tab:windows=S12"; do
+for pair in "sup:series=S1" "sup:ledger=S2" "sup:cross=S3" "sup:intraday=S4" "sup:fidelity=S5" "sup:prompt=S6" "sup:tables=S7" "sup:detail=S8" "app:prompt:body=S6.2" "app:prompt:schema=S6.3" "tab:ledger=S1" "tab:ledger2=S2" "tab:cross=S3" "tab:s:llm=S4" "tab:intraday=S5" "tab:fidelity=S6" "tab:app:series=S7" "tab:app:replay=S8" "tab:complete=S9" "tab:ablation=S10" "tab:post=S11" "fig:cross=S1" "fig:intraday=S2" "fig:window=S3" "fig:post=S4" "fig:thresholds=S5" "fig:deep=S6" "tab:windows=S12"; do
   [ "$(sup_number_of "${pair%%=*}")" = "${pair##*=}" ] || SUP_STALE="$SUP_STALE ${pair%%=*}(is $(sup_number_of "${pair%%=*}"), article says ${pair##*=})"
 done
 RERUN=$(count 'Rerun to get|Label\(s\) may have changed' "$MAIN.log")
