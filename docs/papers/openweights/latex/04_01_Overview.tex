@@ -2,7 +2,7 @@
 \label{sec:results:overview}
 
 % src: detection_by_year.csv label_source=llm scope=all arm_role=primary (n_windows, n_parsed, agree_pct, kappa of the oss_, llama_ and qwen_ arms); Table 3
-Table~\ref{tab:results} gives the verdicts of the three models against the rule on the seven arms, and Figure~\ref{fig:agree} shows them with the hosted reference. gpt-oss-20b agrees with the rule in 98.2\% to 100.0\% of the windows of an arm (kappa 0.939 to 1.000), Qwen3-8B in 95.4\% to 100.0\% of the windows that it answers (kappa 0.668 to 1.000), and Llama~3.1~8B with the verdict first in a share that equals the detection rate of the rule, with kappa 0.000 in every arm. The following sections describe each model, then the departures from the rule, the effect of the schema order and the repeatability.
+Table~\ref{tab:results} gives the verdicts of the three models against the rule on the seven arms, and Figure~\ref{fig:agree} shows them with the hosted reference. gpt-oss-20b agrees with the rule in 98.2\% to 100.0\% of the windows of an arm (kappa 0.939 to 1.000), Qwen3-8B in 95.4\% to 100.0\% of the windows that it answers (kappa 0.668 to 1.000), and Llama~3.1~8B with the verdict first in a share that equals the detection rate of the rule, with kappa 0.000 in every arm.
 
 % src: detection_by_year.csv label_source=classifier scope=all (rate_pct of jan2026_phase4a, new_full, new_ex0dte, p3_2024, p3_2024_dated, p4_2020, p4_2020_dated, symbol SPY) and label_source=llm scope=all arm=bridge_jan, full_spy, ex0dte_spy, p34_* (rate_pct), from Paper A; agree_pct and kappa of the oss_, llama_ and qwen_ arms; n_parsed / n_windows of the qwen_ arms
 \begin{table}[!t]

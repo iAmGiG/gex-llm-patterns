@@ -1,6 +1,6 @@
 # Open-weights paper (Paper B): reproducing an LLM evaluation after its hosted model is retired
 
-Short paper (target 12-15 pages, MDPI class; the venue is not chosen) by Christopher Regan and Ying Xie. Working title:
+Short paper (about 16 pages, MDPI class; planned for MDPI *Electronics*, like Paper A, which is planned for the same journal) by Christopher Regan and Ying Xie. Working title:
 *Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests*.
 
 **Question.** Can an LLM evaluation be reproduced after its hosted model is retired: with the hosted successor alias, and with
@@ -44,6 +44,8 @@ bash docs/papers/openweights/build.sh --final      # strict + fails while a \pen
 bash docs/papers/openweights/build.sh --overleaf   # strict + overleaf/Regan_Xie_OpenWeights_overleaf.zip (git-ignored)
 ```
 
+Page count: the article is about 16 pages in the MDPI layout; the journal sets no page limit, so figures stay at full text width.
+
 Figures (AutoGex env, `export PYTHONNOUSERSITE=1 PYTHONPATH=$(pwd)`):
 
 ```bash
@@ -84,7 +86,7 @@ No `\pending` or `TODO(runs)` remains; `build.sh --final` fails only on the `TOD
 ## Open items for the authors
 
 CRediT roles, funding, acknowledgments and AI-use statement, the Zenodo DOI (one record with Paper A), the title of the
-companion manuscript in `references.bib`, the journal, and the page budget (see the build output). The default sampling values of
+companion manuscript in `references.bib`, the Special Issue (if any). The default sampling values of
 the existing runs are not stored in their run metadata (review item C110): the paper states that they come from each model's
 `generation_config.json` (visible in the vLLM logs) and lists it as a limitation. Recoverable verdicts in truncated Qwen3-8B
 answers (review item E7) are mentioned only as future work, without numbers.
