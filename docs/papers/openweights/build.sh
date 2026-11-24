@@ -2,7 +2,7 @@
 # Build the open-weights paper (Paper B, MDPI class): docs/papers/openweights/latex/Regan_Xie_OpenWeights.pdf
 #
 # Usage: docs/papers/openweights/build.sh [--strict | --final | --overleaf | --clean | -h | --help]
-#   (no option)  pdflatex, bibtex, pdflatex, pdflatex; print the page count (target 12-15), a warning summary and the counts of
+#   (no option)  pdflatex, bibtex, pdflatex, pdflatex; print the page count, a warning summary and the counts of
 #                \tbd and \pending placeholders (in total and per source file, the main file included)
 #   --strict     as above, then exit 1 unless the manuscript compiles cleanly: no undefined references or citations, no bibtex
 #                warnings, no missing figure files, no \tbd, no "Working title" left in \Title, no reference that still changed in
@@ -87,7 +87,7 @@ SUP_PAGES=$(sed -n 's/^Output written on .* (\([0-9]*\) pages.*/\1/p' "$SUPPLEME
 # The article cites the supplement tables by number and the supplement cites two article numbers: they must match.
 number_of() { sed -n "s/.*newlabel{$2}{{\([^}]*\)}.*/\1/p" "$1" | head -1; }
 STALE=""
-for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:engine=S7"; do
+for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:unans=S7" "tab:s:agree=S8" "tab:s:bands=S9" "tab:s:contested=S10" "tab:s:engine=S11"; do
   [ "$(number_of "$SUPPLEMENT.aux" "${pair%%=*}")" = "${pair##*=}" ] || STALE="$STALE ${pair%%=*}(is $(number_of "$SUPPLEMENT.aux" "${pair%%=*}"), the article says ${pair##*=})"
 done
 for pair in "tab:results=2" "sec:methods=3"; do
@@ -113,7 +113,7 @@ TITLE_OPEN=$({ live | grep -c 'Working title' || true; })
 TODO_AUTHORS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(authors)' || true; } | wc -l)
 TODO_RUNS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(runs)' || true; } | wc -l)
 
-echo "=== SUCCESS: latex/$MAIN.pdf (${PAGES:-?} pages; target 12-15) ==="
+echo "=== SUCCESS: latex/$MAIN.pdf (${PAGES:-?} pages) ==="
 echo "undefined references/citations: $UNDEF   bibtex warnings: $BIBWARN   missing figures: $MISSING   unresolved \\tbd: $TBD   \\pending: $PENDING   working title left: $TITLE_OPEN   overfull boxes: $OVERFULL"
 echo "open markers in the sources: TODO(authors) $TODO_AUTHORS_SRC, TODO(runs) $TODO_RUNS_SRC"
 echo "\\pending by file:${PENDING_BY_FILE%,}"
