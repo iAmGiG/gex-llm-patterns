@@ -20,6 +20,13 @@ Input  results/detection_by_year.csv, the long table of 05_report.py, read by fi
     call_only and old_bs are drawn when present;
   * a missing required series or year stops the figure; a missing optional series or year is logged, listed in the
     manifest (extra.gaps, extra.absent_optional_series) and named in the footnote, never silently left out.
+
+Window set (review item B013).  The complete series reaches back to 2008, so in 2020 it has 252 windows, 29 of which
+end before the first window of the published inputs (2020-02-13).  By default every classifier bar is drawn on the
+windows that end on or after the first window end of the published inputs, so that the bars of one year compare the same
+windows; this changes the 2020 cells of the series that start earlier (pre-rebuild archive, complete series with and without
+0DTE) and no other cell.  The restricted counts are read from data/backups/gex_llm/condensed/windows.csv.gz (tracked) and the
+Wilson interval is recomputed for them.  ``--all-windows`` draws every window of each series, as before.
 """
 
 from __future__ import annotations
@@ -143,8 +150,56 @@ def classifier_bars(inputs: figdata.Inputs, detection: pd.DataFrame, published: 
     return Replay(bars, gaps, absent, not_shown, thin)
 
 
+CONDENSED_WINDOWS = theme.REPO_ROOT / "data" / "backups" / "gex_llm" / "condensed" / "windows.csv.gz"
+
+
+def wilson(k: int, n: int, z: float = 1.959963984540054) -> Tuple[float, float]:
+    """Wilson score interval of k out of n, as fractions."""
+    p = k / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return float(centre - half), float(centre + half)
+
+
+def restrict_to_published_span(inputs: figdata.Inputs, bars: Sequence[Dict[str, Any]]) -> Dict[str, Dict[int, List[int]]]:
+    """Redraw the classifier cells whose series has windows ending before the first published window.
+
+    Returns {series key: {year: [windows before, windows after]}} for the cells that changed.  The windows come from the
+    condensed windows table (registered as a source of the manifest); the January batch has the same window set after the
+    first end date, so its ``n_indep_30d`` is the one of the restricted cells.
+    """
+    if not CONDENSED_WINDOWS.is_file():
+        inputs.fail(f"missing {CONDENSED_WINDOWS} (tracked condensed windows table); use --all-windows to draw every window")
+    table = pd.read_csv(CONDENSED_WINDOWS, usecols=["series_key", "symbol", "window_end", "clf_should_detect"])
+    table = table[table["symbol"] == SYMBOL]
+    inputs._record(CONDENSED_WINDOWS, len(table))  # remember the file in the manifest (figdata has no reader for the condensed tables)
+    table["window_end"] = pd.to_datetime(table["window_end"])
+    first = table.loc[table["series_key"] == BATCH_SERIES, "window_end"].min()
+    changed: Dict[str, Dict[int, List[int]]] = {}
+    batch_indep = next(b for b in bars if b["key"] == BATCH_SERIES)["frame"]["n_indep_30d"]
+    for bar in bars:
+        key = bar["key"]
+        if key == PUBLISHED_ARM or key == BATCH_SERIES:
+            continue
+        rows = table[table["series_key"] == key]
+        frame = bar["frame"]
+        for year in frame.index:
+            sel = rows[rows["window_end"].dt.year == int(year)]
+            kept = sel[sel["window_end"] >= first]
+            if len(sel) == 0 or len(kept) == len(sel):
+                continue
+            k, n = int(kept["clf_should_detect"].astype(bool).sum()), len(kept)
+            lo, hi = wilson(k, n)
+            frame.loc[year, ["n", "clf_n_detect", "clf_rate", "clf_ci_lo", "clf_ci_hi"]] = [n, k, k / n, lo, hi]
+            frame.loc[year, "n_indep_30d"] = batch_indep.get(year, frame.loc[year, "n_indep_30d"])
+            changed.setdefault(key, {})[int(year)] = [len(sel), n]
+    return changed
+
+
 def footnote_text(inputs: figdata.Inputs, published: pd.DataFrame, bars: Sequence[Dict[str, Any]], ci_label: str,
-                  gaps: Dict[str, List[int]], absent: Sequence[str], recovered: Optional[pd.Series] = None) -> str:
+                  gaps: Dict[str, List[int]], absent: Sequence[str], recovered: Optional[pd.Series] = None,
+                  restricted: Optional[Dict[str, Dict[int, List[int]]]] = None) -> str:
     """Footnote under the figure: interval method, effective sample size, what each bar is, and any bar that is not drawn.
 
     ``recovered`` (answers per year of the ``r1_o4mini_all`` arm beyond the published arm, from
@@ -166,14 +221,23 @@ def footnote_text(inputs: figdata.Inputs, published: pd.DataFrame, bars: Sequenc
     recovery = f"; the {left_out:,} answers re-parsed in 2026 are not drawn" if left_out else ""
     text = (f"{SYMBOL}, 30-day windows by year of the window end. Error bars: {ci_label}; a year holds only {span} "
             f"non-overlapping windows. First bar: o4-mini output of January 2026 (parsed answers for {parsed:,} of {sent:,} "
-            f"windows{recovery}); other bars: the rule applied to all windows of the series in the legend.")
+            f"windows{recovery}); other bars: the rule applied to the windows of the series in the legend.")
+    if restricted:
+        years = sorted({y for cells in restricted.values() for y in cells})
+        text += (f" In {', '.join(map(str, years))} only the windows that end on or after the first window of the published inputs "
+                 "(2020-02-13) are counted, so that the bars of a year share their windows (223 in 2020).")
     if omitted:
         text += " Not drawn: " + "; ".join(omitted) + "."
     return text
 
 
+def add_arguments(parser) -> None:
+    parser.add_argument("--all-windows", action="store_true",
+                        help="draw every window of each series (default: the windows from the first end date of the published inputs)")
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    args = theme.parse_args(FIG_ID, __doc__, argv)
+    args = theme.parse_args(FIG_ID, __doc__, argv, configure=add_arguments)
     inputs = figdata.Inputs(FIG_ID, args.results_dir, args.tables_dir)
     detection = figdata.load_detection_by_year(inputs)
     detection = detection[detection["symbol"] == SYMBOL]
@@ -199,6 +263,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 int(published["n_parsed"].sum()), "" if recovered is None else f" ({int(recovered.sum())} recovered answers not drawn)",
                 [b["key"] for b in replay.bars])
 
+    restricted = {} if args.all_windows else restrict_to_published_span(inputs, bars)
     fig = theme.new_figure(3.35)
     ax = fig.add_subplot(1, 1, 1)
     group = 0.84
@@ -230,7 +295,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     fig.legend(*theme.row_major(handles, labels, LEGEND_COLUMNS), loc="outside upper center", ncol=LEGEND_COLUMNS,
                handlelength=1.0, columnspacing=1.6)
     ci_label = bars[0]["ci"][2]
-    theme.footnote(fig, footnote_text(inputs, published, bars, ci_label, replay.gaps, replay.absent, recovered))
+    theme.footnote(fig, footnote_text(inputs, published, bars, ci_label, replay.gaps, replay.absent, recovered, restricted))
 
     extra = {
         "symbol": SYMBOL, "years": years, "bars": [b["key"] for b in bars], "ci": ci_label,
@@ -246,6 +311,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                                        for b in bars[1:]},
         "n_indep_30d_by_year": {b["key"]: {int(y): (None if pd.isna(n) else int(n)) for y, n in b["frame"]["n_indep_30d"].items()}
                                 for b in bars},
+        "window_set": "all windows of each series" if args.all_windows else "windows ending on or after the first published window end",
+        "restricted_cells": restricted,
         "gaps": replay.gaps, "absent_optional_series": replay.absent, "years_not_shown": replay.not_shown,
         "low_coverage": replay.thin, "coverage_floor": COVERAGE_FLOOR,
     }

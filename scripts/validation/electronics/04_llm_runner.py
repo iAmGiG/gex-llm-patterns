@@ -1312,6 +1312,8 @@ def run_local_chunk(store: Store, run: Dict[str, Any], args: argparse.Namespace)
     record = {"backend": "vllm.entrypoints.openai.run_batch", "vllm_version": version,
               "model_repo": spec.repo, "model_revision": spec.revision, "model_license": spec.license,
               "served_model_name": run["model"], "engine_args": engine, "engine_env": dict(spec.engine_env),
+              "request_sampling": dict(spec.sampling),  # {} = the model's default sampling (generation_config.json)
+              "schema_property_order": list(common.regime_json_schema(run["model"])["schema"]["properties"]),
               "gpu": gpu,
               "started_at": started.isoformat(), "completed_at": finished.isoformat(),
               "seconds": round((finished - started).total_seconds(), 1), "returncode": result.returncode,

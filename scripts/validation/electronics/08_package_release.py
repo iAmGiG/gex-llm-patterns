@@ -103,7 +103,7 @@ column existed) is dated by its run's `ingested_at`. Join detections to windows 
 o4-mini answers; the 64 answers flagged `detection_metadata.recovered_2026` are not part of the published result.
 Repeats (test-retest) are stored as arms ending in `#rep1`. Arms that begin with `oss_` hold the answers of the
 open-weights model gpt-oss-20b, arms that begin with `llama_` those of Llama 3.1 8B Instruct and arms that begin with
-`qwen_` those of Qwen3-8B, all run locally with vLLM at a pinned revision; the rest of their name is the gpt-6-luna arm that answered the same windows. The series keys and arms are defined in Tables 1 and 3
+`qwen_` those of Qwen3-8B, all run locally with vLLM at a pinned revision; the rest of their name is the gpt-6-luna arm that answered the same windows. Three protocol variants use the same weights under their own model label: arms that begin with `llamarf_` (model `llama-3.1-8b-instruct-rf`) are Llama 3.1 8B with the reasoning field first in the JSON schema, and the arms `osst0_bridge_jan` (model `gpt-oss-20b-t0`) and `llamat0_bridge_jan` (model `llama-3.1-8b-instruct-t0`) are gpt-oss-20b and Llama 3.1 8B with temperature 0 in every request. The series keys and arms are defined in Tables 1 and 3
 of the article, and the column definitions are in `scripts/validation/electronics/sql/gex_llm_regime_schema.sql`
 of the repository. Paths in `runs` are relative to the repository root.
 
