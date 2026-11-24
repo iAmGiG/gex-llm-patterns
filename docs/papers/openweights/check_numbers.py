@@ -293,6 +293,98 @@ for arm_, det_, eq_ in (("pilot_llamarf_bridge_jan", 27, 27), ("pilot_llamat0_br
     pp = dd[dd.arm == arm_].copy(); pp["window_end"] = pp.window_end.astype(str).str[:10]; pm2 = pp.merge(w, on="window_end")
     check(f"{arm_} detected", int(pm2.regime_detected.sum()), det_); check(f"{arm_} equal to rule", int((pm2.regime_detected == pm2.clf_should_detect).sum()), eq_)
 
+# ---- unanswered windows of Qwen3-8B, contested windows, GPU time (unanswered_*.csv, unanswered_analyses.yaml; issue #298)
+UA = yaml.safe_load(open(RES / "unanswered_analyses.yaml"))
+cen = pd.read_csv(RES / "unanswered_census_unanswered.csv")
+cq = cen[(cen.model == "qwen3-8b") & (cen.arm_role == "primary")].groupby("kind").n.sum()
+check("qwen census missing", int(cq["missing"]), 884); check("qwen census failed", int(cq["failed"]), 147); check("qwen census complete_at_cap", int(cq["complete_at_cap"]), 1)
+check("qwen census unanswered", int(cq[["missing", "failed", "complete_at_cap"]].sum()), 1032)
+rv = pd.read_csv(RES / "unanswered_recoverable_verdicts.csv")
+rq = rv[(rv.population == "final_unanswered_primary") & (rv.model == "qwen3-8b")].set_index("arm")
+for col, want_ in (("n_rows", 1032), ("n_with_text", 148), ("n_cut_after_verdict", 144), ("n_cut_before_verdict", 3), ("n_complete", 1), ("n_verdict", 145), ("n_verdict_agrees_rule", 143)):
+    check(f"qwen unanswered {col}", int(rq[col].sum()), want_)
+check("qwen unanswered no JSON text", int((rq.n_rows - rq.n_with_text).sum()), 884)
+S7 = {"qwen_bridge_jan": (131, 114, 17, 0, 0, 17, 15), "qwen_full_spy": (485, 421, 62, 2, 0, 62, 62), "qwen_ex0dte_spy": (374, 315, 57, 1, 1, 58, 58),
+      "qwen_p34_obf_2024": (11, 8, 3, 0, 0, 3, 3), "qwen_p34_dated_2024": (26, 21, 5, 0, 0, 5, 5), "qwen_p34_dated_2020": (5, 5, 0, 0, 0, 0, 0)}
+for arm_, want_ in S7.items():
+    x = rq.loc[arm_]
+    check(f"Table S7 {arm_}", (int(x.n_rows), int(x.n_rows - x.n_with_text), int(x.n_cut_after_verdict), int(x.n_cut_before_verdict), int(x.n_complete), int(x.n_verdict), int(x.n_verdict_agrees_rule)), want_)
+check("Table S7 arms with unanswered windows", sorted(rq.index[rq.n_rows > 0]), sorted(S7))
+fr = pd.read_csv(RES / "unanswered_recoverable_first_pass_vs_retry.csv").set_index("model").loc["qwen3-8b"]
+check("qwen first pass vs retry windows", int(fr.n), 316); check("qwen first pass vs retry same", int(fr.n_same), 313)
+sc = UA["scanner_on_answered_rows"]
+check("scanner answered rows", sc["n_answered_rows"], 89656); check("scanner same verdict", sc["n_same_verdict"], 88362); check("scanner no verdict", sc["n_scanner_no_verdict"], 1294)
+av = pd.read_csv(RES / "unanswered_agreement_variants.csv").set_index(["arm", "period"])
+f = av.loc[("qwen_full_spy", "all")]
+check("qwen full windows", int(f.n_windows), 4691); check("qwen full unanswered", int(f.n_unanswered), 485); check("qwen full answered", int(f.n_answered), 4206)
+check("qwen full agree answered (98.7)", round(f.agree_pct_answered, 1), 98.7); check("qwen full agree answered count", int(f.agree_answered), 4151)
+check("qwen full agree unanswered not detected (98.7)", round(f.agree_pct_unans_no, 1), 98.7); check("qwen full agree unanswered not detected count", int(f.agree_unans_no), 4629)
+check("qwen full agree unanswered errors (88.5)", round(f.agree_pct_unans_error, 1), 88.5); check("qwen full agree unanswered errors count", int(f.agree_unans_error), 4151)
+check("qwen full recoverable", int(f.n_recoverable), 62)
+T8 = {("qwen_full_spy", "all"): (4691, 485, 98.7, 98.7, 88.5, 98.7, 89.8), ("qwen_full_spy", "2024-2025"): (502, 103, 96.0, 96.2, 76.3, 96.1, 78.5),
+      ("qwen_ex0dte_spy", "all"): (4691, 374, 99.4, 99.3, 91.5, 99.5, 92.8), ("qwen_ex0dte_spy", "2024-2025"): (502, 37, 98.7, 98.8, 91.4, 98.7, 93.0),
+      ("qwen_bridge_jan", "all"): (1476, 131, 98.9, 98.9, 90.1, 98.8, 91.1)}
+for key_, want_ in T8.items():
+    x = av.loc[key_]
+    check(f"Table S8 agreement {key_}", (int(x.n_windows), int(x.n_unanswered), round(x.agree_pct_answered, 1), round(x.agree_pct_unans_no, 1), round(x.agree_pct_unans_error, 1), round(x.agree_pct_rec, 1), round(x.agree_pct_rec_error, 1)), want_)
+bw = pd.read_csv(RES / "unanswered_bounds_with_recoverable.csv").set_index(["arm", "period"])
+T8B = {("qwen_full_spy", "all"): (13.8, 24.2, 13.8, 22.9, 62), ("qwen_full_spy", "2024-2025"): (14.5, 35.1, 14.5, 32.9, 11), ("qwen_ex0dte_spy", "all"): (10.7, 18.7, 10.7, 17.5, 58),
+       ("qwen_ex0dte_spy", "2024-2025"): (15.9, 23.3, 15.9, 21.7, 8), ("qwen_bridge_jan", "all"): (45.9, 54.7, 45.9, 53.7, 17)}
+for key_, want_ in T8B.items():
+    x = bw.loc[key_]
+    check(f"Table S8 bounds {key_}", (round(x.lower_pct, 1), round(x.upper_pct, 1), round(x.lower_rec_pct, 1), round(x.upper_rec_pct, 1), int(x.n_recoverable)), want_)
+x = bw.loc[("qwen_full_spy", "2024-2025")]
+check("qwen 2024-25 recoverable all not detected", int(x.n_recoverable_true), 0); check("qwen 2024-25 unreadable", int(x.n_unrecoverable), 92)
+check("qwen 2024-25 bounds equal missing_answer_bounds", (round(x.lower_pct, 6), round(x.upper_pct, 6)), (round(mb[(mb.arm == "qwen_full_spy") & (mb.period == "2024-2025")].iloc[0].lower_pct, 6), round(mb[(mb.arm == "qwen_full_spy") & (mb.period == "2024-2025")].iloc[0].upper_pct, 6)))
+ca = pd.read_csv(RES / "unanswered_contested_agreement.csv").set_index(["arm", "stratum"])
+c = ca.loc[("qwen_full_spy", "contested")]
+check("contested windows", int(c.n_windows), 521); check("qwen contested answered", int(c.n_answered), 454); check("qwen contested answered share", round(c.answered_pct, 1), 87.1)
+check("qwen contested agree", round(c.agree_pct_answered, 1), 92.3); check("qwen contested kappa", round(c.kappa_answered, 3), 0.845)
+c = ca.loc[("qwen_full_spy", "not_contested")]
+check("qwen not contested answered", int(c.n_answered), 3752); check("qwen not contested agree", round(c.agree_pct_answered, 1), 99.5)
+check("oss contested answered", int(ca.loc[("oss_full_spy", "contested")].n_answered), 521); check("oss contested agree", round(ca.loc[("oss_full_spy", "contested")].agree_pct_answered, 1), 98.3)
+check("luna contested agree (Paper A)", round(ca.loc[("full_spy", "contested")].agree_pct_answered, 1), 97.5)
+ec = pd.read_csv(RES / "stored_e1_contested.csv").set_index(["arm", "period", "definition"]).loc[("full_spy", "all", "pivotal")]
+check("contested windows stored_e1", int(ec.n_contested), 521); check("contested share", round(ec.contested_pct, 1), 11.1)
+check("pivotal definition", UA["parameters"]["contested_sets"]["pivotal"], {"days": 1, "billions": 0.5, "flips": 1, "flips_below": 0})
+cs = pd.read_csv(RES / "unanswered_contested_sensitivity.csv")
+cs = cs[cs.stratum == "contested"].set_index(["margin_set", "arm"])
+T10 = {"narrow": (0, 0.5, 0, 0, 346, 94.2, 97.5, 100.0, 99.1), "pivotal": (1, 0.5, 0, 1, 521, 87.1, 92.3, 98.3, 97.5), "margin1": (1, 1.0, 1, 1, 764, 90.6, 94.8, 98.7, 98.2),
+       "wide": (3, 2.0, 2, 2, 1204, 90.0, 95.6, 99.1, 98.8)}
+for set_, want_ in T10.items():
+    q_ = cs.loc[(set_, "qwen_full_spy")]
+    check(f"Table S10 {set_}", (int(q_.margin_days), float(q_.margin_billions), int(q_.margin_flips_below), int(q_.margin_flips_above), int(q_.n_windows), round(q_.answered_pct, 1), round(q_.agree_pct_answered, 1),
+                                round(cs.loc[(set_, "oss_full_spy")].agree_pct_answered, 1), round(cs.loc[(set_, "full_spy")].agree_pct_answered, 1)), want_)
+check("qwen contested agreement range over margin sets", (round(min(cs.loc[(s_, "qwen_full_spy")].agree_pct_answered for s_ in T10), 1), round(max(cs.loc[(s_, "qwen_full_spy")].agree_pct_answered for s_ in T10), 1)), (92.3, 97.5))
+bd = pd.read_csv(RES / "unanswered_answering_bands.csv")
+bd = bd[(bd.model == "qwen3-8b") & (bd.scope == "full_spy")].set_index(["variable", "band"])
+T9 = {("rule", "detect"): (609, 602, 98.9), ("rule", "reject"): (4082, 3604, 88.3), ("persistence_pct", "<60"): (872, 822, 94.3), ("persistence_pct", "60-<70"): (951, 880, 92.5),
+      ("persistence_pct", "70-<80"): (954, 761, 79.8), ("persistence_pct", "80-<90"): (842, 693, 82.3), ("persistence_pct", "90-100"): (1072, 1050, 97.9),
+      ("sign_flips", "0-1"): (332, 332, 100.0), ("sign_flips", "2-3"): (593, 573, 96.6), ("sign_flips", "4-5"): (919, 849, 92.4), ("sign_flips", "6-7"): (994, 883, 88.8),
+      ("sign_flips", "8-10"): (1182, 995, 84.2), ("sign_flips", ">=11"): (671, 574, 85.5), ("dominant_sign", "negative"): (2513, 2374, 94.5), ("dominant_sign", "positive"): (2178, 1832, 84.1)}
+for key_, want_ in T9.items():
+    x = bd.loc[key_]
+    check(f"Table S9 {key_}", (int(x.n_windows), int(x.n_answered), round(x.answered_pct, 1)), want_)
+lg = pd.read_csv(RES / "unanswered_answering_logit.csv")
+lg = lg[(lg.model == "qwen3-8b") & (lg.scope == "full_spy")].set_index("term")
+check("answering AUC", round(lg.auc.iloc[0], 3), 0.744)
+for term_, want_ in (("persistence_per_10pp", 0.64), ("log10_magnitude_bn", 0.65), ("sign_flips", 0.86), ("positive_dominant", 0.29), ("rule_detects", 15.84)):
+    check(f"answering odds ratio {term_}", round(lg.loc[term_].odds_ratio, 2), want_)
+rs = pd.read_csv(RES / "unanswered_repeat_stability.csv").set_index(["model", "base_arm"])
+rq_ = rs.loc["qwen3-8b"]
+check("qwen repeated windows", int(rq_.n_repeated.sum()), 588); check("qwen repeated answered in both", int(rq_.n_both.sum()), 483)
+check("qwen repeated one pass only", int(rq_.n_one_pass_only.sum()), 92); check("qwen repeated neither pass", int(rq_.n_neither.sum()), 13)
+check("qwen repeated same verdict (both answered)", int(rq_.n_same_verdict.sum()), 480)
+gt = pd.read_csv(RES / "unanswered_gpu_time.csv").set_index("model")
+GT = {"gpt-oss-20b": (3, 10.0, 4.9), "llama-3.1-8b-instruct": (5, 3.3, 2.2), "qwen3-8b": (4, 98.5, 31.7), "llama-3.1-8b-instruct-rf": (2, 2.3, 1.4),
+      "gpt-oss-20b-t0": (2, 0.5, 0.5), "llama-3.1-8b-instruct-t0": (2, 0.3, 0.3)}
+for model_, want_ in GT.items():
+    g_ = gt.loc[model_]
+    check(f"GPU time {model_}", (int(g_.n_gpus), round(g_.seconds_sum / 3600, 1), round(g_.union_hours, 1)), want_)
+    check(f"GPU summed hours equal runs.csv.gz {model_}", round(g_.seconds_sum / 3600, 1), round(local[local.model == model_].sec.sum() / 3600, 1))
+check("qwen GPU busy hours", round(gt.loc["qwen3-8b"].gpu_busy_hours, 1), 82.3)
+check("three models summed GPU hours", round(gt.loc[["gpt-oss-20b", "llama-3.1-8b-instruct", "qwen3-8b"]].hours_sum.sum(), 1), 111.8)
+
 print(f"{checked} checks, {len(failures)} mismatch(es)")
 for f_ in failures:
     print("MISMATCH", f_)

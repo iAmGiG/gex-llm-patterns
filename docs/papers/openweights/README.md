@@ -27,11 +27,11 @@ Nothing under `docs/papers/electronics/` is edited by this folder; the figures r
 | `latex/01_Introduction` .. `06_Conclusion` | introduction (setting, four research questions, contributions), related work (issue #297), methods, discussion, conclusion |
 | `latex/04_01_Overview` .. `04_08_Cost` | results: overview table and figure, gpt-oss-20b, Llama 3.1 8B, Qwen3-8B, departures, schema order (reasoning first), repeats and sampling (temperature 0), cost |
 | `latex/07_Appendix_A_Schema` | field orders of the JSON schema (verdict first, reasoning first) |
-| `latex/Regan_Xie_OpenWeights_Supplement.tex` + `S1_Run_Ledger`, `S2_Detail`, `S3_Engine` | local run ledgers (Tables S1-S3), per-model tables (S4-S6), engine settings (S7) |
+| `latex/Regan_Xie_OpenWeights_Supplement.tex` + `S1_Run_Ledger`, `S2_Detail`, `S3_Engine` | local run ledgers (Tables S1-S3), per-model tables (S4-S6), unanswered windows of Qwen3-8B (S7-S10), engine settings (S11) |
 | `latex/references.bib` | own bibliography: entries copied from the Electronics bib, plus six new ones verified on 2026-11-23 (see the header of the file) |
 | `figures/scripts/` | `figopen.py` (model registry, output folder, manifest), `bf01`..`bf05` scripts, `run_all.py` (own registry) |
 | `figures/output/` | PNG (300 dpi), PDF and a provenance manifest per figure |
-| `check_numbers.py` | recomputes the numbers of the text from the tracked files (over 200 checks); the Section 4.6 numbers also need the git-ignored local folder `data/backups/gex_llm/exploratory_llama_reorder_20261108/` (`EXPLORATORY_DIR=...`) |
+| `check_numbers.py` | recomputes the numbers of the text from the tracked files (over 400 checks); the Section 4.6 numbers also need the git-ignored local folder `data/backups/gex_llm/exploratory_llama_reorder_20261108/` (`EXPLORATORY_DIR=...`) |
 | `submission/cover_letter.md` | draft cover letter, venue left open |
 | `build.sh` | build and checks |
 
@@ -63,7 +63,7 @@ Every number in the text and the tables has a `% src:` comment naming the tracke
 `docs/papers/electronics/results/` (`detection_by_year.csv`, `bridge_agreement.csv`, `missing_answer_bounds.csv`,
 `llm_parse_stats.csv`, `reported_vs_computed.csv`, `disagreements.csv`, `stats.yaml`) and `data/backups/gex_llm/condensed/`
 (`runs.csv.gz` for requests, retries and GPU hours: `run_metadata.local.seconds` summed over `mode == local`; `detections.csv.gz`,
-`windows.csv.gz`). GPU hours are engine wall-clock time summed over chunks on shared GPUs.
+`windows.csv.gz`). GPU hours are the engine time (process seconds) summed over runs; the elapsed time is shorter because runs overlapped on several GPUs (Qwen3-8B: 98.5 summed hours, 31.7 elapsed on four GPUs; `unanswered_gpu_time.csv`). The unanswered-window analyses (recoverable verdicts, three agreements, contested windows, answering model, repeat stability) come from `unanswered_*.csv` in the same folder.
 
 ## The variant runs (done; named by model label and arm prefix)
 
@@ -76,7 +76,7 @@ Three local runs vary one setting each and are stored under their own labels, so
   constant answer and not the failure. Section 4.6, Table 3, Figure 5.
 * **D-34**: temperature 0 in every request on the published inputs: `gpt-oss-20b-t0` / `osst0_bridge_jan` (1,614 requests) and
   `llama-3.1-8b-instruct-t0` / `llamat0_bridge_jan` (1,590 requests). Temperature 0 changes neither result. Section 4.7, Table 4.
-* Totals: the abstract, Table 1 and the conclusion count the three models only (47,176 requests, 111.8 GPU-hours); Table 5 adds the
+* Totals: the abstract, Table 1 and the conclusion count the three models only (47,176 requests, 111.8 summed GPU-hours); Table 5 adds the
   variants (15,583 requests, 3.1 GPU-hours; 62,759 requests and 114.9 GPU-hours in all local runs). Only the variants record
   `run_metadata.local.request_sampling` and `schema_property_order`; the earlier runs do not (limitation, Section 5.5).
 * The exploratory 40-window run of 2026-11-08 stays outside the stored arms (git-ignored folder `exploratory_llama_reorder_20261108/`).

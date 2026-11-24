@@ -12,7 +12,7 @@ An evaluation of a language model can be repeated only while its model can be ca
 been retired, a deterministic three-threshold rule on windows of obfuscated daily SPY gamma exposure that the prompt states, and ask
 whether it can be reproduced with open-weights models run locally at pinned revisions on the stored requests. Three models of three
 developers (gpt-oss-20b, Llama 3.1 8B, Qwen3-8B) answered seven arms each. gpt-oss-20b reproduces the stored verdicts and follows
-the rule; Qwen3-8B follows the rule where it answers but leaves 8.8% of the windows unanswered, so its rate is reported as bounds;
+the rule; Qwen3-8B follows the rule where it answers (98.7% of the answered windows of the complete series, 88.5% of all of them if the unanswered ones count as errors) but leaves 8.8% of the windows unanswered, so its rate is reported as bounds;
 Llama 3.1 8B with the verdict first detects almost every window. Agreement with the rule shows that a model applies stated criteria;
 we do not claim more. With the reasoning first Llama 3.1 8B no longer answers yes to every window but still does not follow the rule, and temperature 0 changes neither the gpt-oss-20b nor the Llama result on the published inputs.
 
