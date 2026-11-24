@@ -775,7 +775,7 @@ def repeat_stability(final: pd.DataFrame) -> pd.DataFrame:
     ``n_original_only`` and ``n_repeat_only`` answered in one; ``n_neither``; ``n_one_pass_only`` their sum;
     ``n_same_verdict`` / ``agree_pct`` among the windows answered in both, and ``kappa`` of the two verdicts.
     """
-    rep = final[final["repeat_index"] > 0]
+    rep = final[final["repeat_index"] == 1]  # the same-job repeat; later-date repeats (#rep2 and up) are in drift_summary.csv
     orig = final[final["repeat_index"] == 0]
     cols = ["base_arm", "series_key", "symbol", "window_end", "model", "prompt_version"]
     keep = ["parsed", "regime_detected"]
