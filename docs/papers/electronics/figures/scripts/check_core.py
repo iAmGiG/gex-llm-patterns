@@ -564,13 +564,17 @@ def check_fig04(results: Path, tables: Path, work: Path) -> None:
     check("manifest: code sha256 of fig04, figdata.py, theme.py and common.py; git flags; versions", {Path(c["path"]).name for c in manifest["code"]} >= {
         "fig04_classifier_replay.py", "figdata.py", "theme.py", "common.py"} and all(len(c["sha256"]) == 64 for c in manifest["code"]) and "git_dirty" in manifest
           and {"numpy", "pandas", "pyarrow"} <= set(manifest["versions"]))
-    check("manifest: source sha256 equals the CSV file", manifest["sources"][0]["sha256"] == common.sha256_file(folder / "detection_by_year.csv"))
+    csv_source = next((s for s in manifest["sources"] if Path(s["path"]).name == "detection_by_year.csv"), {})
+    check("manifest: source sha256 equals the CSV file", csv_source.get("sha256") == common.sha256_file(folder / "detection_by_year.csv"))
+    check("manifest: the shared-window default names its window set and the condensed windows table",
+          extra["window_set"].startswith("windows ending on or after") and extra["restricted_cells"]
+          and any(Path(s["path"]).name == "windows.csv.gz" for s in manifest["sources"]), str(extra.get("restricted_cells"))[:200])
     report = yaml.safe_load((folder / "report.yaml").read_text())
     provenance = manifest["results"]
     check("manifest: results ties the figure to report.yaml (sha256, generated_at, inputs_fingerprint) and to the CSV it read",
           provenance["report_yaml"]["sha256"] == common.sha256_file(folder / "report.yaml")
           and provenance["report_yaml"]["inputs_fingerprint"] == report["inputs_fingerprint"] == provenance["files"]["detection_by_year.csv"]["inputs_fingerprint"]
-          and provenance["files"]["detection_by_year.csv"]["matches_report"] is True and provenance["files"]["detection_by_year.csv"]["sha256"] == manifest["sources"][0]["sha256"])
+          and provenance["files"]["detection_by_year.csv"]["matches_report"] is True and provenance["files"]["detection_by_year.csv"]["sha256"] == csv_source.get("sha256"))
 
     # bar heights and whiskers read back from the Figure object
     import importlib.util
@@ -604,12 +608,27 @@ def check_fig04(results: Path, tables: Path, work: Path) -> None:
             expected[(key, int(r.year))] = float(r.rate_pct)
     for _, r in raw[(raw.arm == "r1_o4mini") & (raw.scope == "year")].iterrows():
         expected[("r1_o4mini", int(r.year))] = float(r.rate_pct)
+    csv_expected = dict(expected)  # every window of each series: what --all-windows draws
+    cw = pd.read_csv(module.CONDENSED_WINDOWS, usecols=["series_key", "symbol", "window_end", "clf_should_detect"])
+    cw = cw[cw.symbol == "SPY"]
+    first_end = cw.loc[cw.series_key == "jan2026_phase4a", "window_end"].min()
+    restricted: Dict[str, Dict[int, List[int]]] = {}
+    for key in ("call_only", "old_bs", "new_ex0dte", "new_full"):
+        rows = cw[cw.series_key == key]
+        for year in years:
+            sel = rows[rows.window_end.str[:4] == str(year)]
+            kept = sel[sel.window_end >= first_end]
+            if (key, year) in expected and len(sel) and len(kept) < len(sel):
+                expected[(key, year)] = 100.0 * float(kept.clf_should_detect.astype(bool).mean())
+                restricted.setdefault(key, {})[year] = [len(sel), len(kept)]
+    check("shared-window default: the restricted cells are those the condensed windows table gives (2020: 252 -> 223 windows)",
+          {k: {int(y): v for y, v in d.items()} for k, d in extra["restricted_cells"].items()} == restricted and bool(restricted), str(extra["restricted_cells"]))
     published_rates = [round(expected[("r1_o4mini", y)], 1) for y in years]
     check("the first bar reproduces the published rates by year (12.2, 3.7, 32.4, 20.2, 100, 100 percent)", years == list(range(2020, 2026))
           and published_rates == [12.2, 3.7, 32.4, 20.2, 100.0, 100.0], str(published_rates))
     heights = sorted(round(p.get_height(), 6) for p in bars)
-    check(f"bar heights are exactly the CSV rates ({len(expected)} bars)", rc == 0 and len(bars) == len(expected) and heights == sorted(round(v, 6) for v in expected.values()),
-          f"{len(bars)} bars, rc {rc}")
+    check(f"bar heights are the CSV rates, with the restricted cells recomputed on the shared windows ({len(expected)} bars)",
+          rc == 0 and len(bars) == len(expected) and heights == sorted(round(v, 6) for v in expected.values()), f"{len(bars)} bars, rc {rc}")
     # each bar sits at its (year, series) slot: slots left to right inside a year are the legend order
     slot = {}
     for p in bars:
@@ -620,6 +639,20 @@ def check_fig04(results: Path, tables: Path, work: Path) -> None:
     check("footnote: interval, non-overlapping windows, parsed 1,412 of 1,476 and the answers re-parsed in 2026", "Wilson 95% CI" in foot and "non-overlapping" in foot
           and f"{int(sums):,} of" in foot and f"the {int(sums_all - sums):,} answers re-parsed in 2026 are not drawn" in foot, foot[:400])
     plt.close(fig)
+
+    # --all-windows: every bar is exactly the CSV rate, and the condensed windows table is not read
+    theme.finish = capture
+    theme.logger.setLevel(logging.ERROR)
+    try:
+        with redirect_stderr(io.StringIO()), redirect_stdout(io.StringIO()):
+            rc_all = module.main(["--results-dir", str(folder), "--tables-dir", str(tables), "--output-dir", str(out), "--all-windows"])
+    finally:
+        theme.finish = original_finish
+        theme.logger.setLevel(logging.NOTSET)
+    heights_all = sorted(round(p.get_height(), 6) for p in captured["fig"].axes[0].patches)
+    check(f"--all-windows: bar heights are exactly the CSV rates ({len(csv_expected)} bars)",
+          rc_all == 0 and heights_all == sorted(round(v, 6) for v in csv_expected.values()), f"rc {rc_all}")
+    plt.close(captured["fig"])
 
     # defects of the input: each stops the figure and writes nothing
     def stops(name: str, mutate: Callable[[pd.DataFrame], pd.DataFrame], contains: Sequence[str]) -> None:
@@ -693,7 +726,7 @@ def check_fig04(results: Path, tables: Path, work: Path) -> None:
     finally:
         theme.finish = original_finish
         theme.logger.setLevel(logging.NOTSET)
-    foot2 = " ".join(captured["footnote"])
+    foot2 = " ".join(" ".join(captured["footnote"]).split())
     check("footnote names the bar that is not drawn", "Not drawn: Rule, call leg only in 2022." in foot2, foot2[-200:])
     plt.close(captured["fig"])
 
