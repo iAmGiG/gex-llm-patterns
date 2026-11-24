@@ -193,6 +193,7 @@ services/cache_service_status.sh
 tools/deployment/
 *.sh
 !docs/papers/**/latex/build.sh
+!docs/papers/build_all.sh
 
 # SEC Edgar data
 sec-edgar-filings/

@@ -1,0 +1,61 @@
+{
+  "_comment": "DRAFT for the authors. Not sent to Zenodo. The object under metadata follows the deposit form and the REST API; keys that start with an underscore are notes and must be removed before an upload through the API.",
+  "metadata": {
+    "upload_type": "dataset",
+    "title": "Daily dealer-gamma series, 30-day windows, model runs and answers for two companion studies: persistent dealer-gamma regimes and an open-weights reproduction",
+    "description": "Data deposit for two companion papers by C. Regan and Y. Xie, both in preparation for Electronics (MDPI); the titles may still change. Paper A: Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Inputs with Both Option Legs and a Rule-Following Test of a Current LLM. Paper B: Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests. The zip holds four parquet tables (the daily gamma-exposure series, the 30-day windows with the verdict of a deterministic rule, one row per model run, and every stored model answer with its raw text), a file of the answers that a later answer replaced, the verbatim requests and responses of the three backfilled o4-mini runs, a README and SHA-256 checksums. The tables are in the folder layout that the 05_report.py script of the code repository reads, so every result file of the papers can be regenerated from this deposit alone (08_package_release.py --check). The raw option chains are not part of the deposit.",
+    "creators": [
+      {
+        "name": "Regan, Christopher",
+        "affiliation": "College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060, USA"
+      },
+      {
+        "name": "Xie, Ying",
+        "affiliation": "College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060, USA"
+      }
+    ],
+    "keywords": [
+      "gamma exposure",
+      "dealer hedging",
+      "options market microstructure",
+      "large language models",
+      "temporal obfuscation",
+      "reproducibility",
+      "open-weights models",
+      "OpenAI Batch API",
+      "stored requests"
+    ],
+    "version": "1.0",
+    "language": "eng",
+    "access_right": "open",
+    "license": "REPLACE_BEFORE_UPLOAD: the authors decide (open item B094). Planned value, as in the deposit README: Creative Commons Attribution 4.0 International, Zenodo id cc-by-4.0",
+    "related_identifiers": [
+      {
+        "identifier": "https://github.com/iAmGiG/gex-llm-patterns",
+        "relation": "isSupplementedBy",
+        "resource_type": "software",
+        "scheme": "url"
+      },
+      {
+        "identifier": "10.1007/978-3-032-30801-6_10",
+        "relation": "references",
+        "resource_type": "publication-conferencepaper",
+        "scheme": "doi"
+      },
+      {
+        "identifier": "10.3390/jrfm19060382",
+        "relation": "references",
+        "resource_type": "publication-article",
+        "scheme": "doi"
+      }
+    ],
+    "notes": "Both companion papers are in preparation and not yet submitted; add their DOIs as related identifiers (isSupplementTo) once they are published. The sha256 values of the stored files (SHA256SUMS and raw_backfill/MANIFEST.csv inside the zip), not the git commit ids named in some provenance fields, are the binding record."
+  },
+  "_upload_file": "data/backups/gex_llm/release/regan_xie_electronics_tables_<YYYYMMDD>.zip (git-ignored; written by scripts/validation/electronics/08_package_release.py; run it with --check first)",
+  "_open_fields": [
+    "license (placeholder above)",
+    "grants (none known; the authors confirm)",
+    "community (optional)",
+    "related identifiers for the two new papers (after publication)"
+  ]
+}
