@@ -44,14 +44,14 @@ This memo complements `2026-10-28_memo_published_inputs.md` (the put-row loss in
 
 ## 5. Headline numbers — VERIFIED / PARTLY
 
-- "$23B" (AIAI Table 4, text, Fig 6 caption) matches no stored series; the window means are $3.0 / 4.9 / 5.5 / 9.6 / 20.3 / 19.0 B (JRFM Table 5 already prints these).
+- "$23B" (AIAI Table 3, text, Fig 6 caption) matches no stored series; the window means are $3.0 / 4.9 / 5.5 / 9.6 / 20.3 / 19.0 B (JRFM Table 5 already prints these).
 - "+360% ($5B → $23B)" is arithmetic on two numbers that are not in the data; 2021→2024 is **+317%** ($4.9 → 20.3 B), 2020→2024 **+585%** (JRFM's +577% is the same ratio on rounded values). All 2024–2025 magnitudes are call-only GEX, so the growth is a data artifact in any case.
 - 646/1,412 = 45.8% and its Wilson CI reproduce, but the pooled rate mixes two input series: pre-break windows 117/866 = 13.5%, windows ending on/after 2023-09-29 529/546 = 96.9%.
 - The o4-mini labels equal the deterministic rule (≥ 21 same-sign days, mean |GEX| ≥ $5 B, ≤ 5 flips) on 1,412/1,412 cached windows and on all 1,476 responses (tolerant parsing; strict JSON parses only 445; the pipeline dropped 64, of which 21 are rule-detected).
 
 ## What this means (verified items only)
 
-- AIAI 2026 and JRFM: the 2024–2025 rows (Table 4/5, the pooled 45.8%, the growth claim, Figs 5–6/8) rest on call-only inputs; the 81.2% vs 12.1% contrast rests on dated prompts and two sign conventions; φ = 0.692; three figures are synthetic, one of them the headline progression figure. JRFM is in production, so this is the moment to tell the handling editor.
+- AIAI 2026 and JRFM: the 2024–2025 rows (AIAI Table 3 / JRFM Table 5, the pooled 45.8%, the growth claim, Figs 5–6/8) rest on call-only inputs; the 81.2% vs 12.1% contrast rests on dated prompts and two sign conventions; φ = 0.692; three figures are synthetic, one of them the headline progression figure. JRFM is in production, so this is the moment to tell the handling editor.
 - Paper 1 (IEEE BigData 2025 / journal draft): the "negative on 242/242 days" statement and the −$19.87 B magnitude need correction; the 13-date raw-chain comparison needs its stratification and the baseline-arm input disclosed. The put-row loss does not touch Paper 1.
 - The Electronics extension becomes the vehicle for the corrected analysis: exact recovered inputs, a complete signed series, obfuscated prompts throughout, every input and label stored, and the deterministic rule reported next to every LLM rate.
 

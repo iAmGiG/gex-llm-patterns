@@ -190,7 +190,7 @@ Correction wording: "False-positive rates on negative controls: shuffle 60/277 (
 - Where $23B appears: AIAI `04_Results.tex:85-86` ($23B for 2024 and 2025), `04_Results.tex:93`, `05_Discussion.tex:23` caption, AIAI PDF text (4 matches), and the Fig. 8 image in both PDFs. The JRFM tex has no "$23B"; the JRFM PDF text has none either. JRFM Table 5 already uses $3.0/4.9/5.5/9.6/20.3/19.0B. JRFM `CoverLetter.tex:26` carries "360%".
 - Scope the claim as AIAI text and the Fig. 8 image in both papers, not "JRFM text".
 
-Correction wording: AIAI Table 4 Avg GEX = $3.0B, $4.9B, $5.5B, $9.6B, $20.3B, $19.0B. Flag that the 2024-25 values are call-only.
+Correction wording: AIAI Table 3 Avg GEX = $3.0B, $4.9B, $5.5B, $9.6B, $20.3B, $19.0B. Flag that the 2024-25 values are call-only.
 
 ### 5.2 "+360% ($5B to $23B)" and "+577%". PARTLY
 - Recomputed: 2021 to 2024 +317.0%; 2021 to 2025 +288.7%; 2020 to 2024 +585.2%; 2020 to 2025 +538.7%. (23/5 - 1) = 360% on numbers not in any series.
@@ -220,8 +220,8 @@ Correction wording: "The pooled 45.8% mixes two input series; windows ending bef
 3. The Phase 4 (2020) series is a positive magnitude series. Table 3 "Dominant Sign" (and the "persistent negative" narrative) is a convention artifact and should be dropped or reworded.
 4. Paper 1's 242-day scalar is negative by construction. The "-$19.87B / -$40.69B / -$4.75B" figures come from the quarterly biased files; the series behind the 71.5% has mean -$31.35B (range -$44.49B to -$20.66B). The 13-date raw-chain comparison used the same scalar and 13 dates with 8 baseline hits and 5 misses.
 5. Figures: Fig. 8 in both papers (AIAI Fig. 6, JRFM Fig. 8) is a synthetic fallback with $23B and 360% labels. Fig. 4 (selectivity) in both papers and JRFM Fig. 2 are synthetic; JRFM Figs. 2 and 4 captions cite or imply real windows. Fig. 3 hard-codes a 6.3% control rate and phi 0.672. Fig. 5 is real data (call-only in 2024).
-6. Numbers: phi is 0.69, not 0.672 (AIAI abstract, `04_Results.tex:59`, `research_summary.tex:34`, figure footer). AIAI Table 4 should read $3.0/4.9/5.5/9.6/20.3/19.0B. Growth is +317% (2021 to 2024) or +585% (2020 to 2024); JRFM's 577% should be 585%. The pooled 45.8% mixes two series (13.5% before the break, 96.9% on or after).
-7. For JRFM: the production tex (`jrfm-4256551-production-CORRECTED.tex`) has no "$23B", but the Fig. 8 image, `CoverLetter.tex:26` ("360%") and the Phase 3 / Phase 4 / Fig. 2 / Fig. 4 text above are affected. For AIAI (published): the items above that touch AIAI text and figures (relabelling statement, Table 3, Table 4, Fig. 4, Fig. 6, phi, "42 windows") would need an erratum or a revised version.
+6. Numbers: phi is 0.69, not 0.672 (AIAI abstract, `04_Results.tex:59`, `research_summary.tex:34`, figure footer). AIAI Table 3 should read $3.0/4.9/5.5/9.6/20.3/19.0B. Growth is +317% (2021 to 2024) or +585% (2020 to 2024); JRFM's 577% should be 585%. The pooled 45.8% mixes two series (13.5% before the break, 96.9% on or after).
+7. For JRFM: the production tex (`jrfm-4256551-production-CORRECTED.tex`) has no "$23B", but the Fig. 8 image, `CoverLetter.tex:26` ("360%") and the Phase 3 / Phase 4 / Fig. 2 / Fig. 4 text above are affected. For AIAI (published): the items above that touch AIAI text and figures (relabelling statement, Table 3, Table 3, Fig. 4, Fig. 6, phi, "42 windows") would need an erratum or a revised version.
 
 ---
 

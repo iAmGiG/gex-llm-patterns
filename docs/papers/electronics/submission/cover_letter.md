@@ -45,7 +45,7 @@ detects 501 of 501 windows of 2024-2025 (100.0%); on the complete series it dete
 63 of 502 (12.5%). The conference paper and the *JRFM* article, also published by MDPI, report the earlier rates.
 The article therefore says plainly, in Section 1.1 ("Relation to the Published Results") and in one sentence of the
 abstract, which published results it supersedes: the 100% detection rates for 2024 and 2025 and the rise after 2023
-(AIAI Table 4, JRFM Table 5), the magnitude-growth statement, and the 2021-2023 rates, because 39 earlier days before
+(AIAI Table 3, JRFM Table 5), the magnitude-growth statement, and the 2021-2023 rates, because 39 earlier days before
 2023-09-29 are also call-only (they lie in 332 of 911 published windows; replacing them changes 46 verdicts of the
 rule). It also says that the 2024-versus-2020 baseline contrast of the earlier papers was run with calendar dates
 visible. **No correction has yet been filed with the publishers.** We will file one, and until then the article and
