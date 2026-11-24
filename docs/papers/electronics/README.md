@@ -25,7 +25,7 @@ and the regime label is called a GEX label, not a demonstrated price regime.
   they were 4.1 to 4.6, 4.8, 4.10 and 4.11); Supplement S1 (series SQL) and S2 (the hosted run ledger).
 - **Moved to the supplement:** the cross-asset replication with the scaled QQQ and IWM series (S3, Table S3 and S4,
   Figure S1), the intraday check (S4, Table S5, Figure S2) and the fidelity table by arm (S5, Table S6). Two body tables
-  moved too: the per-year table of gpt-6-luna on SPY is Appendix Table A3, and the QQQ and IWM columns are Table S4.
+  moved too: the per-year table of gpt-6-luna on SPY is Supplement Table S9, and the QQQ and IWM columns are Table S4.
 - **Left for the companion paper:** Section 4.12, Supplement S3 of the old numbering, the local run ledgers, the
   open-weights protocol of Methods 3.5 and 3.6 and the open-weights rows of the arms table. Paper A cites the companion
   paper (`regan2026openweights`, a manuscript in preparation) in the Introduction, the Discussion and the conclusions and
@@ -120,10 +120,12 @@ docs/papers/electronics/
   README.md           this file
   build.sh            build the PDFs and the Overleaf package (below)
   latex/              Regan_Xie_Electronics.tex and one file per part: 01_Introduction, 02_Related_Work, 03_Methods,
-                      04_01_Inputs ... 04_09_Dated, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
-                      08_Appendix_B_Tables, 09_Appendix_C_Data; references.bib
+                      04_01_Inputs ... 04_07_Dated (04_05_Scope merges the three scope checks), 05_Discussion,
+                      06_Conclusion, 07_Appendix_A_Data; references.bib
                       Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger, S3_Cross_Asset,
-                      S4_Intraday and S5_Fidelity
+                      S4_Intraday, S5_Fidelity, S6_Prompt (prompt, schema, request; was Appendix A of the article),
+                      S7_Tables (per-year tables; was Appendix B) and S8_Detail (one window, replay and 2008-2019
+                      figures, ablation, post-publication and windows tables)
   ../openweights/     the companion paper (Paper B), a separate folder
   overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)
   submission/         cover_letter.md
@@ -295,14 +297,14 @@ The decisions are the authors'.
 3. Data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL), and `08_package_release.py --check <zip>` confirms that the zip alone regenerates `results/` (`regan_xie_electronics_tables_20261118.zip` passes). D-31 records Chris's statement of 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data; the audit (B094) asks for that basis in writing before the CC BY deposit and notes that vendor-derived per-strike rows are tracked in the public repository (B095). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The parquet tables are the system of record, the database tables a loaded copy.
 4. `build.sh --strict` must end with `STRICT: ok`; until it fails on `TODO(authors)`, also confirm by hand that none is left, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
 
-## Keeping Appendix A and Supplement S1 in step with the code
+## Keeping Supplement S6 and S1 in step with the code
 
-The prompt, the schema and the request body of Appendix A are transcribed from
+The prompt, the schema and the request body of Section S6 of the supplement (until 2026-11-24 Appendix A of the article) are transcribed from
 `MechanicsPromptBuilder.build_regime_prompt`, `common.REGIME_JSON_SCHEMA` and `common.chat_body`. Sections S1.1 to S1.4 of the
 supplement are the four read-only statements run on 2026-10-28 (only their comment lines were edited for readers; the
 working folder is not in the repository, so the supplement is the repository's copy); S1.5 adds the statement of the
 scaling factor, tested read-only on 2026-10-29. After any change to the prompt, the
-schema or the model configuration, re-check Appendix A from the repository root (the typeset symbols are written `<=`,
+schema or the model configuration, re-check Section S6 from the repository root (the typeset symbols are written `<=`,
 `>=` and `->` in the `.tex` file and set as symbols by the `prompt` listing style):
 
 ```bash
@@ -311,7 +313,7 @@ import json, re, sys
 sys.path.insert(0, "scripts/validation/electronics")
 import common
 
-tex = open("docs/papers/electronics/latex/07_Appendix_A_Prompt.tex").read()
+tex = open("docs/papers/electronics/latex/S6_Prompt.tex").read()
 listing = lambda style: re.search(r"\\begin\{lstlisting\}\[style=%s[^\]]*\]\n(.*?)\n\\end\{lstlisting\}" % style, tex, re.S).group(1)
 seq = common.obfuscate([float(i) * 1e8 - 1.5e9 for i in range(30)])
 real = common.build_prompt(seq)

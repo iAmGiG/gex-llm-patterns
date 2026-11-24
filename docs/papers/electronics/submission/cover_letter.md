@@ -1,7 +1,7 @@
 # Cover letter (draft, 2026-11-07; revised 2026-11-23 for the two-paper split; 2026-11-24 for the statement of what the article supersedes)
 
 <!-- Draft for the MDPI submission form. Items marked TODO(authors) need Chris and Dr. Xie before submission.
-     Numbers are those of the manuscript after the split (abstract, Sections 1.2, 3.3, 4.1-4.4); the open-weights
+     Numbers are those of the manuscript after the split and the cut of 2026-11-24 (abstract, Sections 1.1, 1.3, 3.3, 4.1-4.4); the open-weights
      results moved to the companion manuscript and are not quoted here. -->
 
 Dear Guest Editors of the *Electronics* Special Issue "Timely AI Advancements and Interdisciplinary Synergies for
@@ -17,7 +17,7 @@ doi:10.1007/978-3-032-30801-6_10). That paper and our IEEE BigData 2025 workshop
 article, "Temporal Obfuscation Testing for LLM Structural Reasoning: From Single-Day Dealer Constraints to Persistent
 Market Regimes" (*JRFM* 2026, 19(6), 382, doi:10.3390/jrfm19060382). All three are cited (Section 1.2). The present
 article reuses only the regime criteria and the prompt of the conference paper, restated in Section 3.1 and
-Appendix A. Its experiments, results, figures and tables are new. Relative to all three publications it adds:
+Section S6 of the Supplementary Materials. Its experiments, results, figures and tables are new. Relative to all three publications it adds:
 
 1. the provenance and definition of the daily input series, with six series assembled from recovered, archived and
    rebuilt data;

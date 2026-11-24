@@ -30,10 +30,10 @@ MAIN="Regan_Xie_Electronics"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Section files input by the main file, in order.
 SECTIONS=(01_Introduction 02_Related_Work 03_Methods
-  04_01_Inputs 04_02_Replay 04_03_Bridge 04_04_Complete 04_05_Ablation 04_06_Deep 04_07_Post 04_08_Fidelity 04_09_Dated
-  05_Discussion 06_Conclusion 07_Appendix_A_Prompt 08_Appendix_B_Tables 09_Appendix_C_Data)
+  04_01_Inputs 04_02_Replay 04_03_Bridge 04_04_Complete 04_05_Scope 04_06_Fidelity 04_07_Dated
+  05_Discussion 06_Conclusion 07_Appendix_A_Data)
 SUPPLEMENT="Regan_Xie_Electronics_Supplement"
-SUPPLEMENT_PARTS=(S1_Series_SQL S2_Run_Ledger S3_Cross_Asset S4_Intraday S5_Fidelity)
+SUPPLEMENT_PARTS=(S1_Series_SQL S2_Run_Ledger S3_Cross_Asset S4_Intraday S5_Fidelity S6_Prompt S7_Tables S8_Detail)
 
 die() { echo "$*" >&2; exit 1; }
 usage() { awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "${BASH_SOURCE[0]}"; }
@@ -97,11 +97,11 @@ number_of() { sed -n "s/.*newlabel{$1}{{\([^}]*\)}.*/\1/p" "$MAIN.aux" | head -1
 sup_number_of() { sed -n "s/.*newlabel{$1}{{\([^}]*\)}.*/\1/p" "$SUPPLEMENT.aux" | head -1; }
 SUP_STALE=""
 # the supplement names these article labels by number
-for pair in "sec:methods:criteria=3.1" "sec:methods:series=3.2" "sec:methods:lineage=3.3" "sec:methods:windows=3.4" "sec:methods:arms=3.6" "sec:results:inputs=4.1" "sec:results:post=4.7" "sec:results:fidelity=4.8" "tab:series=1" "tab:arms=3" "tab:complete=A3" "fig:fidelity=10"; do
+for pair in "sec:methods:criteria=3.1" "sec:methods:series=3.2" "sec:methods:lineage=3.3" "sec:methods:windows=3.4" "sec:methods:arms=3.6" "sec:methods:storage=3.7" "sec:methods:statistics=3.8" "sec:results=4" "sec:results:inputs=4.1" "sec:results:replay=4.2" "sec:results:scope=4.5" "sec:results:fidelity=4.6" "app:data=A" "tab:series=1" "tab:arms=2" "fig:fidelity=6"; do
   [ "$(number_of "${pair%%=*}")" = "${pair##*=}" ] || SUP_STALE="$SUP_STALE ${pair%%=*}(is $(number_of "${pair%%=*}"), supplement says ${pair##*=})"
 done
 # the article names these supplement labels by number
-for pair in "sup:series=S1" "sup:ledger=S2" "sup:cross=S3" "sup:intraday=S4" "sup:fidelity=S5" "tab:ledger=S1" "tab:ledger2=S2" "tab:cross=S3" "tab:s:llm=S4" "tab:intraday=S5" "tab:fidelity=S6" "fig:cross=S1" "fig:intraday=S2"; do
+for pair in "sup:series=S1" "sup:ledger=S2" "sup:cross=S3" "sup:intraday=S4" "sup:fidelity=S5" "sup:prompt=S6" "sup:tables=S7" "sup:detail=S8" "app:prompt:body=S6.2" "app:prompt:schema=S6.3" "tab:ledger=S1" "tab:ledger2=S2" "tab:cross=S3" "tab:s:llm=S4" "tab:intraday=S5" "tab:fidelity=S6" "tab:app:series=S7" "tab:app:replay=S8" "tab:complete=S9" "tab:ablation=S10" "tab:post=S11" "fig:cross=S1" "fig:intraday=S2" "fig:window=S3" "fig:post=S4" "fig:replay=S5" "fig:deep=S6" "tab:windows=S12"; do
   [ "$(sup_number_of "${pair%%=*}")" = "${pair##*=}" ] || SUP_STALE="$SUP_STALE ${pair%%=*}(is $(sup_number_of "${pair%%=*}"), article says ${pair##*=})"
 done
 RERUN=$(count 'Rerun to get|Label\(s\) may have changed' "$MAIN.log")

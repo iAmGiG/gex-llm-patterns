@@ -33,7 +33,7 @@
 
 %% Additional packages
 \usepackage{tabularx}  % wrapped text columns in the tables
-\usepackage{listings}  % prompt, schema and SQL listings of the appendices (the styles are defined in 07_Appendix.tex)
+\usepackage{listings}  % the listings of the prompt, the schema and the SQL are in the supplement; the styles are kept here for the part files
 
 %% Commands not defined in this version of mdpi.cls (same block as Regan_Xie_JRFM.tex)
 \newcommand{\dataavailability}[1]{%
@@ -51,17 +51,13 @@
 
 % Figure registry: manuscript figures in order of first citation -> stems of ../figures/output/<stem>.png.
 % File numbers follow the figure list of the data audit (design memo, issue #261); manuscript numbers follow the text,
-% so Figures 5, 7, 9 and 10 sit at file numbers 12, 05, 10 and 07.  fig09 (cross-asset) and fig11 (intraday) are in the
-% supplement (Regan_Xie_Electronics_Supplement.tex registers them).  Keep this block in step with ../figures/scripts.
+% so Figures 3, 5 and 6 sit at file numbers 12, 05 and 07.  fig02 (one window), fig04 (replay), fig08 (2008 to 2019), fig09 (cross-asset),
+% fig10 (post-publication) and fig11 (intraday) are in the supplement (Regan_Xie_Electronics_Supplement.tex registers them).  Keep this block in step with ../figures/scripts.
 \newcommand{\figDesign}{fig01_study_design}
-\newcommand{\figWindow}{fig02_convention_window}
 \newcommand{\figSeries}{fig03_series_comparison}
-\newcommand{\figReplay}{fig04_classifier_replay}
 \newcommand{\figThresholds}{fig12_threshold_sensitivity}
 \newcommand{\figBridge}{fig06_bridge_agreement}
 \newcommand{\figComplete}{fig05_llm_arms_by_year}
-\newcommand{\figDeep}{fig08_deep_baseline}
-\newcommand{\figPost}{fig10_post_publication_2026}
 \newcommand{\figFidelity}{fig07_llm_classifier_fidelity}
 
 % \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
@@ -136,11 +132,9 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 \input{./04_02_Replay}
 \input{./04_03_Bridge}
 \input{./04_04_Complete}
-\input{./04_05_Ablation}
-\input{./04_06_Deep}
-\input{./04_07_Post}
-\input{./04_08_Fidelity}
-\input{./04_09_Dated}
+\input{./04_05_Scope}
+\input{./04_06_Fidelity}
+\input{./04_07_Dated}
 
 \input{./05_Discussion}
 \input{./06_Conclusion}
@@ -148,15 +142,13 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 % Appendices precede the back matter, as in the JRFM source.
 \appendixtitles{yes}
 \appendix
-\input{./07_Appendix_A_Prompt}
-\input{./08_Appendix_B_Tables}
-\input{./09_Appendix_C_Data}
+\input{./07_Appendix_A_Data}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{6pt}
 
 % TODO(authors): Dr. Xie to confirm the CRediT roles; the text below is the JRFM statement.
-\supplementary{The following supporting information is available with this article: Section~S1, series definitions in SQL; Section~S2 and Tables~S1 and~S2, run ledger; Section~S3, Tables~S3 and~S4 and Figure~S1, cross-asset replication; Section~S4, Table~S5 and Figure~S2, intraday check; Section~S5 and Table~S6, fidelity by arm.}
+\supplementary{The following supporting information is available with this article: Section~S1, series definitions in SQL; Section~S2 and Tables~S1 and~S2, run ledger; Section~S3, Tables~S3 and~S4 and Figure~S1, cross-asset replication; Section~S4, Table~S5 and Figure~S2, intraday check; Section~S5 and Table~S6, fidelity by arm; Section~S6, prompt, schema and API configuration; Section~S7 and Tables~S7 to~S9, per-year tables; Section~S8, Tables~S10 to~S12 and Figures~S3 to~S6, detail on the published inputs and the scope checks.}
 
 \authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
 

@@ -1,0 +1,143 @@
+% Section S8 of the Supplementary Materials: detail for the published inputs and the scope checks of Section 4 of the article
+% (moved here on 2026-11-24 from Sections 4.1, 4.5 and 4.7 of the article; labels, captions and % src: comments are unchanged).
+\section{Detail on the Published Inputs and the Scope Checks}
+\label{sup:detail}
+
+Figure~\ref{fig:window} shows one window under four conventions, Table~\ref{tab:ablation} gives the same-day-expiry ablation by year, and Table~\ref{tab:post} and Figure~\ref{fig:post} give the post-publication period, Figures~\ref{fig:replay} and~\ref{fig:deep} the replay by year and 2008 to 2019, and Table~\ref{tab:windows} the windows; the article summarises these in Sections~3.4, 4.1, 4.2 and~4.5.
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figWindow}
+% src: figures/output/fig02_convention_window.json (extra.window_end); windows.csv.gz (clf_positive_days, clf_sign_flips, clf_avg_magnitude, clf_regime_type for window_end 2024-03-15, symbol SPY); series parquet net_gex of 2024-03-15
+\caption{One SPY 30-day window under four conventions (\ident{jan2026_phase4a}, \ident{call_only}, \ident{new_ex0dte}, \ident{new_full}), window ending 2024-03-15. Dashed lines mark the $\pm$\$5 billion magnitude threshold; the table under the bars gives the three criteria and the verdict for each convention. \textbf{Read this figure as:} the same 30 trading days receive different verdicts. The published inputs and the call-only series have 30 of 30 positive days, a mean $|\mathrm{GEX}|$ of \$23.56~billion, 0 sign flips, and are detected. The complete series has 23 positive days, 13 flips and a mean of \$6.66~billion, and the ex-0DTE series 26 positive days, 7 flips and \$3.87~billion; both are rejected as low conviction. On the last day the net GEX is $+$\$14.61~billion on the published inputs, $-$\$15.35~billion on the complete series and $-$\$4.51~billion without same-day expiries.}
+\label{fig:window}
+\end{figure}
+
+% src: series parquet new_full_SPY, new_ex0dte_SPY, jan2026_phase4a_SPY, call_only_SPY and old_bs_SPY, net_gex of 2024-03-15
+Figure~\ref{fig:window} gives an example. The net GEX of SPY on 2024-03-15 is $+$\$14.61~billion on the published inputs and $+$\$14.61~billion as call-only GEX, $-$\$4.51~billion without same-day expiries and $-$\$15.35~billion on the complete series. The archive value is $+$\$12.62~billion and is put-less too, so the step from the archive to the complete series cannot be read as an effect of the gamma model alone: it combines the restored put leg with the change of the gamma model.
+
+\begin{table}[H]
+\centering
+\caption{Same-day-expiry ablation, SPY, by year: share of the absolute net GEX contributed by same-day expiries (percent; a ratio of absolute net values, not a share of gross exposure), and detection rates (percent) of the classifier and of gpt-6-luna on \ident{new_full} and \ident{new_ex0dte}, over all windows that end in the year (in 2020 these include the 29 windows that end before 2020-02-13; Section~4.2 of the article). The McNemar p-values are exact tests on the non-overlapping subsample (Section~3.8 of the article), reported for 2024, 2025 and 2026 and for the pooled periods 2008--2019, 2020--2023 and 2024--2025; the other years have no test (--).}
+\label{tab:ablation}
+\footnotesize
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & 0DTE share & \multicolumn{2}{c}{Classifier} & \multicolumn{2}{c}{gpt-6-luna} & \multicolumn{2}{c}{McNemar p} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+Year & of $|\mathrm{GEX}|$ & full & ex-0DTE & full & ex-0DTE & classifier & gpt-6-luna \\
+\midrule
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2020 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2020 & 25.7 & 22.2 & 10.7 & 22.2 & 10.7 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2021 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2021 & 36.0 & 3.6 & 0.0 & 3.6 & 0.0 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2022 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2022 & 23.4 & 40.6 & 36.7 & 41.8 & 37.1 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2023 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct)
+2023 & 35.8 & 22.4 & 25.2 & 23.2 & 26.0 & -- & -- \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2024 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2024 nonoverlap_30d.p_mcnemar_exact
+2024 & 45.9 & 10.3 & 13.1 & 11.1 & 14.3 & 1.000 & 1.000 \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2025 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2025 nonoverlap_30d.p_mcnemar_exact
+2025 & 43.9 & 13.6 & 16.4 & 14.0 & 16.4 & 1.000 & 1.000 \\
+% src: ex0dte_decomposition.csv symbol=SPY scope=year year=2026 (abs_0dte_share_pct, rate_full_pct, rate_ex0dte_pct, llm_rate_full_pct, llm_rate_ex0dte_pct); stats.yaml contrasts series_contrast new_full vs new_ex0dte period=2026 nonoverlap_30d.p_mcnemar_exact
+2026 & 40.8 & 11.3 & 21.1 & 11.3 & 21.1 & 1.000 & 1.000 \\
+\midrule
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2008-2019 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2008--2019 (pooled) & -- & 10.2 & 6.5 & 10.2 & 6.4 & 0.375 & 0.375 \\
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2020-2023 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2020--2023 (pooled) & -- & 22.2 & 18.1 & 22.7 & 18.4 & 1.000 & 0.688 \\
+% src: stats.yaml contrasts series_contrast SPY new_full vs new_ex0dte period=2024-2025 (rate_a_pct, rate_b_pct, nonoverlap_30d.p_mcnemar_exact), classifier and llm (arms full_spy, ex0dte_spy)
+2024--2025 (pooled) & -- & 12.0 & 14.7 & 12.5 & 15.3 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Post-publication period, SPY, windows ending in 2026 up to 2026-10-09 (those with ends from 2026-02-13 lie entirely in 2026). Cells give windows detected, with the percentage in brackets.}
+\label{tab:post}
+\footnotesize
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Series & Window set & Windows & Classifier detects (\%) & gpt-6-luna detects (\%) & Agreement (\%) \\
+\midrule
+% src: post_publication_2026_summary.csv definition=ends_in_2026 series_key=new_full symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_full} & ends in 2026 & 194 & 22 (11.3) & 22 (11.3) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=entirely_2026 series_key=new_full symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_full} & entirely in 2026 & 165 & 22 (13.3) & 22 (13.3) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=ends_in_2026 series_key=new_ex0dte symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_ex0dte} & ends in 2026 & 194 & 41 (21.1) & 41 (21.1) & 100.0 \\
+% src: post_publication_2026_summary.csv definition=entirely_2026 series_key=new_ex0dte symbol=SPY (label_source=classifier and llm: n_windows, n_detect, rate_pct, agree_with_clf_pct)
+\ident{new_ex0dte} & entirely in 2026 & 165 & 41 (24.8) & 41 (24.8) & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figPost}
+\caption{Post-publication period (windows ending in 2026 up to 2026-10-09): per-window classifier and gpt-6-luna labels for SPY under the complete series; the windows that still contain days of 2025 are set apart. \textbf{Read this figure as:} the 30-day mean $|\mathrm{GEX}|$ of the complete series (a) stays above \$5 billion in every window (lowest value \$6.13~billion), whereas that of the ex-0DTE series is below it in 85 of 194 windows. The rule labels 22 windows of the complete series and 41 windows of the ex-0DTE series as persistent (red in b), and gpt-6-luna differs from the rule in 0 of the 194 windows of the complete series and in 0 of the 194 windows of the ex-0DTE series.}
+\label{fig:post}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figReplay}
+\caption{Detection rate by year, SPY, 2020--2025: the published o4-mini labels and the deterministic rule replayed on the published inputs (\ident{jan2026_phase4a}), the call leg only (\ident{call_only}), the pre-rebuild archive (\ident{old_bs}) and the complete series without and with same-day expiries (\ident{new_ex0dte}, \ident{new_full}), with 95\% Wilson intervals. \textbf{Read this figure as:} the published labels and the rule on the published inputs agree window by window. In 2024 and 2025 the bars of the published inputs, the call-only series and the archive stand at 100\%, and the two bars of the complete series stand at 13.1\% and 10.3\% in 2024 and 16.4\% and 13.6\% in 2025. In 2020 the bars of the archive and of the complete series count the 223 windows that end from 2020-02-13, the span of the published inputs; on all 252 windows the complete series gives 22.2\% (Table~S8). The Wilson intervals are optimistic because the overlapping windows of a year are treated as independent.}
+\label{fig:replay}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\resultfigure{\figDeep}
+\caption{Pre-0DTE baseline, SPY, 2008--2019, with the 2008--2009 financial crisis and the 2018 volatility episode marked. (a) Detection rate by year of the classifier (lines) and gpt-6-luna (markers). (b) Gap between \ident{new_full} and \ident{new_ex0dte}. (c) Share of $|\mathrm{GEX}|$ carried by same-day expiries. \textbf{Read this figure as:} all three series stay at zero until 2013, when no 30-day mean reaches the \$5 billion criterion, and diverge as the same-day share in panel (c) rises, with the largest gap of 12.7 percentage points in 2017. The markers of gpt-6-luna lie close to the lines of the rule in every year. The whiskers are on the first series only; they are Wilson intervals that treat the overlapping windows as independent and are optimistic.}
+\label{fig:deep}
+\end{figure}
+
+\subsection{Calendars, Flagged Windows and the Table of Windows}
+\label{sup:detail:windows}
+
+A span that covers a calendar gap of more than four days is flagged (a gap of five or more days is not a holiday weekend). The exchange closure of 2012-10-29 and 2012-10-30 (Hurricane Sandy) is such a gap without a missing trading day, so in each series that covers 2012 (\ident{new_full} and \ident{new_ex0dte} for the three symbols, and \ident{old_bs}) the 29 windows that span it are flagged although they are complete. The number of trading days of the symbol's master calendar (\path{gex.options_daily_summary}) that are absent from the series inside the span is stored with the window. A third detector compares the span with the NYSE trading calendar and stores the number of NYSE trading days that the series lacks inside it (\ident{nyse_missing_days}); it finds a single day that is absent from the series and from the master calendar alike, which the first two detectors cannot see. A flag marks a window but does not drop it, and flagged windows are kept in every rate.
+% src: condensed/windows.csv.gz series_key=new_full (window_end of the windows with nyse_missing_days > 0: 2018-11, 2018-12, 2019-09, 2019-10, 2020-06 to 2020-08 for SPY, plus 2024-10 and 2024-11 for QQQ); series parquet new_full_SPY (calendar gaps above four days: 2012-10-26 to 2012-10-31, 2019-08-30 to 2019-09-04)
+The gap detector fires on two spans of the complete series, the closure of 2012-10-29 and 2012-10-30, when no day is missing, and the absence of 2019-09-03; the NYSE detector fires on 2018-11-06, 2019-09-03 and 2020-06-23 for all three symbols and on 2024-09-30 for QQQ.
+
+% src: series parquet new_full_SPY against old_bs_SPY (trading_date): 53 days of new_full that old_bs lacks = 19 (spot-filled days of 2009 to 2018, series_metadata spot_fill.days) + 2 (2023-07-12, 2024-03-11) + 26 (2026-01-02 to 2026-02-09) + 1 (2026-05-06) + 5 (2026-10-05 to 2026-10-09)
+Windows use the rows of each series (rule A, Section~3.4 of the article), so the calendars matter. The series \ident{old_bs} lacks 53 trading days of the complete series for SPY: the 19 days of 2009 to 2018 and the day 2026-05-06 that were added to the daily table on 2026-11-03 (Section~3.3 of the article), 2023-07-12, 2024-03-11, the 26 trading days from 2026-01-02 to 2026-02-09, and the 5 days from 2026-10-05 to 2026-10-09. The January calendar lacks 2023-07-12 and 2024-03-11; both dates are in the complete series. For the intraday series, the \ident{market_close} slot (20:00:59 UTC) equals the end-of-day row on the 51 regular days, so the independent late-session observation is \ident{final_rush}. The irregular days 2026-07-29, 2026-08-03 and 2026-09-14 are excluded (Section~S4 of the Supplementary Materials).
+
+The composite intraday windows (rule T0, key \ident{intraday_t0}) take the \ident{new_full} values for days $T{-}29$ to $T{-}1$ and the \ident{final_rush} value at $T{+}0$. A day without a finite value is left out of a rebuilt series before the windows are cut, and stops the window build for the recovered January and Phase 3 and 4 inputs, which must stay as they were sent; no stored series has such a day, so no window holds a missing value.
+
+Table~\ref{tab:windows} gives the 38{,}592 windows.
+
+\begin{table}[H]
+\centering
+\caption{Windows per series and symbol. Rule A cuts 30 consecutive rows of a series that follows the master calendar, rule J does the same for a series with its own calendar, and rule T0 builds the composite intraday windows. The last four columns count windows whose widest calendar gap exceeds four days (Gap), windows with at least one master-calendar day absent from the series (Master), windows with at least one NYSE trading day absent from the series (NYSE), and windows with any of the three flags (Either). Flagged windows are kept.}
+\label{tab:windows}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcrlrrrr@{}}
+\toprule
+ & & & & & \multicolumn{4}{c}{Windows flagged by} \\
+\cmidrule(l){6-9}
+Series key & Symbol & Rule & Windows & Window ends & Gap $>4$ d & Master & NYSE & Either \\
+\midrule
+\ident{jan2026_phase4a} & SPY & J & 1{,}476 & 2020-02-13 to 2025-12-31 & 0 & 58 & 87 & 87 \\
+\ident{call_only} & SPY & A & 1{,}672 & 2020-02-13 to 2026-10-09 & 0 & 0 & 29 & 29 \\
+\ident{old_bs} & SPY & A & 4{,}638 & 2008-02-13 to 2026-10-02 & 116 & 389 & 476 & 505 \\
+\ident{new_full} & IWM & A & 4{,}691 & 2008-02-13 to 2026-10-09 & 58 & 0 & 87 & 116 \\
+\ident{new_full} & QQQ & A & 3{,}878 & 2011-05-04 to 2026-10-09 & 58 & 0 & 116 & 145 \\
+\ident{new_full} & SPY & A & 4{,}691 & 2008-02-13 to 2026-10-09 & 58 & 0 & 87 & 116 \\
+\ident{new_ex0dte} & IWM & A & 4{,}691 & 2008-02-13 to 2026-10-09 & 58 & 0 & 87 & 116 \\
+\ident{new_ex0dte} & QQQ & A & 3{,}878 & 2011-05-04 to 2026-10-09 & 58 & 0 & 116 & 145 \\
+\ident{new_ex0dte} & SPY & A & 4{,}691 & 2008-02-13 to 2026-10-09 & 58 & 0 & 87 & 116 \\
+\ident{intraday_t0} & SPY & T0 & 51 & 2026-07-27 to 2026-10-09 & 0 & 0 & 0 & 0 \\
+\ident{new_full_scaled} & IWM & A & 1{,}672 & 2020-02-13 to 2026-10-09 & 0 & 0 & 29 & 29 \\
+\ident{new_full_scaled} & QQQ & A & 1{,}671 & 2020-02-13 to 2026-10-09 & 0 & 0 & 58 & 58 \\
+\ident{p3_2024} & SPY & J & 223 & 2024-02-13 to 2024-12-31 & 0 & 0 & 0 & 0 \\
+\ident{p3_2024_dated} & SPY & J & 223 & 2024-02-13 to 2024-12-31 & 0 & 0 & 0 & 0 \\
+\ident{p4_2020} & SPY & J & 223 & 2020-02-13 to 2020-12-31 & 0 & 0 & 29 & 29 \\
+\ident{p4_2020_dated} & SPY & J & 223 & 2020-02-13 to 2020-12-31 & 0 & 0 & 29 & 29 \\
+\midrule
+Total & & & 38{,}592 & & 464 & 447 & 1{,}317 & 1{,}520 \\
+\bottomrule
+\end{tabular}
+\end{table}

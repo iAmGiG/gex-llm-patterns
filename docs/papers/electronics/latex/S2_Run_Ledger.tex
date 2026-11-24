@@ -82,3 +82,15 @@ Total (this study) & 35{,}833 & 68{,}576{,}609 & 26{,}324{,}356 & 10.02 & \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Run Order, Pilot and Budget}
+\label{sup:ledger:order}
+
+% src: llm_parse_stats.csv arm=pilot_bridge_jan (prompt_tokens_per_response, completion_tokens_per_response), mean_prompt_tokens and mean_completion_tokens over the gpt-6-luna arms, max_completion_tokens_used; cost_ledger.csv arm=pilot_bridge_jan (est_cost_usd 0.02), run order planning/02_decisions_log.md D-10, D-18, D-22; cost_ledger.yaml budget (hard_stop_usd 12.0, spent_usd 10.020749), totals.backfill.est_cost_usd and budget.not_spend.historical_backfill_usd 9.967462 (rows 7.904 + 1.119 + 0.944), runs of 2026-11-03 est_cost_usd sum 0.320173 = 10.020749 - 9.700576
+The runs went in priority order. The first group was \ident{bridge_jan}, \ident{full_spy}, \ident{ex0dte_spy} and the four \ident{p34_*} arms; the second the unscaled and scaled arms of QQQ and IWM; the third the ex-0DTE arms of QQQ and IWM and the intraday arm; \ident{bridge_old} was optional and ran last. In the pilot of 40 windows a request used 1{,}913 prompt tokens and on average 700 completion tokens, of which 513 were reasoning tokens; the longest answer used 1{,}063 completion tokens, and the pilot cost \$0.02 in all. Over the stored answers of the gpt-6-luna runs, an answer averaged 1{,}914 prompt and 734 completion tokens, and the longest answer used 1{,}864. The new requests cost an estimated \$10.02 at list price, of which \$0.32 for the re-requests of 2026-11-03, against a hard stop of \$12.00. Only runs paid in this study count: the three o4-mini backfills, worth \$9.97 at o4-mini Batch prices, do not.
+
+\subsection{Database Additions of 2026-11-03}
+\label{sup:ledger:additions}
+
+% src: database team note of 2026-11-03 (chain rows of 2026-05-06 carry data_source = 'av_t1_from_slot' in gex.options_chains_partitioned, the morning slot of 2026-05-07 holding the previous session's chain per database issues #64 and #194; the four days without a chain are listed in #194; gex.spot_fill_log lists the days; the counts SPY 19, QQQ 10, IWM 12 are the team's statement, not a result file); series parquet new_full_{SPY,QQQ,IWM} series_metadata spot_fill.days (19, 10, 12 days) and row 2026-05-06
+On 2026-11-03 the database team added the daily rows of \path{gex.options_daily_summary} that had been missing for SPY, QQQ and IWM. For 2026-05-06 the chain was absent that day and was recovered from the intraday slot of the next morning, which carries the previous session's chain. For 41 symbol-days of 2008 to 2018 (SPY 19, QQQ 10, IWM 12) the stored chain lacked the spot price; for these the summary uses the close of the day, a choice that the database team made and that we take over as stated. The days are listed in \path{gex.spot_fill_log} and our series mark them in \ident{series_metadata} (\ident{spot_from}). The series built from the raw chain take the same spot on exactly these days.
