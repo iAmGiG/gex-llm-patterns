@@ -50,6 +50,7 @@ HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import common  # noqa: E402
+import stored_analyses as sa  # noqa: E402
 
 
 def load_report_module():
@@ -586,38 +587,36 @@ def agreement_table(final: pd.DataFrame, periods: Sequence[Tuple[str, Optional[i
 
 
 # --------------------------------------------------------------------------- 5. contested windows
-def contested_windows(persistence_pct: pd.Series, magnitude_bn: pd.Series, sign_flips: pd.Series,
-                      persistence_margin_pp: float = 5.0, magnitude_margin_bn: float = 1.0,
-                      flips_margin: float = 1.0) -> pd.DataFrame:
-    """Which windows are contested, and by which criterion.
+CONTESTED_DEFAULT = "pivotal"
+# One definition for both papers: stored_analyses.contested_mask with the 'pivotal' margins (persistence within 1 day of
+# 21 of 30, mean |GEX| within 0.5 billion of 5, flips 5 or 6) is the default; margin1 is the other definition of that module;
+# narrow and wide only bracket the default in the sensitivity table.
+CONTESTED_SETS = {**{name: dict(m) for name, m in sa.CONTESTED_DEFINITIONS.items()},
+                  "narrow": {"days": 0, "billions": 0.5, "flips": 0, "flips_below": 0},
+                  "wide": {"days": 3, "billions": 2.0, "flips": 2, "flips_below": 2}}
 
-    A criterion is near its threshold when its value is within the margin of it on either side: persistence within
-    ``persistence_margin_pp`` points of 70, mean |GEX| within ``magnitude_margin_bn`` billion of 5, sign flips within
-    ``flips_margin`` of 5 (so with the defaults 65 to 75 percent, 4 to 6 billion, 4 to 6 flips).  A window is
-    contested when exactly one criterion is near and the other two are met (persistence at least 70, magnitude at least
-    5, flips at most 5); the near criterion may itself be met or missed.  Returns a frame with the three ``near_*``
-    flags, ``contested`` (bool) and ``contested_criterion`` ('persistence', 'magnitude', 'flips' or '').  Rows with a
-    missing metric are not contested.
+
+def contested_windows(frame: pd.DataFrame, definition: str = CONTESTED_DEFAULT) -> pd.DataFrame:
+    """Which stored windows are contested, and by which criterion, by ``stored_analyses.contested_mask``.
+
+    ``frame`` holds the stored windows' ``clf_positive_days``, ``clf_negative_days``, ``clf_avg_magnitude`` (USD) and
+    ``clf_sign_flips``.  ``definition`` names a margin set of ``CONTESTED_SETS`` ('pivotal' by default: one day of the
+    majority sign around 21, half a billion around 5, flips 5 or 6).  A window is contested when one criterion is within
+    its margin of its threshold while the other two pass.  Returns ``contested`` and ``by_persistence`` / ``by_magnitude`` /
+    ``by_flips`` (a window can be contested by more than one criterion); rows with a missing metric are not contested.
     """
-    near_p = (persistence_pct - PERSISTENCE_MIN_PCT).abs() <= persistence_margin_pp
-    near_m = (magnitude_bn - MAGNITUDE_MIN_BN).abs() <= magnitude_margin_bn
-    near_f = (sign_flips - FLIPS_MAX).abs() <= flips_margin
-    pass_p = persistence_pct >= PERSISTENCE_MIN_PCT - 1e-9
-    pass_m = magnitude_bn >= MAGNITUDE_MIN_BN
-    pass_f = sign_flips <= FLIPS_MAX
-    known = persistence_pct.notna() & magnitude_bn.notna() & sign_flips.notna()
-    n_near = near_p.astype(int) + near_m.astype(int) + near_f.astype(int)
-    c_p = near_p & pass_m & pass_f
-    c_m = near_m & pass_p & pass_f
-    c_f = near_f & pass_p & pass_m
-    contested = known & (n_near == 1) & (c_p | c_m | c_f)
-    crit = np.where(c_p, "persistence", np.where(c_m, "magnitude", np.where(c_f, "flips", "")))
-    return pd.DataFrame({"near_persistence": near_p, "near_magnitude": near_m, "near_flips": near_f,
-                         "contested": contested, "contested_criterion": np.where(contested, crit, "")},
-                        index=persistence_pct.index)
+    m = CONTESTED_SETS[definition]
+    cols = ["clf_positive_days", "clf_negative_days", "clf_avg_magnitude", "clf_sign_flips"]
+    known = frame[cols].notna().all(axis=1).to_numpy()
+    out = sa.contested_mask(frame["clf_positive_days"].fillna(0).to_numpy(), frame["clf_negative_days"].fillna(0).to_numpy(),
+                            frame["clf_avg_magnitude"].fillna(0).to_numpy(), frame["clf_sign_flips"].fillna(0).to_numpy(),
+                            m["days"], m["billions"], m["flips"], m["flips_below"])
+    out = out.mul(known, axis=0).astype(bool)
+    out.index = frame.index
+    return out
 
 
-def contested_table(final: pd.DataFrame, **margins: float) -> pd.DataFrame:
+def contested_table(final: pd.DataFrame, definition: str = CONTESTED_DEFAULT) -> pd.DataFrame:
     """Agreement and answered share by stratum for every primary arm.
 
     ``stratum``: ``contested``, ``not_contested`` or ``all`` (windows with a rule verdict).  Columns: ``n_windows``,
@@ -626,12 +625,11 @@ def contested_table(final: pd.DataFrame, **margins: float) -> pd.DataFrame:
     ``contested_windows``.
     """
     f = final[(final["arm_role"] == "primary") & final["clf_should_detect"].notna()].copy()
-    flags = contested_windows(f["clf_persistence_pct"], f["clf_avg_magnitude"], f["clf_sign_flips"], **margins)
-    f = f.join(flags)
+    f = f.join(contested_windows(f, definition))
     rows = []
     for (arm, model, series_key, symbol), g in f.groupby(["arm", "model", "series_key", "symbol"], sort=True):
         strata = [("all", g), ("contested", g[g["contested"]]), ("not_contested", g[~g["contested"]])]
-        strata += [(f"contested_{c}", g[g["contested_criterion"] == c]) for c in ("persistence", "magnitude", "flips")]
+        strata += [(f"contested_{c}", g[g[f"by_{c}"]]) for c in ("persistence", "magnitude", "flips")]
         for name, sub in strata:
             if sub.empty:
                 continue
@@ -648,17 +646,15 @@ def contested_table(final: pd.DataFrame, **margins: float) -> pd.DataFrame:
     return round_frame(pd.DataFrame(rows).sort_values(["arm", "series_key", "symbol", "stratum"]).reset_index(drop=True))
 
 
-MARGIN_SETS = {"narrow": (2.5, 0.5, 0.0), "default": (5.0, 1.0, 1.0), "wide": (10.0, 2.0, 2.0)}
-
-
 def contested_sensitivity(final: pd.DataFrame) -> pd.DataFrame:
-    """The contested and not-contested strata of ``contested_table`` under three margin sets (persistence pp,
-    magnitude bn, flips): narrow 2.5 / 0.5 / 0, default 5 / 1 / 1 and wide 10 / 2 / 2, with the set's name."""
+    """The contested and not-contested strata of ``contested_table`` under every margin set of ``CONTESTED_SETS``
+    (``margin_set``; the default is ``pivotal``), with the set's margins in days, billions and flips."""
     parts = []
-    for name, (mp, mm, mf) in MARGIN_SETS.items():
-        t = contested_table(final, persistence_margin_pp=mp, magnitude_margin_bn=mm, flips_margin=mf)
+    for name, m in CONTESTED_SETS.items():
+        t = contested_table(final, name)
         parts.append(t[t["stratum"].isin(["contested", "not_contested"])].assign(
-            margin_set=name, persistence_margin_pp=mp, magnitude_margin_bn=mm, flips_margin=mf))
+            margin_set=name, margin_days=m["days"], margin_billions=m["billions"], margin_flips_above=m["flips"],
+            margin_flips_below=m["flips_below"], is_default=name == CONTESTED_DEFAULT))
     return pd.concat(parts, ignore_index=True).sort_values(["arm", "series_key", "symbol", "margin_set", "stratum"]
                                                            ).reset_index(drop=True)
 
@@ -676,15 +672,14 @@ def answering_bands(final: pd.DataFrame, model: str) -> pd.DataFrame:
 
     ``variable``: persistence_pct (``clf_persistence_pct``), avg_magnitude_bn (``clf_avg_magnitude``), sign_flips
     (``clf_sign_flips``), dominant_sign (positive when more positive than negative days), rule (the rule's verdict),
-    contested (``contested_windows`` with its default margins).  ``scope``: ``all_primary_arms`` (every primary arm of
+    contested (``contested_windows``, default definition).  ``scope``: ``all_primary_arms`` (every primary arm of
     the model; the same window appears in several arms) or ``full_spy`` (the complete-series arm).
     """
     f = final[(final["arm_role"] == "primary") & (final["model"] == model) & final["clf_should_detect"].notna()].copy()
     f["answered"] = f["parsed"]
     f["dominant_sign"] = np.where(f["clf_positive_days"] >= f["clf_negative_days"], "positive", "negative")
     f["rule"] = rule_label(f["clf_should_detect"])
-    f["contested"] = np.where(contested_windows(f["clf_persistence_pct"], f["clf_avg_magnitude"], f["clf_sign_flips"])
-                              ["contested"], "contested", "not_contested")
+    f["contested"] = np.where(contested_windows(f)["contested"], "contested", "not_contested")
     srcs = {"persistence_pct": "clf_persistence_pct", "avg_magnitude_bn": "clf_avg_magnitude", "sign_flips": "clf_sign_flips"}
     rows = []
     scopes = {"all_primary_arms": f, "full_spy": f[f["arm"].str.endswith("full_spy")]}

@@ -91,21 +91,28 @@ check("no recoverable verdicts: the rec variant equals answered", b["agree_rec"]
 c = ua.agreement_variants([True, False], [True, True], [True, False])
 check("all answered: the four variants coincide", c["agree_pct_answered"] == c["agree_pct_unans_no"] == c["agree_pct_unans_error"] == 100.0)
 
-# ---- contested windows
-pers = pd.Series([72.0, 72.0, 90.0, 90.0, 66.7, 66.7, 75.0])
-mag = pd.Series([20.0, 20.0, 5.5, 20.0, 20.0, 3.0, 20.0])
-flips = pd.Series([2, 5, 2, 7, 2, 2, 2])
-w = ua.contested_windows(pers, mag, flips)
-check("only persistence near: contested by persistence", bool(w.loc[0, "contested"]) and w.loc[0, "contested_criterion"] == "persistence")
-check("flips at the limit (near, met): contested by persistence too when both are near -> not contested",
-      not bool(w.loc[1, "contested"]))
-check("magnitude near, others met: contested by magnitude", bool(w.loc[2, "contested"]) and w.loc[2, "contested_criterion"] == "magnitude")
-check("flips 7 is a miss and not near: not contested", not bool(w.loc[3, "contested"]))
-check("persistence 66.7 near and missed, others met: contested", bool(w.loc[4, "contested"]))
-check("magnitude 3 is a far miss while persistence is near: not contested", not bool(w.loc[5, "contested"]))
-check("persistence 75 sits on the margin edge: contested", bool(w.loc[6, "contested"]))
-w2 = ua.contested_windows(pers, mag, flips, persistence_margin_pp=0.5)
-check("a narrower margin drops the 72 percent window", not bool(w2.loc[0, "contested"]))
+# ---- contested windows (the definition is stored_analyses.contested_mask, 'pivotal' by default)
+cw = pd.DataFrame({
+    "clf_positive_days": [22, 22, 25, 25, 20, 20, 22, 28],
+    "clf_negative_days": [8, 8, 5, 5, 10, 10, 8, 2],
+    "clf_avg_magnitude": [20e9, 20e9, 5.4e9, 20e9, 20e9, 3e9, 20e9, 5.6e9],
+    "clf_sign_flips": [2, 5, 2, 7, 2, 2, 6, 2]})
+w = ua.contested_windows(cw)
+check("22 days (one above 21), others met: contested by persistence", bool(w.loc[0, "contested"]) and bool(w.loc[0, "by_persistence"]))
+check("flips 5 at the limit with others met: contested by flips", bool(w.loc[1, "contested"]) and bool(w.loc[1, "by_flips"]))
+check("magnitude 5.4 (within 0.5), others met: contested by magnitude", bool(w.loc[2, "contested"]) and bool(w.loc[2, "by_magnitude"]))
+check("flips 7 and 25 days: not contested", not bool(w.loc[3, "contested"]))
+check("20 days (one below 21) misses persistence: contested, the other two met", bool(w.loc[4, "contested"]))
+check("magnitude 3 is a far miss: not contested", not bool(w.loc[5, "contested"]))
+check("flips 6 (one above the limit), others met: contested", bool(w.loc[6, "contested"]))
+check("magnitude 5.6 is outside the pivotal half billion: not contested; margin1 contests it",
+      not bool(w.loc[7, "contested"]) and bool(ua.contested_windows(cw, "margin1").loc[7, "contested"]))
+check("pivotal margin on flips: 4 flips is not contested, margin1 contests it",
+      not bool(ua.contested_windows(cw.assign(clf_sign_flips=4)).loc[0, "by_flips"])
+      and bool(ua.contested_windows(cw.assign(clf_sign_flips=4), "margin1").loc[0, "by_flips"]))
+check("narrow definition drops the 22-day window", not bool(ua.contested_windows(cw, "narrow").loc[0, "contested"]))
+check("the module uses the very function of stored_analyses", ua.sa.contested_mask is ua.sa.contested_mask
+      and ua.CONTESTED_SETS["pivotal"] == ua.sa.CONTESTED_DEFINITIONS["pivotal"] and ua.CONTESTED_DEFAULT == "pivotal")
 
 # ---- logistic fit and AUC
 rng = np.random.default_rng(1)
