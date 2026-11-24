@@ -1,6 +1,8 @@
 {
   "argv": [
-    "fig12_threshold_sensitivity.py"
+    "fig12_threshold_sensitivity.py",
+    "--tables-dir",
+    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
   ],
   "code": [
     {
@@ -1002,10 +1004,10 @@
     ]
   },
   "figure": "fig12_threshold_sensitivity",
-  "generated_utc": "2026-11-24T03:35:19+00:00",
+  "generated_utc": "2026-11-24T04:56:58+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "d4765a1e16cc1b98cbf5e23d4cd1b2199b147cb3",
+  "git_sha": "c2cbdf9f6194296b75aaebf8d770d7bebbcd7595",
   "outputs": {
     "pdf": {
       "bytes": 23651,
@@ -1013,38 +1015,38 @@
       "sha256": "72f2f914c7f79729286b8379b68dbaafc86128fd9586ccaa45940e87d4264bc0"
     },
     "png": {
-      "bytes": 195423,
+      "bytes": 195513,
       "path": "docs/papers/electronics/figures/output/fig12_threshold_sensitivity.png",
       "pixels": [
         1842,
         1545
       ],
-      "sha256": "e186738c1197b4e1fc031bbe89174589ba96aaa911aaad8700be8896ba11648f"
+      "sha256": "cf64ff36f937efd8d09c24f7ea3855f2e74b878407a9e0beec3b6e19b64ee749"
     }
   },
   "results": {
     "files": {},
     "report_yaml": {
-      "generated_at": "2026-11-24T03:34:10+00:00",
+      "generated_at": "2026-11-24T04:43:54+00:00",
       "inputs_fingerprint": "1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f",
-      "sha256": "c358abf979179cb1c27fc1a0cc733bec94bf66ef62cc97ac6af3ba2b2afa462e"
+      "script_sha256": "86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177",
+      "sha256": "ca2ee9b9d2e2f985b35875182794698c1d32bf07193fbaee04c70c78ccc71e2f"
     }
   },
   "rows": {
-    "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
-    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691
+    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
+    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691
   },
   "sources": [
     {
       "bytes": 425286,
-      "path": "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
+      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
       "sha256": "f452ee8c5af70763b33895691965d0fed01bc80c74701bdac11084672ecedccf"
     },
     {
       "bytes": 1380806,
-      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     }
   ],

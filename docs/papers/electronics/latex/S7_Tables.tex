@@ -1,13 +1,13 @@
-% Appendix B: per-year tables, filled from results/ (05_report.py); every table carries its source in a "% src:" comment.
+% Section S7 of the Supplementary Materials (until 2026-11-24 Appendix B of the article): per-year tables, filled from results/ (05_report.py); every table carries its source in a "% src:" comment.
 %=================================================================
 \section{Per-Year Tables}
-\label{app:tables}
+\label{sup:tables}
 
-Tables~\ref{tab:app:series}--\ref{tab:complete} give the numbers behind the figures of Section~\ref{sec:results} for every year. The years are the calendar years of the window end, and rates are percentages of parsed windows. The Wilson intervals treat overlapping windows as independent and are optimistic; the quarter-block bootstrap interval of every rate is in the result files of the repository (Appendix~\ref{app:data}).
+Tables~\ref{tab:app:series}--\ref{tab:complete} give the numbers behind the figures of Section~4 of the article for every year. The years are the calendar years of the window end, and rates are percentages of parsed windows. The Wilson intervals treat overlapping windows as independent and are optimistic; the quarter-block bootstrap interval of every rate is in the result files of the repository (Appendix~A of the article).
 
 \begin{table}[H]
 \centering
-\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means of the complete series in Section~\ref{sec:results:inputs} are taken over the days it shares with the published inputs, so they can differ slightly from the \ident{new_full} column (\$6.48 against \$6.46~billion in 2024). A dash marks a year outside the series.}
+\caption{Mean absolute daily GEX (USD billion) by series and year, SPY. Each mean is taken over the days that the series has in common with \ident{new_full}; the \ident{new_full} column and the day count use the days shared with \ident{new_ex0dte}. The means of the complete series in Section~4.1 of the article are taken over the days it shares with the published inputs, so they can differ slightly from the \ident{new_full} column (\$6.48 against \$6.46~billion in 2024). A dash marks a year outside the series.}
 % src: series_comparison.csv scope=year symbol=SPY; mean_abs_a_bn / mean_abs_b_bn and n_days of the pairs jan2026_phase4a_vs_new_full, call_only_vs_new_full, old_bs_vs_new_full, new_full_vs_new_ex0dte
 \label{tab:app:series}
 \footnotesize
@@ -75,7 +75,7 @@ Year & Windows & \ident{jan2026_phase4a} & \ident{call_only} & \ident{old_bs} & 
 
 \begin{table}[H]
 \centering
-\caption{gpt-6-luna on the complete SPY series, by year of the window end: windows, detection rate in percent with its 95\% Wilson interval (overlapping windows treated as independent, hence optimistic) for \ident{full_spy} and \ident{ex0dte_spy}, and the agreement of the model verdict with the rule on the same windows (percent). The arms of QQQ and IWM are in Table~S4 of the Supplementary Materials. * Windows ending in 2026 up to 2026-10-09.}
+\caption{gpt-6-luna on the complete SPY series, by year of the window end: windows, detection rate in percent with its 95\% Wilson interval (overlapping windows treated as independent, hence optimistic) for \ident{full_spy} and \ident{ex0dte_spy}, and the agreement of the model verdict with the rule on the same windows (percent). The arms of QQQ and IWM are in Table~\ref{tab:s:llm}. * Windows ending in 2026 up to 2026-10-09.}
 \label{tab:complete}
 \footnotesize
 \begin{tabular}{@{}lrrrrrrr@{}}

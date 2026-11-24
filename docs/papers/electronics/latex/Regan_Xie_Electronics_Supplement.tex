@@ -1,18 +1,21 @@
 %  Supplementary Materials of the Electronics manuscript (compiled on its own: pdflatex, twice).
 %  Section S1: series definitions in SQL.  Section S2: run ledger.  Section S3: cross-asset replication (QQQ, IWM).
-%  Section S4: intraday check.  Section S5: fidelity of model answers by arm.
+%  Section S4: intraday check.  Section S5: fidelity of model answers by arm.  Section S6: prompt, schema and API configuration.  Section S7: per-year tables.  Section S8: detail on the published inputs and the scope checks.
 %  One \input per part, as in the article.  Figures: the PNGs of ../figures/output (figures/ in the Overleaf package);
 %  the stems are registered below and in the main file, and run_all.py --check reads both.
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{booktabs,tabularx,float,listings,xcolor,url,amsmath,amssymb,graphicx}
+\usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
 \lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
   columns=fixed, keepspaces=true, showstringspaces=false, upquote=true,
   breaklines=true, breakindent=0pt, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
   aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
+\lstdefinestyle{prompt}{style=appcode, breakatwhitespace=true,
+  literate={<=}{{$\leq$}}1 {>=}{{$\geq$}}1 {->}{{$\rightarrow$}}1}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
@@ -20,6 +23,10 @@
 % Figure registry of the supplement (stems of ../figures/output/<stem>.png).
 \newcommand{\figCross}{fig09_cross_asset}
 \newcommand{\figIntraday}{fig11_intraday_vs_eod}
+\newcommand{\figWindow}{fig02_convention_window}
+\newcommand{\figPost}{fig10_post_publication_2026}
+\newcommand{\figThresholds}{fig12_threshold_sensitivity}
+\newcommand{\figDeep}{fig08_deep_baseline}
 \IfFileExists{figures/fig09_cross_asset.png}{\newcommand{\figdir}{figures}}{\newcommand{\figdir}{../figures/output}}
 \newcommand{\resultfigure}[1]{%
   \begingroup
@@ -40,4 +47,7 @@
 \input{./S3_Cross_Asset}
 \input{./S4_Intraday}
 \input{./S5_Fidelity}
+\input{./S6_Prompt}
+\input{./S7_Tables}
+\input{./S8_Detail}
 \end{document}

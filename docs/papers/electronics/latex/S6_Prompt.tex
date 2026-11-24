@@ -1,15 +1,15 @@
-%  Appendix A: prompt, schema and API configuration.
+%  Section S6 of the Supplementary Materials (until 2026-11-24 Appendix A of the article): prompt, schema and API configuration.
 %  A is transcribed from the code, not typed.  The prompt is MechanicsPromptBuilder.build_regime_prompt with the 30 data lines
 %  replaced by the placeholder {gex_data_table}; the schema and the request are common.REGIME_JSON_SCHEMA and common.chat_body.
 %  The three typographic symbols of the prompt (U+2264, U+2265, U+2192) are written in ASCII (<=, >=, ->) in this file and
 %  typeset as symbols by the "prompt" listing style, which keeps the sources ASCII.
-%  Prompt check (2026-10-31): the listing of A.2, with the data lines replaced by the placeholder and the three symbols in ASCII,
+%  Prompt check (2026-10-31): the listing of S6.2, with the data lines replaced by the placeholder and the three symbols in ASCII,
 %  equals common.build_prompt on 35,365 of 35,365 obfuscated gpt-6-luna requests stored in data/backups/gex_llm/*/input_*.jsonl.
 %=================================================================
 \section{Prompt, Schema and API Configuration}
-\label{app:prompt}
+\label{sup:prompt}
 
-This appendix reproduces the complete request sent to the model for each 30-day window, so that the experiment can be repeated from the manuscript alone. The prompt text is the output of \ident{MechanicsPromptBuilder.build_regime_prompt} (file \path{src/llm/mechanics_prompt_builder.py}); the schema and the request body are the constant \ident{REGIME_JSON_SCHEMA} and the function \ident{chat_body} of \path{scripts/validation/electronics/common.py}. The listings were generated from these objects and compared with them.
+This section reproduces the complete request sent to the model for each 30-day window, so that the experiment can be repeated from the manuscript alone. The prompt text is the output of \ident{MechanicsPromptBuilder.build_regime_prompt} (file \path{src/llm/mechanics_prompt_builder.py}); the schema and the request body are the constant \ident{REGIME_JSON_SCHEMA} and the function \ident{chat_body} of \path{scripts/validation/electronics/common.py}. The listings were generated from these objects and compared with them.
 
 \subsection{Model and API Configuration}
 \label{app:prompt:config}
@@ -20,20 +20,20 @@ This appendix reproduces the complete request sent to the model for each 30-day 
 \item \textbf{Access:} OpenAI Batch API, endpoint \path{/v1/chat/completions}, completion window of 24 hours, at most 1{,}500 requests per batch job. Each input line is one request that carries the key \texttt{<arm>|<symbol>|<window\_end>} in \ident{custom_id}; a test-retest duplicate adds the suffix \texttt{\#rep1}, and its arm is stored as \texttt{<arm>\#rep1}.
 \item \textbf{Reasoning effort:} \ident{medium}, the default effort of o4-mini in the published run.
 \item \textbf{Maximum completion tokens:} 4{,}000; reasoning tokens count against the limit. An answer that ends with \ident{finish_reason} = \ident{length} is requested once more with 8{,}000.
-\item \textbf{Response format:} the strict JSON schema of Appendix~\ref{app:prompt:schema}. The earlier runs requested the same nine fields in the prompt text only; this is the one protocol change of the study.
+\item \textbf{Response format:} the strict JSON schema of Section~\ref{app:prompt:schema}. The earlier runs requested the same nine fields in the prompt text only; this is the one protocol change of the study.
 \item \textbf{Not sent:} temperature, seed, system message, tools and stop sequences.
 \item \textbf{Parsing:} an answer is parsed as JSON; a second attempt tolerates raw control characters inside strings, and a last fallback extracts the JSON object from free text. The parse status of every answer (\ident{ok}, \ident{fallback}, \ident{failed} or \ident{missing}) is stored.
 \item \textbf{Prices:} USD 0.05 per million input tokens and USD 0.25 per million output tokens on Batch, twice that on the standard API; the cost of the study is an estimate at these list prices.
 \end{itemize}
 
-Identical requests need not return identical answers, because no seed is sent to gpt-6-luna. The test-retest duplicates of Section~\ref{sec:methods:arms} measure this variation, and the deterministic rule, not the model, supplies the reference label of each window.
+Identical requests need not return identical answers, because no seed is sent to gpt-6-luna. The test-retest duplicates of Section~3.6 of the article measure this variation, and the deterministic rule, not the model, supplies the reference label of each window.
 
 \subsection{Prompt Text}
 \label{app:prompt:body}
 
 The prompt is a single user message. The placeholder \texttt{\{gex\_data\_table\}} stands for the 30 data lines of a window, one per day, in the form \texttt{Day T-29: +3.42B} to \texttt{Day T+0: -12.18B}: a relative day label, the net GEX in billions of US dollars with two decimals and an explicit sign, and neither a date nor a ticker. In the two dated arms (\ident{p34_dated_2024} and \ident{p34_dated_2020}) the label is instead the ISO date of the trading day, as in the November 2025 runs (\texttt{2024-01-02: -33.01B}). The rest of the text is the same for every window, series and symbol (prompt version \ident{v2.0_postgresql}) and is the text of the Phase 4A run.
 
-The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 35{,}365 of 35{,}365 requests (the 35{,}833 requests of Table~\ref{tab:arms} less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
+The listing was checked against the stored requests. With the 30 data lines replaced by the placeholder, it equals the user message of 35{,}365 of 35{,}365 requests (the 35{,}833 requests of Table~2 of the article less the 468 requests of the two dated arms). Each stored answer also carries the sha256 of the prompt that produced it in \ident{detection_metadata.prompt_sha256}.
 % src: comparison of this listing with the user message of every input_*.jsonl of the non-dated gpt-6-luna runs in data/backups/gex_llm/ (35,365 requests, 35,365 equal; the 40-request synchronous pilot is included; 35,833 ledger requests minus 2 x 234 = 468 requests of the two dated arms = 35,365), 2026-10-31 for the 34,244 requests of the first runs and 2026-11-03 for the 1,121 re-requests (after removing the 30 data lines, one distinct message across all 35,365 requests); also equal to common.build_prompt
 
 \begin{lstlisting}[style=prompt]
@@ -203,7 +203,7 @@ Analyze the 30-day GEX data above and provide your regime classification in JSON
 \subsection{Output Schema}
 \label{app:prompt:schema}
 
-The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the rule (Section~\ref{sec:results:fidelity}).
+The answer is constrained by the following strict JSON schema, passed as \ident{response_format}. With \ident{strict} set, the model can neither omit nor add a field. The boolean \ident{regime_detected} is the primary label of the study and \ident{regime_type} the secondary one; the counts, the mean magnitude and the persistence are the model's own report and are compared with the values of the rule (Section~4.6 of the article).
 
 \begin{lstlisting}[style=appcode]
 {
@@ -280,14 +280,14 @@ Each line of a batch input file is one request of the following form.
     "messages": [
       {
         "role": "user",
-        "content": "<prompt text of Appendix A.2>"
+        "content": "<prompt text of Section S6.2>"
       }
     ],
     "max_completion_tokens": 4000,
     "reasoning_effort": "medium",
     "response_format": {
       "type": "json_schema",
-      "json_schema": "<schema of Appendix A.3>"
+      "json_schema": "<schema of Section S6.3>"
     }
   }
 }

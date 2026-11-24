@@ -10,7 +10,7 @@ jrfm-4256551), and it cites both. While it was being prepared, the exact inputs 
 recovered and found to lack the put leg of dealer gamma exposure (GEX) from 2023-09-29 onward, and the inputs of the
 published 2024-versus-2020 baselines turned out to carry calendar dates. The article is therefore framed as a
 **re-run on the complete data (both option legs) with a rule-following test of a current model and a plain data statement**, not as an incremental
-extension; it does not present itself as a correction (no correction notice has been filed; a formal revision is a later, low-priority step, decisions log D-20).
+extension; it is not titled a correction, but since 2026-11-24 it says in Section 1.1 ("Relation to the Published Results") which published results it supersedes (the authors' decision of that day: the article serves as the public notice for now). No correction has been filed with the publishers; a formal notice to the journals follows later (decisions log D-20).
 
 ## Paper A of a two-paper split
 
@@ -25,7 +25,7 @@ and the regime label is called a GEX label, not a demonstrated price regime.
   they were 4.1 to 4.6, 4.8, 4.10 and 4.11); Supplement S1 (series SQL) and S2 (the hosted run ledger).
 - **Moved to the supplement:** the cross-asset replication with the scaled QQQ and IWM series (S3, Table S3 and S4,
   Figure S1), the intraday check (S4, Table S5, Figure S2) and the fidelity table by arm (S5, Table S6). Two body tables
-  moved too: the per-year table of gpt-6-luna on SPY is Appendix Table A3, and the QQQ and IWM columns are Table S4.
+  moved too: the per-year table of gpt-6-luna on SPY is Supplement Table S9, and the QQQ and IWM columns are Table S4.
 - **Left for the companion paper:** Section 4.12, Supplement S3 of the old numbering, the local run ledgers, the
   open-weights protocol of Methods 3.5 and 3.6 and the open-weights rows of the arms table. Paper A cites the companion
   paper (`regan2026openweights`, a manuscript in preparation) in the Introduction, the Discussion and the conclusions and
@@ -46,7 +46,7 @@ and the regime label is called a GEX label, not a demonstrated price regime.
 | Model runs | 18 Batch-era arms stored: 15 run with gpt-6-luna and three backfills of the stored o4-mini answers (no API call); 35,833 gpt-6-luna requests, including the 1,121 windows asked again after the database fill of 2026-11-03, estimated at $10.02 at list price; 36,706 stored answers of these arms (34,784 + 1,922), as of 2026-11-10. Bridge gate passed: gpt-6-luna agrees with the published o4-mini labels on 99.6 % of 1,412 windows (kappa 0.99). The open-weights runs belong to the companion paper (`docs/papers/openweights/`); their answers are in the same tables and in the same Zenodo deposit but are not used or reported here. |
 | Pipeline, [`scripts/validation/electronics/`](../../../scripts/validation/electronics/) | `common.py` (the contract, shared with the companion paper: 11 series and 39 arms, 18 of them hosted or backfilled and the other 21 open-weights arms of the companion paper), `00` to `08` (environment check, series, windows, backfill, runner, report, condensed copies, database load, Zenodo package), the schema SQL and the README. |
 | Database tables | `backups.gex_llm_regime_*` exist (documentation PR #165 of the database repository merged; schema applied 2026-10-30 20:32 UTC) and hold the parquet copies (`07_load_tables.py`; first load 2026-10-30 21:02 UTC, reloaded 2026-11-03 21:28 UTC after the database fill, 2026-11-07 23:15 UTC after the gpt-oss-20b runs and 2026-11-10 02:44 UTC after the Llama and Qwen runs: 38,592 windows, 179 runs, 73,846 answers, the latest per window; schema comments applied the same day). Checked on 2026-11-04 against the database's notice of data changes (gex-database-infrastructure #211): the stored SPY, QQQ and IWM series equal the live daily table on every day through 2026-10-09. The parquet copies are the system of record: `results/report.yaml` records `source.kind: parquet`, and the database holds a loaded copy (`07_load_tables.py` only upserts). Nothing raw is in git: the full tables and the Batch JSONL live in the database and on this machine; git keeps `data/backups/gex_llm/condensed/` (with the run provenance as two compressed files since 2026-11-09) and `results/`. |
-| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction notice has been filed; a formal revision is a later, low-priority step with no deadline. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
+| Published results | The findings about the published numbers are recorded in [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) (issue [#262](https://github.com/iAmGiG/gex-llm-patterns/issues/262), closed). No correction has been filed with the publishers yet; a formal notice follows later. Until then this article (Section 1.1) and that page are the public record. This paper carries the re-run on its own terms. Nothing in this folder edits `docs/papers/jrfm/`. |
 | Zenodo deposit | `08_package_release.py` (PR #280, 2026-11-18) keeps booleans and dates typed, writes the folder layout `05_report.py` reads (`series/ windows/ runs/ detections/`) and has `--check <zip>`, which regenerates every file of `results/` from the zip alone. `regan_xie_electronics_tables_20261118.zip` passes; the 20261110 zip does not. The zip is git-ignored; the Zenodo record and DOI do not exist yet (issue #274). |
 | Pre-submission audit (2026-11-12 to 2026-11-18) | Kept locally in `audit/2026-11-12/` (excluded through `.git/info/exclude`, never committed unless Chris decides to). It audited `main` at `46c17ca` with #280 taken into account and changed no code or text. The numbers reproduce: a clean-room re-implementation of the rule gives the stored verdict on 38,592 of 38,592 windows, `results/` regenerates byte for byte, and no stored result is wrong (of 4,288 numbers in the manuscript, cover letter and README, 4,203 trace to a stored source, 8 mismatch and 32 are untraceable, all Minor or Nit). The paper review (four referees and an editor desk check) recommends major revision, not rejection; the audit's verdict is not ready as it stands, ready after one focused revision. The problems are framing, power, wording and disclosure, not arithmetic. Open items before submission (the authors decide each; full list and order in `audit/2026-11-12/phase4_grooming.md`, group P1): the written basis for the CC BY deposit (B094), custody of the inputs that exist only on this disk (B079: the January batch input and the three r1_* input/output pairs), tags for the git commits stamped in `results/report.yaml` and the figure manifests (B085), and then the Zenodo record and DOI; CRediT, Dr. Xie's approval and the AI-use statement; which AIAI and JRFM claims the paper withdraws and what notice status it states (including the 39 earlier call-only days that touch 332 of 911 pre-break published windows); the framing of the LLM arms (they cannot separate recall from rule-following, because the rule is in the prompt), of the complete series (complete is not validated) and of the no-rise claim (no margin); the false or stale sentences (the Llama schema sentence, the 58-fold spot-squared argument, citation defects, four unsourced numbers in Methods); `build.sh --strict` failing on `TODO(authors)`; and, last, cutting the body by about a third. Most of these run on stored data with no new model calls. |
 | Poster | The C-Day poster (`CDayfiles/`, built by `build_cday_poster.py` from Dr. Xie's template; PR #279 added the project ID 1339-GRP and a Data Atlas QR code) was accepted at the Fall 2026 CCSE Computing Showcase. |
@@ -86,7 +86,12 @@ baselines, synthetic figures, headline numbers).
   `reports/validation/paper2_regime_windows/batch_jobs/` and are read by `common.load_phase4a_inputs()`.
 - From 2023-09-29 through 2025-12-31 (565 of 565 trading days) the daily value shown to the model equals the call leg of
   the option chain alone, same-day expiries included, to within 0.005 B: the puts contributed nothing. Through
-  2023-09-28, 900 of 940 days equal today's full net GEX and 39 scattered days are call-only.
+  2023-09-28, 900 of 940 days equal today's full net GEX, 39 scattered days (the first on 2021-09-17, the last on
+  2023-09-27) are call-only, and one (2022-05-31) equals neither series (published -1.33 B, complete -1.23 B). The 39 days
+  lie in 332 of the 911 published windows that end before 2023-09-29; replacing them by the complete values changes 46
+  verdicts of the rule (2022: 32.3% to 40.6%; 2023 before the break: 1.6% to 14.6%). Reproduced by section
+  `published_input_gaps` of `05_report.py`, which writes `results/published_input_gaps.csv` (one row per day) and
+  `results/published_input_gaps_by_year.csv`; the definition of an affected day is in `report.yaml`.
 - Cause: upstream issue #24 of gex-database-infrastructure (fix commit `2c16a4d`, 2026-02-03). The PostgreSQL loader
   read `option_type` from a column the vendor data does not have, labelled every contract a call, and the table's unique
   key discarded the put of each call and put pair. The raw table was reloaded on 2026-02-03.
@@ -103,8 +108,10 @@ baselines, synthetic figures, headline numbers).
   `common.obfuscate(..., labels="dated")` plus `build_prompt()` reproduces all 223 + 223 dated prompts byte for byte
   (checked 2026-10-29), so the dated and the obfuscated arms differ in the day labels only.
 
-The article states the defect and the convention differences in its data section and reports the re-run on its own
-terms; no notice has gone to the editors of AIAI or JRFM (decisions log D-20 and Q-02, revised 2026-11-02).
+The article states the defect and the convention differences in its data section, says in Section 1.1 which published
+results it supersedes, and reports the re-run on its own terms. No notice has gone to the editors of AIAI or JRFM; the
+authors will file one, and until then the article and [`docs/papers/CORRECTIONS.md`](../CORRECTIONS.md) are the record
+(decisions log D-20 and Q-02, revised 2026-11-02; decision of 2026-11-24).
 
 ## Layout
 
@@ -113,10 +120,12 @@ docs/papers/electronics/
   README.md           this file
   build.sh            build the PDFs and the Overleaf package (below)
   latex/              Regan_Xie_Electronics.tex and one file per part: 01_Introduction, 02_Related_Work, 03_Methods,
-                      04_01_Inputs ... 04_09_Dated, 05_Discussion, 06_Conclusion, 07_Appendix_A_Prompt,
-                      08_Appendix_B_Tables, 09_Appendix_C_Data; references.bib
+                      04_01_Inputs ... 04_07_Dated (04_05_Scope merges the three scope checks), 05_Discussion,
+                      06_Conclusion, 07_Appendix_A_Data; references.bib
                       Regan_Xie_Electronics_Supplement.tex with S1_Series_SQL, S2_Run_Ledger, S3_Cross_Asset,
-                      S4_Intraday and S5_Fidelity
+                      S4_Intraday, S5_Fidelity, S6_Prompt (prompt, schema, request; was Appendix A of the article),
+                      S7_Tables (per-year tables; was Appendix B) and S8_Detail (one window, threshold sensitivity and 2008-2019
+                      figures, ablation, post-publication and windows tables)
   ../openweights/     the companion paper (Paper B), a separate folder
   overleaf/           the Overleaf zip written by build.sh --overleaf (not tracked by git)
   submission/         cover_letter.md
@@ -290,14 +299,14 @@ The decisions are the authors'.
 3. Data deposit: `scripts/validation/electronics/08_package_release.py` writes the zip (full tables, README, checksums; no raw Batch JSONL), and `08_package_release.py --check <zip>` confirms that the zip alone regenerates `results/` (`regan_xie_electronics_tables_20261118.zip` passes). D-31 records Chris's statement of 2026-11-08 that the Alpha Vantage premium subscription permits any use of the data; the audit (B094) asks for that basis in writing before the CC BY deposit and notes that vendor-derived per-strike rows are tracked in the public repository (B095). Create the Zenodo record and reserve its DOI (step-by-step in issue #274), add the DOI and the access date to the Data Availability Statement and the cover letter, and publish the record at submission. The parquet tables are the system of record, the database tables a loaded copy. The zip also carries the input and output of the three backfilled o4-mini runs (`raw_backfill/`, hashed in `MANIFEST.csv`; B079), and its README names both papers (the deposit is shared with Paper B). `--tables` and `--raw-root` read the tables and the `r1_*` folders from another root. The git commits stamped in the provenance, with their status and the one local tag `archive/run-744e6cc` (B085), are in [`planning/stamped_commits.md`](planning/stamped_commits.md); a draft of the Zenodo metadata and the steps are in `submission/zenodo_metadata.json` and `submission/zenodo_steps.md`. The licence line and the vendor basis stay with the authors.
 4. `build.sh --strict` must end with `STRICT: ok`; until it fails on `TODO(authors)`, also confirm by hand that none is left, and it also checks the numbers that the supplement cites from the article. Strip the `% src:` comments from the submitted sources.
 
-## Keeping Appendix A and Supplement S1 in step with the code
+## Keeping Supplement S6 and S1 in step with the code
 
-The prompt, the schema and the request body of Appendix A are transcribed from
+The prompt, the schema and the request body of Section S6 of the supplement (until 2026-11-24 Appendix A of the article) are transcribed from
 `MechanicsPromptBuilder.build_regime_prompt`, `common.REGIME_JSON_SCHEMA` and `common.chat_body`. Sections S1.1 to S1.4 of the
 supplement are the four read-only statements run on 2026-10-28 (only their comment lines were edited for readers; the
 working folder is not in the repository, so the supplement is the repository's copy); S1.5 adds the statement of the
 scaling factor, tested read-only on 2026-10-29. After any change to the prompt, the
-schema or the model configuration, re-check Appendix A from the repository root (the typeset symbols are written `<=`,
+schema or the model configuration, re-check Section S6 from the repository root (the typeset symbols are written `<=`,
 `>=` and `->` in the `.tex` file and set as symbols by the `prompt` listing style):
 
 ```bash
@@ -306,7 +315,7 @@ import json, re, sys
 sys.path.insert(0, "scripts/validation/electronics")
 import common
 
-tex = open("docs/papers/electronics/latex/07_Appendix_A_Prompt.tex").read()
+tex = open("docs/papers/electronics/latex/S6_Prompt.tex").read()
 listing = lambda style: re.search(r"\\begin\{lstlisting\}\[style=%s[^\]]*\]\n(.*?)\n\\end\{lstlisting\}" % style, tex, re.S).group(1)
 seq = common.obfuscate([float(i) * 1e8 - 1.5e9 for i in range(30)])
 real = common.build_prompt(seq)

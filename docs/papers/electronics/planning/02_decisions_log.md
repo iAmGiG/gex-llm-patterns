@@ -51,6 +51,7 @@
 | D-32 | 2026-11-08 | Third open-weights model | Qwen3-8B (Alibaba) in thinking mode, seven arms after a gate amendment; unanswered windows reported, rates as bounds |
 | D-33 | 2026-11-23 | Llama, reasoning first | Seven `llamarf_*` arms with the reasoning field first in the schema; the model stops detecting everything but does not follow the rule (kappa 0.10 on the complete series) |
 | D-34 | 2026-11-23 | Decoding control | Temperature 0 on the published inputs for gpt-oss-20b and Llama 3.1 8B; neither result changes |
+| D-35 | 2026-11-24 | The article as the public notice | Section 1.1 states which published results the article supersedes (D-20 amended); no correction filed with the publishers yet; 39 earlier call-only days reproduced in `05_report.py` |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -435,6 +436,12 @@
 - Pilots (40 windows each, 2026-11-23): Llama 40 of 40 detected, 20 of 40 equal to the rule; gpt-oss-20b 40 of 40 equal to the rule.
 - Outcome (2026-11-24): gpt-oss-20b at temperature 0 answered 1,475 of 1,476 windows (24 answers reached 4,000 tokens, 23 finished in the retry at 8,000) and equals the rule in 99.7% of them (kappa 0.995), the published o4-mini answers in 99.7% of 1,411 (kappa 0.994) and its own default-sampling answers in 1,465 of 1,475 (99.3%); all 73 repeated windows that parsed twice have the same verdict. Llama at temperature 0 detects all 1,476 windows, as with its default sampling (the same verdict on 1,476 of 1,476), and its 74 repeats are identical. 1,614 and 1,590 requests, 0.50 and 0.26 GPU-hours. The sampling setting changes neither result.
 
+### D-35 The article as the public notice for now (2026-11-24)
+
+- Date: 2026-11-24. Decided by the authors. Amends D-20 item 3 and Q-02 (b): the article still is not titled a correction and stays a research article (a re-run with a data statement), but it now says plainly, in Section 1.1 ("Relation to the Published Results", at most 180 words) and in one sentence of the abstract, which published results it supersedes, what replaces them, and that no correction has yet been filed with the publishers. The authors will file a formal notice later; until then the article and `docs/papers/CORRECTIONS.md` are the public record.
+- Scattered earlier days: before 2023-09-29 the published inputs also hold 39 days (the first on 2021-09-17) that equal the call leg only. The finding is reproduced by section `published_input_gaps` of `05_report.py` (definition in `report.yaml`; `results/published_input_gaps.csv` and `results/published_input_gaps_by_year.csv`): 332 of the 911 published windows that end before 2023-09-29 contain such a day, and replacing them by the complete values changes 46 verdicts of the rule (45 to detected; 2022: 32.3% to 40.6%; 2023 before the break: 1.6% to 14.6%). The cause of the scattered days is not established; one further day (2022-05-31) equals neither series.
+- Effect on the text: Section 4.1 (paragraph and table on the affected days), Section 3.3 (lineage, with the statement that the cause rests on a reading of the loader code and on the numerical identity), the Discussion (what survives; follow-up list).
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -554,3 +561,4 @@
 - 2026-11-09: D-30 outcome recorded (seven Llama arms run; Section 4.12, the arms table and Table S4 written). D-17 revised: the per-run provenance files are git-ignored, and `06_condense.py` writes them as `condensed/runs.csv.gz` and `condensed/run_records.jsonl.gz`.
 - 2026-11-10: D-32 outcome recorded (seven Qwen3-8B arms run; rates as bounds, `missing_answer_bounds.csv`; Section 4.12 rewritten for three models with one comparison table, Supplement Section S3 with Tables S6 to S8, Table S5 for the Qwen runs; abstract, introduction, discussion, conclusion and Appendix C updated). Summary rows D-30 to D-32 added. The commit message of 4de2439 names D-25 where D-22 is meant.
 - 2026-11-23: the manuscript is split in two (issue #283): the Electronics article keeps the re-run (PR #302), and the open-weights models go to a companion paper in `docs/papers/openweights/` (PR #303). D-33 (Llama 3.1 8B with the reasoning field first) and D-34 (temperature 0 control) added for the companion paper; outcomes recorded 2026-11-24. The exploratory run of 2026-11-08 is now reported in the companion paper, which reverses the removal of 2026-11-09 noted under D-30.
+- 2026-11-24: D-35 added (the article as the public notice for now; the 39 earlier call-only days reproduced; abstract sentence and Section 1.1).
