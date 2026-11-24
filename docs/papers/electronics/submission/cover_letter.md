@@ -1,4 +1,4 @@
-# Cover letter (draft, 2026-11-07; revised 2026-11-23 for the two-paper split)
+# Cover letter (draft, 2026-11-07; revised 2026-11-23 for the two-paper split; 2026-11-24 for the statement of what the article supersedes)
 
 <!-- Draft for the MDPI submission form. Items marked TODO(authors) need Chris and Dr. Xie before submission.
      Numbers are those of the manuscript after the split (abstract, Sections 1.2, 3.3, 4.1-4.4); the open-weights
@@ -42,10 +42,16 @@ finding, the re-run and the bridge to gpt-6-luna; the companion manuscript owns 
 carried only the call leg of the options chain: an upstream database load had dropped the put rows. The article states
 this in Sections 3.3 and 4.1 and reports the re-run on the complete data. On the published inputs the deterministic rule
 detects 501 of 501 windows of 2024-2025 (100.0%); on the complete series it detects 60 of 502 (12.0%), and gpt-6-luna
-63 of 502 (12.5%). The conference paper and the *JRFM* article, also published by MDPI, report the earlier rates. The
-evidence is public in the project repository (`docs/papers/CORRECTIONS.md`).
-<!-- TODO(authors): add one sentence on the earlier articles once decided, e.g. whether a correction has been or will
-     be requested from JRFM and from Springer. -->
+63 of 502 (12.5%). The conference paper and the *JRFM* article, also published by MDPI, report the earlier rates.
+The article therefore says plainly, in Section 1.1 ("Relation to the Published Results") and in one sentence of the
+abstract, which published results it supersedes: the 100% detection rates for 2024 and 2025 and the rise after 2023
+(AIAI Table 4, JRFM Table 5), the magnitude-growth statement, and the 2021-2023 rates, because 39 earlier days before
+2023-09-29 are also call-only (they lie in 332 of 911 published windows; replacing them changes 46 verdicts of the
+rule). It also says that the 2024-versus-2020 baseline contrast of the earlier papers was run with calendar dates
+visible. **No correction has yet been filed with the publishers.** We will file one, and until then the article and
+the corrections page of the repository (`docs/papers/CORRECTIONS.md`) are the public record. The article is a
+research article with a data statement, not a correction notice.
+<!-- TODO(authors): decide whether to say here when and to whom the formal notices (JRFM, Springer) will go. -->
 
 **Data, code and the use of AI tools.** Code, condensed per-window tables and every result file are available at
 https://github.com/iAmGiG/gex-llm-patterns. The full tables (inputs, labels and model answers) will be deposited at
