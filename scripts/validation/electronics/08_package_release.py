@@ -9,7 +9,11 @@ exactly the answers the article counts (the latest per natural key, the rule of 
 05_report.py, 06_condense.py and 07_load_tables.py use); `detections_replaced.parquet` keeps the 1,049 answers that
 the re-run of 2026-11-03 replaced and the open-weights answers cut off at the token limit that a retry replaced,
 each with the run that replaced it, so both can be audited.
-The Batch and local JSONL files are not included: the detections hold every parsed answer and its raw text.
+The Batch and local JSONL files of the model runs are not included (the detections hold every parsed answer and its
+raw text, and `runs` holds the sha256 of every file), with one exception: the input and output files of the three
+backfilled o4-mini runs (r1_o4mini, r1_p3_o4mini, r1_p4_o4mini), which exist in one copy only and which the published
+lineage rests on, are copied byte for byte into `raw_backfill/` with a hashed `MANIFEST.csv` (about 16 MB, prompts that
+hold daily aggregates only). Each file is checked against its manifest.json and the runs table before it is packaged.
 The zip stays out of git (nothing raw goes to the GitHub remote); an author publishes it on Zenodo.
 
 Local paths are made relative to the repository. The package is refused if any text cell still holds an absolute
@@ -70,9 +74,18 @@ ZIP_TIME = (2026, 1, 1, 0, 0, 0)  # fixed member timestamps, so the same tables 
 
 README = """# Daily GEX series, 30-day windows, model runs and answers: Persistent Dealer-Gamma Regimes Under Temporal Obfuscation
 
-Data deposit for: Regan, C.; Xie, Y. "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on
-Complete Inputs with a Controlled LLM Re-Test" (submitted to Electronics, MDPI).
-Code, condensed tables and result files: https://github.com/iAmGiG/gex-llm-patterns
+Data deposit for two companion papers by Regan, C. and Xie, Y., both planned for Electronics (MDPI); the titles may
+still change:
+
+- Paper A: "Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on Inputs with Both Option Legs and a
+  Rule-Following Test of a Current LLM". It uses the arms answered by hosted models: the gpt-6-luna Batch arms and the
+  three backfills of the published o4-mini answers (`r1_*`).
+- Paper B: "Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests".
+  It uses the arms of the local models and their variants: the arms that begin with `oss_`, `osst0_`, `llama_`,
+  `llamarf_`, `llamat0_` and `qwen_` (described below).
+
+Both papers read the same four tables, so one deposit serves both. Code, condensed tables and result files:
+https://github.com/iAmGiG/gex-llm-patterns
 
 ## Files
 
@@ -121,7 +134,16 @@ tables were read from). `detections_replaced.parquet` stays outside the four fol
 ## What is not here
 
 The raw option chains are not included because of their size; the series keep the daily aggregates that every label
-and answer depends on. The verbatim Batch and local input and output files are not included either.
+and answer depends on. The verbatim Batch and local input and output files of the gpt-6-luna and open-weights runs are
+not included either (they total several hundred megabytes); `runs` gives the sha256 and size of each, and the
+detections hold every parsed answer with its raw text.
+
+What is deposited as files: the input and output of the three backfilled o4-mini runs, in `raw_backfill/` (the
+January 2026 Phase 4A run, 1,476 requests; the 2024 baseline, 223; the 2020 baseline, 223). They are the only copies of
+the published run on record, so they are kept verbatim; `raw_backfill/MANIFEST.csv` lists file, run, bytes, lines and
+sha256, and `SHA256SUMS` covers them too. The sha256 values of the stored files, not the git commit ids that some
+provenance fields name, are the binding record; the commit ids that cannot be reached from a branch are listed in
+`docs/papers/electronics/planning/stamped_commits.md` of the repository.
 
 ## Licence and source
 
@@ -136,10 +158,19 @@ rates stay reproducible. See Sections 3.3 and 4.1 of the article.
 """
 
 
+# the backfilled runs whose input and output exist in one copy only (folder under the raw root, run_id in the runs table)
+BACKFILL_RUNS = {
+    "r1_o4mini_phase4a_20260104": "r1_o4mini",
+    "r1_p3_o4mini_20251120": "r1_p3_o4mini",
+    "r1_p4_o4mini_20251120": "r1_p4_o4mini",
+}
+TABLES_ROOT = common.PARQUET_ROOT
+
+
 def load(kind: str) -> pd.DataFrame:
-    found = sorted((common.PARQUET_ROOT / kind).glob("*.parquet"))
+    found = sorted((TABLES_ROOT / kind).glob("*.parquet"))
     if not found:
-        raise SystemExit(f"no parquet under {common.PARQUET_ROOT / kind}")
+        raise SystemExit(f"no parquet under {TABLES_ROOT / kind}")
     return pd.concat([pd.read_parquet(path) for path in found], ignore_index=True)
 
 
@@ -168,6 +199,47 @@ def check_types(name: str, before: pd.DataFrame, after: pd.DataFrame) -> None:
         kinds_after = after[col].map(lambda v: type(v).__name__).value_counts().to_dict()
         if kinds_before != kinds_after:
             raise SystemExit(f"{name}: column {col} changed type ({kinds_before} -> {kinds_after}); not packaged")
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def backfill_files(raw_root: Path, runs: pd.DataFrame, secrets: List[str]) -> List[Tuple[str, bytes]]:
+    """The input/output pairs of the backfilled runs, verbatim, plus raw_backfill/MANIFEST.csv.
+
+    Every file is checked against the sha256 in its manifest.json and in the runs table and scanned for local paths and
+    credentials; any mismatch refuses the package (the bytes are never rewritten, so the hashes stay those of the
+    files the lineage rests on)."""
+    known = re.compile("|".join(re.escape(s) for s in secrets)) if secrets else None
+    by_run = runs.set_index("run_id")
+    members: List[Tuple[str, bytes]] = []
+    rows = ["run_id,arm,file,bytes,lines,sha256,what"]
+    for folder, arm in BACKFILL_RUNS.items():
+        manifest = json.loads((raw_root / folder / "manifest.json").read_text())
+        run_id = manifest["run_id"]
+        for name, what in (("input.jsonl", "requests as sent to the OpenAI Batch API"),
+                           ("output.jsonl", "responses as returned by the OpenAI Batch API")):
+            path = raw_root / folder / name
+            data = path.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            column = "input_sha256" if name.startswith("input") else "output_sha256"
+            stored = (manifest["files"][name]["sha256"], by_run.loc[run_id, column])
+            if digest != stored[0] or digest != stored[1]:
+                raise SystemExit(f"{path}: sha256 {digest} differs from manifest/runs table {stored}; not packaged")
+            text = data.decode("utf-8")
+            for label, pattern in (("an absolute local path", LOCAL_PATH), ("a credential", SECRET),
+                                   ("a config secret", known)):
+                if pattern is not None and pattern.search(text):
+                    raise SystemExit(f"{path} holds {label}; not packaged")
+            members.append((f"raw_backfill/{run_id}/{name}", data))
+            rows.append(f"{run_id},{arm},raw_backfill/{run_id}/{name},{len(data)},{text.count(chr(10))},{digest},{what}")
+    members.append(("raw_backfill/MANIFEST.csv", ("\n".join(rows) + "\n").encode()))
+    return members
 
 
 def config_secrets() -> List[str]:
@@ -302,10 +374,16 @@ def check_zip(target: Path) -> int:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, default=common.PARQUET_ROOT.parent / "release", help="output folder")
+    parser.add_argument("--tables", type=Path, default=common.PARQUET_ROOT,
+                        help="folder with series/ windows/ runs/ detections/ (default: data/backups/gex_llm/tables)")
+    parser.add_argument("--raw-root", type=Path, default=common.BACKUP_ROOT,
+                        help="folder with the r1_* run folders (default: data/backups/gex_llm)")
     parser.add_argument("--check", type=Path, metavar="ZIP", help="only check that ZIP regenerates results/")
     args = parser.parse_args(argv)
     if args.check:
         return check_zip(args.check)
+    global TABLES_ROOT
+    TABLES_ROOT = args.tables
     args.out.mkdir(parents=True, exist_ok=True)
     secrets = config_secrets()
     tables: Dict[str, pd.DataFrame] = {kind: load(kind) for kind in KINDS}
@@ -325,6 +403,10 @@ def main(argv=None) -> int:
         data = parquet_bytes(clean, SORT.get(name, SORT["detections"]))
         files.append((MEMBER[name], data))
         listing.append(f"| `{MEMBER[name]}` | {len(clean):,} | {len(data) / 1e6:.1f} MB |")
+    raw = backfill_files(args.raw_root, tables["runs"], secrets)
+    files.extend(raw)
+    for name, data in raw:
+        listing.append(f"| `{name}` | | {len(data) / 1e6:.1f} MB |")
     table = "| File | Rows | Size |\n|---|---|---|\n" + "\n".join(listing)
     replaced = tables["detections_replaced"]
     n_retry = int(replaced["replaced_by_run_id"].isin(retry_runs(tables["runs"])).sum())
