@@ -52,8 +52,9 @@ for model, req, hours, retries, chunks in (("gpt-oss-20b", 12398, 10.0, 14, 20),
     check(f"{model} GPU hours", round(g.sec.sum() / 3600, 1), hours)
     check(f"{model} retry requests", g[g.retry.notna()].n_requests.sum(), retries)
     check(f"{model} runs", len(g), chunks)
-check("total requests", local.n_requests.sum(), 47176)
-check("total GPU hours", round(local.sec.sum() / 3600, 1), 111.8)
+three = local[local.model.isin(["gpt-oss-20b", "llama-3.1-8b-instruct", "qwen3-8b"])]
+check("total requests (three models)", three.n_requests.sum(), 47176)
+check("total GPU hours (three models)", round(three.sec.sum() / 3600, 1), 111.8)
 revs = {m: {json.loads(s)["local"]["model_revision"] for s in runs[runs.model == m].run_metadata} for m in PREFIX if m != "gpt-6-luna"}
 check("oss revision", revs["gpt-oss-20b"], {"6cee5e81ee83917806bbde320786a8fb61efebee"})
 check("llama revision", revs["llama-3.1-8b-instruct"], {"0e9e39f249a16976918f6564b8830bc894c89659"})
@@ -209,6 +210,88 @@ if expl.is_file():
     check("exploratory rejected-but-detected", int((x.det & ~x.clf_should_detect).sum()), 13); check("exploratory detected-but-missed", int((~x.det & x.clf_should_detect).sum()), 1)
 else:
     print(f"note: {expl} not found; the exploratory-run numbers were not checked")
+
+
+# ---- the variants (decisions D-33 and D-34): llamarf_*, osst0_bridge_jan, llamat0_bridge_jan
+VAR = {"llama-3.1-8b-instruct-rf": (12379, 2.3, 1, 16), "gpt-oss-20b-t0": (1614, 0.5, 24, 4), "llama-3.1-8b-instruct-t0": (1590, 0.3, 0, 3)}
+for model, (req, hours, retries, chunks) in VAR.items():
+    g = local[local.model == model]
+    check(f"{model} requests", g.n_requests.sum(), req); check(f"{model} GPU hours", round(g.sec.sum() / 3600, 1), hours)
+    check(f"{model} retry requests", g[g.retry.notna()].n_requests.sum(), retries); check(f"{model} runs", len(g), chunks)
+check("rf GPU seconds", round(local[local.model == "llama-3.1-8b-instruct-rf"].sec.sum(), 1), 8459.0)
+check("osst0 GPU seconds", round(local[local.model == "gpt-oss-20b-t0"].sec.sum(), 1), 1788.9)
+check("llamat0 GPU seconds", round(local[local.model == "llama-3.1-8b-instruct-t0"].sec.sum(), 1), 952.6)
+vloc = local[local.model.isin(VAR)]
+check("variant requests", vloc.n_requests.sum(), 15583); check("variant GPU hours", round(vloc.sec.sum() / 3600, 1), 3.1)
+check("all local requests", local.n_requests.sum(), 62759); check("all local GPU hours", round(local.sec.sum() / 3600, 1), 114.9)
+check("all retries", local[local.retry.notna()].n_requests.sum(), 10061)
+
+
+def sampling(model):
+    return {(json.dumps(json.loads(s)["local"].get("request_sampling")), json.dumps(json.loads(s)["local"].get("schema_property_order"))) for s in runs[runs.model == model].run_metadata}
+
+
+rf_order = ["reasoning", "positive_days", "negative_days", "avg_magnitude_billions", "sign_flips", "persistence_pct", "regime_type", "regime_detected", "confidence"]
+check("rf sampling and order", sampling("llama-3.1-8b-instruct-rf"), {("{}", json.dumps(rf_order))})
+check("t0 sampling oss", {x[0] for x in sampling("gpt-oss-20b-t0")}, {'{"temperature": 0.0}'})
+check("t0 sampling llama", {x[0] for x in sampling("llama-3.1-8b-instruct-t0")}, {'{"temperature": 0.0}'})
+check("earlier runs record no sampling", sampling("qwen3-8b"), {("null", "null")})
+check("earlier llama record no sampling", sampling("llama-3.1-8b-instruct"), {("null", "null")})
+RF = {"bridge_jan": (972, 67.0, 0.360, 38.7), "full_spy": (2210, 56.7, 0.096, 17.4), "ex0dte_spy": (2244, 55.7, 0.083, 17.3), "p34_obf_2024": (112, 54.7, 0.092, 37.2),
+      "p34_dated_2024": (110, 52.0, 0.048, 35.9), "p34_obf_2020": (167, 35.4, 0.062, 14.8), "p34_dated_2020": (147, 41.7, 0.061, 23.3)}
+for arm, (nd, ag, ka, w5) in RF.items():
+    x = llm.loc["llamarf_" + arm]
+    check(f"rf {arm} windows", x.n_windows, table2[arm][0]); check(f"rf {arm} parsed", x.n_parsed, x.n_windows); check(f"rf {arm} detected", x.n_detect, nd)
+    check(f"rf {arm} agree", round(x.agree_pct, 1), ag); check(f"rf {arm} kappa", round(x.kappa, 3), ka); check(f"rf {arm} within 5%", round(a["llamarf_" + arm], 1), w5)
+    check(f"rf {arm} metrics_agree under 0.5%", int(x.metrics_agree_pct < 0.5), 1)
+x = llm.loc["llamarf_full_spy"]; check("rf full rate", round(x.rate_pct, 1), 47.1)
+check("rf bridge rate", round(llm.loc["llamarf_bridge_jan"].rate_pct, 1), 65.9)
+ys = det[(det.label_source == "llm") & (det.scope == "year") & (det.arm == "llamarf_full_spy") & det.year.isin([2024, 2025])]
+check("rf 2024-25 detected", ys.n_detect.sum(), 279); check("rf 2024-25 windows", ys.n_parsed.sum(), 502)
+check("rf baseline agree range", (round(min(llm.loc["llamarf_" + k].agree_pct for k in BASES[3:]), 1), round(max(llm.loc["llamarf_" + k].agree_pct for k in BASES[3:]), 1)), (35.4, 54.7))
+check("rf baseline kappa range", (round(min(llm.loc["llamarf_" + k].kappa for k in BASES[3:]), 3), round(max(llm.loc["llamarf_" + k].kappa for k in BASES[3:]), 3)), (0.048, 0.092))
+check("rf within 5% range", (round(min(a["llamarf_" + k] for k in BASES), 1), round(max(a["llamarf_" + k] for k in BASES), 1)), (14.8, 38.7))
+check("rf metrics_agree max under 0.5", int(max(llm.loc["llamarf_" + k].metrics_agree_pct for k in BASES) < 0.5), 1)
+check("rf vs o4-mini pairs", b.loc["llamarf_bridge_jan"].n_pairs, 1412); check("rf vs o4-mini agree", round(b.loc["llamarf_bridge_jan"].agree_pct, 1), 67.2)
+check("rf vs o4-mini kappa", round(b.loc["llamarf_bridge_jan"].kappa, 3), 0.361)
+ps2 = ps[ps.arm.isin(["llamarf_" + k for k in BASES]) & (ps.arm_role == "primary")]
+check("rf rows equal parsed", int((ps2.n_rows == ps2.n_parsed).all()), 1); check("rf retry answers", ps2.n_rerun_at_retry_cap.sum(), 1)
+check("rf mean tokens", round((ps2.mean_completion_tokens * ps2.n_rows).sum() / ps2.n_rows.sum(), 1), 160.0)
+
+
+def sametab(x_, y_):
+    A = dd[(dd.arm == x_) & dd.parse_status.isin(["ok", "fallback"])][["window_end", "regime_detected"]]
+    B = dd[(dd.arm == y_) & dd.parse_status.isin(["ok", "fallback"])][["window_end", "regime_detected"]]
+    m = A.merge(B, on="window_end")
+    return len(m), int((m.regime_detected_x == m.regime_detected_y).sum())
+
+
+check("rf vs verdict first bridge", sametab("llamarf_bridge_jan", "llama_bridge_jan"), (1476, 972))
+check("rf vs verdict first full", sametab("llamarf_full_spy", "llama_full_spy"), (4691, 2211))
+check("rf vs verdict first ex0dte", sametab("llamarf_ex0dte_spy", "llama_ex0dte_spy"), (4691, 2245))
+rt = tr[tr.ref_arm.str.startswith("llamarf_")]
+check("rf retest pairs", rt.n_pairs.sum(), 588); check("rf retest equal", int((rt.n_ref_det_oth_det + rt.n_ref_not_oth_not).sum()), 353)
+f = rt[rt.ref_arm == "llamarf_full_spy"].iloc[0]
+check("rf retest full agree", round(f.agree_pct, 1), 55.7); check("rf retest full kappa", round(f.kappa, 3), 0.113); check("rf retest full pairs", f.n_pairs, 235)
+# temperature 0
+o = llm.loc["osst0_bridge_jan"]; l0 = llm.loc["llamat0_bridge_jan"]
+check("osst0 parsed", o.n_parsed, 1475); check("osst0 detected", o.n_detect, 669); check("osst0 agree", round(o.agree_pct, 1), 99.7); check("osst0 kappa", round(o.kappa, 3), 0.995)
+check("llamat0 detected", l0.n_detect, 1476); check("llamat0 agree", round(l0.agree_pct, 1), 45.2); check("llamat0 kappa", abs(l0.kappa), 0.0, 1e-9)
+check("osst0 vs o4-mini pairs", b.loc["osst0_bridge_jan"].n_pairs, 1411); check("osst0 vs o4-mini agree", round(b.loc["osst0_bridge_jan"].agree_pct, 1), 99.7)
+check("osst0 vs o4-mini kappa", round(b.loc["osst0_bridge_jan"].kappa, 3), 0.994)
+check("osst0 vs luna pairs", mp.loc["osst0_bridge_jan"].n_pairs, 1475); check("osst0 vs luna agree", round(mp.loc["osst0_bridge_jan"].agree_pct, 1), 99.3)
+check("osst0 vs luna kappa", round(mp.loc["osst0_bridge_jan"].kappa, 3), 0.986)
+check("osst0 vs default", sametab("osst0_bridge_jan", "oss_bridge_jan"), (1475, 1465)); check("llamat0 vs default", sametab("llamat0_bridge_jan", "llama_bridge_jan"), (1476, 1476))
+po = ps[ps.arm == "osst0_bridge_jan"].iloc[0]
+check("osst0 retry answers", po.n_rerun_at_retry_cap, 24); check("osst0 unanswered", po.n_rows - po.n_parsed, 1)
+check("osst0 mean tokens", round(po.mean_completion_tokens), 1811); check("llamat0 mean tokens", round(ps[ps.arm == "llamat0_bridge_jan"].iloc[0].mean_completion_tokens), 176)
+for arm_, pairs_, eq_ in (("osst0_bridge_jan", 73, 73), ("llamat0_bridge_jan", 74, 74), ("oss_bridge_jan", 74, 74), ("llama_bridge_jan", 74, 74)):
+    r_ = tr[tr.ref_arm == arm_].iloc[0]
+    check(f"{arm_} retest pairs", r_.n_pairs, pairs_); check(f"{arm_} retest agree", round(r_.agree_pct * r_.n_pairs / 100), eq_)
+check("oss default detected (bridge)", llm.loc["oss_bridge_jan"].n_detect, 673)
+for arm_, det_, eq_ in (("pilot_llamarf_bridge_jan", 27, 27), ("pilot_llamat0_bridge_jan", 40, 20)):
+    pp = dd[dd.arm == arm_].copy(); pp["window_end"] = pp.window_end.astype(str).str[:10]; pm2 = pp.merge(w, on="window_end")
+    check(f"{arm_} detected", int(pm2.regime_detected.sum()), det_); check(f"{arm_} equal to rule", int((pm2.regime_detected == pm2.clf_should_detect).sum()), eq_)
 
 print(f"{checked} checks, {len(failures)} mismatch(es)")
 for f_ in failures:

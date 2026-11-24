@@ -4,7 +4,7 @@
 \label{sup:engine}
 
 % src: runs.csv.gz (condensed/) run_metadata.local (model_repo, model_revision, model_license, vllm_version, gpu.name, engine_args, engine_env) of the 133 local runs; common.py LOCAL_SPECS; planning/02_decisions_log.md D-29 (max-model-len 8,192, 12,096 for a retry; PyTorch sampler), D-30 (bf16; memory share 0.22, pilot 0.27), D-32 (reasoning parser qwen3; memory share 0.27, 0.42 or 0.45); local_<k>.log of the gpt-oss-20b runs (reasoning parser openai_gptoss); HF generation_config.json of each repository at the pinned revision
-All local runs use vLLM~0.32.0 (vLLM), its offline batch runner \ident{vllm.entrypoints.openai.run_batch}, one NVIDIA A100-SXM4-80GB GPU per job, engine seed 261, the PyTorch sampler (\ident{VLLM_USE_FLASHINFER_SAMPLER=0}) and a local copy of the repository at the pinned revision, read without network access. Table~\ref{tab:s:engine} lists the settings that differ by model. The request body is that of the hosted model with the model name replaced (Section~3.2 of the article); no sampling parameter is sent.
+All local runs use vLLM~0.32.0 (vLLM), its offline batch runner \path{vllm.entrypoints.openai.run_batch}, one NVIDIA A100-SXM4-80GB GPU per job, engine seed 261, the PyTorch sampler (\path{VLLM_USE_FLASHINFER_SAMPLER=0}) and a local copy of the repository at the pinned revision, read without network access. Table~\ref{tab:s:engine} lists the settings that differ by model. The request body is that of the hosted model with the model name replaced (Section~3.2 of the article); no sampling parameter is sent.
 
 \begin{table}[H]
 \centering
@@ -17,7 +17,7 @@ All local runs use vLLM~0.32.0 (vLLM), its offline batch runner \ident{vllm.entr
  & gpt-oss-20b & Llama~3.1~8B~Instruct & Qwen3-8B \\
 \midrule
 Repository & \path{openai/gpt-oss-20b} & \path{meta-llama/Llama-3.1-8B-Instruct} & \path{Qwen/Qwen3-8B} \\
-Revision & \path{6cee5e81ee83917806bbde320786a8fb61efebee} & \path{0e9e39f249a16976918f6564b8830bc894c89659} & \path{b968826d9c46dd6066d109eabc6255188de91218} \\
+Revision & \texttt{6cee5e81ee\allowbreak 83917806bb\allowbreak de320786a8\allowbreak fb61efebee} & \texttt{0e9e39f249\allowbreak a16976918f\allowbreak 6564b8830b\allowbreak c894c89659} & \texttt{b968826d9c\allowbreak 46dd6066d1\allowbreak 09eabc6255\allowbreak 188de91218} \\
 Licence & Apache-2.0 & Llama 3.1 Community License & Apache-2.0 \\
 Precision & MXFP4 (release format) & bfloat16 (release format) & bfloat16 (release format) \\
 Reasoning parser & gpt-oss & none & qwen3 \\

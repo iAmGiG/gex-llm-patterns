@@ -5,8 +5,8 @@ A left-to-right schematic of three rungs.  Rung 1 (grey, cited from the companio
 the published run is retired and only its stored answers survive.  Rung 2 (grey, cited from Paper A): its hosted
 successor alias reproduces the stored verdicts, but the alias has no dated snapshot and can be retired in turn.  Rung 3
 (coloured, the object of this paper): open-weights models at pinned revisions answer the stored requests on local GPUs.
-Boxes of the two pending runs (the Llama 3.1 8B arms with the reasoning field first and the temperature-0 control) are
-dashed until their runs exist in ``runs.csv.gz``, and solid, with their counts, afterwards.
+Boxes of the variant runs (the Llama 3.1 8B arms with the reasoning field first and the temperature-0 control) are
+dashed while their runs are missing from ``runs.csv.gz`` and solid, with their counts, once they exist.
 
 Input  data/backups/gex_llm/condensed/runs.csv.gz (model, mode, n_requests, run_metadata.local.seconds, run_metadata.retry_of);
   results/bridge_agreement.csv (comparison bridge, ref_arm r1_o4mini, other_arm bridge_jan, scope all: n_pairs, agree_pct,

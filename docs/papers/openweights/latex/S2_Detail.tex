@@ -24,7 +24,7 @@ Repeated requests give the first verdict again in 74 of 74 bridge windows, 234 o
 % src: detection_by_year.csv scope=all (label_source=classifier rate_pct of jan2026_phase4a, new_full, new_ex0dte, p3_2024, p3_2024_dated, p4_2020, p4_2020_dated; label_source=llm rate_pct and n_compared of the gpt-6-luna twins and of the oss arms; agree_pct and kappa of the oss arms against the rule); bridge_agreement.csv comparison=model_pair scope=all (agree_pct, kappa)
 \label{tab:s:oss}
 \small
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Arm & Windows & Rule & gpt-6-luna & gpt-oss-20b & vs gpt-6-luna & vs rule \\
@@ -51,8 +51,8 @@ Every answer of Llama~3.1~8B parses at the first attempt and none comes near the
 \centering
 \caption{Llama~3.1~8B: windows, windows detected, agreement with the rule in percent (Cohen's kappa in brackets), the share of answers whose reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value, the share whose sign-flip count is exact, and the repeated requests that returned the first verdict. Every answer parsed.}
 \label{tab:s:llama}
-\small
-\setlength{\tabcolsep}{4pt}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Arm & Windows & Detected & vs rule & Mean $|\mathrm{GEX}|$ within 5\% & Flips exact & Repeats equal \\
@@ -82,7 +82,7 @@ Of the 99 windows that Qwen3-8B detects and the rule rejects, 83 fail only the l
 \centering
 \caption{Qwen3-8B: windows of each arm, the share answered within 8{,}000 completion tokens (all windows, and the windows that the rule detects and rejects), the agreement with the rule and with gpt-6-luna on the answered windows (Cohen's kappa in brackets), and the bounds of the detection rate over all windows (lower: every unanswered window counted as not detected; upper: as detected), next to the rate of the rule. All values in percent.}
 \label{tab:s:qwen}
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lrrrrrrrr@{}}
 \toprule

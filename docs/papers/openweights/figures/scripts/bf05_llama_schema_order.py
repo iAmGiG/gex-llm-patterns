@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Llama 3.1 8B with the verdict first and with the reasoning first (run of decision D-33).
 
-PENDING until the arms ``llamarf_*`` exist in ``results/detection_by_year.csv`` (the model label is
+Pending until the arms ``llamarf_*`` exist in ``results/detection_by_year.csv`` (the model label is
 ``llama-3.1-8b-instruct-rf``).  Until then the script draws a boxed placeholder that says so, and writes it as the
 figure; the manifest records ``pending: true``.  With the arms stored it draws, on the complete SPY series
 (``full_spy``): (a) the detection rate by year of the rule (black line), of Llama 3.1 8B with the verdict first (open
@@ -28,7 +28,7 @@ FIG_ID = "bf05_llama_schema_order"
 RESULTS_FILES = ("detection_by_year.csv", "reported_vs_computed.csv")
 TABLE_KINDS: Sequence[str] = ()
 PENDING_ARMS = ("llamarf_full_spy",)  # run_all.py reports the figure as pending while these arms are missing
-HEIGHT_IN = 2.5
+HEIGHT_IN = 3.0
 YEARS = tuple(range(2008, 2027))
 
 
@@ -74,7 +74,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     theme.year_axis(ax_year, years, step=3)
     ax_year.grid(axis="y", color=theme.GRID, linewidth=0.5)
     theme.panel_title(ax_year, "a", "Detection rate, complete SPY series")
-    ax_year.legend(loc="center left", frameon=False, fontsize=8)
+    handles, labels = ax_year.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="outside lower center", ncol=4, frameon=False, fontsize=8)
 
     arms = [a for a in figopen.ARMS if f"llamarf_{a}" in set(reported["arm"])]
     allrows = reported[(reported["basis"] == "arm") & (reported["scope"] == "all")].set_index("arm")["ratio_within_5pct_pct"]

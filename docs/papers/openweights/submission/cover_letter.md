@@ -13,7 +13,7 @@ whether it can be reproduced with open-weights models run locally at pinned revi
 developers (gpt-oss-20b, Llama 3.1 8B, Qwen3-8B) answered seven arms each. gpt-oss-20b reproduces the stored verdicts and follows
 the rule; Qwen3-8B follows the rule where it answers but leaves 8.8% of the windows unanswered, so its rate is reported as bounds;
 Llama 3.1 8B with the verdict first detects almost every window. Agreement with the rule shows that a model applies stated criteria;
-we do not claim more. TODO(runs): one sentence on the reasoning-first and temperature-0 runs once they are stored.
+we do not claim more. With the reasoning first Llama 3.1 8B no longer answers yes to every window but still does not follow the rule, and temperature 0 changes neither the gpt-oss-20b nor the Llama result on the published inputs.
 
 This paper is a companion of a second manuscript by the same authors, which re-runs the underlying test on complete inputs and
 bridges the retired model to its hosted successor ("Persistent Dealer-Gamma Regimes Under Temporal Obfuscation: A Re-Run on

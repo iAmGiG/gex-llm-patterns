@@ -136,7 +136,7 @@ if [ "$STRICT" -eq 1 ]; then
   fi
   [ -z "$WHY" ] || die "STRICT: not clean:${WHY#;} (details in $MAIN.log and build_2_bibtex.log)"
   if [ "$FINAL" -eq 1 ]; then echo "FINAL: ok"; else echo "STRICT: ok"; fi
-  [ "$PENDING" -eq 0 ] || echo "STRICT: note: $PENDING \\pending marker(s) remain (results of the runs D-33 and D-34)"
+  [ "$PENDING" -eq 0 ] || echo "STRICT: note: $PENDING \\pending marker(s) remain (the Zenodo DOI)"
 fi
 
 if [ "$OVERLEAF" -eq 1 ]; then

@@ -25,13 +25,13 @@ Nothing under `docs/papers/electronics/` is edited by this folder; the figures r
 |---|---|
 | `latex/Regan_Xie_OpenWeights.tex` | main file (class setup, macros, abstract, back matter); one `\input` per part, never one flat file |
 | `latex/01_Introduction` .. `06_Conclusion` | introduction (setting, four research questions, contributions), related work (issue #297), methods, discussion, conclusion |
-| `latex/04_01_Overview` .. `04_08_Cost` | results: overview table and figure, gpt-oss-20b, Llama 3.1 8B, Qwen3-8B, departures, schema order (pending run), repeats and sampling (pending run), cost |
+| `latex/04_01_Overview` .. `04_08_Cost` | results: overview table and figure, gpt-oss-20b, Llama 3.1 8B, Qwen3-8B, departures, schema order (reasoning first), repeats and sampling (temperature 0), cost |
 | `latex/07_Appendix_A_Schema` | field orders of the JSON schema (verdict first, reasoning first) |
 | `latex/Regan_Xie_OpenWeights_Supplement.tex` + `S1_Run_Ledger`, `S2_Detail`, `S3_Engine` | local run ledgers (Tables S1-S3), per-model tables (S4-S6), engine settings (S7) |
 | `latex/references.bib` | own bibliography: entries copied from the Electronics bib, plus six new ones verified on 2026-11-23 (see the header of the file) |
 | `figures/scripts/` | `figopen.py` (model registry, output folder, manifest), `bf01`..`bf05` scripts, `run_all.py` (own registry) |
 | `figures/output/` | PNG (300 dpi), PDF and a provenance manifest per figure |
-| `check_numbers.py` | recomputes the numbers of the text from the tracked files (175 checks); the Section 4.6 numbers also need the git-ignored local folder `data/backups/gex_llm/exploratory_llama_reorder_20261108/` (`EXPLORATORY_DIR=...`) |
+| `check_numbers.py` | recomputes the numbers of the text from the tracked files (over 200 checks); the Section 4.6 numbers also need the git-ignored local folder `data/backups/gex_llm/exploratory_llama_reorder_20261108/` (`EXPLORATORY_DIR=...`) |
 | `submission/cover_letter.md` | draft cover letter, venue left open |
 | `build.sh` | build and checks |
 
@@ -53,7 +53,7 @@ Figures (AutoGex env, `export PYTHONNOUSERSITE=1 PYTHONPATH=$(pwd)`):
 
 Figures: BF1 reproduction ladder, BF2 agreement and kappa per model and arm, BF3 detection rate by period with the Qwen3-8B
 bounds and the answered share, BF4 departures by direction and failing criterion, BF5 Llama 3.1 8B verdict first versus
-reasoning first (placeholder until the arms `llamarf_*` exist; `run_all.py --check` reports it as `pending`).
+reasoning first (draws the `llamarf_*` arms; `run_all.py --check` reports it as `pending` only if they are missing). BF1 and BF2 show the variants; BF3 adds the reasoning-first dot.
 
 ## Where the numbers come from
 
@@ -63,17 +63,23 @@ Every number in the text and the tables has a `% src:` comment naming the tracke
 (`runs.csv.gz` for requests, retries and GPU hours: `run_metadata.local.seconds` summed over `mode == local`; `detections.csv.gz`,
 `windows.csv.gz`). GPU hours are engine wall-clock time summed over chunks on shared GPUs.
 
-## Pending runs (placeholders `\pending{...}` and `% TODO(runs)`)
+## The variant runs (done; named by model label and arm prefix)
 
-* **D-33**: the seven Llama 3.1 8B arms again with the reasoning field first (label `llama-3.1-8b-instruct-rf`, arms
-  `llamarf_*`). Only evidence so far: an exploratory 40-window run of 2026-11-08, outside the stored arms (32 of 40 detected, 26 of
-  40 equal to the rule; verdict-first pilot on the same windows: 40 detected, 20 equal). Fills Table 3 and Figure 5 (Section 4.6),
-  the abstract, Section 5.4 and the conclusion; add ledger rows to Table S2.
-* **D-34**: decoding control on the published inputs, gpt-oss-20b and Llama 3.1 8B (verdict first) with temperature 0
-  (labels `gpt-oss-20b-t0`, `llama-3.1-8b-instruct-t0`, arms `osst0_bridge_jan`, `llamat0_bridge_jan`). Fills Table 4 (Section 4.7),
-  the abstract, Section 5.4 and the conclusion.
-* After both runs: `05_report.py` rerun by the branch that owns it, `common.ARMS`/`theme.ARM_LABELS` extended there, then
-  `run_all.py`, update totals in the abstract/Table 1/Table 5 (`check_numbers.py` totals will change), `build.sh --final`.
+Three local runs vary one setting each and are stored under their own labels, so they never mix with the arms of the three models
+(registered in `scripts/validation/electronics/common.py`, 48 arms in all):
+
+* **D-33**: Llama 3.1 8B with the reasoning field first (`common.REASONING_FIRST_ORDER`), seven arms: model `llama-3.1-8b-instruct-rf`,
+  arms `llamarf_*` (12,379 requests, 2.35 GPU-hours). Findings: it no longer says yes to every window (47.1% of the complete series
+  detected, rule 13.0%), but it does not follow the rule (agreement 56.7%, kappa 0.096), so the verdict-first order explains the
+  constant answer and not the failure. Section 4.6, Table 3, Figure 5.
+* **D-34**: temperature 0 in every request on the published inputs: `gpt-oss-20b-t0` / `osst0_bridge_jan` (1,614 requests) and
+  `llama-3.1-8b-instruct-t0` / `llamat0_bridge_jan` (1,590 requests). Temperature 0 changes neither result. Section 4.7, Table 4.
+* Totals: the abstract, Table 1 and the conclusion count the three models only (47,176 requests, 111.8 GPU-hours); Table 5 adds the
+  variants (15,583 requests, 3.1 GPU-hours; 62,759 requests and 114.9 GPU-hours in all local runs). Only the variants record
+  `run_metadata.local.request_sampling` and `schema_property_order`; the earlier runs do not (limitation, Section 5.5).
+* The exploratory 40-window run of 2026-11-08 stays outside the stored arms (git-ignored folder `exploratory_llama_reorder_20261108/`).
+
+No `\pending` or `TODO(runs)` remains; `build.sh --final` fails only on the `TODO(authors)` items and the DOI marker.
 
 ## Open items for the authors
 
