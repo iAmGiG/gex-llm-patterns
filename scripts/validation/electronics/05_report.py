@@ -80,6 +80,16 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 other), ref_arm, arm, arm_role, model, series_key, symbol, scope, year, n, median_ratio,
                                 q25_ratio, q75_ratio, ratio_within_5pct_pct, median_abs_diff_bn, median_reported_bn,
                                 median_computed_bn
+    published_input_gaps.csv    one row per trading day before 2023-09-29 on which the published (January) input equals the
+                                stored call-only value but not the complete value (a call-only day before the break of the
+                                put rows): trading_date, published_gex_bn, call_only_gex_bn, complete_gex_bn,
+                                replacement_gex_bn (the complete value rounded to the 0.01B of the prompt), sign_changes,
+                                n_windows (published windows that contain the day)
+    published_input_gaps_by_year.csv
+                                the published windows that end before 2023-09-29, per end year and in total: windows,
+                                windows that contain at least one such day, rule detections on the published inputs and with
+                                those days replaced by the complete values, verdicts changed (and their direction), and the
+                                rule detections of the complete series on the same end dates
     missing_answer_bounds.csv   per registered arm with unparsed answers and period: the rate over parsed windows, the
                                 unparsed windows by the rule's verdict, the share parsed among the windows the rule detects
                                 and among those it does not, and the bounds lower_pct (unparsed = not detected) and
@@ -2294,6 +2304,120 @@ def section_missing_answer_bounds(ctx: Context) -> Dict[str, Any]:
             "unparsed_clf_no_detect": int(overall["n_unparsed_clf_no_detect"].sum())}
 
 
+# --------------------------------------------------------------------------- 13. published_input_gaps*.csv
+PUT_LOSS_START = pd.Timestamp("2023-09-29")  # from this day every published value equals the call-only value (565 days to 2025-12-31)
+GAPS_COLUMNS = ["trading_date", "published_gex_bn", "call_only_gex_bn", "complete_gex_bn", "replacement_gex_bn",
+                "sign_changes", "n_windows"]
+GAPS_YEAR_COLUMNS = [
+    "scope", "year", "window_end_first", "window_end_last", "n_windows", "n_windows_with_affected_day",
+    "n_detect_published", "rate_published_pct", "n_detect_replaced", "rate_replaced_pct", "n_verdicts_changed",
+    "n_changed_to_detect", "n_changed_to_not_detect", "n_detect_complete_series", "n_windows_complete_series",
+    "rate_complete_series_pct",
+]
+GAPS_YEAR_INT_COLUMNS = ["year", "n_windows", "n_windows_with_affected_day", "n_detect_published", "n_detect_replaced",
+                         "n_verdicts_changed", "n_changed_to_detect", "n_changed_to_not_detect", "n_detect_complete_series",
+                         "n_windows_complete_series"]
+GAPS_DEFINITION = (
+    "Affected day: a trading day before 2023-09-29 of the published (jan2026_phase4a) SPY series on which the published value "
+    f"equals the stored call-only value within {EXACT_MATCH_TOL_USD / 1e9:.3f}B (the 0.01B rounding of the prompt) and differs from "
+    "the complete value (new_full) by more than that. The windows are the published windows (30 consecutive rows of the "
+    "published series) that end before 2023-09-29. 'Replaced' recomputes the rule on the same windows with each affected day set "
+    "to the complete value rounded to 0.01B; nothing else changes."
+)
+
+
+def section_published_input_gaps(ctx: Context) -> Dict[str, Any]:
+    """Call-only days among the published inputs before the break of 2023-09-29, and what they do to the rule's verdicts."""
+    series = with_call_only(ctx.data.series)
+    need = (BRIDGE_SERIES, CALL_ONLY, FULL_SERIES)
+    absent = [key for key in need if not ((series["series_key"] == key) & (series["symbol"] == "SPY")).any()]
+    if absent:
+        raise SectionSkipped(f"series {absent} absent for SPY")
+    by_key = {key: series[(series["series_key"] == key) & (series["symbol"] == "SPY")].set_index("trading_date")["net_gex"]
+              for key in need}
+    days = pd.DataFrame({"pub": by_key[BRIDGE_SERIES]}).join(by_key[CALL_ONLY].rename("call")).join(by_key[FULL_SERIES].rename("full"))
+    if days[["call", "full"]].isna().any().any():
+        raise SectionSkipped("the published series has days that the call-only or the complete series lacks")
+    tol = EXACT_MATCH_TOL_USD
+    like_call = (days["pub"] - days["call"]).abs() <= tol
+    like_full = (days["pub"] - days["full"]).abs() <= tol
+    pre = days.index < PUT_LOSS_START
+    affected = days[pre & like_call & ~like_full]
+    replacement = (affected["full"] / 1e7).round() * 1e7  # the value the prompt would have shown (0.01B)
+    win = ctx.data.windows
+    full_win = win[(win["series_key"] == FULL_SERIES) & (win["symbol"] == "SPY")].set_index("window_end")["clf_should_detect"]
+    win = win[(win["series_key"] == BRIDGE_SERIES) & (win["symbol"] == "SPY")].sort_values("window_end")
+    calendar = list(days.index)
+    position = {day: i for i, day in enumerate(calendar)}
+    records: List[Dict[str, Any]] = []
+    touched_by_day: Dict[Any, int] = {day: 0 for day in affected.index}
+    mismatched = 0
+    for row in win.itertuples(index=False):
+        i = position.get(row.window_end)
+        if i is None or i < common.WINDOW_DAYS - 1:
+            raise SectionSkipped(f"published window ending {row.window_end.date()} does not end on a day of the published series")
+        span = calendar[i - common.WINDOW_DAYS + 1: i + 1]
+        values = [float(days.at[day, "pub"]) for day in span]
+        stored = bool(row.clf_should_detect)
+        recomputed = common.classify(values)["should_detect"]
+        mismatched += int(recomputed != stored)  # with no day replaced the rule must give the stored verdict
+        if row.window_end >= PUT_LOSS_START:
+            continue
+        hit = [day for day in span if day in affected.index]
+        for day in hit:
+            touched_by_day[day] += 1
+        swapped = [float(replacement[day]) if day in replacement.index else v for day, v in zip(span, values)]
+        after = common.classify(swapped)["should_detect"] if hit else recomputed
+        records.append({"window_end": row.window_end, "year": row.window_end.year, "touched": bool(hit), "published": stored,
+                        "replaced": bool(after), "complete": full_win.get(row.window_end, np.nan)})
+    if not records:
+        raise SectionSkipped("no published window ends before the break")
+    detail = pd.DataFrame(records)
+    day_rows = pd.DataFrame({
+        "trading_date": affected.index.strftime("%Y-%m-%d"),
+        "published_gex_bn": affected["pub"].to_numpy() / 1e9, "call_only_gex_bn": affected["call"].to_numpy() / 1e9,
+        "complete_gex_bn": affected["full"].to_numpy() / 1e9, "replacement_gex_bn": replacement.to_numpy() / 1e9,
+        "sign_changes": ((affected["pub"] > 0) != (affected["full"] > 0)).to_numpy(),
+        "n_windows": [touched_by_day[day] for day in affected.index]})
+    ctx.write_csv("published_input_gaps.csv", day_rows[GAPS_COLUMNS], ["n_windows"])
+
+    def entry(scope: str, year: Optional[int], frame: pd.DataFrame) -> Dict[str, Any]:
+        n = len(frame)
+        complete = frame["complete"].dropna()
+        k_pub, k_new, k_full = int(frame["published"].sum()), int(frame["replaced"].sum()), int(complete.astype(bool).sum())
+        flipped = frame["published"] != frame["replaced"]
+        return {"scope": scope, "year": year, "window_end_first": frame["window_end"].min().strftime("%Y-%m-%d"),
+                "window_end_last": frame["window_end"].max().strftime("%Y-%m-%d"), "n_windows": n,
+                "n_windows_with_affected_day": int(frame["touched"].sum()),
+                "n_detect_published": k_pub, "rate_published_pct": 100.0 * k_pub / n,
+                "n_detect_replaced": k_new, "rate_replaced_pct": 100.0 * k_new / n,
+                "n_verdicts_changed": int(flipped.sum()), "n_changed_to_detect": int((flipped & frame["replaced"]).sum()),
+                "n_changed_to_not_detect": int((flipped & frame["published"]).sum()),
+                "n_detect_complete_series": k_full, "n_windows_complete_series": len(complete),
+                "rate_complete_series_pct": (100.0 * k_full / len(complete)) if len(complete) else math.nan}
+
+    year_rows = [entry("year", int(year), group) for year, group in detail.groupby("year", sort=True)]
+    total = entry("all", None, detail)
+    yearly = pd.DataFrame(year_rows + [total], columns=GAPS_YEAR_COLUMNS)
+    ctx.write_csv("published_input_gaps_by_year.csv", yearly, GAPS_YEAR_INT_COLUMNS)
+    after_break = days[~pre]
+    neither = days[pre & ~like_call & ~like_full]
+    return {"rows": len(yearly), "definition": GAPS_DEFINITION,
+            "n_affected_days": len(affected), "first_affected_day": affected.index.min().strftime("%Y-%m-%d"),
+            "last_affected_day": affected.index.max().strftime("%Y-%m-%d"),
+            "affected_days_by_year": {int(y): int(c) for y, c in affected.groupby(affected.index.year).size().items()},
+            "n_published_days_before_break": int(pre.sum()), "n_equal_complete_before_break": int((pre & like_full).sum()),
+            "n_equal_neither_before_break": len(neither),
+            "equal_neither_days": {d.strftime("%Y-%m-%d"): {"published_bn": row.pub / 1e9, "call_only_bn": row.call / 1e9,
+                                                            "complete_bn": row.full / 1e9} for d, row in neither.iterrows()},
+            "n_days_from_break": len(after_break),
+            "n_days_from_break_equal_call_only": int(like_call[~pre].sum()),
+            "n_days_from_break_equal_complete": int(like_full[~pre].sum()),
+            "n_published_windows": len(win), "n_recomputed_verdicts_not_equal_to_stored": mismatched,
+            "n_windows_before_break": total["n_windows"], "n_windows_with_affected_day": total["n_windows_with_affected_day"],
+            "n_verdicts_changed": total["n_verdicts_changed"]}
+
+
 # --------------------------------------------------------------------------- sections and orchestration
 class Section:
     """A named report section, its output files and the function that produces them."""
@@ -2316,6 +2440,8 @@ SECTIONS = (
     Section("llm_parse_stats", ("llm_parse_stats.csv",), section_llm_parse_stats),
     Section("reported_vs_computed", ("reported_vs_computed.csv",), section_reported_vs_computed),
     Section("missing_answer_bounds", ("missing_answer_bounds.csv",), section_missing_answer_bounds),
+    Section("published_input_gaps", ("published_input_gaps.csv", "published_input_gaps_by_year.csv"),
+            section_published_input_gaps),
 )
 
 
