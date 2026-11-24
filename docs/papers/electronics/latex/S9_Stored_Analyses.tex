@@ -4,7 +4,7 @@
 \section{Further Analyses of the Stored Data}
 \label{sup:stored}
 
-This section reports analyses of the stored series, windows and answers that were added after the model runs, on 2026-11-24 (Section~3.8 of the article gives the order). They call no model. Unless stated otherwise the rule is the one of Section~3.1 of the article, the sample is SPY on the complete series (\ident{new_full}), and the intervals are 95\% percentile intervals of a moving-block bootstrap with blocks of 60 consecutive windows (5{,}000 draws, seed 261), the interval that the article reports as primary. All values come from the files \path{stored_*.csv} of \path{docs/papers/electronics/results/}; \path{stored_analyses.yaml} lists the files, the columns and the parameters.
+This section reports analyses of the stored series, windows and answers that were added after the model runs, on 2026-11-24 (the paragraph "Order of the Analyses" at the end of Section~3.8 of the article gives the order). They call no model. Unless stated otherwise the rule is the one of Section~3.1 of the article, the sample is SPY on the complete series (\ident{new_full}), and the intervals are 95\% percentile intervals of a moving-block bootstrap with blocks of 60 consecutive windows (5{,}000 draws, seed 261), the interval that the article reports as primary. All values come from the files \path{stored_*.csv} of \path{docs/papers/electronics/results/}; \path{stored_analyses.yaml} lists the files, the columns and the parameters.
 
 \subsection{Single-Criterion Comparators and Contested Windows}
 \label{sup:stored:e1}
@@ -14,7 +14,7 @@ Table~\ref{tab:stored:comparators} compares gpt-6-luna with predictors that use 
 
 \begin{table}[H]
 \centering
-\caption{Agreement with the rule (percent of windows), SPY, \ident{new_full}: gpt-6-luna (arm \ident{full_spy}, first pass, with a 95\% moving-block interval) and predictors that use fewer criteria than the rule: always not detected, sign flips at most five (flips only), and magnitude at least \$5 billion together with flips at most five. Windows are grouped by the year of their end.}
+\caption{Agreement with the rule (percent of windows), SPY, \ident{new_full}: gpt-6-luna (arm \ident{full_spy}, first pass, with a 95\% moving-block interval) and predictors that use fewer criteria than the rule: always not detected, sign flips at most five (flips only), and magnitude at least \$5 billion together with flips at most five. Windows are grouped by the year of their end; the 194 windows that end in 2026 are in the last row only.}
 \label{tab:stored:comparators}
 \footnotesize
 \begin{tabular}{@{}lrrrrr@{}}
@@ -30,11 +30,11 @@ All windows & 4{,}691 & 99.7 [99.4, 99.9] & 87.0 & 63.7 & 97.5 \\
 \end{table}
 
 % src: stored_e1_contested.csv arm=full_spy definition=pivotal (period 2008-2019, 2020-2023, 2024-2025, all: n_contested, contested_pct, arm_agree_pct and its interval, flips_only_agree_pct and its interval, always_yes_agree_pct, arm_uncontested_agree_pct); definition=margin1 n_contested 764; parameters in stored_analyses.yaml (contested_definitions)
-A window is contested when one criterion lies within a small margin of its threshold while the other two criteria pass: persistence of 20, 21 or 22 days, a mean $|\mathrm{GEX}|$ between \$4.5 and \$5.5 billion, or 6 sign flips (one above the limit, none below). The complete series has 521 contested windows (11.1\% of 4{,}691). Inside them gpt-6-luna agrees with the rule on 97.5\% (interval 95.7--98.9), the flips-only predictor on 71.8\% (61.8--81.5) and always-detected on 45.5\%; outside them the model agrees on 99.9\%. Thirteen of the 16 windows where the model differs from the rule are contested (Table~\ref{tab:stored:contested}). The comparison therefore separates the model from the single-criterion predictors where the criteria conflict, and it does not separate it from the rule itself, which is in the prompt. A wider margin (one day, \$1.0 billion, flips 4 to 6) gives 764 contested windows.
+A window is contested when a criterion lies within its margin of its threshold while the other two criteria pass the rule: persistence of 20, 21 or 22 days, a mean $|\mathrm{GEX}|$ between \$4.5 and \$5.5 billion, or 5 or 6 sign flips (at the limit or one above it). A window that is near on two criteria is counted once: the three criteria give 70, 256 and 234 windows, and the union is 521 (11.1\% of 4{,}691). Inside them gpt-6-luna agrees with the rule on 97.5\% (interval 95.7--98.9), the flips-only predictor on 71.8\% (61.8--81.5) and always-detected on 45.5\%; outside them the model agrees on 99.9\%. Thirteen of the 16 windows where the model differs from the rule are contested (Table~\ref{tab:stored:contested}). The comparison therefore separates the model from the single-criterion predictors where the criteria conflict, and it does not separate it from the rule itself, which is in the prompt. A wider margin (one day, \$1.0 billion, flips 4 to 6) gives 764 contested windows.
 
 \begin{table}[H]
 \centering
-\caption{Contested windows of the complete series (pivotal definition: one criterion within its margin of the threshold, the other two passing): number and share of the windows of each period, and agreement with the rule (percent, 95\% moving-block interval) of gpt-6-luna and of the flips-only predictor inside them, of always-detected, and of gpt-6-luna outside them.}
+\caption{Contested windows of the complete series (pivotal definition: a criterion within its margin of the threshold while the other two pass, each window counted once): number and share of the windows of each period, and agreement with the rule (percent, 95\% moving-block interval) of gpt-6-luna and of the flips-only predictor inside them, of always-detected, and of gpt-6-luna outside them. The 194 windows that end in 2026 are in the last row only.}
 \label{tab:stored:contested}
 \footnotesize
 \begin{tabular}{@{}lrrrrr@{}}
@@ -124,7 +124,7 @@ Wilson at the effective sample size (ACF) & [5.0, 28.1] & [4.7, 26.6] \\
 \label{sup:stored:e4}
 
 % src: stored_e4_shift_margin.csv threshold_bn=5.0 block_len=60 circular=False (window_set all and shared; baseline; n_baseline, rate_baseline_pct, rate_late_pct, shift_pp, ci_lo_pp, ci_hi_pp, upper_below_margin; margin_pp 5.0); stored_e4_summary.csv block_len=60 circular=False (n_thresholds 12, n_upper_below_margin 0 or 1, max_ci_hi_pp); stored_analyses.yaml parameters.margin_pp
-Table~\ref{tab:stored:shift} gives the 2024--2025 rate minus the rate of a baseline period, with a moving-block interval, for the windows of the complete series (all) and for the windows that the complete series shares with the published inputs (shared: 975 windows of 2020--2023 and 501 of 2024--2025, which leaves out the 29 windows of early 2020 that precede the published inputs; Section~4.2 of the article). The margin is fixed at 5 points: a rise of more than that is ruled out when the upper limit of the interval lies below 5. It does so in none of the rows of the table. Over the twelve magnitude thresholds from \$3 to \$10 billion, the upper limit lies below the margin for at most one threshold for every baseline at a block length of 60 windows, and for the baseline 2020--2023 over all windows the largest upper limit over the thresholds is 19.7 points. The data therefore do not rule out a rise of 5 points or more after 2023. On the shared windows the shift against 2020--2023 is $-$7.9 points (interval $-$20.9 to 8.6).
+Table~\ref{tab:stored:shift} gives the 2024--2025 rate minus the rate of a baseline period, with a moving-block interval, for the windows of the complete series (all) and for the windows that the complete series shares with the published inputs (shared: 975 windows of 2020--2023 and 501 of 2024--2025, which leaves out the 29 windows of early 2020 that precede the published inputs, one window of 2023 and one of 2024; Section~4.2 of the article). The margin is fixed at 5 points: a rise of more than that is ruled out when the upper limit of the interval lies below 5. It does so in none of the rows of the table. Over the twelve magnitude thresholds from \$3 to \$10 billion, the upper limit lies below the margin for at most one threshold for every baseline at a block length of 60 windows, and for the baseline 2020--2023 over all windows the largest upper limit over the thresholds is 19.7 points. The data therefore do not rule out a rise of 5 points or more after 2023: for the baseline 2020--2023 over all windows, the upper limit is above the margin at 11 of the 12 thresholds. On the shared windows the shift against 2020--2023 is $-$7.9 points (interval $-$20.9 to 8.6).
 
 \begin{table}[H]
 \centering
@@ -154,7 +154,7 @@ The dollar threshold of \$5 billion does not scale with the level of the market.
 
 \begin{table}[H]
 \centering
-\caption{Detection rate of the rule with the \$5 billion threshold replaced by a scale-free variant: the reference years that fix the scale, the rates of 2020--2023 and of 2024--2025 (percent; windows detected in parentheses) and the shift between them (points, 95\% moving-block interval with 60-window blocks). The fixed threshold and the variant without the magnitude criterion need no reference years. The interval of the fixed threshold differs by a tenth of a point from that of Table~\ref{tab:stored:shift} because the bootstrap draws of the two analyses are seeded separately.}
+\caption{Detection rate of the rule with the \$5 billion threshold replaced by a scale-free variant: the reference years that fix the scale, the rates of 2020--2023 and of 2024--2025 (percent; windows detected in parentheses) and the shift between them (points, 95\% moving-block interval with 60-window blocks). The fixed threshold and the variant without the magnitude criterion need no reference years. All variants of the analysis are shown; with the scale fixed in 2010 the three variants that scale with spot or with the calibrated gross share detect no window in 2020--2025. The interval of the fixed threshold differs by a tenth of a point from that of Table~\ref{tab:stored:shift} because the bootstrap draws of the two analyses are seeded separately.}
 \label{tab:stored:scalefree}
 \footnotesize
 \begin{tabular}{@{}llrrr@{}}
@@ -169,6 +169,12 @@ Share of trailing gross GEX, calibrated & 2024--2025 & 27.3 & 12.0 (60) & $-$15.
 No magnitude criterion & -- & 28.8 & 12.0 (60) & $-$16.8 [$-$28.6, 2.4] \\
 Threshold $\propto$ spot & 2020 & 14.0 & 6.4 (32) & $-$7.7 [$-$16.3, 7.8] \\
 Threshold $\propto$ spot$^2$ & 2020 & 7.9 & 0.0 (0) & $-$7.9 [$-$11.5, $-$1.1] \\
+Share of trailing gross GEX, calibrated & 2020 & 8.2 & 5.0 (25) & $-$3.2 [$-$12.3, 9.7] \\
+12.5\% of trailing gross GEX & 2020 & 27.4 & 12.0 (60) & $-$15.4 [$-$26.9, 3.0] \\
+Threshold $\propto$ spot & 2010 & 0.0 & 0.0 (0) & 0.0 [0.0, 0.0] \\
+Threshold $\propto$ spot$^2$ & 2010 & 0.0 & 0.0 (0) & 0.0 [0.0, 0.0] \\
+Share of trailing gross GEX, calibrated & 2010 & 0.0 & 0.0 (0) & 0.0 [0.0, 0.0] \\
+12.5\% of trailing gross GEX & 2010 & 27.4 & 12.0 (60) & $-$15.4 [$-$27.1, 3.9] \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -181,7 +187,7 @@ Table~\ref{tab:stored:era} pairs the complete series with the series without sam
 
 \begin{table}[H]
 \centering
-\caption{Same-day-expiry ablation by era, SPY: windows, rule rate on the complete series (full) and without same-day expiries (ex-0DTE) in percent, windows detected by both series, only by the complete series and only without same-day expiries, discordant windows (detected by one series only), the gap (full minus ex-0DTE rate, in points) and Cohen's kappa between the two label sets (-- where neither series detects a window).}
+\caption{Same-day-expiry ablation by era, SPY (the era 2024--2025 lies inside the era 2023--2026, so the rows overlap): windows, rule rate on the complete series (full) and without same-day expiries (ex-0DTE) in percent, windows detected by both series, only by the complete series and only without same-day expiries, discordant windows (detected by one series only), the gap (full minus ex-0DTE rate, in points) and Cohen's kappa between the two label sets (-- where neither series detects a window).}
 \label{tab:stored:era}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -244,3 +250,9 @@ Hybrid (published, then call-only) & start on or after it & 536 & 536 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Later-Date Repeats of the Hosted Model}
+\label{sup:stored:drift}
+
+% src: drift_summary.csv base_arm=full_spy repeat_index=2 (n_windows_compared 300, n_same 294, pct_same 98.0, kappa 0.960, n_changed 6, n_detect_to_not 1, n_not_to_detect 5, n_toward_rule 3, n_away_from_rule 3, original_ and repeat_agree_with_rule_pct 99.0, original_rate_pct 49.0, repeat_rate_pct 50.3, original_answer_first 2026-10-29, original_answer_last 2026-11-03, repeat_answer_first 2026-11-24, same_job_n_windows 235, same_job_pct_same 99.1); bridge_agreement.csv comparison=test_retest other_arm=full_spy#rep2 and full_spy#rep1 (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa_boot_lo, kappa_boot_hi, p_mcnemar_exact 0.219); drift_runs.csv (second job: base_arm=bridge_jan, n_requests 200, status in_progress); cost_ledger.yaml totals.counted.n_requests 36{,}333
+The hosted alias has no dated snapshot, so we asked 300 windows of the complete series (\ident{full_spy}) again on 2026-11-24. The sample is balanced on the verdict of the rule (the detection rate is 49.0\% in the first pass and 50.3\% in the repeat, so it gives no population rate), and the first answers are 21 to 26 days older (2026-10-29 to 2026-11-03). The two passes give the same verdict in 294 windows (98.0\%; kappa 0.960, calendar-quarter bootstrap interval 0.927--0.987; the interval of the agreement is 96.4--99.3\%). Six windows changed, 1 from detected to not detected and 5 the other way; 3 moved toward the rule and 3 away from it, and both passes agree with the rule on 99.0\% of the windows. The same-job repeat of the arm, run within hours of the first pass, changed 2 of 235 windows (99.1\% the same). The two samples differ, and we do not compare the two figures further. Three hundred windows cannot show a small drift. A second repeat, of 200 windows of the published inputs (\ident{bridge_jan}), was submitted on the same day and was not complete when the results were built; the ledger lists it as in progress, so 36{,}333 requests have been submitted in all and 36{,}133 are answered and stored.

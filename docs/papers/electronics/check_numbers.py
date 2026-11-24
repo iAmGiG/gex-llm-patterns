@@ -46,7 +46,7 @@ def pick(df: pd.DataFrame, **flt) -> pd.Series:
 def check(name, got, want, tol=0.0):
     global checked
     checked += 1
-    if isinstance(want, str) or isinstance(got, str):
+    if isinstance(want, (str, dict, list)) or isinstance(got, (str, dict, list)):
         ok = got == want
     else:
         ok = abs(float(got) - float(want)) <= tol
@@ -147,17 +147,15 @@ def rows() -> dict[str, list[str]]:
     # E6 scale-free thresholds: stored_e6_scale_free.csv and stored_e6_scale_free_shift.csv (block_len=60, baseline 2020-2023)
     sf, sh = rd("stored_e6_scale_free.csv"), rd("stored_e6_scale_free_shift.csv")
     r = []
-    for variant, ref, label in (("fixed_5bn", "none", "Fixed \\$5 billion (stored)"), ("spot_linear", "2024-2025", "Threshold $\\propto$ spot"),
-                                ("spot_squared", "2024-2025", "Threshold $\\propto$ spot$^2$"),
-                                ("trailing_gross_calibrated", "2024-2025", "Share of trailing gross GEX, calibrated"),
-                                ("trailing_gross_12.5pct", "2024-2025", "12.5\\% of trailing gross GEX"),
-                                ("no_magnitude", "none", "No magnitude criterion"),
-                                ("spot_linear", "2020", "Threshold $\\propto$ spot"), ("spot_squared", "2020", "Threshold $\\propto$ spot$^2$")):
+    labels = {"fixed_5bn": "Fixed \\$5 billion (stored)", "spot_linear": "Threshold $\\propto$ spot", "spot_squared": "Threshold $\\propto$ spot$^2$",
+              "trailing_gross_calibrated": "Share of trailing gross GEX, calibrated", "trailing_gross_12.5pct": "12.5\\% of trailing gross GEX",
+              "no_magnitude": "No magnitude criterion"}
+    for _, d in sh.iterrows():
+        variant, ref = d.variant, d.reference_years
         a = pick(sf, variant=variant, reference_years=ref, period="2020-2023")
         b = pick(sf, variant=variant, reference_years=ref, period="2024-2025")
-        d = pick(sh, variant=variant, reference_years=ref, baseline="2020-2023", block_len=60)
-        refl = {"none": "--", "2024-2025": "2024--2025", "2020": "2020"}[ref]
-        r.append(f"{label} & {refl} & {f1(a.rate_pct)} & {f1(b.rate_pct)} ({n(b.n_detected)}) & {f1(d.shift_pp)} {ci(d.ci_lo_pp, d.ci_hi_pp)} \\\\")
+        refl = {"none": "--", "2024-2025": "2024--2025", "2020": "2020", "2010": "2010"}[ref]
+        r.append(f"{labels[variant]} & {refl} & {f1(a.rate_pct)} & {f1(b.rate_pct)} ({n(b.n_detected)}) & {f1(d.shift_pp)} {ci(d.ci_lo_pp, d.ci_hi_pp)} \\\\")
     out["e6_scale_free"] = r
 
     # E9 same-day expiries by era: stored_e9_pair_by_era.csv
@@ -220,6 +218,22 @@ def check_prose():
     check("E1 discordant in contested (arm_discordant_in_contested)", con.arm_discordant_in_contested, 13)
     check("E1 margin1 contested windows (definition=margin1 n_contested)", pick(rd("stored_e1_contested.csv"), arm="full_spy", period="all", definition="margin1").n_contested, 764)
     check("E1 contested 2024-2025 (period=2024-2025 n_contested)", pick(rd("stored_e1_contested.csv"), arm="full_spy", period="2024-2025", definition="pivotal").n_contested, 76)
+
+    check("E1 windows near on persistence (stored_e1_contested.csv arm=full_spy period=all definition=pivotal n_by_persistence)", con.n_by_persistence, 70)
+    check("E1 windows near on magnitude (n_by_magnitude)", con.n_by_magnitude, 256)
+    check("E1 windows near on flips (n_by_flips)", con.n_by_flips, 234)
+    check("E1 the three counts sum to 560 and the union is 521 (a window near on two criteria counts once)", con.n_by_persistence + con.n_by_magnitude + con.n_by_flips, 560)
+    c2425 = pick(rd("stored_e1_contested.csv"), arm="full_spy", period="2024-2025", definition="pivotal")
+    check("E1 flips-only agreement on the contested windows of 2024-2025 (period=2024-2025 flips_only_agree_pct)", c2425.flips_only_agree_pct, 100.0)
+    check("E1 luna agreement on the contested windows of 2024-2025 (arm_agree_pct)", round(c2425.arm_agree_pct, 1), 96.1)
+    # shared windows: years of the windows that the complete series has and the published inputs lack
+    ly_ = rd("stored_e13_lineage_by_year.csv"); ly_ = ly_[ly_.comparison == "published vs complete"].set_index(ly_[ly_.comparison == "published vs complete"].year.astype(str))
+    dy = rd("detection_by_year.csv"); dy = dy[(dy.label_source == "classifier") & (dy.series_key == "new_full") & (dy.symbol == "SPY") & (dy.scope == "year")]
+    full_n = {str(int(y)): int(k) for y, k in zip(dy.year, dy.n)}
+    miss = {y: full_n[y] - int(ly_.loc[y].n_common) for y in ("2020", "2021", "2022", "2023", "2024", "2025")}
+    check("shared set: windows of the complete series missing from the published inputs by year (detection_by_year.csv new_full n minus stored_e13_lineage_by_year.csv n_common)", miss, {"2020": 29, "2021": 0, "2022": 0, "2023": 1, "2024": 1, "2025": 0})
+    check("shared set: baseline windows dropped (1,005 less 975 = 29 + 1)", 1005 - 975, miss["2020"] + miss["2023"])
+    check("shared set: late windows dropped (502 less 501)", 502 - 501, miss["2024"])
 
     # --- E3: episodes, effective sample size, intervals (Section 4.2, Methods 3.8, Discussion)
     ess = pick(rd("stored_e3_ess.csv"), source="rule")
@@ -401,6 +415,9 @@ def check_prose():
     check("repeat: same-job percent same (same_job_pct_same)", round(r2.same_job_pct_same, 1), 99.1)
     check("repeat: detection rate of the sample, first pass (original_rate_pct)", round(r2.original_rate_pct, 1), 49.0)
     check("repeat: detection rate of the sample, repeat (repeat_rate_pct)", round(r2.repeat_rate_pct, 1), 50.3)
+    from datetime import date
+    days = [(date.fromisoformat(r2.repeat_answer_first) - date.fromisoformat(d_)).days for d_ in (r2.original_answer_last, r2.original_answer_first)]
+    check("repeat: days between the first answers and the repeat (original_answer_last, original_answer_first to repeat_answer_first)", days, [21, 26])
     ba = rd("bridge_agreement.csv")
     t = pick(ba, comparison="test_retest", ref_arm="full_spy", other_arm="full_spy#rep2", scope="all")
     check("repeat: pairs (bridge_agreement.csv comparison=test_retest other_arm=full_spy#rep2 scope=all n_pairs)", t.n_pairs, 300)
@@ -414,6 +431,8 @@ def check_prose():
     one = pick(ba, comparison="test_retest", ref_arm="full_spy", other_arm="full_spy#rep1", scope="all")
     check("repeat: same-job repeat of full_spy pairs (other_arm=full_spy#rep1 n_pairs)", one.n_pairs, 235)
     check("repeat: same-job repeat of full_spy percent (agree_pct)", round(one.agree_pct, 1), 99.1)
+    check("repeat: windows that changed in the same-job repeat of full_spy (n_ref_det_oth_not + n_ref_not_oth_det)", one.n_ref_det_oth_not + one.n_ref_not_oth_det, 2)
+    check("repeat: the repeat run times the windows answered 235", one.n_pairs, 235)
 
     # --- counts and cost of the hosted runs (Methods, Section S2, Figure 1)
     led = yaml.safe_load((RES / "cost_ledger.yaml").read_text())
@@ -449,6 +468,8 @@ def check_prose():
     check("repeat answers of the first submission (arm_role=repeat, arm not ending #rep2, sum n_rows)", g[(g.arm_role == "repeat") & ~g.arm.str.endswith("#rep2")].n_rows.sum(), 2992)
     # 1,516 duplicate-sample answers of the arms other than bridge_jan plus the 1,476 of the full repeat of bridge_jan
     check("duplicate sample of the other arms (1,516 = 2,992 less the 1,476 of bridge_jan#rep1)", 2992 - g[g.arm == "bridge_jan#rep1"].n_rows.sum(), 1516)
+    check("requests submitted in all (cost_ledger.yaml totals.counted.n_requests)", led["totals"]["counted"]["n_requests"], 36333)
+    check("requests submitted in all = answered and stored 36,133 + in progress 200", 36133 + 200, led["totals"]["counted"]["n_requests"])
     dr = rd("drift_runs.csv")
     check("drift runs listed (drift_runs.csv rows)", len(dr), 2)
     check("drift run still in progress: requests (drift_runs.csv status=in_progress n_requests)", dr[dr.status == "in_progress"].n_requests.sum(), 200)
