@@ -52,6 +52,7 @@
 | D-33 | 2026-11-23 | Llama, reasoning first | Seven `llamarf_*` arms with the reasoning field first in the schema; the model stops detecting everything but does not follow the rule (kappa 0.10 on the complete series) |
 | D-34 | 2026-11-23 | Decoding control | Temperature 0 on the published inputs for gpt-oss-20b and Llama 3.1 8B; neither result changes |
 | D-35 | 2026-11-24 | The article as the public notice | Section 1.1 states which published results the article supersedes (D-20 amended); no correction filed with the publishers yet; 39 earlier call-only days reproduced in `05_report.py` |
+| D-36 | 2026-11-24 | Analyses added after the runs | Supplement S9 (moving-block intervals, the 5-point margin, contested windows, put-weight grid, scale-free thresholds, same-day-expiry pairs, lineage) and the later-date repeats were added after the runs and are exploratory; the article lists what was fixed before the runs |
 | Q-01 | closed 2026-10-29 | QQQ and IWM floor effect | Closed by D-18 |
 | Q-02 | open | Wording and notices | What the Electronics paper says about the defect; which notices go to which venue and when; the status of AIAI |
 | Q-03 | open | Spend | Confirm spend for priority 2 and 3 (and optional 4) once the pilot cost is known; the upper estimate with the scaled arms is above the hard stop |
@@ -442,6 +443,13 @@
 - Scattered earlier days: before 2023-09-29 the published inputs also hold 39 days (the first on 2021-09-17) that equal the call leg only. The finding is reproduced by section `published_input_gaps` of `05_report.py` (definition in `report.yaml`; `results/published_input_gaps.csv` and `results/published_input_gaps_by_year.csv`): 332 of the 911 published windows that end before 2023-09-29 contain such a day, and replacing them by the complete values changes 46 verdicts of the rule (45 to detected; 2022: 32.3% to 40.6%; 2023 before the break: 1.6% to 14.6%). The cause of the scattered days is not established; one further day (2022-05-31) equals neither series.
 - Effect on the text: Section 4.1 (paragraph and table on the affected days), Section 3.3 (lineage, with the statement that the cause rests on a reading of the loader code and on the numerical identity), the Discussion (what survives; follow-up list).
 
+### D-36 Analyses added after the runs (2026-11-24)
+
+- Date: 2026-11-24.
+- Decision: the stored-data analyses of Supplement S9 (E1 comparators and contested windows, E2 put-weight and threshold grid, E3 episodes, effective sample size and interval methods, E4 period shift with a 5-point margin, E6 scale-free thresholds, E9 same-day-expiry pairs by era, E13 lineage of the published labels) and the later-date repeats of the hosted model (`full_spy#rep2`, 300 windows, answered 2026-11-24; `bridge_jan#rep2`, 200 windows, submitted the same day and not complete when the results were built) were added after the model runs. They are exploratory. The primary interval for the 2024-2025 rate and the period shift is the 60-window moving-block bootstrap; the calendar-quarter bootstrap and the non-overlapping subsample are secondary; no multiplicity adjustment is made.
+- Why: the plan was not registered; Q-05 (gate details) and Q-06 (primary comparisons) stay open above, so the article says what was fixed in advance (2026-10-28 and 2026-10-29, before the full `bridge_jan` arm was answered), what was added after results were seen and that the plan is not pre-registered.
+- Encoded in: `scripts/validation/electronics/stored_analyses.py` (results `results/stored_*.csv`), `latex/S9_Stored_Analyses.tex`, the paragraph "Order of the Analyses" at the end of Methods 3.8, `check_numbers.py`.
+
 ## 3. Open decisions for the authors
 
 ### Q-01 QQQ and IWM floor effect (closed)
@@ -562,3 +570,4 @@
 - 2026-11-10: D-32 outcome recorded (seven Qwen3-8B arms run; rates as bounds, `missing_answer_bounds.csv`; Section 4.12 rewritten for three models with one comparison table, Supplement Section S3 with Tables S6 to S8, Table S5 for the Qwen runs; abstract, introduction, discussion, conclusion and Appendix C updated). Summary rows D-30 to D-32 added. The commit message of 4de2439 names D-25 where D-22 is meant.
 - 2026-11-23: the manuscript is split in two (issue #283): the Electronics article keeps the re-run (PR #302), and the open-weights models go to a companion paper in `docs/papers/openweights/` (PR #303). D-33 (Llama 3.1 8B with the reasoning field first) and D-34 (temperature 0 control) added for the companion paper; outcomes recorded 2026-11-24. The exploratory run of 2026-11-08 is now reported in the companion paper, which reverses the removal of 2026-11-09 noted under D-30.
 - 2026-11-24: D-35 added (the article as the public notice for now; the 39 earlier call-only days reproduced; abstract sentence and Section 1.1).
+- 2026-11-24: added D-36 (analyses and later-date repeats added after the runs are exploratory).
