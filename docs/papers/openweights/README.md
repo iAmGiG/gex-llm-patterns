@@ -1,6 +1,6 @@
 # Open-weights paper (Paper B): reproducing an LLM evaluation after its hosted model is retired
 
-Short paper (target 12-15 pages, MDPI class; planned for MDPI *Electronics*, like Paper A, which is planned for the same journal) by Christopher Regan and Ying Xie. Working title:
+Short paper (about 16 pages, MDPI class; planned for MDPI *Electronics*, like Paper A, which is planned for the same journal) by Christopher Regan and Ying Xie. Working title:
 *Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests*.
 
 **Question.** Can an LLM evaluation be reproduced after its hosted model is retired: with the hosted successor alias, and with
@@ -27,7 +27,7 @@ Nothing under `docs/papers/electronics/` is edited by this folder; the figures r
 | `latex/01_Introduction` .. `06_Conclusion` | introduction (setting, four research questions, contributions), related work (issue #297), methods, discussion, conclusion |
 | `latex/04_01_Overview` .. `04_08_Cost` | results: overview table and figure, gpt-oss-20b, Llama 3.1 8B, Qwen3-8B, departures, schema order (reasoning first), repeats and sampling (temperature 0), cost |
 | `latex/07_Appendix_A_Schema` | field orders of the JSON schema (verdict first, reasoning first) |
-| `latex/Regan_Xie_OpenWeights_Supplement.tex` + `S1_Run_Ledger`, `S2_Detail`, `S3_Engine`, `S4_Decoding` | local run ledgers (Tables S1-S3), per-model tables (S4-S6), engine settings (S7), decoding control (S8, moved from Section 4.7 to keep the article at 15 pages) |
+| `latex/Regan_Xie_OpenWeights_Supplement.tex` + `S1_Run_Ledger`, `S2_Detail`, `S3_Engine` | local run ledgers (Tables S1-S3), per-model tables (S4-S6), engine settings (S7) |
 | `latex/references.bib` | own bibliography: entries copied from the Electronics bib, plus six new ones verified on 2026-11-23 (see the header of the file) |
 | `figures/scripts/` | `figopen.py` (model registry, output folder, manifest), `bf01`..`bf05` scripts, `run_all.py` (own registry) |
 | `figures/output/` | PNG (300 dpi), PDF and a provenance manifest per figure |
@@ -44,7 +44,7 @@ bash docs/papers/openweights/build.sh --final      # strict + fails while a \pen
 bash docs/papers/openweights/build.sh --overleaf   # strict + overleaf/Regan_Xie_OpenWeights_overleaf.zip (git-ignored)
 ```
 
-Layout for the 15-page budget (Electronics layout, class options as in Paper A): result figures at 0.70 of the text width (`\resultfigure` in the main file), float spacing 8 pt and caption margin 0.2 cm in the preamble, and the decoding-control table in the supplement. No arXiv or other preprint layout is kept in the tree; the authors decided to submit to MDPI *Electronics* directly.
+Page count: the article is about 16 pages in the MDPI layout; the journal sets no page limit, so figures stay at full text width.
 
 Figures (AutoGex env, `export PYTHONNOUSERSITE=1 PYTHONPATH=$(pwd)`):
 
@@ -75,8 +75,8 @@ Three local runs vary one setting each and are stored under their own labels, so
   detected, rule 13.0%), but it does not follow the rule (agreement 56.7%, kappa 0.096), so the verdict-first order explains the
   constant answer and not the failure. Section 4.6, Table 3, Figure 5.
 * **D-34**: temperature 0 in every request on the published inputs: `gpt-oss-20b-t0` / `osst0_bridge_jan` (1,614 requests) and
-  `llama-3.1-8b-instruct-t0` / `llamat0_bridge_jan` (1,590 requests). Temperature 0 changes neither result. Section 4.7, Table S8.
-* Totals: the abstract, Table 1 and the conclusion count the three models only (47,176 requests, 111.8 GPU-hours); the cost table adds the
+  `llama-3.1-8b-instruct-t0` / `llamat0_bridge_jan` (1,590 requests). Temperature 0 changes neither result. Section 4.7, Table 4.
+* Totals: the abstract, Table 1 and the conclusion count the three models only (47,176 requests, 111.8 GPU-hours); Table 5 adds the
   variants (15,583 requests, 3.1 GPU-hours; 62,759 requests and 114.9 GPU-hours in all local runs). Only the variants record
   `run_metadata.local.request_sampling` and `schema_property_order`; the earlier runs do not (limitation, Section 5.5).
 * The exploratory 40-window run of 2026-11-08 stays outside the stored arms (git-ignored folder `exploratory_llama_reorder_20261108/`).
@@ -86,7 +86,7 @@ No `\pending` or `TODO(runs)` remains; `build.sh --final` fails only on the `TOD
 ## Open items for the authors
 
 CRediT roles, funding, acknowledgments and AI-use statement, the Zenodo DOI (one record with Paper A), the title of the
-companion manuscript in `references.bib`, the Special Issue (if any), and the page budget (15 pages after the layout tightening; page 15 is nearly full, so any added text needs a cut or a further table move) (see the build output). The default sampling values of
+companion manuscript in `references.bib`, the Special Issue (if any). The default sampling values of
 the existing runs are not stored in their run metadata (review item C110): the paper states that they come from each model's
 `generation_config.json` (visible in the vLLM logs) and lists it as a limitation. Recoverable verdicts in truncated Qwen3-8B
 answers (review item E7) are mentioned only as future work, without numbers.
