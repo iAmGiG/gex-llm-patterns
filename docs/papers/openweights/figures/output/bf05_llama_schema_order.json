@@ -41,10 +41,10 @@
     "pending": false
   },
   "figure": "bf05_llama_schema_order",
-  "generated_utc": "2026-11-24T03:55:20+00:00",
-  "git_dirty": true,
-  "git_dirty_tracked": true,
-  "git_sha": "7117c1f3c1960a943866e32d448122a8a7b53f6e",
+  "generated_utc": "2026-11-24T03:55:39+00:00",
+  "git_dirty": false,
+  "git_dirty_tracked": false,
+  "git_sha": "aa346430f90bbd5b218084f67ceb9eef8361eeeb",
   "outputs": {
     "pdf": {
       "bytes": 17464,
