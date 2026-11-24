@@ -514,7 +514,8 @@ model object's created time (one free `models.retrieve`).
 `max_completion_tokens`, `reasoning_effort`, `response_format`). Batch bodies accept no per-request metadata and no
 `service_tier`, so the keys travel in `custom_id`: `<arm>|<symbol>|<window_end>`, with `#rep1` appended for a
 test-retest duplicate. A duplicate is stored under arm `<arm>#rep1` (`common.REPEAT_ARM_SUFFIX`, 40 characters are
-enough), because the detections natural key has no repeat index. `common.custom_id(..., repeat=1)`,
+enough), because the detections natural key has no repeat index. A repeat sent on a later date (the drift check, below)
+uses the next index: `#rep2` in the custom_id and the arm `<arm>#rep2`; `#rep1` always means the same-job repeat. `common.custom_id(..., repeat=1)`,
 `common.parse_custom_id`, `common.custom_id_repeat` and `common.base_arm` are the one definition; 04 writes the labels,
 05 reads them, and `05_report.py --check-conventions` fails if the two ever disagree. The prompts of the dated arms are
 the November prompts byte for byte; the prompts of `bridge_jan` are the January prompts byte for byte (section 7).
@@ -707,7 +708,37 @@ a `--parquet-root` that does not exist, an unreadable parquet file, `--source db
 once with an error message).
 Section names (for `--only`): `detection_by_year`, `bridge_agreement`, `series_comparison`, `ex0dte_decomposition`,
 `post_publication_2026`, `intraday`, `stats`, `cost_ledger`, `disagreements`, `llm_parse_stats`, `reported_vs_computed`,
-`missing_answer_bounds`, `published_input_gaps`.
+`missing_answer_bounds`, `published_input_gaps`, `drift`, `llm_departures`, `stored_analyses`, `unanswered_analyses`.
+
+**Analysis sections.** Four sections were added for the second paper and the review items of issues #289, #298 and #301.
+`stored_analyses` calls `stored_analyses.py` (E1 trivial comparators and contested windows, E2 put weight, E3 episodes and
+effective sample size, E4 period shift with margin, E6 scale-free thresholds, E9 same-day expiry, E13 lineage) and writes
+`stored_<analysis>.csv` (19 files) and `stored_analyses.yaml`; `unanswered_analyses` calls `unanswered_analyses.py` (census of
+unanswered windows, recoverable verdicts, bounds with them, agreement three ways, contested windows, predictors of
+non-response, repeat stability, GPU time) and writes `unanswered_<table>.csv` (12 files) and `unanswered_analyses.yaml`. The
+modules are imported, not copied, and share one contested-window definition: `stored_analyses.contested_mask` with the
+`pivotal` margins (persistence within one day of 21, mean |GEX| within 0.5 B of 5 B, flips 5 or 6), which
+`unanswered_analyses` uses by default (its sensitivity table adds `margin1`, `narrow` and `wide`). Each YAML holds the
+parameters, the gate results (a failed gate fails the section and the exit status), and a description of every file and
+the notes of its main columns. `unanswered_analyses` reads the answer texts, so it needs parquet tables (it skips on the
+database source) and the files `llm_parse_stats.csv` and `missing_answer_bounds.csv` of the same results folder; with
+`--only` rerun those two first. The bootstrap draws of the two modules are their own (5,000 moving-block draws, seed
+261) and do not follow `--n-boot`; the two sections take about a minute each. `drift` writes `drift_summary.csv` and
+`drift_runs.csv`, `llm_departures` writes `llm_departures.csv` (see section 5.1).
+
+Check files (no pytest plugins needed): `python -m pytest scripts/validation/electronics/stored_analyses_check.py` (known
+answers of the vectorised rule, windows, episodes, resampling and the gates) and
+`python scripts/validation/electronics/unanswered_analyses_check.py` (answer scanner, agreement variants, contested windows,
+logistic fit, repeat stability, GPU intervals). Both run on small constructed inputs and need no tables. The module
+runners also work on their own: `stored_analyses.py --parquet-root <tables> --out <dir> [--only E2,E3]` and
+`unanswered_analyses.py --parquet-root <tables> --out <dir>`.
+
+**Drift check (issue #301).** `04_llm_runner.py drift --arm <arm> --n 300 [--repeat-index 2]` writes (no network, no cost)
+a run that re-sends windows that already hold an answer, byte-identical to the stored requests, with custom_id ending in
+`#rep<k>` (k at least 2; `#rep1` is the same-job repeat) and the answers stored under arm `<arm>#rep<k>`; the sample is
+balanced on the rule's verdict. Submit, poll and ingest as any other run. The report's test-retest block then compares
+the repeat with its original arm, and `drift_summary.csv` adds the direction of the changes against the rule, the dates of
+the original and the repeat answers and the `#rep1` agreement beside it.
 
 ### Step 6. Figures and manuscript
 
@@ -804,6 +835,10 @@ rates are percentages, intervals are Wilson 95 %, and `n_indep_30d` counts non-o
 | `disagreements.csv`, `llm_parse_stats.csv`, `reported_vs_computed.csv` | every parsed answer whose verdict differs from the rule; parse and finish-reason counts and token use per arm; model-reported over computed mean \|GEX\| |
 | `stats.yaml` | overlap-aware inference: rates by label source and period, series, label (`p3_2024` against `p3_2024_dated`, `p4_2020` against `p4_2020_dated`) and scale (`new_full_scaled` against `new_full`) contrasts, period shifts, Phase 3 against Phase 4, and the headline contrasts |
 | `cost_ledger.csv`, `.yaml` | spend per run, arm and model, reconciled with per-request token use; `budget` counts only runs with `common.counts_toward_budget`, the three o4-mini backfills sit under `not_spend` |
+| `stored_e1_comparators.csv`, `stored_e1_contested.csv`, `stored_e2_*.csv`, `stored_e3_*.csv`, `stored_e4_*.csv`, `stored_e6_*.csv`, `stored_e9_*.csv`, `stored_e13_*.csv`, `stored_analyses.yaml` | stored-data analyses of `stored_analyses.py` (issue #289), 19 CSV files; the YAML holds parameters, gates and descriptions of every file and column |
+| `unanswered_*.csv` (12 files), `unanswered_analyses.yaml` | unanswered windows of the local models (`unanswered_analyses.py`, issue #298): `census_unanswered`, `recoverable_verdicts`, `recoverable_first_pass_vs_retry`, `bounds_with_recoverable`, `agreement_variants`, `contested_agreement`, `contested_sensitivity`, `answering_bands`, `answering_logit`, `repeat_stability`, `gpu_time`, `gpu_time_runs` |
+| `drift_summary.csv`, `drift_runs.csv` | later-date repeats (`<arm>#rep<k>`, k at least 2) against the original answers: windows compared, same verdict, kappa, changes toward and away from the rule with an exact binomial p-value, dates of the original and repeat answers, and the same-job `#rep1` agreement beside it; `drift_runs.csv` lists the drift runs and how many of their answers are stored |
+| `llm_departures.csv` | direction of each model's departures from the rule per SPY arm and pooled (model yes and rule no against model no and rule yes) with an exact binomial p-value; pooled rows add overlapping arms |
 | `report.yaml` | row counts, input fingerprint, script and git sha, warnings, caveats, classifier diagnostics (floor effect, scaling, flagged windows with `n_nyse_missing_days`, `rates_without_nyse_missing`: per series and arm the detection rate with and without the windows that span a missing NYSE day, and the largest change in points), headline numbers |
 | `env_check_<UTC stamp>.json` | `00_env_check.py --write` |
 
@@ -1109,7 +1144,9 @@ one January answer the shared parser rejected (fenced with a raw control charact
 | `02_build_windows.py` | 30-day windows with the deterministic verdict and the hole detectors |
 | `03_backfill_round1.py` | the three published o4-mini runs as arms `r1_o4mini`, `r1_p3_o4mini`, `r1_p4_o4mini` |
 | `04_llm_runner.py` | gpt-6-luna Batch runner, local open-weights runner and cost ledger |
-| `05_report.py` | paper tables, overlap-aware statistics, cost ledger |
+| `05_report.py` | paper tables, overlap-aware statistics, cost ledger; registers the analysis sections |
+| `stored_analyses.py`, `stored_analyses_check.py` | stored-data analyses E1-E13 (issue #289) and its known-answer checks |
+| `unanswered_analyses.py`, `unanswered_analyses_check.py` | unanswered windows of the local models (issue #298) and its checks |
 | `06_condense.py` | the condensed copies and the run provenance that git tracks |
 | `07_load_tables.py` | upserts the parquet tables into `backups.gex_llm_regime_*` |
 | `08_package_release.py` | the Zenodo zip (git-ignored); `--check <zip>` regenerates `results/` from it |
