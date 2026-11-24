@@ -14,9 +14,12 @@ On the exact published inputs the mean magnitude that o4-mini reports equals the
 % src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan (scope=all and by year); other arms scope=all (full_spy#rep1: n_pairs 235, agree_pct 99.148936)
 The repeat pass runs gpt-6-luna a second time on all 1{,}476 windows of the published inputs. The two passes agree on 99.3\% of the windows (kappa 0.985, bootstrap 0.969--0.996) and differ in 11 windows, which is more than the 5 windows in which the first pass differs from o4-mini. The disagreement between the two models is thus no larger than the disagreement of the model with itself. The repeats of the other arms agree on 98.8\% to 100.0\% of their windows (Tables~S1 and~S2 of the Supplementary Materials list the runs; the repeat of \ident{full_spy} agrees on 99.1\% of 235 windows).
 
+% src: drift_summary.csv base_arm=full_spy repeat_index=2 (n_windows_compared 300, n_same 294, pct_same 98.0, kappa 0.960, n_changed 6, n_detect_to_not 1, n_not_to_detect 5, n_toward_rule 3, n_away_from_rule 3, original_ and repeat_agree_with_rule_pct 99.0, original_answer_first 2026-10-29, original_answer_last 2026-11-03, repeat_answer_first 2026-11-24, same_job_pct_same 99.1); bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (agree_boot_lo_pct 96.4, agree_boot_hi_pct 99.3, kappa_boot_lo 0.927, kappa_boot_hi 0.987, p_mcnemar_exact 0.219)
+A later-date repeat asks about drift of the hosted alias, which has no dated snapshot. On 2026-11-24, 300 windows of the complete series (\ident{full_spy}), balanced on the verdict of the rule and first answered between 2026-10-29 and 2026-11-03, were asked again. The two passes give the same verdict in 294 windows (98.0\%; kappa 0.960, bootstrap interval 0.927--0.987); the 6 windows that changed (1 from detected to not detected, 5 the other way) lie 3 toward and 3 away from the rule, and both passes agree with the rule on 99.0\%. About 2\% of the verdicts therefore change after three weeks, the same order as in the same-job repeat of the arm (0.9\% of 235 windows), and the changes do not lean toward or away from the rule. With 300 windows, balanced on the rule's verdict so that they give no population rate, a small drift cannot be detected (interval of the agreement 96.4--99.3\%).
+
 \begin{table}[H]
 \centering
-\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, and the third compares gpt-6-luna with its own repeat pass. Intervals are quarter-block bootstrap intervals; the McNemar test is exact on all windows at stride one and therefore optimistic.}
+\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, the third compares gpt-6-luna with its own repeat pass, and the fourth with a repeat on a later date. Intervals are quarter-block bootstrap intervals; the McNemar test is exact on all windows at stride one and therefore optimistic.}
 \label{tab:bridge}
 \footnotesize
 \begin{tabular}{@{}lrrr@{}}
@@ -48,6 +51,12 @@ Block-bootstrap p (calendar quarters) & -- & -- & 0.121 \\
 Windows with a parsed answer & -- & 1{,}476 & -- \\
 Agreement between passes (\%) [95\% block-bootstrap interval] & -- & -- & 99.3 [98.6, 99.8] \\
 Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.985 [0.969, 0.996] \\
+\midrule
+% src: bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa, kappa_boot_lo, kappa_boot_hi); drift_summary.csv base_arm=full_spy repeat_index=2 (n_changed, n_toward_rule, n_away_from_rule)
+\multicolumn{4}{@{}l}{\textit{Later-date repeat of gpt-6-luna (2026-11-24; 300 windows of the complete series balanced on the rule)}} \\
+Agreement between passes (\%) [95\% block-bootstrap interval] & -- & -- & 98.0 [96.4, 99.3] \\
+Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.960 [0.927, 0.987] \\
+Windows changed (toward the rule / away from it) & -- & -- & 6 (3 / 3) \\
 \bottomrule
 \end{tabular}
 \end{table}
