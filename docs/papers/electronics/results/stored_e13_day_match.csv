@@ -1,0 +1,7 @@
+candidate,part,n_days,n_equal_within_tol,n_missing
+complete_net,before the break,940,900,0
+complete_net,from the break,565,0,0
+call_only_call,before the break,940,39,0
+call_only_call,from the break,565,565,0
+hybrid,before the break,940,900,0
+hybrid,from the break,565,565,0

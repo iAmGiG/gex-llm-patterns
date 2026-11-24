@@ -1,0 +1,10 @@
+published_vs,part,n_windows,equal,different
+call_only,windows ending before the break,911,142,769
+call_only,windows spanning the break,29,10,19
+call_only,windows starting on or after the break,536,536,0
+complete,windows ending before the break,911,865,46
+complete,windows spanning the break,29,26,3
+complete,windows starting on or after the break,536,78,458
+hybrid,windows ending before the break,911,865,46
+hybrid,windows spanning the break,29,28,1
+hybrid,windows starting on or after the break,536,536,0

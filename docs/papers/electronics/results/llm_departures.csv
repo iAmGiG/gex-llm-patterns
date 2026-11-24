@@ -1,0 +1,82 @@
+model,series_key,arm,scope,period,n_arms,n_compared,n_disagree,n_model_yes_rule_no,n_model_no_rule_yes,share_model_yes_pct,p_binomial,note
+gpt-6-luna,jan2026_phase4a,bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+gpt-6-luna,new_full,full_spy,arm,2024-2025,1,502,5,4,1,80.0,0.375,
+gpt-6-luna,new_ex0dte,ex0dte_spy,arm,2024-2025,1,502,5,4,1,80.0,0.375,
+gpt-6-luna,p3_2024,p34_obf_2024,arm,2024-2025,1,223,1,0,1,0.0,1.0,
+gpt-6-luna,p3_2024_dated,p34_dated_2024,arm,2024-2025,1,223,0,0,0,,,
+gpt-6-luna,old_bs,bridge_old,arm,2024-2025,1,501,0,0,0,,,
+gpt-6-luna,,,pooled,2024-2025,6,2452,11,8,3,72.727273,0.226562,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+gpt-6-luna,jan2026_phase4a,bridge_jan,arm,all,1,1476,6,5,1,83.333333,0.21875,
+gpt-6-luna,new_full,full_spy,arm,all,1,4691,16,12,4,75.0,0.076813,
+gpt-6-luna,new_ex0dte,ex0dte_spy,arm,all,1,4691,14,9,5,64.285714,0.42395,
+gpt-6-luna,p3_2024,p34_obf_2024,arm,all,1,223,1,0,1,0.0,1.0,
+gpt-6-luna,p3_2024_dated,p34_dated_2024,arm,all,1,223,0,0,0,,,
+gpt-6-luna,p4_2020,p34_obf_2020,arm,all,1,223,0,0,0,,,
+gpt-6-luna,p4_2020_dated,p34_dated_2020,arm,all,1,223,0,0,0,,,
+gpt-6-luna,intraday_t0,intraday_spy,arm,all,1,51,0,0,0,,,
+gpt-6-luna,old_bs,bridge_old,arm,all,1,4638,8,3,5,37.5,0.726562,
+gpt-6-luna,,,pooled,all,9,16439,45,29,16,64.444444,0.072454,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+gpt-oss-20b,jan2026_phase4a,oss_bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+gpt-oss-20b,new_full,oss_full_spy,arm,2024-2025,1,502,2,2,0,100.0,0.5,
+gpt-oss-20b,new_ex0dte,oss_ex0dte_spy,arm,2024-2025,1,502,1,1,0,100.0,1.0,
+gpt-oss-20b,p3_2024,oss_p34_obf_2024,arm,2024-2025,1,223,4,4,0,100.0,0.125,
+gpt-oss-20b,p3_2024_dated,oss_p34_dated_2024,arm,2024-2025,1,223,2,2,0,100.0,0.5,
+gpt-oss-20b,,,pooled,2024-2025,5,1951,9,9,0,100.0,0.003906,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+gpt-oss-20b,jan2026_phase4a,oss_bridge_jan,arm,all,1,1476,6,6,0,100.0,0.03125,
+gpt-oss-20b,new_full,oss_full_spy,arm,all,1,4689,13,11,2,84.615385,0.022461,
+gpt-oss-20b,new_ex0dte,oss_ex0dte_spy,arm,all,1,4691,7,6,1,85.714286,0.125,
+gpt-oss-20b,p3_2024,oss_p34_obf_2024,arm,all,1,223,4,4,0,100.0,0.125,
+gpt-oss-20b,p3_2024_dated,oss_p34_dated_2024,arm,all,1,223,2,2,0,100.0,0.5,
+gpt-oss-20b,p4_2020,oss_p34_obf_2020,arm,all,1,223,0,0,0,,,
+gpt-oss-20b,p4_2020_dated,oss_p34_dated_2020,arm,all,1,223,0,0,0,,,
+gpt-oss-20b,,,pooled,all,7,11748,32,29,3,90.625,2.55601e-06,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+gpt-oss-20b-t0,jan2026_phase4a,osst0_bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+gpt-oss-20b-t0,,,pooled,2024-2025,1,501,0,0,0,,,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+gpt-oss-20b-t0,jan2026_phase4a,osst0_bridge_jan,arm,all,1,1475,4,3,1,75.0,0.625,
+gpt-oss-20b-t0,,,pooled,all,1,1475,4,3,1,75.0,0.625,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct,jan2026_phase4a,llama_bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+llama-3.1-8b-instruct,new_full,llama_full_spy,arm,2024-2025,1,502,442,442,0,100.0,1.76105e-133,
+llama-3.1-8b-instruct,new_ex0dte,llama_ex0dte_spy,arm,2024-2025,1,502,428,428,0,100.0,2.88531e-129,
+llama-3.1-8b-instruct,p3_2024,llama_p34_obf_2024,arm,2024-2025,1,223,42,42,0,100.0,4.54747e-13,
+llama-3.1-8b-instruct,p3_2024_dated,llama_p34_dated_2024,arm,2024-2025,1,223,42,42,0,100.0,4.54747e-13,
+llama-3.1-8b-instruct,,,pooled,2024-2025,5,1951,954,954,0,100.0,1.31345e-287,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct,jan2026_phase4a,llama_bridge_jan,arm,all,1,1476,809,809,0,100.0,5.85819e-244,
+llama-3.1-8b-instruct,new_full,llama_full_spy,arm,all,1,4691,4081,4081,0,100.0,0.0,
+llama-3.1-8b-instruct,new_ex0dte,llama_ex0dte_spy,arm,all,1,4691,4199,4199,0,100.0,0.0,
+llama-3.1-8b-instruct,p3_2024,llama_p34_obf_2024,arm,all,1,223,42,42,0,100.0,4.54747e-13,
+llama-3.1-8b-instruct,p3_2024_dated,llama_p34_dated_2024,arm,all,1,223,42,42,0,100.0,4.54747e-13,
+llama-3.1-8b-instruct,p4_2020,llama_p34_obf_2020,arm,all,1,223,196,196,0,100.0,1.99136e-59,
+llama-3.1-8b-instruct,p4_2020_dated,llama_p34_dated_2020,arm,all,1,223,196,196,0,100.0,1.99136e-59,
+llama-3.1-8b-instruct,,,pooled,all,7,11750,9565,9565,0,100.0,0.0,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct-rf,jan2026_phase4a,llamarf_bridge_jan,arm,2024-2025,1,501,42,0,42,0.0,4.54747e-13,
+llama-3.1-8b-instruct-rf,new_full,llamarf_full_spy,arm,2024-2025,1,502,263,241,22,91.634981,9.27445e-48,
+llama-3.1-8b-instruct-rf,new_ex0dte,llamarf_ex0dte_spy,arm,2024-2025,1,502,238,210,28,88.235294,1.14645e-35,
+llama-3.1-8b-instruct-rf,p3_2024,llamarf_p34_obf_2024,arm,2024-2025,1,223,101,16,85,15.841584,1.54424e-12,
+llama-3.1-8b-instruct-rf,p3_2024_dated,llamarf_p34_dated_2024,arm,2024-2025,1,223,107,18,89,16.82243,1.78099e-12,
+llama-3.1-8b-instruct-rf,,,pooled,2024-2025,5,1951,751,485,266,64.580559,1.13177e-15,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct-rf,jan2026_phase4a,llamarf_bridge_jan,arm,all,1,1476,487,396,91,81.314168,2.21012e-46,
+llama-3.1-8b-instruct-rf,new_full,llamarf_full_spy,arm,all,1,4691,2029,1815,214,89.452932,8.53022e-316,
+llama-3.1-8b-instruct-rf,new_ex0dte,llamarf_ex0dte_spy,arm,all,1,4691,2077,1915,162,92.200289,0.0,
+llama-3.1-8b-instruct-rf,p3_2024,llamarf_p34_obf_2024,arm,all,1,223,101,16,85,15.841584,1.54424e-12,
+llama-3.1-8b-instruct-rf,p3_2024_dated,llamarf_p34_dated_2024,arm,all,1,223,107,18,89,16.82243,1.78099e-12,
+llama-3.1-8b-instruct-rf,p4_2020,llamarf_p34_obf_2020,arm,all,1,223,144,142,2,98.611111,9.36381e-40,
+llama-3.1-8b-instruct-rf,p4_2020_dated,llamarf_p34_dated_2020,arm,all,1,223,130,125,5,96.153846,4.37826e-31,
+llama-3.1-8b-instruct-rf,,,pooled,all,7,11750,5075,4427,648,87.231527,0.0,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct-t0,jan2026_phase4a,llamat0_bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+llama-3.1-8b-instruct-t0,,,pooled,2024-2025,1,501,0,0,0,,,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+llama-3.1-8b-instruct-t0,jan2026_phase4a,llamat0_bridge_jan,arm,all,1,1476,809,809,0,100.0,5.85819e-244,
+llama-3.1-8b-instruct-t0,,,pooled,all,1,1476,809,809,0,100.0,5.85819e-244,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+qwen3-8b,jan2026_phase4a,qwen_bridge_jan,arm,2024-2025,1,501,0,0,0,,,
+qwen3-8b,new_full,qwen_full_spy,arm,2024-2025,1,399,16,16,0,100.0,3.05176e-05,
+qwen3-8b,new_ex0dte,qwen_ex0dte_spy,arm,2024-2025,1,465,6,6,0,100.0,0.03125,
+qwen3-8b,p3_2024,qwen_p34_obf_2024,arm,2024-2025,1,212,4,4,0,100.0,0.125,
+qwen3-8b,p3_2024_dated,qwen_p34_dated_2024,arm,2024-2025,1,197,9,9,0,100.0,0.003906,
+qwen3-8b,,,pooled,2024-2025,5,1774,35,35,0,100.0,5.82077e-11,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
+qwen3-8b,jan2026_phase4a,qwen_bridge_jan,arm,all,1,1345,15,13,2,86.666667,0.007385,
+qwen3-8b,new_full,qwen_full_spy,arm,all,1,4206,55,51,4,92.727273,2.04742e-11,
+qwen3-8b,new_ex0dte,qwen_ex0dte_spy,arm,all,1,4317,24,21,3,87.5,0.000277162,
+qwen3-8b,p3_2024,qwen_p34_obf_2024,arm,all,1,212,4,4,0,100.0,0.125,
+qwen3-8b,p3_2024_dated,qwen_p34_dated_2024,arm,all,1,197,9,9,0,100.0,0.003906,
+qwen3-8b,p4_2020,qwen_p34_obf_2020,arm,all,1,223,0,0,0,,,
+qwen3-8b,p4_2020_dated,qwen_p34_dated_2020,arm,all,1,218,1,1,0,100.0,1.0,
+qwen3-8b,,,pooled,all,7,10718,108,99,9,91.666667,2.64597e-20,"pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent and p_binomial is descriptive only"
