@@ -14,9 +14,12 @@ On the exact published inputs the mean magnitude that o4-mini reports equals the
 % src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan (scope=all and by year); other arms scope=all (full_spy#rep1: n_pairs 235, agree_pct 99.148936)
 The repeat pass runs gpt-6-luna a second time on all 1{,}476 windows of the published inputs. The two passes agree on 99.3\% of the windows (kappa 0.985, bootstrap 0.969--0.996) and differ in 11 windows, which is more than the 5 windows in which the first pass differs from o4-mini. The disagreement between the two models is thus no larger than the disagreement of the model with itself. The repeats of the other arms agree on 98.8\% to 100.0\% of their windows (Tables~S1 and~S2 of the Supplementary Materials list the runs; the repeat of \ident{full_spy} agrees on 99.1\% of 235 windows).
 
-\begin{table}[H]
+% src: drift_summary.csv base_arm=full_spy repeat_index=2 (n_windows_compared 300, n_same 294, pct_same 98.0, kappa 0.960, n_changed 6, n_detect_to_not 1, n_not_to_detect 5, n_toward_rule 3, n_away_from_rule 3, original_ and repeat_agree_with_rule_pct 99.0, original_answer_first 2026-10-29, original_answer_last 2026-11-03, repeat_answer_first 2026-11-24, same_job_pct_same 99.1); bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (agree_boot_lo_pct 96.4, agree_boot_hi_pct 99.3, kappa_boot_lo 0.927, kappa_boot_hi 0.987, p_mcnemar_exact 0.219)
+A later-date repeat asks about drift: 300 windows of the complete series, balanced on the verdict of the rule and first answered 21 to 26 days earlier, were asked again on 2026-11-24, and 294 give the same verdict (98.0\%; kappa 0.960); the 6 that changed lie 3 toward and 3 away from the rule. A second repeat, of 200 windows of the published inputs, was submitted that day and was not complete when the results were built (Section~S9).
+
+\begin{table}[!htbp]
 \centering
-\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, and the third compares gpt-6-luna with its own repeat pass. Intervals are quarter-block bootstrap intervals; the McNemar test is exact on all windows at stride one and therefore optimistic.}
+\caption{Bridge to the published result: gpt-6-luna versus o4-mini on the exact Phase 4A inputs. The first block holds the 1{,}412 answers of the published result, the second adds the 64 re-parsed answers, the third compares gpt-6-luna with its own repeat pass, and the fourth with a repeat on a later date. Intervals are calendar-quarter bootstrap intervals in every block; the McNemar test is exact on all windows at stride one and therefore optimistic.}
 \label{tab:bridge}
 \footnotesize
 \begin{tabular}{@{}lrrr@{}}
@@ -27,8 +30,8 @@ Statistic & o4-mini & gpt-6-luna & Both \\
 Windows with a parsed answer & 1{,}412 & 1{,}412 & 1{,}412 \\
 Detection rate (\%) & 45.8 & 46.1 & -- \\
 Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
-Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.4, 99.9] \\
-Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.993 [0.986, 0.998] \\
+Agreement between models (\%) [95\% interval] & -- & -- & 99.6 [99.4, 99.9] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.993 [0.986, 0.998] \\
 McNemar exact p (stride one, all windows) & -- & -- & 0.063 \\
 Block-bootstrap p (calendar quarters) & -- & -- & 0.010 \\
 Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
@@ -38,21 +41,25 @@ Median reported / computed mean $|\mathrm{GEX}|$ & 1.000 & 1.000 & -- \\
 Windows with a parsed answer & 1{,}476 & 1{,}476 & 1{,}476 \\
 Detection rate (\%) & 45.2 & 45.5 & -- \\
 Agreement with the classifier (\%) & 100.0 & 99.6 & -- \\
-Agreement between models (\%) [95\% block-bootstrap interval] & -- & -- & 99.6 [99.3, 99.9] \\
-Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.992 [0.984, 0.997] \\
+Agreement between models (\%) [95\% interval] & -- & -- & 99.6 [99.3, 99.9] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.992 [0.984, 0.997] \\
 McNemar exact p (stride one, all windows) & -- & -- & 0.219 \\
 Block-bootstrap p (calendar quarters) & -- & -- & 0.121 \\
 \midrule
 % src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan other_arm=bridge_jan#rep1 scope=all
 \multicolumn{4}{@{}l}{\textit{Test-retest of gpt-6-luna (first pass against repeat pass)}} \\
 Windows with a parsed answer & -- & 1{,}476 & -- \\
-Agreement between passes (\%) [95\% block-bootstrap interval] & -- & -- & 99.3 [98.6, 99.8] \\
-Cohen's kappa [95\% block-bootstrap interval] & -- & -- & 0.985 [0.969, 0.996] \\
+Agreement between passes (\%) [95\% interval] & -- & -- & 99.3 [98.6, 99.8] \\
+Cohen's kappa [95\% interval] & -- & -- & 0.985 [0.969, 0.996] \\
+\midrule
+% src: bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa, kappa_boot_lo, kappa_boot_hi); drift_summary.csv base_arm=full_spy repeat_index=2 (n_changed, n_toward_rule, n_away_from_rule)
+\multicolumn{4}{@{}l}{\textit{Later-date repeat of gpt-6-luna (300 windows of the complete series, 21 to 26 days later)}} \\
+Agreement between passes (\%) [95\% interval] & -- & -- & 98.0 [96.4, 99.3] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \resultfigure{\figBridge}
 \caption{Bridge to the published result on the Phase 4A windows. (a) Confusion matrix of gpt-6-luna against the o4-mini labels, with the overall agreement and Cohen's kappa. (b), (c) Agreement and kappa by year, with the test-retest of gpt-6-luna and the agreement gate as dashed references. \textbf{Read this figure as:} nearly all windows lie on the diagonal (646 and 761), and the five off-diagonal windows are all detections by gpt-6-luna alone. Yearly agreement is 98.8\% or higher and the yearly kappa is far above the gate of 0.6, at 0.851 in its lowest year. The test-retest agreement of gpt-6-luna with itself (99.3\%) is a lower reference than the agreement with o4-mini. The whiskers of the yearly points are Wilson intervals that treat the overlapping windows as independent and are optimistic; the interval of the overall value is a quarter-block bootstrap interval.}

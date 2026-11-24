@@ -1,0 +1,4 @@
+model,n,n_same,n_first_agrees_rule,n_retry_agrees_rule
+gpt-oss-20b,5,5,5,5
+gpt-oss-20b-t0,1,1,1,1
+qwen3-8b,316,313,313,314

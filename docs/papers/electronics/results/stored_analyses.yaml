@@ -1,0 +1,1011 @@
+module: scripts/validation/electronics/stored_analyses.py
+issue: 289
+determinism: every resampling draws from a generator seeded from the seed and a stable tag; nothing run-specific
+  is stored
+parameters:
+  seed: 261
+  n_boot: 5000
+  block_lengths:
+  - 30
+  - 60
+  - 90
+  - 120
+  primary_block: 60
+  margin_pp: 5.0
+  put_weights:
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  - 1.0
+  - 1.05
+  - 1.1
+  - 1.2
+  grid_bn:
+  - 3.0
+  - 3.5
+  - 4.0
+  - 4.5
+  - 5.0
+  - 5.5
+  - 6.0
+  - 6.5
+  - 7.0
+  shift_grid_bn:
+  - 3.0
+  - 3.5
+  - 4.0
+  - 4.5
+  - 5.0
+  - 5.5
+  - 6.0
+  - 6.4
+  - 6.5
+  - 7.0
+  - 8.0
+  - 10.0
+  break_date: '2023-09-29'
+  contested_definitions:
+    margin1:
+      days: 1
+      billions: 1.0
+      flips: 1
+      flips_below: 1
+    pivotal:
+      days: 1
+      billions: 0.5
+      flips: 1
+      flips_below: 0
+gates:
+  rule_vs_stored_windows:
+    call_only:
+      stored_windows: 1672
+      series_windows: 1672
+      matched: 1672
+      equal: 1672
+      start_equal: 1672
+    jan2026_phase4a:
+      stored_windows: 1476
+      series_windows: 1476
+      matched: 1476
+      equal: 1476
+      start_equal: 1476
+    new_ex0dte:
+      stored_windows: 4691
+      series_windows: 4691
+      matched: 4691
+      equal: 4691
+      start_equal: 4691
+    new_full:
+      stored_windows: 4691
+      series_windows: 4691
+      matched: 4691
+      equal: 4691
+      start_equal: 4691
+    old_bs:
+      stored_windows: 4638
+      series_windows: 4638
+      matched: 4638
+      equal: 4638
+      start_equal: 4638
+    p3_2024:
+      stored_windows: 223
+      series_windows: 223
+      matched: 223
+      equal: 223
+      start_equal: 223
+    p3_2024_dated:
+      stored_windows: 223
+      series_windows: 223
+      matched: 223
+      equal: 223
+      start_equal: 223
+    p4_2020:
+      stored_windows: 223
+      series_windows: 223
+      matched: 223
+      equal: 223
+      start_equal: 223
+    p4_2020_dated:
+      stored_windows: 223
+      series_windows: 223
+      matched: 223
+      equal: 223
+      start_equal: 223
+  per_analysis:
+    E1:
+      arms: 42
+    E2:
+      stored_windows: 4691
+      recomputed_windows: 4691
+      equal_call_plus_put: 4691
+      equal_stored_net: 4691
+      max_abs_net_minus_call_plus_put_usd: 2048.0
+      pass: true
+    E3:
+      sources:
+      - rule
+      - gpt-6-luna
+      episodes_rule: 7
+    E4:
+      shared_windows_in_complete: 1476
+      published_windows: 1476
+    E6: {}
+    E9:
+      windows_paired: 4691
+      windows_checked: 4691
+      full_equals_stored: 4691
+      ex_equals_stored: 4691
+    E13:
+      break_date: '2023-09-29'
+      tolerance_usd: 6000000.0
+  all_passed: true
+  notes: []
+payloads:
+  e2_gate.yaml:
+    stored_windows: 4691
+    recomputed_windows: 4691
+    equal_call_plus_put: 4691
+    equal_stored_net: 4691
+    max_abs_net_minus_call_plus_put_usd: 2048.0
+    pass: true
+  e6_scale_facts.yaml:
+    reference:
+      2024-2025:
+        reference_spot: 579.41
+        calibrated_gross_share: 0.128856
+      '2020':
+        reference_spot: 326.875
+        calibrated_gross_share: 0.258079
+      '2010':
+        reference_spot: 113.82
+        calibrated_gross_share: 0.908071
+    fold_ratios:
+      2009_to_2026:
+        first_year: 2009
+        last_year: 2026
+        spot: 7.622773
+        spot_squared: 58.10667
+        abs_net: 9.5171
+        gross: 11.541316
+      2010_to_2026:
+        first_year: 2010
+        last_year: 2026
+        spot: 6.339736
+        spot_squared: 40.192247
+        abs_net: 7.186242
+        gross: 8.184515
+      2010_to_2025:
+        first_year: 2010
+        last_year: 2025
+        spot: 5.428491
+        spot_squared: 29.46851
+        abs_net: 6.111859
+        gross: 7.026319
+    spot_source: series.spot of each trading day (underlying_price; the 19 days in series_metadata.spot_fill are
+      as stored); window spot = mean over its 30 days; reference spot = median daily spot over the reference years
+  e9_gate.yaml:
+    windows_paired: 4691
+    windows_checked: 4691
+    full_equals_stored: 4691
+    ex_equals_stored: 4691
+  stored_analyses_meta.yaml:
+    parameters:
+      seed: 261
+      n_boot: 5000
+      block_lengths:
+      - 30
+      - 60
+      - 90
+      - 120
+      primary_block: 60
+      margin_pp: 5.0
+      put_weights:
+      - 0.5
+      - 0.6
+      - 0.7
+      - 0.8
+      - 0.9
+      - 1.0
+      - 1.05
+      - 1.1
+      - 1.2
+      grid_bn:
+      - 3.0
+      - 3.5
+      - 4.0
+      - 4.5
+      - 5.0
+      - 5.5
+      - 6.0
+      - 6.5
+      - 7.0
+      shift_grid_bn:
+      - 3.0
+      - 3.5
+      - 4.0
+      - 4.5
+      - 5.0
+      - 5.5
+      - 6.0
+      - 6.4
+      - 6.5
+      - 7.0
+      - 8.0
+      - 10.0
+      break_date: '2023-09-29'
+      contested_definitions:
+        margin1:
+          days: 1
+          billions: 1.0
+          flips: 1
+          flips_below: 1
+        pivotal:
+          days: 1
+          billions: 0.5
+          flips: 1
+          flips_below: 0
+    gate_rule_vs_stored_windows:
+      call_only:
+        stored_windows: 1672
+        series_windows: 1672
+        matched: 1672
+        equal: 1672
+        start_equal: 1672
+      jan2026_phase4a:
+        stored_windows: 1476
+        series_windows: 1476
+        matched: 1476
+        equal: 1476
+        start_equal: 1476
+      new_ex0dte:
+        stored_windows: 4691
+        series_windows: 4691
+        matched: 4691
+        equal: 4691
+        start_equal: 4691
+      new_full:
+        stored_windows: 4691
+        series_windows: 4691
+        matched: 4691
+        equal: 4691
+        start_equal: 4691
+      old_bs:
+        stored_windows: 4638
+        series_windows: 4638
+        matched: 4638
+        equal: 4638
+        start_equal: 4638
+      p3_2024:
+        stored_windows: 223
+        series_windows: 223
+        matched: 223
+        equal: 223
+        start_equal: 223
+      p3_2024_dated:
+        stored_windows: 223
+        series_windows: 223
+        matched: 223
+        equal: 223
+        start_equal: 223
+      p4_2020:
+        stored_windows: 223
+        series_windows: 223
+        matched: 223
+        equal: 223
+        start_equal: 223
+      p4_2020_dated:
+        stored_windows: 223
+        series_windows: 223
+        matched: 223
+        equal: 223
+        start_equal: 223
+    E1:
+      arms: 42
+    E2:
+      stored_windows: 4691
+      recomputed_windows: 4691
+      equal_call_plus_put: 4691
+      equal_stored_net: 4691
+      max_abs_net_minus_call_plus_put_usd: 2048.0
+      pass: true
+    E3:
+      sources:
+      - rule
+      - gpt-6-luna
+      episodes_rule: 7
+    E4:
+      shared_windows_in_complete: 1476
+      published_windows: 1476
+    E6: {}
+    E9:
+      windows_paired: 4691
+      windows_checked: 4691
+      full_equals_stored: 4691
+      ex_equals_stored: 4691
+    E13:
+      break_date: '2023-09-29'
+      tolerance_usd: 6000000.0
+    notes: []
+    files:
+      stored_e1_comparators.csv:
+        rows: 125
+        columns:
+        - arm
+        - model
+        - series_key
+        - period
+        - n_windows
+        - rule_rate_pct
+        - arm_rate_pct
+        - arm_agreement_pct
+        - arm_agreement_lo_pct
+        - arm_agreement_hi_pct
+        - always_no_agreement_pct
+        - always_yes_agreement_pct
+        - flips_only_agreement_pct
+        - magnitude_only_agreement_pct
+        - persistence_only_agreement_pct
+        - persistence_magnitude_agreement_pct
+        - persistence_flips_agreement_pct
+        - magnitude_flips_agreement_pct
+        - flips_only_agreement_lo_pct
+        - flips_only_agreement_hi_pct
+        - best_trivial
+        - best_trivial_agreement_pct
+        - luna_n_common
+        - luna_agreement_pct
+      stored_e1_contested.csv:
+        rows: 226
+        columns:
+        - arm
+        - model
+        - series_key
+        - period
+        - definition
+        - n_windows
+        - n_contested
+        - contested_pct
+        - n_by_persistence
+        - n_by_magnitude
+        - n_by_flips
+        - rule_yes_in_contested
+        - arm_discordant_total
+        - arm_discordant_in_contested
+        - arm_agree_pct
+        - arm_agree_lo_pct
+        - arm_agree_hi_pct
+        - arm_sens_pct
+        - arm_sens_lo_pct
+        - arm_sens_hi_pct
+        - arm_spec_pct
+        - arm_spec_lo_pct
+        - arm_spec_hi_pct
+        - arm_ppv_pct
+        - arm_ppv_lo_pct
+        - arm_ppv_hi_pct
+        - flips_only_agree_pct
+        - flips_only_agree_lo_pct
+        - flips_only_agree_hi_pct
+        - flips_only_sens_pct
+        - flips_only_sens_lo_pct
+        - flips_only_sens_hi_pct
+        - flips_only_spec_pct
+        - flips_only_spec_lo_pct
+        - flips_only_spec_hi_pct
+        - flips_only_ppv_pct
+        - flips_only_ppv_lo_pct
+        - flips_only_ppv_hi_pct
+        - always_yes_agree_pct
+        - always_yes_agree_lo_pct
+        - always_yes_agree_hi_pct
+        - always_yes_sens_pct
+        - always_yes_sens_lo_pct
+        - always_yes_sens_hi_pct
+        - always_yes_spec_pct
+        - always_yes_spec_lo_pct
+        - always_yes_spec_hi_pct
+        - always_yes_ppv_pct
+        - always_yes_ppv_lo_pct
+        - always_yes_ppv_hi_pct
+        - arm_uncontested_agree_pct
+      stored_e2_put_weight_grid.csv:
+        rows: 243
+        columns:
+        - put_weight
+        - threshold_bn
+        - period
+        - n_windows
+        - n_detected
+        - rate_pct
+      stored_e2_period_shift.csv:
+        rows: 162
+        columns:
+        - put_weight
+        - threshold_bn
+        - baseline
+        - rate_late_pct
+        - rate_baseline_pct
+        - shift_pp
+        - sign
+      stored_e2_sign_crossings.csv:
+        rows: 15
+        columns:
+        - threshold_bn
+        - baseline
+        - put_weight
+        - from_sign
+        - to_sign
+      stored_e3_episodes.csv:
+        rows: 18
+        columns:
+        - source
+        - start
+        - end
+        - length
+        - gap_before
+      stored_e3_intervals.csv:
+        rows: 26
+        columns:
+        - source
+        - method
+        - block_len
+        - rate_pct
+        - ci_lo_pct
+        - ci_hi_pct
+        - n_effective
+      stored_e3_ess.csv:
+        rows: 2
+        columns:
+        - source
+        - n_windows
+        - n_detected
+        - rate_pct
+        - n_episodes
+        - windows_per_episode_mean
+        - ess_acf
+        - ess_batch_30
+        - ess_batch_sqrt_n
+        - n_nonoverlapping_30d
+      stored_e4_shift_margin.csv:
+        rows: 864
+        columns:
+        - window_set
+        - baseline
+        - threshold_bn
+        - block_len
+        - circular
+        - n_late
+        - n_baseline
+        - rate_late_pct
+        - rate_baseline_pct
+        - shift_pp
+        - ci_lo_pp
+        - ci_hi_pp
+        - margin_pp
+        - upper_below_margin
+        - lower_above_minus_margin
+        - quarter_ci_lo_pp
+        - quarter_ci_hi_pp
+      stored_e4_summary.csv:
+        rows: 72
+        columns:
+        - window_set
+        - baseline
+        - block_len
+        - circular
+        - n_thresholds
+        - n_upper_below_margin
+        - n_positive_shift
+        - max_ci_hi_pp
+      stored_e6_scale_free.csv:
+        rows: 70
+        columns:
+        - variant
+        - reference_years
+        - period
+        - n_windows
+        - n_detected
+        - rate_pct
+        - mean_threshold_bn
+      stored_e6_scale_free_shift.csv:
+        rows: 14
+        columns:
+        - variant
+        - reference_years
+        - baseline
+        - block_len
+        - shift_pp
+        - ci_lo_pp
+        - ci_hi_pp
+      stored_e6_scale_by_year.csv:
+        rows: 19
+        columns:
+        - year
+        - n_days
+        - mean_spot
+        - mean_abs_net_bn
+        - mean_gross_bn
+      stored_e9_pair_by_era.csv:
+        rows: 5
+        columns:
+        - era
+        - n_windows
+        - rate_full_pct
+        - rate_ex0dte_pct
+        - both
+        - only_full
+        - only_ex0dte
+        - neither
+        - discordant
+        - discordant_pct_of_windows
+        - detected_by_either
+        - discordant_pct_of_either
+        - gap_pp
+        - kappa
+      stored_e9_pair_by_weekday.csv:
+        rows: 15
+        columns:
+        - era
+        - weekday
+        - n_windows
+        - rate_full_pct
+        - rate_ex0dte_pct
+        - both
+        - only_full
+        - only_ex0dte
+        - neither
+        - discordant
+        - discordant_pct_of_windows
+        - detected_by_either
+        - discordant_pct_of_either
+        - gap_pp
+        - kappa
+      stored_e9_same_day_share.csv:
+        rows: 20
+        columns:
+        - year
+        - n_days
+        - abs_0dte_share_of_abs_net
+        - abs_0dte_share_of_gross
+        - gross_removed_share
+        - net_removed_share_of_abs_net
+        - sign_flip_pct
+      stored_e9_era_interaction.csv:
+        rows: 36
+        columns:
+        - threshold_bn
+        - block_len
+        - era_a
+        - era_b
+        - gap_a_pp
+        - gap_b_pp
+        - interaction_pp
+        - ci_lo_pp
+        - ci_hi_pp
+        - ci_excludes_zero
+      stored_e13_lineage_by_year.csv:
+        rows: 44
+        columns:
+        - comparison
+        - year
+        - n_common
+        - equal
+        - different
+        - only_a
+        - only_b
+        - rate_a_pct
+        - rate_b_pct
+      stored_e13_lineage_by_break.csv:
+        rows: 9
+        columns:
+        - published_vs
+        - part
+        - n_windows
+        - equal
+        - different
+      stored_e13_day_match.csv:
+        rows: 6
+        columns:
+        - candidate
+        - part
+        - n_days
+        - n_equal_within_tol
+        - n_missing
+files:
+  stored_e13_day_match.csv:
+    rows: 6
+    description: 'E13: days on which the published value equals each candidate series within the tolerance, by part'
+    columns:
+    - candidate
+    - part
+    - n_days
+    - n_equal_within_tol
+    - n_missing
+    column_notes: {}
+  stored_e13_lineage_by_break.csv:
+    rows: 9
+    description: 'E13: published windows ending before, spanning and starting after the break date against the complete,
+      call-only and hybrid series'
+    columns:
+    - published_vs
+    - part
+    - n_windows
+    - equal
+    - different
+    column_notes:
+      n_windows: windows in the row
+  stored_e13_lineage_by_year.csv:
+    rows: 44
+    description: 'E13: the published (January) series against the complete, call-only and hybrid series: windows
+      equal and different per year, and the rate of each'
+    columns:
+    - comparison
+    - year
+    - n_common
+    - equal
+    - different
+    - only_a
+    - only_b
+    - rate_a_pct
+    - rate_b_pct
+    column_notes:
+      year: calendar year of window_end
+  stored_e1_comparators.csv:
+    rows: 125
+    description: 'E1: agreement with the rule of every first-pass arm and of trivial predictors (always no, always
+      yes, one or two of the three criteria), per period; moving-block intervals (60-day blocks) for the arm and
+      for flips_only'
+    columns:
+    - arm
+    - model
+    - series_key
+    - period
+    - n_windows
+    - rule_rate_pct
+    - arm_rate_pct
+    - arm_agreement_pct
+    - arm_agreement_lo_pct
+    - arm_agreement_hi_pct
+    - always_no_agreement_pct
+    - always_yes_agreement_pct
+    - flips_only_agreement_pct
+    - magnitude_only_agreement_pct
+    - persistence_only_agreement_pct
+    - persistence_magnitude_agreement_pct
+    - persistence_flips_agreement_pct
+    - magnitude_flips_agreement_pct
+    - flips_only_agreement_lo_pct
+    - flips_only_agreement_hi_pct
+    - best_trivial
+    - best_trivial_agreement_pct
+    - luna_n_common
+    - luna_agreement_pct
+    column_notes:
+      arm: arm label as in detection_by_year.csv
+      model: model name
+      series_key: series the arm read
+      period: calendar years of window_end
+      n_windows: windows in the row
+      rule_rate_pct: the rule's detection rate in percent
+      arm_rate_pct: the arm's detection rate in percent
+      arm_agreement_pct: agreement of the arm with the rule in percent
+  stored_e1_contested.csv:
+    rows: 226
+    description: 'E1: contested windows per arm, period and definition (pivotal is the one both papers quote): counts,
+      and the arm, flips_only and always_yes predictors inside them (agreement, sensitivity, specificity, ppv with
+      block intervals)'
+    columns:
+    - arm
+    - model
+    - series_key
+    - period
+    - definition
+    - n_windows
+    - n_contested
+    - contested_pct
+    - n_by_persistence
+    - n_by_magnitude
+    - n_by_flips
+    - rule_yes_in_contested
+    - arm_discordant_total
+    - arm_discordant_in_contested
+    - arm_agree_pct
+    - arm_agree_lo_pct
+    - arm_agree_hi_pct
+    - arm_sens_pct
+    - arm_sens_lo_pct
+    - arm_sens_hi_pct
+    - arm_spec_pct
+    - arm_spec_lo_pct
+    - arm_spec_hi_pct
+    - arm_ppv_pct
+    - arm_ppv_lo_pct
+    - arm_ppv_hi_pct
+    - flips_only_agree_pct
+    - flips_only_agree_lo_pct
+    - flips_only_agree_hi_pct
+    - flips_only_sens_pct
+    - flips_only_sens_lo_pct
+    - flips_only_sens_hi_pct
+    - flips_only_spec_pct
+    - flips_only_spec_lo_pct
+    - flips_only_spec_hi_pct
+    - flips_only_ppv_pct
+    - flips_only_ppv_lo_pct
+    - flips_only_ppv_hi_pct
+    - always_yes_agree_pct
+    - always_yes_agree_lo_pct
+    - always_yes_agree_hi_pct
+    - always_yes_sens_pct
+    - always_yes_sens_lo_pct
+    - always_yes_sens_hi_pct
+    - always_yes_spec_pct
+    - always_yes_spec_lo_pct
+    - always_yes_spec_hi_pct
+    - always_yes_ppv_pct
+    - always_yes_ppv_lo_pct
+    - always_yes_ppv_hi_pct
+    - arm_uncontested_agree_pct
+    column_notes:
+      arm: arm label as in detection_by_year.csv
+      model: model name
+      series_key: series the arm read
+      period: calendar years of window_end
+      definition: contested-window definition (pivotal or margin1)
+      n_windows: windows in the row
+  stored_e2_period_shift.csv:
+    rows: 162
+    description: 'E2: 2024-2025 rate minus the rate of each baseline period, per put weight and threshold'
+    columns:
+    - put_weight
+    - threshold_bn
+    - baseline
+    - rate_late_pct
+    - rate_baseline_pct
+    - shift_pp
+    - sign
+    column_notes:
+      put_weight: multiplier of the put leg of GEX
+      threshold_bn: magnitude threshold in billions of USD
+      shift_pp: later rate minus baseline rate in points
+  stored_e2_put_weight_grid.csv:
+    rows: 243
+    description: 'E2: rule detection rate of the complete series when the put leg is multiplied by put_weight (1.0
+      = stored) and the magnitude threshold is threshold_bn, per period'
+    columns:
+    - put_weight
+    - threshold_bn
+    - period
+    - n_windows
+    - n_detected
+    - rate_pct
+    column_notes:
+      put_weight: multiplier of the put leg of GEX
+      threshold_bn: magnitude threshold in billions of USD
+      period: calendar years of window_end
+      n_windows: windows in the row
+      rate_pct: detection rate in percent
+  stored_e2_sign_crossings.csv:
+    rows: 15
+    description: 'E2: threshold and baseline where the sign of the shift changes between neighbouring put weights'
+    columns:
+    - threshold_bn
+    - baseline
+    - put_weight
+    - from_sign
+    - to_sign
+    column_notes:
+      threshold_bn: magnitude threshold in billions of USD
+      put_weight: multiplier of the put leg of GEX
+  stored_e3_episodes.csv:
+    rows: 18
+    description: 'E3: runs of consecutive detected windows (start, end, length, gap before) for each source'
+    columns:
+    - source
+    - start
+    - end
+    - length
+    - gap_before
+    column_notes: {}
+  stored_e3_ess.csv:
+    rows: 2
+    description: 'E3: effective sample sizes of the 2024-2025 detection flags (autocorrelation, batch means) and
+      the episode count'
+    columns:
+    - source
+    - n_windows
+    - n_detected
+    - rate_pct
+    - n_episodes
+    - windows_per_episode_mean
+    - ess_acf
+    - ess_batch_30
+    - ess_batch_sqrt_n
+    - n_nonoverlapping_30d
+    column_notes:
+      n_windows: windows in the row
+      rate_pct: detection rate in percent
+  stored_e3_intervals.csv:
+    rows: 26
+    description: 'E3: 95 percent intervals for the 2024-2025 rate by method (Wilson, quarter block, moving and circular
+      block, episode bootstrap, Wilson at the effective sample size)'
+    columns:
+    - source
+    - method
+    - block_len
+    - rate_pct
+    - ci_lo_pct
+    - ci_hi_pct
+    - n_effective
+    column_notes:
+      block_len: moving-block length in windows
+      rate_pct: detection rate in percent
+      ci_lo_pct: lower 95 percent limit (percent)
+      ci_hi_pct: upper 95 percent limit (percent)
+  stored_e4_shift_margin.csv:
+    rows: 864
+    description: 'E4: period shift (2024-2025 minus baseline, points) per threshold, baseline, block length and
+      window set with moving-block intervals and the margin test (upper_below_margin: upper limit below margin_pp)'
+    columns:
+    - window_set
+    - baseline
+    - threshold_bn
+    - block_len
+    - circular
+    - n_late
+    - n_baseline
+    - rate_late_pct
+    - rate_baseline_pct
+    - shift_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    - margin_pp
+    - upper_below_margin
+    - lower_above_minus_margin
+    - quarter_ci_lo_pp
+    - quarter_ci_hi_pp
+    column_notes:
+      threshold_bn: magnitude threshold in billions of USD
+      block_len: moving-block length in windows
+      shift_pp: later rate minus baseline rate in points
+      ci_lo_pp: lower 95 percent limit (points)
+      ci_hi_pp: upper 95 percent limit (points)
+  stored_e4_summary.csv:
+    rows: 72
+    description: 'E4: per window set, baseline, block length and circular flag: thresholds tested and thresholds
+      whose upper limit is below the margin'
+    columns:
+    - window_set
+    - baseline
+    - block_len
+    - circular
+    - n_thresholds
+    - n_upper_below_margin
+    - n_positive_shift
+    - max_ci_hi_pp
+    column_notes:
+      block_len: moving-block length in windows
+  stored_e6_scale_by_year.csv:
+    rows: 19
+    description: 'E6: mean spot, mean absolute net GEX and mean gross GEX per year (complete series)'
+    columns:
+    - year
+    - n_days
+    - mean_spot
+    - mean_abs_net_bn
+    - mean_gross_bn
+    column_notes:
+      year: calendar year of window_end
+  stored_e6_scale_free.csv:
+    rows: 70
+    description: 'E6: detection rate per period when the fixed 5B threshold is replaced by a scale-free variant
+      (reference_years: the years that fix the scale)'
+    columns:
+    - variant
+    - reference_years
+    - period
+    - n_windows
+    - n_detected
+    - rate_pct
+    - mean_threshold_bn
+    column_notes:
+      period: calendar years of window_end
+      n_windows: windows in the row
+      rate_pct: detection rate in percent
+  stored_e6_scale_free_shift.csv:
+    rows: 14
+    description: 'E6: 2024-2025 minus 2020-2023 shift of each scale-free variant with moving-block intervals'
+    columns:
+    - variant
+    - reference_years
+    - baseline
+    - block_len
+    - shift_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    column_notes:
+      block_len: moving-block length in windows
+      shift_pp: later rate minus baseline rate in points
+      ci_lo_pp: lower 95 percent limit (points)
+      ci_hi_pp: upper 95 percent limit (points)
+  stored_e9_era_interaction.csv:
+    rows: 36
+    description: 'E9: difference between two eras of the full-vs-ex0dte gap with block intervals, per threshold'
+    columns:
+    - threshold_bn
+    - block_len
+    - era_a
+    - era_b
+    - gap_a_pp
+    - gap_b_pp
+    - interaction_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    - ci_excludes_zero
+    column_notes:
+      threshold_bn: magnitude threshold in billions of USD
+      block_len: moving-block length in windows
+      ci_lo_pp: lower 95 percent limit (points)
+      ci_hi_pp: upper 95 percent limit (points)
+  stored_e9_pair_by_era.csv:
+    rows: 5
+    description: 'E9: new_full against new_ex0dte (same-day expiry removed) per era: verdict cells, discordant windows,
+      gap, kappa'
+    columns:
+    - era
+    - n_windows
+    - rate_full_pct
+    - rate_ex0dte_pct
+    - both
+    - only_full
+    - only_ex0dte
+    - neither
+    - discordant
+    - discordant_pct_of_windows
+    - detected_by_either
+    - discordant_pct_of_either
+    - gap_pp
+    - kappa
+    column_notes:
+      era: period of the era comparison
+      n_windows: windows in the row
+      kappa: Cohen's kappa (null when undefined)
+  stored_e9_pair_by_weekday.csv:
+    rows: 15
+    description: 'E9: the same pairing per era and weekday of window_end'
+    columns:
+    - era
+    - weekday
+    - n_windows
+    - rate_full_pct
+    - rate_ex0dte_pct
+    - both
+    - only_full
+    - only_ex0dte
+    - neither
+    - discordant
+    - discordant_pct_of_windows
+    - detected_by_either
+    - discordant_pct_of_either
+    - gap_pp
+    - kappa
+    column_notes:
+      era: period of the era comparison
+      n_windows: windows in the row
+      kappa: Cohen's kappa (null when undefined)
+  stored_e9_same_day_share.csv:
+    rows: 20
+    description: 'E9: share of |GEX| from same-day expiries per year and how often removing them flips the daily
+      sign'
+    columns:
+    - year
+    - n_days
+    - abs_0dte_share_of_abs_net
+    - abs_0dte_share_of_gross
+    - gross_removed_share
+    - net_removed_share_of_abs_net
+    - sign_flip_pct
+    column_notes:
+      year: calendar year of window_end

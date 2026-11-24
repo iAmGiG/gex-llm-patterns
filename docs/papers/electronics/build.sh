@@ -33,7 +33,7 @@ SECTIONS=(01_Introduction 02_Related_Work 03_Methods
   04_01_Inputs 04_02_Replay 04_03_Bridge 04_04_Complete 04_05_Scope 04_06_Fidelity 04_07_Dated
   05_Discussion 06_Conclusion 07_Appendix_A_Data)
 SUPPLEMENT="Regan_Xie_Electronics_Supplement"
-SUPPLEMENT_PARTS=(S1_Series_SQL S2_Run_Ledger S3_Cross_Asset S4_Intraday S5_Fidelity S6_Prompt S7_Tables S8_Detail)
+SUPPLEMENT_PARTS=(S1_Series_SQL S2_Run_Ledger S3_Cross_Asset S4_Intraday S5_Fidelity S6_Prompt S7_Tables S8_Detail S9_Stored_Analyses)
 
 die() { echo "$*" >&2; exit 1; }
 usage() { awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "${BASH_SOURCE[0]}"; }

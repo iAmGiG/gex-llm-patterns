@@ -1,0 +1,7 @@
+model,n_runs,n_gpus,seconds_sum,hours_sum,union_hours,gpu_busy_hours,max_engines_per_gpu,span_hours,max_concurrent,n_same_gpu_overlaps,seconds_vs_interval_max_abs
+gpt-oss-20b,20,3,36043.5,10.012,4.856,10.012,1,4.99,3,0,0.049
+gpt-oss-20b-t0,4,2,1788.9,0.497,0.497,0.497,1,4.113,1,0,0.016
+llama-3.1-8b-instruct,15,5,11904.2,3.307,2.191,3.307,1,6.571,4,0,0.05
+llama-3.1-8b-instruct-rf,16,2,8459.0,2.35,1.447,2.35,1,4.388,2,0,0.05
+llama-3.1-8b-instruct-t0,3,2,952.6,0.265,0.265,0.265,1,1.478,1,0,0.03
+qwen3-8b,98,4,354438.9,98.455,31.669,82.317,2,32.241,5,24,0.049

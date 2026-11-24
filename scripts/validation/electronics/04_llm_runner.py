@@ -1153,6 +1153,52 @@ def cmd_generate(store: Store, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_drift(store: Store, args: argparse.Namespace) -> int:
+    """Re-send windows that already hold an answer, as repeat ``k`` in a new job (issue #301: has the model drifted?).
+
+    The requests are byte-identical to the stored ones; their custom_id ends with '#rep<k>' and the answers are stored
+    under arm '<arm>#rep<k>', so no stored answer of the arm or of its '#rep1' repeat is touched, and the report's
+    test-retest block compares them with the original answers.  The sample is balanced on the rule's verdict.
+    """
+    arm = common.ARMS[args.arm]
+    if not arm.llm:
+        raise RunnerError(f"{arm.key} is a backfill arm: nothing was sent, so nothing can be sent again")
+    if args.repeat_index <= REPEAT_INDEX:
+        raise RunnerError(f"--repeat-index must be above {REPEAT_INDEX} ('#rep{REPEAT_INDEX}' is the same-job repeat)")
+    window_series = common.arm_window_series(arm)
+    model = common.arm_model(arm)
+    label = detection_arm(arm.key, args.repeat_index)
+    start, end = window_range(arm, None, None)
+    pool = [w for w in store.load_windows(window_series, arm.symbol, args.from_db) if start <= w["window_end"] <= end]
+    index = store.detection_index([arm.key, label], model, common.PROMPT_VERSION)
+    held = pending_requests(store, [arm.key], model, common.PROMPT_VERSION)
+    answered = [w for w in pool if window_state(index.get((arm.key, w["window_end"]), ()), prompt_hash(w)) == "done"]
+    taken = [w for w in answered if index.get((label, w["window_end"])) or (label, w["window_end"]) in held]
+    candidates = [w for w in answered if w not in taken]
+    sample = balanced_sample(candidates, min(args.n, len(candidates)), args.seed, label)
+    log.info("%s: %d windows, %d with a current answer, %d already repeated as %s or in flight | selected %d "
+             "(%d the rule detects)", arm.key, len(pool), len(answered), len(taken), label, len(sample),
+             sum(bool(w["clf_should_detect"]) for w in sample))  # fmt: skip
+    if not sample:
+        log.info("nothing to generate")
+        return 0
+    requests = [build_request(make_custom_id(arm.key, w, args.repeat_index), w, common.MAX_COMPLETION_TOKENS, model)
+                for w in sample]  # fmt: skip
+    mode = run_mode(model)
+    created = common.model_created_at(common.openai_client()) if args.online and mode == "batch" else None
+    selection = {"purpose": "drift check: later-date repeat of answered windows (issue #301)",
+                 "repeat_index": args.repeat_index, "n": args.n, "seed": args.seed, "sample": "balanced on the rule",
+                 "n_windows_in_range": len(pool), "n_answered": len(answered), "n_already_repeated": len(taken),
+                 "n_selected": len(sample), "n_selected_rule_detects": sum(bool(w["clf_should_detect"]) for w in sample),
+                 "windows_series": window_series,
+                 "windows_source": "db" if args.from_db else str(common.parquet_path("windows", window_series, arm.symbol))}
+    rows = create_run(store, arm=arm.key, series_key=window_series, symbol=arm.symbol, requests=requests,
+                      mode=mode, max_completion_tokens=common.MAX_COMPLETION_TOKENS, chunk_size=common.BATCH_MAX_REQUESTS,
+                      metadata={"selection": selection}, model_created_at=created, model=model)  # fmt: skip
+    print_generated(rows)
+    return 0
+
+
 def print_generated(rows: Sequence[Dict[str, Any]]) -> None:
     run_id = rows[0]["run_metadata"]["parent_run_id"]
     projected = sum(r["run_metadata"]["projected_cost_usd"] for r in rows)
@@ -1998,6 +2044,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--include-done", action="store_true", help="also run windows that already have an answer")
     p.add_argument("--include-inflight", action="store_true",
                    help="also run windows that a generated, submitted or not yet ingested run already holds")  # fmt: skip
+    p.add_argument("--online", action="store_true", help="record the model object's created timestamp (free API call)")
+
+    p = command("drift", cmd_drift, "write a later-date repeat of answered windows as '<arm>#rep<k>' (no network, no cost)", source)
+    p.add_argument("--arm", required=True, choices=arms)
+    p.add_argument("--n", type=_bounded_int(1), default=300, help="windows, balanced on the rule's verdict (default: %(default)s)")
+    p.add_argument("--repeat-index", type=_bounded_int(2), default=2,
+                   help="k of the '#rep<k>' label; '#rep1' is the same-job repeat (default: %(default)s)")  # fmt: skip
+    p.add_argument("--seed", type=int, default=DEFAULT_SEED, help="seed of the reproducible hash-rank sampling")
     p.add_argument("--online", action="store_true", help="record the model object's created timestamp (free API call)")
 
     p = command("submit", cmd_submit, "upload and create the batches of a run (spends money; budget-guarded)", spend)

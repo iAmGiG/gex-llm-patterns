@@ -1,9 +1,9 @@
-generated_at: '2026-11-24T04:43:54+00:00'
+generated_at: '2026-11-24T06:41:51+00:00'
 script:
   path: scripts/validation/electronics/05_report.py
-  sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+  sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
   common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
-  git_sha: b95ba6599a40f1ce7469ac73db3311312860227d
+  git_sha: d55d18a3b19d52bd1f8e66582108614a36fcbead
 environment:
   python: 3.12.12
   pandas: 2.3.3
@@ -307,6 +307,10 @@ source:
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet
     rows: 348
     sha256: 395ca09e16dcc09717912cd8513ae775da274cd2bd7a0f2096043fc395b864e3
+  - kind: detections
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261124T045255Z_c0.parquet
+    rows: 300
+    sha256: 9a7d3cbe32d5b2326a9b2dde4e68e17017b65e3dc27f23d2332de45832980763
   - kind: detections
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet
     rows: 54
@@ -976,6 +980,10 @@ source:
     rows: 1
     sha256: 54440f9f38c838a06d1fd2432cb03873651fcf3f12a6a9dc461c922e98ba2e29
   - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_jan_gpt-6-luna_batch_20261124T045259Z_c0.parquet
+    rows: 1
+    sha256: 22df74890adb82fa55a9f77e5f76254d88cf02b26dbcd13656ebfc5dbe2ba89f
+  - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet
     rows: 1
     sha256: c95d571ad11b54391d197fa700075c541f807b6a009a05ae1cc67f595aa01b3e
@@ -1115,6 +1123,10 @@ source:
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet
     rows: 1
     sha256: 3c3306a961c8be11908f6ac032b92660393672c3d304784b3aaa81f982a18d6e
+  - kind: runs
+    path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/full_spy_gpt-6-luna_batch_20261124T045255Z_c0.parquet
+    rows: 1
+    sha256: 520ddf3e7a17e6a57b62ba242ba364d4a2123d3d7f3b0b1855eaf4ecf8cfc3ea
   - kind: runs
     path: /mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/runs/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet
     rows: 1
@@ -1778,9 +1790,9 @@ source:
   max_created_at:
     series: '2026-11-03T03:59:19.961463+00:00'
     windows: '2026-11-03T04:00:12.004395+00:00'
-    detections: '2026-11-24T03:32:16.280571+00:00'
-    runs: '2026-11-24T03:21:53.533745+00:00'
-inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
+    detections: '2026-11-24T05:42:08.818863+00:00'
+    runs: '2026-11-24T04:52:59.022008+00:00'
+inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
 inputs:
   series:
     rows: 39027
@@ -1949,7 +1961,7 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
   detections:
-    rows: 89404
+    rows: 89704
     coverage:
     - arm: bridge_jan
       model: gpt-6-luna
@@ -2110,6 +2122,14 @@ inputs:
       rows: 235
       first: '2008-04-30'
       last: '2026-06-26'
+      recovered_2026_rows: 0
+    - arm: full_spy#rep2
+      model: gpt-6-luna
+      series_key: new_full
+      symbol: SPY
+      rows: 300
+      first: '2008-03-27'
+      last: '2026-09-08'
       recovered_2026_rows: 0
     - arm: intraday_spy
       model: gpt-6-luna
@@ -2751,10 +2771,10 @@ inputs:
       first: '2020-02-13'
       last: '2020-12-31'
       recovered_2026_rows: 0
-    parsed_rows: 88307
+    parsed_rows: 88607
     recovered_2026_rows: 64
   runs:
-    rows: 202
+    rows: 204
 sections:
   detection_by_year:
     status: written
@@ -2762,7 +2782,7 @@ sections:
     - detection_by_year.csv
     - detection_by_year_wide.csv
     summary:
-      rows: 1002
+      rows: 1022
       classifier_rate_pct_by_year:
         jan2026_phase4a:
           SPY:
@@ -3786,7 +3806,7 @@ sections:
     - bridge_agreement.csv
     - bridge_agreement.yaml
     summary:
-      rows: 732
+      rows: 752
       gate:
         comparison: r1_o4mini vs bridge_jan
         metric: cohen_kappa
@@ -4220,6 +4240,11 @@ sections:
         n_pairs: 235
         agree_pct: 99.148936
         kappa: 0.955238
+      - ref_arm: full_spy
+        other_arm: full_spy#rep2
+        n_pairs: 300
+        agree_pct: 98.0
+        kappa: 0.960005
       - ref_arm: intraday_spy
         other_arm: intraday_spy#rep1
         n_pairs: 3
@@ -5118,6 +5143,7 @@ sections:
       - full_qqq#rep1
       - full_qqq_scaled#rep1
       - full_spy#rep1
+      - full_spy#rep2
       - intraday_spy#rep1
       - llama_ex0dte_spy#rep1
       - llama_full_spy#rep1
@@ -6723,14 +6749,14 @@ sections:
     - cost_ledger.csv
     - cost_ledger.yaml
     summary:
-      rows: 202
-      est_cost_usd: 10.020749
-      spent_usd: 10.020749
-      committed_usd: 10.020749
-      remaining_to_hard_stop_usd: 1.979251
+      rows: 204
+      est_cost_usd: 10.107226
+      spent_usd: 10.107226
+      committed_usd: 10.171336
+      remaining_to_hard_stop_usd: 1.828664
       historical_backfill_usd: 9.967462
-      est_cost_usd_all_stored_runs: 19.988211
-      cost_per_request_usd: 0.000279651
+      est_cost_usd_all_stored_runs: 20.074688
+      cost_per_request_usd: 0.000279723
   disagreements:
     status: written
     files:
@@ -7079,9 +7105,9 @@ sections:
     files:
     - llm_parse_stats.csv
     summary:
-      rows: 100
-      luna_rows: 87202
-      luna_parsed: 86109
+      rows: 101
+      luna_rows: 87502
+      luna_parsed: 86409
       luna_finish_length: 1091
       luna_rerun_at_retry_cap: 10038
   reported_vs_computed:
@@ -7089,7 +7115,7 @@ sections:
     files:
     - reported_vs_computed.csv
     summary:
-      rows: 863
+      rows: 883
       bridge_pairs:
       - comparison: bridge
         ref_arm: r1_o4mini
@@ -7504,9 +7530,327 @@ sections:
       n_windows_before_break: 911
       n_windows_with_affected_day: 332
       n_verdicts_changed: 46
+  drift:
+    status: written
+    files:
+    - drift_summary.csv
+    - drift_runs.csv
+    summary:
+      rows: 46
+      n_drift_runs: 2
+      n_drift_runs_without_answers: 1
+      later_date_repeats:
+      - repeat_arm: full_spy#rep2
+        n_windows_compared: 300
+        pct_same: 98.0
+        kappa: 0.960005
+        n_toward_rule: 3
+        n_away_from_rule: 3
+        original_answer_first: '2026-10-29'
+        original_answer_last: '2026-11-03'
+        repeat_answer_first: '2026-11-24'
+        repeat_answer_last: '2026-11-24'
+        same_job_pct_same: 99.148936
+      file: drift_summary.csv
+      runs_file: drift_runs.csv
+  llm_departures:
+    status: written
+    files:
+    - llm_departures.csv
+    summary:
+      rows: 81
+      note: pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not
+        independent and p_binomial is descriptive only
+      file: llm_departures.csv
+      luna_pooled_all:
+        n_arms: 9
+        n_compared: 16439
+        n_disagree: 45
+        n_model_yes_rule_no: 29
+        n_model_no_rule_yes: 16
+        share_model_yes_pct: 64.444444
+        p_binomial: 0.072454
+      luna_arms_all:
+      - arm: bridge_jan
+        n_disagree: 6
+        n_model_yes_rule_no: 5
+        n_model_no_rule_yes: 1
+        p_binomial: 0.21875
+      - arm: full_spy
+        n_disagree: 16
+        n_model_yes_rule_no: 12
+        n_model_no_rule_yes: 4
+        p_binomial: 0.076813
+      - arm: ex0dte_spy
+        n_disagree: 14
+        n_model_yes_rule_no: 9
+        n_model_no_rule_yes: 5
+        p_binomial: 0.42395
+      - arm: p34_obf_2024
+        n_disagree: 1
+        n_model_yes_rule_no: 0
+        n_model_no_rule_yes: 1
+        p_binomial: 1.0
+      - arm: p34_dated_2024
+        n_disagree: 0
+        n_model_yes_rule_no: 0
+        n_model_no_rule_yes: 0
+        p_binomial: null
+      - arm: p34_obf_2020
+        n_disagree: 0
+        n_model_yes_rule_no: 0
+        n_model_no_rule_yes: 0
+        p_binomial: null
+      - arm: p34_dated_2020
+        n_disagree: 0
+        n_model_yes_rule_no: 0
+        n_model_no_rule_yes: 0
+        p_binomial: null
+      - arm: intraday_spy
+        n_disagree: 0
+        n_model_yes_rule_no: 0
+        n_model_no_rule_yes: 0
+        p_binomial: null
+      - arm: bridge_old
+        n_disagree: 8
+        n_model_yes_rule_no: 3
+        n_model_no_rule_yes: 5
+        p_binomial: 0.726562
+  stored_analyses:
+    status: written
+    files:
+    - stored_e1_comparators.csv
+    - stored_e1_contested.csv
+    - stored_e2_put_weight_grid.csv
+    - stored_e2_period_shift.csv
+    - stored_e2_sign_crossings.csv
+    - stored_e3_episodes.csv
+    - stored_e3_ess.csv
+    - stored_e3_intervals.csv
+    - stored_e4_shift_margin.csv
+    - stored_e4_summary.csv
+    - stored_e6_scale_by_year.csv
+    - stored_e6_scale_free.csv
+    - stored_e6_scale_free_shift.csv
+    - stored_e9_pair_by_era.csv
+    - stored_e9_pair_by_weekday.csv
+    - stored_e9_same_day_share.csv
+    - stored_e9_era_interaction.csv
+    - stored_e13_lineage_by_year.csv
+    - stored_e13_lineage_by_break.csv
+    - stored_e13_day_match.csv
+    - stored_analyses.yaml
+    summary:
+      rows: 1991
+      files:
+      - stored_e13_day_match.csv
+      - stored_e13_lineage_by_break.csv
+      - stored_e13_lineage_by_year.csv
+      - stored_e1_comparators.csv
+      - stored_e1_contested.csv
+      - stored_e2_period_shift.csv
+      - stored_e2_put_weight_grid.csv
+      - stored_e2_sign_crossings.csv
+      - stored_e3_episodes.csv
+      - stored_e3_ess.csv
+      - stored_e3_intervals.csv
+      - stored_e4_shift_margin.csv
+      - stored_e4_summary.csv
+      - stored_e6_scale_by_year.csv
+      - stored_e6_scale_free.csv
+      - stored_e6_scale_free_shift.csv
+      - stored_e9_era_interaction.csv
+      - stored_e9_pair_by_era.csv
+      - stored_e9_pair_by_weekday.csv
+      - stored_e9_same_day_share.csv
+      contested_windows_pivotal:
+        value: 521
+        file: stored_e1_contested.csv
+        row:
+          arm: full_spy
+          period: all
+          definition: pivotal
+        column: n_contested
+      contested_windows_margin1:
+        value: 764
+        file: stored_e1_contested.csv
+        row:
+          arm: full_spy
+          period: all
+          definition: margin1
+        column: n_contested
+      luna_agree_pct_in_pivotal_contested:
+        value: 97.504798
+        file: stored_e1_contested.csv
+        row:
+          arm: full_spy
+          period: all
+          definition: pivotal
+        column: arm_agree_pct
+      luna_agree_pct_outside_pivotal_contested:
+        value: 99.928058
+        file: stored_e1_contested.csv
+        row:
+          arm: full_spy
+          period: all
+          definition: pivotal
+        column: arm_uncontested_agree_pct
+      flips_only_agreement_pct_full_spy:
+        value: 63.717757
+        file: stored_e1_comparators.csv
+        row:
+          arm: full_spy
+          period: all
+        column: flips_only_agreement_pct
+      luna_agreement_pct_full_spy:
+        value: 99.658921
+        file: stored_e1_comparators.csv
+        row:
+          arm: full_spy
+          period: all
+        column: arm_agreement_pct
+      episodes_rule_2024_2025:
+        value: 7
+        file: stored_e3_ess.csv
+        row:
+          source: rule
+        column: n_episodes
+      ess_acf_rule_2024_2025:
+        value: 31.735244
+        file: stored_e3_ess.csv
+        row:
+          source: rule
+        column: ess_acf
+      moving_block_60_ci_lo_pct_rule:
+        value: 3.784861
+        file: stored_e3_intervals.csv
+        row:
+          source: rule
+          method: moving_block
+          block_len: 60
+        column: ci_lo_pct
+      moving_block_60_ci_hi_pct_rule:
+        value: 24.103586
+        file: stored_e3_intervals.csv
+        row:
+          source: rule
+          method: moving_block
+          block_len: 60
+        column: ci_hi_pct
+      e4_thresholds_upper_below_margin_all_2020_2023_block60:
+        value: 1
+        file: stored_e4_summary.csv
+        row:
+          window_set: all
+          baseline: 2020-2023
+          block_len: 60
+          circular: false
+        column: n_upper_below_margin
+      e4_shift_pp_at_5bn_all_2020_2023_block60:
+        value: -10.236863
+        file: stored_e4_shift_margin.csv
+        row:
+          window_set: all
+          baseline: 2020-2023
+          threshold_bn: 5.0
+          block_len: 60
+          circular: false
+        column: shift_pp
+      e6_spot_squared_shift_pp:
+        value: -17.401637
+        file: stored_e6_scale_free_shift.csv
+        row:
+          variant: spot_squared
+          reference_years: 2024-2025
+          block_len: 60
+        column: shift_pp
+      e13_published_windows_before_break_equal_complete:
+        value: 865
+        file: stored_e13_lineage_by_break.csv
+        row:
+          published_vs: complete
+          part: windows ending before the break
+        column: equal
+      e13_published_windows_before_break_n:
+        value: 911
+        file: stored_e13_lineage_by_break.csv
+        row:
+          published_vs: complete
+          part: windows ending before the break
+        column: n_windows
+  unanswered_analyses:
+    status: written
+    files:
+    - unanswered_census_unanswered.csv
+    - unanswered_recoverable_verdicts.csv
+    - unanswered_recoverable_first_pass_vs_retry.csv
+    - unanswered_bounds_with_recoverable.csv
+    - unanswered_agreement_variants.csv
+    - unanswered_contested_agreement.csv
+    - unanswered_contested_sensitivity.csv
+    - unanswered_answering_bands.csv
+    - unanswered_answering_logit.csv
+    - unanswered_repeat_stability.csv
+    - unanswered_gpu_time.csv
+    - unanswered_gpu_time_runs.csv
+    - unanswered_analyses.yaml
+    summary:
+      rows: 1267
+      files:
+      - unanswered_agreement_variants.csv
+      - unanswered_answering_bands.csv
+      - unanswered_answering_logit.csv
+      - unanswered_bounds_with_recoverable.csv
+      - unanswered_census_unanswered.csv
+      - unanswered_contested_agreement.csv
+      - unanswered_contested_sensitivity.csv
+      - unanswered_gpu_time.csv
+      - unanswered_gpu_time_runs.csv
+      - unanswered_recoverable_first_pass_vs_retry.csv
+      - unanswered_recoverable_verdicts.csv
+      - unanswered_repeat_stability.csv
+      contested_definition: pivotal
+      n_unanswered_primary_arms: 1035
+      qwen_contested_agree_pct_answered:
+        value: 92.290749
+        file: unanswered_contested_agreement.csv
+        row:
+          arm: qwen_full_spy
+          stratum: contested
+        column: agree_pct_answered
+      qwen_contested_answered_pct:
+        value: 87.140115
+        file: unanswered_contested_agreement.csv
+        row:
+          arm: qwen_full_spy
+          stratum: contested
+        column: answered_pct
+      luna_contested_agree_pct:
+        value: 97.504798
+        file: unanswered_contested_agreement.csv
+        row:
+          arm: full_spy
+          stratum: contested
+        column: agree_pct_answered
+      contested_windows_full_spy:
+        value: 521
+        file: unanswered_contested_agreement.csv
+        row:
+          arm: full_spy
+          stratum: contested
+        column: n_windows
+      qwen_full_spy_bounds_with_recoverable_all_periods:
+        value: 13.835003
+        file: unanswered_bounds_with_recoverable.csv
+        row:
+          arm: qwen_full_spy
+          period: all
+          series_key: new_full
+          symbol: SPY
+        column: lower_rec_pct
 files:
   bridge_agreement.csv:
-    rows: 732
+    rows: 752
     columns:
     - comparison
     - ref_arm
@@ -7550,15 +7894,15 @@ files:
     - only_r1
     - only_luna
     - neither
-    bytes: 174233
-    sha256: 79a6fff2e5b54694d935f22ca24d4e488804cb729098759b661ae5af0a501a58
+    bytes: 178411
+    sha256: bf3d895c6402ecc42d60febb533e83b33d167fa3ab9b31f9fd4a695cbcc9c154
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   bridge_agreement.yaml:
     keys:
     - reference_arm
@@ -7572,17 +7916,17 @@ files:
     - test_retest
     - model_pair
     - notes
-    bytes: 539807
-    sha256: 02938c1f2cd13355f1f39f4f07a45f2c0d15f0b1d403d2abe7836db2a84f1765
+    bytes: 553425
+    sha256: 42aeab898469fc36168e8798a838536b2dabd9cb909bd15dfb5032099eea85ec
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   cost_ledger.csv:
-    rows: 202
+    rows: 204
     columns:
     - run_id
     - arm
@@ -7616,15 +7960,15 @@ files:
     - completed_at
     - ingested_at
     - git_sha
-    bytes: 69563
-    sha256: 1ee4197c2eb277ad6aa82cdd88d080e02c75eb6d169d09ebc640629faab9b521
+    bytes: 70094
+    sha256: 4ad69b33e1ad243a7f7e267a546ae9f05e8c0db0b03fe202ccfa46b20fd9d442
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   cost_ledger.yaml:
     keys:
     - currency
@@ -7637,17 +7981,17 @@ files:
     - by_status
     - runs_without_est_cost
     - reconciliation
-    bytes: 25816
-    sha256: e788845416aa174665115eff2e34a3df201319cee97a39707d113dc4d2d28d75
+    bytes: 26041
+    sha256: 3e95ef3f9a02d772c2a9f15d862335f4defaba04da53bd5e74a8d5af56c34dfa
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   detection_by_year.csv:
-    rows: 1002
+    rows: 1022
     columns:
     - label_source
     - arm
@@ -7680,17 +8024,17 @@ files:
     - type_agree_pct
     - n_shape_ok
     - max_mean_abs_gex_bn
-    bytes: 171064
-    sha256: c6a8f8ef2f75e0852c9f8a7c63b5b0302ba18cf2b0c419423aa1cd227d504910
+    bytes: 174526
+    sha256: 110a5dc27c12d294bd7fb2897d0e23c6aa664a3c1c98d3b683c49982cd9ec248
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   detection_by_year_wide.csv:
-    rows: 885
+    rows: 904
     columns:
     - series_key
     - symbol
@@ -7712,15 +8056,15 @@ files:
     - n_compared
     - clf_rate_matched
     - n_indep_30d
-    bytes: 115463
-    sha256: 2f47636c90d25ae162f0f01639aa993ed850c6a0b2d34a258c5031bdfc1cdf12
+    bytes: 118080
+    sha256: d6840e465d7d071fe5b6541cf74735687ecc6d3dd5d99c7777202b086afe2b43
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   disagreements.csv:
     rows: 15653
     columns:
@@ -7749,12 +8093,78 @@ files:
     bytes: 2856695
     sha256: 14e008ce86443cc2ed0121d7e629fa58e636a705905c8473d2b8eb12dd6a7306
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
+  drift_runs.csv:
+    rows: 2
+    columns:
+    - run_id
+    - base_arm
+    - repeat_index
+    - model
+    - n_requests
+    - status
+    - submitted_at
+    - ingested_at
+    - n_answers_stored
+    - n_parsed_stored
+    bytes: 347
+    sha256: 857f94e6e081e07c232ea9e5f4486ed9ed913d686f25bae1fddba3fe5764bd0e
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  drift_summary.csv:
+    rows: 46
+    columns:
+    - base_arm
+    - repeat_arm
+    - repeat_index
+    - repeat_kind
+    - model
+    - series_key
+    - symbol
+    - n_windows_compared
+    - n_same
+    - pct_same
+    - kappa
+    - n_changed
+    - n_detect_to_not
+    - n_not_to_detect
+    - n_toward_rule
+    - n_away_from_rule
+    - p_toward_vs_away
+    - original_agree_with_rule_pct
+    - repeat_agree_with_rule_pct
+    - original_rate_pct
+    - repeat_rate_pct
+    - original_answer_first
+    - original_answer_last
+    - repeat_answer_first
+    - repeat_answer_last
+    - same_job_repeat_arm
+    - same_job_n_windows
+    - same_job_pct_same
+    - same_job_kappa
+    - n_windows_in_both_repeats
+    - same_job_pct_same_on_those
+    - later_pct_same_on_those
+    bytes: 9501
+    sha256: 6cc45be7f83253180e2d93f59ee4782498bd627e34fa36a87980eb8b4e184989
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
   ex0dte_decomposition.csv:
     rows: 57
     columns:
@@ -7785,12 +8195,12 @@ files:
     bytes: 7573
     sha256: 0adff916ed255c3fbaf5f5d3c5bd9c58fb8a7f69a12319b88f716cc2bcc5bc0c
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   intraday.csv:
     rows: 51
     columns:
@@ -7813,14 +8223,39 @@ files:
     bytes: 6799
     sha256: b7c3016c76007be6a77d85eaad548dbea5eb0fc5250b4c611d83c746afe6e9d2
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
+  llm_departures.csv:
+    rows: 81
+    columns:
+    - model
+    - series_key
+    - arm
+    - scope
+    - period
+    - n_arms
+    - n_compared
+    - n_disagree
+    - n_model_yes_rule_no
+    - n_model_no_rule_yes
+    - share_model_yes_pct
+    - p_binomial
+    - note
+    bytes: 8645
+    sha256: 9383a1813ca1d75c590cc13547969c48106420ad5fff538b40978a26368b3f9f
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
   llm_parse_stats.csv:
-    rows: 100
+    rows: 101
     columns:
     - arm
     - arm_role
@@ -7845,15 +8280,15 @@ files:
     - mean_completion_tokens
     - max_completion_tokens_used
     - mean_reasoning_tokens
-    bytes: 13125
-    sha256: 1c1981ef9db150a3fed724a56b1dd3e7961d3d3daa8085e89de2db1a54fda11b
+    bytes: 13240
+    sha256: 5a4ce564cb72d7dcce0e46c5912428feefe1d392eeef6f4b436404ff7b3c3db6
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   missing_answer_bounds.csv:
     rows: 39
     columns:
@@ -7880,12 +8315,12 @@ files:
     bytes: 5676
     sha256: c636f1d425bbe0f026b964476bbe05988571bcc0cd454115872471b875839c75
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   post_publication_2026.csv:
     rows: 1959
     columns:
@@ -7938,12 +8373,12 @@ files:
     bytes: 295036
     sha256: f3970f4fa3736e22ab3e10dfcba7e10d5bccc46c9bac239c9e65f0d69a174c21
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   post_publication_2026_summary.csv:
     rows: 58
     columns:
@@ -7966,12 +8401,12 @@ files:
     bytes: 7358
     sha256: 8150fb35946c714ef65bb83cd5fa300469501c4bd982a24a9536cd437eaa856a
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   published_input_gaps.csv:
     rows: 39
     columns:
@@ -7985,12 +8420,12 @@ files:
     bytes: 2073
     sha256: 204a0d42e09665a4b44fca4df4eebe5b7fdef81faa3f317f5857748fdbfe4193
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   published_input_gaps_by_year.csv:
     rows: 5
     columns:
@@ -8013,14 +8448,14 @@ files:
     bytes: 734
     sha256: 6d2e0495e47d3ed2ca24893c93b46d4a07021a96da61d20f198fd76ecdc1140d
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   reported_vs_computed.csv:
-    rows: 863
+    rows: 883
     columns:
     - basis
     - comparison
@@ -8041,15 +8476,15 @@ files:
     - median_abs_diff_bn
     - median_reported_bn
     - median_computed_bn
-    bytes: 115099
-    sha256: 94dae5659ed8682557a1bf5557335f7d82102b9b500365abec2b91559412648d
+    bytes: 117529
+    sha256: da07cc67698f1ea3a7b9a371b9a7fd212e8e0ace6c8ec0d9fb65f72377ee5d41
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   series_comparison.csv:
     rows: 106
     columns:
@@ -8071,12 +8506,12 @@ files:
     bytes: 14215
     sha256: f4b24afd4576ff16188ba07c6c516b3807a470526dabf8485b999af57a29a8ba
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
   stats.yaml:
     keys:
     - meta
@@ -8086,12 +8521,811 @@ files:
     bytes: 337990
     sha256: 954f16689423c2f1524b658c6945752b3b06eaf1b737643991f21a0ec6b0fffb
     produced_with:
-      inputs_fingerprint: 1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21
-      script_sha256: 86d4000c1b81fe84dc97648f45869848bcd5170cbc161db0d74dff902d1d1177
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
       common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
       seed: 261
       n_boot: 2000
-      generated_at: '2026-11-24T04:43:54+00:00'
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_analyses.yaml:
+    keys:
+    - module
+    - issue
+    - determinism
+    - parameters
+    - gates
+    - payloads
+    - files
+    bytes: 25120
+    sha256: f396333df873de33db06468e4681100c059976b9cabab464991ff4c34107d302
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e13_day_match.csv:
+    rows: 6
+    columns:
+    - candidate
+    - part
+    - n_days
+    - n_equal_within_tol
+    - n_missing
+    bytes: 274
+    sha256: e110794247bd04f0a51947f2d905eb2ec910f7e82e06baebfd4281bd468b5242
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e13_lineage_by_break.csv:
+    rows: 9
+    columns:
+    - published_vs
+    - part
+    - n_windows
+    - equal
+    - different
+    bytes: 506
+    sha256: 6ff0249d011bbdd9d65ff1f3010a954700b7f553158628be3b89a53c16d1f491
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e13_lineage_by_year.csv:
+    rows: 44
+    columns:
+    - comparison
+    - year
+    - n_common
+    - equal
+    - different
+    - only_a
+    - only_b
+    - rate_a_pct
+    - rate_b_pct
+    bytes: 2954
+    sha256: 2f5d51f4456806a10eeb5479ec94e9949d0f1119d05a5381e431aa137774a7e4
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e1_comparators.csv:
+    rows: 125
+    columns:
+    - arm
+    - model
+    - series_key
+    - period
+    - n_windows
+    - rule_rate_pct
+    - arm_rate_pct
+    - arm_agreement_pct
+    - arm_agreement_lo_pct
+    - arm_agreement_hi_pct
+    - always_no_agreement_pct
+    - always_yes_agreement_pct
+    - flips_only_agreement_pct
+    - magnitude_only_agreement_pct
+    - persistence_only_agreement_pct
+    - persistence_magnitude_agreement_pct
+    - persistence_flips_agreement_pct
+    - magnitude_flips_agreement_pct
+    - flips_only_agreement_lo_pct
+    - flips_only_agreement_hi_pct
+    - best_trivial
+    - best_trivial_agreement_pct
+    - luna_n_common
+    - luna_agreement_pct
+    bytes: 28165
+    sha256: cae641b5f6d47216a61c436a5d47eb21fda2edcec4752fa4eb03a7385b11ef51
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e1_contested.csv:
+    rows: 226
+    columns:
+    - arm
+    - model
+    - series_key
+    - period
+    - definition
+    - n_windows
+    - n_contested
+    - contested_pct
+    - n_by_persistence
+    - n_by_magnitude
+    - n_by_flips
+    - rule_yes_in_contested
+    - arm_discordant_total
+    - arm_discordant_in_contested
+    - arm_agree_pct
+    - arm_agree_lo_pct
+    - arm_agree_hi_pct
+    - arm_sens_pct
+    - arm_sens_lo_pct
+    - arm_sens_hi_pct
+    - arm_spec_pct
+    - arm_spec_lo_pct
+    - arm_spec_hi_pct
+    - arm_ppv_pct
+    - arm_ppv_lo_pct
+    - arm_ppv_hi_pct
+    - flips_only_agree_pct
+    - flips_only_agree_lo_pct
+    - flips_only_agree_hi_pct
+    - flips_only_sens_pct
+    - flips_only_sens_lo_pct
+    - flips_only_sens_hi_pct
+    - flips_only_spec_pct
+    - flips_only_spec_lo_pct
+    - flips_only_spec_hi_pct
+    - flips_only_ppv_pct
+    - flips_only_ppv_lo_pct
+    - flips_only_ppv_hi_pct
+    - always_yes_agree_pct
+    - always_yes_agree_lo_pct
+    - always_yes_agree_hi_pct
+    - always_yes_sens_pct
+    - always_yes_sens_lo_pct
+    - always_yes_sens_hi_pct
+    - always_yes_spec_pct
+    - always_yes_spec_lo_pct
+    - always_yes_spec_hi_pct
+    - always_yes_ppv_pct
+    - always_yes_ppv_lo_pct
+    - always_yes_ppv_hi_pct
+    - arm_uncontested_agree_pct
+    bytes: 78965
+    sha256: b6d7194367204012e2afea30bce8f3c089bf15dcec1977162570b70ad93c9a0f
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e2_period_shift.csv:
+    rows: 162
+    columns:
+    - put_weight
+    - threshold_bn
+    - baseline
+    - rate_late_pct
+    - rate_baseline_pct
+    - shift_pp
+    - sign
+    bytes: 8157
+    sha256: a3e8c4d319759e1ff53a42386062877834b6033fb52882c577064bd2e85e0275
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e2_put_weight_grid.csv:
+    rows: 243
+    columns:
+    - put_weight
+    - threshold_bn
+    - period
+    - n_windows
+    - n_detected
+    - rate_pct
+    bytes: 8894
+    sha256: 27c6c0e7190e147ae39c92711d9634d4a1d0667ae03fe1a6e84175f604f84523
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e2_sign_crossings.csv:
+    rows: 15
+    columns:
+    - threshold_bn
+    - baseline
+    - put_weight
+    - from_sign
+    - to_sign
+    bytes: 470
+    sha256: bbccb3f7ba03fc1b5349f8fa71e8c9e28e05715b2263e885daf0d3e4f37aec90
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e3_episodes.csv:
+    rows: 18
+    columns:
+    - source
+    - start
+    - end
+    - length
+    - gap_before
+    bytes: 677
+    sha256: bca437cc337575cbb90f114161849ba996a42a53303cfc512fabb9152e660e43
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e3_ess.csv:
+    rows: 2
+    columns:
+    - source
+    - n_windows
+    - n_detected
+    - rate_pct
+    - n_episodes
+    - windows_per_episode_mean
+    - ess_acf
+    - ess_batch_30
+    - ess_batch_sqrt_n
+    - n_nonoverlapping_30d
+    bytes: 284
+    sha256: 13a6181c7aacfd69b15846c7dba3c083c7b574a8afb147293f9b1f61c5052012
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e3_intervals.csv:
+    rows: 26
+    columns:
+    - source
+    - method
+    - block_len
+    - rate_pct
+    - ci_lo_pct
+    - ci_hi_pct
+    - n_effective
+    bytes: 1536
+    sha256: 7c00878a8f46eaed93313bf90e88f522d9ee788d219a3cdc74d7aa5554759724
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e4_shift_margin.csv:
+    rows: 864
+    columns:
+    - window_set
+    - baseline
+    - threshold_bn
+    - block_len
+    - circular
+    - n_late
+    - n_baseline
+    - rate_late_pct
+    - rate_baseline_pct
+    - shift_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    - margin_pp
+    - upper_below_margin
+    - lower_above_minus_margin
+    - quarter_ci_lo_pp
+    - quarter_ci_hi_pp
+    bytes: 108065
+    sha256: 5e4c87bfc6ac78e2223a3ecfa64165976c6865de4a4a55466909779dcd92cea7
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e4_summary.csv:
+    rows: 72
+    columns:
+    - window_set
+    - baseline
+    - block_len
+    - circular
+    - n_thresholds
+    - n_upper_below_margin
+    - n_positive_shift
+    - max_ci_hi_pp
+    bytes: 3471
+    sha256: 9dac71fa49c348b41f93e2607eb8b0afec1c9386fcb3417d7ffc8072f66000a2
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e6_scale_by_year.csv:
+    rows: 19
+    columns:
+    - year
+    - n_days
+    - mean_spot
+    - mean_abs_net_bn
+    - mean_gross_bn
+    bytes: 776
+    sha256: 9f80cf8586f79755673bb92d71c4100e60a2cf3a81b7729f2f1cc43dbf4fbf9a
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e6_scale_free.csv:
+    rows: 70
+    columns:
+    - variant
+    - reference_years
+    - period
+    - n_windows
+    - n_detected
+    - rate_pct
+    - mean_threshold_bn
+    bytes: 4066
+    sha256: ff9b503af152e53e47f47c626b16e90ac00eaf7bad43270b0cc1b1e01faae0dc
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e6_scale_free_shift.csv:
+    rows: 14
+    columns:
+    - variant
+    - reference_years
+    - baseline
+    - block_len
+    - shift_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    bytes: 958
+    sha256: 593f12707f5a74a7bce8f096c4f9fd291a34ff803458d59e737808b51d96c796
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e9_era_interaction.csv:
+    rows: 36
+    columns:
+    - threshold_bn
+    - block_len
+    - era_a
+    - era_b
+    - gap_a_pp
+    - gap_b_pp
+    - interaction_pp
+    - ci_lo_pp
+    - ci_hi_pp
+    - ci_excludes_zero
+    bytes: 3060
+    sha256: 8da4191826db7ba63d6acfe92cb87811752c8762b9377bb3c4015d29aaea2499
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e9_pair_by_era.csv:
+    rows: 5
+    columns:
+    - era
+    - n_windows
+    - rate_full_pct
+    - rate_ex0dte_pct
+    - both
+    - only_full
+    - only_ex0dte
+    - neither
+    - discordant
+    - discordant_pct_of_windows
+    - detected_by_either
+    - discordant_pct_of_either
+    - gap_pp
+    - kappa
+    bytes: 591
+    sha256: 916fbbbc5f5b37310e319d1a3f5290ffddea9434c8685b63f11dade329a438bb
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e9_pair_by_weekday.csv:
+    rows: 15
+    columns:
+    - era
+    - weekday
+    - n_windows
+    - rate_full_pct
+    - rate_ex0dte_pct
+    - both
+    - only_full
+    - only_ex0dte
+    - neither
+    - discordant
+    - discordant_pct_of_windows
+    - detected_by_either
+    - discordant_pct_of_either
+    - gap_pp
+    - kappa
+    bytes: 1529
+    sha256: 1d80a68223fb04fb0472ffb8a99ac172baf7dbfbfb810bb63d718868ebdede38
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  stored_e9_same_day_share.csv:
+    rows: 20
+    columns:
+    - year
+    - n_days
+    - abs_0dte_share_of_abs_net
+    - abs_0dte_share_of_gross
+    - gross_removed_share
+    - net_removed_share_of_abs_net
+    - sign_flip_pct
+    bytes: 1214
+    sha256: d59fca424279beeac1b572d44223e3f57477a52b542d8f71743a58cfd57f5f4e
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_agreement_variants.csv:
+    rows: 79
+    columns:
+    - arm
+    - model
+    - series_key
+    - symbol
+    - period
+    - n_windows
+    - n_unanswered
+    - n_recoverable
+    - n_answered
+    - agree_answered
+    - agree_pct_answered
+    - kappa_answered
+    - n_unans_no
+    - agree_unans_no
+    - agree_pct_unans_no
+    - kappa_unans_no
+    - n_unans_error
+    - agree_unans_error
+    - agree_pct_unans_error
+    - kappa_unans_error
+    - n_rec
+    - agree_rec
+    - agree_pct_rec
+    - kappa_rec
+    - n_rec_error
+    - agree_rec_error
+    - agree_pct_rec_error
+    - kappa_rec_error
+    bytes: 13655
+    sha256: b149c964e3597830b57cc6f4126564ee4cfc648dea17784f67f0f6540c0eb4b1
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_analyses.yaml:
+    keys:
+    - module
+    - issue
+    - determinism
+    - parameters
+    - gates
+    - reconciliation
+    - n_answer_rows
+    - n_final_rows
+    - scanner_on_answered_rows
+    - files
+    bytes: 9743
+    sha256: a87f2367b898d8a96142505517e9900b5107fb906f403daadb26877660d8214c
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_answering_bands.csv:
+    rows: 36
+    columns:
+    - model
+    - scope
+    - variable
+    - band
+    - n_windows
+    - n_answered
+    - answered_pct
+    - n_rule_detect
+    bytes: 2370
+    sha256: 6a33bbf80ae2fcbd42c1384ef4f90e67f5ccfef201495d6d00adff7eca281da7
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_answering_logit.csv:
+    rows: 12
+    columns:
+    - model
+    - scope
+    - term
+    - coef
+    - se
+    - odds_ratio
+    - auc
+    - n
+    - n_answered
+    bytes: 1081
+    sha256: 90e0c148f0e1da50cf2e13b331a3555bc564649cbc10371c761997c39a9e2f1f
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_bounds_with_recoverable.csv:
+    rows: 39
+    columns:
+    - arm
+    - model
+    - series_key
+    - symbol
+    - period
+    - n_windows
+    - n_parsed
+    - n_detected_parsed
+    - rate_parsed_pct
+    - n_unparsed
+    - lower_pct
+    - upper_pct
+    - n_recoverable
+    - n_recoverable_true
+    - n_unrecoverable
+    - lower_rec_pct
+    - upper_rec_pct
+    - rate_with_rec_pct
+    - width_pp
+    - width_rec_pp
+    bytes: 5662
+    sha256: e3db7bbc8393fc69d615f8a7074f01574fdb2bc5dacb878e332361c0944a4000
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_census_unanswered.csv:
+    rows: 265
+    columns:
+    - model
+    - arm
+    - arm_role
+    - request_cap
+    - kind
+    - finish_reason
+    - cap_reached
+    - rule
+    - n
+    bytes: 20438
+    sha256: 352175a00f8bc969b5299f39e10e18775415714b9e3a44877b11dd9c0451b5bb
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_contested_agreement.csv:
+    rows: 214
+    columns:
+    - arm
+    - model
+    - series_key
+    - symbol
+    - stratum
+    - n_windows
+    - n_answered
+    - answered_pct
+    - n_rule_detect
+    - agree_pct_answered
+    - agree_pct_unans_error
+    - kappa_answered
+    bytes: 21868
+    sha256: 61cf8c4114a34b533c171b8c838d4168b7653d178c36dfca54c2426a92e10251
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_contested_sensitivity.csv:
+    rows: 352
+    columns:
+    - arm
+    - model
+    - series_key
+    - symbol
+    - stratum
+    - n_windows
+    - n_answered
+    - answered_pct
+    - n_rule_detect
+    - agree_pct_answered
+    - agree_pct_unans_error
+    - kappa_answered
+    - margin_set
+    - margin_days
+    - margin_billions
+    - margin_flips_above
+    - margin_flips_below
+    - is_default
+    bytes: 43410
+    sha256: 7a30b4b5f9be8ece2db08636aed33e7d7aa7bc812bd6022c035cc13ce3af1f83
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_gpu_time.csv:
+    rows: 6
+    columns:
+    - model
+    - n_runs
+    - n_gpus
+    - seconds_sum
+    - hours_sum
+    - union_hours
+    - gpu_busy_hours
+    - max_engines_per_gpu
+    - span_hours
+    - max_concurrent
+    - n_same_gpu_overlaps
+    - seconds_vs_interval_max_abs
+    bytes: 561
+    sha256: 4d588c15d786930f392d544ba67793fd6652b17b15da28f364650cce0a24f3ab
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_gpu_time_runs.csv:
+    rows: 156
+    columns:
+    - model
+    - run_id
+    - gpu
+    - seconds
+    - started_at
+    - completed_at
+    bytes: 18570
+    sha256: 520785ea0c6d909321d719324c5e66a921dcf4c1681e377ab26d3b567c951967
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_recoverable_first_pass_vs_retry.csv:
+    rows: 3
+    columns:
+    - model
+    - n
+    - n_same
+    - n_first_agrees_rule
+    - n_retry_agrees_rule
+    bytes: 123
+    sha256: 3a62b27948089dfa384aefe5fcb1b0468697afb9bd33e697bfc36cfd92544369
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_recoverable_verdicts.csv:
+    rows: 60
+    columns:
+    - population
+    - model
+    - arm
+    - n_rows
+    - n_with_text
+    - n_verdict
+    - n_verdict_true
+    - n_verdict_false
+    - n_cut_after_verdict
+    - n_cut_before_verdict
+    - n_complete
+    - n_verdict_rule_detect
+    - n_verdict_rule_reject
+    - n_verdict_agrees_rule
+    bytes: 4551
+    sha256: 5a6bb349884891ccc08c92afcf873e05d711ee9d8513478e977bcf81fe90edbf
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
+  unanswered_repeat_stability.csv:
+    rows: 45
+    columns:
+    - model
+    - base_arm
+    - n_repeated
+    - n_both
+    - n_original_only
+    - n_repeat_only
+    - n_neither
+    - n_one_pass_only
+    - n_same_verdict
+    - agree_pct
+    - kappa
+    bytes: 2859
+    sha256: 4f896738d068e87cce400443ae5404f76a77ddc29007948945ee23e172718e69
+    produced_with:
+      inputs_fingerprint: 4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9
+      script_sha256: 391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc
+      common_sha256: d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa
+      seed: 261
+      n_boot: 2000
+      generated_at: '2026-11-24T06:41:51+00:00'
 untracked_files: []
 warnings: []
 diagnostics:
@@ -9985,6 +11219,11 @@ headline:
       n_pairs: 235
       agree_pct: 99.148936
       kappa: 0.955238
+    - ref_arm: full_spy
+      other_arm: full_spy#rep2
+      n_pairs: 300
+      agree_pct: 98.0
+      kappa: 0.960005
     - ref_arm: intraday_spy
       other_arm: intraday_spy#rep1
       n_pairs: 3
@@ -12684,13 +13923,244 @@ headline:
       n: 1476
       median_ratio: 1.018359
   cost:
-    est_cost_usd: 10.020749
-    spent_usd: 10.020749
-    committed_usd: 10.020749
-    remaining_to_hard_stop_usd: 1.979251
+    est_cost_usd: 10.107226
+    spent_usd: 10.107226
+    committed_usd: 10.171336
+    remaining_to_hard_stop_usd: 1.828664
     historical_backfill_usd: 9.967462
-    est_cost_usd_all_stored_runs: 19.988211
-    cost_per_request_usd: 0.000279651
+    est_cost_usd_all_stored_runs: 20.074688
+    cost_per_request_usd: 0.000279723
+  drift:
+    n_drift_runs: 2
+    n_drift_runs_without_answers: 1
+    later_date_repeats:
+    - repeat_arm: full_spy#rep2
+      n_windows_compared: 300
+      pct_same: 98.0
+      kappa: 0.960005
+      n_toward_rule: 3
+      n_away_from_rule: 3
+      original_answer_first: '2026-10-29'
+      original_answer_last: '2026-11-03'
+      repeat_answer_first: '2026-11-24'
+      repeat_answer_last: '2026-11-24'
+      same_job_pct_same: 99.148936
+    file: drift_summary.csv
+    runs_file: drift_runs.csv
+  llm_departures:
+    note: pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not independent
+      and p_binomial is descriptive only
+    file: llm_departures.csv
+    luna_pooled_all:
+      n_arms: 9
+      n_compared: 16439
+      n_disagree: 45
+      n_model_yes_rule_no: 29
+      n_model_no_rule_yes: 16
+      share_model_yes_pct: 64.444444
+      p_binomial: 0.072454
+    luna_arms_all:
+    - arm: bridge_jan
+      n_disagree: 6
+      n_model_yes_rule_no: 5
+      n_model_no_rule_yes: 1
+      p_binomial: 0.21875
+    - arm: full_spy
+      n_disagree: 16
+      n_model_yes_rule_no: 12
+      n_model_no_rule_yes: 4
+      p_binomial: 0.076813
+    - arm: ex0dte_spy
+      n_disagree: 14
+      n_model_yes_rule_no: 9
+      n_model_no_rule_yes: 5
+      p_binomial: 0.42395
+    - arm: p34_obf_2024
+      n_disagree: 1
+      n_model_yes_rule_no: 0
+      n_model_no_rule_yes: 1
+      p_binomial: 1.0
+    - arm: p34_dated_2024
+      n_disagree: 0
+      n_model_yes_rule_no: 0
+      n_model_no_rule_yes: 0
+      p_binomial: null
+    - arm: p34_obf_2020
+      n_disagree: 0
+      n_model_yes_rule_no: 0
+      n_model_no_rule_yes: 0
+      p_binomial: null
+    - arm: p34_dated_2020
+      n_disagree: 0
+      n_model_yes_rule_no: 0
+      n_model_no_rule_yes: 0
+      p_binomial: null
+    - arm: intraday_spy
+      n_disagree: 0
+      n_model_yes_rule_no: 0
+      n_model_no_rule_yes: 0
+      p_binomial: null
+    - arm: bridge_old
+      n_disagree: 8
+      n_model_yes_rule_no: 3
+      n_model_no_rule_yes: 5
+      p_binomial: 0.726562
+  stored_analyses:
+    contested_windows_pivotal:
+      value: 521
+      file: stored_e1_contested.csv
+      row:
+        arm: full_spy
+        period: all
+        definition: pivotal
+      column: n_contested
+    contested_windows_margin1:
+      value: 764
+      file: stored_e1_contested.csv
+      row:
+        arm: full_spy
+        period: all
+        definition: margin1
+      column: n_contested
+    luna_agree_pct_in_pivotal_contested:
+      value: 97.504798
+      file: stored_e1_contested.csv
+      row:
+        arm: full_spy
+        period: all
+        definition: pivotal
+      column: arm_agree_pct
+    luna_agree_pct_outside_pivotal_contested:
+      value: 99.928058
+      file: stored_e1_contested.csv
+      row:
+        arm: full_spy
+        period: all
+        definition: pivotal
+      column: arm_uncontested_agree_pct
+    flips_only_agreement_pct_full_spy:
+      value: 63.717757
+      file: stored_e1_comparators.csv
+      row:
+        arm: full_spy
+        period: all
+      column: flips_only_agreement_pct
+    luna_agreement_pct_full_spy:
+      value: 99.658921
+      file: stored_e1_comparators.csv
+      row:
+        arm: full_spy
+        period: all
+      column: arm_agreement_pct
+    episodes_rule_2024_2025:
+      value: 7
+      file: stored_e3_ess.csv
+      row:
+        source: rule
+      column: n_episodes
+    ess_acf_rule_2024_2025:
+      value: 31.735244
+      file: stored_e3_ess.csv
+      row:
+        source: rule
+      column: ess_acf
+    moving_block_60_ci_lo_pct_rule:
+      value: 3.784861
+      file: stored_e3_intervals.csv
+      row:
+        source: rule
+        method: moving_block
+        block_len: 60
+      column: ci_lo_pct
+    moving_block_60_ci_hi_pct_rule:
+      value: 24.103586
+      file: stored_e3_intervals.csv
+      row:
+        source: rule
+        method: moving_block
+        block_len: 60
+      column: ci_hi_pct
+    e4_thresholds_upper_below_margin_all_2020_2023_block60:
+      value: 1
+      file: stored_e4_summary.csv
+      row:
+        window_set: all
+        baseline: 2020-2023
+        block_len: 60
+        circular: false
+      column: n_upper_below_margin
+    e4_shift_pp_at_5bn_all_2020_2023_block60:
+      value: -10.236863
+      file: stored_e4_shift_margin.csv
+      row:
+        window_set: all
+        baseline: 2020-2023
+        threshold_bn: 5.0
+        block_len: 60
+        circular: false
+      column: shift_pp
+    e6_spot_squared_shift_pp:
+      value: -17.401637
+      file: stored_e6_scale_free_shift.csv
+      row:
+        variant: spot_squared
+        reference_years: 2024-2025
+        block_len: 60
+      column: shift_pp
+    e13_published_windows_before_break_equal_complete:
+      value: 865
+      file: stored_e13_lineage_by_break.csv
+      row:
+        published_vs: complete
+        part: windows ending before the break
+      column: equal
+    e13_published_windows_before_break_n:
+      value: 911
+      file: stored_e13_lineage_by_break.csv
+      row:
+        published_vs: complete
+        part: windows ending before the break
+      column: n_windows
+  unanswered_analyses:
+    contested_definition: pivotal
+    n_unanswered_primary_arms: 1035
+    qwen_contested_agree_pct_answered:
+      value: 92.290749
+      file: unanswered_contested_agreement.csv
+      row:
+        arm: qwen_full_spy
+        stratum: contested
+      column: agree_pct_answered
+    qwen_contested_answered_pct:
+      value: 87.140115
+      file: unanswered_contested_agreement.csv
+      row:
+        arm: qwen_full_spy
+        stratum: contested
+      column: answered_pct
+    luna_contested_agree_pct:
+      value: 97.504798
+      file: unanswered_contested_agreement.csv
+      row:
+        arm: full_spy
+        stratum: contested
+      column: agree_pct_answered
+    contested_windows_full_spy:
+      value: 521
+      file: unanswered_contested_agreement.csv
+      row:
+        arm: full_spy
+        stratum: contested
+      column: n_windows
+    qwen_full_spy_bounds_with_recoverable_all_periods:
+      value: 13.835003
+      file: unanswered_bounds_with_recoverable.csv
+      row:
+        arm: qwen_full_spy
+        period: all
+        series_key: new_full
+        symbol: SPY
+      column: lower_rec_pct
 caveats:
 - Windows have stride 1 and overlap; Wilson intervals in detection_by_year.csv are descriptive. Inference is in
   stats.yaml (quarter-block bootstrap and non-overlapping 30-day subsample next to every p-value).

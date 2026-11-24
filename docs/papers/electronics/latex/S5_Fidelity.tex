@@ -35,3 +35,6 @@ Arm & Windows & Accuracy (\%) & Cohen's kappa & Metrics agree (\%) & Flips exact
 \bottomrule
 \end{tabular}
 \end{table}
+
+% src: llm_departures.csv model=gpt-6-luna scope=arm arm=full_spy period=all (n_disagree 16, n_model_yes_rule_no 12, n_model_no_rule_yes 4, p_binomial 0.077) and scope=pooled period=all (n_arms 9, n_disagree 45, n_model_yes_rule_no 29, n_model_no_rule_yes 16, share_model_yes_pct 64.4, p_binomial 0.072)
+\paragraph{Direction of the departures.} On the nine SPY arms (the file of departures leaves out the scaled QQQ and IWM arms) the model differs from the rule in 45 windows, 29 of them detections that the rule rejects (64.4\%) and 16 rejections of a detection. On \ident{full_spy} alone it differs in 16 windows, 12 of that kind. The exact binomial tests give $p=0.072$ and $p=0.077$; both are descriptive, because the arms read overlapping windows. The departures lean toward detection, but the lean is not established.

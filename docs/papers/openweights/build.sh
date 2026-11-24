@@ -87,7 +87,7 @@ SUP_PAGES=$(sed -n 's/^Output written on .* (\([0-9]*\) pages.*/\1/p' "$SUPPLEME
 # The article cites the supplement tables by number and the supplement cites two article numbers: they must match.
 number_of() { sed -n "s/.*newlabel{$2}{{\([^}]*\)}.*/\1/p" "$1" | head -1; }
 STALE=""
-for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:engine=S7"; do
+for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:unans=S7" "tab:s:agree=S8" "tab:s:bands=S9" "tab:s:contested=S10" "tab:s:engine=S11"; do
   [ "$(number_of "$SUPPLEMENT.aux" "${pair%%=*}")" = "${pair##*=}" ] || STALE="$STALE ${pair%%=*}(is $(number_of "$SUPPLEMENT.aux" "${pair%%=*}"), the article says ${pair##*=})"
 done
 for pair in "tab:results=2" "sec:methods=3"; do

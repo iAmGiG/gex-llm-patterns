@@ -1,0 +1,13 @@
+model,scope,term,coef,se,odds_ratio,auc,n,n_answered
+qwen3-8b,full_spy,intercept,11.089671,1.678579,65491.182913,0.744327,4691,4206
+qwen3-8b,full_spy,persistence_per_10pp,-0.440691,0.048297,0.643592,0.744327,4691,4206
+qwen3-8b,full_spy,log10_magnitude_bn,-0.43532,0.172162,0.647058,0.744327,4691,4206
+qwen3-8b,full_spy,sign_flips,-0.15236,0.01861,0.858679,0.744327,4691,4206
+qwen3-8b,full_spy,positive_dominant,-1.231296,0.115311,0.291914,0.744327,4691,4206
+qwen3-8b,full_spy,rule_detects,2.762819,0.397743,15.844448,0.744327,4691,4206
+qwen3-8b,all_primary_arms,intercept,11.87428,1.082776,143527.171896,0.743013,11750,10718
+qwen3-8b,all_primary_arms,persistence_per_10pp,-0.273554,0.030774,0.760671,0.743013,11750,10718
+qwen3-8b,all_primary_arms,log10_magnitude_bn,-0.650944,0.111981,0.521553,0.743013,11750,10718
+qwen3-8b,all_primary_arms,sign_flips,-0.165842,0.012594,0.84718,0.743013,11750,10718
+qwen3-8b,all_primary_arms,positive_dominant,-0.912618,0.072114,0.401472,0.743013,11750,10718
+qwen3-8b,all_primary_arms,rule_detects,2.696354,0.240949,14.825573,0.743013,11750,10718

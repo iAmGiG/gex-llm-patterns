@@ -1,0 +1,3 @@
+source,n_windows,n_detected,rate_pct,n_episodes,windows_per_episode_mean,ess_acf,ess_batch_30,ess_batch_sqrt_n,n_nonoverlapping_30d
+rule,502,60,11.952191,7,8.571429,31.735244,29.388954,41.779226,16.733333
+gpt-6-luna,502,63,12.549801,11,5.727273,33.744577,31.133534,44.49869,16.733333

@@ -1,14 +1,15 @@
 \section{Run Ledgers of the Local Runs}
 \label{sup:ledger}
 
-Tables~\ref{tab:s:led:oss}, \ref{tab:s:led:llama} and~\ref{tab:s:led:qwen} list the local runs of gpt-oss-20b, Llama~3.1~8B and Qwen3-8B (Section~3 of the article) and, below the total of each model, the variant runs (reasoning first, temperature 0), one row per chunk, with the requests, the tokens and the GPU time. The runs cost nothing. The hosted Batch runs of the companion manuscript (Paper A) are listed in its supplement and are not repeated here.
+Tables~\ref{tab:s:led:oss}, \ref{tab:s:led:llama} and~\ref{tab:s:led:qwen} list the local runs of gpt-oss-20b, Llama~3.1~8B and Qwen3-8B (Section~3 of the article) and, below the total of each model, the variant runs (reasoning first, temperature 0), one row per chunk, with the requests, the tokens and the GPU time. The GPU minutes are the engine time of a chunk (process seconds) and the totals are their sums; chunks overlapped on several GPUs, so the elapsed time, the hours during which at least one engine of the model was running, is shorter: 4.9 hours for gpt-oss-20b on three GPUs (10.0 summed), 2.2 hours for Llama~3.1~8B on five (3.3 summed) and 31.7 hours for Qwen3-8B on four (98.5 summed); the variants took 1.4 hours (reasoning first, two GPUs, 2.3 summed), 0.5 hours (gpt-oss-20b, temperature 0) and 0.3 hours (Llama~3.1~8B, temperature 0). The runs cost nothing. The hosted Batch runs of the companion manuscript (Paper A) are listed in its supplement and are not repeated here.
 
+% src: unanswered_gpu_time.csv (model, n_gpus, hours_sum, union_hours: gpt-oss-20b 3, 10.012, 4.856; llama-3.1-8b-instruct 5, 3.307, 2.191; qwen3-8b 4, 98.455, 31.669, gpu_busy_hours 82.317; llama-3.1-8b-instruct-rf 2, 2.35, 1.447; gpt-oss-20b-t0 2, 0.497, 0.497; llama-3.1-8b-instruct-t0 2, 0.265, 0.265).
 % src: runs.csv.gz (condensed/) rows with mode=local and model gpt-oss-20b-t0, llama-3.1-8b-instruct-rf, llama-3.1-8b-instruct-t0 (run_id, n_requests, prompt_tokens, completion_tokens, run_metadata.local.seconds / 60, run_metadata.retry_of); the variants are listed below the total of the original runs of each table, with their own totals.
 
 % src: cost_ledger.csv rows with model = gpt-oss-20b (n_requests, prompt_tokens, completion_tokens, status); runs parquet run_metadata.local.seconds (GPU minutes) and run_metadata.retry_of (the retry runs)
 \begin{table}[H]
 \centering
-\caption{Run ledger: the local runs of gpt-oss-20b, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each. The GPU minutes include the start of the engine and depend on the load that other users put on the shared GPUs. The four runs marked \emph{retry} above the variant block request again the answers that ended at the limit of 4{,}000 completion tokens, at 8{,}000 tokens; their answers replace the cut-off ones. The run with the timestamp 20261107T205228Z holds six test-retest repeats that a second generation step added while other chunks of the arm were still running, so \ident{oss_ex0dte_spy} carries 241 repeats instead of 235.}
+\caption{Run ledger: the local runs of gpt-oss-20b, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each. The GPU minutes include the start of the engine and depend on the load that other users put on the shared GPUs. The four runs marked \emph{retry} above the variant block request again the answers that ended at the limit of 4{,}000 completion tokens, at 8{,}000 tokens; their answers replace the cut-off ones. The run with the timestamp 20261107T205228Z holds six test-retest repeats that a second generation step added while other chunks of the arm were still running, so \ident{oss_ex0dte_spy} carries 241 repeats instead of 235. The total of the original runs is 10.0 hours of summed engine time, 4.9 hours elapsed.}
 \label{tab:s:led:oss}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -53,7 +54,7 @@ Total (variant) & 1{,}614 & 3{,}002{,}040 & 2{,}979{,}671 & 29.8 & \\
 {\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{longtable}{@{}p{4.9cm}rrrrl@{}}
-\caption{Run ledger: the local runs of Llama~3.1~8B, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each, as in Table~\ref{tab:s:led:oss}. In the verdict-first runs no answer reached the token limit, so there is no retry run; the reasoning-first variant has one retry request (marked \emph{retry}).}\\
+\caption{Run ledger: the local runs of Llama~3.1~8B, one row per chunk, answered by vLLM~0.32.0 on one NVIDIA A100 GPU each, as in Table~\ref{tab:s:led:oss}. In the verdict-first runs no answer reached the token limit, so there is no retry run; the reasoning-first variant has one retry request (marked \emph{retry}). The total of the original runs is 3.3 hours of summed engine time, 2.2 hours elapsed.}\\
 \label{tab:s:led:llama}\\
 \toprule
 Run identifier & Requests & Prompt tokens & Completion tokens & GPU minutes & Status \\
@@ -113,7 +114,7 @@ Total (temperature 0) & 1{,}590 & 2{,}893{,}800 & 279{,}527 & 15.9 & \\
 % src: cost_ledger.csv rows with model = qwen3-8b (n_requests, prompt_tokens, completion_tokens), summed per run (98 chunks); runs parquet run_metadata.local.seconds (GPU minutes, summed per run) and run_metadata.retry_of (the retry runs: 10,022 requests); planning/02_decisions_log.md D-32
 \begin{table}[H]
 \centering
-\caption{Run ledger: the local runs of Qwen3-8B, answered by vLLM~0.32.0 as in Table~\ref{tab:s:led:oss}, one row per run with its chunks summed (the first passes ran in chunks of about 150 requests). The runs marked \emph{retry} request again, at 8{,}000 tokens, the answers that ended at the limit of 4{,}000 completion tokens (10{,}022 of the 12{,}378 first-pass requests); their answers replace the cut-off ones. The GPU minutes depend on the load of the shared GPUs: the engine took 27\% to 45\% of the memory of a GPU that other users were also using, and the retry runs, whose answers are the longest, ran in a few large chunks.}
+\caption{Run ledger: the local runs of Qwen3-8B, answered by vLLM~0.32.0 as in Table~\ref{tab:s:led:oss}, one row per run with its chunks summed (the first passes ran in chunks of about 150 requests). The runs marked \emph{retry} request again, at 8{,}000 tokens, the answers that ended at the limit of 4{,}000 completion tokens (10{,}022 of the 12{,}378 first-pass requests); their answers replace the cut-off ones. The GPU minutes depend on the load of the shared GPUs: the engine took 27\% to 45\% of the memory of a GPU that other users were also using, and the retry runs, whose answers are the longest, ran in a few large chunks. The total is 98.5 hours of summed engine time; the elapsed time was 31.7 hours, and the GPUs were busy for 82.3 hours because two engines shared a GPU at times.}
 \label{tab:s:led:qwen}
 \scriptsize
 \setlength{\tabcolsep}{3pt}

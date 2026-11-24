@@ -11,7 +11,7 @@ The published inputs follow two different series (Table~\ref{tab:lineage}). In 2
 % src: results/report.yaml sections.published_input_gaps.summary (definition; n_affected_days 39, first_affected_day 2021-09-17, last_affected_day 2023-09-27, affected_days_by_year 2021: 2, 2022: 3, 2023: 34; n_published_days_before_break 940, n_equal_complete_before_break 900, n_equal_neither_before_break 1 (2022-05-31: published -1.33, complete -1.227519 billion); n_days_from_break 565 = n_days_from_break_equal_call_only, n_days_from_break_equal_complete 0; n_recomputed_verdicts_not_equal_to_stored 0 of n_published_windows 1,476); published_input_gaps.csv (39 rows; sign_changes true on 25 of 39); published_input_gaps_by_year.csv scope=all (n_windows 911, n_windows_with_affected_day 332, n_verdicts_changed 46, n_changed_to_detect 45, n_changed_to_not_detect 1)
 The 39 earlier call-only days need a definition and their effect. An affected day is a trading day before 2023-09-29 on which the published value equals the stored call-only value (to within \$0.006~billion, the 0.01B rounding of the prompt) and differs from the complete value. Of the 940 published days before that date, 900 equal the complete series, 39 are affected (2 in 2021, 3 in 2022 and 34 in 2023, from 2021-09-17 to 2023-09-27), and one, 2022-05-31, equals neither series: the published value is $-$\$1.33~billion against $-$\$1.23~billion on the complete series, and we leave it as published. The 39 affected days are listed with the three values in \path{results/published_input_gaps.csv}; on 25 of them the complete value has the other sign. We did not establish why these days and no others before 2023-09-29 carry the call leg only. Table~\ref{tab:gaps} shows their effect on the 911 published windows that end before 2023-09-29. With no day replaced, the rule reproduces the stored verdict in all 1{,}476 published windows. The affected days lie in 332 of the 911 windows (36.4\%). Replacing them by the complete values, rounded to the 0.01B of the prompt, changes 46 verdicts of the rule, 45 of them from not detected to detected: the rate for 2022 rises from 32.3\% to 40.6\%, and that for 2023 before the break from 1.6\% to 14.6\%. In every year the rate with the days replaced equals the rule's rate on the complete series for the same end dates. The published inputs of 2021 to 2023 are therefore not a clean reference either, and Table~\ref{tab:replay} should be read with this in mind. The shift of Section~\ref{sec:results:replay} is computed on the complete series and does not depend on these days.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Effect of the call-only days before 2023-09-29 on the rule's verdicts on the published windows that end before that date, SPY (windows by year of the window end; for 2023, ends up to 2023-09-28). Rates are in percent with the windows detected in brackets. An affected day is a trading day on which the published value equals the call-only value within \$0.006~billion and differs from the complete value (Section~\ref{sec:results:inputs}); ``replaced'' sets these days to the complete value, and ``changed'' counts the windows whose verdict differs between the two columns.}
 \label{tab:gaps}
@@ -42,7 +42,7 @@ The pre-rebuild archive (\ident{old_bs}) was computed from the same put-less tab
 % src: series parquet p3_2024_SPY and p4_2020_SPY (252 values each; sign counts, positive-value range, mean absolute value); windows.csv.gz series_key=p3_2024 and p4_2020 (223 windows each)
 The inputs of the Phase 3 and 4 runs of November 2025 survive in the same way: 252 daily values for 2024 and 252 for 2020, 223 windows each, with ISO dates in the prompts. The 2024 values are a gross call-plus-put magnitude with a negative sign imposed. They are negative on 242 days, and the 10 positive values (\$10.61~billion to \$13.76~billion) are placeholder rows of the source database. The 2020 values are a magnitude only and are positive on every day. The mean absolute daily value is \$31.24~billion for 2024 and \$2.85~billion for 2020, so the two baselines differ in convention and in scale (Section~\ref{sec:results:dated}).
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Agreement of the recovered published inputs with each candidate series, by year (share of daily values equal at the 0.01B precision of the prompt, in percent). The archive uses another gamma model, so exact equality is not expected for it.}
 \label{tab:lineage}
@@ -69,7 +69,7 @@ Year & Days & \ident{new_full} & \ident{call_only} & \ident{old_bs} \\
 
 
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \resultfigure{\figSeries}
 % src: series_comparison.csv SPY by year (pairs jan2026_phase4a_vs_new_full, call_only_vs_jan2026_phase4a, new_full_vs_new_ex0dte: mean_abs_a_bn, mean_abs_b_bn, sign_agree_pct)
