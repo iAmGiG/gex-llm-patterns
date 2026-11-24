@@ -2,7 +2,7 @@
 # Build the open-weights paper (Paper B, MDPI class): docs/papers/openweights/latex/Regan_Xie_OpenWeights.pdf
 #
 # Usage: docs/papers/openweights/build.sh [--strict | --final | --overleaf | --clean | -h | --help]
-#   (no option)  pdflatex, bibtex, pdflatex, pdflatex; print the page count (target 12-15), a warning summary and the counts of
+#   (no option)  pdflatex, bibtex, pdflatex, pdflatex; print the page count, a warning summary and the counts of
 #                \tbd and \pending placeholders (in total and per source file, the main file included)
 #   --strict     as above, then exit 1 unless the manuscript compiles cleanly: no undefined references or citations, no bibtex
 #                warnings, no missing figure files, no \tbd, no "Working title" left in \Title, no reference that still changed in
@@ -113,7 +113,7 @@ TITLE_OPEN=$({ live | grep -c 'Working title' || true; })
 TODO_AUTHORS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(authors)' || true; } | wc -l)
 TODO_RUNS_SRC=$({ cat "${ALLSRC[@]}" | grep -o 'TODO(runs)' || true; } | wc -l)
 
-echo "=== SUCCESS: latex/$MAIN.pdf (${PAGES:-?} pages; target 12-15) ==="
+echo "=== SUCCESS: latex/$MAIN.pdf (${PAGES:-?} pages) ==="
 echo "undefined references/citations: $UNDEF   bibtex warnings: $BIBWARN   missing figures: $MISSING   unresolved \\tbd: $TBD   \\pending: $PENDING   working title left: $TITLE_OPEN   overfull boxes: $OVERFULL"
 echo "open markers in the sources: TODO(authors) $TODO_AUTHORS_SRC, TODO(runs) $TODO_RUNS_SRC"
 echo "\\pending by file:${PENDING_BY_FILE%,}"
