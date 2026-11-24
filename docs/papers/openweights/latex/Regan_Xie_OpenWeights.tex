@@ -16,6 +16,7 @@
 %    - The parts are pulled in as ./NN_Name on purpose: build.sh puts ../../jrfm on TEXINPUTS and the JRFM folder has files of the
 %      same names (01_Introduction, 02_Related_Work, 05_Discussion, 06_Conclusion), so a bare name would typeset the wrong text.
 %    - Figures are the PNGs written by ../figures/scripts into ../figures/output (300 dpi, 6.14 in wide); the stems are registered once, below.
+% Journal: Electronics (MDPI), as in the companion manuscript (docs/papers/electronics); Special Issue and article type as for Paper A (to be confirmed by the authors).
 \documentclass[electronics,article,submit,moreauthors,pdftex]{Definitions/mdpi}
 
 \firstpage{1}
@@ -28,6 +29,10 @@
 \pubyear{2026}
 \copyrightyear{2026}
 \history{Received: date; Accepted: date; Published: date}
+
+% Layout tightening for the 15-page budget: tighter float spacing and narrower caption margins (no text effect).
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}\setlength{\floatsep}{8pt plus 2pt minus 2pt}\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\captionsetup{margin=0.2cm}
 
 %% Additional packages
 \usepackage{tabularx}  % wrapped text columns in the tables
@@ -55,13 +60,13 @@
 \newcommand{\figDepart}{bf04_departures}
 \newcommand{\figOrder}{bf05_llama_schema_order}
 
-% \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
+% \resultfigure{\figXxx}: PNG at 0.70 of the text width (15-page budget) from \figdir, or a visible placeholder box plus a log warning if it is missing.
 \IfFileExists{figures/bf01_reproduction_ladder.png}{\newcommand{\figdir}{figures}}{\newcommand{\figdir}{../figures/output}}  % figures/ in the Overleaf package, ../figures/output in the repository
 \newcommand{\resultfigure}[1]{%
   \begingroup
   \edef\figstem{#1}%
   \IfFileExists{\figdir/\figstem.png}%
-    {\includegraphics[width=\textwidth]{\figdir/\figstem.png}}%
+    {\includegraphics[width=0.70\textwidth]{\figdir/\figstem.png}}%
     {\GenericWarning{}{Missing figure file \figdir/\figstem.png}%
      \fbox{\parbox[c][4cm][c]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{\centering\ttfamily
        Missing figure file\\\expandafter\detokenize\expandafter{\figstem}.png}}}%
@@ -132,7 +137,7 @@ $^{1}$ \quad College of Computing and Software Engineering, Kennesaw State Unive
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{6pt}
 
-\supplementary{The following supporting information is available with this article: Section~S1 and Tables~S1--S3, run ledgers of the local runs; Section~S2 and Tables~S4--S6, detail of the three models; Section~S3 and Table~S7, engine settings.}
+\supplementary{The following supporting information is available with this article: Section~S1 and Tables~S1--S3, run ledgers of the local runs; Section~S2 and Tables~S4--S6, detail of the three models; Section~S3 and Table~S7, engine settings; Section~S4 and Table~S8, decoding control.}
 
 % TODO(authors): Dr. Xie to confirm the CRediT roles; the text below is the statement of the companion manuscript.
 \authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}

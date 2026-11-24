@@ -1,0 +1,23 @@
+%  Section S4: decoding control on the published inputs (Table S8); moved from Section 4.7 of the article to keep it within 15 pages (layout only).
+%=================================================================
+\section{Decoding Control}
+\label{sup:decoding}
+
+\begin{table}[H]
+\centering
+\caption{Decoding control on the published inputs (\ident{bridge_jan}, 1{,}476 windows): default sampling (stored arms) and temperature 0 (run D-34). Agreement with the rule (kappa) and with the default-sampling arm of the same model, in percent; windows answered in both arms for the latter.}
+% src: as the comment above: detection_by_year.csv (n_detect, agree_pct, kappa of oss_bridge_jan, osst0_bridge_jan, llama_bridge_jan, llamat0_bridge_jan), bridge_agreement.csv test_retest (74 of 74, 73 of 73, 74 of 74, 74 of 74), condensed/detections.csv.gz (1,465 of 1,475; 1,476 of 1,476)
+\label{tab:s:decoding}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}Xrrrr@{}}
+\toprule
+Model and sampling & Detected & Agree with the rule (kappa) & Agree with default & Repeats equal \\
+\midrule
+gpt-oss-20b, default (temperature 1.0) & 673 & 99.6 (0.992) & --- & 74 of 74 \\
+gpt-oss-20b, temperature 0 & 669 & 99.7 (0.995) & 99.3 & 73 of 73 \\
+Llama~3.1~8B, default (0.6, top-p 0.9) & 1{,}476 & 45.2 (0.000) & --- & 74 of 74 \\
+Llama~3.1~8B, temperature 0 & 1{,}476 & 45.2 (0.000) & 100.0 & 74 of 74 \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -27,7 +27,7 @@ SECTIONS=(01_Introduction 02_Related_Work 03_Methods
   04_01_Overview 04_02_Oss 04_03_Llama 04_04_Qwen 04_05_Departures 04_06_Order 04_07_Repeat 04_08_Cost
   05_Discussion 06_Conclusion 07_Appendix_A_Schema)
 SUPPLEMENT="Regan_Xie_OpenWeights_Supplement"
-SUPPLEMENT_PARTS=(S1_Run_Ledger S2_Detail S3_Engine)
+SUPPLEMENT_PARTS=(S1_Run_Ledger S2_Detail S3_Engine S4_Decoding)
 
 die() { echo "$*" >&2; exit 1; }
 usage() { awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "${BASH_SOURCE[0]}"; }
@@ -87,7 +87,7 @@ SUP_PAGES=$(sed -n 's/^Output written on .* (\([0-9]*\) pages.*/\1/p' "$SUPPLEME
 # The article cites the supplement tables by number and the supplement cites two article numbers: they must match.
 number_of() { sed -n "s/.*newlabel{$2}{{\([^}]*\)}.*/\1/p" "$1" | head -1; }
 STALE=""
-for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:engine=S7"; do
+for pair in "tab:s:led:oss=S1" "tab:s:led:llama=S2" "tab:s:led:qwen=S3" "tab:s:oss=S4" "tab:s:llama=S5" "tab:s:qwen=S6" "tab:s:engine=S7" "tab:s:decoding=S8"; do
   [ "$(number_of "$SUPPLEMENT.aux" "${pair%%=*}")" = "${pair##*=}" ] || STALE="$STALE ${pair%%=*}(is $(number_of "$SUPPLEMENT.aux" "${pair%%=*}"), the article says ${pair##*=})"
 done
 for pair in "tab:results=2" "sec:methods=3"; do
