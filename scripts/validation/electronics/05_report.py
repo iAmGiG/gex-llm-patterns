@@ -94,6 +94,23 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 unparsed windows by the rule's verdict, the share parsed among the windows the rule detects
                                 and among those it does not, and the bounds lower_pct (unparsed = not detected) and
                                 upper_pct (unparsed = detected) over all windows of the arm (D-32)
+    stored_<analysis>.csv, stored_analyses.yaml
+                                stored-data analyses of stored_analyses.py (issue #289), one CSV per table: E1 comparators and
+                                contested windows, E2 put weight, E3 episodes and effective sample size, E4 period shift with
+                                margin, E6 scale-free thresholds, E9 same-day expiry, E13 lineage; the YAML holds the
+                                parameters, the gates (the vectorised rule equals every stored verdict), the file and column
+                                descriptions
+    unanswered_<table>.csv, unanswered_analyses.yaml
+                                what the unanswered answers of the local models do (unanswered_analyses.py, issue #298): census,
+                                recoverable verdicts, bounds, agreement three ways, contested windows (the definition of
+                                stored_analyses.contested_mask, 'pivotal'), predictors of non-response, repeat stability, GPU time;
+                                the gates reconcile it with llm_parse_stats.csv and missing_answer_bounds.csv
+    drift_summary.csv, drift_runs.csv
+                                later-date repeats ('<arm>#rep<k>', k >= 2, issue #301) against the original answers, with the
+                                same-job repeat ('#rep1') beside them; drift_runs.csv lists the drift runs and how many of their
+                                answers are stored
+    llm_departures.csv          direction of the model's departures from the rule per SPY arm and pooled (model yes and rule no
+                                against model no and rule yes) with an exact binomial p-value (review item E10)
     stats.yaml                 overlap-aware inference: rates per label source and period, series / label / scale contrasts,
                                 period shifts, Phase 3 vs Phase 4, and headline_contrasts (the ones the text quotes)
     cost_ledger.csv/yaml        per run, arm and model, reconciled with per-request token usage; budget counts only runs for
@@ -144,6 +161,7 @@ import os
 import platform
 import sys
 from dataclasses import dataclass, field
+from functools import partial
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Collection, Dict, Iterator, List, Mapping, Optional, Sequence, Tuple
@@ -2418,6 +2436,394 @@ def section_published_input_gaps(ctx: Context) -> Dict[str, Any]:
             "n_verdicts_changed": total["n_verdicts_changed"]}
 
 
+# --------------------------------------------------------------------------- 14. stored_*.csv, stored_analyses.yaml
+def analysis_module(name: str) -> Any:
+    """stored_analyses / unanswered_analyses, imported by name from this folder.
+
+    Both modules reuse this file (loading, typing, Wilson and bootstrap helpers) by loading it by path.  The running copy of
+    this file is handed to them instead, so that one copy of it is used.
+    """
+    me = sys.modules.get(__name__)
+    if me is not None:
+        sys.modules.setdefault("report05", me)
+        sys.modules.setdefault("electronics_report_05", me)
+    module = importlib.import_module(name)
+    if name == "stored_analyses" and me is not None:
+        module._report_module = me
+    return module
+
+
+class FileSink:
+    """Output object of stored_analyses.run: CSV files go through ``Context.write_csv`` under a prefix, the module's YAML
+    payloads are collected for the section's one YAML file."""
+
+    def __init__(self, ctx: Context, prefix: str):
+        self.ctx, self.prefix = ctx, prefix
+        self.files: Dict[str, Dict[str, Any]] = {}
+        self.payloads: Dict[str, Any] = {}
+
+    def csv(self, name: str, frame: pd.DataFrame) -> None:
+        full = name if name.startswith(self.prefix) else self.prefix + name
+        self.ctx.write_csv(full, frame)
+        self.files[full] = {"rows": int(len(frame)), "columns": list(frame.columns)}
+
+    def yaml(self, name: str, payload: Dict[str, Any]) -> None:
+        self.payloads[name] = payload
+
+
+STORED_FILES = {
+    "e1_comparators": "E1: agreement with the rule of every first-pass arm and of trivial predictors (always no, always yes, one or "
+                      "two of the three criteria), per period; moving-block intervals (60-day blocks) for the arm and for flips_only",
+    "e1_contested": "E1: contested windows per arm, period and definition (pivotal is the one both papers quote): counts, and the arm, "
+                    "flips_only and always_yes predictors inside them (agreement, sensitivity, specificity, ppv with block intervals)",
+    "e2_put_weight_grid": "E2: rule detection rate of the complete series when the put leg is multiplied by put_weight (1.0 = stored) "
+                          "and the magnitude threshold is threshold_bn, per period",
+    "e2_period_shift": "E2: 2024-2025 rate minus the rate of each baseline period, per put weight and threshold",
+    "e2_sign_crossings": "E2: threshold and baseline where the sign of the shift changes between neighbouring put weights",
+    "e3_episodes": "E3: runs of consecutive detected windows (start, end, length, gap before) for each source",
+    "e3_ess": "E3: effective sample sizes of the 2024-2025 detection flags (autocorrelation, batch means) and the episode count",
+    "e3_intervals": "E3: 95 percent intervals for the 2024-2025 rate by method (Wilson, quarter block, moving and circular block, "
+                    "episode bootstrap, Wilson at the effective sample size)",
+    "e4_shift_margin": "E4: period shift (2024-2025 minus baseline, points) per threshold, baseline, block length and window set with "
+                       "moving-block intervals and the margin test (upper_below_margin: upper limit below margin_pp)",
+    "e4_summary": "E4: per window set, baseline, block length and circular flag: thresholds tested and thresholds whose upper limit is "
+                  "below the margin",
+    "e6_scale_by_year": "E6: mean spot, mean absolute net GEX and mean gross GEX per year (complete series)",
+    "e6_scale_free": "E6: detection rate per period when the fixed 5B threshold is replaced by a scale-free variant "
+                     "(reference_years: the years that fix the scale)",
+    "e6_scale_free_shift": "E6: 2024-2025 minus 2020-2023 shift of each scale-free variant with moving-block intervals",
+    "e9_pair_by_era": "E9: new_full against new_ex0dte (same-day expiry removed) per era: verdict cells, discordant windows, gap, kappa",
+    "e9_pair_by_weekday": "E9: the same pairing per era and weekday of window_end",
+    "e9_same_day_share": "E9: share of |GEX| from same-day expiries per year and how often removing them flips the daily sign",
+    "e9_era_interaction": "E9: difference between two eras of the full-vs-ex0dte gap with block intervals, per threshold",
+    "e13_lineage_by_year": "E13: the published (January) series against the complete, call-only and hybrid series: windows equal and "
+                           "different per year, and the rate of each",
+    "e13_lineage_by_break": "E13: published windows ending before, spanning and starting after the break date against the complete, "
+                            "call-only and hybrid series",
+    "e13_day_match": "E13: days on which the published value equals each candidate series within the tolerance, by part",
+}
+UNANSWERED_FILES = {
+    "census_unanswered": "final answers of every model and arm by kind (answered, missing, failed, complete_at_cap), finish reason, "
+                         "whether the request cap was reached and the rule's verdict",
+    "recoverable_verdicts": "verdicts that can be read out of unanswered answers (per population, model and arm) and their agreement "
+                            "with the rule",
+    "recoverable_first_pass_vs_retry": "windows whose cut first answer holds a verdict and whose retry answered: same verdict and "
+                                       "agreement of each with the rule",
+    "bounds_with_recoverable": "missing_answer_bounds.csv with the recoverable verdicts added (lower_rec_pct, upper_rec_pct, widths)",
+    "agreement_variants": "agreement and kappa with the rule per arm and period when unanswered windows are dropped, counted as not "
+                          "detected, counted as errors, or filled with the recoverable verdict",
+    "contested_agreement": "agreement with the rule by stratum (all, contested, not_contested, contested_<criterion>) for every primary "
+                           "arm under the pivotal definition",
+    "contested_sensitivity": "the contested and not_contested strata under the margin sets pivotal (default), margin1, narrow and wide",
+    "answering_bands": "answered share of the focus model by band of the rule's metrics, dominant sign, rule verdict and contested status",
+    "answering_logit": "logistic regression of answering on the rule's metrics for the focus model (coefficients, odds ratios, auc)",
+    "repeat_stability": "per model and base arm: windows answered in both passes, in one, in none, and the same-verdict share",
+    "gpu_time": "local GPU time per model: runs, GPUs, summed and union hours, concurrency",
+    "gpu_time_runs": "one row per local run: model, run_id, GPU, seconds, start and end (UTC)",
+}
+ANALYSIS_COLUMN_NOTES = {
+    "arm": "arm label as in detection_by_year.csv", "model": "model name", "series_key": "series the arm read",
+    "period": "calendar years of window_end", "n_windows": "windows in the row", "rate_pct": "detection rate in percent",
+    "rule_rate_pct": "the rule's detection rate in percent", "arm_rate_pct": "the arm's detection rate in percent",
+    "arm_agreement_pct": "agreement of the arm with the rule in percent", "agree_pct": "agreement with the rule in percent",
+    "ci_lo_pct": "lower 95 percent limit (percent)", "ci_hi_pct": "upper 95 percent limit (percent)",
+    "ci_lo_pp": "lower 95 percent limit (points)", "ci_hi_pp": "upper 95 percent limit (points)",
+    "shift_pp": "later rate minus baseline rate in points", "block_len": "moving-block length in windows",
+    "threshold_bn": "magnitude threshold in billions of USD", "put_weight": "multiplier of the put leg of GEX",
+    "definition": "contested-window definition (pivotal or margin1)", "stratum": "all, contested, not_contested or contested_<criterion>",
+    "answered_pct": "share of windows with a parsed answer, percent", "n_answered": "windows with a parsed answer",
+    "kappa": "Cohen's kappa (null when undefined)", "kappa_answered": "kappa with the rule on answered windows",
+    "agree_pct_answered": "agreement with the rule over answered windows",
+    "agree_pct_unans_error": "agreement over all windows, an unanswered window counted as wrong",
+    "margin_set": "name of the contested-window margins", "is_default": "true for the definition both papers quote",
+    "year": "calendar year of window_end", "era": "period of the era comparison",
+}
+
+
+def describe_files(files: Mapping[str, Mapping[str, Any]], notes: Mapping[str, str], prefix: str) -> Dict[str, Any]:
+    """Per CSV file: rows, the one-line description, columns and the notes of those columns that ANALYSIS_COLUMN_NOTES covers."""
+    out: Dict[str, Any] = {}
+    for name, info in sorted(files.items()):
+        if "columns" not in info:
+            continue
+        stem = name[len(prefix):-4] if name.startswith(prefix) else name[:-4]
+        out[name] = {"rows": info["rows"], "description": notes.get(stem, ""), "columns": list(info["columns"]),
+                     "column_notes": {c: ANALYSIS_COLUMN_NOTES[c] for c in info["columns"] if c in ANALYSIS_COLUMN_NOTES}}
+    return out
+
+
+def quote(ctx: Context, name: str, where: Mapping[str, Any], column: str) -> Dict[str, Any]:
+    """A number a writer quotes: its value, the file, the row filter and the column (exactly one row must match)."""
+    frame = pd.read_csv(ctx.results_dir / name)
+    for key, value in where.items():
+        frame = frame[frame[key] == value]
+    if len(frame) != 1:
+        raise RuntimeError(f"{name}: {len(frame)} rows match {dict(where)}, expected one")
+    return {"value": to_native(frame.iloc[0][column]), "file": name, "row": dict(where), "column": column}
+
+
+def section_stored_analyses(ctx: Context) -> Dict[str, Any]:
+    """Stored-data analyses E1-E4, E6, E9, E13 (stored_analyses.py, issue #289): files stored_*.csv and stored_analyses.yaml."""
+    sa = analysis_module("stored_analyses")
+    absent = [k for k in (FULL_SERIES, "new_ex0dte", BRIDGE_SERIES) if not (ctx.data.series["series_key"] == k).any()]
+    if absent or ctx.data.detections.empty:
+        raise SectionSkipped(f"series {absent} or the detections are absent")
+    params = {**sa.default_params(), "seed": ctx.seed}  # the draws of the moving-block bootstrap stay at the module's 5,000
+    sink = FileSink(ctx, "stored_")
+    meta = sa.run(ctx.data, None, None, params, out=sink)
+    if meta["notes"]:
+        raise RuntimeError("stored_analyses: a gate failed: " + "; ".join(meta["notes"]))
+    meta = sa.round_native({k: v for k, v in meta.items() if k not in ("files", "timings_s")})
+    ctx.write_yaml("stored_analyses.yaml", {
+        "module": "scripts/validation/electronics/stored_analyses.py", "issue": 289,
+        "determinism": "every resampling draws from a generator seeded from the seed and a stable tag; nothing run-specific is stored",
+        "parameters": meta.pop("parameters"),
+        "gates": {"rule_vs_stored_windows": meta.pop("gate_rule_vs_stored_windows"),
+                  "per_analysis": {k: meta[k] for k in ("E1", "E2", "E3", "E4", "E6", "E9", "E13")},
+                  "all_passed": True, "notes": meta["notes"]},
+        "payloads": sa.round_native(sink.payloads),
+        "files": describe_files(sink.files, STORED_FILES, "stored_"),
+    })
+    q = partial(quote, ctx)
+    full = {"arm": "full_spy", "period": "all"}
+    return {
+        "rows": sum(info["rows"] for info in sink.files.values() if "columns" in info), "files": sorted(sink.files),
+        "contested_windows_pivotal": q("stored_e1_contested.csv", {**full, "definition": "pivotal"}, "n_contested"),
+        "contested_windows_margin1": q("stored_e1_contested.csv", {**full, "definition": "margin1"}, "n_contested"),
+        "luna_agree_pct_in_pivotal_contested": q("stored_e1_contested.csv", {**full, "definition": "pivotal"}, "arm_agree_pct"),
+        "luna_agree_pct_outside_pivotal_contested": q("stored_e1_contested.csv", {**full, "definition": "pivotal"}, "arm_uncontested_agree_pct"),
+        "flips_only_agreement_pct_full_spy": q("stored_e1_comparators.csv", full, "flips_only_agreement_pct"),
+        "luna_agreement_pct_full_spy": q("stored_e1_comparators.csv", full, "arm_agreement_pct"),
+        "episodes_rule_2024_2025": q("stored_e3_ess.csv", {"source": "rule"}, "n_episodes"),
+        "ess_acf_rule_2024_2025": q("stored_e3_ess.csv", {"source": "rule"}, "ess_acf"),
+        "moving_block_60_ci_lo_pct_rule": q("stored_e3_intervals.csv", {"source": "rule", "method": "moving_block", "block_len": 60}, "ci_lo_pct"),
+        "moving_block_60_ci_hi_pct_rule": q("stored_e3_intervals.csv", {"source": "rule", "method": "moving_block", "block_len": 60}, "ci_hi_pct"),
+        "e4_thresholds_upper_below_margin_all_2020_2023_block60": q(
+            "stored_e4_summary.csv", {"window_set": "all", "baseline": "2020-2023", "block_len": 60, "circular": False}, "n_upper_below_margin"),
+        "e4_shift_pp_at_5bn_all_2020_2023_block60": q(
+            "stored_e4_shift_margin.csv", {"window_set": "all", "baseline": "2020-2023", "threshold_bn": 5.0, "block_len": 60, "circular": False}, "shift_pp"),
+        "e6_spot_squared_shift_pp": q("stored_e6_scale_free_shift.csv", {"variant": "spot_squared", "reference_years": "2024-2025", "block_len": 60}, "shift_pp"),
+        "e13_published_windows_before_break_equal_complete": q(
+            "stored_e13_lineage_by_break.csv", {"published_vs": "complete", "part": "windows ending before the break"}, "equal"),
+        "e13_published_windows_before_break_n": q(
+            "stored_e13_lineage_by_break.csv", {"published_vs": "complete", "part": "windows ending before the break"}, "n_windows"),
+    }
+
+
+# --------------------------------------------------------------------------- 15. unanswered_*.csv, unanswered_analyses.yaml
+def section_unanswered_analyses(ctx: Context) -> Dict[str, Any]:
+    """What the unanswered answers of the local models do to the results (unanswered_analyses.py, issue #298)."""
+    if ctx.data.source.get("kind") != "parquet":
+        raise SectionSkipped("unanswered_analyses reads the answer texts (raw_response) from the parquet copies")
+    root = Path(ctx.data.source["parquet_root"])
+    need = [name for name in ("llm_parse_stats.csv", "missing_answer_bounds.csv") if not (ctx.results_dir / name).exists()]
+    if need:
+        raise SectionSkipped(f"{need} are not in the results folder (run the sections llm_parse_stats and missing_answer_bounds first)")
+    ua = analysis_module("unanswered_analyses")
+    frames, summary = ua.compute_all(root, ctx.results_dir, ["qwen3-8b"])
+    rec, bounds, final = summary["reconciliation"], summary["bounds_reconciliation"], summary["final_rows_check"]
+    gates = {"final_rows_equal_report_detections": final["only_here"] == 0 and final["only_in_report"] == 0
+             and final["run_id_differs"] == 0 and final["parsed_differs"] == 0,
+             "census_equals_llm_parse_stats": rec["n_differences"] == 0,
+             "bounds_equal_missing_answer_bounds": bounds["unmatched"] == 0 and bounds["count_mismatch"] == 0
+             and bounds["max_abs_diff_lower_pct"] == 0 and bounds["max_abs_diff_upper_pct"] == 0}
+    if not all(gates.values()):
+        raise RuntimeError("unanswered_analyses: a gate failed: " + ", ".join(k for k, v in gates.items() if not v))
+    files: Dict[str, Dict[str, Any]] = {}
+    for name, frame in sorted(frames.items()):
+        full = "unanswered_" + name
+        ctx.write_csv(full, frame)
+        files[full] = {"rows": int(len(frame)), "columns": list(frame.columns)}
+    ctx.write_yaml("unanswered_analyses.yaml", {
+        "module": "scripts/validation/electronics/unanswered_analyses.py", "issue": 298,
+        "determinism": "no resampling; the file holds no paths, clocks or run-specific values",
+        "parameters": {"focus_models": ["qwen3-8b"], "contested_definition": ua.CONTESTED_DEFAULT,
+                       "contested_sets": ua.CONTESTED_SETS, "contested_function": "stored_analyses.contested_mask"},
+        "gates": {**gates, "all_passed": True},
+        "reconciliation": {"census_vs_llm_parse_stats": rec, "bounds_vs_missing_answer_bounds": bounds,
+                           "final_rows_vs_report_detections": final},
+        "n_answer_rows": summary["n_answer_rows"], "n_final_rows": summary["n_final_rows"],
+        "scanner_on_answered_rows": summary["scanner_on_answered_rows"],
+        "files": describe_files(files, UNANSWERED_FILES, "unanswered_"),
+    })
+    q = partial(quote, ctx)
+    cell = {"arm": "qwen_full_spy", "period": "all"}
+    pivotal = {"arm": "qwen_full_spy", "stratum": "contested"}
+    return {
+        "rows": sum(info["rows"] for info in files.values()), "files": sorted(files),
+        "contested_definition": ua.CONTESTED_DEFAULT,
+        "n_unanswered_primary_arms": rec["unanswered_primary"],
+        "qwen_contested_agree_pct_answered": q("unanswered_contested_agreement.csv", pivotal, "agree_pct_answered"),
+        "qwen_contested_answered_pct": q("unanswered_contested_agreement.csv", pivotal, "answered_pct"),
+        "luna_contested_agree_pct": q("unanswered_contested_agreement.csv", {"arm": "full_spy", "stratum": "contested"}, "agree_pct_answered"),
+        "contested_windows_full_spy": q("unanswered_contested_agreement.csv", {"arm": "full_spy", "stratum": "contested"}, "n_windows"),
+        "qwen_full_spy_bounds_with_recoverable_all_periods": q(
+            "unanswered_bounds_with_recoverable.csv", {**cell, "series_key": "new_full", "symbol": "SPY"}, "lower_rec_pct"),
+    }
+
+
+# --------------------------------------------------------------------------- 16. drift_summary.csv, drift_runs.csv
+DRIFT_COLUMNS = [
+    "base_arm", "repeat_arm", "repeat_index", "repeat_kind", "model", "series_key", "symbol", "n_windows_compared", "n_same",
+    "pct_same", "kappa", "n_changed", "n_detect_to_not", "n_not_to_detect", "n_toward_rule", "n_away_from_rule",
+    "p_toward_vs_away", "original_agree_with_rule_pct", "repeat_agree_with_rule_pct", "original_rate_pct", "repeat_rate_pct",
+    "original_answer_first", "original_answer_last", "repeat_answer_first", "repeat_answer_last",
+    "same_job_repeat_arm", "same_job_n_windows", "same_job_pct_same", "same_job_kappa", "n_windows_in_both_repeats",
+    "same_job_pct_same_on_those", "later_pct_same_on_those"]
+DRIFT_INT_COLUMNS = ["repeat_index", "n_windows_compared", "n_same", "n_changed", "n_detect_to_not", "n_not_to_detect",
+                     "n_toward_rule", "n_away_from_rule", "same_job_n_windows", "n_windows_in_both_repeats"]
+DRIFT_RUN_COLUMNS = ["run_id", "base_arm", "repeat_index", "model", "n_requests", "status", "submitted_at", "ingested_at",
+                     "n_answers_stored", "n_parsed_stored"]
+DRIFT_RUN_INT_COLUMNS = ["repeat_index", "n_requests", "n_answers_stored", "n_parsed_stored"]
+PAIR_KEY = ["series_key", "symbol", "window_end", "model"]
+
+
+def day_of(stamp: pd.Series) -> Tuple[Optional[str], Optional[str]]:
+    """(first, last) calendar day (UTC) of a series of timestamps; None when there is none."""
+    stamp = pd.to_datetime(stamp, utc=True).dropna()
+    return (None, None) if stamp.empty else (stamp.min().strftime("%Y-%m-%d"), stamp.max().strftime("%Y-%m-%d"))
+
+
+def paired_answers(original: pd.DataFrame, repeat: pd.DataFrame) -> pd.DataFrame:
+    """The windows both answered (parsed): original and repeat verdicts, the rule's verdict and the answer times."""
+    cols = PAIR_KEY + ["regime_detected", "clf_should_detect", "created_at"]
+    left = original[cols].rename(columns={"regime_detected": "orig", "created_at": "orig_at"})
+    right = repeat[PAIR_KEY + ["regime_detected", "created_at"]].rename(columns={"regime_detected": "rep", "created_at": "rep_at"})
+    both = left.merge(right, on=PAIR_KEY, how="inner")
+    return both.assign(orig=both["orig"].astype(bool), rep=both["rep"].astype(bool),
+                       rule=both["clf_should_detect"].astype("boolean"))
+
+
+def drift_row(base: str, label: str, index: int, original: pd.DataFrame, repeat: pd.DataFrame,
+              same_job: Optional[pd.DataFrame]) -> Optional[Dict[str, Any]]:
+    """One comparison of an original arm with one repeat label: agreement, kappa, direction against the rule, dates."""
+    both = paired_answers(original, repeat)
+    if both.empty:
+        return None
+    tt, tf, ft, ff = confusion_counts(both["orig"], both["rep"])
+    n = len(both)
+    changed = both[both["orig"] != both["rep"]]
+    known = changed[changed["rule"].notna()]
+    toward = int((known["rep"] == known["rule"].astype(bool)).sum())
+    away = len(known) - toward
+    ruled = both[both["rule"].notna()]
+    row: Dict[str, Any] = {
+        "base_arm": base, "repeat_arm": label, "repeat_index": index, "repeat_kind": "same_job" if index == 1 else "later_date",
+        "model": both["model"].iloc[0], "series_key": both["series_key"].iloc[0], "symbol": both["symbol"].iloc[0],
+        "n_windows_compared": n, "n_same": tt + ff, "pct_same": 100.0 * (tt + ff) / n,
+        "kappa": float(binary_kappa(tt, tf, ft, ff)), "n_changed": len(changed), "n_detect_to_not": tf, "n_not_to_detect": ft,
+        "n_toward_rule": toward, "n_away_from_rule": away, "p_toward_vs_away": mcnemar_exact(toward, away),
+        "original_agree_with_rule_pct": 100.0 * float((ruled["orig"] == ruled["rule"].astype(bool)).mean()) if len(ruled) else math.nan,
+        "repeat_agree_with_rule_pct": 100.0 * float((ruled["rep"] == ruled["rule"].astype(bool)).mean()) if len(ruled) else math.nan,
+        "original_rate_pct": 100.0 * float(both["orig"].mean()), "repeat_rate_pct": 100.0 * float(both["rep"].mean())}
+    row["original_answer_first"], row["original_answer_last"] = day_of(both["orig_at"])
+    row["repeat_answer_first"], row["repeat_answer_last"] = day_of(both["rep_at"])
+    if same_job is not None and index > 1:
+        pair = paired_answers(original, same_job)
+        a, b, c, d = confusion_counts(pair["orig"], pair["rep"])
+        row.update({"same_job_repeat_arm": base + REPEAT_MARK + "1", "same_job_n_windows": len(pair),
+                    "same_job_pct_same": 100.0 * (a + d) / len(pair) if len(pair) else math.nan,
+                    "same_job_kappa": float(binary_kappa(a, b, c, d)) if len(pair) else math.nan})
+        shared = pair[PAIR_KEY].merge(both[PAIR_KEY], on=PAIR_KEY, how="inner")
+        on_shared_same = pair.merge(shared, on=PAIR_KEY)
+        on_shared_later = both.merge(shared, on=PAIR_KEY)
+        row["n_windows_in_both_repeats"] = len(shared)
+        if len(shared):
+            row["same_job_pct_same_on_those"] = 100.0 * float((on_shared_same["orig"] == on_shared_same["rep"]).mean())
+            row["later_pct_same_on_those"] = 100.0 * float((on_shared_later["orig"] == on_shared_later["rep"]).mean())
+    return row
+
+
+def section_drift(ctx: Context) -> Dict[str, Any]:
+    """Later-date repeats ('#rep2' and up, issue #301) against the original answers, next to the same-job repeat ('#rep1')."""
+    det = ctx.data.detections
+    parsed = det[det["parsed"]]
+    rows: List[Dict[str, Any]] = []
+    for (base, label, index, series_key, symbol, model), group in parsed[parsed["repeat_index"] > 0].groupby(
+            ["base_arm", "arm", "repeat_index", "series_key", "symbol", "model"], sort=True):
+        original = parsed[(parsed["arm"] == base) & (parsed["series_key"] == series_key) & (parsed["symbol"] == symbol)
+                          & (parsed["model"] == model)]
+        same_job = parsed[(parsed["arm"] == base + REPEAT_MARK + "1") & (parsed["series_key"] == series_key)
+                          & (parsed["symbol"] == symbol) & (parsed["model"] == model)]
+        row = drift_row(base, label, int(index), original, group, same_job if len(same_job) else None)
+        if row:
+            rows.append(row)
+    runs = ctx.data.runs
+    meta = runs["run_metadata"].map(as_mapping) if "run_metadata" in runs.columns else pd.Series([{}] * len(runs), index=runs.index)
+    repeat_of = meta.map(lambda m: as_mapping(m.get("selection")).get("repeat_index"))
+    drift_runs = runs[repeat_of.notna() & (repeat_of.map(lambda v: v if v == v else 0) > 1)].copy() if len(runs) else runs.iloc[0:0].copy()
+    if not rows and drift_runs.empty:
+        raise SectionSkipped("no later-date repeat answers and no drift run")
+    frame = pd.DataFrame(rows, columns=DRIFT_COLUMNS)
+    if len(frame):
+        frame = sort_rows(frame, ["base_arm", "repeat_index"])
+    ctx.write_csv("drift_summary.csv", frame, DRIFT_INT_COLUMNS)
+    by_run = ctx.data.detections.groupby("run_id").agg(n_answers_stored=("arm", "size"), n_parsed_stored=("parsed", "sum"))
+    listing = pd.DataFrame({
+        "run_id": drift_runs["run_id"], "base_arm": drift_runs["arm"], "repeat_index": repeat_of[drift_runs.index].astype(int),
+        "model": drift_runs["model"], "n_requests": drift_runs["n_requests"], "status": drift_runs["status"],
+        "submitted_at": pd.to_datetime(drift_runs["submitted_at"], utc=True).dt.strftime("%Y-%m-%dT%H:%MZ"),
+        "ingested_at": pd.to_datetime(drift_runs["ingested_at"], utc=True).dt.strftime("%Y-%m-%dT%H:%MZ")})
+    listing = listing.join(by_run, on="run_id").fillna({"n_answers_stored": 0, "n_parsed_stored": 0})
+    ctx.write_csv("drift_runs.csv", sort_rows(listing[DRIFT_RUN_COLUMNS], ["base_arm", "repeat_index", "run_id"]),
+                  DRIFT_RUN_INT_COLUMNS)
+    later = frame[frame["repeat_kind"] == "later_date"] if len(frame) else frame
+    return {"rows": len(frame), "n_drift_runs": len(listing),
+            "n_drift_runs_without_answers": int((listing["n_answers_stored"] == 0).sum()),
+            "later_date_repeats": [{k: (None if pd.isna(v) else v) for k, v in r.items() if k in (
+                "repeat_arm", "n_windows_compared", "pct_same", "kappa", "n_toward_rule", "n_away_from_rule", "same_job_pct_same",
+                "original_answer_first", "original_answer_last", "repeat_answer_first", "repeat_answer_last")}
+                for r in later.to_dict("records")],
+            "file": "drift_summary.csv", "runs_file": "drift_runs.csv"}
+
+
+# --------------------------------------------------------------------------- 17. llm_departures.csv (review item E10)
+DEPARTURE_COLUMNS = ["model", "series_key", "arm", "scope", "period", "n_arms", "n_compared", "n_disagree", "n_model_yes_rule_no",
+                     "n_model_no_rule_yes", "share_model_yes_pct", "p_binomial", "note"]
+DEPARTURE_INT_COLUMNS = ["n_arms", "n_compared", "n_disagree", "n_model_yes_rule_no", "n_model_no_rule_yes"]
+DEPARTURE_NOTE = ("pooled rows add the windows of arms that read the same or overlapping dates, so the windows are not "
+                  "independent and p_binomial is descriptive only")
+
+
+def departure_row(model: str, series_key: str, arm: str, scope: str, period: str, n_arms: int, frame: pd.DataFrame) -> Dict[str, Any]:
+    yes_no = int((frame["regime_detected"].astype(bool) & ~frame["clf_should_detect"].astype(bool)).sum())
+    no_yes = int((~frame["regime_detected"].astype(bool) & frame["clf_should_detect"].astype(bool)).sum())
+    n = yes_no + no_yes
+    return {"model": model, "series_key": series_key, "arm": arm, "scope": scope, "period": period, "n_arms": n_arms,
+            "n_compared": len(frame), "n_disagree": n, "n_model_yes_rule_no": yes_no, "n_model_no_rule_yes": no_yes,
+            "share_model_yes_pct": 100.0 * yes_no / n if n else math.nan,
+            "p_binomial": float(sps.binomtest(yes_no, n, 0.5).pvalue) if n else math.nan,
+            "note": DEPARTURE_NOTE if scope == "pooled" else ""}
+
+
+def section_llm_departures(ctx: Context) -> Dict[str, Any]:
+    """Direction of the LLM's departures from the rule on SPY (first pass, primary arms): model yes against model no."""
+    det = ctx.data.detections
+    sel = det[det["parsed"] & (det["repeat_index"] == 0) & (det["arm_role"] == "primary") & (det["symbol"] == "SPY")
+              & det["clf_should_detect"].notna()]
+    if sel.empty:
+        raise SectionSkipped("no parsed first-pass SPY answers with a stored window")
+    rows: List[Dict[str, Any]] = []
+    spans = {"all": (None, None), "2024-2025": (2024, 2025)}
+    for model, g_model in sel.groupby("model", sort=True):
+        for period, (first, last) in spans.items():
+            part = slice_years(g_model, first, last)
+            if part.empty:
+                continue
+            for (series_key, arm), g in part.groupby(["series_key", "arm"], sort=True):
+                rows.append(departure_row(model, series_key, arm, "arm", period, 1, g))
+            rows.append(departure_row(model, "", "", "pooled", period, int(part["arm"].nunique()), part))
+    frame = sort_rows(pd.DataFrame(rows, columns=DEPARTURE_COLUMNS), ["model", "period", "arm"])
+    ctx.write_csv("llm_departures.csv", frame, DEPARTURE_INT_COLUMNS)
+    luna = frame[(frame["model"] == common.MODEL) & (frame["period"] == "all")]
+    pooled = luna[luna["scope"] == "pooled"].iloc[0] if (luna["scope"] == "pooled").any() else None
+    return {"rows": len(frame), "note": DEPARTURE_NOTE, "file": "llm_departures.csv",
+            "luna_pooled_all": None if pooled is None else {k: pooled[k] for k in (
+                "n_arms", "n_compared", "n_disagree", "n_model_yes_rule_no", "n_model_no_rule_yes", "share_model_yes_pct", "p_binomial")},
+            "luna_arms_all": [{k: r[k] for k in ("arm", "n_disagree", "n_model_yes_rule_no", "n_model_no_rule_yes", "p_binomial")}
+                              for r in luna[luna["scope"] == "arm"].to_dict("records")]}
+
+
 # --------------------------------------------------------------------------- sections and orchestration
 class Section:
     """A named report section, its output files and the function that produces them."""
@@ -2442,6 +2848,12 @@ SECTIONS = (
     Section("missing_answer_bounds", ("missing_answer_bounds.csv",), section_missing_answer_bounds),
     Section("published_input_gaps", ("published_input_gaps.csv", "published_input_gaps_by_year.csv"),
             section_published_input_gaps),
+    Section("drift", ("drift_summary.csv", "drift_runs.csv"), section_drift),
+    Section("llm_departures", ("llm_departures.csv",), section_llm_departures),
+    Section("stored_analyses", tuple(f"stored_{name}.csv" for name in STORED_FILES) + ("stored_analyses.yaml",),
+            section_stored_analyses),
+    Section("unanswered_analyses", tuple(f"unanswered_{name}.csv" for name in UNANSWERED_FILES) + ("unanswered_analyses.yaml",),
+            section_unanswered_analyses),
 )
 
 
@@ -2589,6 +3001,13 @@ def headline(status: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
         out["reported_vs_computed"] = {k: v for k, v in summary("reported_vs_computed").items() if k != "rows"}
     if summary("cost_ledger"):
         out["cost"] = {k: v for k, v in summary("cost_ledger").items() if k != "rows"}
+    if summary("drift"):
+        out["drift"] = {k: v for k, v in summary("drift").items() if k != "rows"}
+    if summary("llm_departures"):
+        out["llm_departures"] = {k: v for k, v in summary("llm_departures").items() if k != "rows"}
+    for name in ("stored_analyses", "unanswered_analyses"):
+        if summary(name):
+            out[name] = {k: v for k, v in summary(name).items() if k not in ("rows", "files")}
     return out
 
 

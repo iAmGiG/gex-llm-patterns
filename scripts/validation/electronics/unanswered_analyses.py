@@ -880,24 +880,26 @@ def sha256_of(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def run_all(parquet_root: Path, results_dir: Path, out: Path, focus_models: Sequence[str]) -> Dict[str, Any]:
-    """Compute every table, write the files to ``out`` and return the summary (also written as summary.yaml)."""
-    out.mkdir(parents=True, exist_ok=True)
+def compute_all(parquet_root: Path, results_dir: Path, focus_models: Sequence[str]) -> Tuple[Dict[str, pd.DataFrame], Dict[str, Any]]:
+    """Compute every table without writing: (name -> frame, summary).  Names are the file names ``run_all`` writes.
+
+    ``results_dir`` supplies llm_parse_stats.csv and missing_answer_bounds.csv, which the census and the bounds reconcile
+    with.  The summary holds no paths, clocks or other run-specific values, so it is the same on every run.
+    """
+    frames: Dict[str, pd.DataFrame] = {}
     rows, runs, _windows = read_all_answer_rows(parquet_root)
     final = rows[rows["is_final"]].reset_index(drop=True)
-    summary: Dict[str, Any] = {"parquet_root": str(parquet_root), "n_answer_rows": int(len(rows)),
-                               "n_final_rows": int(len(final)), "final_rows_check": check_final_rows(rows, parquet_root)}
-    write_csv(round_frame(census(final)), out / "census_unanswered.csv")
+    summary: Dict[str, Any] = {"n_answer_rows": int(len(rows)), "n_final_rows": int(len(final)),
+                               "final_rows_check": check_final_rows(rows, parquet_root)}
+    frames["census_unanswered.csv"] = round_frame(census(final))
     parse_stats = pd.read_csv(results_dir / "llm_parse_stats.csv")
     bounds_stored = pd.read_csv(results_dir / "missing_answer_bounds.csv")
     summary["reconciliation"] = reconcile_with_results(final, parse_stats, bounds_stored)
-    rec = recoverable_table(rows)
-    write_csv(rec, out / "recoverable_verdicts.csv")
+    frames["recoverable_verdicts.csv"] = recoverable_table(rows)
     summary["scanner_on_answered_rows"] = scanner_check_on_answered(rows)
-    retry = retry_stability_of_cut_verdicts(rows)
-    write_csv(retry, out / "recoverable_first_pass_vs_retry.csv")
+    frames["recoverable_first_pass_vs_retry.csv"] = retry_stability_of_cut_verdicts(rows)
     bwr = bounds_with_recoverable(final)
-    write_csv(bwr, out / "bounds_with_recoverable.csv")
+    frames["bounds_with_recoverable.csv"] = bwr
     cmp_cols = ["arm", "model", "series_key", "symbol", "period"]
     chk = bwr.merge(bounds_stored[cmp_cols + ["n_windows", "n_parsed", "n_unparsed", "lower_pct", "upper_pct"]], on=cmp_cols,
                     how="outer", suffixes=("", "_stored"), indicator=True)
@@ -908,24 +910,31 @@ def run_all(parquet_root: Path, results_dir: Path, out: Path, focus_models: Sequ
         "max_abs_diff_upper_pct": float((chk["upper_pct"] - chk["upper_pct_stored"]).abs().max()),
         "count_mismatch": int(((chk["n_windows"] != chk["n_windows_stored"]) | (chk["n_parsed"] != chk["n_parsed_stored"])
                                | (chk["n_unparsed"] != chk["n_unparsed_stored"])).sum())}
-    agr = agreement_table(final)
-    write_csv(agr, out / "agreement_variants.csv")
-    write_csv(contested_table(final), out / "contested_agreement.csv")
-    write_csv(contested_sensitivity(final), out / "contested_sensitivity.csv")
+    frames["agreement_variants.csv"] = agreement_table(final)
+    frames["contested_agreement.csv"] = contested_table(final)
+    frames["contested_sensitivity.csv"] = contested_sensitivity(final)
     bands, logits = [], []
     for model in focus_models:
         bands.append(answering_bands(final, model))
         logits.append(answering_logit(final, model))
-    write_csv(pd.concat(bands, ignore_index=True), out / "answering_bands.csv")
-    write_csv(pd.concat(logits, ignore_index=True), out / "answering_logit.csv")
-    write_csv(repeat_stability(final), out / "repeat_stability.csv")
+    frames["answering_bands.csv"] = pd.concat(bands, ignore_index=True)
+    frames["answering_logit.csv"] = pd.concat(logits, ignore_index=True)
+    frames["repeat_stability.csv"] = repeat_stability(final)
     local = gpu_runs(runs)
-    gpu = gpu_time_summary(local)
-    write_csv(gpu, out / "gpu_time.csv")
-    write_csv(round_frame(local.assign(started_at=local["started_at"].dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                                       completed_at=local["completed_at"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")), 1),
-              out / "gpu_time_runs.csv")
-    summary["files"] = sorted(p.name for p in out.glob("*.csv"))
+    frames["gpu_time.csv"] = gpu_time_summary(local)
+    frames["gpu_time_runs.csv"] = round_frame(local.assign(started_at=local["started_at"].dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                                                           completed_at=local["completed_at"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")), 1)
+    summary["files"] = sorted(frames)
+    return frames, summary
+
+
+def run_all(parquet_root: Path, results_dir: Path, out: Path, focus_models: Sequence[str]) -> Dict[str, Any]:
+    """Compute every table, write the files to ``out`` and return the summary (also written as summary.yaml)."""
+    out.mkdir(parents=True, exist_ok=True)
+    frames, summary = compute_all(parquet_root, results_dir, focus_models)
+    for name, frame in frames.items():
+        write_csv(frame, out / name)
+    summary = {"parquet_root": str(parquet_root), **summary}
     with open(out / "summary.yaml", "w") as fh:
         yaml.safe_dump(json.loads(json.dumps(summary, default=str)), fh, sort_keys=True)
     return summary

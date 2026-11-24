@@ -1124,10 +1124,15 @@ def default_params() -> Dict[str, Any]:
             "contested_definitions": CONTESTED_DEFINITIONS}
 
 
-def run(data, out_dir: Path, only: Optional[Sequence[str]] = None, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """Run the analyses (all, or the keys of ``only``) and write one file per table into ``out_dir``; returns the meta dict."""
+def run(data, out_dir: Optional[Path], only: Optional[Sequence[str]] = None, params: Optional[Dict[str, Any]] = None,
+        out: Optional[Output] = None) -> Dict[str, Any]:
+    """Run the analyses (all, or the keys of ``only``) and write one file per table into ``out_dir``; returns the meta dict.
+
+    A caller that registers the files itself (05_report.py) passes ``out``: any object with the methods ``csv(name, frame)``
+    and ``yaml(name, payload)`` and a ``files`` dict; ``out_dir`` is then unused.
+    """
     p = default_params() if params is None else params
-    out = Output(out_dir)
+    out = Output(out_dir) if out is None else out
     notes: List[str] = []
     chosen = [a for a in ANALYSES if only is None or a in only]
     meta: Dict[str, Any] = {"parameters": {k: (str(v.date()) if isinstance(v, pd.Timestamp) else v) for k, v in p.items()}}
