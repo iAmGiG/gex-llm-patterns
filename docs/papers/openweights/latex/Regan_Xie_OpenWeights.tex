@@ -1,0 +1,172 @@
+%  Paper B: reproducing a retired-model LLM evaluation with open-weights models on stored requests (MDPI class; the venue is not chosen).
+%  Companion of the manuscript in docs/papers/electronics (Paper A), which owns the input-lineage finding, the re-run on the complete
+%  inputs and the bridge between o4-mini and gpt-6-luna; this paper cites them and reports only the open-weights comparison.
+%
+%  Build with ../build.sh: it exports TEXINPUTS/BSTINPUTS=".:../../jrfm:" so that Definitions/ resolves to
+%  docs/papers/jrfm/Definitions (mdpi.cls hard-codes Definitions/... paths relative to the working directory).
+%  For Overleaf, ../build.sh --overleaf writes a self-contained zip (Definitions/ and figures/ next to this file; \figdir finds them).
+%
+%  Conventions
+%    - "% src: ..." comments name the tracked file (and column or key) each number comes from: results/ means
+%      docs/papers/electronics/results/ (written by scripts/validation/electronics/05_report.py), condensed/ means
+%      data/backups/gex_llm/condensed/.  ../check_numbers.py recomputes the numbers of the text from these files.
+%    - \pending{...} prints a visible marker for a result that is still missing (none remains since the runs of decisions D-33 and D-34 were stored);
+%      "../build.sh --strict" allows it, "../build.sh --final" does not.
+%    - "% TODO(authors)" marks open author decisions (CRediT, funding, the data DOI).
+%    - The parts are pulled in as ./NN_Name on purpose: build.sh puts ../../jrfm on TEXINPUTS and the JRFM folder has files of the
+%      same names (01_Introduction, 02_Related_Work, 05_Discussion, 06_Conclusion), so a bare name would typeset the wrong text.
+%    - Figures are the PNGs written by ../figures/scripts into ../figures/output (300 dpi, 6.14 in wide); the stems are registered once, below.
+\documentclass[electronics,article,submit,moreauthors,pdftex]{Definitions/mdpi}
+
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\history{Received: date; Accepted: date; Published: date}
+
+%% Additional packages
+\usepackage{tabularx}  % wrapped text columns in the tables
+\usepackage{listings}  % schema listing of the appendix
+
+%% Commands not defined in this version of mdpi.cls (same block as Regan_Xie_Electronics.tex)
+\newcommand{\dataavailability}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Data Availability Statement:} {#1}\par}}
+\newcommand{\institutionalreview}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Institutional Review Board Statement:} {#1}\par}}
+\newcommand{\informedconsent}[1]{%
+\vspace{6pt}\noindent{\fontsize{9}{9}\selectfont\textbf{Informed Consent Statement:} {#1}\par}}
+
+%% Local macros ---------------------------------------------------------------
+% \tbd{}: visible marker for text that is still missing.  \pending{what}: visible marker for a number or sentence that a pending run fills.
+\DeclareRobustCommand{\tbd}{\textbf{TBD}}
+\DeclareRobustCommand{\pending}[1]{\textbf{[pending: #1]}}
+% \ident{some_key}: typewriter identifier (arm, column, table) with literal underscores.
+\DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
+
+% Figure registry: manuscript figures in order of first citation -> stems of ../figures/output/<stem>.png.  Keep in step with ../figures/scripts/run_all.py.
+\newcommand{\figLadder}{bf01_reproduction_ladder}
+\newcommand{\figAgree}{bf02_agreement_by_arm}
+\newcommand{\figRate}{bf03_rate_by_period}
+\newcommand{\figDepart}{bf04_departures}
+\newcommand{\figOrder}{bf05_llama_schema_order}
+
+% \resultfigure{\figXxx}: full-width PNG from \figdir, or a visible placeholder box plus a log warning if it is missing.
+\IfFileExists{figures/bf01_reproduction_ladder.png}{\newcommand{\figdir}{figures}}{\newcommand{\figdir}{../figures/output}}  % figures/ in the Overleaf package, ../figures/output in the repository
+\newcommand{\resultfigure}[1]{%
+  \begingroup
+  \edef\figstem{#1}%
+  \IfFileExists{\figdir/\figstem.png}%
+    {\includegraphics[width=\textwidth]{\figdir/\figstem.png}}%
+    {\GenericWarning{}{Missing figure file \figdir/\figstem.png}%
+     \fbox{\parbox[c][4cm][c]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{\centering\ttfamily
+       Missing figure file\\\expandafter\detokenize\expandafter{\figstem}.png}}}%
+  \endgroup}
+
+%=================================================================
+\Title{Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests}
+
+% Author ORCID IDs
+\newcommand{\orcidauthorA}{0009-0009-3777-6148}
+\newcommand{\orcidauthorB}{0000-0002-8661-8877}
+
+% Authors
+\Author{Christopher Regan $^{1,}$*\orcidA{} and Ying Xie $^{1}$\orcidB{}}
+
+% Authors for PDF metadata
+\AuthorNames{Christopher Regan and Ying Xie}
+
+% Affiliations
+\address{%
+$^{1}$ \quad College of Computing and Software Engineering, Kennesaw State University, Marietta, GA 30060, USA}
+
+% Corresponding author
+\corres{Correspondence: cregan1@students.kennesaw.edu (C.R.)}
+
+% Abstract: one paragraph, IMRaD without headings, at most 200 words (MDPI).
+% src: Section 4.1 (Table 2); detection_by_year.csv label_source=llm scope=all arm=oss_full_spy (agree_pct 99.722755, kappa 0.987793), bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=oss_bridge_jan (n_pairs 1412, agree_pct 99.575071);
+%      llama_* (n_detect, kappa 0.000 to 0.000064); qwen_full_spy (agree_pct 98.692344, kappa 0.948367); missing_answer_bounds.csv period=all arm=qwen_* (n_unparsed summed 1,032 of n_windows 11,750 = 8.8 percent), arm=qwen_full_spy period=2024-2025 (lower_pct 14.541833, upper_pct 35.059761, clf_rate_pct 11.952191);
+%      runs.csv.gz run_metadata.local.seconds summed over mode=local (402,386.6 s = 111.8 h) and n_requests (47,176); Section 4.6 (llamarf_full_spy agree_pct 56.746962, kappa 0.096287; exploratory run 32 of 40 detected, 26 of 40 agree); Section 4.7 (osst0_bridge_jan, llamat0_bridge_jan); the totals are the three models only: the variants add 15,583 requests and 3.1 GPU-hours (62,759 requests and 114.9 GPU-hours in all local runs)
+\abstract{When a hosted model is retired, an LLM evaluation built on it can no longer be run again, and its successor alias may change in turn. Can it be reproduced with open-weights models, run locally at pinned revisions on the stored requests? The task is a rule stated in the prompt: three thresholds decide whether a 30-day window of obfuscated daily SPY gamma exposure is a persistent regime. Agreement with the rule is the object of study, not a claim about reasoning. gpt-oss-20b, Llama 3.1 8B and Qwen3-8B answered seven arms (47,176 requests, 111.8 GPU-hours). gpt-oss-20b gives the stored o4-mini verdict in 99.6\% of 1,412 windows and agrees with the rule in 99.7\% of the 4,689 windows of the complete series that it answers. Qwen3-8B agrees in 98.7\% of the windows it answers, but 8.8\% of all windows stay unanswered, so its 2024--2025 rate is bounded at 14.5--35.1\%. Llama 3.1 8B writing its verdict first detects almost every window (kappa 0.000); with the reasoning first it does not, but still does not follow the rule (kappa 0.096). Temperature 0 changes neither the gpt-oss-20b nor the Llama result on the published inputs.}
+
+% Keywords (semicolon-separated per MDPI style, 3--10)
+\keyword{reproducibility; open-weights LLMs; model retirement; rule-following; structured output; non-determinism; evaluation protocol}
+
+% Listing style (the listings package is loaded above); the two penalties are set to 0 because mdpi.cls loads hyphenat[none].
+\lstdefinestyle{appcode}{basicstyle={\ttfamily\scriptsize\exhyphenpenalty=0 \hyphenpenalty=0 },
+  columns=fixed, keepspaces=true, showstringspaces=false, upquote=true,
+  breaklines=true, breakindent=0pt, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  aboveskip=6pt, belowskip=6pt, xleftmargin=4pt, backgroundcolor=\color{gray!8}}
+
+%=================================================================
+\begin{document}
+
+% One \input per part, so that a part can be rendered alone: comment out the lines you do not need.
+\input{./01_Introduction}
+\input{./02_Related_Work}
+\input{./03_Methods}
+
+\section{Results}
+\label{sec:results}
+\input{./04_01_Overview}
+\input{./04_02_Oss}
+\input{./04_03_Llama}
+\input{./04_04_Qwen}
+\input{./04_05_Departures}
+\input{./04_06_Order}
+\input{./04_07_Repeat}
+\input{./04_08_Cost}
+
+\input{./05_Discussion}
+\input{./06_Conclusion}
+
+% Appendices precede the back matter.
+\appendixtitles{yes}
+\appendix
+\input{./07_Appendix_A_Schema}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{6pt}
+
+\supplementary{The following supporting information is available with this article: Section~S1 and Tables~S1--S3, run ledgers of the local runs; Section~S2 and Tables~S4--S6, detail of the three models; Section~S3 and Table~S7, engine settings.}
+
+% TODO(authors): Dr. Xie to confirm the CRediT roles; the text below is the statement of the companion manuscript.
+\authorcontributions{Conceptualization, C.R. and Y.X.; methodology, C.R.; software, C.R.; validation, C.R.; formal analysis, C.R.; investigation, C.R.; resources, C.R.; data curation, C.R.; writing---original draft preparation, C.R.; writing---review and editing, C.R. and Y.X.; visualization, C.R.; supervision, Y.X. All authors have read and agreed to the published version of the manuscript.}
+
+% TODO(authors): confirm the funding statement.
+\funding{This research received no external funding.}
+
+\conflictsofinterest{The authors declare no conflict of interest.}
+
+% TODO(authors): add the Zenodo DOI once the record is created (issue #274; one record for this paper and the companion manuscript) and the access date at submission.
+\dataavailability{All code, the condensed per-window tables and the result files are available at \url{https://github.com/iAmGiG/gex-llm-patterns}. The full tables (daily series, windows, runs and detections, including every request and answer of the open-weights models) are deposited at Zenodo, in the record shared with the companion manuscript; the DOI is \pending{authors: Zenodo DOI}. The raw option chains are not part of the deposit.}
+
+% TODO(authors): confirm the acknowledgments and the statement on the use of AI tools.
+\acknowledgments{We acknowledge the computational resources provided by the College of Computing and Software Engineering at Kennesaw State University. The open-weights models gpt-oss-20b (OpenAI), Llama~3.1~8B~Instruct (Meta) and Qwen3-8B (Alibaba) were run on these resources with vLLM. During this study the authors used a command-line AI coding assistant to write the analysis code and to draft and revise the manuscript text from the stored results; the authors have reviewed and edited the output and take full responsibility for the content of this publication.}
+
+\institutionalreview{Not applicable.}
+
+\informedconsent{Not applicable.}
+
+\abbreviations{The following abbreviations are used in this manuscript:\\
+
+\noindent
+\begin{tabular}{@{}ll}
+API & Application Programming Interface \\
+GEX & Gamma Exposure \\
+GPU & Graphics Processing Unit \\
+JSON & JavaScript Object Notation \\
+LLM & Large Language Model \\
+\end{tabular}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\reftitle{References}
+
+\externalbibliography{yes}
+\bibliography{references}
+
+\end{document}

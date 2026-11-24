@@ -1,0 +1,22 @@
+\section{Related Work}
+\label{sec:background}
+
+\subsection{Hosted-Model Drift and Retirement}
+\label{sec:background:drift}
+
+A hosted model can change its behavior between versions: GPT-3.5 and GPT-4 behaved differently on the same tasks within a few months \cite{chen2024chatgpt}. It can also be withdrawn, after which no study that depends on it can be run again. Work on reproducible evaluation of language models lists the sensitivity of results to the evaluation setup and the lack of reproducibility and transparency among its main difficulties \cite{biderman2024lessons}, and in machine-learning-based science, leakage between inputs and labels is a common cause of results that do not hold up \cite{kapoor2023leakage}. Our setting differs from drift studies in one respect: the retired model is not compared with its later version on new prompts, but its stored answers to a fixed set of requests are compared with those of replacement models.
+
+\subsection{Non-Determinism Under Settings Meant to Be Deterministic}
+\label{sec:background:nondeterminism}
+
+Repeated requests to a hosted model need not return the same answer, even at temperature zero \cite{atil2025nondeterminism,ouyang2025nondeterminism}, and greedy decoding and sampling can differ in measured performance \cite{song2025greedy}. Locally, part of the variation comes from the numerics of inference: the batch size, the number of GPUs and the GPU version can change the generated responses, most strongly for reasoning models, where small rounding differences in early tokens can grow into different chains of thought \cite{yuan2025nondeterminism}. We therefore store the engine version, the seed and the sampling defaults of each run, repeat a sample of windows, and report the repeats with the caveat that they ran in the same job.
+
+\subsection{Structured Output and the Order of the Answer}
+\label{sec:background:structured}
+
+Constraining the output to a schema makes answers machine-readable, but it can change what the model does: restricting a model to structured formats lowered its reasoning performance across several tasks, and stricter formats lowered it more \cite{tam2024format}. For our task the order of the schema fields matters for another reason. A model decodes the fields in order, so a schema that puts the verdict before the reasoning makes the model commit before it has written the working, whereas chain-of-thought prompting puts the working first \cite{wei2022chain}; and written reasoning can rationalize an answer that the model reached for another reason \cite{turpin2023unfaithful}. We use this literature to frame the question, not to explain our result.
+
+\subsection{Open Weights as a Route to Reproducibility}
+\label{sec:background:open}
+
+Open-weights models can be pinned to a repository revision, run offline on local hardware and run again later with an engine whose version and seed are recorded. We use gpt-oss-20b \cite{openai2025gptoss}, Llama~3.1~8B \cite{grattafiori2024llama3} and Qwen3-8B \cite{yang2025qwen3} with vLLM \cite{kwon2023vllm}. Open weights remove the dependence on a provider, not on the engine, the numerics or the hardware, and a model of 8 to 20 billion parameters may not do what a hosted frontier model did; whether it does is the empirical question of this paper. Benchmark contamination threatens evaluations of any model \cite{dong2024generalization}; we keep it out of the design as far as possible, since the task is a stated rule on rounded numbers without dates or tickers \cite{regan2025obfuscation}, and agreement with the rule shows that the verdict equals the rule's; these data cannot separate applying the rule from recall of the series.

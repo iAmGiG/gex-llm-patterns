@@ -318,6 +318,10 @@ data/backups/gex_llm/*
 !data/backups/gex_llm/condensed/
 data/backups/gex_llm/**/*.jsonl
 !docs/papers/electronics/build.sh
+!docs/papers/openweights/build.sh
+# open-weights paper: the Overleaf package and the LaTeX build logs are written by docs/papers/openweights/build.sh (the PDFs are kept)
+docs/papers/openweights/overleaf/
+docs/papers/openweights/latex/build_*.log
 
 # C-Day poster template supplied by Dr. Xie (another student's finished poster): kept on this machine only;
 # docs/papers/electronics/CDayfiles/build_cday_poster.py reads it to build Regan_Xie_CDay_Poster.pptx

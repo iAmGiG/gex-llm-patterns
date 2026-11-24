@@ -51,6 +51,36 @@ pricing_usd_per_mtok:
     local:
       input: 0.0
       output: 0.0
+  llama-3.1-8b-instruct-rf:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
+  gpt-oss-20b-t0:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
+  llama-3.1-8b-instruct-t0:
+    standard:
+      input: 0.0
+      output: 0.0
+    batch:
+      input: 0.0
+      output: 0.0
+    local:
+      input: 0.0
+      output: 0.0
 budget:
   rule: a run is spend when common.counts_toward_budget(run) holds (model gpt-6-luna, an LLM arm or an arm outside
     the registry, no run_metadata 'backfill') and it has left the machine (status not 'generated'); the backfill
@@ -84,6 +114,23 @@ budget:
     - llama_p34_dated_2024_llama-31-8b-instruct_local_20261108T175242Z_c0
     - llama_p34_obf_2020_llama-31-8b-instruct_local_20261108T175244Z_c0
     - llama_p34_obf_2024_llama-31-8b-instruct_local_20261108T175239Z_c0
+    - llamarf_bridge_jan_llama-31-8b-instruct-rf_local_20261123T231216Z_c0
+    - llamarf_bridge_jan_llama-31-8b-instruct-rf_local_20261123T231216Z_c1
+    - llamarf_ex0dte_spy_llama-31-8b-instruct-rf_local_20261123T231237Z_c0
+    - llamarf_ex0dte_spy_llama-31-8b-instruct-rf_local_20261123T231237Z_c1
+    - llamarf_ex0dte_spy_llama-31-8b-instruct-rf_local_20261123T231237Z_c2
+    - llamarf_ex0dte_spy_llama-31-8b-instruct-rf_local_20261123T231237Z_c3
+    - llamarf_full_spy_llama-31-8b-instruct-rf_local_20261123T231232Z_c0
+    - llamarf_full_spy_llama-31-8b-instruct-rf_local_20261123T231232Z_c1
+    - llamarf_full_spy_llama-31-8b-instruct-rf_local_20261123T231232Z_c2
+    - llamarf_full_spy_llama-31-8b-instruct-rf_local_20261123T231232Z_c3
+    - llamarf_full_spy_llama-31-8b-instruct-rf_local_20261124T032153Z_c0
+    - llamarf_p34_dated_2020_llama-31-8b-instruct-rf_local_20261123T231229Z_c0
+    - llamarf_p34_dated_2024_llama-31-8b-instruct-rf_local_20261123T231223Z_c0
+    - llamarf_p34_obf_2020_llama-31-8b-instruct-rf_local_20261123T231225Z_c0
+    - llamarf_p34_obf_2024_llama-31-8b-instruct-rf_local_20261123T231219Z_c0
+    - llamat0_bridge_jan_llama-31-8b-instruct-t0_local_20261123T231917Z_c0
+    - llamat0_bridge_jan_llama-31-8b-instruct-t0_local_20261123T231917Z_c1
     - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c0
     - oss_bridge_jan_gpt-oss-20b_local_20261107T181402Z_c1
     - oss_bridge_jan_gpt-oss-20b_local_20261107T222800Z_c0
@@ -103,8 +150,14 @@ budget:
     - oss_p34_dated_2024_gpt-oss-20b_local_20261107T222807Z_c0
     - oss_p34_obf_2020_gpt-oss-20b_local_20261107T183458Z_c0
     - oss_p34_obf_2024_gpt-oss-20b_local_20261107T181626Z_c0
+    - osst0_bridge_jan_gpt-oss-20b-t0_local_20261123T231920Z_c0
+    - osst0_bridge_jan_gpt-oss-20b-t0_local_20261123T231920Z_c1
+    - osst0_bridge_jan_gpt-oss-20b-t0_local_20261124T031917Z_c0
     - pilot_llama_bridge_jan_llama-31-8b-instruct_local_20261108T174407Z_c0
+    - pilot_llamarf_bridge_jan_llama-31-8b-instruct-rf_local_20261123T230855Z_c0
+    - pilot_llamat0_bridge_jan_llama-31-8b-instruct-t0_local_20261123T231153Z_c0
     - pilot_oss_bridge_jan_gpt-oss-20b_local_20261107T180914Z_c0
+    - pilot_osst0_bridge_jan_gpt-oss-20b-t0_local_20261123T231450Z_c0
     - pilot_qwen_bridge_jan_qwen3-8b_local_20261108T180454Z_c0
     - pilot_qwen_bridge_jan_qwen3-8b_local_20261108T183430Z_c0
     - qwen_bridge_jan_qwen3-8b_local_20261108T192156Z_c0
@@ -221,21 +274,21 @@ totals:
     est_cost_usd: 9.967462
     cost_per_request_usd: 0.005186
   other_model:
-    runs: 133
-    n_requests: 47176
-    prompt_tokens: 88552733
-    completion_tokens: 131784667
-    reasoning_tokens: 125242806
+    runs: 156
+    n_requests: 62759
+    prompt_tokens: 117006433
+    completion_tokens: 137026983
+    reasoning_tokens: 127913715
     est_cost_usd: 0.0
     cost_per_request_usd: 0.0
   all_stored_runs:
-    runs: 179
-    n_requests: 84931
-    prompt_tokens: 160613780
-    completion_tokens: 161768578
-    reasoning_tokens: 148150655
+    runs: 202
+    n_requests: 100514
+    prompt_tokens: 189067480
+    completion_tokens: 167010894
+    reasoning_tokens: 150821564
     est_cost_usd: 19.988211
-    cost_per_request_usd: 0.000235346
+    cost_per_request_usd: 0.00019886
 by_arm:
 - arm: bridge_jan
   runs: 2
@@ -381,6 +434,70 @@ by_arm:
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
+- arm: llamarf_bridge_jan
+  runs: 2
+  n_requests: 1550
+  prompt_tokens: 2821000
+  completion_tokens: 245991
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_ex0dte_spy
+  runs: 4
+  n_requests: 4926
+  prompt_tokens: 8965320
+  completion_tokens: 789229
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_full_spy
+  runs: 5
+  n_requests: 4927
+  prompt_tokens: 8967140
+  completion_tokens: 791100
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_p34_dated_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 439920
+  completion_tokens: 38252
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_p34_dated_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 439920
+  completion_tokens: 36684
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_p34_obf_2020
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 425880
+  completion_tokens: 38951
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamarf_p34_obf_2024
+  runs: 1
+  n_requests: 234
+  prompt_tokens: 425880
+  completion_tokens: 36777
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: llamat0_bridge_jan
+  runs: 2
+  n_requests: 1550
+  prompt_tokens: 2821000
+  completion_tokens: 272471
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: oss_bridge_jan
   runs: 3
   n_requests: 1553
@@ -437,6 +554,14 @@ by_arm:
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
+- arm: osst0_bridge_jan
+  runs: 3
+  n_requests: 1574
+  prompt_tokens: 2927640
+  completion_tokens: 2912928
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: p34_dated_2020
   runs: 1
   n_requests: 234
@@ -485,11 +610,35 @@ by_arm:
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
+- arm: pilot_llamarf_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 72800
+  completion_tokens: 6134
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: pilot_llamat0_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 72800
+  completion_tokens: 7056
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - arm: pilot_oss_bridge_jan
   runs: 1
   n_requests: 40
   prompt_tokens: 74400
   completion_tokens: 66286
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- arm: pilot_osst0_bridge_jan
+  runs: 1
+  n_requests: 40
+  prompt_tokens: 74400
+  completion_tokens: 66743
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
@@ -598,11 +747,35 @@ by_model:
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
+- model: gpt-oss-20b-t0
+  runs: 4
+  n_requests: 1614
+  prompt_tokens: 3002040
+  completion_tokens: 2979671
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
 - model: llama-3.1-8b-instruct
   runs: 15
   n_requests: 12378
   prompt_tokens: 22556040
   completion_tokens: 2102759
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- model: llama-3.1-8b-instruct-rf
+  runs: 16
+  n_requests: 12379
+  prompt_tokens: 22557860
+  completion_tokens: 1983118
+  est_cost_usd: 0.0
+  est_cost_usd_counted: null
+  cost_per_request_usd: 0.0
+- model: llama-3.1-8b-instruct-t0
+  runs: 3
+  n_requests: 1590
+  prompt_tokens: 2893800
+  completion_tokens: 279527
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
@@ -640,10 +813,10 @@ by_mode:
   est_cost_usd_counted: 9.99909
   cost_per_request_usd: 0.000529406
 - mode: local
-  runs: 133
-  n_requests: 47176
-  prompt_tokens: 88552733
-  completion_tokens: 131784667
+  runs: 156
+  n_requests: 62759
+  prompt_tokens: 117006433
+  completion_tokens: 137026983
   est_cost_usd: 0.0
   est_cost_usd_counted: null
   cost_per_request_usd: 0.0
@@ -657,17 +830,17 @@ by_mode:
   cost_per_request_usd: 0.000541488
 by_status:
 - status: ingested
-  runs: 179
-  n_requests: 84931
-  prompt_tokens: 160613780
-  completion_tokens: 161768578
+  runs: 202
+  n_requests: 100514
+  prompt_tokens: 189067480
+  completion_tokens: 167010894
   est_cost_usd: 19.988211
   est_cost_usd_counted: 10.020749
-  cost_per_request_usd: 0.000235346
+  cost_per_request_usd: 0.00019886
 runs_without_est_cost: []
 reconciliation:
-  runs_compared_with_detection_usage: 178
-  runs_with_token_gap: 111
+  runs_compared_with_detection_usage: 201
+  runs_with_token_gap: 114
   max_abs_cost_gap_usd: 0.0
   note: 'gaps compare the run totals with the sum over that run''s detection rows; cost_gap_usd compares est_cost_usd
     with the token usage priced by common.PRICING_USD_PER_MTOK. A run whose answers were later replaced (the 2026-11-03

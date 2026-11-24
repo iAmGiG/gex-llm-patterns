@@ -1,0 +1,42 @@
+\subsection{Does the Order of the Schema Explain the Llama Failure?}
+\label{sec:results:order}
+
+% src: exploratory_llama_reorder_20261108/output.jsonl (local, git-ignored, kept with the deposit: 40 answers, regime_detected true in 32, equal to clf_should_detect in 26; confusion table with clf_should_detect: 7 and 13 for the 20 rejected windows, 1 and 19 for the 20 detected ones); condensed/detections.csv.gz arm=pilot_llama_bridge_jan (40 answers on the same 40 windows: regime_detected true in 40, equal to clf_should_detect in 20), arm=pilot_llamarf_bridge_jan (27 detected, 27 equal to clf_should_detect); condensed/windows.csv.gz series_key=jan2026_phase4a clf_should_detect (20 of the 40 windows); planning/02_decisions_log.md D-30 (exploratory run, pilot), D-33
+Two runs bear on this question. On 2026-11-08, after the 40-window pilot, we sent the same 40 requests to Llama~3.1~8B with the schema reordered so that the reasoning and the counts come before the verdict (Appendix~\ref{app:schema}). That run is outside the stored arms: it was a single exploratory pass, and its answers are kept with the deposit and not in the result tables. The 40 windows are balanced on the rule (20 detected, 20 not). With the verdict first the model detected all 40 and agreed with the rule in 20; with the reasoning first it detected 32 and agreed in 26. The order changed the verdicts and moved them towards the rule, but not far: 13 of the 20 windows that the rule rejects were still detected, and 1 of the 20 that it detects was missed.
+
+% src: detection_by_year.csv label_source=llm scope=all arm=llamarf_* (n_windows, n_parsed, n_detect, rate_pct, agree_pct, kappa); scope=year arm=llamarf_full_spy years 2024 and 2025 (n_detect summed 279, n_parsed 502), llama_full_spy (502 of 502), oss_full_spy (62 of 502); classifier new_full 2024-2025 (60 of 502); reported_vs_computed.csv basis=arm scope=all arm=llamarf_* (ratio_within_5pct_pct 14.798206 to 38.685637, llama_* 14.349776 to 64.125561); detection_by_year.csv metrics_agree_pct llamarf_* (0.000 to 0.448); bridge_agreement.csv comparison=bridge ref_arm=r1_o4mini other_arm=llamarf_bridge_jan (n_pairs 1412, agree_pct 67.209632, kappa 0.361487), comparison=model_pair ref_arm=bridge_jan other_arm=llamarf_bridge_jan (kappa 0.358572); condensed/detections.csv.gz llamarf_* against llama_* on the same windows (972 of 1,476; 2,211 of 4,691; 2,245 of 4,691 equal verdicts); llm_parse_stats.csv llamarf_* (n_parsed = n_rows, one answer with n_rerun_at_retry_cap on llamarf_full_spy); runs.csv.gz model=llama-3.1-8b-instruct-rf (12,379 requests, 2.35 GPU-hours); planning/02_decisions_log.md D-33
+The full run (decision D-33) repeats the seven arms with the reasoning field first, and the model no longer says yes to every window. Every window is answered (one answer needed the retry at 8{,}000 tokens), and it detects 47.1\% of the windows of the complete series (2{,}210 of 4{,}691; the rule 13.0\%) and 65.9\% of the published inputs (972 of 1{,}476; the rule 45.2\%); in 2024 and 2025 it detects 279 of the 502 windows, against 60 for the rule. It still does not follow the rule. Its agreement is 56.7\% on the complete series (kappa 0.096), 67.0\% on the published inputs (kappa 0.360) and 35.4\% to 54.7\% on the four baseline arms (kappa 0.048 to 0.092); against the stored o4-mini verdicts it agrees in 67.2\% of 1{,}412 windows (kappa 0.361). Table~\ref{tab:order} lists every arm. The numbers that it reports are wrong: its reported mean $|\mathrm{GEX}|$ lies within 5\% of the computed value in 14.8\% to 38.7\% of the answers per arm, and its reported metrics as a whole equal the computed ones in less than 0.5\% of them.
+
+The two runs say the same. The verdict-first order explains why the \ident{llama_} arms answer yes to almost every window: with the reasoning first the verdict is no longer constant. It does not explain the failure of the task: the reasoning-first verdicts are close to chance (kappa about 0.1 on the complete series) and its working is wrong, so schema order is not the whole explanation, and this run does not say what else is.
+
+\begin{table}[!t]
+\centering
+\caption{Llama~3.1~8B with the verdict first (stored arms) and with the reasoning first (run D-33): windows detected, agreement with the rule in percent (kappa) and share of answers whose reported mean $|\mathrm{GEX}|$ is within 5\% of the computed value.}
+% src: verdict first: detection_by_year.csv label_source=llm scope=all arm=llama_* (n_detect, agree_pct, kappa), reported_vs_computed.csv basis=arm scope=all (ratio_within_5pct_pct); reasoning first: the same columns for arm=llamarf_* (n_detect 972, 2,210, 2,244, 112, 110, 167, 147; agree_pct 67.0, 56.7, 55.7, 54.7, 52.0, 35.4, 41.7; kappa 0.360, 0.096, 0.083, 0.092, 0.048, 0.062, 0.061; ratio_within_5pct_pct 38.7, 17.4, 17.3, 37.2, 35.9, 14.8, 23.3)
+\label{tab:order}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+& & \multicolumn{3}{c}{Verdict first} & \multicolumn{3}{c}{Reasoning first} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+Arm & Windows & Detected & Agree (kappa) & Within 5\% & Detected & Agree (kappa) & Within 5\% \\
+\midrule
+\ident{bridge_jan} & 1{,}476 & 1{,}476 & 45.2 (0.000) & 41.6 & 972 & 67.0 (0.360) & 38.7 \\
+\ident{full_spy} & 4{,}691 & 4{,}690 & 13.0 (0.000) & 19.1 & 2{,}210 & 56.7 (0.096) & 17.4 \\
+\ident{ex0dte_spy} & 4{,}691 & 4{,}690 & 10.5 (0.000) & 16.1 & 2{,}244 & 55.7 (0.083) & 17.3 \\
+\ident{p34_obf_2024} & 223 & 223 & 81.2 (0.000) & 64.1 & 112 & 54.7 (0.092) & 37.2 \\
+\ident{p34_dated_2024} & 223 & 223 & 81.2 (0.000) & 62.3 & 110 & 52.0 (0.048) & 35.9 \\
+\ident{p34_obf_2020} & 223 & 223 & 12.1 (0.000) & 14.3 & 167 & 35.4 (0.062) & 14.8 \\
+\ident{p34_dated_2020} & 223 & 223 & 12.1 (0.000) & 23.8 & 147 & 41.7 (0.061) & 23.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!t]
+\centering
+\resultfigure{\figOrder}
+\caption{Llama~3.1~8B with the verdict first (open squares) and with the reasoning first (filled diamonds) on the complete SPY series: detection rate by year (a), with the rule and gpt-oss-20b for reference, and share of reported mean $|\mathrm{GEX}|$ within 5\% of the computed value by arm (b; open bars verdict first, filled bars reasoning first). \textbf{Read this figure as:} the reasoning-first markers leave 100\% but do not follow the rule line.}
+% src: figures/output/bf05_llama_schema_order.json (arms llama_full_spy, llamarf_full_spy, oss_full_spy of detection_by_year.csv scope=year; reported_vs_computed.csv basis=arm scope=all)
+\label{fig:order}
+\end{figure}

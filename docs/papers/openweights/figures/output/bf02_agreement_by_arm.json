@@ -1,0 +1,193 @@
+{
+  "argv": [
+    "bf02_agreement_by_arm.py"
+  ],
+  "code": [
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figdata.py",
+      "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/figllm.py",
+      "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
+    },
+    {
+      "git": "clean",
+      "path": "docs/papers/electronics/figures/scripts/theme.py",
+      "sha256": "ccfebc01dd90f52928d57dffa65e1b829a9d53d12644b7f18a7ca5df1c4e04e6"
+    },
+    {
+      "git": "clean",
+      "path": "scripts/validation/electronics/common.py",
+      "sha256": "d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa"
+    }
+  ],
+  "extra": {
+    "arms": [
+      "bridge_jan",
+      "full_spy",
+      "ex0dte_spy",
+      "p34_obf_2024",
+      "p34_dated_2024",
+      "p34_obf_2020",
+      "p34_dated_2020"
+    ],
+    "models_drawn": [
+      "oss",
+      "llama",
+      "qwen",
+      "llamarf",
+      "osst0",
+      "llamat0"
+    ],
+    "openweights_code": {
+      "docs/papers/openweights/figures/scripts/bf02_agreement_by_arm.py": "a91a4b33766b481f6aa4e2d6fdfbcc16641330b686eccacf9bad170f7a5c8235",
+      "docs/papers/openweights/figures/scripts/figopen.py": "45062d93b392979e4f50cbb31416cb2bd3d0f2eba514b35a5e88966474495dcc"
+    },
+    "values": {
+      "llama:agree_pct": [
+        45.1897,
+        13.0036,
+        10.4882,
+        81.1659,
+        81.1659,
+        12.1076,
+        12.1076
+      ],
+      "llama:kappa": [
+        0.0,
+        0.0001,
+        0.0001,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "llamarf:agree_pct": [
+        67.0054,
+        56.747,
+        55.7237,
+        54.7085,
+        52.0179,
+        35.426,
+        41.704
+      ],
+      "llamarf:kappa": [
+        0.3596,
+        0.0963,
+        0.0831,
+        0.0916,
+        0.0483,
+        0.0623,
+        0.0607
+      ],
+      "llamat0:agree_pct": [
+        45.1897
+      ],
+      "llamat0:kappa": [
+        0.0
+      ],
+      "oss:agree_pct": [
+        99.5935,
+        99.7228,
+        99.8508,
+        98.2063,
+        99.1031,
+        100.0,
+        100.0
+      ],
+      "oss:kappa": [
+        0.9918,
+        0.9878,
+        0.9921,
+        0.9391,
+        0.9701,
+        1.0,
+        1.0
+      ],
+      "osst0:agree_pct": [
+        99.7288
+      ],
+      "osst0:kappa": [
+        0.9945
+      ],
+      "qwen:agree_pct": [
+        98.8848,
+        98.6923,
+        99.4441,
+        98.1132,
+        95.4315,
+        100.0,
+        99.5413
+      ],
+      "qwen:kappa": [
+        0.9777,
+        0.9484,
+        0.9725,
+        0.9245,
+        0.6675,
+        1.0,
+        0.9785
+      ]
+    }
+  },
+  "figure": "bf02_agreement_by_arm",
+  "generated_utc": "2026-11-24T03:55:28+00:00",
+  "git_dirty": false,
+  "git_dirty_tracked": false,
+  "git_sha": "aa346430f90bbd5b218084f67ceb9eef8361eeeb",
+  "outputs": {
+    "pdf": {
+      "bytes": 18169,
+      "path": "docs/papers/openweights/figures/output/bf02_agreement_by_arm.pdf",
+      "sha256": "2f5404a43eea5ce39d7d581a7b90d93530db0b6e8a94ae08d861a81ad330c5a5"
+    },
+    "png": {
+      "bytes": 147437,
+      "path": "docs/papers/openweights/figures/output/bf02_agreement_by_arm.png",
+      "pixels": [
+        1842,
+        990
+      ],
+      "sha256": "1d7f2e1f08824a2e3c3b69607ababbdc3018479d76329b91bbf7de1f2ee897f0"
+    }
+  },
+  "results": {
+    "files": {
+      "detection_by_year.csv": {
+        "inputs_fingerprint": "1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21",
+        "listed_in_report": true,
+        "matches_report": true,
+        "sha256": "c6a8f8ef2f75e0852c9f8a7c63b5b0302ba18cf2b0c419423aa1cd227d504910"
+      }
+    },
+    "report_yaml": {
+      "generated_at": "2026-11-24T03:34:10+00:00",
+      "inputs_fingerprint": "1d9bdc637e816a0edb3981a4aa52100aa388c2253d05d5ee9403e6584744ae21",
+      "path": "docs/papers/electronics/results/report.yaml",
+      "script_sha256": "47df9c3018157d17a1ce51e520522e1d20234c3fbe4baa35a7a3ee3a78c1d15f",
+      "sha256": "c358abf979179cb1c27fc1a0cc733bec94bf66ef62cc97ac6af3ba2b2afa462e"
+    }
+  },
+  "rows": {
+    "docs/papers/electronics/results/detection_by_year.csv": 1002
+  },
+  "sources": [
+    {
+      "bytes": 171064,
+      "path": "docs/papers/electronics/results/detection_by_year.csv",
+      "sha256": "c6a8f8ef2f75e0852c9f8a7c63b5b0302ba18cf2b0c419423aa1cd227d504910"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "pillow": "12.1.0",
+    "pyarrow": "23.0.0",
+    "python": "3.12.12",
+    "pyyaml": "6.0.3"
+  }
+}

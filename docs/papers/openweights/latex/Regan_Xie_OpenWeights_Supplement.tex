@@ -1,0 +1,21 @@
+%  Supplementary Materials of the open-weights manuscript (compiled on its own: pdflatex, twice).
+%  Section S1: run ledgers of the local runs (Tables S1-S3).  Section S2: the three models in detail (Tables S4-S6).  Section S3: engine settings (Table S7).
+%  One \input per part, as in the article.  The article cites the tables by number: Tables S1-S3 are the ledgers of gpt-oss-20b, Llama 3.1 8B and Qwen3-8B,
+%  Tables S4-S6 the detail of the same models; build.sh checks the numbers.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,tabularx,float,listings,xcolor,url,amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\DeclareRobustCommand{\ident}[1]{\texttt{\detokenize{#1}}}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\title{Supplementary Materials for\\ ``Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests''}
+\author{Christopher Regan and Ying Xie}
+\date{}
+\begin{document}
+\maketitle
+\input{./S1_Run_Ledger}
+\input{./S2_Detail}
+\input{./S3_Engine}
+\end{document}
