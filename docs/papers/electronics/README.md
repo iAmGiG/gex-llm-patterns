@@ -247,6 +247,7 @@ ledger.
 | 2026-10-04 | the pre-rebuild daily table is archived as `backups.options_daily_summary_pre_rebuild_20261004` |
 | 2026-10-08 | `gex.options_daily_summary` is rebuilt from stored per-contract gamma, same-day expiries included |
 | 2026-10-12 | equity options move from Alpha Vantage to Cboe delayed quotes, so every window ends on or before 2026-10-09 |
+| 2026-11-19 | last session of options, intraday and price data in the database (Cboe refuses the node from that evening; no replacement source); no effect on the windows of this study |
 
 ## Related issues and documents
 

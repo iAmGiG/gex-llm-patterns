@@ -1,6 +1,6 @@
 # Data Collection Status
 
-> ⚠️ **Snapshot: last validated 2025-12-17.** Paper 1 (published) and Paper 2 (AIAI 2026 accepted, JRFM under review) used the data reflected below. For live collection status, see CLAUDE.md. Active trading-infrastructure data collection has been migrated to the AutoTrader-AgentEdge repository.
+> ⚠️ **Snapshot: last validated 2025-12-17.** Paper 1 (published) and Paper 2 (AIAI 2026 accepted, JRFM under review) used the data reflected below. There is no live collection any more: options, intraday and price collection into the research database ended at the close of 2026-11-19 (database repository, issue #239). Active trading-infrastructure data collection has been migrated to the AutoTrader-AgentEdge repository.
 
 Last updated: 2025-12-17 00:35 UTC
 
