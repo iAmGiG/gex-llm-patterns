@@ -224,10 +224,10 @@
     ]
   },
   "figure": "fig08_deep_baseline",
-  "generated_utc": "2026-11-25T01:00:49+00:00",
+  "generated_utc": "2026-11-25T01:20:53+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "6b54dda34d2d3f824691c1fab32e1ef1fba0ef56",
+  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
   "outputs": {
     "pdf": {
       "bytes": 23481,
@@ -260,11 +260,11 @@
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-24T20:06:12+00:00",
+      "generated_at": "2026-11-25T01:19:45+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc",
-      "sha256": "2df262da1eff781c9af2f98da51d6deb168e2a89716a6830d4cdd409000847f4"
+      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
+      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
     }
   },
   "rows": {
