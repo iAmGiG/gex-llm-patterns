@@ -662,6 +662,41 @@ def git_sha() -> str:
         return "unknown"
 
 
+_MAIN_CHECKOUT: List[Optional[Path]] = []
+
+
+def main_checkout_root() -> Optional[Path]:
+    """Root of the main working tree when this checkout is a linked git worktree (its data folders are usually links into
+    the main one); None when git cannot say."""
+    if not _MAIN_CHECKOUT:
+        try:
+            common_dir = subprocess.check_output(["git", "-C", str(REPO_ROOT), "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                                                 text=True, stderr=subprocess.DEVNULL).strip()
+            _MAIN_CHECKOUT.append(Path(common_dir).parent if common_dir.endswith(".git") else None)
+        except Exception:  # pragma: no cover - git missing
+            _MAIN_CHECKOUT.append(None)
+    return _MAIN_CHECKOUT[0]
+
+
+def repo_relative(path: Any) -> str:
+    """The path as it is written into result files and manifests: relative to the repository root when it lies in this
+    checkout or, for a linked git worktree, in the main checkout (as given, then with links resolved); absolute otherwise.
+    A record written from any checkout of the repository then names the same path."""
+    given = Path(path)
+    given = given if given.is_absolute() else Path.cwd() / given
+    roots = [REPO_ROOT, REPO_ROOT.resolve()]
+    main = main_checkout_root()
+    if main is not None:
+        roots += [main, main.resolve()]
+    for candidate in (given, given.resolve()):
+        for root in roots:
+            try:
+                return str(candidate.relative_to(root))
+            except ValueError:
+                continue
+    return str(given.resolve())
+
+
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 

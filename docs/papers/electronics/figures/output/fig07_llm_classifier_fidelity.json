@@ -2,7 +2,7 @@
   "argv": [
     "fig07_llm_classifier_fidelity.py",
     "--tables-dir",
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
+    "data/backups/gex_llm/tables"
   ],
   "code": [
     {
@@ -21,14 +21,14 @@
       "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "ccfebc01dd90f52928d57dffa65e1b829a9d53d12644b7f18a7ca5df1c4e04e6"
+      "sha256": "e6c7b1e5baf8c2ceddae9728d191758517ffef6cd854369ac13c055432458f00"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa"
+      "sha256": "a6da849b13555d85500958e5192d2e904e6ce239c3ac7ae77257f06ac01a901f"
     }
   ],
   "extra": {
@@ -374,10 +374,10 @@
     ]
   },
   "figure": "fig07_llm_classifier_fidelity",
-  "generated_utc": "2026-11-25T01:20:49+00:00",
+  "generated_utc": "2026-11-25T02:12:39+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
+  "git_sha": "f23906cc37dd608ef783d8544b2de4267a00b7be",
   "outputs": {
     "pdf": {
       "bytes": 112841,
@@ -385,13 +385,13 @@
       "sha256": "bb01e5cf247ef462f1d6bfc94df2a7499353df0846da1988cd5ca5751765cf68"
     },
     "png": {
-      "bytes": 633247,
+      "bytes": 630682,
       "path": "docs/papers/electronics/figures/output/fig07_llm_classifier_fidelity.png",
       "pixels": [
         1842,
         1845
       ],
-      "sha256": "6cb01a46f294a47fd6d8da78daa7b06f0251d29055b8de69e6515acd1541022c"
+      "sha256": "18f52b76dfd5e931e19b4c3df4b774a093c68132e5cdccb3c559b34aeedb5c25"
     }
   },
   "results": {
@@ -404,71 +404,71 @@
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-25T01:19:45+00:00",
+      "generated_at": "2026-11-25T02:03:02+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "script_sha256": "f089b5bea40675d82c6ced7595828d75745272b20a37405996dc82df619876f9",
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     }
   },
   "rows": {
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet": 1476,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet": 1218,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet": 1218,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet": 1217,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet": 985,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet": 893,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet": 807,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet": 30,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet": 892,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet": 807,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet": 30,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet": 1227,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet": 1226,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet": 1226,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet": 992,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet": 322,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet": 1228,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet": 1228,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet": 1228,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet": 994,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet": 178,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet": 878,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet": 793,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet": 30,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet": 1354,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet": 1353,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet": 1160,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet": 127,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet": 877,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet": 793,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet": 30,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet": 1227,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet": 1226,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet": 1226,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet": 992,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet": 322,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet": 51,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_o4mini.parquet": 1476,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet": 51,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3878,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3878,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet": 1672,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet": 1671,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/old_bs_SPY.parquet": 4638,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet": 223,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet": 1476,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet": 1218,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet": 1218,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet": 1217,
+    "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet": 985,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet": 893,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet": 30,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet": 892,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet": 807,
+    "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet": 30,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet": 1227,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet": 322,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet": 1228,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet": 994,
+    "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet": 178,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet": 878,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet": 30,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet": 1354,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet": 1353,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet": 1160,
+    "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet": 127,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet": 877,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet": 793,
+    "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet": 30,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet": 1227,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet": 1226,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet": 992,
+    "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet": 322,
+    "data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet": 51,
+    "data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet": 223,
+    "data/backups/gex_llm/tables/detections/r1_o4mini.parquet": 1476,
+    "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet": 51,
+    "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet": 1476,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet": 1672,
+    "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet": 1671,
+    "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet": 4638,
+    "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet": 223,
+    "data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet": 223,
     "docs/papers/electronics/results/detection_by_year.csv": 1029,
     "docs/papers/electronics/results/report.yaml": 15
   },
@@ -479,293 +479,293 @@
       "sha256": "3f06008bfec114d98fc679a22f6c6711ef27730e4647c015468a78d1b19319d0"
     },
     {
-      "bytes": 449934,
+      "bytes": 411480,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     },
     {
       "bytes": 618398,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/bridge_jan_gpt-6-luna_batch_20261029T203742Z_c0.parquet",
       "sha256": "b9e2084bab34bd8205389d4c990e330c6f66fe6508a910bcf8267108fdbc3df4"
     },
     {
       "bytes": 507058,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c0.parquet",
       "sha256": "ee61d44b6b753518ce17db3028f8d3fcd8f2f4e353f8e3b31d71b99fa9691f69"
     },
     {
       "bytes": 541204,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c1.parquet",
       "sha256": "6535e894980d079d89ee18ceec636cb3f99a840a5899576b489b0ca484f59265"
     },
     {
       "bytes": 532872,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet",
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c2.parquet",
       "sha256": "1a14ae5f02f0cd47aef2e03785b2244099fb77cb21e4aa8b2ce53855b054aff0"
     },
     {
       "bytes": 526945,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet",
+      "path": "data/backups/gex_llm/tables/detections/bridge_old_gpt-6-luna_batch_20261030T010455Z_c3.parquet",
       "sha256": "b10951bda7332b8531188a256a979a836d176179beaca15c5c6b24b5ef41f0f9"
     },
     {
       "bytes": 362142,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c0.parquet",
       "sha256": "4e481bea79aff8020f4363683633332a9d2fe19425c70797ed1978102717d8c5"
     },
     {
       "bytes": 377631,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261030T010451Z_c1.parquet",
       "sha256": "77324f7ea1bbdc4302d93fd4bee0cee684edb076073e10cfe35ee34193930a4d"
     },
     {
       "bytes": 30981,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_iwm_gpt-6-luna_batch_20261103T040105Z_c0.parquet",
       "sha256": "54f12e87137acbd24cb3f10632dc2fe59dff602bef4c4ddd9bb9690e136e8f3b"
     },
     {
       "bytes": 378009,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c0.parquet",
       "sha256": "d7985cca88d57ef329641efdff37cac3b0e14b4fd1eaa7e4c22ee3042d096ee9"
     },
     {
       "bytes": 388000,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261030T010447Z_c1.parquet",
       "sha256": "10e71e5e0cd6af43e886f2e71425e1ea2690e18298275d50f8a70e07fc85edc7"
     },
     {
       "bytes": 29903,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_qqq_gpt-6-luna_batch_20261103T040102Z_c0.parquet",
       "sha256": "972bc1de569012c151889e4d7ef7effe99176e7b12cbdeb656ebc2178bfbdecf"
     },
     {
       "bytes": 512022,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c0.parquet",
       "sha256": "acc281b2b3de6da698fe61fb95c8500ba9cb7f2d91a9cc14fd7705b9fd40c8e8"
     },
     {
       "bytes": 530166,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c1.parquet",
       "sha256": "840359a3d2070ce2af296c19006a56ca18edd6d734992c2d48c77910f9902673"
     },
     {
       "bytes": 517425,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c2.parquet",
       "sha256": "1117b1f4fd277ed0e7cf2d4257025534efd62f6cff81d410b803d08a40e3ddfb"
     },
     {
       "bytes": 543565,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261029T203749Z_c3.parquet",
       "sha256": "5140fc94f58bf89745b819e2ffe0504e45ead42ed92c5a22cd2a855e877dd096"
     },
     {
       "bytes": 184841,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/ex0dte_spy_gpt-6-luna_batch_20261103T040045Z_c0.parquet",
       "sha256": "4f10ed397d860cc26beb708066e6ea10cf2275a3d1b58847c574d85d323b9e1d"
     },
     {
       "bytes": 483505,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c0.parquet",
       "sha256": "55c25ea6f26c74aa6aa5f330259451728def98dd385e0a6b529f15e06d4bb551"
     },
     {
       "bytes": 469622,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c1.parquet",
       "sha256": "6b64ce1ac7280bc31584ff64c7ec4ef54dfccfbdb8eff6af5b7fc3a1dd96a8dd"
     },
     {
       "bytes": 503106,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c2.parquet",
       "sha256": "2f45a81ac352a857203eb75d8ff8ee611e8d786ed77daf5b00ae9ef2206cebfa"
     },
     {
       "bytes": 510913,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261029T204033Z_c3.parquet",
       "sha256": "cd8bddf7162a324fcb49f441c4c3e6b509825a99a045a17864036cd45be9835b"
     },
     {
       "bytes": 99566,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_gpt-6-luna_batch_20261103T040052Z_c0.parquet",
       "sha256": "b86f0dc43311f56e35ff21f37cc219b463399ef55ae5ed0278b7594eca2d0165"
     },
     {
       "bytes": 383357,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c0.parquet",
       "sha256": "b06a26ab1bb82992d8e351029d353ef0b0053469c2d21f63850b40082a5f00c7"
     },
     {
       "bytes": 409475,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261029T204039Z_c1.parquet",
       "sha256": "92748d3a25e7a298c9adf57c33ef0e145cd525fa3f60366db4f065a4903f567e"
     },
     {
       "bytes": 32106,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_iwm_scaled_gpt-6-luna_batch_20261103T040059Z_c0.parquet",
       "sha256": "a961531189629657f22ec10e14c837e4fba6bf89522e7d9991e15a82197a691a"
     },
     {
       "bytes": 584335,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c0.parquet",
       "sha256": "912edaec1cf26b7b88ab8b811b92d11f3098907a01259918962741749c328017"
     },
     {
       "bytes": 575385,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c1.parquet",
       "sha256": "f0f1d3b07e8c138499a57a1603ccaedf793f92eed4938914ba2b0584c3e2741a"
     },
     {
       "bytes": 562161,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261029T204029Z_c2.parquet",
       "sha256": "fea3ac8285e4809f9aa5905fd2454994605cb9df013eacc485cf8e17095ce54a"
     },
     {
       "bytes": 79750,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_gpt-6-luna_batch_20261103T040049Z_c0.parquet",
       "sha256": "4d52a5589f5f9d53a2d7da3b35f79618e76bc382d06a5349d6eb95a5569118d0"
     },
     {
       "bytes": 391611,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c0.parquet",
       "sha256": "b4932572b59077d9a05bcca81bceeed132b9c6aef8af936ab252a8f9406f894f"
     },
     {
       "bytes": 403081,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261029T204036Z_c1.parquet",
       "sha256": "7b577ee6815a0e32ea9c056378b3cc7411195b490f813463469c780fc553bd5c"
     },
     {
       "bytes": 31924,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_qqq_scaled_gpt-6-luna_batch_20261103T040056Z_c0.parquet",
       "sha256": "62e58cfcc775ae341e81d11ddecddaacd98375d09c00ddb510753a604c5e7d6c"
     },
     {
       "bytes": 515309,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c0.parquet",
       "sha256": "be24fb9c58333fc6d22168cecd948433c197e1909cd78ef72865022c7a6d5d39"
     },
     {
       "bytes": 535988,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c1.parquet",
       "sha256": "1820e146d1940d6481be55dca4047eb0d4c272697a215acb11abdd6198d60a80"
     },
     {
       "bytes": 539746,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c2.parquet",
       "sha256": "1d33546ef0f41c103c43e5208463b7849df27d61dd5c11e22da4ba224c72aa6c"
     },
     {
       "bytes": 546487,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261029T203745Z_c3.parquet",
       "sha256": "5ad767de80fb29084af43ea1e7b123b89237580f67504d878b985ac9865a0769"
     },
     {
       "bytes": 194224,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/full_spy_gpt-6-luna_batch_20261103T040042Z_c0.parquet",
       "sha256": "395ca09e16dcc09717912cd8513ae775da274cd2bd7a0f2096043fc395b864e3"
     },
     {
       "bytes": 46226,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/intraday_spy_gpt-6-luna_batch_20261029T204042Z_c0.parquet",
       "sha256": "dcc6c0bda79889cb6e49faa3f54339732f9d14d98f65e28173eb52e590f299c3"
     },
     {
       "bytes": 99542,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/p34_dated_2020_gpt-6-luna_batch_20261029T203759Z_c0.parquet",
       "sha256": "f40d7e2ecf55d8e4060020727193990cb697858da3652bddb6c3096776033386"
     },
     {
       "bytes": 109148,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/p34_dated_2024_gpt-6-luna_batch_20261029T203754Z_c0.parquet",
       "sha256": "6d0c7e70d0f8ab78d4566d900c904b2ab36d7308124c8853f7ed3b9e5430e886"
     },
     {
       "bytes": 100942,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/p34_obf_2020_gpt-6-luna_batch_20261029T203757Z_c0.parquet",
       "sha256": "6c9fc29446b84039c0f92cf89be62ada0454432976ab347ea391223cdb86e834"
     },
     {
       "bytes": 110046,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet",
+      "path": "data/backups/gex_llm/tables/detections/p34_obf_2024_gpt-6-luna_batch_20261029T203752Z_c0.parquet",
       "sha256": "8ed2c890dd109d14e8009577901c60401b8691b493676f5800060f652ed68cbb"
     },
     {
       "bytes": 515768,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/detections/r1_o4mini.parquet",
+      "path": "data/backups/gex_llm/tables/detections/r1_o4mini.parquet",
       "sha256": "11fd9b58dbc64105264d8f8d0a72accdb7e92e247c556b22ce8ab88aca46d4ef"
     },
     {
       "bytes": 29692,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/intraday_t0_SPY.parquet",
       "sha256": "6de8e2628d311a724141b47f7a1356b00cc8c288aa0a996d71add11b73697ecd"
     },
     {
       "bytes": 425286,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/jan2026_phase4a_SPY.parquet",
       "sha256": "f452ee8c5af70763b33895691965d0fed01bc80c74701bdac11084672ecedccf"
     },
     {
       "bytes": 1438633,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
       "sha256": "da0d84f092b8e6de962ee2f6b4b486531be670c4c2a51e32e974ae6d3ee2473e"
     },
     {
       "bytes": 1191743,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
       "sha256": "91e554b1113b2bddde98fe25cdcab7c40be66d4685365462122c14bd5043c1a3"
     },
     {
       "bytes": 1447055,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
       "sha256": "999fa2f10c3fdeb18d6c712505a76e1a55d8600b6b9a1a03b9e6659f1037dcff"
     },
     {
       "bytes": 1362674,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
       "sha256": "519d7414c14ab9b3e7e76a675ed4f458a44f5eeedc5be527615242e6f2e71301"
     },
     {
       "bytes": 1130075,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
       "sha256": "04e5c8b348174529ef9a6e8f2593808f132512d39d119bf8e9d85ab92a4fa7a1"
     },
     {
       "bytes": 1380806,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     },
     {
       "bytes": 519804,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_scaled_IWM.parquet",
       "sha256": "21e239f5c7c87543308ca50336c719120454287a355985225424b8ee680876bb"
     },
     {
       "bytes": 523686,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_scaled_QQQ.parquet",
       "sha256": "15391ad332f018636daed90692aca68427243a6b78a97b038408d4022407cfa3"
     },
     {
       "bytes": 1357445,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/old_bs_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/old_bs_SPY.parquet",
       "sha256": "5b8108ff4b6264d3153286659d134310781f087da77d24458fddaadad1cd1308"
     },
     {
       "bytes": 75054,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/p3_2024_SPY.parquet",
       "sha256": "46eb2d8eacc8e32329aae367d008f0592f012e48f3e2e03707a31ceccbaab264"
     },
     {
       "bytes": 56506,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/p3_2024_dated_SPY.parquet",
       "sha256": "5fb0356da3b7696e485da7bdf72592bff427aed76d1803d8bbf665309167a7e6"
     },
     {
       "bytes": 74489,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/p4_2020_SPY.parquet",
       "sha256": "599ff783523e562980261c56f66b86de823bf5401fd9deee52aa5f9af68da6cb"
     },
     {
       "bytes": 54705,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/p4_2020_dated_SPY.parquet",
       "sha256": "fdc1675081f04e4d64d48f5477ae03ee60738472c44a1e17fd66757ba3780e22"
     }
   ],

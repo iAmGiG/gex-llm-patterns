@@ -3216,7 +3216,7 @@ def write_report(ctx: Context, status: Dict[str, Dict[str, Any]], args_view: Dic
                         "scipy": scipy.__version__, "pyyaml": yaml.__version__},
         "parameters": args_view,
         "contract": CONTRACT,
-        "source": data.source,
+        "source": source_for_report(data.source),
         "inputs_fingerprint": produced["inputs_fingerprint"],
         "inputs": {
             "series": {"rows": len(data.series), "coverage": coverage(data.series, ["series_key", "symbol"], "trading_date")},
@@ -3238,13 +3238,25 @@ def write_report(ctx: Context, status: Dict[str, Dict[str, Any]], args_view: Dic
     })
 
 
+def source_for_report(source: Dict[str, Any]) -> Dict[str, Any]:
+    """``Data.source`` as report.yaml records it: the same record with the parquet root and the file paths written by
+    ``common.repo_relative``, so that the report does not depend on which checkout wrote it."""
+    shown = dict(source)
+    if shown.get("parquet_root"):
+        shown["parquet_root"] = common.repo_relative(shown["parquet_root"])
+    if isinstance(shown.get("files"), list):
+        shown["files"] = [{**f, "path": common.repo_relative(f["path"])} if isinstance(f, dict) and f.get("path") else f
+                          for f in shown["files"]]
+    return shown
+
+
 def generate(data: Data, results_dir: Path, seed: int = SEED, n_boot: int = N_BOOT,
              only: Optional[Sequence[str]] = None) -> Dict[str, Dict[str, Any]]:
     """Run the selected sections on ``data``, write report.yaml and return the per-section status."""
     results_dir.mkdir(parents=True, exist_ok=True)
     ctx = Context(data, results_dir, seed, n_boot, warnings=list(data.warnings))
     status = run_sections(ctx, only)
-    write_report(ctx, status, {"seed": seed, "n_boot": n_boot, "results_dir": str(results_dir), "only": list(only) if only else None})
+    write_report(ctx, status, {"seed": seed, "n_boot": n_boot, "results_dir": common.repo_relative(results_dir), "only": list(only) if only else None})
     return status
 
 
