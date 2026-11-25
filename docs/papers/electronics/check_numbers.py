@@ -513,6 +513,7 @@ def check_prose():
     # Figure 1 (figures/output/fig01_study_design.json extra.cost_usd, extra.other_requests)
     import json
     fj = json.loads((HERE / "figures/output/fig01_study_design.json").read_text())["extra"]
+    check("Figure 1 as-of date printed in the figure equals the caption of Figure 1 (extra.as_of)", ("as of " + fj["as_of"]) in (HERE / "latex/03_Methods.tex").read_text(), True)
     check("Figure 1 cost (fig01_study_design.json extra.cost_usd)", round(fj["cost_usd"], 2), 10.16)
     check("Figure 1 pilot and repeat requests (extra.other_requests)", fj["other_requests"], 3532)
     check("Figure 1 pilot and repeat requests = pilot 40 + bridge repeat 1,476 + duplicate samples 1,516 + later-date repeats 500", 40 + 1476 + 1516 + 500, 3532)
