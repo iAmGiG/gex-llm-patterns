@@ -134,6 +134,9 @@ if [ "$STRICT" -eq 1 ]; then
     [ "$TODO_AUTHORS_SRC" -eq 0 ] || WHY="$WHY; $TODO_AUTHORS_SRC TODO(authors) comment(s) in the sources"
     [ "$TODO_RUNS_SRC" -eq 0 ]    || WHY="$WHY; $TODO_RUNS_SRC TODO(runs) comment(s) in the sources"
   fi
+  if [ "$FINAL" -eq 1 ] && [ "$TODO_AUTHORS_SRC$TODO_RUNS_SRC" != "00" ]; then  # name the markers, supplement files included
+    echo "open markers:"; grep -n -E 'TODO\((authors|runs)\)' "${ALLSRC[@]}" | cut -c1-110 >&2 || true
+  fi
   [ -z "$WHY" ] || die "STRICT: not clean:${WHY#;} (details in $MAIN.log and build_2_bibtex.log)"
   if [ "$FINAL" -eq 1 ]; then echo "FINAL: ok"; else echo "STRICT: ok"; fi
   [ "$PENDING" -eq 0 ] || echo "STRICT: note: $PENDING \\pending marker(s) remain (the Zenodo DOI)"

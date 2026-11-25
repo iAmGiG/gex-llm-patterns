@@ -136,6 +136,7 @@ if [ "$STRICT" -eq 1 ]; then
   [ -z "$WHY" ] || die "STRICT: not submission-ready:${WHY#;} (details in $MAIN.log and build_2_bibtex.log)"
   [ "$TODO" -eq 0 ] || echo "STRICT: note: $TODO open TODO marker(s) remain in the sources, $TODO_AUTHORS of them TODO(authors)"
   if [ "$FINAL" -eq 1 ] && [ "$TODO_AUTHORS" -gt 0 ]; then
+    echo "open markers:" >&2; grep -n 'TODO(authors)' "${ALL_SOURCES[@]}" | cut -c1-110 >&2 || true
     die "FINAL: not ready to submit: $TODO_AUTHORS TODO(authors) marker(s) remain (CRediT roles, Zenodo DOI; grep -n 'TODO(authors)' latex/*.tex)"
   fi
   echo "STRICT: ok"
