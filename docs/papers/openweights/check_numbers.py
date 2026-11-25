@@ -313,7 +313,7 @@ check("Table S7 arms with unanswered windows", sorted(rq.index[rq.n_rows > 0]), 
 fr = pd.read_csv(RES / "unanswered_recoverable_first_pass_vs_retry.csv").set_index("model").loc["qwen3-8b"]
 check("qwen first pass vs retry windows", int(fr.n), 316); check("qwen first pass vs retry same", int(fr.n_same), 313)
 sc = UA["scanner_on_answered_rows"]
-check("scanner answered rows", sc["n_answered_rows"], 89656); check("scanner same verdict", sc["n_same_verdict"], 88362); check("scanner no verdict", sc["n_scanner_no_verdict"], 1294)
+check("scanner answered rows", sc["n_answered_rows"], 89856); check("scanner same verdict", sc["n_same_verdict"], 88562); check("scanner no verdict", sc["n_scanner_no_verdict"], 1294)
 av = pd.read_csv(RES / "unanswered_agreement_variants.csv").set_index(["arm", "period"])
 f = av.loc[("qwen_full_spy", "all")]
 check("qwen full windows", int(f.n_windows), 4691); check("qwen full unanswered", int(f.n_unanswered), 485); check("qwen full answered", int(f.n_answered), 4206)

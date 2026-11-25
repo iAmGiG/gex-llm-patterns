@@ -1,3 +1,3 @@
 run_id,base_arm,repeat_index,model,n_requests,status,submitted_at,ingested_at,n_answers_stored,n_parsed_stored
-bridge_jan_gpt-6-luna_batch_20261124T045259Z_c0,bridge_jan,2,gpt-6-luna,200,in_progress,2026-11-24T04:53Z,,0,0
+bridge_jan_gpt-6-luna_batch_20261124T045259Z_c0,bridge_jan,2,gpt-6-luna,200,ingested,2026-11-24T04:53Z,2026-11-24T15:23Z,200,200
 full_spy_gpt-6-luna_batch_20261124T045255Z_c0,full_spy,2,gpt-6-luna,300,ingested,2026-11-24T04:53Z,2026-11-24T05:42Z,300,300

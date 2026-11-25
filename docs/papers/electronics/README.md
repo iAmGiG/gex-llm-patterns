@@ -34,7 +34,7 @@ and the regime label is called a GEX label, not a demonstrated price regime.
 - **Totals for this paper** (as of 2026-11-10, from the condensed tables): 18 arms (15 gpt-6-luna, 3 backfills), 36,706
   stored answers (34,784 + 1,922), 46 runs, 35,833 gpt-6-luna requests, an estimated $10.02 at list price; the 38,592
   windows and the 39,027 daily rows are unchanged. The earlier totals of 39 arms, 179 runs and 73,846 answers covered
-  both papers. The later-date repeat of the hosted model (2026-11-24, `full_spy#rep2`, 300 requests, $0.09) is a separate dated addition: with it 36,133 requests, $10.11 and 37,006 stored answers; the second repeat (`bridge_jan#rep2`, 200 requests) was still running at the provider when this was written.
+  both papers. The two later-date repeats of the hosted model (2026-11-24, `full_spy#rep2` with 300 requests and `bridge_jan#rep2` with 200, $0.14 together) are a separate dated addition: with them 36,333 requests, $10.16 and 37,206 stored answers.
 - **Number check for the added analyses:** `check_numbers.py` ties the numbers of Supplement S9, the changed inference sentences, the later-date repeat, the counts and the cost to files and columns in `results/` (`~/miniconda3/envs/AutoGex/bin/python docs/papers/electronics/check_numbers.py`; `--emit` prints the S9 table rows); it exits 1 on a mismatch and does not cover the rest of the manuscript.
 
 ## Status (2026-11-23)
