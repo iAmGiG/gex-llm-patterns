@@ -46,7 +46,7 @@ def pick(df: pd.DataFrame, **flt) -> pd.Series:
 def check(name, got, want, tol=0.0):
     global checked
     checked += 1
-    if isinstance(want, (str, dict, list)) or isinstance(got, (str, dict, list)):
+    if isinstance(want, (str, dict, list, tuple)) or isinstance(got, (str, dict, list, tuple)):
         ok = got == want
     else:
         ok = abs(float(got) - float(want)) <= tol
@@ -432,6 +432,20 @@ def check_prose():
     check("repeat: same-job repeat of full_spy pairs (other_arm=full_spy#rep1 n_pairs)", one.n_pairs, 235)
     check("repeat: same-job repeat of full_spy percent (agree_pct)", round(one.agree_pct, 1), 99.1)
     check("repeat: windows that changed in the same-job repeat of full_spy (n_ref_det_oth_not + n_ref_not_oth_det)", one.n_ref_det_oth_not + one.n_ref_not_oth_det, 2)
+    # second later-date repeat: 200 windows of the published inputs (bridge_jan#rep2)
+    b2 = pick(ds, base_arm="bridge_jan", repeat_index=2)
+    check("second repeat: windows, same, changed (drift_summary.csv base_arm=bridge_jan repeat_index=2)", (int(b2.n_windows_compared), int(b2.n_same), int(b2.n_changed)), (200, 198, 2))
+    check("second repeat: percent same and kappa (pct_same, kappa)", (round(b2.pct_same, 1), round(b2.kappa, 3)), (99.0, 0.980))
+    check("second repeat: yes to no, no to yes, toward and away from the rule", (int(b2.n_detect_to_not), int(b2.n_not_to_detect), int(b2.n_toward_rule), int(b2.n_away_from_rule)), (0, 2, 1, 1))
+    check("second repeat: agreement with the rule in both passes", (round(b2.original_agree_with_rule_pct, 1), round(b2.repeat_agree_with_rule_pct, 1)), (99.5, 99.5))
+    check("second repeat: dates of the first answers and of the repeat", (b2.original_answer_first, b2.original_answer_last, b2.repeat_answer_first), ("2026-10-30", "2026-10-30", "2026-11-24"))
+    check("second repeat: days between the first answers and the repeat lie within 21 to 26", (date.fromisoformat(b2.repeat_answer_first) - date.fromisoformat(b2.original_answer_first)).days, 25)
+    check("second repeat: same-job repeat on the same 200 windows (n_windows_in_both_repeats, same_job_pct_same_on_those)", (int(b2.n_windows_in_both_repeats), round(b2.same_job_pct_same_on_those, 1)), (200, 99.5))
+    tb = pick(ba, comparison="test_retest", ref_arm="bridge_jan", other_arm="bridge_jan#rep2", scope="all")
+    check("second repeat: pairs and agreement (bridge_agreement.csv other_arm=bridge_jan#rep2 scope=all)", (int(tb.n_pairs), round(tb.agree_pct, 1)), (200, 99.0))
+    check("second repeat: agreement interval (agree_boot_lo_pct, agree_boot_hi_pct)", (round(tb.agree_boot_lo_pct, 1), round(tb.agree_boot_hi_pct, 1)), (97.4, 100.0))
+    check("second repeat: kappa interval (kappa_boot_lo, kappa_boot_hi)", (round(tb.kappa_boot_lo, 3), round(tb.kappa_boot_hi, 3)), (0.946, 1.0))
+    check("both repeats: windows, changed, toward and away from the rule", (int(r2.n_windows_compared + b2.n_windows_compared), int(r2.n_changed + b2.n_changed), int(r2.n_toward_rule + b2.n_toward_rule), int(r2.n_away_from_rule + b2.n_away_from_rule)), (500, 8, 4, 4))
     check("repeat: the repeat run times the windows answered 235", one.n_pairs, 235)
 
     # --- counts and cost of the hosted runs (Methods, Section S2, Figure 1)
@@ -453,32 +467,37 @@ def check_prose():
     check("S2: later-date repeat completion tokens (completion_tokens)", rp.completion_tokens, 231129)
     check("S2: total prompt tokens of the runs behind the results (sum prompt_tokens)", main.prompt_tokens.sum(), 68576609)
     check("S2: total completion tokens of the runs behind the results (sum completion_tokens)", main.completion_tokens.sum(), 26324356)
-    check("stored requests of all ingested hosted runs (status=ingested sum n_requests)", ing.n_requests.sum(), 36133)
-    check("stored cost in USD of all ingested hosted runs (sum est_cost_usd)", round(ing.est_cost_usd.sum(), 2), 10.11)
-    check("cost_ledger.yaml budget.spent_usd", round(led["budget"]["spent_usd"], 6), 10.107226)
+    check("stored requests of all ingested hosted runs (status=ingested sum n_requests)", ing.n_requests.sum(), 36333)
+    check("stored cost in USD of all ingested hosted runs (sum est_cost_usd)", round(ing.est_cost_usd.sum(), 2), 10.16)
+    rb = later[later.run_id.str.contains("045259Z")].iloc[0]
+    check("second later-date repeat (bridge_jan): requests, prompt and completion tokens, status", (int(rb.n_requests), int(rb.prompt_tokens), int(rb.completion_tokens), rb.status), (200, 382600, 145476, "ingested"))
+    check("second later-date repeat: cost in USD (est_cost_usd)", round(rb.est_cost_usd, 2), 0.06)
+    check("both later-date repeats: requests and cost in USD", (int(later.n_requests.sum()), round(later.est_cost_usd.sum(), 2)), (500, 0.14))
+    check("cost_ledger.yaml budget.spent_usd", round(led["budget"]["spent_usd"], 6), 10.162725)
     check("cost_ledger.yaml hard stop (budget.hard_stop_usd)", led["budget"]["hard_stop_usd"], 12.0)
     check("backfilled o4-mini answers (cost_ledger.yaml totals.backfill.n_requests)", led["totals"]["backfill"]["n_requests"], 1922)
     ps = rd("llm_parse_stats.csv")
     g = ps[ps.model == "gpt-6-luna"]
     rep2 = g[g.arm.str.endswith("#rep2")]
     check("stored gpt-6-luna answers outside the later-date repeat (llm_parse_stats.csv model=gpt-6-luna, arm not ending #rep2, sum n_rows)", g[~g.arm.str.endswith("#rep2")].n_rows.sum(), 34784)
-    check("stored answers of the later-date repeat (arm=full_spy#rep2 n_rows)", rep2.n_rows.sum(), 300)
-    check("parsed answers of the later-date repeat (n_parsed)", rep2.n_parsed.sum(), 300)
-    check("stored gpt-6-luna answers in all (sum n_rows)", g.n_rows.sum(), 35084)
+    check("stored answers of the later-date repeats (arm=full_spy#rep2 and bridge_jan#rep2 n_rows)", tuple(int(rep2.set_index("arm").n_rows[a]) for a in ("full_spy#rep2", "bridge_jan#rep2")), (300, 200))
+    check("parsed answers of the later-date repeats (n_parsed)", rep2.n_parsed.sum(), 500)
+    check("stored gpt-6-luna answers in all (sum n_rows)", g.n_rows.sum(), 35284)
+    check("stored answers with the backfills and both repeats", int(g.n_rows.sum()) + 1922, 37206)
     check("repeat answers of the first submission (arm_role=repeat, arm not ending #rep2, sum n_rows)", g[(g.arm_role == "repeat") & ~g.arm.str.endswith("#rep2")].n_rows.sum(), 2992)
     # 1,516 duplicate-sample answers of the arms other than bridge_jan plus the 1,476 of the full repeat of bridge_jan
     check("duplicate sample of the other arms (1,516 = 2,992 less the 1,476 of bridge_jan#rep1)", 2992 - g[g.arm == "bridge_jan#rep1"].n_rows.sum(), 1516)
     check("requests submitted in all (cost_ledger.yaml totals.counted.n_requests)", led["totals"]["counted"]["n_requests"], 36333)
-    check("requests submitted in all = answered and stored 36,133 + in progress 200", 36133 + 200, led["totals"]["counted"]["n_requests"])
+    check("requests sent in all = runs behind the results 35,833 + later-date repeats 500", 35833 + 500, led["totals"]["counted"]["n_requests"])
     dr = rd("drift_runs.csv")
     check("drift runs listed (drift_runs.csv rows)", len(dr), 2)
-    check("drift run still in progress: requests (drift_runs.csv status=in_progress n_requests)", dr[dr.status == "in_progress"].n_requests.sum(), 200)
+    check("drift runs ingested (drift_runs.csv status=ingested, sum n_answers_stored)", (int((dr.status == "ingested").sum()), int(dr.n_answers_stored.sum())), (2, 500))
     # Figure 1 (figures/output/fig01_study_design.json extra.cost_usd, extra.other_requests)
     import json
     fj = json.loads((HERE / "figures/output/fig01_study_design.json").read_text())["extra"]
-    check("Figure 1 cost (fig01_study_design.json extra.cost_usd)", round(fj["cost_usd"], 2), 10.11)
-    check("Figure 1 pilot and repeat requests (extra.other_requests)", fj["other_requests"], 3332)
-    check("Figure 1 pilot and repeat requests = pilot 40 + bridge repeat 1,476 + duplicate samples 1,516 + later-date repeat 300", 40 + 1476 + 1516 + 300, 3332)
+    check("Figure 1 cost (fig01_study_design.json extra.cost_usd)", round(fj["cost_usd"], 2), 10.16)
+    check("Figure 1 pilot and repeat requests (extra.other_requests)", fj["other_requests"], 3532)
+    check("Figure 1 pilot and repeat requests = pilot 40 + bridge repeat 1,476 + duplicate samples 1,516 + later-date repeats 500", 40 + 1476 + 1516 + 500, 3532)
 
     # --- timeline (Methods 3.8): jobs submitted before the first bridge answer was complete
     cur2 = main[~main.run_id.str.startswith("pilot_")]

@@ -31,6 +31,13 @@ arm,,,,bridge_jan#rep1,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2023,249,1.0,0
 arm,,,,bridge_jan#rep1,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2024,251,1.0,0.999971,1.000064,100.0,0.000667,19.89,19.893
 arm,,,,bridge_jan#rep1,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2025,250,1.0,0.999916,1.000018,100.0,0.001,20.365,20.363667
 arm,,,,bridge_jan#rep1,repeat,gpt-6-luna,jan2026_phase4a,SPY,all,,1476,1.0,0.999885,1.000069,99.593496,0.000667,6.6085,6.607667
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2020,22,1.0,0.999266,1.0006,100.0,0.002333,2.97,2.967167
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2021,35,1.0,0.999877,1.000171,97.142857,0.000667,4.91,4.906333
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2022,29,1.0,0.999647,1.000287,100.0,0.002,5.81,5.808333
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2023,42,1.0,0.999928,1.000066,100.0,0.001167,8.7875,8.789667
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2024,41,1.0,0.999906,1.000034,100.0,0.001667,20.25,20.246667
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,year,2025,31,0.999998,0.999889,1.000007,100.0,0.001333,20.53,20.525667
+arm,,,,bridge_jan#rep2,repeat,gpt-6-luna,jan2026_phase4a,SPY,all,,200,1.0,0.99988,1.000067,99.5,0.001333,7.6925,7.691
 arm,,,,full_spy,primary,gpt-6-luna,new_full,SPY,year,2008,224,1.000147,0.999872,1.000635,100.0,0.000484,1.2615,1.259857
 arm,,,,full_spy,primary,gpt-6-luna,new_full,SPY,year,2009,252,0.999262,0.998672,0.999799,97.619048,0.000781,0.83715,0.837999
 arm,,,,full_spy,primary,gpt-6-luna,new_full,SPY,year,2010,252,1.000236,0.999941,1.000508,98.809524,0.000434,1.128,1.126995

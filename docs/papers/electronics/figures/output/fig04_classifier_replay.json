@@ -250,10 +250,10 @@
     }
   },
   "figure": "fig04_classifier_replay",
-  "generated_utc": "2026-11-24T06:42:23+00:00",
+  "generated_utc": "2026-11-25T01:00:30+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "c1ef6957b8ec18085a703bedaf34601a176a2396",
+  "git_sha": "6b54dda34d2d3f824691c1fab32e1ef1fba0ef56",
   "outputs": {
     "pdf": {
       "bytes": 14090,
@@ -273,23 +273,23 @@
   "results": {
     "files": {
       "detection_by_year.csv": {
-        "inputs_fingerprint": "4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9",
+        "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "110a5dc27c12d294bd7fb2897d0e23c6aa664a3c1c98d3b683c49982cd9ec248"
+        "sha256": "3f06008bfec114d98fc679a22f6c6711ef27730e4647c015468a78d1b19319d0"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-24T06:41:51+00:00",
-      "inputs_fingerprint": "4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9",
+      "generated_at": "2026-11-24T20:06:12+00:00",
+      "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
       "script_sha256": "391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc",
-      "sha256": "cee5fa92d0a5c12aaa79f66c0fe1105e98ba8e320530498c8bd9b308c0657c90"
+      "sha256": "2df262da1eff781c9af2f98da51d6deb168e2a89716a6830d4cdd409000847f4"
     }
   },
   "rows": {
     "data/backups/gex_llm/condensed/windows.csv.gz": 18111,
-    "docs/papers/electronics/results/detection_by_year.csv": 1022
+    "docs/papers/electronics/results/detection_by_year.csv": 1029
   },
   "sources": [
     {
@@ -298,9 +298,9 @@
       "sha256": "c7bcc1b157b3fd2011138426e178d7c6f0a8179c8242f2bceb8a5273db4943fa"
     },
     {
-      "bytes": 174526,
+      "bytes": 175804,
       "path": "docs/papers/electronics/results/detection_by_year.csv",
-      "sha256": "110a5dc27c12d294bd7fb2897d0e23c6aa664a3c1c98d3b683c49982cd9ec248"
+      "sha256": "3f06008bfec114d98fc679a22f6c6711ef27730e4647c015468a78d1b19319d0"
     }
   ],
   "versions": {

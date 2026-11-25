@@ -3,6 +3,8 @@ gpt-6-luna,bridge_jan,primary,4000.0,answered,stop,False,detect,667
 gpt-6-luna,bridge_jan,primary,4000.0,answered,stop,False,reject,809
 gpt-6-luna,bridge_jan#rep1,repeat,4000.0,answered,stop,False,detect,667
 gpt-6-luna,bridge_jan#rep1,repeat,4000.0,answered,stop,False,reject,809
+gpt-6-luna,bridge_jan#rep2,repeat,4000.0,answered,stop,False,detect,100
+gpt-6-luna,bridge_jan#rep2,repeat,4000.0,answered,stop,False,reject,100
 gpt-6-luna,bridge_old,primary,4000.0,answered,stop,False,detect,1004
 gpt-6-luna,bridge_old,primary,4000.0,answered,stop,False,reject,3634
 gpt-6-luna,bridge_old#rep1,repeat,4000.0,answered,stop,False,detect,45

@@ -75,10 +75,10 @@
     }
   },
   "figure": "bf01_reproduction_ladder",
-  "generated_utc": "2026-11-24T06:43:04+00:00",
+  "generated_utc": "2026-11-25T01:04:15+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "c1ef6957b8ec18085a703bedaf34601a176a2396",
+  "git_sha": "6b54dda34d2d3f824691c1fab32e1ef1fba0ef56",
   "outputs": {
     "pdf": {
       "bytes": 17582,
@@ -98,34 +98,34 @@
   "results": {
     "files": {
       "bridge_agreement.csv": {
-        "inputs_fingerprint": "4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9",
+        "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
         "listed_in_report": true,
         "matches_report": true,
-        "sha256": "bf3d895c6402ecc42d60febb533e83b33d167fa3ab9b31f9fd4a695cbcc9c154"
+        "sha256": "c75180430aec49422ad8e5dd20c4690e16b52ba54b1047af5e634a495b0c1bc5"
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-24T06:41:51+00:00",
-      "inputs_fingerprint": "4712e6920d9d7a116c630684ec816ba521e4702327aba1ce02b3fff8bc40ccf9",
+      "generated_at": "2026-11-24T20:06:12+00:00",
+      "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
       "script_sha256": "391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc",
-      "sha256": "cee5fa92d0a5c12aaa79f66c0fe1105e98ba8e320530498c8bd9b308c0657c90"
+      "sha256": "2df262da1eff781c9af2f98da51d6deb168e2a89716a6830d4cdd409000847f4"
     }
   },
   "rows": {
-    "data/backups/gex_llm/condensed/runs.csv.gz": 202,
-    "docs/papers/electronics/results/bridge_agreement.csv": 752
+    "data/backups/gex_llm/condensed/runs.csv.gz": 204,
+    "docs/papers/electronics/results/bridge_agreement.csv": 759
   },
   "sources": [
     {
-      "bytes": 65064,
+      "bytes": 66329,
       "path": "data/backups/gex_llm/condensed/runs.csv.gz",
-      "sha256": "1e8a8307cdca23ba2e9d5b4634c017442ae12c9283a2e1f5ebf891f108724088"
+      "sha256": "2d9af5ff09a75b42066507a0db5ca5019809e64aa932511a4e33dafb98f857e5"
     },
     {
-      "bytes": 178411,
+      "bytes": 179948,
       "path": "docs/papers/electronics/results/bridge_agreement.csv",
-      "sha256": "bf3d895c6402ecc42d60febb533e83b33d167fa3ab9b31f9fd4a695cbcc9c154"
+      "sha256": "c75180430aec49422ad8e5dd20c4690e16b52ba54b1047af5e634a495b0c1bc5"
     }
   ],
   "versions": {

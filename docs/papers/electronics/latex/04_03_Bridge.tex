@@ -14,8 +14,8 @@ On the exact published inputs the mean magnitude that o4-mini reports equals the
 % src: bridge_agreement.csv comparison=test_retest ref_arm=bridge_jan (scope=all and by year); other arms scope=all (full_spy#rep1: n_pairs 235, agree_pct 99.148936)
 The repeat pass runs gpt-6-luna a second time on all 1{,}476 windows of the published inputs. The two passes agree on 99.3\% of the windows (kappa 0.985, bootstrap 0.969--0.996) and differ in 11 windows, which is more than the 5 windows in which the first pass differs from o4-mini. The disagreement between the two models is thus no larger than the disagreement of the model with itself. The repeats of the other arms agree on 98.8\% to 100.0\% of their windows (Tables~S1 and~S2 of the Supplementary Materials list the runs; the repeat of \ident{full_spy} agrees on 99.1\% of 235 windows).
 
-% src: drift_summary.csv base_arm=full_spy repeat_index=2 (n_windows_compared 300, n_same 294, pct_same 98.0, kappa 0.960, n_changed 6, n_detect_to_not 1, n_not_to_detect 5, n_toward_rule 3, n_away_from_rule 3, original_ and repeat_agree_with_rule_pct 99.0, original_answer_first 2026-10-29, original_answer_last 2026-11-03, repeat_answer_first 2026-11-24, same_job_pct_same 99.1); bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (agree_boot_lo_pct 96.4, agree_boot_hi_pct 99.3, kappa_boot_lo 0.927, kappa_boot_hi 0.987, p_mcnemar_exact 0.219)
-A later-date repeat asks about drift: 300 windows of the complete series, balanced on the verdict of the rule and first answered 21 to 26 days earlier, were asked again on 2026-11-24, and 294 give the same verdict (98.0\%; kappa 0.960); the 6 that changed lie 3 toward and 3 away from the rule. A second repeat, of 200 windows of the published inputs, was submitted that day and was not complete when the results were built (Section~S9).
+% src: drift_summary.csv base_arm=full_spy repeat_index=2 (n_windows_compared 300, n_same 294, pct_same 98.0, kappa 0.960, n_changed 6, n_detect_to_not 1, n_not_to_detect 5, n_toward_rule 3, n_away_from_rule 3, original_ and repeat_agree_with_rule_pct 99.0, original_answer_first 2026-10-29, original_answer_last 2026-11-03, repeat_answer_first 2026-11-24, same_job_pct_same 99.1); bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (agree_boot_lo_pct 96.4, agree_boot_hi_pct 99.3, kappa_boot_lo 0.927, kappa_boot_hi 0.987, p_mcnemar_exact 0.219); drift_summary.csv base_arm=bridge_jan repeat_index=2 (n_windows_compared 200, n_same 198, pct_same 99.0, kappa 0.980, n_changed 2, n_toward_rule 1, n_away_from_rule 1, original_answer_first and _last 2026-10-30)
+A later-date repeat asks about drift: 300 windows of the complete series and 200 windows of the published inputs, each sample balanced on the verdict of the rule and first answered 21 to 26 days earlier, were asked again on 2026-11-24. In the first sample 294 give the same verdict (98.0\%; kappa 0.960) and in the second 198 (99.0\%; kappa 0.980); of the 8 that changed, 4 lie toward and 4 away from the rule (Section~S9).
 
 \begin{table}[!htbp]
 \centering
@@ -52,9 +52,10 @@ Windows with a parsed answer & -- & 1{,}476 & -- \\
 Agreement between passes (\%) [95\% interval] & -- & -- & 99.3 [98.6, 99.8] \\
 Cohen's kappa [95\% interval] & -- & -- & 0.985 [0.969, 0.996] \\
 \midrule
-% src: bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa, kappa_boot_lo, kappa_boot_hi); drift_summary.csv base_arm=full_spy repeat_index=2 (n_changed, n_toward_rule, n_away_from_rule)
-\multicolumn{4}{@{}l}{\textit{Later-date repeat of gpt-6-luna (300 windows of the complete series, 21 to 26 days later)}} \\
-Agreement between passes (\%) [95\% interval] & -- & -- & 98.0 [96.4, 99.3] \\
+% src: bridge_agreement.csv comparison=test_retest ref_arm=full_spy other_arm=full_spy#rep2 scope=all (n_pairs, agree_pct, agree_boot_lo_pct, agree_boot_hi_pct, kappa, kappa_boot_lo, kappa_boot_hi); the same columns for ref_arm=bridge_jan other_arm=bridge_jan#rep2 (n_pairs 200, agree_pct 99.0, agree_boot_lo_pct 97.4, agree_boot_hi_pct 100.0)
+\multicolumn{4}{@{}l}{\textit{Later-date repeats of gpt-6-luna (agreement between passes, 21 to 26 days apart)}} \\
+Complete series, 300 windows (\%) [95\% interval] & -- & -- & 98.0 [96.4, 99.3] \\
+Published inputs, 200 windows (\%) [95\% interval] & -- & -- & 99.0 [97.4, 100.0] \\
 \bottomrule
 \end{tabular}
 \end{table}
