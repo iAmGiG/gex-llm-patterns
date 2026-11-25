@@ -84,7 +84,7 @@ below are authoritative (the figure scripts read them; the spec's wide shapes ar
                                 stored call-only value but not the complete value (a call-only day before the break of the
                                 put rows): trading_date, published_gex_bn, call_only_gex_bn, complete_gex_bn,
                                 replacement_gex_bn (the complete value rounded to the 0.01B of the prompt), sign_changes,
-                                n_windows (published windows that contain the day)
+                                n_windows (published windows that end before 2023-09-29 and contain the day)
     published_input_gaps_by_year.csv
                                 the published windows that end before 2023-09-29, per end year and in total: windows,
                                 windows that contain at least one such day, rule detections on the published inputs and with
@@ -2505,6 +2505,9 @@ STORED_FILES = {
     "e9_pair_by_weekday": "E9: the same pairing per era and weekday of window_end",
     "e9_same_day_share": "E9: share of |GEX| from same-day expiries per year and how often removing them flips the daily sign",
     "e9_era_interaction": "E9: difference between two eras of the full-vs-ex0dte gap with block intervals, per threshold",
+    "e9_mde": "E9: minimum detectable effect of the 2024-2025 full-vs-ex0dte gap per block length: se_pp is the standard deviation "
+              "of the gap over the moving-block resamples (n_boot draws), mde_pp = (1.959964 + 0.841621) * se_pp (two-sided 5 percent "
+              "test, 80 percent power)",
     "e13_lineage_by_year": "E13: the published (January) series against the complete, call-only and hybrid series: windows equal and "
                            "different per year, and the rate of each",
     "e13_lineage_by_break": "E13: published windows ending before, spanning and starting after the break date against the complete, "

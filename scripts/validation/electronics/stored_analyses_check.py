@@ -326,6 +326,23 @@ def test_era_interaction_known_answer():
     assert r["gap_a_pp"] == pytest.approx(20.0) and r["gap_b_pp"] == pytest.approx(-10.0) and r["interaction_pp"] == pytest.approx(-30.0)
 
 
+def test_gap_mde_known_answer():
+    # one window per day, gap indicator alternating 0, 1 in blocks of 2: with block length 2 every block holds one 1, so
+    # the gap of a resample is the same in every draw and se = 0; with independent single draws se is the binomial value
+    we = pd.date_range("2024-01-02", periods=400, freq="D")
+    full = np.tile([True, True, False, False], 100)
+    pair = pd.DataFrame({"window_end": we, "full": full, "ex": np.zeros(400, bool)})
+    r = sa.gap_mde(pair, 2024, 2025, 4, 400, sa.make_rng(1))
+    assert r["n_windows"] == 400 and r["gap_pp"] == pytest.approx(50.0) and r["se_pp"] == pytest.approx(0.0, abs=1e-9)
+    assert r["mde_pp"] == pytest.approx(0.0, abs=1e-9)
+    iid = pd.DataFrame({"window_end": we, "full": np.random.default_rng(3).random(400) < 0.3, "ex": np.zeros(400, bool)})
+    r1 = sa.gap_mde(iid, 2024, 2025, 1, 4000, sa.make_rng(2))
+    p_hat = iid["full"].mean()
+    se_theory = 100 * np.sqrt(p_hat * (1 - p_hat) / 400)
+    assert r1["se_pp"] == pytest.approx(se_theory, rel=0.06)
+    assert r1["mde_pp"] == pytest.approx((sa.Z_ALPHA + sa.Z_POWER) * r1["se_pp"])
+
+
 def test_same_day_shares_known_answer():
     days = pd.DataFrame({"trading_date": pd.to_datetime(["2024-01-02", "2024-01-03"]), "net_full": [10.0, -20.0],
                          "net_ex0dte": [4.0, -10.0], "call_full": [30.0, 30.0], "put_full": [-20.0, -50.0],

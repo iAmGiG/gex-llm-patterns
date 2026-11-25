@@ -585,6 +585,15 @@ payloads:
         - ci_lo_pp
         - ci_hi_pp
         - ci_excludes_zero
+      stored_e9_mde.csv:
+        rows: 4
+        columns:
+        - era
+        - block_len
+        - n_windows
+        - gap_pp
+        - se_pp
+        - mde_pp
       stored_e13_lineage_by_year.csv:
         rows: 44
         columns:
@@ -949,6 +958,22 @@ files:
       block_len: moving-block length in windows
       ci_lo_pp: lower 95 percent limit (points)
       ci_hi_pp: upper 95 percent limit (points)
+  stored_e9_mde.csv:
+    rows: 4
+    description: 'E9: minimum detectable effect of the 2024-2025 full-vs-ex0dte gap per block length: se_pp is the
+      standard deviation of the gap over the moving-block resamples (n_boot draws), mde_pp = (1.959964 + 0.841621)
+      * se_pp (two-sided 5 percent test, 80 percent power)'
+    columns:
+    - era
+    - block_len
+    - n_windows
+    - gap_pp
+    - se_pp
+    - mde_pp
+    column_notes:
+      era: period of the era comparison
+      block_len: moving-block length in windows
+      n_windows: windows in the row
   stored_e9_pair_by_era.csv:
     rows: 5
     description: 'E9: new_full against new_ex0dte (same-day expiry removed) per era: verdict cells, discordant windows,

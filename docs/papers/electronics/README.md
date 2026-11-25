@@ -20,9 +20,10 @@ reproduces the published answers of the retired o4-mini. The language-model arms
 prompt states; they cannot separate recall from reasoning, and the paper says so. The title no longer says "controlled",
 and the regime label is called a GEX label, not a demonstrated price regime.
 
-- **Kept:** Sections 4.1 inputs, 4.2 replay, 4.3 bridge, 4.4 complete series, 4.5 same-day-expiry ablation, 4.6 deep
-  baseline, 4.7 post-publication period, 4.8 fidelity and 4.9 dated versus obfuscated labels (numbered after the split;
-  they were 4.1 to 4.6, 4.8, 4.10 and 4.11); Supplement S1 (series SQL) and S2 (the hosted run ledger).
+- **Kept:** Sections 4.1 inputs, 4.2 replay, 4.3 bridge, 4.4 complete series, 4.5 robustness and scope (4.5.1
+  same-day-expiry ablation, 4.5.2 deep baseline, 4.5.3 post-publication period), 4.6 fidelity and 4.7 dated versus
+  obfuscated labels (numbered after the split and the cut of 2026-11-24; the files are `04_01`..`04_07`); Supplement S1
+  (series SQL) and S2 (the hosted run ledger); S7 to S9 hold the per-year tables, the detail figures and the stored-data analyses.
 - **Moved to the supplement:** the cross-asset replication with the scaled QQQ and IWM series (S3, Table S3 and S4,
   Figure S1), the intraday check (S4, Table S5, Figure S2) and the fidelity table by arm (S5, Table S6). Two body tables
   moved too: the per-year table of gpt-6-luna on SPY is Supplement Table S9, and the QQQ and IWM columns are Table S4.
@@ -246,6 +247,7 @@ ledger.
 | 2026-10-04 | the pre-rebuild daily table is archived as `backups.options_daily_summary_pre_rebuild_20261004` |
 | 2026-10-08 | `gex.options_daily_summary` is rebuilt from stored per-contract gamma, same-day expiries included |
 | 2026-10-12 | equity options move from Alpha Vantage to Cboe delayed quotes, so every window ends on or before 2026-10-09 |
+| 2026-11-19 | last session of options, intraday and price data in the database (Cboe refuses the node from that evening; no replacement source); no effect on the windows of this study |
 
 ## Related issues and documents
 

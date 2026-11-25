@@ -48,7 +48,7 @@
       "r1_p3_o4mini": 223,
       "r1_p4_o4mini": 223
     },
-    "as_of": "2026-11-24",
+    "as_of": "2026-11-25",
     "cost_usd": 10.162725,
     "exclude_local": true,
     "last_window_end": "2026-10-09",
@@ -127,34 +127,34 @@
     "windows": 38592
   },
   "figure": "fig01_study_design",
-  "generated_utc": "2026-11-25T01:00:18+00:00",
+  "generated_utc": "2026-11-25T01:20:22+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "6b54dda34d2d3f824691c1fab32e1ef1fba0ef56",
+  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
   "outputs": {
     "pdf": {
       "bytes": 23611,
       "path": "docs/papers/electronics/figures/output/fig01_study_design.pdf",
-      "sha256": "917bb4820e32bb0cb0e70539d7f38a11e6e87fad40f4c3168f75ed71e8e9a3d6"
+      "sha256": "0b6934717de90d842c823745a8e8aad5a4f3451cabaa6eed00d1975986aece58"
     },
     "png": {
-      "bytes": 482728,
+      "bytes": 482784,
       "path": "docs/papers/electronics/figures/output/fig01_study_design.png",
       "pixels": [
         1842,
         1690
       ],
-      "sha256": "66a40179e643087fd72c66f3c177cbb2a8a294c7f188f95bfeae55d07130c197"
+      "sha256": "2e0c13d415d1e8157b4b3108d949cf47517d843f8e7499af8e4c6194b29b69bd"
     }
   },
   "results": {
     "files": {},
     "report_yaml": {
-      "generated_at": "2026-11-24T20:06:12+00:00",
+      "generated_at": "2026-11-25T01:19:45+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "391df6d15d7528b7734be1607c79968a17aaf5f167015a1f108d50ec810b94fc",
-      "sha256": "2df262da1eff781c9af2f98da51d6deb168e2a89716a6830d4cdd409000847f4"
+      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
+      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
     }
   },
   "rows": {
@@ -162,9 +162,9 @@
   },
   "sources": [
     {
-      "bytes": 444881,
+      "bytes": 449934,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "2df262da1eff781c9af2f98da51d6deb168e2a89716a6830d4cdd409000847f4"
+      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
     }
   ],
   "versions": {

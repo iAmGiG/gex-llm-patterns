@@ -169,6 +169,13 @@ def rows() -> dict[str, list[str]]:
     out["e9_era"] = r
 
     # E9 share of same-day expiries: stored_e9_same_day_share.csv
+    md = rd("stored_e9_mde.csv")
+    check("E9 standard error of the 2024-2025 gap at block 60 (stored_e9_mde.csv era=2024-2025 block_len=60 se_pp)", round(pick(md, era="2024-2025", block_len=60).se_pp, 1), 2.9)
+    check("E9 minimum detectable effect at block 60 (mde_pp)", round(pick(md, era="2024-2025", block_len=60).mde_pp, 1), 8.2)
+    check("E9 minimum detectable effect, smallest over block lengths (min mde_pp)", round(md.mde_pp.min(), 1), 6.9)
+    check("E9 minimum detectable effect, largest over block lengths (max mde_pp)", round(md.mde_pp.max(), 1), 9.3)
+    check("E9 minimum detectable effect uses n_windows (n_windows)", int(md.n_windows.iloc[0]), 502)
+    check("E9 minimum detectable effect = 2.80 se (mde_pp / se_pp, block 60)", round(pick(md, era="2024-2025", block_len=60).mde_pp / pick(md, era="2024-2025", block_len=60).se_pp, 2), 2.80)
     sd = rd("stored_e9_same_day_share.csv")
     r = []
     for y in (2019, 2024, 2025, 2026):
@@ -355,7 +362,18 @@ def check_prose():
     check("E9 share of gross 2024 (abs_0dte_share_of_gross)", round(s24.abs_0dte_share_of_gross, 1), 7.6)
     check("E9 gross removed 2024 (gross_removed_share)", round(s24.gross_removed_share, 1), 18.0)
     s25 = sd[sd.year.astype(str) == "2025"].iloc[0]
+    check("E9 share of gross 2025 (year=2025 abs_0dte_share_of_gross)", round(s25.abs_0dte_share_of_gross, 1), 8.1)
+    s19 = sd[sd.year.astype(str) == "2019"].iloc[0]
+    check("E9 share of gross 2019 (year=2019 abs_0dte_share_of_gross)", round(s19.abs_0dte_share_of_gross, 1), 3.6)
+    check("E9 share of absolute net 2019 (abs_0dte_share_of_abs_net)", round(s19.abs_0dte_share_of_abs_net, 1), 22.1)
     check("E9 gross removed 2025 (year=2025 gross_removed_share)", round(s25.gross_removed_share, 1), 20.0)
+
+    # --- window sets of Figure 5 in 2020 (detection_by_year.csv label_source=llm scope=year year=2020)
+    dby = rd("detection_by_year.csv")
+    for arm_, want_ in (("bridge_jan", 223), ("full_spy", 252), ("ex0dte_spy", 252), ("bridge_old", 252)):
+        row_ = dby[(dby.label_source == "llm") & (dby.symbol == "SPY") & (dby.scope == "year") & (dby.year == 2020) & (dby.arm == arm_)]
+        check(f"Figure 5 caption: windows of {arm_} in 2020 (detection_by_year.csv llm year=2020 n_windows)", int(row_.n_windows.iloc[0]), want_)
+    check("Figure 5 caption: 29 windows of 2020 end before 2020-02-13 (252 - 223)", 252 - 223, 29)
 
     # --- E13: lineage (S9; Section 4.1 and the Introduction state the 332 / 46 from published_input_gaps_by_year.csv)
     lb = rd("stored_e13_lineage_by_break.csv")
@@ -495,6 +513,7 @@ def check_prose():
     # Figure 1 (figures/output/fig01_study_design.json extra.cost_usd, extra.other_requests)
     import json
     fj = json.loads((HERE / "figures/output/fig01_study_design.json").read_text())["extra"]
+    check("Figure 1 as-of date printed in the figure equals the caption of Figure 1 (extra.as_of)", ("as of " + fj["as_of"]) in (HERE / "latex/03_Methods.tex").read_text(), True)
     check("Figure 1 cost (fig01_study_design.json extra.cost_usd)", round(fj["cost_usd"], 2), 10.16)
     check("Figure 1 pilot and repeat requests (extra.other_requests)", fj["other_requests"], 3532)
     check("Figure 1 pilot and repeat requests = pilot 40 + bridge repeat 1,476 + duplicate samples 1,516 + later-date repeats 500", 40 + 1476 + 1516 + 500, 3532)
