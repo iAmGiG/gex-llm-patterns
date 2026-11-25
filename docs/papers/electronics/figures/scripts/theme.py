@@ -588,11 +588,9 @@ def parse_args(fig_id: str, doc: Optional[str], argv: Optional[Sequence[str]] = 
 
 # --------------------------------------------------------------------------- output and provenance
 def display_path(path: Path) -> str:
-    """Repo-relative path when the file lives in the repository, absolute otherwise."""
-    try:
-        return str(path.resolve().relative_to(REPO_ROOT))
-    except ValueError:
-        return str(path.resolve())
+    """Repo-relative path when the file lives in the repository (this checkout or, for a git worktree, the main one),
+    absolute otherwise."""
+    return common.repo_relative(path)
 
 
 def save_figure(fig: Figure, fig_id: str, output_dir: Path, pdf: bool = True,
@@ -775,7 +773,7 @@ def write_manifest(fig_id: str, sources: Sequence[Path], rows: Mapping[str, int]
         "git_sha": common.git_sha(),
         "git_dirty": None if tree is None else bool(tree.strip()),
         "git_dirty_tracked": None if tracked_changes is None else bool(tracked_changes.strip()),
-        "argv": [Path(sys.argv[0]).name, *sys.argv[1:]],
+        "argv": [Path(sys.argv[0]).name, *(display_path(Path(a)) if Path(a).is_absolute() else a for a in sys.argv[1:])],  # folders as display paths
         "code": [{"path": display_path(p), "sha256": common.sha256_file(p), "git": states[p.resolve()]} for p in code],
         "versions": library_versions(),
         "outputs": {},

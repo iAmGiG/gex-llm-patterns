@@ -2,7 +2,7 @@
   "argv": [
     "fig06_bridge_agreement.py",
     "--tables-dir",
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
+    "data/backups/gex_llm/tables"
   ],
   "code": [
     {
@@ -16,14 +16,14 @@
       "sha256": "0319cf97a75a121f9e0d2321107869b5ef9d1cbaa99e6beeb508783ab4229fbf"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "ccfebc01dd90f52928d57dffa65e1b829a9d53d12644b7f18a7ca5df1c4e04e6"
+      "sha256": "e6c7b1e5baf8c2ceddae9728d191758517ffef6cd854369ac13c055432458f00"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa"
+      "sha256": "a6da849b13555d85500958e5192d2e904e6ce239c3ac7ae77257f06ac01a901f"
     }
   ],
   "extra": {
@@ -50,10 +50,10 @@
     ]
   },
   "figure": "fig06_bridge_agreement",
-  "generated_utc": "2026-11-25T01:20:42+00:00",
+  "generated_utc": "2026-11-25T02:12:27+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
+  "git_sha": "f23906cc37dd608ef783d8544b2de4267a00b7be",
   "outputs": {
     "pdf": {
       "bytes": 19650,
@@ -86,11 +86,11 @@
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-25T01:19:45+00:00",
+      "generated_at": "2026-11-25T02:03:02+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "script_sha256": "f089b5bea40675d82c6ced7595828d75745272b20a37405996dc82df619876f9",
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     }
   },
   "rows": {

@@ -2,7 +2,7 @@
   "argv": [
     "fig09_cross_asset.py",
     "--tables-dir",
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
+    "data/backups/gex_llm/tables"
   ],
   "code": [
     {
@@ -21,14 +21,14 @@
       "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "ccfebc01dd90f52928d57dffa65e1b829a9d53d12644b7f18a7ca5df1c4e04e6"
+      "sha256": "e6c7b1e5baf8c2ceddae9728d191758517ffef6cd854369ac13c055432458f00"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa"
+      "sha256": "a6da849b13555d85500958e5192d2e904e6ce239c3ac7ae77257f06ac01a901f"
     }
   ],
   "extra": {
@@ -379,10 +379,10 @@
     ]
   },
   "figure": "fig09_cross_asset",
-  "generated_utc": "2026-11-25T01:20:57+00:00",
+  "generated_utc": "2026-11-25T02:12:50+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
+  "git_sha": "f23906cc37dd608ef783d8544b2de4267a00b7be",
   "outputs": {
     "pdf": {
       "bytes": 25498,
@@ -390,13 +390,13 @@
       "sha256": "8f3ae6155cbc2e853cc42c3cd47ffd643c97b28db5f07cca9d5bc66580be0575"
     },
     "png": {
-      "bytes": 342187,
+      "bytes": 341917,
       "path": "docs/papers/electronics/figures/output/fig09_cross_asset.png",
       "pixels": [
         1842,
         1425
       ],
-      "sha256": "61d9447f8616aae53e13ff58cfa6d6e3b4bad4b60d5137e9077e9f38dba7e911"
+      "sha256": "54f33dc43a46bf08251e9db54a25a57474237958254de93678dadff43ef57f5b"
     }
   },
   "results": {
@@ -409,20 +409,20 @@
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-25T01:19:45+00:00",
+      "generated_at": "2026-11-25T02:03:02+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "script_sha256": "f089b5bea40675d82c6ced7595828d75745272b20a37405996dc82df619876f9",
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     }
   },
   "rows": {
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3878,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3878,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_IWM.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet": 3878,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
     "docs/papers/electronics/results/detection_by_year.csv": 1029,
     "docs/papers/electronics/results/report.yaml": 15
   },
@@ -433,38 +433,38 @@
       "sha256": "3f06008bfec114d98fc679a22f6c6711ef27730e4647c015468a78d1b19319d0"
     },
     {
-      "bytes": 449934,
+      "bytes": 411480,
       "path": "docs/papers/electronics/results/report.yaml",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     },
     {
       "bytes": 1438633,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_IWM.parquet",
       "sha256": "da0d84f092b8e6de962ee2f6b4b486531be670c4c2a51e32e974ae6d3ee2473e"
     },
     {
       "bytes": 1191743,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_QQQ.parquet",
       "sha256": "91e554b1113b2bddde98fe25cdcab7c40be66d4685365462122c14bd5043c1a3"
     },
     {
       "bytes": 1447055,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
       "sha256": "999fa2f10c3fdeb18d6c712505a76e1a55d8600b6b9a1a03b9e6659f1037dcff"
     },
     {
       "bytes": 1362674,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_IWM.parquet",
       "sha256": "519d7414c14ab9b3e7e76a675ed4f458a44f5eeedc5be527615242e6f2e71301"
     },
     {
       "bytes": 1130075,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_QQQ.parquet",
       "sha256": "04e5c8b348174529ef9a6e8f2593808f132512d39d119bf8e9d85ab92a4fa7a1"
     },
     {
       "bytes": 1380806,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     }
   ],

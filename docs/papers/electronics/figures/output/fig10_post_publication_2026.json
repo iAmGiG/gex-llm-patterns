@@ -2,7 +2,7 @@
   "argv": [
     "fig10_post_publication_2026.py",
     "--tables-dir",
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables"
+    "data/backups/gex_llm/tables"
   ],
   "code": [
     {
@@ -21,14 +21,14 @@
       "sha256": "3825ef3f7414230b9dc15057a9df9e2a293053b7d5766c4c72d2a60c4fe60888"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "docs/papers/electronics/figures/scripts/theme.py",
-      "sha256": "ccfebc01dd90f52928d57dffa65e1b829a9d53d12644b7f18a7ca5df1c4e04e6"
+      "sha256": "e6c7b1e5baf8c2ceddae9728d191758517ffef6cd854369ac13c055432458f00"
     },
     {
-      "git": "clean",
+      "git": "modified",
       "path": "scripts/validation/electronics/common.py",
-      "sha256": "d9f464d26c07d8fe9c37708cb75580ec0ed6d66eacd9191c2a3218e7608339aa"
+      "sha256": "a6da849b13555d85500958e5192d2e904e6ce239c3ac7ae77257f06ac01a901f"
     }
   ],
   "extra": {
@@ -75,10 +75,10 @@
     "wording": "post-publication period (not out-of-sample)"
   },
   "figure": "fig10_post_publication_2026",
-  "generated_utc": "2026-11-25T01:21:01+00:00",
+  "generated_utc": "2026-11-25T02:12:55+00:00",
   "git_dirty": true,
   "git_dirty_tracked": true,
-  "git_sha": "e458b273b535d385c7c5b7fb04877eab9fc3ba1b",
+  "git_sha": "f23906cc37dd608ef783d8544b2de4267a00b7be",
   "outputs": {
     "pdf": {
       "bytes": 26888,
@@ -86,13 +86,13 @@
       "sha256": "e664ac62ce0f9e71fe5a4d9c7eac5663a2c052b2a25f9b600d36101decb2c2f2"
     },
     "png": {
-      "bytes": 271903,
+      "bytes": 271813,
       "path": "docs/papers/electronics/figures/output/fig10_post_publication_2026.png",
       "pixels": [
         1842,
         1701
       ],
-      "sha256": "2e9508f07205e24d340c5f5c8130584ff3aa5abf7001d39143bc951e9de9a552"
+      "sha256": "220c89068e4e67568baae9af6e7ea3ff6d5290f4ca6378fb849560ba5d391af9"
     }
   },
   "results": {
@@ -105,16 +105,16 @@
       }
     },
     "report_yaml": {
-      "generated_at": "2026-11-25T01:19:45+00:00",
+      "generated_at": "2026-11-25T02:03:02+00:00",
       "inputs_fingerprint": "0364facb5a416b9b53dabcdda196a6963e6a60277ee840e9eb9bf013be412208",
       "path": "docs/papers/electronics/results/report.yaml",
-      "script_sha256": "2765e5286c4b9aef91b2ce173e0db35cef52ad6d8389ea089c50f75016de4473",
-      "sha256": "d2277dd9e5fe63e4e1ff9aabe8ee63961ad91327c8b659855ca60b37b46faeb8"
+      "script_sha256": "f089b5bea40675d82c6ced7595828d75745272b20a37405996dc82df619876f9",
+      "sha256": "1aa77c7ce3af42a8761d2938ea99609d3dfaf4ace618f401570a1d22fc15e11c"
     }
   },
   "rows": {
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
-    "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet": 4691,
+    "data/backups/gex_llm/tables/windows/new_full_SPY.parquet": 4691,
     "docs/papers/electronics/results/post_publication_2026.csv": 1959
   },
   "sources": [
@@ -125,12 +125,12 @@
     },
     {
       "bytes": 1447055,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_ex0dte_SPY.parquet",
       "sha256": "999fa2f10c3fdeb18d6c712505a76e1a55d8600b6b9a1a03b9e6659f1037dcff"
     },
     {
       "bytes": 1380806,
-      "path": "/mnt/bst/a100/yxie2/cregan1/gex-llm-patterns/data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
+      "path": "data/backups/gex_llm/tables/windows/new_full_SPY.parquet",
       "sha256": "aaee56173dae68450f6a28e91e6727eac8364b50a342649e0f897fc70ac3bf97"
     }
   ],
