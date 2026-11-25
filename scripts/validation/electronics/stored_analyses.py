@@ -679,6 +679,24 @@ def era_interaction(pair: pd.DataFrame, era_a: Tuple[int, int], era_b: Tuple[int
             "interaction_pp": float(point), "ci_lo_pp": lo, "ci_hi_pp": hi}
 
 
+Z_ALPHA, Z_POWER = 1.959964, 0.841621  # two-sided 5 percent test, 80 percent power
+
+
+def gap_mde(pair: pd.DataFrame, first_year: int, last_year: int, block_len: int, n_boot: int,
+            rng: np.random.Generator) -> Dict[str, float]:
+    """Minimum detectable effect of the full-vs-ex0dte gap (rate(full) - rate(ex0dte), points) among the windows ending in
+    ``first_year``..``last_year``: se = standard deviation of the gap over ``n_boot`` moving-block resamples of the paired
+    sequence of that era (the draws of the gap interval), mde = (Z_ALPHA + Z_POWER) * se, the size of a true gap that a
+    two-sided 5 percent test detects with 80 percent power when the resampling variance is the variance of the estimate."""
+    y = pair["window_end"].dt.year.to_numpy()
+    e = pair[(y >= first_year) & (y <= last_year)]
+    d = e["full"].to_numpy(float) - e["ex"].to_numpy(float)
+    s = mbb_sums(np.column_stack([d, np.ones_like(d)]), block_len, n_boot, rng)
+    draws = 100 * s[:, 0] / s[:, 1]
+    se = float(np.std(draws, ddof=1))
+    return {"n_windows": int(len(e)), "gap_pp": 100 * float(d.mean()), "se_pp": se, "mde_pp": (Z_ALPHA + Z_POWER) * se}
+
+
 def same_day_shares(days: pd.DataFrame) -> pd.DataFrame:
     """Per year, the same-day-expiry (0DTE) part of the complete series against two denominators.
 
@@ -1049,6 +1067,11 @@ def run_e9(data, out: Output, params: Dict[str, Any], notes: List[str]) -> Dict[
             ia_rows.append({"threshold_bn": float(thr), "block_len": int(L), "era_a": "2014-2022", "era_b": "2023-2026", **r,
                             "ci_excludes_zero": bool(r["ci_lo_pp"] > 0 or r["ci_hi_pp"] < 0)})
     out.csv("e9_era_interaction.csv", pd.DataFrame(ia_rows))
+    mde_rows = []
+    for L in params["block_lengths"]:
+        r = gap_mde(pair, 2024, 2025, L, params["n_boot"], make_rng(params["seed"], "E9mde", L))
+        mde_rows.append({"era": "2024-2025", "block_len": int(L), **r})
+    out.csv("e9_mde.csv", pd.DataFrame(mde_rows))
     out.yaml("e9_gate.yaml", round_native(gate))
     return gate
 
