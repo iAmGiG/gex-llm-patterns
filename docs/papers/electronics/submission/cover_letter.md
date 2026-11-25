@@ -15,7 +15,7 @@ Issue held jointly with EAAAI 2026 and AIAI 2026, following the invitation to ex
 Market Regimes Through Temporal Obfuscation" (AIAI 2026, IFIP AICT, Springer, pp. 127-140,
 doi:10.1007/978-3-032-30801-6_10). That paper and our IEEE BigData 2025 workshop paper are combined in a separate journal
 article, "Temporal Obfuscation Testing for LLM Structural Reasoning: From Single-Day Dealer Constraints to Persistent
-Market Regimes" (*JRFM* 2026, 19(6), 382, doi:10.3390/jrfm19060382). All three are cited (Section 1.2). The present
+Market Regimes" (*JRFM* 2026, 19(6), 382, doi:10.3390/jrfm19060382). All three are cited (Section 1.3). The present
 article reuses only the regime criteria and the prompt of the conference paper, restated in Section 3.1 and
 Section S6 of the Supplementary Materials. Its experiments, results, figures and tables are new. Relative to all three publications it adds:
 
@@ -25,7 +25,8 @@ Section S6 of the Supplementary Materials. Its experiments, results, figures and
    Cohen's kappa 0.993);
 3. the years 2008-2019 and the post-publication year 2026, and, in the Supplementary Materials, the exchange-traded
    funds QQQ and IWM next to SPY and an intraday check;
-4. inference that accounts for overlapping windows (quarter-block bootstrap, non-overlapping subsamples);
+4. inference that accounts for overlapping windows (a 60-window moving-block bootstrap, with a calendar-quarter bootstrap and
+   non-overlapping subsamples as secondary checks);
 5. a rerun of the 2024 and 2020 baselines with and without calendar dates;
 6. a disclosed per-symbol scaling for QQQ and IWM (Supplementary Materials).
 
