@@ -1,6 +1,6 @@
 # Open-weights paper (Paper B): reproducing an LLM evaluation after its hosted model is retired
 
-Short paper (about 16 pages, MDPI class; planned for MDPI *Electronics*, like Paper A, which is planned for the same journal) by Christopher Regan and Ying Xie. Working title:
+Short paper (17 pages plus a 10-page supplement in the MDPI class, no venue page rule assumed; planned for MDPI *Electronics*, like Paper A, which is planned for the same journal) by Christopher Regan and Ying Xie. Working title:
 *Reproducing an LLM Evaluation After Its Hosted Model Is Retired: Open-Weights Models on Stored Requests*.
 
 **Question.** Can an LLM evaluation be reproduced after its hosted model is retired: with the hosted successor alias, and with
@@ -44,7 +44,7 @@ bash docs/papers/openweights/build.sh --final      # strict + fails while a \pen
 bash docs/papers/openweights/build.sh --overleaf   # strict + overleaf/Regan_Xie_OpenWeights_overleaf.zip (git-ignored)
 ```
 
-Page count: the article is about 16 pages in the MDPI layout; the journal sets no page limit, so figures stay at full text width.
+Page count: 17 pages for the article and 10 for the supplement in the MDPI layout. The article states no page target of its own, and no venue rule is assumed; figures stay at full text width.
 
 Figures (AutoGex env, `export PYTHONNOUSERSITE=1 PYTHONPATH=$(pwd)`):
 

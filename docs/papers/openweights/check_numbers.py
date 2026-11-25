@@ -2,7 +2,7 @@
 """Recompute the numbers of the open-weights manuscript from the tracked files and compare them with the text.
 
 Reads only tracked files: docs/papers/electronics/results/ (read only) and data/backups/gex_llm/condensed/.  Each check names the
-file it reads; a mismatch is printed and the exit status is 1.  The two pending runs (D-33, D-34) have no numbers yet and are not checked.
+file it reads; a mismatch is printed and the exit status is 1. 
 Exploratory-run numbers (Section 4.6) need the git-ignored local folder data/backups/gex_llm/exploratory_llama_reorder_20261108/ and are
 checked only when it exists (set EXPLORATORY_DIR to point elsewhere).
 
@@ -107,6 +107,17 @@ for pre, equal, pairs in (("oss_", 593, 594), ("llama_", 588, 588), ("qwen_", 48
     check(f"{pre} retest pairs", g.n_pairs.sum(), pairs)
     check(f"{pre} retest equal", round((g.n_pairs * g.agree_pct / 100).sum()), equal)
 check("luna bridge retest agree", round(tr[tr.ref_arm == "bridge_jan"].agree_pct.iloc[0], 1), 99.3)
+# later-date repeats of the hosted alias (Paper A; drift_summary.csv, repeat_index 2)
+dr = pd.read_csv(RES / "drift_summary.csv")
+dr = dr[dr.repeat_index == 2].set_index("base_arm")
+check("luna later-date repeat full_spy same", int(dr.loc["full_spy"].n_same), 294)
+check("luna later-date repeat full_spy n", int(dr.loc["full_spy"].n_windows_compared), 300)
+check("luna later-date repeat bridge_jan same", int(dr.loc["bridge_jan"].n_same), 198)
+check("luna later-date repeat bridge_jan n", int(dr.loc["bridge_jan"].n_windows_compared), 200)
+for a in ("full_spy", "bridge_jan"):
+    gap = (pd.to_datetime(dr.loc[a].repeat_answer_first) - pd.to_datetime(dr.loc[a].original_answer_last)).days
+    check(f"later-date repeat {a} gap at least 21 days", int(gap >= 21), 1)
+check("later-date repeat longest gap 26 days", int(max((pd.to_datetime(dr.loc[a].repeat_answer_first) - pd.to_datetime(dr.loc[a].original_answer_first)).days for a in dr.index)), 26)
 
 # ---- parse stats: tokens, unanswered, retries (llm_parse_stats.csv)
 ps = pd.read_csv(RES / "llm_parse_stats.csv")

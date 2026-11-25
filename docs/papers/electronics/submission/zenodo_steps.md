@@ -8,7 +8,8 @@ basis for it (review item B094) before step 3.
        python scripts/validation/electronics/08_package_release.py
        python scripts/validation/electronics/08_package_release.py --check data/backups/gex_llm/release/regan_xie_electronics_tables_<date>.zip
 
-   `--check` must print `CHECK ok`. The zip carries the four tables, `detections_replaced.parquet`, `raw_backfill/` (the
+   The current zip is `regan_xie_electronics_tables_20261125.zip` (204 runs, 89,904 answers; the counts of
+   `condensed/runs.csv.gz` and `condensed/detections.csv.gz`); rebuild it if the tables change. `--check` must print `CHECK ok`. The zip carries the four tables, `detections_replaced.parquet`, `raw_backfill/` (the
    input and output of the three backfilled o4-mini runs, with `MANIFEST.csv`), the README and `SHA256SUMS`.
 2. Sign in at zenodo.org with the account that will own the record and start a new upload.
 3. Fill the form from `zenodo_metadata.json` (type Dataset; title; description; the two creators; keywords; version;
@@ -20,11 +21,11 @@ basis for it (review item B094) before step 3.
 
 ## Where the DOI goes
 
-| File and line (2026-11-24, `origin/main` `ebdbf65`) | What |
+| File and line (2026-11-25, branch `paper/b-finish`) | What |
 |---|---|
-| `docs/papers/electronics/latex/Regan_Xie_Electronics.tex:167` (the TODO) and `:168` (`\dataavailability`) | add the DOI and update the access date |
-| `docs/papers/openweights/latex/Regan_Xie_OpenWeights.tex:145` (the TODO) and `:146` (`\dataavailability`, which holds `\pending{authors: Zenodo DOI}`) | replace the `\pending` marker by the DOI |
-| `docs/papers/electronics/submission/cover_letter.md:52` | the TODO for the DOI |
+| `docs/papers/electronics/latex/Regan_Xie_Electronics.tex:159` (the TODO) and `:160` (`\dataavailability`) | add the DOI and update the access date |
+| `docs/papers/openweights/latex/Regan_Xie_OpenWeights.tex:147` (the TODO) and `:148` (`\dataavailability`, which holds `\pending{authors: Zenodo DOI}`) | replace the `\pending` marker by the DOI |
+| `docs/papers/electronics/submission/cover_letter.md:58` | the TODO for the DOI |
 
 Line numbers shift when these files are edited; grep for `TODO(authors)` and `Zenodo DOI` to find them again. The record
 is shared by both papers, so both Data Availability Statements say so; keep them in step.
